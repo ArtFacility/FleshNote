@@ -156,12 +156,24 @@ export default function EntityExtractor({ projectPath, onDone }) {
     ])
     if (filePath) {
       try {
-        const result = await window.api.loadChapterContent(projectPath, -1)
-        // Fallback: read via a generic file reader endpoint
-        // For now, we just set a placeholder
-        setRawText(`${t('extractor.fileLoaded', '[File loaded:')} ${filePath}]\n\n${t('extractor.pastePrompt2', 'Paste your text here or use the file content.')}`)
-      } catch {
-        setRawText(t('extractor.pastePrompt1', 'Paste your raw text here...'))
+        setConverting(true)
+        // We can use the split-preview endpoint even if we don't care about splits,
+        // because it returns the full text read from Docx/Txt/Md
+        const result = await window.api.importSplitPreview({
+          project_path: projectPath,
+          file_path: filePath
+        })
+
+        if (result && result.splits) {
+          // Join all split contents to get the full file text
+          const fullText = result.splits.map(s => s.content).join('\n\n')
+          setRawText(fullText)
+        }
+      } catch (err) {
+        console.error('Failed to load file:', err)
+        alert('Failed to read file: ' + err.message)
+      } finally {
+        setConverting(false)
       }
     }
   }
@@ -173,7 +185,7 @@ export default function EntityExtractor({ projectPath, onDone }) {
 
     try {
       // 1. Run spaCy NER
-      const nerResult = await window.api.importNerExtract(rawText)
+      const nerResult = await window.api.importNerExtract({ text: rawText })
       setNerHighlights(nerResult.entities || [])
 
       // 2. Regex-based field extraction
@@ -245,12 +257,19 @@ export default function EntityExtractor({ projectPath, onDone }) {
           region: form.region,
           description: form.description
         })
+      } else if (entityType === 'item') {
+        await window.api.createLoreEntity({
+          project_path: projectPath,
+          name: form.name.trim(),
+          category: 'item',
+          classification: form.classification,
+          description: form.description,
+          origin: form.origin
+        })
       }
-      // Items would go through a lore_entity create endpoint (not yet built)
 
       setSavedEntities((prev) => [...prev, { type: entityType, name: form.name }])
       resetForm()
-      setRawText('')
       setEntityType(null)
     } catch (err) {
       console.error('Save failed:', err)

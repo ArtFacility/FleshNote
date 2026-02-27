@@ -348,6 +348,7 @@
         "bioLabelShort": "BIO (optional)",
         "bioPlaceholder": "A brief description...",
         "addCharacterBtn": "Add another character",
+        "importFromNotes": "Import from Notes",
         "charSetupTitle": "Character Setup",
         "charSetupSubtitle": "Add at least one character to set as the POV for your first chapter.",
         "numChaptersLabel": "NUMBER OF CHAPTERS",

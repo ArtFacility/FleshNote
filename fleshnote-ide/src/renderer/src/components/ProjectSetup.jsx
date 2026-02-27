@@ -299,8 +299,8 @@ export default function ProjectSetup({ projectPath, projectConfig, onComplete, o
         splits: splits,
         target_word_count: parseInt(projectConfig?.default_chapter_target) || 4000
       })
-      // Move to character setup (step 3 of import)
-      setStep(3)
+      // Move to worldbuilding data (step 2 of import)
+      setStep(2)
     } catch (err) {
       console.error('Import failed:', err)
       alert('Import failed: ' + err.message)
@@ -426,7 +426,7 @@ export default function ProjectSetup({ projectPath, projectConfig, onComplete, o
           )}
 
           {/* Step 2: Characters */}
-          {step === 2 && (
+          {step === 2 && !showExtractor && (
             <>
               <h2 className="setup-title">{t('setup.charactersTitle', 'Characters')}</h2>
               <p className="setup-subtitle">
@@ -512,10 +512,23 @@ export default function ProjectSetup({ projectPath, projectConfig, onComplete, o
                 </div>
               ))}
 
-              <button className="setup-add-btn" onClick={addCharacter}>
-                <Icons.Plus /> {t('setup.addCharacterBtn', 'Add another character')}
-              </button>
+              <div style={{ display: 'flex', gap: 12, marginTop: 12 }}>
+                <button className="setup-add-btn" style={{ flex: 1 }} onClick={addCharacter}>
+                  <Icons.Plus /> {t('setup.addCharacterBtn', 'Add another character')}
+                </button>
+                <button
+                  className="setup-add-btn"
+                  style={{ flex: 1, borderColor: 'var(--accent-amber)' }}
+                  onClick={() => setShowExtractor(true)}
+                >
+                  <Icons.Target /> {t('setup.importFromNotes', 'Import from Notes')}
+                </button>
+              </div>
             </>
+          )}
+
+          {step === 2 && showExtractor && (
+            <EntityExtractor projectPath={projectPath} onDone={() => setShowExtractor(false)} />
           )}
 
           {/* Step 3: Story Scope */}

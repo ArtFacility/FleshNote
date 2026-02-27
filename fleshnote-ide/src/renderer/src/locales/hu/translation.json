@@ -348,6 +348,7 @@
     "bioLabelShort": "BIO (opcionális)",
     "bioPlaceholder": "Rövid leírás...",
     "addCharacterBtn": "Újabb karakter hozzáadása",
+    "importFromNotes": "Importálás jegyzetekből",
     "charSetupTitle": "Karakter beállítása",
     "charSetupSubtitle": "Adj hozzá legalább egy karaktert, aki az első fejezet POV-ja lesz.",
     "numChaptersLabel": "FEJEZETEK SZÁMA",

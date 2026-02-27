@@ -348,6 +348,7 @@
         "bioLabelShort": "BIO (opcjonalnie)",
         "bioPlaceholder": "Krótki opis...",
         "addCharacterBtn": "Dodaj kolejną postać",
+        "importFromNotes": "Importuj z notatek",
         "charSetupTitle": "Konfiguracja Postaci",
         "charSetupSubtitle": "Dodaj przynajmniej jedną postać, aby ustawić ją jako POV dla pierwszego rozdziału.",
         "numChaptersLabel": "LICZBA ROZDZIAŁÓW",

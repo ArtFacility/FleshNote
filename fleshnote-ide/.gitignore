@@ -25,8 +25,8 @@ venv/
 .claude/
 CLAUDE.md
 
-# Temporary fixers and POCs
-*.py
+# Temporary fixers and POCs (only in root)
+/*.py
 *POC.jsx
 *poc.jsx
 export-page-proof-of-concept.jsx
