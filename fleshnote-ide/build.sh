@@ -32,6 +32,31 @@ case "$TARGET" in
         ;;
 esac
 
+# ── Relaunch in a terminal on Linux if not attached to one ──
+if [ "$TARGET" = "linux" ] && [ -z "${IN_TERMINAL:-}" ] && [ ! -t 1 ] && [ -n "${DISPLAY:-}" ]; then
+    export IN_TERMINAL=1
+    SCRIPT_PATH=$(readlink -f "$0")
+    
+    echo "Relaunching in a terminal window..."
+    for term in gnome-terminal konsole xfce4-terminal x-terminal-emulator xterm; do
+        if command -v "$term" >/dev/null 2>&1; then
+            case "$term" in
+                gnome-terminal)
+                    exec "$term" -- bash -c '"$0" "$@"; echo; read -rp "Press Enter to exit..."' "$SCRIPT_PATH" "$@"
+                    ;;
+                xfce4-terminal)
+                    exec "$term" -x bash -c '"$0" "$@"; echo; read -rp "Press Enter to exit..."' "$SCRIPT_PATH" "$@"
+                    ;;
+                *)
+                    exec "$term" -e bash -c '"$0" "$@"; echo; read -rp "Press Enter to exit..."' "$SCRIPT_PATH" "$@"
+                    ;;
+            esac
+        fi
+    done
+    echo "Warning: No terminal emulator found. Continuing in current environment."
+fi
+
+
 # ── Step 1: Build Python backend with PyInstaller ──
 echo "[1/3] Building Python backend..."
 echo ""
