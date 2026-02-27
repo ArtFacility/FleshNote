@@ -33,6 +33,4 @@ export-page-proof-of-concept.jsx
 Fleshstone_IDE_Plan.pdf
 
 # Local build scripts/configs
-build.bat
-build.sh
 dev-app-update.yml
