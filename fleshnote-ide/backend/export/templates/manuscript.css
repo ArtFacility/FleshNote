@@ -1,0 +1,145 @@
+/* 
+   Manuscript Export Base CSS
+   Used for Self-Contained HTML exports
+*/
+
+body {
+    font-family: "Literata", "Georgia", "Times New Roman", serif;
+    max-width: 38em;
+    margin: 0 auto;
+    padding: 3em var(--margin-outer, 1.5em);
+    background: #fafaf7;
+    color: #2a2a2a;
+    font-size: var(--font-size, 1.125rem);
+    line-height: 1.7;
+    margin-left: calc(var(--margin-gutter, 0in) + auto);
+}
+
+p {
+    margin-bottom: 0;
+    text-indent: 1.5em;
+}
+
+p:first-of-type,
+h2+p,
+hr+p,
+h3+p {
+    text-indent: 0;
+}
+
+h1,
+h2,
+h3 {
+    text-align: center;
+    font-weight: normal;
+}
+
+h1 {
+    margin-bottom: 0.2em;
+    font-size: 2.5em;
+    letter-spacing: 0.05em;
+}
+
+h3.author {
+    margin-top: 0;
+    margin-bottom: 4em;
+    font-style: italic;
+    color: #555;
+}
+
+h2 {
+    font-size: 1.6em;
+    margin-top: 3em;
+    margin-bottom: 1.5em;
+    letter-spacing: 0.05em;
+    text-transform: uppercase;
+}
+
+hr {
+    border: none;
+    text-align: center;
+    margin: 2em 0;
+}
+
+hr::after {
+    content: "◆";
+    color: #999;
+    font-size: 1.2em;
+}
+
+.entity {
+    border-bottom: 1px dotted #999;
+    cursor: help;
+}
+
+.epistemic {
+    display: block;
+    font-size: 0.85em;
+    color: #555;
+    font-style: italic;
+    border-left: 3px solid #ccc;
+    padding-left: 1em;
+    margin: 1em 0;
+}
+
+.footnotes {
+    font-size: 0.85em;
+    color: #666;
+    margin-top: 4em;
+}
+
+.footnotes hr {
+    border-top: 1px solid #ddd;
+    margin-bottom: 1em;
+}
+
+.footnotes hr::after {
+    content: none;
+}
+
+.footnotes ol {
+    padding-left: 2em;
+}
+
+.footnotes li {
+    margin-bottom: 0.5em;
+}
+
+.footnotes a {
+    color: #555;
+    text-decoration: none;
+}
+
+.footnotes a:hover {
+    text-decoration: underline;
+}
+
+@media print {
+    body {
+        max-width: 100%;
+        padding: 0;
+        font-size: var(--font-size, 11pt);
+        background: transparent;
+        margin: 0;
+    }
+
+    @page {
+        margin-top: 0.75in;
+        margin-bottom: 0.75in;
+        margin-left: var(--margin-gutter, 0.75in);
+        margin-right: var(--margin-outer, 0.75in);
+    }
+
+    a {
+        text-decoration: none;
+        color: inherit;
+    }
+
+    .no-print {
+        display: none;
+    }
+
+    h2 {
+        page-break-before: always;
+    }
+}

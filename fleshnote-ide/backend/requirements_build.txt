@@ -1,0 +1,14 @@
+# Production dependencies for FleshNote Backend
+fastapi==0.115.11
+uvicorn==0.34.0
+pydantic==2.10.6
+spacy==3.8.4
+huspacy==0.8.0
+python-docx==1.1.2
+xhtml2pdf==0.2.16
+ebooklib==0.18
+lxml==5.3.1
+thinc==8.3.4
+blis==1.0.1
+numpy<2.0.0
+pyinstaller==6.12.0

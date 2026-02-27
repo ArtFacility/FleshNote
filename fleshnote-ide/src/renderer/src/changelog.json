@@ -1,0 +1,60 @@
+{
+    "currentVersion": "0.5.0",
+    "history": [
+        {
+            "version": "0.5.0",
+            "date": "2026-02-26",
+            "changes": [
+                "Implemented Professional Export Module with support for PDF, DOCX, and EPUB.",
+                "Added 'Book-Ready' formatting logic for industry-standard print exports.",
+                "Added Live Export Preview with real-time formatting visualization.",
+                "Enhanced PDF export stability and CSS variable resolution."
+            ]
+        },
+        {
+            "version": "0.3.1-alpha",
+            "date": "2026-02-25",
+            "changes": [
+                "Added 'About' modal providing fundamental application context and developer attribution.",
+                "Added 'Load Tutorial' quick-start button for a mock project workspace."
+            ]
+        },
+        {
+            "version": "0.3.0-alpha",
+            "date": "2026-02-25",
+            "changes": [
+                "Full support for Arabic RTL localization and CSS UI flipping.",
+                "Moved NLP model downloads to OS user directories (AppData) to drastically reduce executable sizes on Windows and Linux.",
+                "Added direct HuSpaCy package integration for Hungarian text parsing and tokenization natively.",
+                "Enhanced project configurations to never fail load states when creating new projects.",
+                "Resolved internal background TCP binding collisions on local server execution."
+            ]
+        },
+        {
+            "version": "0.2.0-alpha",
+            "date": "2026-02-23",
+            "changes": [
+                "Enabled standalone executable building for Windows (.exe) and Linux.",
+                "Integrated Python backend natively into the Electron application.",
+                "Added external changelog and version tracking.",
+                "Added 'What's New' viewing panel on the startup screen."
+            ]
+        },
+        {
+            "version": "0.1.2-alpha",
+            "date": "2026-02-20",
+            "changes": [
+                "Added global context menus for text editing.",
+                "Refactored Entity Inspector Panel.",
+                "Added Quick Notes system."
+            ]
+        },
+        {
+            "version": "0.1.0-alpha",
+            "date": "2026-02-15",
+            "changes": [
+                "Initial prototype for FleshNote IDE."
+            ]
+        }
+    ]
+}

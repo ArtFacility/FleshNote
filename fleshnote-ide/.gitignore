@@ -1,0 +1,38 @@
+node_modules
+dist
+out
+.DS_Store
+.eslintcache
+*.log*
+
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+backend/build/
+backend/dist/
+*.spec
+.venv
+env/
+venv/
+.env
+
+# IDEs
+.idea/
+.vscode/
+
+# Agent/AI specific
+.claude/
+CLAUDE.md
+
+# Temporary fixers and POCs
+*.py
+*POC.jsx
+*poc.jsx
+export-page-proof-of-concept.jsx
+Fleshstone_IDE_Plan.pdf
+
+# Local build scripts/configs
+build.bat
+build.sh
+dev-app-update.yml
