@@ -11,7 +11,7 @@ __pycache__/
 *$py.class
 backend/build/
 backend/dist/
-*.spec
+# *.spec (removed to allow tracking backend.spec)
 .venv
 env/
 venv/
