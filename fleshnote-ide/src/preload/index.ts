@@ -85,6 +85,8 @@ const api = {
   importSplitPreview: (payload) => ipcRenderer.invoke('api:importSplitPreview', payload),
   importConfirmSplits: (payload) => ipcRenderer.invoke('api:importConfirmSplits', payload),
   importNerExtract: (payload) => ipcRenderer.invoke('api:importNerExtract', payload),
+  importNerAnalyze: (payload) => ipcRenderer.invoke('api:importNerAnalyze', payload),
+  importBulkCreateEntities: (payload) => ipcRenderer.invoke('api:importBulkCreateEntities', payload),
 
   // ── NLP Configuration ──────────────────────────────
   checkNlpModel: (langCode) => ipcRenderer.invoke('api:checkNlpModel', langCode),

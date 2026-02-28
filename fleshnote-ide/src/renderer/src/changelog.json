@@ -1,6 +1,15 @@
 {
-    "currentVersion": "0.5.0",
+    "currentVersion": "0.5.1",
     "history": [
+        {
+            "version": "0.5.1",
+            "date": "2026-02-28",
+            "changes": [
+                "Finalized the icon of the app.",
+                "Added fancy home screen text.",
+                "Reworked the import module for entities."
+            ]
+        },
         {
             "version": "0.5.0",
             "date": "2026-02-26",
@@ -47,13 +56,6 @@
                 "Added global context menus for text editing.",
                 "Refactored Entity Inspector Panel.",
                 "Added Quick Notes system."
-            ]
-        },
-        {
-            "version": "0.1.0-alpha",
-            "date": "2026-02-15",
-            "changes": [
-                "Initial prototype for FleshNote IDE."
             ]
         }
     ]

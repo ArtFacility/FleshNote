@@ -1,6 +1,6 @@
 {
   "name": "fleshnote-ide",
-  "version": "0.5.0",
+  "version": "0.5.1",
   "description": "An Electron application with React and TypeScript",
   "main": "./out/main/index.js",
   "author": {

@@ -425,6 +425,14 @@ app.whenReady().then(async () => {
     return await backendPost('/api/project/import/ner-extract', payload)
   })
 
+  ipcMain.handle('api:importNerAnalyze', async (_event, payload) => {
+    return await backendPost('/api/project/import/ner-analyze', payload)
+  })
+
+  ipcMain.handle('api:importBulkCreateEntities', async (_event, payload) => {
+    return await backendPost('/api/project/import/bulk-create-entities', payload)
+  })
+
   // ── NLP Configuration ──────────────────────────────
   ipcMain.handle('api:checkNlpModel', async (_event, langCode) => {
     return await backendPost('/api/settings/check-model', { lang_code: langCode })

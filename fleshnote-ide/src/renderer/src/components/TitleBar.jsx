@@ -1,5 +1,6 @@
 import { useTranslation } from 'react-i18next'
 import changelogData from '../changelog.json'
+import ideIcon from '../assets/ide_icon.svg'
 
 const Icons = {
     Feather: () => (
@@ -48,8 +49,8 @@ export default function TitleBar({ projectName }) {
 
     return (
         <div className="ide-titlebar">
-            <div className="ide-titlebar-logo">
-                <Icons.Feather />
+            <div className="ide-titlebar-logo" style={{ direction: 'ltr' }}>
+                <img src={ideIcon} alt="FleshNote Logo" style={{ width: 14, height: 16, objectFit: 'contain' }} />
                 FLESHNOTE <span>v{changelogData.currentVersion}</span>
             </div>
             <div className="ide-titlebar-project">{projectName || ''}</div>
