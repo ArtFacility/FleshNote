@@ -56,6 +56,12 @@ datas = [
     ('export/templates/manuscript.css', 'export/templates'),
 ]
 
+from PyInstaller.utils.hooks import collect_submodules
+
+hidden_imports.extend(collect_submodules('numpy'))
+hidden_imports.extend(collect_submodules('spacy'))
+hidden_imports.extend(collect_submodules('thinc'))
+
 a = Analysis(
     ['main.py'],
     pathex=[],

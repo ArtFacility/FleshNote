@@ -42,10 +42,25 @@ linux:
     - AppImage
     - snap
     - deb
+    - flatpak
   maintainer: electronjs.org
   category: Utility
 appImage:
   artifactName: ${name}-${version}.${ext}
+flatpak:
+  artifactName: ${name}-${version}.${ext}
+  runtime: org.freedesktop.Platform
+  runtimeVersion: "25.08"
+  sdk: org.freedesktop.Sdk
+  baseVersion: "25.08"
+  finishArgs:
+    - --share=network
+    - --share=ipc
+    - --socket=x11
+    - --socket=wayland
+    - --device=dri
+    - --filesystem=home
+    - --talk-name=org.freedesktop.Notifications
 npmRebuild: false
 publish:
   provider: generic
