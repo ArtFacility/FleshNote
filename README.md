@@ -7,7 +7,7 @@ An advanced, localized, and feature-rich writing tool for writers, and world bui
 ## 🌟 Key Features
 
 - **Intuitive World Building**: Manage entities, characters, and items with a powerful inspector.
-- **Localization Support**: Fully translated into **Hungarian (HU)**, **English (EN)**, and **Polish (PL)**.
+- **Localization Support**: Fully translated into **Hungarian (HU)**, **English (EN)**, **Arabic (AR)** and **Polish (PL)**.
 - **Advanced Editor**: Featuring `@` inline entity mentions, `CTRL+F` search, and `#TODO` tracking.
 - **Focus Sprint Modes**: Unique writing challenges including Kamikaze (stop and lose text), Fog, Hemingway, Combo, and Zen modes.
 - **Plot Planner**: A zoomable, multi-layer timeline for organizing story arcs and narrative beats.
@@ -24,10 +24,21 @@ An advanced, localized, and feature-rich writing tool for writers, and world bui
 
 ### Installation
 
-1. Clone the repository.
-2. Install dependencies:
+1. Clone the repository and navigate into the `fleshnote-ide` subfolder:
+   ```bash
+   cd fleshnote-ide
+   ```
+2. Install the frontend dependencies:
    ```bash
    npm install
+   ```
+3. Setup the Python backend environment:
+   ```bash
+   cd backend
+   python3 -m venv .venv
+   source .venv/bin/activate  # On Windows: .venv\Scripts\activate
+   pip install -r requirements_build.txt
+   cd ..
    ```
 
 ### Development
@@ -69,6 +80,18 @@ npm run build:mac
 **Linux**
 ```bash
 npm run build:linux
+```
+
+**Linux (Flatpak)**
+
+> **Note:** To build Flatpak correctly, you must ensure `flatpak` and `flatpak-builder` are installed on your system. 
+> Since the bundler operates at the user-level, you also **must** have the Flathub remote added for your local user environment, or the build will fail:
+> ```bash
+> flatpak remote-add --user --if-not-exists flathub https://flathub.org/repo/flathub.flatpakrepo
+> ```
+
+```bash
+npm run build:flatpak
 ```
 
 ## 🛠️ Recommended Setup
