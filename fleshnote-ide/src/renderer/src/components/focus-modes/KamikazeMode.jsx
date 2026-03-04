@@ -8,9 +8,9 @@ export default function KamikazeMode({ editor }) {
     const particleIdRef = useRef(0);
     const lastInteractionRef = useRef(Date.now());
 
-    // 60 seconds total: 50s quiet, 10s countdown, then boom
+    // 60 seconds total: 50s quiet, 5s countdown, then boom
     const IDLE_LIMIT = 60;
-    const COUNTDOWN_START = 10;
+    const COUNTDOWN_START = 55;
 
     const resetIdle = () => {
         lastInteractionRef.current = Date.now();

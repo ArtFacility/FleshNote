@@ -123,8 +123,12 @@
     transition: width 0.3s ease;
 }
 
-.progress-chapter.status-revised .progress-chapter-fill {
+.progress-chapter.status-final .progress-chapter-fill {
     background: var(--accent-green);
+}
+
+.progress-chapter.status-revised .progress-chapter-fill {
+    background: var(--accent-blue);
 }
 
 .progress-chapter.status-draft .progress-chapter-fill {
@@ -297,10 +301,14 @@
     padding: 2px 6px;
 }
 
-.chapter-status.revised,
 .chapter-status.final {
     color: var(--accent-green);
     background: var(--accent-green-dim);
+}
+
+.chapter-status.revised {
+    color: var(--accent-blue);
+    background: var(--accent-blue-dim);
 }
 
 .chapter-status.draft {

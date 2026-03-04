@@ -3,6 +3,7 @@ import { useTranslation } from 'react-i18next'
 import Editor from './Editor'
 import EntityInspectorPanel from './EntityInspectorPanel'
 import FleshNotePlannerDesktop from './FleshNotePlannerDesktop'
+import CustomCalendarPlanner from './CustomCalendarPlanner'
 import ProjectSettingsModal from './ProjectSettingsModal'
 import ExportModal from './ExportModal'
 import changelogData from '../changelog.json'
@@ -137,6 +138,23 @@ const Icons = {
       <line x1="16" y1="17" x2="8" y2="17" />
       <polyline points="10 9 9 9 8 9" />
     </svg>
+  ),
+  Calendar: () => (
+    <svg
+      width="14"
+      height="14"
+      viewBox="0 0 24 24"
+      fill="none"
+      stroke="currentColor"
+      strokeWidth="2"
+      strokeLinecap="round"
+      strokeLinejoin="round"
+    >
+      <rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect>
+      <line x1="16" y1="2" x2="16" y2="6"></line>
+      <line x1="8" y1="2" x2="8" y2="6"></line>
+      <line x1="3" y1="10" x2="21" y2="10"></line>
+    </svg>
   )
 }
 
@@ -144,7 +162,7 @@ const Icons = {
 
 export default function FleshNoteIDE({ projectConfig, projectPath, onCloseProject, onConfigUpdate }) {
   const { t } = useTranslation()
-  const [isPlannerOpen, setIsPlannerOpen] = useState(false)
+  const [mainView, setMainView] = useState('editor') // 'editor' | 'planner' | 'calendar'
   const [focusMode, setFocusMode] = useState(null)
   const [chapters, setChapters] = useState([])
   const [activeChapter, setActiveChapter] = useState(null)
@@ -163,6 +181,7 @@ export default function FleshNoteIDE({ projectConfig, projectPath, onCloseProjec
   // Settings modal state
   const [showSettings, setShowSettings] = useState(false)
   const [showExportModal, setShowExportModal] = useState(false)
+  const [isSaving, setIsSaving] = useState(false)
 
   const toggleFocus = useCallback((mode) => setFocusMode(mode), [])
 
@@ -223,6 +242,7 @@ export default function FleshNoteIDE({ projectConfig, projectPath, onCloseProjec
   const handleEditorUpdate = useCallback(
     async (html, wordCount) => {
       if (!activeChapter || !projectPath) return
+      setIsSaving(true)
       try {
         await window.api.saveChapterContent({
           project_path: projectPath,
@@ -233,8 +253,15 @@ export default function FleshNoteIDE({ projectConfig, projectPath, onCloseProjec
         setChapters((prev) =>
           prev.map((ch) => (ch.id === activeChapter.id ? { ...ch, word_count: wordCount } : ch))
         )
+        // CRITICAL: Sync the local state so navigating back and forth doesn't revert to stale data
+        setChapterContent((prev) =>
+          (prev && prev.id === activeChapter.id) ? { ...prev, content: html, word_count: wordCount } : prev
+        )
       } catch (err) {
         console.error('Failed to save chapter:', err)
+      } finally {
+        // Just a small delay so it doesn't flicker too fast
+        setTimeout(() => setIsSaving(false), 1000)
       }
     },
     [activeChapter, projectPath]
@@ -376,6 +403,16 @@ export default function FleshNoteIDE({ projectConfig, projectPath, onCloseProjec
     <>
       {/* ── IDE HEADER TOOLBAR ──────────────────────── */}
       <div className="ide-header-toolbar">
+        {projectConfig?.track_custom_calendar && (
+          <button
+            className="ide-header-btn"
+            title={t('ide.calendar', 'Custom Calendar')}
+            onClick={() => setMainView(mainView === 'calendar' ? 'editor' : 'calendar')}
+            style={{ color: mainView === 'calendar' ? 'var(--accent-amber)' : 'inherit' }}
+          >
+            <Icons.Calendar />
+          </button>
+        )}
         <button className="ide-header-btn" title={t('ide.notes', 'Notes')}>
           <Icons.FileText />
         </button>
@@ -401,7 +438,7 @@ export default function FleshNoteIDE({ projectConfig, projectPath, onCloseProjec
         <div className="progress-bar-container">
           <button
             className="progress-label"
-            onClick={() => setIsPlannerOpen(!isPlannerOpen)}
+            onClick={() => setMainView(mainView === 'planner' ? 'editor' : 'planner')}
             style={{
               background: 'transparent',
               border: '1px solid var(--border-subtle)',
@@ -413,14 +450,16 @@ export default function FleshNoteIDE({ projectConfig, projectPath, onCloseProjec
               letterSpacing: '1px'
             }}
           >
-            {isPlannerOpen ? t('ide.backToWriting', 'Back to writing') : t('ide.manuscript', 'Manuscript')}
+            {mainView === 'planner' ? t('ide.backToWriting', 'Back to writing') : t('ide.planner', 'Planner')}
           </button>
           <div className="progress-track">
             {chapters.map((ch) => {
               const pct =
-                ch.target_word_count > 0
-                  ? Math.min(100, (ch.word_count / ch.target_word_count) * 100)
-                  : 0
+                ch.status === 'final'
+                  ? 100
+                  : ch.target_word_count > 0
+                    ? Math.min(100, (ch.word_count / ch.target_word_count) * 100)
+                    : 0
               return (
                 <div
                   key={ch.id}
@@ -450,7 +489,9 @@ export default function FleshNoteIDE({ projectConfig, projectPath, onCloseProjec
 
       {/* ── MAIN BODY ──────────────────────────────── */}
       <div className="ide-body">
-        {isPlannerOpen ? (
+        {mainView === 'calendar' ? (
+          <CustomCalendarPlanner />
+        ) : mainView === 'planner' ? (
           <FleshNotePlannerDesktop
             projectPath={projectPath}
             chapters={chapters}
@@ -752,7 +793,16 @@ export default function FleshNoteIDE({ projectConfig, projectPath, onCloseProjec
 
       {/* ── STATUS BAR ─────────────────────────────── */}
       <div className="status-bar">
-        <div className="status-bar-item">{projectName}</div>
+        <div className="status-bar-item">
+          <span style={{
+            opacity: isSaving ? 1 : 0,
+            transition: 'opacity 0.3s ease',
+            color: 'var(--accent-amber)',
+            fontWeight: 'bold'
+          }}>
+            {t('ide.saving', 'Saving...')}
+          </span>
+        </div>
         <div className="status-bar-right">
           <div className="status-bar-item">Markdown · UTF-8</div>
           <div

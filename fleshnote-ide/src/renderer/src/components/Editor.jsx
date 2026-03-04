@@ -8,7 +8,7 @@ import { EntityLinkMark } from '../extensions/EntityLinkMark'
 import { TodoHighlighter } from '../extensions/TodoHighlighter'
 import { SearchAndReplace } from '../extensions/SearchAndReplace'
 import getSuggestionConfig from '../extensions/mentionSuggestion'
-import { useEffect, useRef, useState, useCallback } from 'react'
+import { useEffect, useRef, useState, useCallback, useMemo } from 'react'
 import { useTranslation } from 'react-i18next'
 import EntityContextMenu from './EntityContextMenu'
 import AppendDescriptionPopup from './AppendDescriptionPopup'
@@ -23,6 +23,7 @@ import ComboMode from './focus-modes/ComboMode'
 import ZenMode from './focus-modes/ZenMode'
 import KamikazeMode from './focus-modes/KamikazeMode'
 import FogMode from './focus-modes/FogMode'
+import MomentumMode from './focus-modes/MomentumMode'
 
 // ── Inline SVG Icons ────────────────────────────────────────────────────────
 
@@ -161,6 +162,26 @@ export default function Editor({
   const { t, i18n } = useTranslation()
   const saveTimeoutRef = useRef(null)
 
+  const latestContentRef = useRef({ html: '', words: 0, isDirty: false })
+  const onUpdateRef = useRef(onUpdate)
+
+  useEffect(() => {
+    onUpdateRef.current = onUpdate
+  }, [onUpdate])
+
+  useEffect(() => {
+    return () => {
+      // Flush any unsaved changes on unmount
+      if (saveTimeoutRef.current) {
+        clearTimeout(saveTimeoutRef.current)
+      }
+      if (latestContentRef.current.isDirty && onUpdateRef.current) {
+        onUpdateRef.current(latestContentRef.current.html, latestContentRef.current.words)
+        latestContentRef.current.isDirty = false
+      }
+    }
+  }, [])
+
   // Search state
   const [showSearch, setShowSearch] = useState(false)
   const [searchTerm, setSearchTerm] = useState('')
@@ -187,25 +208,47 @@ export default function Editor({
   const [hoverCard, setHoverCard] = useState(null)
   const [hoverPos, setHoverPos] = useState({ x: 0, y: 0 })
 
+  // Planner beats for current chapter
+  const BEAT_COLORS = {
+    beat: 'var(--accent-amber)', reveal: 'var(--accent-purple)',
+    twist: 'var(--accent-red)', climax: 'var(--accent-blue)',
+    development: 'var(--accent-purple)', change: 'var(--accent-red)',
+    move: 'var(--accent-blue)',
+  }
+  const [chapterBeats, setChapterBeats] = useState([])
+  useEffect(() => {
+    if (!projectPath || !chapter?.id) { setChapterBeats([]); return }
+    window.api.loadPlanner(projectPath).then(res => {
+      if (res?.status === 'ok') {
+        const beats = (res.blocks || [])
+          .filter(b => b.chapter_id === chapter.id && b.layer === 'surface')
+          .sort((a, b) => a.pct - b.pct)
+        setChapterBeats(beats)
+      }
+    }).catch(() => { })
+  }, [projectPath, chapter?.id])
+
+  const extensions = useMemo(() => [
+    StarterKit.configure({
+      codeBlock: false,
+      blockquote: false
+    }),
+    Underline,
+    Placeholder.configure({
+      placeholder: t('editor.beginWriting', 'Begin writing...'),
+      emptyEditorClass: 'is-editor-empty'
+    }),
+    CharacterCount,
+    EntityLinkMark,
+    TodoHighlighter,
+    SearchAndReplace,
+    Mention.configure({
+      suggestion: getSuggestionConfig(() => entitiesRef.current),
+    })
+  ], [t])
+
   const editor = useEditor({
-    extensions: [
-      StarterKit.configure({
-        codeBlock: false,
-        blockquote: false
-      }),
-      Underline,
-      Placeholder.configure({
-        placeholder: t('editor.beginWriting', 'Begin writing...'),
-        emptyEditorClass: 'is-editor-empty'
-      }),
-      CharacterCount,
-      EntityLinkMark,
-      TodoHighlighter,
-      SearchAndReplace,
-      Mention.configure({
-        suggestion: getSuggestionConfig(() => entitiesRef.current),
-      })
-    ],
+    extensions,
     content: '',
     editorProps: {
       attributes: {
@@ -288,10 +331,15 @@ export default function Editor({
     onUpdate: ({ editor }) => {
       if (onUpdate) {
         if (saveTimeoutRef.current) clearTimeout(saveTimeoutRef.current)
+
+        const html = editor.getHTML()
+        const words = editor.storage.characterCount.words()
+
+        latestContentRef.current = { html, words, isDirty: true }
+
         saveTimeoutRef.current = setTimeout(() => {
-          const html = editor.getHTML()
-          const words = editor.storage.characterCount.words()
           onUpdate(html, words)
+          latestContentRef.current.isDirty = false
         }, 500)
       }
     },
@@ -920,6 +968,39 @@ export default function Editor({
               }}
             />
           </div>
+          {chapterBeats.length > 0 && (
+            <div style={{
+              padding: '6px 64px 0',
+              display: 'flex',
+              flexWrap: 'wrap',
+              gap: '6px',
+              alignItems: 'center',
+            }}>
+              <span style={{
+                fontFamily: 'var(--font-mono)',
+                fontSize: '9px',
+                color: 'var(--text-tertiary)',
+                textTransform: 'uppercase',
+                letterSpacing: '0.5px',
+                marginRight: '2px',
+              }}>Beats</span>
+              {chapterBeats.map(beat => (
+                <span key={beat.id} title={`${beat.block_type} · ${Math.round(beat.pct)}%`} style={{
+                  fontFamily: 'var(--font-mono)',
+                  fontSize: '9px',
+                  padding: '2px 6px',
+                  background: 'var(--bg-elevated)',
+                  border: '1px solid var(--border-subtle)',
+                  color: BEAT_COLORS[beat.block_type] || 'var(--accent-amber)',
+                  textTransform: 'uppercase',
+                  letterSpacing: '0.5px',
+                  whiteSpace: 'nowrap',
+                }}>
+                  {beat.label}
+                </span>
+              ))}
+            </div>
+          )}
           <EditorContent editor={editor} />
         </div>
       </div>

@@ -1,4 +1,5 @@
 import React, { useState, useRef, useCallback, useEffect, useMemo } from "react";
+import { useTranslation } from "react-i18next";
 
 /* ─── constants ─── */
 const RAIL_Y = 240; // Shifted down so the text input doesn't overlap the top lane
@@ -40,10 +41,13 @@ const Icons = {
     X: () => <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><line x1="18" y1="6" x2="6" y2="18" /><line x1="6" y1="6" x2="18" y2="18" /></svg>,
     Eye: () => <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z" /><circle cx="12" cy="12" r="3" /></svg>,
     EyeOff: () => <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M17.94 17.94A10.07 10.07 0 0112 20c-7 0-11-8-11-8a18.45 18.45 0 015.06-5.94M9.9 4.24A9.12 9.12 0 0112 4c7 0 11 8 11 8a18.5 18.5 0 01-2.16 3.19m-6.72-1.07a3 3 0 11-4.24-4.24" /><line x1="1" y1="1" x2="23" y2="23" /></svg>,
-    Save: () => <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M19 21H5a2 2 0 01-2-2V5a2 2 0 012-2h11l5 5v11a2 2 0 01-2 2z" /><polyline points="17 21 17 13 7 13 7 21" /><polyline points="7 3 7 8 15 8" /></svg>
+    Save: () => <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M19 21H5a2 2 0 01-2-2V5a2 2 0 012-2h11l5 5v11a2 2 0 01-2 2z" /><polyline points="17 21 17 13 7 13 7 21" /><polyline points="7 3 7 8 15 8" /></svg>,
+    ChevronUp: () => <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5"><polyline points="18 15 12 9 6 15" /></svg>,
+    ChevronDown: () => <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5"><polyline points="6 9 12 15 18 9" /></svg>,
 };
 
 export default function FleshNotePlannerDesktop({ projectPath, chapters, activeChapter }) {
+    const { t } = useTranslation();
     // Data
     const [settings, setSettings] = useState({ theme: "", cursor_pct: 0, shadow_visible: 0 });
     const [blocks, setBlocks] = useState([]);
@@ -52,6 +56,8 @@ export default function FleshNotePlannerDesktop({ projectPath, chapters, activeC
 
     // Active states
     const [activeLayer, setActiveLayer] = useState("surface");
+    const [colorPickerArcId, setColorPickerArcId] = useState(null);
+    const [hoveredBlockId, setHoveredBlockId] = useState(null);
 
     // Dragging states
     const [draggingBlockId, setDraggingBlockId] = useState(null);
@@ -66,12 +72,35 @@ export default function FleshNotePlannerDesktop({ projectPath, chapters, activeC
     const [containerWidth, setContainerWidth] = useState(800);
 
     const containerRef = useRef(null);
+    const canvasRef = useRef(null);
 
     const railGeom = useMemo(() => {
-        const left = 100; // Increased padding so Start block stays on screen
-        const right = Math.max(left + 200, (containerWidth * zoomMultiplier) - 100); // Padding for End block
-        return { left, width: right - left, right };
+        const basePadding = 100;
+        const railWidth = Math.max(200, (containerWidth * zoomMultiplier) - basePadding * 2);
+        const contentWidth = railWidth + basePadding * 2;
+
+        // Center the rail when content is narrower than the container
+        let left = basePadding;
+        if (contentWidth < containerWidth) {
+            left = (containerWidth - railWidth) / 2;
+        }
+
+        return { left, width: railWidth, right: left + railWidth };
     }, [containerWidth, zoomMultiplier]);
+
+    // Chapter span ranges (proportional to target_word_count)
+    const chapterSpans = useMemo(() => {
+        if (!chapters || chapters.length === 0) return [];
+        const totalTarget = chapters.reduce((sum, c) => sum + (c.target_word_count || 1), 0);
+        const spans = [];
+        let cursor = 0;
+        for (const ch of chapters) {
+            const span = ((ch.target_word_count || 1) / totalTarget) * 100;
+            spans.push({ id: ch.id, chapter_number: ch.chapter_number, title: ch.title, startPct: cursor, endPct: cursor + span, status: ch.status });
+            cursor += span;
+        }
+        return spans;
+    }, [chapters]);
 
     useEffect(() => {
         if (!containerRef.current) return;
@@ -143,6 +172,24 @@ export default function FleshNotePlannerDesktop({ projectPath, chapters, activeC
         }, 500);
     };
 
+    // Auto-assign chapter_id based on block pct position within chapter spans
+    useEffect(() => {
+        if (chapterSpans.length === 0 || blocks.length === 0) return;
+        let anyChanged = false;
+        const updated = blocks.map(b => {
+            const span = chapterSpans.find(s => b.pct >= s.startPct && b.pct < s.endPct)
+                || chapterSpans[chapterSpans.length - 1]; // pct=100 edge case
+            if (span && b.chapter_id !== span.id) {
+                anyChanged = true;
+                const newBlock = { ...b, chapter_id: span.id, chapter_status: span.status };
+                debouncedSaveBlock(newBlock);
+                return newBlock;
+            }
+            return b;
+        });
+        if (anyChanged) setBlocks(updated);
+    }, [chapterSpans]);
+
     /* ─── Handlers ─── */
     const handleThemeChange = (val) => {
         setSettings(prev => ({ ...prev, theme: val }));
@@ -164,7 +211,7 @@ export default function FleshNotePlannerDesktop({ projectPath, chapters, activeC
             id: "b_" + uuid(),
             layer: activeLayer,
             block_type: "beat",
-            label: "New Beat",
+            label: t('ide.newBeat', "New Beat"),
             pct: 50,
             lane: 0,
         };
@@ -202,7 +249,8 @@ export default function FleshNotePlannerDesktop({ projectPath, chapters, activeC
         const newA = {
             id: "a_" + uuid(),
             layer: activeLayer,
-            name: "New Arc",
+            name: t('ide.newArc', "New Arc"),
+            description: "",
             color: PRESET_COLORS[arcs.length % PRESET_COLORS.length],
             start_pct: 10,
             end_pct: 90,
@@ -227,13 +275,32 @@ export default function FleshNotePlannerDesktop({ projectPath, chapters, activeC
         apiDeleteArc(id);
     };
 
+    const reorderArc = (id, direction) => {
+        setArcs((prev) => {
+            const layerArcs = prev.filter(a => a.layer === activeLayer);
+            const otherArcs = prev.filter(a => a.layer !== activeLayer);
+            const idx = layerArcs.findIndex(a => a.id === id);
+            if (idx < 0) return prev;
+            const swapIdx = idx + direction;
+            if (swapIdx < 0 || swapIdx >= layerArcs.length) return prev;
+            const reordered = [...layerArcs];
+            [reordered[idx], reordered[swapIdx]] = [reordered[swapIdx], reordered[idx]];
+            // Persist sort_order for swapped arcs
+            reordered.forEach((a, i) => {
+                const updated = { ...a, sort_order: i };
+                debouncedSaveArc(updated);
+            });
+            return [...otherArcs, ...reordered.map((a, i) => ({ ...a, sort_order: i }))];
+        });
+    };
+
     // Global mouse handlers (Workspace dragging)
     const onMouseMove = useCallback((e) => {
-        if (!containerRef.current) return;
-        const rect = containerRef.current.getBoundingClientRect();
+        if (!canvasRef.current) return;
+        const rect = canvasRef.current.getBoundingClientRect();
         // Calculate coordinate relative to planner-content (vital for scrolling to right works properly)
-        const mouseX = (e.clientX - rect.left) + containerRef.current.scrollLeft;
-        const mouseY = (e.clientY - rect.top) + containerRef.current.scrollTop;
+        const mouseX = (e.clientX - rect.left) + canvasRef.current.scrollLeft;
+        const mouseY = (e.clientY - rect.top) + canvasRef.current.scrollTop;
 
         if (draggingBlockId) {
             // Because dragOffset.x is relative to the center, blockCenter perfectly aligns no matter the compressed width
@@ -279,7 +346,18 @@ export default function FleshNotePlannerDesktop({ projectPath, chapters, activeC
     const onMouseUp = useCallback(() => {
         if (draggingBlockId) {
             const target = blocks.find(b => b.id === draggingBlockId);
-            if (target) apiSaveBlock(target);
+            if (target) {
+                // Auto-assign chapter based on where block was dropped
+                const span = chapterSpans.find(s => target.pct >= s.startPct && target.pct < s.endPct)
+                    || (chapterSpans.length > 0 ? chapterSpans[chapterSpans.length - 1] : null);
+                if (span && target.chapter_id !== span.id) {
+                    const updated = { ...target, chapter_id: span.id, chapter_status: span.status };
+                    setBlocks(prev => prev.map(b => b.id === updated.id ? updated : b));
+                    apiSaveBlock(updated);
+                } else {
+                    apiSaveBlock(target);
+                }
+            }
             setDraggingBlockId(null);
         }
         if (resizingArc) {
@@ -290,7 +368,7 @@ export default function FleshNotePlannerDesktop({ projectPath, chapters, activeC
         if (isCanvasPanning) {
             setIsCanvasPanning(false);
         }
-    }, [draggingBlockId, resizingArc, blocks, arcs, isCanvasPanning]);
+    }, [draggingBlockId, resizingArc, blocks, arcs, isCanvasPanning, chapterSpans]);
 
     useEffect(() => {
         window.addEventListener("mousemove", onMouseMove);
@@ -301,13 +379,32 @@ export default function FleshNotePlannerDesktop({ projectPath, chapters, activeC
         };
     }, [onMouseMove, onMouseUp]);
 
+    // Scroll-wheel zoom (non-passive for preventDefault)
+    useEffect(() => {
+        const canvas = canvasRef.current;
+        if (!canvas) return;
+
+        const handleWheel = (e) => {
+            if (e.ctrlKey || e.metaKey) {
+                e.preventDefault();
+                const direction = e.deltaY < 0 ? 1 : -1;
+                setZoomMultiplier(prev =>
+                    Math.round(Math.max(0.5, Math.min(5.0, prev + 0.1 * direction)) * 10) / 10
+                );
+            }
+        };
+
+        canvas.addEventListener('wheel', handleWheel, { passive: false });
+        return () => canvas.removeEventListener('wheel', handleWheel);
+    }, [loading]); // Re-attach after loading completes and canvasRef mounts
+
     // Filter lists
     const visibleBlocks = blocks.filter(
         (b) => b.layer === activeLayer || settings.shadow_visible
     );
-    const visibleArcs = arcs.filter(
-        (a) => a.layer === activeLayer || settings.shadow_visible
-    );
+    const visibleArcs = arcs
+        .filter((a) => a.layer === activeLayer || settings.shadow_visible)
+        .sort((a, b) => (a.sort_order || 0) - (b.sort_order || 0));
 
     // Compute UI geometry (compress close blocks)
     const COMPRESSED_W = 24;
@@ -344,7 +441,7 @@ export default function FleshNotePlannerDesktop({ projectPath, chapters, activeC
         return geom;
     }, [visibleBlocks, railGeom]);
 
-    if (loading) return <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', height: '100%', color: 'var(--text-tertiary)', fontFamily: 'var(--font-mono)', fontSize: 11 }}>Loading planner...</div>;
+    if (loading) return <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', height: '100%', color: 'var(--text-tertiary)', fontFamily: 'var(--font-mono)', fontSize: 11 }}>{t('ide.loadingPlanner', 'Loading planner...')}</div>;
 
     return (
         <div
@@ -383,7 +480,7 @@ export default function FleshNotePlannerDesktop({ projectPath, chapters, activeC
                             transition: "color 0.2s",
                         }}
                     >
-                        Surface Layer
+                        {t('ide.surfaceLayer', 'Surface Layer')}
                     </button>
                     <button
                         onClick={() => setActiveLayer("shadow")}
@@ -398,14 +495,14 @@ export default function FleshNotePlannerDesktop({ projectPath, chapters, activeC
                             transition: "color 0.2s",
                         }}
                     >
-                        Shadow Layer
+                        {t('ide.shadowLayer', 'Shadow Layer')}
                     </button>
                 </div>
 
                 <div style={{ display: "flex", alignItems: "center", gap: "16px" }}>
                     <button
                         onClick={toggleLayerVisibility}
-                        title={settings.shadow_visible ? "Hide inactive layer" : "Show inactive layer"}
+                        title={settings.shadow_visible ? t('ide.hideInactiveLayer', 'Hide inactive layer') : t('ide.showInactiveLayer', 'Show inactive layer')}
                         style={{
                             display: "flex",
                             alignItems: "center",
@@ -437,7 +534,7 @@ export default function FleshNotePlannerDesktop({ projectPath, chapters, activeC
                             textTransform: "uppercase",
                         }}
                     >
-                        <Icons.Plus /> Add Block
+                        <Icons.Plus /> {t('ide.addBlock', 'Add Block')}
                     </button>
 
                     <button
@@ -456,14 +553,14 @@ export default function FleshNotePlannerDesktop({ projectPath, chapters, activeC
                             textTransform: "uppercase",
                         }}
                     >
-                        <Icons.Plus /> Add Arc
+                        <Icons.Plus /> {t('ide.addArc', 'Add Arc')}
                     </button>
 
                     <div style={{
                         display: "flex", alignItems: "center", gap: "8px",
                         padding: "0 12px", borderLeft: "1px solid var(--border-subtle)", marginLeft: "8px"
                     }}>
-                        <span style={{ fontFamily: "var(--font-mono)", fontSize: "10px", color: "var(--text-tertiary)" }}>ZOOM</span>
+                        <span style={{ fontFamily: "var(--font-mono)", fontSize: "10px", color: "var(--text-tertiary)" }}>{t('ide.zoom', 'ZOOM')}</span>
                         <input
                             type="range"
                             min="0.5" max="5.0" step="0.1"
@@ -479,7 +576,7 @@ export default function FleshNotePlannerDesktop({ projectPath, chapters, activeC
                 <input
                     value={settings.theme || ""}
                     onChange={(e) => handleThemeChange(e.target.value)}
-                    placeholder="What is the central theme of this story?"
+                    placeholder={t('ide.themePlaceholder', 'What is the central theme of this story?')}
                     maxLength={120}
                     style={{
                         width: "100%",
@@ -498,18 +595,18 @@ export default function FleshNotePlannerDesktop({ projectPath, chapters, activeC
 
             {/* PLANNER CANVAS */}
             <div
-                ref={containerRef}
+                ref={canvasRef}
                 onMouseDown={(e) => {
                     // Only initiate panning if clicking directly on the canvas background
                     if (e.target === e.currentTarget || e.target.id === 'planner-bg') {
                         setIsCanvasPanning(true);
-                        setPanStart({ x: e.clientX, scrollLeft: containerRef.current.scrollLeft });
+                        setPanStart({ x: e.clientX, scrollLeft: canvasRef.current.scrollLeft });
                     }
                 }}
                 onMouseMove={(e) => {
                     if (isCanvasPanning) {
                         const dx = e.clientX - panStart.x;
-                        containerRef.current.scrollLeft = panStart.scrollLeft - dx;
+                        canvasRef.current.scrollLeft = panStart.scrollLeft - dx;
                     }
                 }}
                 onMouseLeave={() => setIsCanvasPanning(false)}
@@ -517,12 +614,12 @@ export default function FleshNotePlannerDesktop({ projectPath, chapters, activeC
                     flex: 1,
                     position: "relative",
                     overflowX: "auto",
-                    overflowY: "hidden",
+                    overflowY: "auto",
                     display: "flex", // Ensure it behaves block-level stretching
                     cursor: isCanvasPanning ? "grabbing" : "grab"
                 }}
             >
-                <div id="planner-bg" style={{ position: "absolute", left: 0, top: 0, right: 0, bottom: 0, minWidth: `${Math.max(800, railGeom.right + 100)}px` }}>
+                <div id="planner-bg" style={{ position: "absolute", left: 0, top: 0, right: 0, bottom: 0, minWidth: `${Math.max(800, railGeom.right + 100)}px`, minHeight: `${Math.max(400, ARC_TOP + (visibleArcs.length * 72) + 80)}px` }}>
                     {/* Visual Lane Background Rails */}
                     {LANE_Y.map((y, idx) => (
                         <div
@@ -553,6 +650,17 @@ export default function FleshNotePlannerDesktop({ projectPath, chapters, activeC
                         }}
                     />
 
+                    {/* Timeline Percentage Markers */}
+                    {[0, 25, 50, 75, 100].map((pct) => {
+                        const mx = railGeom.left + (pct / 100) * railGeom.width;
+                        return (
+                            <div key={`tick-${pct}`} style={{ position: "absolute", left: mx, top: RAIL_Y + 6, pointerEvents: "none", display: "flex", flexDirection: "column", alignItems: "center", transform: "translateX(-50%)" }}>
+                                <div style={{ width: "1px", height: "14px", background: "var(--border-subtle)" }} />
+                                <span style={{ fontFamily: "var(--font-mono)", fontSize: "8px", color: "var(--text-tertiary)", marginTop: "2px", opacity: 0.6 }}>{pct}%</span>
+                            </div>
+                        );
+                    })}
+
                     {/* Render Timeline Arcs */}
                     {visibleArcs.map((a) => {
                         const isInactive = a.layer !== activeLayer;
@@ -560,17 +668,11 @@ export default function FleshNotePlannerDesktop({ projectPath, chapters, activeC
                         const x2 = railGeom.left + (a.end_pct / 100) * railGeom.width;
                         const w = Math.max(0, x2 - x1);
                         const myIndex = visibleArcs.filter(va => va.layer === a.layer).findIndex(va => va.id === a.id);
-                        const yOffset = ARC_TOP + (myIndex * 60) + 12; // Added 12px margin from timeline
+                        const yOffset = ARC_TOP + (myIndex * 72) + 12;
 
                         return (
                             <div
                                 key={a.id}
-                                title={a.description || "Click to add description"} /* Hover to reveal description */
-                                onClick={() => {
-                                    if (isInactive) return;
-                                    const newDesc = prompt("Enter Arc Description:", a.description || "");
-                                    if (newDesc !== null) updateArcProps(a.id, { description: newDesc });
-                                }}
                                 style={{
                                     position: "absolute",
                                     left: x1,
@@ -584,10 +686,12 @@ export default function FleshNotePlannerDesktop({ projectPath, chapters, activeC
                                 <input
                                     value={a.name}
                                     onChange={(e) => updateArcProps(a.id, { name: e.target.value })}
+                                    onMouseDown={(e) => e.stopPropagation()}
+                                    onClick={(e) => e.stopPropagation()}
                                     maxLength={24}
                                     style={{
                                         position: "absolute",
-                                        top: "-22px",
+                                        top: "-34px",
                                         left: "10px",
                                         background: "transparent",
                                         color: a.color,
@@ -600,21 +704,125 @@ export default function FleshNotePlannerDesktop({ projectPath, chapters, activeC
                                     }}
                                 />
 
-                                {/* Delete arc button */}
-                                <button
-                                    onClick={() => deleteArc(a.id)}
+                                {/* Arc Description Input */}
+                                <input
+                                    value={a.description || ""}
+                                    onChange={(e) => {
+                                        if (e.target.value.length <= 80) {
+                                            updateArcProps(a.id, { description: e.target.value });
+                                        }
+                                    }}
+                                    placeholder={t('ide.addDescription', "Add description...")}
+                                    maxLength={80}
+                                    onMouseDown={(e) => e.stopPropagation()}
+                                    onClick={(e) => e.stopPropagation()}
                                     style={{
                                         position: "absolute",
-                                        top: "-24px",
-                                        right: "0px",
+                                        top: "-18px",
+                                        left: "10px",
                                         background: "transparent",
-                                        border: "none",
                                         color: "var(--text-tertiary)",
-                                        cursor: "pointer",
+                                        border: "none",
+                                        fontFamily: "var(--font-mono)",
+                                        fontSize: "9px",
+                                        letterSpacing: "0.5px",
+                                        outline: "none",
+                                        width: Math.max(w - 20, 60),
+                                        opacity: a.description ? 0.8 : 0.4,
+                                        transition: "opacity 0.15s ease",
                                     }}
-                                >
-                                    <Icons.X />
-                                </button>
+                                    onFocus={(e) => { e.target.style.opacity = "1"; e.target.style.color = "var(--text-secondary)"; }}
+                                    onBlur={(e) => {
+                                        e.target.style.opacity = a.description ? "0.8" : "0.4";
+                                        e.target.style.color = "var(--text-tertiary)";
+                                    }}
+                                />
+
+                                {/* Arc Color Swatch + Delete */}
+                                <div style={{ position: "absolute", top: "-36px", right: "0px", display: "flex", alignItems: "center", gap: "4px" }}>
+                                    {/* Color swatch */}
+                                    <div style={{ position: "relative" }}>
+                                        <button
+                                            onClick={(e) => { e.stopPropagation(); setColorPickerArcId(colorPickerArcId === a.id ? null : a.id); }}
+                                            onMouseDown={(e) => e.stopPropagation()}
+                                            style={{
+                                                width: "14px",
+                                                height: "14px",
+                                                background: a.color,
+                                                border: "2px solid var(--border-default)",
+                                                cursor: "pointer",
+                                                padding: 0,
+                                            }}
+                                        />
+                                        {colorPickerArcId === a.id && (
+                                            <div
+                                                onMouseDown={(e) => e.stopPropagation()}
+                                                style={{
+                                                    position: "absolute",
+                                                    top: "20px",
+                                                    right: 0,
+                                                    display: "grid",
+                                                    gridTemplateColumns: "repeat(4, 1fr)",
+                                                    gap: "4px",
+                                                    padding: "8px",
+                                                    background: "var(--bg-elevated)",
+                                                    border: "1px solid var(--border-default)",
+                                                    zIndex: 50,
+                                                }}
+                                            >
+                                                {PRESET_COLORS.map((c) => (
+                                                    <button
+                                                        key={c}
+                                                        onClick={(e) => {
+                                                            e.stopPropagation();
+                                                            updateArcProps(a.id, { color: c });
+                                                            setColorPickerArcId(null);
+                                                        }}
+                                                        style={{
+                                                            width: "18px",
+                                                            height: "18px",
+                                                            background: c,
+                                                            border: c === a.color ? "2px solid var(--text-primary)" : "1px solid var(--border-subtle)",
+                                                            cursor: "pointer",
+                                                            padding: 0,
+                                                        }}
+                                                    />
+                                                ))}
+                                            </div>
+                                        )}
+                                    </div>
+                                    {/* Reorder */}
+                                    <button
+                                        onClick={(e) => { e.stopPropagation(); reorderArc(a.id, -1); }}
+                                        onMouseDown={(e) => e.stopPropagation()}
+                                        title={t('ide.moveUp', "Move up")}
+                                        style={{ background: "transparent", border: "none", color: "var(--text-tertiary)", cursor: "pointer", padding: "0 1px" }}
+                                    >
+                                        <Icons.ChevronUp />
+                                    </button>
+                                    <button
+                                        onClick={(e) => { e.stopPropagation(); reorderArc(a.id, 1); }}
+                                        onMouseDown={(e) => e.stopPropagation()}
+                                        title={t('ide.moveDown', "Move down")}
+                                        style={{ background: "transparent", border: "none", color: "var(--text-tertiary)", cursor: "pointer", padding: "0 1px" }}
+                                    >
+                                        <Icons.ChevronDown />
+                                    </button>
+                                    {/* Delete */}
+                                    <button
+                                        onClick={(e) => { e.stopPropagation(); deleteArc(a.id); }}
+                                        onMouseDown={(e) => e.stopPropagation()}
+                                        title={t('ide.deleteArc', "Delete arc")}
+                                        style={{
+                                            background: "transparent",
+                                            border: "none",
+                                            color: "var(--text-tertiary)",
+                                            cursor: "pointer",
+                                        }}
+                                    >
+                                        <Icons.X />
+                                    </button>
+                                </div>
 
                                 {/* Vertical Drop Lines for Arcs */}
                                 <div style={{ position: "absolute", left: 0, top: -(yOffset - RAIL_Y - 12), width: 1, height: yOffset - RAIL_Y - 12, background: a.color, opacity: 0.3 }} />
@@ -699,6 +907,8 @@ export default function FleshNotePlannerDesktop({ projectPath, chapters, activeC
                                     onMouseDown={(e) => {
                                         if (!isInactive) startDragBlock(e, b.id);
                                     }}
+                                    onMouseEnter={() => setHoveredBlockId(b.id)}
+                                    onMouseLeave={() => setHoveredBlockId(null)}
                                     style={{
                                         position: "absolute",
                                         left: x,
@@ -740,13 +950,14 @@ export default function FleshNotePlannerDesktop({ projectPath, chapters, activeC
                                                     }}
                                                 >
                                                     {Object.keys(currentTypes).map((k) => (
-                                                        <option key={k} value={k}>{currentTypes[k].label}</option>
+                                                        <option key={k} value={k}>{t(`ide.blockType_${k}`, currentTypes[k].label)}</option>
                                                     ))}
                                                 </select>
                                                 {!isInactive && (
                                                     <button
                                                         onMouseDown={(e) => e.stopPropagation()}
                                                         onClick={(e) => deleteBlock(e, b.id)}
+                                                        title={t('ide.deleteBlock', "Delete Block")}
                                                         style={{
                                                             background: "none",
                                                             border: "none",
@@ -776,7 +987,34 @@ export default function FleshNotePlannerDesktop({ projectPath, chapters, activeC
                                             />
                                         </>
                                     )}
+
+                                    {/* Hover Info Card */}
+                                    {hoveredBlockId === b.id && !isDragging && (
+                                        <div
+                                            style={{
+                                                position: "absolute",
+                                                bottom: isCompressed ? "unset" : "-52px",
+                                                top: isCompressed ? "-60px" : "unset",
+                                                left: "50%",
+                                                transform: "translateX(-50%)",
+                                                background: "var(--bg-elevated)",
+                                                border: "1px solid var(--border-default)",
+                                                padding: "6px 10px",
+                                                zIndex: 30,
+                                                whiteSpace: "nowrap",
+                                                pointerEvents: "none",
+                                            }}
+                                        >
+                                            {isCompressed && (
+                                                <div style={{ fontFamily: "var(--font-sans)", fontSize: "11px", color: "var(--text-primary)", marginBottom: "2px" }}>{b.label}</div>
+                                            )}
+                                            <div style={{ fontFamily: "var(--font-mono)", fontSize: "8px", color: "var(--text-tertiary)", textTransform: "uppercase", letterSpacing: "0.5px" }}>
+                                                {typeDef.label} · {Math.round(b.pct)}%{b.chapter_id ? ` · Ch.${(chapters.find(c => c.id === b.chapter_id) || {}).chapter_number || '?'}` : ''}
+                                            </div>
+                                        </div>
+                                    )}
                                 </div>
+
                             </React.Fragment>
                         );
                     })}
@@ -806,50 +1044,118 @@ export default function FleshNotePlannerDesktop({ projectPath, chapters, activeC
                         <div style={{ position: "absolute", left: BLOCK_W / 2, top: BLOCK_H, width: "2px", height: Math.max(0, RAIL_Y + 12 - (LANE_Y[0] + BLOCK_H)), background: "var(--text-tertiary)", opacity: 0.3 }} />
                     </div>
 
-                    {/* "You Are Here" Indicator based on chapters progress */}
-                    {chapters && chapters.length > 0 && activeChapter && (() => {
-                        const activeIndex = chapters.findIndex(c => c.id === activeChapter.id);
-                        const pctProgress = activeIndex >= 0 ? ((activeIndex + 1) / chapters.length) * 100 : 0;
-                        const indicatorX = railGeom.left + (pctProgress / 100) * railGeom.width;
+                    {/* Chapter Spans & "You Are Here" Indicator */}
+                    {chapterSpans.length > 0 && (() => {
+                        const activeSpan = activeChapter ? chapterSpans.find(s => s.id === activeChapter.id) : null;
 
                         return (
-                            <div style={{
-                                position: "absolute",
-                                left: indicatorX,
-                                top: RAIL_Y - 14,
-                                display: "flex",
-                                flexDirection: "column",
-                                alignItems: "center",
-                                transform: "translateX(-50%)",
-                                pointerEvents: "none", // Let clicks pass through to blocks/arcs
-                                zIndex: 1, // Stay behind blocks
-                            }}>
-                                <div style={{
-                                    width: "0",
-                                    height: "0",
-                                    borderLeft: "6px solid transparent",
-                                    borderRight: "6px solid transparent",
-                                    borderTop: "8px solid var(--accent-green)",
-                                    marginBottom: "2px"
-                                }} />
-                                <div style={{
-                                    fontFamily: "var(--font-mono)",
-                                    fontSize: "9px",
-                                    color: "var(--accent-green)",
-                                    fontWeight: "bold",
-                                    textTransform: "uppercase",
-                                    letterSpacing: "1px",
-                                    whiteSpace: "nowrap",
-                                }}>
-                                    You Are Here
-                                </div>
-                                <div style={{
-                                    width: "2px",
-                                    height: "80px", // Drops down past the rail a bit
-                                    background: "var(--accent-green)",
-                                    opacity: 0.3
-                                }} />
-                            </div>
+                            <>
+                                {/* Chapter boundary dividers on the rail */}
+                                {chapterSpans.slice(1).map((s) => {
+                                    const divX = railGeom.left + (s.startPct / 100) * railGeom.width;
+                                    return (
+                                        <div key={`ch-div-${s.id}`} style={{ position: "absolute", left: divX, top: RAIL_Y + 6, pointerEvents: "none", transform: "translateX(-0.5px)" }}>
+                                            <div style={{ width: "1px", height: "14px", background: "var(--text-tertiary)", opacity: 0.3 }} />
+                                        </div>
+                                    );
+                                })}
+
+                                {/* Active chapter highlight bar */}
+                                {activeSpan && (() => {
+                                    const hlLeft = railGeom.left + (activeSpan.startPct / 100) * railGeom.width;
+                                    const hlWidth = ((activeSpan.endPct - activeSpan.startPct) / 100) * railGeom.width;
+                                    const midX = hlLeft + hlWidth / 2;
+
+                                    return (
+                                        <>
+                                            {/* Thick highlight bar on the rail */}
+                                            <div style={{
+                                                position: "absolute",
+                                                top: RAIL_Y + 8,
+                                                left: hlLeft,
+                                                width: hlWidth,
+                                                height: "10px",
+                                                background: "var(--accent-green)",
+                                                opacity: 0.15,
+                                                pointerEvents: "none",
+                                            }} />
+                                            {/* Active bar top edge */}
+                                            <div style={{
+                                                position: "absolute",
+                                                top: RAIL_Y + 8,
+                                                left: hlLeft,
+                                                width: hlWidth,
+                                                height: "10px",
+                                                border: "1px solid var(--accent-green)",
+                                                opacity: 0.3,
+                                                pointerEvents: "none",
+                                                boxSizing: "border-box",
+                                            }} />
+                                            {/* Chapter label inside highlight */}
+                                            <div style={{
+                                                position: "absolute",
+                                                top: RAIL_Y + 22,
+                                                left: hlLeft,
+                                                width: hlWidth,
+                                                pointerEvents: "none",
+                                                textAlign: "center",
+                                                overflow: "hidden",
+                                            }}>
+                                                <span style={{
+                                                    fontFamily: "var(--font-mono)",
+                                                    fontSize: "8px",
+                                                    color: "var(--accent-green)",
+                                                    opacity: 0.6,
+                                                    textTransform: "uppercase",
+                                                    letterSpacing: "0.5px",
+                                                    whiteSpace: "nowrap",
+                                                }}>
+                                                    Ch.{activeSpan.chapter_number}
+                                                </span>
+                                            </div>
+
+                                            {/* "You Are Here" indicator at chapter midpoint */}
+                                            <div style={{
+                                                position: "absolute",
+                                                left: midX,
+                                                top: RAIL_Y - 14,
+                                                display: "flex",
+                                                flexDirection: "column",
+                                                alignItems: "center",
+                                                transform: "translateX(-50%)",
+                                                pointerEvents: "none",
+                                                zIndex: 1,
+                                            }}>
+                                                <div style={{
+                                                    width: "0",
+                                                    height: "0",
+                                                    borderLeft: "6px solid transparent",
+                                                    borderRight: "6px solid transparent",
+                                                    borderTop: "8px solid var(--accent-green)",
+                                                    marginBottom: "2px"
+                                                }} />
+                                                <div style={{
+                                                    fontFamily: "var(--font-mono)",
+                                                    fontSize: "9px",
+                                                    color: "var(--accent-green)",
+                                                    fontWeight: "bold",
+                                                    textTransform: "uppercase",
+                                                    letterSpacing: "1px",
+                                                    whiteSpace: "nowrap",
+                                                }}>
+                                                    You Are Here
+                                                </div>
+                                                <div style={{
+                                                    width: "2px",
+                                                    height: "80px",
+                                                    background: "var(--accent-green)",
+                                                    opacity: 0.3
+                                                }} />
+                                            </div>
+                                        </>
+                                    );
+                                })()}
+                            </>
                         );
                     })()}
                 </div>

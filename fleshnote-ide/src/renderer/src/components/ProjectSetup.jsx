@@ -158,7 +158,7 @@ export default function ProjectSetup({ projectPath, projectConfig, onComplete, o
   const [locationName, setLocationName] = useState('')
   const [locationRegion, setLocationRegion] = useState('')
   const [characters, setCharacters] = useState([
-    { name: '', role: 'Protagonist', age: '', species: '', bio: '' }
+    { name: '', role: 'Protagonist', species: '', bio: '' }
   ])
   const [storyScope, setStoryScope] = useState('novel')
   const [customChapterCount, setCustomChapterCount] = useState(25)
@@ -177,7 +177,7 @@ export default function ProjectSetup({ projectPath, projectConfig, onComplete, o
   const addCharacter = () => {
     setCharacters((prev) => [
       ...prev,
-      { name: '', role: 'Supporting', age: '', species: '', bio: '' }
+      { name: '', role: 'Supporting', species: '', bio: '' }
     ])
   }
 
@@ -477,30 +477,19 @@ export default function ProjectSetup({ projectPath, projectConfig, onComplete, o
                     </div>
                   </div>
 
-                  <div style={{ display: 'flex', gap: 12 }}>
-                    <div style={{ flex: 1 }}>
-                      <label style={labelStyle}>{t('setup.ageLabel', 'AGE (optional)')}</label>
+                  {trackSpecies && (
+                    <div>
+                      <label style={labelStyle}>
+                        {projectConfig?.species_label || t('extractor.fieldSpecies', 'SPECIES')}
+                      </label>
                       <input
                         style={inputStyle}
-                        value={char.age}
-                        onChange={(e) => updateCharacter(i, 'age', e.target.value)}
-                        placeholder={t('setup.agePlaceholder', 'e.g. 19')}
+                        value={char.species}
+                        onChange={(e) => updateCharacter(i, 'species', e.target.value)}
+                        placeholder="e.g. Human"
                       />
                     </div>
-                    {trackSpecies && (
-                      <div style={{ flex: 1 }}>
-                        <label style={labelStyle}>
-                          {projectConfig?.species_label || t('extractor.fieldSpecies', 'SPECIES')}
-                        </label>
-                        <input
-                          style={inputStyle}
-                          value={char.species}
-                          onChange={(e) => updateCharacter(i, 'species', e.target.value)}
-                          placeholder="e.g. Human"
-                        />
-                      </div>
-                    )}
-                  </div>
+                  )}
 
                   <label style={labelStyle}>{t('setup.bioLabel', 'BIO (optional, 1-2 sentences)')}</label>
                   <textarea

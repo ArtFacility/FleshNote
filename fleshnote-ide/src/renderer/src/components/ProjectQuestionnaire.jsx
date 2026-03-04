@@ -1,6 +1,22 @@
 import { useState, useEffect } from 'react'
 import { useTranslation } from 'react-i18next'
 
+const Icons = {
+  X: () => (
+    <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+      <line x1="18" y1="6" x2="6" y2="18" />
+      <line x1="6" y1="6" x2="18" y2="18" />
+    </svg>
+  ),
+  AlertTriangle: () => (
+    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+      <path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z" />
+      <line x1="12" y1="9" x2="12" y2="13" />
+      <line x1="12" y1="17" x2="12.01" y2="17" />
+    </svg>
+  )
+}
+
 // Mirroring the Python presets
 const GENRE_PRESETS = {
   fantasy: {
@@ -69,6 +85,19 @@ export default function ProjectQuestionnaire({ workspacePath, onCancel, onComple
   const { t } = useTranslation()
   const [step, setStep] = useState(1)
   const [loading, setLoading] = useState(false)
+  const [error, setError] = useState(null)
+  const [existingProjects, setExistingProjects] = useState([])
+
+  useEffect(() => {
+    if (workspacePath) {
+      window.api.getProjects(workspacePath)
+        .then(data => {
+          const names = (data.projects || []).map(p => p.name.toLowerCase())
+          setExistingProjects(names)
+        })
+        .catch(err => console.error('Failed to load existing projects', err))
+    }
+  }, [workspacePath])
 
   // Form State
   const [formData, setFormData] = useState({
@@ -116,13 +145,20 @@ export default function ProjectQuestionnaire({ workspacePath, onCancel, onComple
     }
 
     try {
+      setError(null)
       const result = await window.api.initProject(payload)
       console.log('DB Generated Successfully:', result)
       setLoading(false)
       onComplete(result.project_path) // Pass the full path back to App.jsx
     } catch (err) {
       console.error('Failed to init project:', err)
-      alert(t('q.errorCreating', 'Error creating project. Check terminal for python logs.'))
+      let msg = err.message || t('q.errorCreating', 'Error creating project.')
+      // Strip redundant Electron prefix
+      if (msg.includes("Error occurred in handler for 'api:initProject':")) {
+        msg = msg.replace("Error occurred in handler for 'api:initProject':", "").trim()
+        if (msg.startsWith('Error:')) msg = msg.replace('Error:', '').trim()
+      }
+      setError(msg)
       setLoading(false)
     }
   }
@@ -140,6 +176,9 @@ export default function ProjectQuestionnaire({ workspacePath, onCancel, onComple
   }
 
   const selectStyle = { ...inputStyle, cursor: 'pointer', appearance: 'none' }
+
+  const projectNameCheck = (formData.project_name || 'Untitled Project').trim().toLowerCase()
+  const nameTaken = existingProjects.includes(projectNameCheck)
 
   return (
     <div
@@ -175,11 +214,20 @@ export default function ProjectQuestionnaire({ workspacePath, onCancel, onComple
               {t('q.projectNameLabel', 'PROJECT NAME')}
             </label>
             <input
-              style={inputStyle}
+              style={{
+                ...inputStyle,
+                borderColor: nameTaken ? 'var(--accent-red)' : 'var(--border-subtle)',
+                marginBottom: nameTaken ? '4px' : '16px'
+              }}
               value={formData.project_name}
               onChange={(e) => updateField('project_name', e.target.value)}
               placeholder={t('q.projectNamePlaceholder', 'e.g. The Resonance Archives')}
             />
+            {nameTaken && (
+              <div style={{ color: 'var(--accent-red)', fontSize: '11px', marginBottom: '16px' }}>
+                {t('q.nameTaken', 'A project with this name already exists in this workspace.')}
+              </div>
+            )}
 
             <label
               style={{
@@ -472,6 +520,42 @@ export default function ProjectQuestionnaire({ workspacePath, onCancel, onComple
             />
           </div>
         )}
+        {error && (
+          <div
+            style={{
+              marginTop: '16px',
+              padding: '12px',
+              backgroundColor: 'rgba(255, 75, 75, 0.1)',
+              border: '1px solid var(--accent-red)',
+              borderRadius: '4px',
+              color: 'var(--accent-red)',
+              fontSize: '12px',
+              fontFamily: 'var(--font-mono)',
+              display: 'flex',
+              gap: '12px',
+              alignItems: 'center'
+            }}
+          >
+            <Icons.AlertTriangle />
+            <span style={{ flex: 1 }}>{error}</span>
+            <button
+              onClick={() => setError(null)}
+              style={{
+                background: 'transparent',
+                border: 'none',
+                color: 'inherit',
+                cursor: 'pointer',
+                padding: '4px',
+                display: 'flex',
+                opacity: 0.7
+              }}
+              onMouseEnter={(e) => (e.currentTarget.style.opacity = '1')}
+              onMouseLeave={(e) => (e.currentTarget.style.opacity = '0.7')}
+            >
+              <Icons.X />
+            </button>
+          </div>
+        )}
 
         {/* Navigation Buttons */}
         <div style={{ display: 'flex', gap: '12px', marginTop: '32px' }}>
@@ -494,7 +578,15 @@ export default function ProjectQuestionnaire({ workspacePath, onCancel, onComple
           )}
 
           {step < 3 ? (
-            <button className="onboarding-enter-btn" onClick={() => setStep(step + 1)}>
+            <button
+              className="onboarding-enter-btn"
+              onClick={() => setStep(step + 1)}
+              disabled={step === 1 && nameTaken}
+              style={{
+                opacity: (step === 1 && nameTaken) ? 0.5 : 1,
+                cursor: (step === 1 && nameTaken) ? 'not-allowed' : 'pointer'
+              }}
+            >
               {t('q.nextBtn', 'Next Step')}
             </button>
           ) : (
