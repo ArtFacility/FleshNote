@@ -1,6 +1,6 @@
 # FleshNote IDE
 
-An advanced, localized, and feature-rich world-building IDE for writers and game developers. Built with Electron, React, TypeScript, and FastAPI.
+An advanced, localized, and feature-rich writing tool for writers, and world builders who actually wish to finish their story this century. Built with Electron, React, TypeScript, and FastAPI.
 
 [![License: GPL v3](https://img.shields.io/badge/License-GPLv3-blue.svg)](https://www.gnu.org/licenses/gpl-3.0)
 
@@ -8,6 +8,9 @@ An advanced, localized, and feature-rich world-building IDE for writers and game
 
 - **Intuitive World Building**: Manage entities, characters, and items with a powerful inspector.
 - **Localization Support**: Fully translated into **Hungarian (HU)**, **English (EN)**, and **Polish (PL)**.
+- **Advanced Editor**: Featuring `@` inline entity mentions, `CTRL+F` search, and `#TODO` tracking.
+- **Focus Sprint Modes**: Unique writing challenges including Kamikaze (stop and lose text), Fog, Hemingway, Combo, and Zen modes.
+- **Plot Planner**: A zoomable, multi-layer timeline for organizing story arcs and narrative beats.
 - **Entity Inspector**: Advanced panel for managing bio, agendas, and deep-linking between entities.
 - **Export Flow**: Comprehensive export capabilities for project data (added in v0.5.0).
 - **Modern UI**: Sleek, responsive interface built with Tailwind CSS and Tiptap editor.
@@ -17,7 +20,7 @@ An advanced, localized, and feature-rich world-building IDE for writers and game
 ### Prerequisites
 
 - [Node.js](https://nodejs.org/) (Project uses npm)
-- [Python 3.10+](https://www.python.org/) (For backend services)
+- [Python 3.13](https://www.python.org/) (For backend services)
 
 ### Installation
 

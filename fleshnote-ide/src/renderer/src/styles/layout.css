@@ -1,0 +1,319 @@
+/* ── LAYOUT ─────────────────────────────────────── */
+.ide-root {
+    display: flex;
+    flex-direction: column;
+    height: 100vh;
+    background: var(--bg-deep);
+}
+
+.ide-titlebar {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    height: 38px;
+    padding: 0 16px;
+    background: var(--bg-base);
+    border-bottom: 1px solid var(--border-subtle);
+    flex-shrink: 0;
+    user-select: none;
+    -webkit-app-region: drag;
+    /* Makes the bar draggable */
+}
+
+/* Ensure buttons and actions inside the bar are still clickable */
+.ide-titlebar-actions,
+.ide-titlebar-btn {
+    -webkit-app-region: no-drag;
+}
+
+.ide-titlebar-logo {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-family: var(--font-mono);
+    font-size: 12px;
+    font-weight: 500;
+    color: var(--accent-amber);
+    letter-spacing: 0.5px;
+}
+
+.ide-titlebar-logo span {
+    color: var(--text-tertiary);
+    font-weight: 400;
+}
+
+.ide-titlebar-project {
+    font-family: var(--font-mono);
+    font-size: 11px;
+    color: var(--text-secondary);
+    letter-spacing: 0.3px;
+}
+
+.ide-titlebar-actions {
+    display: flex;
+    gap: 2px;
+}
+
+.ide-titlebar-btn {
+    width: 28px;
+    height: 28px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: none;
+    border: none;
+    color: var(--text-tertiary);
+    cursor: pointer;
+    transition: all 0.15s;
+}
+
+.ide-titlebar-btn:hover {
+    color: var(--text-secondary);
+    background: var(--bg-elevated);
+}
+
+/* ── PROGRESS TIMELINE BAR ─────────────────────── */
+.progress-bar-container {
+    height: 32px;
+    display: flex;
+    align-items: center;
+    padding: 0 16px;
+    gap: 4px;
+    background: var(--bg-base);
+    border-bottom: 1px solid var(--border-subtle);
+    flex-shrink: 0;
+}
+
+.progress-label {
+    font-family: var(--font-mono);
+    font-size: 10px;
+    color: var(--text-tertiary);
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    margin-inline-end: 8px;
+    white-space: nowrap;
+}
+
+.progress-track {
+    display: flex;
+    flex: 1;
+    gap: 3px;
+    align-items: center;
+}
+
+.progress-chapter {
+    flex: 1;
+    height: 6px;
+    position: relative;
+    cursor: pointer;
+    transition: all 0.2s;
+}
+
+.progress-chapter-bg {
+    position: absolute;
+    inset: 0;
+    background: var(--bg-elevated);
+}
+
+.progress-chapter-fill {
+    position: absolute;
+    inset-inline-start: 0;
+    top: 0;
+    bottom: 0;
+    transition: width 0.3s ease;
+}
+
+.progress-chapter.status-revised .progress-chapter-fill {
+    background: var(--accent-green);
+}
+
+.progress-chapter.status-draft .progress-chapter-fill {
+    background: var(--accent-amber);
+}
+
+.progress-chapter.status-writing .progress-chapter-fill {
+    background: var(--accent-amber);
+    animation: pulse-fill 2s ease infinite;
+}
+
+.progress-chapter.status-planned .progress-chapter-fill {
+    background: var(--bg-hover);
+}
+
+.progress-chapter.active {
+    transform: scaleY(1.8);
+}
+
+.progress-chapter.active .progress-chapter-bg {
+    border: 1px solid var(--accent-amber);
+}
+
+@keyframes pulse-fill {
+
+    0%,
+    100% {
+        opacity: 1;
+    }
+
+    50% {
+        opacity: 0.5;
+    }
+}
+
+.progress-chapter-tooltip {
+    position: absolute;
+    bottom: calc(100% + 8px);
+    inset-inline-start: 50%;
+    transform: translateX(-50%);
+    background: var(--bg-elevated);
+    border: 1px solid var(--border-default);
+    padding: 6px 10px;
+    font-family: var(--font-mono);
+    font-size: 10px;
+    white-space: nowrap;
+    z-index: 100;
+    pointer-events: none;
+    color: var(--text-secondary);
+    display: none;
+}
+
+.progress-chapter:hover .progress-chapter-tooltip {
+    display: block;
+}
+
+.progress-stats {
+    font-family: var(--font-mono);
+    font-size: 10px;
+    color: var(--text-tertiary);
+    margin-inline-start: 8px;
+    white-space: nowrap;
+}
+
+.progress-stats strong {
+    color: var(--accent-amber);
+    font-weight: 500;
+}
+
+/* ── MAIN BODY ──────────────────────────────────── */
+.ide-body {
+    display: flex;
+    flex: 1;
+    overflow: hidden;
+}
+
+/* ── LEFT PANEL ─────────────────────────────────── */
+.panel-left {
+    width: 320px;
+    min-width: 320px;
+    background: var(--bg-base);
+    border-inline-end: 1px solid var(--border-subtle);
+    display: flex;
+    flex-direction: column;
+    transition: all 0.3s ease;
+    overflow: hidden;
+}
+
+.panel-left.collapsed {
+    width: 0;
+    min-width: 0;
+    border-inline-end: none;
+}
+
+.panel-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 12px 16px;
+    border-bottom: 1px solid var(--border-subtle);
+    flex-shrink: 0;
+}
+
+.panel-header-title {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-family: var(--font-mono);
+    font-size: 11px;
+    text-transform: uppercase;
+    letter-spacing: 1.2px;
+    color: var(--text-secondary);
+}
+
+.panel-content {
+    flex: 1;
+    overflow-y: auto;
+    padding: 16px;
+}
+
+/* ── CHAPTER LIST (left panel) ─────────────────────── */
+
+.chapter-list-item {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 10px 12px;
+    cursor: pointer;
+    transition: background 0.15s;
+    border-bottom: 1px solid var(--border-subtle);
+}
+
+.chapter-list-item:hover {
+    background: var(--bg-surface);
+}
+
+.chapter-list-item.active {
+    background: var(--bg-elevated);
+    border-inline-start: 2px solid var(--accent-amber);
+}
+
+.chapter-num {
+    font-family: var(--font-mono);
+    font-size: 10px;
+    color: var(--text-tertiary);
+    min-width: 28px;
+}
+
+.chapter-info {
+    flex: 1;
+}
+
+.chapter-title {
+    font-size: 13px;
+    color: var(--text-primary);
+    margin-bottom: 2px;
+}
+
+.chapter-meta {
+    font-family: var(--font-mono);
+    font-size: 10px;
+    color: var(--text-tertiary);
+}
+
+.chapter-status {
+    font-family: var(--font-mono);
+    font-size: 9px;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    padding: 2px 6px;
+}
+
+.chapter-status.revised,
+.chapter-status.final {
+    color: var(--accent-green);
+    background: var(--accent-green-dim);
+}
+
+.chapter-status.draft {
+    color: var(--accent-amber);
+    background: var(--accent-amber-dim);
+}
+
+.chapter-status.writing {
+    color: var(--accent-amber);
+    background: var(--accent-amber-dim);
+}
+
+.chapter-status.planned {
+    color: var(--text-tertiary);
+    background: var(--bg-elevated);
+}

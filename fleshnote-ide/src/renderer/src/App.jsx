@@ -31,6 +31,14 @@ export default function App() {
     document.documentElement.lang = i18n.language
   }, [i18n.language])
 
+  useEffect(() => {
+    if (projectConfig?.dyslexia_mode) {
+      document.body.classList.add('dyslexia-mode')
+    } else {
+      document.body.classList.remove('dyslexia-mode')
+    }
+  }, [projectConfig?.dyslexia_mode])
+
   // ── Load an existing project ────────────────────────
   const handleSelectProject = async (projectPath) => {
     try {
@@ -118,6 +126,7 @@ export default function App() {
           projectConfig={projectConfig}
           projectPath={activeProject}
           onCloseProject={handleCloseProject}
+          onConfigUpdate={setProjectConfig}
         />
       )}
     </div>

@@ -123,7 +123,8 @@ fleshnote-ide/
 │   └── renderer/
 │       └── src/
 │           ├── App.jsx       # View router (picker -> questionnaire -> setup -> ide)
-│           ├── index.css     # All styles (custom properties, no frameworks)
+│           ├── styles/       # Modular CSS (editor.css, layout.css, etc.)
+│           ├── index.css     # Global CSS variables and base styles
 │           ├── main.tsx      # React entry point
 │           ├── components/
 │           │   ├── FleshNoteIDE.jsx           # Main IDE shell
@@ -176,7 +177,7 @@ My Novel/
 ## Styling Conventions
 
 1. **Vanilla CSS only** — no CSS frameworks, no CSS-in-JS, no utility classes
-2. **Custom properties** — all colors, fonts, and spacing defined as CSS variables in `index.css`
+2. **Custom properties** — all colors, fonts, and spacing defined as CSS variables in `index.css` and the `styles/` directory
 3. **Inline SVGs** — all icons are inline SVG components, no icon libraries
 4. **Dark theme** — single theme, no light mode
 5. **Font stack**:

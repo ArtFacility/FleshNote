@@ -411,6 +411,31 @@ app.whenReady().then(async () => {
     return await backendPost('/api/project/calendar/calculate-age', payload)
   })
 
+  // ── Planner ────────────────────────────────────────
+  ipcMain.handle('api:loadPlanner', async (_event, projectPath) => {
+    return await backendPost('/api/project/planner/load', { project_path: projectPath })
+  })
+
+  ipcMain.handle('api:updatePlannerSettings', async (_event, payload) => {
+    return await backendPost('/api/project/planner/settings', payload)
+  })
+
+  ipcMain.handle('api:savePlannerBlock', async (_event, payload) => {
+    return await backendPost('/api/project/planner/save-block', payload)
+  })
+
+  ipcMain.handle('api:savePlannerArc', async (_event, payload) => {
+    return await backendPost('/api/project/planner/save-arc', payload)
+  })
+
+  ipcMain.handle('api:deletePlannerBlock', async (_event, payload) => {
+    return await backendPost('/api/project/planner/delete-block', payload)
+  })
+
+  ipcMain.handle('api:deletePlannerArc', async (_event, payload) => {
+    return await backendPost('/api/project/planner/delete-arc', payload)
+  })
+
   // ── Import ─────────────────────────────────────────
   ipcMain.handle('api:importSplitPreview', async (_event, payload) => {
     return await backendPost('/api/project/import/split-preview', payload)

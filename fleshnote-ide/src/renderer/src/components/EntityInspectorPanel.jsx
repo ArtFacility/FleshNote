@@ -188,6 +188,19 @@ const Icons = {
       <path d="M12 2a7 7 0 0 0-7 7c0 2.38 1.19 4.47 3 5.74V17a2 2 0 0 0 2 2h4a2 2 0 0 0 2-2v-2.26c1.81-1.27 3-3.36 3-5.74a7 7 0 0 0-7-7z" />
       <line x1="9" y1="21" x2="15" y2="21" />
     </svg>
+  ),
+  Clock: () => (
+    <svg
+      width="14"
+      height="14"
+      viewBox="0 0 24 24"
+      fill="none"
+      stroke="currentColor"
+      strokeWidth="2"
+    >
+      <circle cx="12" cy="12" r="10" />
+      <polyline points="12 6 12 12 16 14" />
+    </svg>
   )
 }
 
@@ -216,7 +229,8 @@ export default function EntityInspectorPanel({
   onEntityUpdated
 }) {
   const { t } = useTranslation()
-  const [showHidden, setShowHidden] = useState(true)
+  const [viewMode, setViewMode] = useState('author')  // 'author' | 'narrative' | 'world_time'
+  const [filterCharacterId, setFilterCharacterId] = useState(null)
   const [editMode, setEditMode] = useState(false)
   const [editData, setEditData] = useState({})
   const [saving, setSaving] = useState(false)
@@ -243,7 +257,14 @@ export default function EntityInspectorPanel({
   const groupData = entity?.type === 'group' ? currEntity : null
   const loreData = (!charData && !locationData && !groupData && entity?.type !== 'quicknote') ? currEntity : null
 
-  // Load knowledge facts when entity or chapter changes
+  // Auto-default filterCharacterId to active chapter's POV character
+  useEffect(() => {
+    if (activeChapter?.pov_character_id) {
+      setFilterCharacterId(activeChapter.pov_character_id)
+    }
+  }, [activeChapter?.pov_character_id])
+
+  // Load knowledge facts when entity, chapter, or view mode changes
   const loadKnowledgeFacts = useCallback(async () => {
     if (!entity || !projectPath) return
 
@@ -254,10 +275,13 @@ export default function EntityInspectorPanel({
         // For characters: show facts this character KNOWS
         const params = {
           project_path: projectPath,
-          character_id: entity.id
+          character_id: entity.id,
+          filter_mode: viewMode
         }
-        if (!showHidden && activeChapter?.chapter_number) {
+        if (viewMode === 'narrative' && activeChapter?.chapter_number) {
           params.current_chapter = activeChapter.chapter_number
+        } else if (viewMode === 'world_time') {
+          params.current_world_time = activeChapter?.world_time || null
         }
         result = await window.api.getKnowledgeForCharacter(params)
       } else {
@@ -265,11 +289,16 @@ export default function EntityInspectorPanel({
         const params = {
           project_path: projectPath,
           source_entity_type: entity.type,
-          source_entity_id: entity.id
+          source_entity_id: entity.id,
+          filter_mode: viewMode
         }
-        if (!showHidden && activeChapter?.pov_character_id && activeChapter?.chapter_number) {
-          params.pov_character_id = activeChapter.pov_character_id
-          params.current_chapter = activeChapter.chapter_number
+        if (viewMode !== 'author') {
+          params.filter_character_id = filterCharacterId || null
+          if (viewMode === 'narrative' && activeChapter?.chapter_number) {
+            params.current_chapter = activeChapter.chapter_number
+          } else if (viewMode === 'world_time') {
+            params.current_world_time = activeChapter?.world_time || null
+          }
         }
         result = await window.api.getKnowledgeForEntity(params)
       }
@@ -283,9 +312,10 @@ export default function EntityInspectorPanel({
     entity?.id,
     entity?.type,
     projectPath,
-    showHidden,
-    activeChapter?.pov_character_id,
-    activeChapter?.chapter_number
+    viewMode,
+    filterCharacterId,
+    activeChapter?.chapter_number,
+    activeChapter?.world_time
   ])
 
   useEffect(() => {
@@ -620,18 +650,49 @@ export default function EntityInspectorPanel({
 
   return (
     <div>
-      {/* Epistemic toggle */}
-      <div
-        className="epistemic-toggle"
-        onClick={() => setShowHidden(!showHidden)}
-        style={{ margin: '-16px -16px 16px', width: 'calc(100% + 32px)' }}
-      >
-        {showHidden ? <Icons.Eye /> : <Icons.EyeOff />}
-        <div className="epistemic-toggle-label">
-          {showHidden ? t('inspector.viewAuthor', 'Author View \u2014 All Info') : t('inspector.viewPov', 'POV Filter \u2014 Reader Knowledge')}
-        </div>
-        <div className={`epistemic-toggle-switch ${showHidden ? 'active' : ''}`} />
+      {/* Epistemic view mode selector */}
+      <div className="epistemic-mode-bar" style={{ margin: '-16px -16px 0', width: 'calc(100% + 32px)' }}>
+        <button
+          className={`epistemic-mode-btn ${viewMode === 'author' ? 'active' : ''}`}
+          onClick={() => setViewMode('author')}
+          title={t('inspector.viewAuthorTooltip', 'Show all knowledge — unfiltered')}
+        >
+          <Icons.Eye /> {t('inspector.viewAuthorShort', 'Author')}
+        </button>
+        <button
+          className={`epistemic-mode-btn ${viewMode === 'narrative' ? 'active' : ''}`}
+          onClick={() => setViewMode('narrative')}
+          title={t('inspector.viewNarrativeTooltip', 'Filter by reading order (chapter sequence)')}
+        >
+          <Icons.BookOpen /> {t('inspector.viewNarrativeShort', 'Narrative')}
+        </button>
+        <button
+          className={`epistemic-mode-btn ${viewMode === 'world_time' ? 'active' : ''}`}
+          onClick={() => setViewMode('world_time')}
+          title={t('inspector.viewWorldTimeTooltip', 'Filter by in-universe chronological time')}
+        >
+          <Icons.Clock /> {t('inspector.viewWorldTimeShort', 'World Time')}
+        </button>
       </div>
+      {/* Character filter for non-character entities in filtered modes */}
+      {viewMode !== 'author' && entity.type !== 'character' && (
+        <div className="epistemic-character-filter" style={{ margin: '0 -16px 16px', width: 'calc(100% + 32px)' }}>
+          <select
+            className="epistemic-filter-select"
+            value={filterCharacterId || ''}
+            onChange={(e) => setFilterCharacterId(e.target.value ? parseInt(e.target.value) : null)}
+          >
+            <option value="">{t('inspector.allCharacters', 'All characters')}</option>
+            {characters.map((c) => (
+              <option key={c.id} value={c.id}>{c.name}</option>
+            ))}
+          </select>
+        </div>
+      )}
+      {/* Spacer when no character filter shown */}
+      {(viewMode === 'author' || entity.type === 'character') && (
+        <div style={{ marginBottom: '16px' }} />
+      )}
 
       {/* Entity header + edit toggle */}
       <div className="entity-header">
@@ -718,7 +779,7 @@ export default function EntityInspectorPanel({
                     </div>
                   </div>
                 )}
-                {showHidden && charData.true_goal && (
+                {charData.true_goal && (
                   <div className="entity-agenda-row">
                     <div className="entity-agenda-icon" style={{ color: 'var(--accent-red)' }}>
                       <Icons.EyeOff />
@@ -784,18 +845,16 @@ export default function EntityInspectorPanel({
           </div>
 
           {/* Notes */}
-          {showHidden && (
-            <div className="entity-section">
-              <div className="entity-section-title">
-                <Icons.Feather /> {t('inspector.authorNotesSection', 'Author Notes')}
-              </div>
-              {editMode ? (
-                renderEditField('', 'notes', true)
-              ) : (
-                <div className="entity-narrative-note">{charData.notes || t('inspector.noNotes', 'No notes.')}</div>
-              )}
+          <div className="entity-section">
+            <div className="entity-section-title">
+              <Icons.Feather /> {t('inspector.authorNotesSection', 'Author Notes')}
             </div>
-          )}
+            {editMode ? (
+              renderEditField('', 'notes', true)
+            ) : (
+              <div className="entity-narrative-note">{charData.notes || t('inspector.noNotes', 'No notes.')}</div>
+            )}
+          </div>
         </>
       )}
 
@@ -868,7 +927,7 @@ export default function EntityInspectorPanel({
                       </div>
                     </div>
                   )}
-                  {showHidden && groupData.true_agenda && (
+                  {groupData.true_agenda && (
                     <div className="entity-agenda-row">
                       <div className="entity-agenda-icon" style={{ color: 'var(--accent-red)' }}>
                         <Icons.EyeOff />
@@ -911,7 +970,7 @@ export default function EntityInspectorPanel({
                       <div className="entity-detail-value" style={{ whiteSpace: 'pre-wrap' }}>{loreData.rules}</div>
                     </div>
                   )}
-                  {showHidden && loreData.limitations && (
+                  {loreData.limitations && (
                     <div className="entity-detail-row">
                       <div className="entity-detail-label" style={{ color: 'var(--accent-red)' }}>{t('inspector.limitations', 'Limitations')}</div>
                       <div className="entity-detail-value" style={{ whiteSpace: 'pre-wrap' }}>{loreData.limitations}</div>
@@ -943,20 +1002,18 @@ export default function EntityInspectorPanel({
             )}
           </div>
 
-          {showHidden && (
-            <div className="entity-section">
-              <div className="entity-section-title">
-                <Icons.Feather /> {t('inspector.authorNotesSection', 'Author Notes')}
-              </div>
-              {editMode ? (
-                renderEditField('', 'notes', true)
-              ) : (
-                <div className="entity-narrative-note">
-                  {(locationData || loreData || groupData).notes || t('inspector.noNotes', 'No notes.')}
-                </div>
-              )}
+          <div className="entity-section">
+            <div className="entity-section-title">
+              <Icons.Feather /> {t('inspector.authorNotesSection', 'Author Notes')}
             </div>
-          )}
+            {editMode ? (
+              renderEditField('', 'notes', true)
+            ) : (
+              <div className="entity-narrative-note">
+                {(locationData || loreData || groupData).notes || t('inspector.noNotes', 'No notes.')}
+              </div>
+            )}
+          </div>
         </>
       )}
 
@@ -969,7 +1026,7 @@ export default function EntityInspectorPanel({
           <span>
             <Icons.Brain /> {t('inspector.knowledgeSection', 'Knowledge')}
           </span>
-          {showHidden && (
+          {viewMode === 'author' && (
             <button
               className="entity-edit-toggle"
               onClick={() => setAddingFact(!addingFact)}
@@ -981,14 +1038,14 @@ export default function EntityInspectorPanel({
           )}
         </div>
 
-        {!showHidden && !activeChapter?.pov_character_id && (
+        {viewMode === 'world_time' && !activeChapter?.world_time && (
           <div className="knowledge-no-pov">
-            {t('inspector.noPovKnowledge', 'No POV character set for this chapter. Set a POV to filter knowledge.')}
+            {t('inspector.noWorldTime', 'No world time set for this chapter. Set a world time in the chapter metadata to filter.')}
           </div>
         )}
 
         {/* Add fact form */}
-        {addingFact && showHidden && (
+        {addingFact && viewMode === 'author' && (
           <div className="knowledge-add-form">
             <textarea
               className="entity-edit-textarea"
@@ -1042,9 +1099,14 @@ export default function EntityInspectorPanel({
                 <span className="knowledge-fact-when">
                   {getChapterLabel(fact.learned_in_chapter)}
                 </span>
+                {fact.world_time && (
+                  <span className="knowledge-fact-when" title={t('inspector.worldTimeLabel', 'World time')}>
+                    {fact.world_time}
+                  </span>
+                )}
                 {fact.is_secret && <span className="knowledge-fact-badge secret">{t('inspector.secretBadge', 'SECRET')}</span>}
               </div>
-              {showHidden && (
+              {viewMode === 'author' && (
                 <button
                   className="knowledge-fact-delete"
                   onClick={() => handleDeleteFact(fact.id)}

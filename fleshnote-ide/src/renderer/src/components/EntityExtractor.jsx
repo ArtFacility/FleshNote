@@ -593,6 +593,8 @@ function FocusView({
   )
 }
 
+import EntityExtractorLoading from './EntityExtractorLoading'
+
 // ─── MAIN COMPONENT ─────────────────────────────────────
 
 export default function EntityExtractor({ projectPath, projectConfig, onDone, onBack, chapterTexts }) {
@@ -987,14 +989,13 @@ export default function EntityExtractor({ projectPath, projectConfig, onDone, on
   if (phase === 'analyzing') {
     return (
       <div className="ner-container">
-        <div className="ner-loading">
-          <Icons.Zap />
-          <span className="ner-loading-text">
-            {chapterTexts
+        <EntityExtractorLoading
+          subtitle={
+            chapterTexts
               ? t('extractor.analyzingChapters', { count: chapterTexts.length })
-              : t('extractor.analyzingText')}
-          </span>
-        </div>
+              : t('extractor.analyzingText')
+          }
+        />
       </div>
     )
   }
@@ -1030,10 +1031,7 @@ export default function EntityExtractor({ projectPath, projectConfig, onDone, on
   if (phase === 'creating') {
     return (
       <div className="ner-container">
-        <div className="ner-loading">
-          <Icons.Zap />
-          <span className="ner-loading-text">{t('extractor.creating')}</span>
-        </div>
+        <EntityExtractorLoading subtitle={t('extractor.creating')} />
       </div>
     )
   }

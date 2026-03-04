@@ -80,6 +80,14 @@ const api = {
   updateCalendarConfig: (payload) => ipcRenderer.invoke('api:updateCalendarConfig', payload),
   calculateAge: (payload) => ipcRenderer.invoke('api:calculateAge', payload),
 
+  // ── Planner ──────────────────────────────────────────
+  loadPlanner: (projectPath) => ipcRenderer.invoke('api:loadPlanner', projectPath),
+  updatePlannerSettings: (payload) => ipcRenderer.invoke('api:updatePlannerSettings', payload),
+  savePlannerBlock: (payload) => ipcRenderer.invoke('api:savePlannerBlock', payload),
+  savePlannerArc: (payload) => ipcRenderer.invoke('api:savePlannerArc', payload),
+  deletePlannerBlock: (payload) => ipcRenderer.invoke('api:deletePlannerBlock', payload),
+  deletePlannerArc: (payload) => ipcRenderer.invoke('api:deletePlannerArc', payload),
+
   // ── Import ─────────────────────────────────────────
   openFile: (filters) => ipcRenderer.invoke('dialog:openFile', filters),
   importSplitPreview: (payload) => ipcRenderer.invoke('api:importSplitPreview', payload),

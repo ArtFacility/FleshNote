@@ -1,0 +1,412 @@
+/* ── MIDDLE PANEL (EDITOR) ──────────────────────── */
+.panel-middle {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    min-width: 0;
+}
+
+.editor-toolbar {
+    display: flex;
+    align-items: center;
+    padding: 8px 24px;
+    gap: 16px;
+    border-bottom: 1px solid var(--border-subtle);
+    background: var(--bg-base);
+    flex-shrink: 0;
+}
+
+.editor-toolbar-group {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+}
+
+.editor-toolbar-label {
+    font-family: var(--font-mono);
+    font-size: 9px;
+    text-transform: uppercase;
+    letter-spacing: 1.2px;
+    color: var(--text-tertiary);
+}
+
+.editor-toolbar-value {
+    font-family: var(--font-mono);
+    font-size: 11px;
+    color: var(--text-secondary);
+    background: var(--bg-elevated);
+    padding: 3px 10px;
+    border: 1px solid var(--border-subtle);
+    cursor: default;
+}
+
+.editor-toolbar-value.character {
+    border-inline-start: 2px solid var(--entity-character);
+}
+
+.editor-toolbar-divider {
+    width: 1px;
+    height: 20px;
+    background: var(--border-subtle);
+}
+
+.editor-toolbar-right {
+    margin-inline-start: auto;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.editor-wordcount {
+    font-family: var(--font-mono);
+    font-size: 11px;
+    color: var(--text-tertiary);
+}
+
+.editor-wordcount strong {
+    color: var(--accent-amber);
+}
+
+.focus-btn {
+    display: flex;
+    align-items: center;
+    gap: 5px;
+    font-family: var(--font-mono);
+    font-size: 10px;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    color: var(--text-tertiary);
+    background: none;
+    border: 1px solid var(--border-subtle);
+    padding: 4px 10px;
+    cursor: pointer;
+    transition: all 0.15s;
+}
+
+.focus-btn:hover {
+    color: var(--accent-amber);
+    border-color: var(--accent-amber);
+}
+
+.focus-btn.active {
+    color: var(--accent-amber);
+    border-color: var(--accent-amber);
+    background: var(--accent-amber-dim);
+}
+
+/* ── Formatting Toolbar ──────────────────────────── */
+
+.editor-format-toolbar {
+    display: flex;
+    align-items: center;
+    padding: 4px 24px;
+    gap: 2px;
+    border-bottom: 1px solid var(--border-subtle);
+    background: var(--bg-base);
+    flex-shrink: 0;
+}
+
+.format-btn {
+    width: 28px;
+    height: 28px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: none;
+    border: 1px solid transparent;
+    color: var(--text-tertiary);
+    cursor: pointer;
+    transition: all 0.15s;
+}
+
+.format-btn:hover {
+    color: var(--text-secondary);
+    background: var(--bg-elevated);
+}
+
+.format-btn.active {
+    color: var(--accent-amber);
+    background: var(--accent-amber-dim);
+    border-color: var(--accent-amber);
+}
+
+/* ── Toolbar Select Dropdowns ────────────────────── */
+
+.editor-toolbar-select {
+    font-family: var(--font-mono);
+    font-size: 11px;
+    color: var(--text-secondary);
+    background: var(--bg-elevated);
+    padding: 3px 24px 3px 10px;
+    border: 1px solid var(--border-subtle);
+    cursor: pointer;
+    appearance: none;
+    -webkit-appearance: none;
+    background-image: url("data:image/svg+xml,%3Csvg width='10' height='10' viewBox='0 0 24 24' fill='none' stroke='%236b6860' stroke-width='2' xmlns='http://www.w3.org/2000/svg'%3E%3Cpolyline points='6 9 12 15 18 9'/%3E%3C/svg%3E");
+    background-repeat: no-repeat;
+    background-position: right 6px center;
+    background-size: 10px;
+    transition: border-color 0.15s;
+}
+
+.editor-toolbar-select.character {
+    border-inline-start: 2px solid var(--entity-character);
+}
+
+.editor-toolbar-select:hover {
+    border-color: var(--border-default);
+}
+
+.editor-toolbar-select:focus {
+    outline: none;
+    border-color: var(--accent-amber);
+}
+
+.editor-toolbar-select option {
+    background: var(--bg-elevated);
+    color: var(--text-primary);
+}
+
+.editor-toolbar-input {
+    background: transparent;
+    border: 1px solid transparent;
+    color: var(--text-secondary);
+    font-family: var(--font-mono);
+    font-size: 11px;
+    padding: 2px 6px;
+    outline: none;
+    width: 140px;
+    transition: all 0.15s;
+}
+
+.editor-toolbar-input:hover {
+    border-color: var(--border-subtle);
+}
+
+.editor-toolbar-input:focus {
+    border-color: var(--accent-amber);
+    color: var(--text-primary);
+}
+
+.editor-toolbar-input::placeholder {
+    color: var(--text-tertiary);
+    font-style: italic;
+}
+
+.editor-area {
+    flex: 1;
+    overflow-y: auto;
+    overflow-x: hidden;
+    padding: 40px 64px;
+    background: var(--bg-deep);
+    max-width: 100%;
+}
+
+.editor-chapter-heading {
+    font-family: var(--font-mono);
+    font-size: 11px;
+    text-transform: uppercase;
+    letter-spacing: 2px;
+    color: var(--text-tertiary);
+    margin-bottom: 8px;
+}
+
+.editor-chapter-title {
+    font-family: var(--font-sans);
+    font-size: 28px;
+    font-weight: 600;
+    color: var(--text-primary);
+    margin-bottom: 32px;
+    padding-bottom: 16px;
+    border-bottom: 1px solid var(--border-subtle);
+}
+
+.editor-paragraph {
+    font-family: var(--font-serif);
+    font-size: 18px;
+    line-height: 1.8;
+    color: var(--text-primary);
+    margin-bottom: 20px;
+    text-indent: 0;
+    opacity: 0.92;
+}
+
+.editor-paragraph:first-of-type {
+    text-indent: 0;
+}
+
+/* ── TODO HIGHLIGHT ─────────────────────────────── */
+.todo-highlight {
+    background-color: rgba(217, 64, 64, 0.2);
+    color: var(--accent-amber);
+    padding: 0 4px;
+    border-radius: 4px;
+    font-weight: bold;
+    font-family: var(--font-mono);
+    border: 1px dashed var(--accent-amber);
+}
+
+/* ── SEARCH RESULTS ─────────────────────────────── */
+.search-result {
+    background-color: rgba(217, 160, 64, 0.3);
+    border-radius: 2px;
+}
+
+.search-result-active {
+    background-color: var(--accent-amber);
+    color: var(--text-inverse);
+    border-radius: 2px;
+}
+
+/* ── ENTITY LINKS IN TEXT ───────────────────────── */
+.entity-link {
+    cursor: pointer;
+    transition: all 0.15s;
+    text-decoration: none;
+    border-bottom: 1.5px solid transparent;
+    padding-bottom: 0px;
+    position: relative;
+}
+
+/* Hide entity colors when focus mode is active */
+.editor-area.focus-mode-active .entity-link {
+    color: inherit;
+    border-bottom: none;
+    font-weight: inherit;
+}
+
+
+.entity-link.character {
+    color: var(--entity-character);
+    border-bottom-color: var(--entity-character);
+    border-bottom-style: dotted;
+}
+
+.entity-link.item,
+.entity-link.lore {
+    color: var(--entity-lore);
+    border-bottom-color: var(--entity-lore);
+    border-bottom-style: dotted;
+}
+
+.entity-link.location {
+    color: var(--entity-location);
+    border-bottom-color: var(--entity-location);
+    border-bottom-style: dotted;
+}
+
+.entity-link:hover {
+    opacity: 0.8;
+}
+
+.entity-link.character:hover {
+    border-bottom-style: solid;
+}
+
+.entity-link.item:hover,
+.entity-link.lore:hover {
+    border-bottom-style: solid;
+}
+
+.entity-link.location:hover {
+    border-bottom-style: solid;
+}
+
+/* ── HOVER TOOLTIP ──────────────────────────────── */
+.entity-hover-card {
+    position: fixed;
+    z-index: 1000;
+    background: var(--bg-elevated);
+    border: 1px solid var(--border-default);
+    padding: 12px 14px;
+    max-width: 280px;
+    pointer-events: none;
+    animation: hover-card-in 0.12s ease;
+    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.5);
+}
+
+@keyframes hover-card-in {
+    from {
+        opacity: 0;
+        transform: translateY(4px);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+.hover-card-type {
+    font-family: var(--font-mono);
+    font-size: 9px;
+    text-transform: uppercase;
+    letter-spacing: 1.5px;
+    margin-bottom: 4px;
+}
+
+.hover-card-type.character {
+    color: var(--entity-character);
+}
+
+.hover-card-type.item,
+.hover-card-type.lore {
+    color: var(--entity-lore);
+}
+
+.hover-card-type.location {
+    color: var(--entity-location);
+}
+
+.hover-card-name {
+    font-size: 14px;
+    font-weight: 600;
+    color: var(--text-primary);
+    margin-bottom: 6px;
+}
+
+.hover-card-detail {
+    font-family: var(--font-mono);
+    font-size: 10px;
+    color: var(--text-secondary);
+    line-height: 1.5;
+}
+
+.hover-card-hint {
+    font-family: var(--font-mono);
+    font-size: 9px;
+    color: var(--text-tertiary);
+    margin-top: 6px;
+    padding-top: 6px;
+    border-top: 1px solid var(--border-subtle);
+}
+
+/* ── MOMENTUM PARTICLES ──────────────────────────────── */
+.momentum-particle {
+    position: absolute;
+    font-family: 'Noto Sans Old Hungarian', var(--font-inter);
+    font-size: 24px;
+    opacity: 0;
+    pointer-events: none;
+    z-index: 5;
+    animation: floatUp 2s ease-out forwards;
+    text-shadow: 0 0 12px currentColor;
+    mix-blend-mode: screen;
+}
+
+@keyframes floatUp {
+    0% {
+        opacity: 0;
+        transform: translateY(0) scale(0.5);
+    }
+
+    20% {
+        opacity: 0.8;
+        transform: translateY(-20px) scale(1.2);
+    }
+
+    100% {
+        opacity: 0;
+        transform: translateY(-100px) scale(1.8);
+    }
+}

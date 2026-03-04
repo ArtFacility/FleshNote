@@ -30,18 +30,23 @@ def export_project(request: ExportRequest):
             "trim": request.trim
         }
         
-        filepath = pipeline.run(
+        filepath, todo_count = pipeline.run(
             content_mode=request.content_mode,
             fmt=request.format,
             book_ready=request.book_ready,
             overrides=overrides
         )
         
-        return {
+        response = {
             "status": "success",
             "message": "Export completed successfully.",
             "filepath": filepath
         }
+        
+        if todo_count > 0:
+            response["warnings"] = f"Removed {todo_count} #TODO tag(s) from the exported text."
+            
+        return response
     except Exception as e:
         import traceback
         traceback.print_exc()

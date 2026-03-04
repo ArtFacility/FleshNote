@@ -1,0 +1,406 @@
+/* ── EDITABLE NAME ──────────────────────────── */
+
+.ner-entity-name-editable {
+    cursor: pointer;
+    border-bottom: 1px dashed transparent;
+    transition: border-color 0.15s;
+}
+
+.ner-entity-name-editable:hover {
+    border-bottom-color: var(--accent-amber);
+}
+
+.ner-entity-name-lg {
+    font-size: 24px;
+    font-weight: 700;
+}
+
+.ner-name-input {
+    font-family: var(--font-sans);
+    font-size: 14px;
+    font-weight: 600;
+    background: var(--bg-deep);
+    color: var(--text-primary);
+    border: 1px solid var(--accent-amber);
+    padding: 2px 6px;
+    outline: none;
+    min-width: 120px;
+}
+
+.ner-name-input-lg {
+    font-size: 22px;
+    font-weight: 700;
+    padding: 4px 10px;
+    min-width: 200px;
+}
+
+.ner-name-edited-badge {
+    color: var(--accent-amber);
+    font-weight: 700;
+    margin-inline-start: 4px;
+    font-size: 0.85em;
+    vertical-align: super;
+}
+
+/* ── LORE ADD CATEGORY ─────────────────────── */
+
+.ner-lore-add-btn {
+    color: var(--accent-amber) !important;
+    border-top: 1px solid var(--border-subtle);
+    margin-top: 2px;
+    padding-top: 8px !important;
+}
+
+.ner-lore-add-row {
+    padding: 4px 6px;
+}
+
+.ner-lore-add-input {
+    width: 100%;
+    background: var(--bg-deep);
+    color: var(--text-primary);
+    border: 1px solid var(--accent-amber);
+    font-family: var(--font-mono);
+    font-size: 12px;
+    padding: 4px 8px;
+    outline: none;
+    box-sizing: border-box;
+}
+
+/* ── HEADER ROW + ACTIONS ───────────────────── */
+
+.ner-header-row {
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+    gap: 12px;
+}
+
+.ner-header-actions {
+    display: flex;
+    gap: 6px;
+    flex-shrink: 0;
+    padding-top: 2px;
+}
+
+.ner-view-toggle {
+    background: none;
+    border: 1px solid var(--border-subtle);
+    color: var(--text-tertiary);
+    padding: 5px 8px;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    transition: all 0.15s;
+    position: relative;
+}
+
+.ner-view-toggle:hover {
+    border-color: var(--border-default);
+    color: var(--text-secondary);
+}
+
+.ner-view-toggle.active {
+    border-color: var(--accent-amber);
+    color: var(--accent-amber);
+    background: rgba(212, 160, 82, 0.08);
+}
+
+.ner-sidebar-badge {
+    position: absolute;
+    top: -6px;
+    inset-inline-end: -6px;
+    background: var(--accent-amber);
+    color: var(--bg-deep);
+    font-family: var(--font-mono);
+    font-size: 9px;
+    font-weight: 700;
+    min-width: 16px;
+    height: 16px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 8px;
+    line-height: 1;
+}
+
+/* ── CONTENT ROW (card view + sidebar) ──────── */
+
+.ner-content-row {
+    display: flex;
+    gap: 12px;
+    flex: 1;
+    min-height: 0;
+    overflow: hidden;
+}
+
+.ner-content-row .ner-scroll-area {
+    flex: 1;
+    min-width: 0;
+}
+
+/* ── SIDEBAR ────────────────────────────────── */
+
+.ner-sidebar {
+    width: 220px;
+    flex-shrink: 0;
+    border-inline-start: 1px solid var(--border-subtle);
+    padding-inline-start: 12px;
+    overflow-y: auto;
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+
+.ner-sidebar-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding-bottom: 8px;
+    border-bottom: 1px solid var(--border-subtle);
+}
+
+.ner-sidebar-list {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+}
+
+.ner-sidebar-item {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    font-family: var(--font-sans);
+    font-size: 12px;
+    padding: 3px 0;
+}
+
+.ner-sidebar-item .ner-type-badge {
+    font-size: 9px;
+    padding: 1px 5px;
+    flex-shrink: 0;
+}
+
+.ner-sidebar-name {
+    color: var(--text-secondary);
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    flex: 1;
+    min-width: 0;
+}
+
+.ner-sidebar-alias-count {
+    font-family: var(--font-mono);
+    font-size: 10px;
+    color: var(--text-tertiary);
+    flex-shrink: 0;
+}
+
+.ner-sidebar-empty {
+    font-family: var(--font-mono);
+    font-size: 11px;
+    color: var(--text-tertiary);
+    padding: 16px 0;
+    text-align: center;
+}
+
+/* ── FOCUS VIEW ─────────────────────────────── */
+
+.ner-focus-card {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 20px;
+    padding: 32px 24px;
+    flex: 1;
+    min-height: 0;
+    overflow-y: auto;
+}
+
+.ner-focus-done {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 12px;
+    padding: 48px;
+    color: var(--accent-green);
+    font-family: var(--font-mono);
+    font-size: 14px;
+}
+
+.ner-focus-progress {
+    width: 100%;
+    max-width: 420px;
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+}
+
+.ner-focus-progress-text {
+    font-family: var(--font-mono);
+    font-size: 11px;
+    color: var(--text-tertiary);
+    text-align: center;
+}
+
+.ner-focus-progress-bar {
+    width: 100%;
+    height: 3px;
+    background: var(--bg-elevated);
+    overflow: hidden;
+}
+
+.ner-focus-progress-fill {
+    height: 100%;
+    background: var(--accent-amber);
+    transition: width 0.3s ease;
+}
+
+.ner-focus-name-row {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    flex-wrap: wrap;
+    justify-content: center;
+}
+
+.ner-focus-snippet {
+    font-family: var(--font-serif);
+    font-size: 14px;
+    font-style: italic;
+    color: var(--text-secondary);
+    border-inline-start: 3px solid var(--border-subtle);
+    padding: 8px 16px;
+    max-width: 520px;
+    line-height: 1.6;
+}
+
+.ner-focus-meta {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.ner-focus-meta .ner-freq-bar {
+    width: 80px;
+}
+
+.ner-focus-type-selector {
+    max-width: 420px;
+    width: 100%;
+}
+
+.ner-focus-type-selector .ner-type-btn {
+    padding: 8px 20px;
+    font-size: 13px;
+}
+
+.ner-focus-type-selector .ner-type-row {
+    justify-content: center;
+}
+
+.ner-focus-hotkeys {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 12px;
+    justify-content: center;
+}
+
+.ner-focus-hotkey {
+    font-family: var(--font-mono);
+    font-size: 10px;
+    color: var(--text-tertiary);
+    display: flex;
+    align-items: center;
+    gap: 4px;
+}
+
+.ner-focus-hotkey kbd {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    min-width: 18px;
+    height: 18px;
+    padding: 0 5px;
+    background: var(--bg-elevated);
+    border: 1px solid var(--border-subtle);
+    font-family: var(--font-mono);
+    font-size: 10px;
+    color: var(--text-secondary);
+    line-height: 1;
+}
+
+.ner-focus-nav {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+}
+
+.ner-focus-nav .ner-type-btn {
+    padding: 6px 14px;
+}
+
+.ner-focus-nav .ner-type-btn:disabled {
+    opacity: 0.3;
+    cursor: not-allowed;
+}
+
+/* ── IDE HEADER TOOLBAR ────────────────────────── */
+
+.ide-header-toolbar {
+    height: 36px;
+    display: flex;
+    align-items: center;
+    justify-content: flex-end;
+    padding: 0 16px;
+    gap: 8px;
+    background: var(--bg-deep);
+    flex-shrink: 0;
+}
+
+.ide-header-btn {
+    background: none;
+    border: none;
+    color: var(--text-tertiary);
+    padding: 6px;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 4px;
+    transition: all 0.15s;
+}
+
+.ide-header-btn:hover {
+    color: var(--text-primary);
+    background: var(--bg-surface);
+}
+
+.ide-header-divider {
+    width: 1px;
+    height: 16px;
+    background: var(--border-subtle);
+    margin: 0 4px;
+}
+
+/* ── EMPTY STATE ────────────────────────────── */
+.ner-empty {
+    text-align: center;
+    padding: 40px 24px;
+}
+
+.ner-empty-title {
+    font-family: var(--font-sans);
+    font-size: 14px;
+    color: var(--text-secondary);
+    margin-bottom: 8px;
+}
+
+.ner-empty-hint {
+    font-family: var(--font-mono);
+    font-size: 11px;
+    color: var(--text-tertiary);
+}

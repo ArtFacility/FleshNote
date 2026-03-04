@@ -72,7 +72,7 @@ function AnimatedTitle() {
           display: 'inline-block',
           fontFamily: isLatin
             ? 'var(--font-sans)'
-            : '"Segoe UI Historic", "Noto Serif", serif',
+            : 'var(--font-runes)',
           color: isLatin ? 'var(--text-primary)' : 'var(--accent-amber)',
           opacity: isExit ? 0 : 1,
           transform: isExit ? 'scaleY(0.4) translateY(-6px)' : 'scaleY(1) translateY(0px)',

@@ -5,6 +5,7 @@ import sqlite3
 _FLESHNOTE_MARKER_PATTERN = re.compile(r'\{\{(char|loc|item|lore|group|quicknote|secret):(\d+)\|([^}]+)\}\}')
 _EPISTEMIC_PATTERN = re.compile(r'\{(secret|knows|believes):([^}]+)\}')
 _HTML_TAG_PATTERN = re.compile(r'<[^>]+>')
+_TODO_PATTERN = re.compile(r'#TODO.*?(?=\u200B|</p>|<br>|<br/>|\n|$)', re.IGNORECASE)
 
 def _resolve_entity_name(db_conn, entity_id: str, short_type: str) -> str:
     cursor = db_conn.cursor()
@@ -54,6 +55,12 @@ def strip_html(text: str) -> str:
     # Convert <p> and <br> to newlines before stripping to preserve paragraph breaks
     text = text.replace('</p>', '\n').replace('<br>', '\n').replace('<br/>', '\n')
     return _HTML_TAG_PATTERN.sub('', text)
+
+def strip_todo(text: str) -> tuple[str, int]:
+    """Removes #TODO and following text until end of paragraph/line."""
+    todos_found = len(_TODO_PATTERN.findall(text))
+    text = _TODO_PATTERN.sub('', text)
+    return text, todos_found
 
 def strip_prose(text: str, db_conn, remove_html: bool = True) -> str:
     """Prose Only mode: removing all markers, converting links to plain text."""
