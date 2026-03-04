@@ -125,7 +125,7 @@ Matches: `<span[data-entity-type]>`
 
 Outputs: `<span class="entity-link {type}" data-entity-type="..." data-entity-id="...">content</span>`
 
-### CSS Styling (in `index.css`)
+### CSS Styling (in `src/renderer/src/styles/editor.css`)
 
 ```css
 .entity-link.character {
@@ -146,6 +146,23 @@ Outputs: `<span class="entity-link {type}" data-entity-type="..." data-entity-id
 ---
 
 ## Creating Entity Links
+
+### `@` Mention Popup
+
+**Component:** `src/renderer/src/components/MentionList.jsx` and `src/renderer/src/extensions/mentionSuggestion.js`
+
+**Trigger:** Typing `@` followed by an entity name in the editor.
+
+**Flow:**
+
+```
+User types "@"
+  -> Tiptap Mention extension captures trigger
+  -> getSuggestionConfig filters the active global `entities` context
+  -> MentionList popup renders matching entities based on name or aliases
+  -> User navigates with Arrow keys and hits Enter/click
+  -> editor.chain().focus().insertContent().setEntityLink().run() replaces the typed text with a pristine EntityLinkMark
+```
 
 ### Right-Click Context Menu
 

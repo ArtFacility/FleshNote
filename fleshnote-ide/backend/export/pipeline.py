@@ -4,7 +4,7 @@ import datetime
 import re
 
 from export.typography import apply_typography
-from export.strip import strip_prose, strip_notes, strip_full
+from export.strip import strip_prose, strip_notes, strip_full, strip_todo
 import export.render_txt as render_txt
 import export.render_md as render_md
 import export.render_html as render_html
@@ -81,6 +81,8 @@ class ExportPipeline:
         conn = sqlite3.connect(self.db_path)
         
         text = apply_typography(preview_chapter['text'])
+        text, _ = strip_todo(text) # Strip TODOs for preview too
+        
         if content_mode == 'prose':
             text = strip_prose(text, conn, remove_html=False) # Keep tags for HTML preview
             footnotes = []
@@ -101,11 +103,15 @@ class ExportPipeline:
         chapters = self.get_chapters_ordered()
         conn = sqlite3.connect(self.db_path)
         
-        # --- STAGE 1: STRIP & TYPOGRAPHY ---
+        # --- STAGE 2: RENDER ---
+        rendered_output = ""
+        todo_count = 0
         remove_html = fmt in ('txt', 'md', 'docx')
         
         for ch in chapters:
             text = apply_typography(ch['text'])
+            text, t_count = strip_todo(text)
+            todo_count += t_count
             
             if content_mode == 'prose':
                 text = strip_prose(text, conn, remove_html=remove_html)
@@ -120,9 +126,7 @@ class ExportPipeline:
             
         conn.close()
         
-        # --- STAGE 2: RENDER ---
-        rendered_output = ""
-        
+        # --- STAGE 3: RENDER ---
         if fmt == 'txt':
             rendered_output = render_txt.render(chapters, content_mode)
         elif fmt == 'md':
@@ -150,4 +154,4 @@ class ExportPipeline:
         with open(filepath, mode, encoding=encoding) as f:
             f.write(rendered_output)
             
-        return filepath
+        return filepath, todo_count

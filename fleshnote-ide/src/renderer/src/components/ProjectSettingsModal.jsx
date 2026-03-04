@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react'
 import { useTranslation } from 'react-i18next'
 
-export default function ProjectSettingsModal({ isOpen, onClose, projectPath }) {
+export default function ProjectSettingsModal({ isOpen, onClose, projectPath, onConfigUpdate }) {
     const { t } = useTranslation()
     const [activeTab, setActiveTab] = useState('general')
     const [config, setConfig] = useState(null)
@@ -72,6 +72,8 @@ export default function ProjectSettingsModal({ isOpen, onClose, projectPath }) {
         setConfig(prev => ({ ...prev, [key]: value }))
         try {
             await window.api?.updateProjectConfig?.(projectPath, key, value, type)
+            // Notify parent about the update
+            onConfigUpdate?.({ ...config, [key]: value })
         } catch (err) {
             console.error("Failed to update project config", err)
         }
@@ -136,6 +138,12 @@ export default function ProjectSettingsModal({ isOpen, onClose, projectPath }) {
                             onClick={() => setActiveTab('nlp')}
                         >
                             {t('settings.tabNlp', 'NLP & Analysis')}
+                        </button>
+                        <button
+                            className={activeTab === 'accessibility' ? 'active' : ''}
+                            onClick={() => setActiveTab('accessibility')}
+                        >
+                            {t('settings.tabAccessibility', 'Accessibility')}
                         </button>
                     </div>
 
@@ -399,6 +407,28 @@ export default function ProjectSettingsModal({ isOpen, onClose, projectPath }) {
                                     </label>
                                 </div>
 
+                            </div>
+                        )}
+
+                        {activeTab === 'accessibility' && (
+                            <div className="settings-section">
+                                <h3>{t('settings.accessibilityFeatures', 'Accessibility & Visuals')}</h3>
+
+                                <div className="settings-card">
+                                    <h4>{t('settings.uiVisuals', 'UI & Typography')}</h4>
+                                    <p className="settings-desc mb-4">{t('settings.dyslexiaModeDesc', 'Override all fonts with OpenDyslexic to improve readability for some users.')}</p>
+
+                                    <label className="checkbox-label">
+                                        <input
+                                            type="checkbox"
+                                            checked={config.dyslexia_mode || false}
+                                            onChange={() => handleToggle('dyslexia_mode')}
+                                        />
+                                        <div>
+                                            <strong>{t('settings.dyslexiaMode', 'OpenDyslexic Font Mode')}</strong>
+                                        </div>
+                                    </label>
+                                </div>
                             </div>
                         )}
                     </div>

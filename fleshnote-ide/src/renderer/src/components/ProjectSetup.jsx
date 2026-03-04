@@ -528,7 +528,11 @@ export default function ProjectSetup({ projectPath, projectConfig, onComplete, o
           )}
 
           {step === 2 && showExtractor && (
-            <EntityExtractor projectPath={projectPath} onDone={() => setShowExtractor(false)} />
+            <EntityExtractor
+              projectPath={projectPath}
+              projectConfig={projectConfig}
+              onDone={() => setShowExtractor(false)}
+            />
           )}
 
           {/* Step 3: Story Scope */}
@@ -704,37 +708,18 @@ export default function ProjectSetup({ projectPath, projectConfig, onComplete, o
             </>
           )}
 
-          {/* Step 2: Worldbuilding (optional) */}
-          {step === 2 && !showExtractor && (
-            <>
-              <h2 className="setup-title">{t('setup.wbTitle', 'Worldbuilding Data')}</h2>
-              <p className="setup-subtitle">
-                {t('setup.wbSubtitle', 'Want to import character, location, or item data from reference documents?')}
-              </p>
-
-              <div style={{ display: 'flex', gap: 16, marginTop: 24, marginBottom: 24 }}>
-                <button className="setup-mode-btn" onClick={() => setStep(3)}>
-                  <Icons.User />
-                  <div className="setup-mode-label">{t('setup.skipForNow', 'Skip for now')}</div>
-                  <div className="setup-mode-desc">{t('setup.skipWbDesc', 'I\'ll add worldbuilding data as I write')}</div>
-                </button>
-                <button className="setup-mode-btn" onClick={() => setShowExtractor(true)}>
-                  <Icons.Target />
-                  <div className="setup-mode-label">{t('setup.openExtractor', 'Open Extractor')}</div>
-                  <div className="setup-mode-desc">{t('setup.openExtractorDesc', 'Dual-pane data extractor with NLP detection')}</div>
-                </button>
-              </div>
-            </>
-          )}
-
-          {/* Step 2b: Entity Extractor (full-screen overlay) */}
-          {step === 2 && showExtractor && (
+          {/* Step 2: Entity Detection */}
+          {step === 2 && (
             <EntityExtractor
               projectPath={projectPath}
-              onDone={() => {
-                setShowExtractor(false)
-                setStep(3)
-              }}
+              projectConfig={projectConfig}
+              chapterTexts={splits.map((s, i) => ({
+                index: i,
+                title: s.title,
+                content: s.content
+              }))}
+              onDone={() => setStep(3)}
+              onBack={() => setStep(1)}
             />
           )}
 
@@ -805,44 +790,40 @@ export default function ProjectSetup({ projectPath, projectConfig, onComplete, o
             </>
           )}
 
-          {/* Navigation */}
-          <div style={{ display: 'flex', gap: 12, marginTop: 32 }}>
-            <button
-              className="setup-btn secondary"
-              onClick={() => {
-                if (step > 1) setStep(step - 1)
-                else setMode(null)
-              }}
-            >
-              {step > 1 ? t('setup.back', 'Back') : t('setup.cancel', 'Cancel')}
-            </button>
-
-            {step === 1 && splits.length > 0 && (
+          {/* Navigation (hidden on step 2 since EntityExtractor has its own) */}
+          {step !== 2 && (
+            <div style={{ display: 'flex', gap: 12, marginTop: 32 }}>
               <button
-                className="setup-btn primary"
-                onClick={handleConfirmSplits}
-                disabled={loading}
+                className="setup-btn secondary"
+                onClick={() => {
+                  if (step > 1) setStep(step - 1)
+                  else setMode(null)
+                }}
               >
-                {loading ? t('setup.importing', 'Importing...') : t('setup.confirmChapters', 'Confirm {{count}} Chapters', { count: splits.length })}
+                {step > 1 ? t('setup.back', 'Back') : t('setup.cancel', 'Cancel')}
               </button>
-            )}
 
-            {step === 2 && (
-              <button className="setup-btn primary" onClick={() => setStep(3)}>
-                {t('setup.continue', 'Continue')}
-              </button>
-            )}
+              {step === 1 && splits.length > 0 && (
+                <button
+                  className="setup-btn primary"
+                  onClick={handleConfirmSplits}
+                  disabled={loading}
+                >
+                  {loading ? t('setup.importing', 'Importing...') : t('setup.confirmChapters', 'Confirm {{count}} Chapters', { count: splits.length })}
+                </button>
+              )}
 
-            {step === 3 && (
-              <button
-                className="setup-btn primary"
-                onClick={handleImportCharacterComplete}
-                disabled={loading}
-              >
-                {loading ? t('setup.settingUp', 'Setting up...') : t('setup.startWriting', 'Start Writing')}
-              </button>
-            )}
-          </div>
+              {step === 3 && (
+                <button
+                  className="setup-btn primary"
+                  onClick={handleImportCharacterComplete}
+                  disabled={loading}
+                >
+                  {loading ? t('setup.settingUp', 'Setting up...') : t('setup.startWriting', 'Start Writing')}
+                </button>
+              )}
+            </div>
+          )}
         </div>
       </div>
     )

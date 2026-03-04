@@ -1,0 +1,117 @@
+/* ── CONTEXT MENU ───────────────────────────────── */
+.context-menu {
+    position: fixed;
+    z-index: 2000;
+    background: var(--bg-elevated);
+    border: 1px solid var(--border-default);
+    min-width: 220px;
+    padding: 4px 0;
+    animation: ctx-in 0.1s ease;
+    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.5);
+}
+
+@keyframes ctx-in {
+    from {
+        opacity: 0;
+        transform: scale(0.95);
+    }
+
+    to {
+        opacity: 1;
+        transform: scale(1);
+    }
+}
+
+.context-menu-item {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 8px 14px;
+    font-size: 12px;
+    color: var(--text-secondary);
+    cursor: pointer;
+    transition: all 0.1s;
+    border: none;
+    background: none;
+    width: 100%;
+    text-align: start;
+}
+
+.context-menu-item:hover {
+    background: var(--bg-hover);
+    color: var(--text-primary);
+}
+
+.context-menu-item .icon {
+    color: var(--text-tertiary);
+}
+
+.context-menu-item .shortcut {
+    margin-inline-start: auto;
+    font-family: var(--font-mono);
+    font-size: 10px;
+    color: var(--text-tertiary);
+}
+
+.context-menu-divider {
+    height: 1px;
+    background: var(--border-subtle);
+    margin: 4px 0;
+}
+
+.context-menu-header {
+    padding: 4px 14px 6px;
+    font-family: var(--font-mono);
+    font-size: 9px;
+    text-transform: uppercase;
+    letter-spacing: 1.5px;
+    color: var(--text-tertiary);
+}
+
+/* ── Context Menu: Submenus ────────────────────── */
+
+.context-menu-item.has-submenu {
+    position: relative;
+}
+
+.context-menu-item .chevron {
+    margin-inline-start: auto;
+    color: var(--text-tertiary);
+    display: flex;
+    align-items: center;
+}
+
+.context-menu-item.has-submenu.active {
+    background: var(--bg-hover);
+    color: var(--text-primary);
+}
+
+.context-menu-submenu {
+    position: absolute;
+    left: calc(100% - 2px);
+    top: -4px;
+    background: var(--bg-elevated);
+    border: 1px solid var(--border-default);
+    min-width: 240px;
+    padding: 4px 0;
+    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.5);
+    z-index: 2001;
+    animation: ctx-in 0.08s ease;
+}
+
+.context-menu-submenu.submenu-left {
+    left: auto;
+    right: calc(100% - 2px);
+}
+
+.context-menu-item.danger {
+    color: var(--accent-red);
+}
+
+.context-menu-item.danger .icon {
+    color: var(--accent-red);
+}
+
+.context-menu-item.danger:hover {
+    background: var(--accent-red-dim);
+}

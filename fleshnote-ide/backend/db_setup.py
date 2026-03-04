@@ -446,6 +446,8 @@ def generate_project_db(project_path: str, answers: dict) -> str:
                                          -- ('character', 'lore', 'location', 'group')
             source_entity_id    INTEGER, -- FK to the relevant entity
             learned_in_chapter  INTEGER, -- NULL = character knows from the start
+            world_time          TEXT,    -- In-universe time when character learned this
+                                         -- Used for world-time filtering in non-linear stories
             is_secret           INTEGER DEFAULT 0,
                                          -- 1 = author-only info the character CAN'T know
             reveal_in_chapter   INTEGER, -- Planned chapter for the reveal (author planning)
@@ -519,7 +521,90 @@ def generate_project_db(project_path: str, answers: dict) -> str:
     """)
 
     # ══════════════════════════════════════════════════════════
-    # TABLE 11: CALENDAR CONFIG
+    # TABLE 11: PLANNER SETTINGS (Singleton)
+    # Global planner states: cursor progress, visibility, and 
+    # theme description.
+    # ══════════════════════════════════════════════════════════
+
+    cursor.execute("""
+        CREATE TABLE IF NOT EXISTS planner_settings (
+            id              INTEGER PRIMARY KEY CHECK(id = 1),
+            theme           TEXT DEFAULT '' CHECK(length(theme) <= 120),
+            cursor_pct      REAL DEFAULT 0 CHECK(cursor_pct >= 0 AND cursor_pct <= 100),
+            writing_started INTEGER DEFAULT 0,
+            shadow_visible  INTEGER DEFAULT 0,
+            updated_at      TEXT DEFAULT (datetime('now'))
+        )
+    """)
+    # Seed the singleton on DB creation
+    cursor.execute("INSERT OR IGNORE INTO planner_settings (id) VALUES (1)")
+
+    # ══════════════════════════════════════════════════════════
+    # TABLE 12: PLANNER BLOCKS
+    # Plot milestones and story beats in the planner.
+    # ══════════════════════════════════════════════════════════
+
+    cursor.execute("""
+        CREATE TABLE IF NOT EXISTS planner_blocks (
+            id                   TEXT PRIMARY KEY,
+            layer                TEXT NOT NULL DEFAULT 'surface'
+                                     CHECK(layer IN ('surface', 'shadow')),
+            block_type           TEXT NOT NULL,
+            label                TEXT DEFAULT '' CHECK(length(label) <= 50),
+            pct                  REAL NOT NULL CHECK(pct >= 0 AND pct <= 100),
+            lane                 INTEGER DEFAULT 0 CHECK(lane IN (0, 1, 2)),
+            chapter_id           INTEGER REFERENCES chapters(id) ON DELETE SET NULL,
+            chapter_status       TEXT CHECK(chapter_status IN
+                                     (NULL, 'planned', 'writing', 'draft', 'revised', 'final')),
+            added_during_writing INTEGER DEFAULT 0,
+            sort_order           INTEGER DEFAULT 0,
+            created_at           TEXT DEFAULT (datetime('now')),
+            updated_at           TEXT DEFAULT (datetime('now'))
+        )
+    """)
+
+    # ══════════════════════════════════════════════════════════
+    # TABLE 13: PLANNER ARCS
+    # Character arcs (surface) or hidden forces (shadow).
+    # ══════════════════════════════════════════════════════════
+
+    cursor.execute("""
+        CREATE TABLE IF NOT EXISTS planner_arcs (
+            id          TEXT PRIMARY KEY,
+            layer       TEXT NOT NULL DEFAULT 'surface'
+                            CHECK(layer IN ('surface', 'shadow')),
+            name        TEXT DEFAULT '' CHECK(length(name) <= 24),
+            description TEXT DEFAULT '' CHECK(length(description) <= 80),
+            color       TEXT NOT NULL DEFAULT '#d97706',
+            start_pct   REAL NOT NULL DEFAULT 0
+                            CHECK(start_pct >= 0 AND start_pct <= 100),
+            end_pct     REAL NOT NULL DEFAULT 100
+                            CHECK(end_pct >= 0 AND end_pct <= 100),
+            sort_order  INTEGER DEFAULT 0,
+            created_at  TEXT DEFAULT (datetime('now')),
+            updated_at  TEXT DEFAULT (datetime('now')),
+            CHECK(start_pct < end_pct)
+        )
+    """)
+
+    # ══════════════════════════════════════════════════════════
+    # TRIGGER: UPDATE_BLOCK_CHAPTER_STATUS
+    # Sync planner blocks when chapter status changes natively
+    # ══════════════════════════════════════════════════════════
+    
+    cursor.execute("""
+        CREATE TRIGGER IF NOT EXISTS update_block_chapter_status
+        AFTER UPDATE OF status ON chapters
+        BEGIN
+            UPDATE planner_blocks
+            SET chapter_status = NEW.status,
+                updated_at = datetime('now')
+            WHERE chapter_id = NEW.id;
+        END;
+    """)
+
+    # ══════════════════════════════════════════════════════════
+    # TABLE 14: CALENDAR CONFIG
     # Custom calendar system for worldbuilding. Stores the
     # full calendar definition as key/value pairs (same pattern
     # as project_config). Writers can define custom months,
@@ -612,6 +697,11 @@ def generate_project_db(project_path: str, answers: dict) -> str:
         # Secrets by reveal chapter
         "CREATE INDEX IF NOT EXISTS idx_secret_reveal ON secrets(reveal_chapter_id);",
         "CREATE INDEX IF NOT EXISTS idx_secret_status ON secrets(status);",
+
+        # Planner indexes
+        "CREATE INDEX IF NOT EXISTS idx_blocks_layer ON planner_blocks(layer);",
+        "CREATE INDEX IF NOT EXISTS idx_blocks_chapter ON planner_blocks(chapter_id);",
+        "CREATE INDEX IF NOT EXISTS idx_arcs_layer ON planner_arcs(layer);",
     ]
 
     for idx in indexes:
@@ -688,7 +778,79 @@ def apply_migrations(db_path: str):
         columns = [col[1] for col in cursor.fetchall()]
         if "updated_at" not in columns:
             cursor.execute("ALTER TABLE groups ADD COLUMN updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP")
-            
+
+        # Check knowledge_states table for world_time
+        cursor.execute("PRAGMA table_info(knowledge_states)")
+        columns = [col[1] for col in cursor.fetchall()]
+        if "world_time" not in columns:
+            cursor.execute("ALTER TABLE knowledge_states ADD COLUMN world_time TEXT")
+
+        # Planner Migrations (Add safely into existing DBs)
+        cursor.execute("""
+        CREATE TABLE IF NOT EXISTS planner_settings (
+            id              INTEGER PRIMARY KEY CHECK(id = 1),
+            theme           TEXT DEFAULT '' CHECK(length(theme) <= 120),
+            cursor_pct      REAL DEFAULT 0 CHECK(cursor_pct >= 0 AND cursor_pct <= 100),
+            writing_started INTEGER DEFAULT 0,
+            shadow_visible  INTEGER DEFAULT 0,
+            updated_at      TEXT DEFAULT (datetime('now'))
+        )
+        """)
+        cursor.execute("INSERT OR IGNORE INTO planner_settings (id) VALUES (1)")
+
+        cursor.execute("""
+        CREATE TABLE IF NOT EXISTS planner_blocks (
+            id                   TEXT PRIMARY KEY,
+            layer                TEXT NOT NULL DEFAULT 'surface'
+                                     CHECK(layer IN ('surface', 'shadow')),
+            block_type           TEXT NOT NULL,
+            label                TEXT DEFAULT '' CHECK(length(label) <= 50),
+            pct                  REAL NOT NULL CHECK(pct >= 0 AND pct <= 100),
+            lane                 INTEGER DEFAULT 0 CHECK(lane IN (0, 1, 2)),
+            chapter_id           INTEGER REFERENCES chapters(id) ON DELETE SET NULL,
+            chapter_status       TEXT CHECK(chapter_status IN
+                                     (NULL, 'planned', 'writing', 'draft', 'revised', 'final')),
+            added_during_writing INTEGER DEFAULT 0,
+            sort_order           INTEGER DEFAULT 0,
+            created_at           TEXT DEFAULT (datetime('now')),
+            updated_at           TEXT DEFAULT (datetime('now'))
+        )
+        """)
+
+        cursor.execute("""
+        CREATE TABLE IF NOT EXISTS planner_arcs (
+            id          TEXT PRIMARY KEY,
+            layer       TEXT NOT NULL DEFAULT 'surface'
+                            CHECK(layer IN ('surface', 'shadow')),
+            name        TEXT DEFAULT '' CHECK(length(name) <= 24),
+            description TEXT DEFAULT '' CHECK(length(description) <= 80),
+            color       TEXT NOT NULL DEFAULT '#d97706',
+            start_pct   REAL NOT NULL DEFAULT 0
+                            CHECK(start_pct >= 0 AND start_pct <= 100),
+            end_pct     REAL NOT NULL DEFAULT 100
+                            CHECK(end_pct >= 0 AND end_pct <= 100),
+            sort_order  INTEGER DEFAULT 0,
+            created_at  TEXT DEFAULT (datetime('now')),
+            updated_at  TEXT DEFAULT (datetime('now')),
+            CHECK(start_pct < end_pct)
+        )
+        """)
+
+        cursor.execute("CREATE INDEX IF NOT EXISTS idx_blocks_layer ON planner_blocks(layer);")
+        cursor.execute("CREATE INDEX IF NOT EXISTS idx_blocks_chapter ON planner_blocks(chapter_id);")
+        cursor.execute("CREATE INDEX IF NOT EXISTS idx_arcs_layer ON planner_arcs(layer);")
+
+        cursor.execute("""
+            CREATE TRIGGER IF NOT EXISTS update_block_chapter_status
+            AFTER UPDATE OF status ON chapters
+            BEGIN
+                UPDATE planner_blocks
+                SET chapter_status = NEW.status,
+                    updated_at = datetime('now')
+                WHERE chapter_id = NEW.id;
+            END;
+        """)
+
         conn.commit()
     except Exception as e:
         print(f"Warning: Migration failed: {e}")
@@ -789,7 +951,7 @@ def get_knowledge_for_pov(db_path: str, character_id: int, current_chapter: int)
     cursor.execute(
         """
         SELECT id, fact, source_entity_type, source_entity_id,
-               learned_in_chapter, is_secret, notes
+               learned_in_chapter, is_secret, notes, world_time
         FROM knowledge_states
         WHERE character_id = ?
           AND is_secret = 0
@@ -810,6 +972,7 @@ def get_knowledge_for_pov(db_path: str, character_id: int, current_chapter: int)
             "learned_in_chapter": r[4],
             "is_secret": bool(r[5]),
             "notes": r[6],
+            "world_time": r[7],
         }
         for r in rows
     ]

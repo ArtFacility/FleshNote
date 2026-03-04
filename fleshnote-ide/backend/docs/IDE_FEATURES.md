@@ -118,6 +118,9 @@ Because of this, changing the document reading direction physically mirrors ever
 - **Underline** extension
 - **CharacterCount** extension
 - **EntityLinkMark** custom mark extension
+- **Mention** extension for `@` inline entity linking
+- **TodoHighlighter** for inline `[TODO: ]` tracking
+- **SearchAndReplace** for `CTRL+F` inline search
 - **Placeholder**: "Begin writing..."
 - Content format: HTML with entity-link spans
 
@@ -168,6 +171,10 @@ Text marked as entity links renders with type-specific styling:
 - **Characters**: Amber dotted underline
 - **Locations**: Green dotted underline
 - **Items/Lore**: Blue dotted underline
+
+### `@` Mention Popup
+
+Typing `@` followed by any existing entity name or alias pulls up a floating `MentionList` to instantly auto-complete and convert the typed phrase into a permanent inline EntityLinkMark.
 
 ### Right-Click Context Menu
 
@@ -276,8 +283,10 @@ Status can be set to any value at any time via the dropdown.
 | Ctrl+B                       | Toggle bold              |
 | Ctrl+I                       | Toggle italic            |
 | Ctrl+U                       | Toggle underline         |
+| Ctrl+F                       | Toggle Search Overlay    |
+| Alt+T                        | Insert `[TODO: ]` tag    |
 | Right-click (with selection) | Open entity context menu |
-| Escape                       | Close context menu       |
+| Escape                       | Close context/search menu|
 
 ---
 

@@ -25,6 +25,7 @@ export default function MakeConnectionPopup({
   const [learnedInChapter, setLearnedInChapter] = useState(activeChapter?.chapter_number || '')
   const [isSecret, setIsSecret] = useState(false)
   const [revealChapter, setRevealChapter] = useState('')
+  const [worldTime, setWorldTime] = useState('')
   const [saving, setSaving] = useState(false)
   const [showEntitySearch, setShowEntitySearch] = useState(false)
   const factRef = useRef(null)
@@ -33,6 +34,16 @@ export default function MakeConnectionPopup({
   useEffect(() => {
     setTimeout(() => factRef.current?.focus(), 50)
   }, [])
+
+  // Auto-populate world_time from selected chapter
+  useEffect(() => {
+    if (learnedInChapter) {
+      const ch = chapters.find(c => c.chapter_number === parseInt(learnedInChapter))
+      setWorldTime(ch?.world_time || '')
+    } else {
+      setWorldTime('')
+    }
+  }, [learnedInChapter, chapters])
 
   // Default to POV character if set
   useEffect(() => {
@@ -74,7 +85,9 @@ export default function MakeConnectionPopup({
         source_entity_type: selectedEntity?.type || null,
         source_entity_id: selectedEntity?.id || null,
         learned_in_chapter: learnedInChapter ? parseInt(learnedInChapter) : null,
-        is_secret: isSecret ? 1 : 0
+        world_time: worldTime || null,
+        is_secret: isSecret ? 1 : 0,
+        reveal_in_chapter: revealChapter ? parseInt(revealChapter) : null
       })
       onClose()
     } catch (err) {
@@ -219,6 +232,21 @@ export default function MakeConnectionPopup({
               ))}
             </select>
           </div>
+        </div>
+
+        {/* World time (auto-populated from chapter) */}
+        <div className="popup-field">
+          <label className="popup-label">
+            {t('popup.worldTime', 'World time')}
+            <span className="popup-optional">{t('popup.optional', '(optional)')}</span>
+          </label>
+          <input
+            className="popup-search-input"
+            type="text"
+            value={worldTime}
+            onChange={(e) => setWorldTime(e.target.value)}
+            placeholder={t('popup.worldTimePlaceholder', 'In-universe time (auto-filled from chapter)')}
+          />
         </div>
 
         {/* Secret toggle */}

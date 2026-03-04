@@ -2,6 +2,7 @@ import { useState, useCallback, useEffect } from 'react'
 import { useTranslation } from 'react-i18next'
 import Editor from './Editor'
 import EntityInspectorPanel from './EntityInspectorPanel'
+import FleshNotePlannerDesktop from './FleshNotePlannerDesktop'
 import ProjectSettingsModal from './ProjectSettingsModal'
 import ExportModal from './ExportModal'
 import changelogData from '../changelog.json'
@@ -141,9 +142,10 @@ const Icons = {
 
 // ─── MAIN IDE SHELL ─────────────────────────────────────────────────────────
 
-export default function FleshNoteIDE({ projectConfig, projectPath, onCloseProject }) {
+export default function FleshNoteIDE({ projectConfig, projectPath, onCloseProject, onConfigUpdate }) {
   const { t } = useTranslation()
-  const [focusMode, setFocusMode] = useState(false)
+  const [isPlannerOpen, setIsPlannerOpen] = useState(false)
+  const [focusMode, setFocusMode] = useState(null)
   const [chapters, setChapters] = useState([])
   const [activeChapter, setActiveChapter] = useState(null)
   const [chapterContent, setChapterContent] = useState(null)
@@ -162,7 +164,7 @@ export default function FleshNoteIDE({ projectConfig, projectPath, onCloseProjec
   const [showSettings, setShowSettings] = useState(false)
   const [showExportModal, setShowExportModal] = useState(false)
 
-  const toggleFocus = useCallback(() => setFocusMode((prev) => !prev), [])
+  const toggleFocus = useCallback((mode) => setFocusMode(mode), [])
 
   const projectName = projectConfig?.project_name || t('ide.untitledProject', 'Untitled Project')
 
@@ -397,7 +399,22 @@ export default function FleshNoteIDE({ projectConfig, projectPath, onCloseProjec
       {/* ── PROGRESS BAR ───────────────────────────── */}
       {chapters.length > 0 && (
         <div className="progress-bar-container">
-          <div className="progress-label">{t('ide.manuscript', 'Manuscript')}</div>
+          <button
+            className="progress-label"
+            onClick={() => setIsPlannerOpen(!isPlannerOpen)}
+            style={{
+              background: 'transparent',
+              border: '1px solid var(--border-subtle)',
+              padding: '4px 10px',
+              cursor: 'pointer',
+              color: 'var(--text-secondary)',
+              fontFamily: 'var(--font-mono)',
+              textTransform: 'uppercase',
+              letterSpacing: '1px'
+            }}
+          >
+            {isPlannerOpen ? t('ide.backToWriting', 'Back to writing') : t('ide.manuscript', 'Manuscript')}
+          </button>
           <div className="progress-track">
             {chapters.map((ch) => {
               const pct =
@@ -433,293 +450,303 @@ export default function FleshNoteIDE({ projectConfig, projectPath, onCloseProjec
 
       {/* ── MAIN BODY ──────────────────────────────── */}
       <div className="ide-body">
-        {/* ── LEFT PANEL ──────────────────────────── */}
-        <div className={`panel-left ${focusMode ? 'collapsed' : ''}`}>
-          <div className="panel-header">
-            <div className="panel-header-title">
-              {leftPanelMode === 'chapters' ? (
-                <>
-                  <Icons.BookOpen /> {t('ide.chaptersTitle', 'Chapters')}
-                </>
-              ) : (
-                <>
-                  <Icons.Layers /> {t('ide.entityInspectorTitle', 'Entity Inspector')}
-                </>
-              )}
-            </div>
-            {leftPanelMode === 'chapters' ? (
-              <button
-                className="ide-titlebar-btn"
-                onClick={handleCreateChapter}
-                title={t('ide.newChapterBtn', 'New Chapter')}
-                style={{ color: 'var(--accent-amber)' }}
-              >
-                <Icons.Plus />
-              </button>
-            ) : (
-              <button
-                className="ide-titlebar-btn"
-                onClick={handleBackToChapters}
-                title={t('ide.backToChaptersBtn', 'Back to chapters')}
-              >
-                <Icons.X />
-              </button>
-            )}
-          </div>
-          <div className="panel-content">
-            {leftPanelMode === 'chapters' && (
-              <>
-                {loading ? (
-                  <div
-                    style={{
-                      display: 'flex',
-                      alignItems: 'center',
-                      justifyContent: 'center',
-                      height: '100%',
-                      color: 'var(--text-tertiary)',
-                      fontFamily: 'var(--font-mono)',
-                      fontSize: '11px'
-                    }}
+        {isPlannerOpen ? (
+          <FleshNotePlannerDesktop
+            projectPath={projectPath}
+            chapters={chapters}
+            activeChapter={activeChapter}
+          />
+        ) : (
+          <>
+            {/* ── LEFT PANEL ──────────────────────────── */}
+            <div className={`panel-left ${focusMode ? 'collapsed' : ''}`}>
+              <div className="panel-header">
+                <div className="panel-header-title">
+                  {leftPanelMode === 'chapters' ? (
+                    <>
+                      <Icons.BookOpen /> {t('ide.chaptersTitle', 'Chapters')}
+                    </>
+                  ) : (
+                    <>
+                      <Icons.Layers /> {t('ide.entityInspectorTitle', 'Entity Inspector')}
+                    </>
+                  )}
+                </div>
+                {leftPanelMode === 'chapters' ? (
+                  <button
+                    className="ide-titlebar-btn"
+                    onClick={handleCreateChapter}
+                    title={t('ide.newChapterBtn', 'New Chapter')}
+                    style={{ color: 'var(--accent-amber)' }}
                   >
-                    {t('ide.loadingChapters', 'Loading chapters...')}
-                  </div>
-                ) : chapters.length === 0 ? (
-                  <div
-                    style={{
-                      display: 'flex',
-                      flexDirection: 'column',
-                      alignItems: 'center',
-                      justifyContent: 'center',
-                      height: '100%',
-                      gap: 12,
-                      opacity: 0.5
-                    }}
-                  >
-                    <Icons.BookOpen />
-                    <div
-                      style={{
-                        fontFamily: 'var(--font-mono)',
-                        fontSize: 11,
-                        color: 'var(--text-tertiary)',
-                        lineHeight: 1.6,
-                        textAlign: 'center'
-                      }}
-                    >
-                      {t('ide.noChaptersYet', 'No chapters yet.')}
-                    </div>
-                  </div>
+                    <Icons.Plus />
+                  </button>
                 ) : (
-                  chapters.map((ch) => (
-                    <div
-                      key={ch.id}
-                      className={`chapter-list-item ${activeChapter?.id === ch.id ? 'active' : ''}`}
-                      onClick={() => loadChapter(ch)}
-                      onMouseEnter={() => setHoveredChapterId(ch.id)}
-                      onMouseLeave={() => setHoveredChapterId(null)}
-                      style={{ position: 'relative' }}
-                    >
-                      <div className="chapter-num">
-                        {String(ch.chapter_number).padStart(2, '0')}
+                  <button
+                    className="ide-titlebar-btn"
+                    onClick={handleBackToChapters}
+                    title={t('ide.backToChaptersBtn', 'Back to chapters')}
+                  >
+                    <Icons.X />
+                  </button>
+                )}
+              </div>
+              <div className="panel-content">
+                {leftPanelMode === 'chapters' && (
+                  <>
+                    {loading ? (
+                      <div
+                        style={{
+                          display: 'flex',
+                          alignItems: 'center',
+                          justifyContent: 'center',
+                          height: '100%',
+                          color: 'var(--text-tertiary)',
+                          fontFamily: 'var(--font-mono)',
+                          fontSize: '11px'
+                        }}
+                      >
+                        {t('ide.loadingChapters', 'Loading chapters...')}
                       </div>
-                      <div className="chapter-info">
-                        <div className="chapter-title">{ch.title}</div>
-                        <div className="chapter-meta">
-                          {ch.word_count > 0
-                            ? `${ch.word_count.toLocaleString()} / ${ch.target_word_count.toLocaleString()} ${t('ide.words', 'words')}`
-                            : '\u2014'}
-                        </div>
-                      </div>
-
-                      {hoveredChapterId === ch.id ? (
+                    ) : chapters.length === 0 ? (
+                      <div
+                        style={{
+                          display: 'flex',
+                          flexDirection: 'column',
+                          alignItems: 'center',
+                          justifyContent: 'center',
+                          height: '100%',
+                          gap: 12,
+                          opacity: 0.5
+                        }}
+                      >
+                        <Icons.BookOpen />
                         <div
                           style={{
-                            display: 'flex',
-                            gap: '4px',
-                            position: 'absolute',
-                            insetInlineEnd: '12px',
-                            background: 'var(--bg-elevated)',
-                            padding: '2px 4px',
-                            borderRadius: '4px',
-                            boxShadow: '0 2px 4px rgba(0,0,0,0.5)'
+                            fontFamily: 'var(--font-mono)',
+                            fontSize: 11,
+                            color: 'var(--text-tertiary)',
+                            lineHeight: 1.6,
+                            textAlign: 'center'
                           }}
                         >
-                          <button
-                            title={t('ide.insertAboveBtn', 'Insert Above')}
-                            onClick={(e) => {
-                              e.stopPropagation()
-                              handleInsertChapter(ch.id, 'above')
-                            }}
-                            style={{
-                              background: 'transparent',
-                              border: 'none',
-                              color: 'var(--text-secondary)',
-                              cursor: 'pointer',
-                              padding: '4px'
-                            }}
-                            onMouseEnter={(e) =>
-                              (e.currentTarget.style.color = 'var(--accent-amber)')
-                            }
-                            onMouseLeave={(e) =>
-                              (e.currentTarget.style.color = 'var(--text-secondary)')
-                            }
-                          >
-                            <svg
-                              width="12"
-                              height="12"
-                              viewBox="0 0 24 24"
-                              fill="none"
-                              stroke="currentColor"
-                              strokeWidth="2"
-                            >
-                              <path d="M12 19V5M5 12l7-7 7 7" />
-                            </svg>
-                          </button>
-                          <button
-                            title={t('ide.insertBelowBtn', 'Insert Below')}
-                            onClick={(e) => {
-                              e.stopPropagation()
-                              handleInsertChapter(ch.id, 'below')
-                            }}
-                            style={{
-                              background: 'transparent',
-                              border: 'none',
-                              color: 'var(--text-secondary)',
-                              cursor: 'pointer',
-                              padding: '4px'
-                            }}
-                            onMouseEnter={(e) =>
-                              (e.currentTarget.style.color = 'var(--accent-amber)')
-                            }
-                            onMouseLeave={(e) =>
-                              (e.currentTarget.style.color = 'var(--text-secondary)')
-                            }
-                          >
-                            <svg
-                              width="12"
-                              height="12"
-                              viewBox="0 0 24 24"
-                              fill="none"
-                              stroke="currentColor"
-                              strokeWidth="2"
-                            >
-                              <path d="M12 5v14M19 12l-7 7-7-7" />
-                            </svg>
-                          </button>
-                          <button
-                            title={t('ide.deleteChapterBtn', 'Delete Chapter')}
-                            onClick={(e) => {
-                              e.stopPropagation()
-                              setDeletingChapter(ch)
-                            }}
-                            style={{
-                              background: 'transparent',
-                              border: 'none',
-                              color: 'var(--text-secondary)',
-                              cursor: 'pointer',
-                              padding: '4px'
-                            }}
-                            onMouseEnter={(e) =>
-                              (e.currentTarget.style.color = 'var(--entity-character)')
-                            }
-                            onMouseLeave={(e) =>
-                              (e.currentTarget.style.color = 'var(--text-secondary)')
-                            }
-                          >
-                            <svg
-                              width="12"
-                              height="12"
-                              viewBox="0 0 24 24"
-                              fill="none"
-                              stroke="currentColor"
-                              strokeWidth="2"
-                            >
-                              <path d="M3 6h18M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2M10 11v6M14 11v6" />
-                            </svg>
-                          </button>
+                          {t('ide.noChaptersYet', 'No chapters yet.')}
                         </div>
-                      ) : (
-                        <div className={`chapter-status ${ch.status}`}>{ch.status}</div>
-                      )}
-                    </div>
-                  ))
+                      </div>
+                    ) : (
+                      chapters.map((ch) => (
+                        <div
+                          key={ch.id}
+                          className={`chapter-list-item ${activeChapter?.id === ch.id ? 'active' : ''}`}
+                          onClick={() => loadChapter(ch)}
+                          onMouseEnter={() => setHoveredChapterId(ch.id)}
+                          onMouseLeave={() => setHoveredChapterId(null)}
+                          style={{ position: 'relative' }}
+                        >
+                          <div className="chapter-num">
+                            {String(ch.chapter_number).padStart(2, '0')}
+                          </div>
+                          <div className="chapter-info">
+                            <div className="chapter-title">{ch.title}</div>
+                            <div className="chapter-meta">
+                              {ch.word_count > 0
+                                ? `${ch.word_count.toLocaleString()} / ${ch.target_word_count.toLocaleString()} ${t('ide.words', 'words')}`
+                                : '\u2014'}
+                            </div>
+                          </div>
+
+                          {hoveredChapterId === ch.id ? (
+                            <div
+                              style={{
+                                display: 'flex',
+                                gap: '4px',
+                                position: 'absolute',
+                                insetInlineEnd: '12px',
+                                background: 'var(--bg-elevated)',
+                                padding: '2px 4px',
+                                borderRadius: '4px',
+                                boxShadow: '0 2px 4px rgba(0,0,0,0.5)'
+                              }}
+                            >
+                              <button
+                                title={t('ide.insertAboveBtn', 'Insert Above')}
+                                onClick={(e) => {
+                                  e.stopPropagation()
+                                  handleInsertChapter(ch.id, 'above')
+                                }}
+                                style={{
+                                  background: 'transparent',
+                                  border: 'none',
+                                  color: 'var(--text-secondary)',
+                                  cursor: 'pointer',
+                                  padding: '4px'
+                                }}
+                                onMouseEnter={(e) =>
+                                  (e.currentTarget.style.color = 'var(--accent-amber)')
+                                }
+                                onMouseLeave={(e) =>
+                                  (e.currentTarget.style.color = 'var(--text-secondary)')
+                                }
+                              >
+                                <svg
+                                  width="12"
+                                  height="12"
+                                  viewBox="0 0 24 24"
+                                  fill="none"
+                                  stroke="currentColor"
+                                  strokeWidth="2"
+                                >
+                                  <path d="M12 19V5M5 12l7-7 7 7" />
+                                </svg>
+                              </button>
+                              <button
+                                title={t('ide.insertBelowBtn', 'Insert Below')}
+                                onClick={(e) => {
+                                  e.stopPropagation()
+                                  handleInsertChapter(ch.id, 'below')
+                                }}
+                                style={{
+                                  background: 'transparent',
+                                  border: 'none',
+                                  color: 'var(--text-secondary)',
+                                  cursor: 'pointer',
+                                  padding: '4px'
+                                }}
+                                onMouseEnter={(e) =>
+                                  (e.currentTarget.style.color = 'var(--accent-amber)')
+                                }
+                                onMouseLeave={(e) =>
+                                  (e.currentTarget.style.color = 'var(--text-secondary)')
+                                }
+                              >
+                                <svg
+                                  width="12"
+                                  height="12"
+                                  viewBox="0 0 24 24"
+                                  fill="none"
+                                  stroke="currentColor"
+                                  strokeWidth="2"
+                                >
+                                  <path d="M12 5v14M19 12l-7 7-7-7" />
+                                </svg>
+                              </button>
+                              <button
+                                title={t('ide.deleteChapterBtn', 'Delete Chapter')}
+                                onClick={(e) => {
+                                  e.stopPropagation()
+                                  setDeletingChapter(ch)
+                                }}
+                                style={{
+                                  background: 'transparent',
+                                  border: 'none',
+                                  color: 'var(--text-secondary)',
+                                  cursor: 'pointer',
+                                  padding: '4px'
+                                }}
+                                onMouseEnter={(e) =>
+                                  (e.currentTarget.style.color = 'var(--entity-character)')
+                                }
+                                onMouseLeave={(e) =>
+                                  (e.currentTarget.style.color = 'var(--text-secondary)')
+                                }
+                              >
+                                <svg
+                                  width="12"
+                                  height="12"
+                                  viewBox="0 0 24 24"
+                                  fill="none"
+                                  stroke="currentColor"
+                                  strokeWidth="2"
+                                >
+                                  <path d="M3 6h18M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2M10 11v6M14 11v6" />
+                                </svg>
+                              </button>
+                            </div>
+                          ) : (
+                            <div className={`chapter-status ${ch.status}`}>{ch.status}</div>
+                          )}
+                        </div>
+                      ))
+                    )}
+                  </>
                 )}
-              </>
-            )}
-            {leftPanelMode === 'entity' && inspectedEntity && (
-              <EntityInspectorPanel
-                entity={inspectedEntity}
+                {leftPanelMode === 'entity' && inspectedEntity && (
+                  <EntityInspectorPanel
+                    entity={inspectedEntity}
+                    characters={characters}
+                    entities={entities}
+                    activeChapter={activeChapter}
+                    projectPath={projectPath}
+                    chapters={chapters}
+                    onEntityUpdated={handleEntitiesChanged}
+                  />
+                )}
+              </div>
+            </div>
+
+            {/* ── MIDDLE PANEL — EDITOR ────────────────── */}
+            {chapters.length === 0 && !loading ? (
+              <div className="panel-middle">
+                <div
+                  style={{
+                    display: 'flex',
+                    flexDirection: 'column',
+                    alignItems: 'center',
+                    justifyContent: 'center',
+                    height: '100%',
+                    gap: 20
+                  }}
+                >
+                  <Icons.BookOpen />
+                  <div
+                    style={{
+                      fontFamily: 'var(--font-mono)',
+                      fontSize: 13,
+                      color: 'var(--text-tertiary)',
+                      textAlign: 'center',
+                      lineHeight: 1.8
+                    }}
+                  >
+                    {t('ide.noChaptersYet', 'No chapters yet.')}
+                    <br />
+                    {t('ide.createFirstPrompt', 'Create your first chapter to start writing.')}
+                  </div>
+                  <button
+                    onClick={handleCreateChapter}
+                    style={{
+                      padding: '12px 24px',
+                      backgroundColor: 'var(--accent-amber)',
+                      color: 'var(--bg-deep)',
+                      border: 'none',
+                      cursor: 'pointer',
+                      fontFamily: 'var(--font-mono)',
+                      fontSize: '12px',
+                      textTransform: 'uppercase',
+                      letterSpacing: '1px',
+                      fontWeight: 600
+                    }}
+                  >
+                    {t('ide.createChapter1Btn', '+ Create Chapter 1')}
+                  </button>
+                </div>
+              </div>
+            ) : (
+              <Editor
+                chapter={chapterContent}
+                onUpdate={handleEditorUpdate}
+                focusMode={focusMode}
+                onToggleFocus={toggleFocus}
                 characters={characters}
                 entities={entities}
-                activeChapter={activeChapter}
                 projectPath={projectPath}
+                projectConfig={projectConfig}
                 chapters={chapters}
-                onEntityUpdated={handleEntitiesChanged}
+                onChapterMetaUpdate={handleChapterMetaUpdate}
+                onEntityClick={handleEntityClick}
+                onEntitiesChanged={handleEntitiesChanged}
               />
             )}
-          </div>
-        </div>
-
-        {/* ── MIDDLE PANEL — EDITOR ────────────────── */}
-        {chapters.length === 0 && !loading ? (
-          <div className="panel-middle">
-            <div
-              style={{
-                display: 'flex',
-                flexDirection: 'column',
-                alignItems: 'center',
-                justifyContent: 'center',
-                height: '100%',
-                gap: 20
-              }}
-            >
-              <Icons.BookOpen />
-              <div
-                style={{
-                  fontFamily: 'var(--font-mono)',
-                  fontSize: 13,
-                  color: 'var(--text-tertiary)',
-                  textAlign: 'center',
-                  lineHeight: 1.8
-                }}
-              >
-                {t('ide.noChaptersYet', 'No chapters yet.')}
-                <br />
-                {t('ide.createFirstPrompt', 'Create your first chapter to start writing.')}
-              </div>
-              <button
-                onClick={handleCreateChapter}
-                style={{
-                  padding: '12px 24px',
-                  backgroundColor: 'var(--accent-amber)',
-                  color: 'var(--bg-deep)',
-                  border: 'none',
-                  cursor: 'pointer',
-                  fontFamily: 'var(--font-mono)',
-                  fontSize: '12px',
-                  textTransform: 'uppercase',
-                  letterSpacing: '1px',
-                  fontWeight: 600
-                }}
-              >
-                {t('ide.createChapter1Btn', '+ Create Chapter 1')}
-              </button>
-            </div>
-          </div>
-        ) : (
-          <Editor
-            chapter={chapterContent}
-            onUpdate={handleEditorUpdate}
-            focusMode={focusMode}
-            onToggleFocus={toggleFocus}
-            characters={characters}
-            entities={entities}
-            projectPath={projectPath}
-            projectConfig={projectConfig}
-            chapters={chapters}
-            onChapterMetaUpdate={handleChapterMetaUpdate}
-            onEntityClick={handleEntityClick}
-            onEntitiesChanged={handleEntitiesChanged}
-          />
+          </>
         )}
       </div>
 
@@ -804,6 +831,7 @@ export default function FleshNoteIDE({ projectConfig, projectPath, onCloseProjec
         isOpen={showSettings}
         onClose={() => setShowSettings(false)}
         projectPath={projectPath}
+        onConfigUpdate={onConfigUpdate}
       />
 
       <ExportModal

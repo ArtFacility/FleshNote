@@ -18,6 +18,7 @@ from routes.calendar import router as calendar_router
 from routes.quick_notes import router as quick_notes_router
 from routes.settings import router as settings_router
 from routes.export import router as export_router
+from routes.planner import router as planner_router
 
 app = FastAPI(title="FleshNote API")
 
@@ -34,6 +35,7 @@ app.include_router(calendar_router)
 app.include_router(quick_notes_router)
 app.include_router(settings_router)
 app.include_router(export_router)
+app.include_router(planner_router)
 
 # Define our data models so FastAPI knows what to expect
 class WorkspaceRequest(BaseModel):

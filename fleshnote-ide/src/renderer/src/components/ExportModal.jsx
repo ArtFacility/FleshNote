@@ -350,10 +350,15 @@ export default function ExportModal({ isOpen, onClose, projectPath, projectConfi
       const res = await window.api.exportProject(payload);
       if (res && res.status === 'success') {
         const platform = window.electron.process.platform;
-        const msg = platform === 'win32'
+        let msg = platform === 'win32'
           ? `Export successful! Saved to:\n${res.filepath}`
           : `Export successful!`;
-        setNotification({ message: msg, type: 'success' });
+
+        if (res.warnings) {
+          msg += `\n\n⚠️ ${res.warnings}`;
+        }
+
+        setNotification({ message: msg, type: res.warnings ? 'warning' : 'success' });
         console.log("Export successful:", res.filepath);
       } else {
         setNotification({ message: "Export failed or returned incomplete status.", type: 'error' });
@@ -435,7 +440,7 @@ export default function ExportModal({ isOpen, onClose, projectPath, projectConfi
         {notification && (
           <div style={{
             position: 'absolute', top: 80, left: '50%', transform: 'translateX(-50%)',
-            zIndex: 1000, background: notification.type === 'error' ? '#d94040' : '#c9a55a',
+            zIndex: 1000, background: notification.type === 'error' ? '#d94040' : notification.type === 'warning' ? '#d9a040' : '#c9a55a',
             color: '#1a1a1e', padding: '12px 24px', borderRadius: '8px',
             boxShadow: '0 8px 24px rgba(0,0,0,0.4)', fontWeight: 600, fontSize: 13,
             ...mono, transition: 'all 0.3s ease', textAlign: 'center', whiteSpace: 'pre-wrap'

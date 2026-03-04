@@ -315,10 +315,10 @@ export default function EntityContextMenu({
               {t('contextMenu.createCharacter', 'Character:')} &quot;{displayText}&quot;
             </button>
             <button className="context-menu-item" onClick={() => onCreateEntity('lore')}>
-              <span className="icon" style={{ color: 'var(--entity-item)' }}>
+              <span className="icon" style={{ color: 'var(--entity-lore)' }}>
                 <Icons.Gem />
               </span>
-              {t('contextMenu.createLore', 'Item/Lore:')} &quot;{displayText}&quot;
+              {t('contextMenu.createLore', 'Item:')} &quot;{displayText}&quot;
             </button>
             <button className="context-menu-item" onClick={() => onCreateEntity('location')}>
               <span className="icon" style={{ color: 'var(--entity-location)' }}>

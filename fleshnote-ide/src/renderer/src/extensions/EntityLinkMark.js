@@ -11,6 +11,7 @@ import { Mark, mergeAttributes } from '@tiptap/core'
  */
 export const EntityLinkMark = Mark.create({
   name: 'entityLink',
+  inclusive: false,
 
   addOptions() {
     return {
@@ -62,14 +63,14 @@ export const EntityLinkMark = Mark.create({
     return {
       setEntityLink:
         (attributes) =>
-        ({ commands }) => {
-          return commands.setMark(this.name, attributes)
-        },
+          ({ commands }) => {
+            return commands.setMark(this.name, attributes)
+          },
       unsetEntityLink:
         () =>
-        ({ commands }) => {
-          return commands.unsetMark(this.name)
-        }
+          ({ commands }) => {
+            return commands.unsetMark(this.name)
+          }
     }
   }
 })

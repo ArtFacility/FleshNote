@@ -3,7 +3,11 @@ import StarterKit from '@tiptap/starter-kit'
 import Placeholder from '@tiptap/extension-placeholder'
 import CharacterCount from '@tiptap/extension-character-count'
 import Underline from '@tiptap/extension-underline'
+import Mention from '@tiptap/extension-mention'
 import { EntityLinkMark } from '../extensions/EntityLinkMark'
+import { TodoHighlighter } from '../extensions/TodoHighlighter'
+import { SearchAndReplace } from '../extensions/SearchAndReplace'
+import getSuggestionConfig from '../extensions/mentionSuggestion'
 import { useEffect, useRef, useState, useCallback } from 'react'
 import { useTranslation } from 'react-i18next'
 import EntityContextMenu from './EntityContextMenu'
@@ -13,6 +17,12 @@ import CustomLorePopup from './CustomLorePopup'
 import ForeshadowingPopup from './ForeshadowingPopup'
 import QuickNotePopup from './QuickNotePopup'
 import AddAliasPopup from './AddAliasPopup'
+import FocusSelectorPopup from './FocusSelectorPopup'
+import HemingwayMode from './focus-modes/HemingwayMode'
+import ComboMode from './focus-modes/ComboMode'
+import ZenMode from './focus-modes/ZenMode'
+import KamikazeMode from './focus-modes/KamikazeMode'
+import FogMode from './focus-modes/FogMode'
 
 // ── Inline SVG Icons ────────────────────────────────────────────────────────
 
@@ -66,8 +76,7 @@ const FormatIcons = {
       stroke="currentColor"
       strokeWidth="2"
     >
-      <path d="M16 4H9a3 3 0 0 0-3 3c0 2 1.5 3 3 3" />
-      <path d="M12 12h3c1.5 0 3 1 3 3a3 3 0 0 1-3 3H8" />
+      <path d="M16 4H9a3 3 0 0 0-3 3v1c0 2 1.5 3 3 3h6a3 3 0 0 1 3 3v1a3 3 0 0 1-3 3H8" />
       <line x1="4" y1="12" x2="20" y2="12" />
     </svg>
   ),
@@ -138,19 +147,32 @@ function EntityHoverCard({ data, position, entities }) {
 export default function Editor({
   chapter,
   onUpdate,
-  focusMode,
+  focusMode, // { active: boolean, type: string, goal: number | null, startWordCount: number | null }
   onToggleFocus,
-  characters = [],
-  entities = [],
-  projectPath,
-  projectConfig,
-  chapters = [],
   onChapterMetaUpdate,
+  projectPath,
+  entities,
+  characters,
+  chapters,
   onEntityClick,
-  onEntitiesChanged
+  onEntitiesChanged,
+  projectConfig
 }) {
   const { t, i18n } = useTranslation()
   const saveTimeoutRef = useRef(null)
+
+  // Search state
+  const [showSearch, setShowSearch] = useState(false)
+  const [searchTerm, setSearchTerm] = useState('')
+  const [searchResultsCount, setSearchResultsCount] = useState(0)
+  const [searchCurrentIndex, setSearchCurrentIndex] = useState(0)
+  const searchInputRef = useRef(null)
+
+  // Track latest entities for Mention suggestion
+  const entitiesRef = useRef(entities)
+  useEffect(() => {
+    entitiesRef.current = entities
+  }, [entities])
 
   // Context menu state
   const [ctxMenu, setCtxMenu] = useState(null)
@@ -159,7 +181,7 @@ export default function Editor({
 
   // Popup state — only one popup active at a time
   const [activePopup, setActivePopup] = useState(null)
-  // activePopup = { type: 'appendDescription' | 'quickNote' | 'makeConnection' | 'customLore' | 'foreshadowing', position, data }
+  // activePopup = { type: 'appendDescription' | 'quickNote' | 'makeConnection' | 'customLore' | 'foreshadowing' | 'focusSelector', position, data }
 
   // Hover card state
   const [hoverCard, setHoverCard] = useState(null)
@@ -177,12 +199,17 @@ export default function Editor({
         emptyEditorClass: 'is-editor-empty'
       }),
       CharacterCount,
-      EntityLinkMark
+      EntityLinkMark,
+      TodoHighlighter,
+      SearchAndReplace,
+      Mention.configure({
+        suggestion: getSuggestionConfig(() => entitiesRef.current),
+      })
     ],
     content: '',
     editorProps: {
       attributes: {
-        class: 'editor-area',
+        class: `editor-area ${focusMode?.active && focusMode?.type === 'normal' ? 'focus-mode-active' : ''}`,
         dir: i18n.dir()
       },
       handleDOMEvents: {
@@ -267,8 +294,55 @@ export default function Editor({
           onUpdate(html, words)
         }, 500)
       }
+    },
+    onTransaction: ({ editor }) => {
+      if (editor.storage.searchAndReplace) {
+        setSearchResultsCount(editor.storage.searchAndReplace.results.length)
+        setSearchCurrentIndex(editor.storage.searchAndReplace.currentIndex)
+      }
     }
   })
+
+  // Search keyboard shortcut and focus behavior
+  useEffect(() => {
+    const handleGlobalKeyDown = (e) => {
+      if (e.ctrlKey && e.key === 'f') {
+        e.preventDefault()
+        setShowSearch(prev => !prev)
+      }
+    }
+    window.addEventListener('keydown', handleGlobalKeyDown)
+    return () => window.removeEventListener('keydown', handleGlobalKeyDown)
+  }, [])
+
+  useEffect(() => {
+    if (showSearch && searchInputRef.current) {
+      searchInputRef.current.focus()
+    }
+  }, [showSearch])
+
+  // Sync search term to Tiptap
+  useEffect(() => {
+    if (editor) {
+      if (showSearch) {
+        editor.commands.setSearchTerm(searchTerm)
+      } else {
+        editor.commands.clearSearch()
+      }
+    }
+  }, [searchTerm, showSearch, editor])
+
+  // Auto-scroll to active search result
+  useEffect(() => {
+    if (showSearch) {
+      setTimeout(() => {
+        const activeEl = document.querySelector('.search-result-active')
+        if (activeEl) {
+          activeEl.scrollIntoView({ behavior: 'smooth', block: 'center' })
+        }
+      }, 50)
+    }
+  }, [searchCurrentIndex, showSearch])
 
   // When chapter changes, load new content
   useEffect(() => {
@@ -555,6 +629,17 @@ export default function Editor({
   const targetWords = chapter.target_word_count || 4000
   const chapterStatus = chapter.status || 'planned'
 
+  let remainingWords = null;
+  let canExitFocus = true;
+
+  if (focusMode?.active && focusMode.goal && focusMode.startWordCount !== undefined) {
+    const wordsWritten = wordCount - focusMode.startWordCount;
+    remainingWords = Math.max(0, focusMode.goal - wordsWritten);
+    if (remainingWords > 0) {
+      canExitFocus = false;
+    }
+  }
+
   return (
     <div className="panel-middle">
       {/* ── Metadata Toolbar (POV, Status, Word Count) ────── */}
@@ -619,52 +704,76 @@ export default function Editor({
         </div>
 
         <div className="editor-toolbar-right">
-          <div className="editor-wordcount">
-            <strong>{wordCount.toLocaleString()}</strong> /
-            <input
-              className="editor-target-words"
-              type="number"
-              value={chapter.target_word_count || ''}
-              onChange={(e) =>
-                onChapterMetaUpdate?.({ target_word_count: parseInt(e.target.value) || 0 })
-              }
-              title={t('editor.targetWordsTooltip', 'Target Word Count')}
-            />
-            {t('editor.wordsContext', 'words')}
+          <div className="editor-wordcount" style={{ display: 'flex', alignItems: 'center', gap: '4px' }}>
+            <span>
+              <strong>{wordCount.toLocaleString()}</strong> /
+              <input
+                className="editor-target-words"
+                type="number"
+                value={chapter.target_word_count || ''}
+                onChange={(e) =>
+                  onChapterMetaUpdate?.({ target_word_count: parseInt(e.target.value) || 0 })
+                }
+                title={t('editor.targetWordsTooltip', 'Target Word Count')}
+              />
+              {t('editor.wordsContext', 'words')}
+            </span>
+            {remainingWords !== null && (
+              <span style={{ color: remainingWords > 0 ? 'var(--accent-red)' : 'var(--accent-green)', fontWeight: 'bold', marginLeft: '8px' }}>
+                ({remainingWords > 0 ? `-${remainingWords} to goal` : 'Goal Met!'})
+              </span>
+            )}
           </div>
-          <button className={`focus-btn ${focusMode ? 'active' : ''}`} onClick={onToggleFocus}>
-            {focusMode ? t('editor.exitFocus', 'Exit Focus') : t('editor.focusBtn', 'Focus')}
+          <button
+            className={`focus-btn ${focusMode?.active ? 'active' : ''}`}
+            onClick={() => {
+              if (focusMode?.active) {
+                if (canExitFocus) {
+                  onToggleFocus(null) // Exit focus mode
+                } else {
+                  // Provide feedback that they can't exit yet? Could add a toast later.
+                }
+              } else {
+                setActivePopup({ type: 'focusSelector' })
+              }
+            }}
+            disabled={!canExitFocus}
+            style={!canExitFocus ? { opacity: 0.5, cursor: 'not-allowed' } : {}}
+            title={!canExitFocus ? t('editor.focusExitDisabled', 'Complete word goal to exit') : undefined}
+          >
+            {focusMode?.active ? t('editor.exitFocus', 'Exit Focus') : t('editor.focusBtn', 'Focus')}
           </button>
         </div>
       </div>
+
 
       {/* ── Formatting Toolbar ────────────────────────────── */}
       <div className="editor-format-toolbar">
         <button
           className={`format-btn ${editor.isActive('bold') ? 'active' : ''}`}
           onClick={() => editor.chain().focus().toggleBold().run()}
-          title="Bold (Ctrl+B)"
+          title={t('editor.boldTooltip', 'Bold (Ctrl+B)')}
         >
           <FormatIcons.Bold />
         </button>
         <button
           className={`format-btn ${editor.isActive('italic') ? 'active' : ''}`}
           onClick={() => editor.chain().focus().toggleItalic().run()}
-          title="Italic (Ctrl+I)"
+          title={t('editor.italicTooltip', 'Italic (Ctrl+I)')}
         >
           <FormatIcons.Italic />
         </button>
         <button
           className={`format-btn ${editor.isActive('underline') ? 'active' : ''}`}
           onClick={() => editor.chain().focus().toggleUnderline().run()}
-          title="Underline (Ctrl+U)"
+          title={t('editor.underlineTooltip', 'Underline (Ctrl+U)')}
         >
           <FormatIcons.UnderlineIcon />
         </button>
         <button
           className={`format-btn ${editor.isActive('strike') ? 'active' : ''}`}
           onClick={() => editor.chain().focus().toggleStrike().run()}
-          title="Strikethrough"
+          title={t('editor.strikethroughTooltip', 'Strikethrough')}
         >
           <FormatIcons.Strikethrough />
         </button>
@@ -678,8 +787,106 @@ export default function Editor({
         </button>
       </div>
 
+      {/* ── Focus Mode Overlays ────────────────────────────── */}
+      {focusMode?.active && focusMode.type === 'momentum' && <MomentumMode editor={editor} />}
+      {focusMode?.active && focusMode.type === 'hemingway' && <HemingwayMode editor={editor} />}
+      {focusMode?.active && focusMode.type === 'combo' && <ComboMode editor={editor} />}
+      {focusMode?.active && focusMode.type === 'zen' && (
+        <ZenMode
+          currentWords={editor.storage.characterCount.words()}
+          currentChars={editor.storage.characterCount.characters()}
+          startWordCount={focusMode.startWordCount}
+          targetWordCount={focusMode.startWordCount + focusMode.goal}
+        />
+      )}
+      {focusMode?.active && focusMode.type === 'kamikaze' && (
+        <KamikazeMode editor={editor} />
+      )}
+      {focusMode?.active && focusMode.type === 'fog' && (
+        <FogMode editor={editor} />
+      )}
+
       {/* ── Scrollable Editor Content ─────────────────────── */}
-      <div style={{ flex: 1, display: 'flex', flexDirection: 'column', minHeight: 0 }}>
+      <div style={{ flex: 1, display: 'flex', flexDirection: 'column', minHeight: 0, position: 'relative' }}>
+
+        {/* Search Bar Overlay */}
+        {showSearch && (
+          <div className="search-overlay" style={{
+            position: 'absolute',
+            top: '20px',
+            right: '40px',
+            background: 'var(--bg-elevated)',
+            border: '1px solid var(--border-subtle)',
+            borderRadius: '2px',
+            padding: '8px 12px',
+            display: 'flex',
+            alignItems: 'center',
+            gap: '12px',
+            boxShadow: '0 8px 24px rgba(0,0,0,0.5)',
+            zIndex: 100,
+            fontFamily: 'var(--font-mono)'
+          }}>
+            <input
+              ref={searchInputRef}
+              type="text"
+              placeholder={t('editor.search', 'Search...')}
+              value={searchTerm}
+              onChange={(e) => setSearchTerm(e.target.value)}
+              onKeyDown={(e) => {
+                if (e.key === 'Enter') {
+                  e.preventDefault()
+                  if (e.shiftKey) {
+                    editor.commands.previousSearchResult()
+                  } else {
+                    editor.commands.nextSearchResult()
+                  }
+                }
+                if (e.key === 'Escape') {
+                  setShowSearch(false)
+                }
+              }}
+              style={{
+                background: 'var(--bg-deep)',
+                border: '1px solid var(--border-default)',
+                color: 'var(--text-primary)',
+                padding: '4px 8px',
+                borderRadius: '2px',
+                outline: 'none',
+                width: '160px',
+                fontSize: '12px'
+              }}
+            />
+
+            <div style={{ fontSize: '10px', color: 'var(--text-tertiary)', minWidth: '40px', textAlign: 'center' }}>
+              {searchResultsCount > 0 ? `${searchCurrentIndex + 1} / ${searchResultsCount}` : '0 / 0'}
+            </div>
+
+            <div style={{ display: 'flex', gap: '4px' }}>
+              <button
+                onClick={() => editor.commands.previousSearchResult()}
+                title={t('editor.previousSearchResult', 'Previous (Shift+Enter)')}
+                style={{ background: 'none', border: 'none', color: 'var(--text-secondary)', cursor: 'pointer', padding: '4px' }}
+              >
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><polyline points="18 15 12 9 6 15"></polyline></svg>
+              </button>
+              <button
+                onClick={() => editor.commands.nextSearchResult()}
+                title={t('editor.nextSearchResult', 'Next (Enter)')}
+                style={{ background: 'none', border: 'none', color: 'var(--text-secondary)', cursor: 'pointer', padding: '4px' }}
+              >
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><polyline points="6 9 12 15 18 9"></polyline></svg>
+              </button>
+              <button
+                onClick={() => setShowSearch(false)}
+                title={t('editor.closeSearch', 'Close (Esc)')}
+                style={{ background: 'none', border: 'none', color: 'var(--text-secondary)', cursor: 'pointer', padding: '4px', marginLeft: '4px' }}
+              >
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>
+              </button>
+            </div>
+          </div>
+        )}
+
         <div
           style={{
             flex: 1,
@@ -782,7 +989,7 @@ export default function Editor({
           selectedText={activePopup.data?.text || ctxText}
           position={activePopup.position}
           projectPath={projectPath}
-          activeChapter={chapter}
+          entities={entities}
           onClose={closePopup}
         />
       )}
@@ -792,8 +999,24 @@ export default function Editor({
           selectedText={activePopup.data?.text || ctxText}
           position={activePopup.position}
           projectPath={projectPath}
+          entities={Object.values(entities)}
           onClose={closePopup}
-          onSuccess={handleAliasCreated}
+          onAliasAdded={handleAliasCreated}
+        />
+      )}
+
+      {activePopup?.type === 'focusSelector' && (
+        <FocusSelectorPopup
+          onClose={closePopup}
+          onSelectMode={({ type, goal }) => {
+            onToggleFocus({
+              active: true,
+              type,
+              goal,
+              startWordCount: editor ? editor.storage.characterCount.words() : 0
+            })
+            closePopup()
+          }}
         />
       )}
     </div>

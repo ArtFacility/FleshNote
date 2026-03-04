@@ -1,6 +1,33 @@
 {
-    "currentVersion": "0.5.0",
+    "currentVersion": "0.6.0",
     "history": [
+        {
+            "version": "0.6.0",
+            "date": "2026-03-01",
+            "changes": [
+                "NEW: plot planner! Prepare your story arcs and beats.",
+                "NEW: focus sprint modes! Kamikaze, Fog, Hemingway, Combo, Zen",
+                "You can now link to existing entries via @name syntax",
+                "Search functionality (CTRL+F)",
+                "TODO (alt+t) inline addition",
+                "Dyslexia friendly mode added into accessibility settings",
+                "Knowledge state reworked, now it works globally chapter level instead of requiring a POV character.",
+                "Fixed Item entities not being colored in the editor.",
+                "Fixed not being able to escape entity links via pressing space/enter",
+                "Code cleanup.",
+                "Optimized the entity extractor.",
+                "Cool loading screen while the entity extractor does it's thing"
+            ]
+        },
+        {
+            "version": "0.5.1",
+            "date": "2026-02-28",
+            "changes": [
+                "Finalized the icon of the app.",
+                "Added fancy home screen text.",
+                "Reworked the import module for entities."
+            ]
+        },
         {
             "version": "0.5.0",
             "date": "2026-02-26",
@@ -47,13 +74,6 @@
                 "Added global context menus for text editing.",
                 "Refactored Entity Inspector Panel.",
                 "Added Quick Notes system."
-            ]
-        },
-        {
-            "version": "0.1.0-alpha",
-            "date": "2026-02-15",
-            "changes": [
-                "Initial prototype for FleshNote IDE."
             ]
         }
     ]
