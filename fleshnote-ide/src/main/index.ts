@@ -7,6 +7,7 @@ import { spawn, ChildProcessWithoutNullStreams } from 'child_process'
 import killPort from 'kill-port'
 
 let pythonProcess: ChildProcessWithoutNullStreams | null = null
+let backendStderr = ''
 const globalConfigPath = join(app.getPath('userData'), 'fleshnote_config.json')
 const BACKEND_URL = 'http://127.0.0.1:8000'
 
@@ -51,23 +52,77 @@ async function startPythonBackend() {
     }
   })
 
-  pythonProcess.stderr.on('data', (data) => console.error(`Backend Error: ${data}`))
+  pythonProcess.stderr.on('data', (data) => {
+    const text = data.toString()
+    backendStderr += text
+    console.error(`Backend Error: ${text}`)
+  })
+
+  pythonProcess.on('exit', (code) => {
+    if (code !== 0 && code !== null) {
+      showBackendErrorWindow(
+        `Backend process exited unexpectedly (code ${code})\n\n${backendStderr || 'No stderr output captured.'}`
+      )
+    }
+  })
 }
 
-async function waitForBackend() {
+async function waitForBackend(timeoutMs = 30000) {
   console.log('Waiting for Python backend to wake up...')
-  while (true) {
+  const deadline = Date.now() + timeoutMs
+  while (Date.now() < deadline) {
     try {
       const response = await fetch(`${BACKEND_URL}/`)
       if (response.ok) {
         console.log('Backend is online.')
-        break
+        return
       }
-    } catch (error) {
-      // ECONNREFUSED means it's not ready yet.
+    } catch {
+      // ECONNREFUSED — not ready yet.
     }
     await new Promise((resolve) => setTimeout(resolve, 200))
   }
+  throw new Error(
+    `Backend did not respond within ${timeoutMs / 1000} seconds.\n\n` +
+    (backendStderr || 'No stderr output captured.')
+  )
+}
+
+function showBackendErrorWindow(details: string) {
+  const errWin = new BrowserWindow({
+    width: 640,
+    height: 460,
+    title: 'FleshNote — Backend Error',
+    show: false,
+    autoHideMenuBar: true,
+    webPreferences: { sandbox: false }
+  })
+
+  const escaped = details.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;')
+  const html = `<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<style>
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body { font-family: system-ui, sans-serif; background: #12121f; color: #e0e0e0; padding: 24px; display: flex; flex-direction: column; height: 100vh; }
+  h2 { color: #ff6b6b; font-size: 16px; margin-bottom: 8px; }
+  p { color: #999; font-size: 12px; margin-bottom: 12px; line-height: 1.5; }
+  textarea { flex: 1; width: 100%; background: #0a0a16; color: #d0d0e0; border: 1px solid #333; border-radius: 6px; padding: 12px; font-family: 'Consolas', monospace; font-size: 11px; resize: none; outline: none; }
+  button { margin-top: 12px; padding: 8px 20px; background: #e94560; color: white; border: none; border-radius: 6px; cursor: pointer; font-size: 13px; align-self: flex-start; transition: background 0.15s; }
+  button:hover { background: #c73652; }
+</style>
+</head>
+<body>
+<h2>⚠ Backend Failed to Start</h2>
+<p>FleshNote's backend process crashed or timed out. Copy the error log below and report it.</p>
+<textarea readonly>${escaped}</textarea>
+<button onclick="navigator.clipboard.writeText(document.querySelector('textarea').value).then(() => this.textContent = '✓ Copied!')">Copy to Clipboard</button>
+</body>
+</html>`
+
+  errWin.loadURL(`data:text/html;charset=utf-8,${encodeURIComponent(html)}`)
+  errWin.once('ready-to-show', () => errWin.show())
 }
 
 // ── Helper: POST to backend ──────────────────────────────────────────────────
@@ -135,8 +190,13 @@ function updateGlobalConfig(newConfig) {
 
 app.whenReady().then(async () => {
   startPythonBackend()
-  await waitForBackend()
-  electronApp.setAppUserModelId('com.electron')
+  try {
+    await waitForBackend()
+  } catch (err: any) {
+    showBackendErrorWindow(err.message)
+    return
+  }
+  electronApp.setAppUserModelId('com.artfacility.fleshnote')
 
   // ── Global Config ──────────────────────────────────
   ipcMain.handle('api:getGlobalConfig', () => getGlobalConfig())
