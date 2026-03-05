@@ -131,6 +131,102 @@ def _update_entity_appearances(cursor, chapter_id: int, md_content: str):
             """, (entity_type, entity_id, chapter_id, match.start()))
 
 
+# ── Twist / Foreshadow Link Serialization ────────────────────────────────────
+# Markdown format: {{twist:5|the killer revealed}}  {{foreshadow:3|a glint of metal}}
+# TipTap HTML:     <span data-twist-type="twist" data-twist-id="5" class="twist-link twist">the killer revealed</span>
+
+_TWIST_TYPE_TO_SHORT = {"twist": "twist", "foreshadow": "foreshadow"}
+_SHORT_TO_TWIST_TYPE = {v: k for k, v in _TWIST_TYPE_TO_SHORT.items()}
+
+
+def _twist_md_to_html(content: str) -> str:
+    """Convert {{twist:id|text}} / {{foreshadow:id|text}} markers to TipTap spans on load."""
+    pattern = r'\{\{(twist|foreshadow):(\d+)\|([^}]+)\}\}'
+
+    def replacer(match):
+        short_type = match.group(1)
+        twist_id = match.group(2)
+        text = match.group(3)
+        return (
+            f'<span data-twist-type="{short_type}" data-twist-id="{twist_id}" '
+            f'class="twist-link {short_type}">{text}</span>'
+        )
+
+    return re.sub(pattern, replacer, content)
+
+
+def _twist_html_to_md(content: str) -> str:
+    """Convert TipTap twist/foreshadow spans to {{type:id|text}} markers on save."""
+    pattern = r'<span[^>]*?data-twist-type="([^"]+)"[^>]*?data-twist-id="(\d+)"[^>]*?>([^<]+)</span>'
+
+    def replacer(match):
+        twist_type = match.group(1)
+        twist_id = match.group(2)
+        text = match.group(3)
+        return f'{{{{{twist_type}:{twist_id}|{text}}}}}'
+
+    return re.sub(pattern, replacer, content)
+
+
+def _update_foreshadowings(cursor, chapter_id: int, md_content: str):
+    """Scan markdown for {{foreshadow:id|text}} and {{twist:id|text}} markers,
+    calculate word offsets, and sync the foreshadowings table."""
+    cursor.execute("DELETE FROM foreshadowings WHERE chapter_id = ?", (chapter_id,))
+
+    # Strip all HTML tags to get plain text for word counting
+    plain = re.sub(r'<[^>]+>', ' ', md_content)
+
+    # Find all twist/foreshadow markers
+    pattern = r'\{\{(twist|foreshadow):(\d+)\|([^}]+)\}\}'
+    for match in re.finditer(pattern, md_content):
+        marker_type = match.group(1)
+        twist_id = int(match.group(2))
+        selected_text = match.group(3)
+
+        # Calculate word offset: count words in plain text before the marker position
+        # We need the position in the original md_content, then map to plain text
+        char_pos = match.start()
+        # Get the text before this marker, strip HTML, count words
+        text_before = re.sub(r'<[^>]+>', ' ', md_content[:char_pos])
+        # Also strip other markers from the word count
+        text_before = re.sub(r'\{\{[^}]+\}\}', '', text_before)
+        word_offset = len(text_before.split())
+
+        if marker_type == "foreshadow":
+            cursor.execute("""
+                INSERT INTO foreshadowings (twist_id, chapter_id, word_offset, selected_text)
+                VALUES (?, ?, ?, ?)
+            """, (twist_id, chapter_id, word_offset, selected_text))
+        elif marker_type == "twist":
+            # Check if this twist already had a reveal in a DIFFERENT chapter
+            cursor.execute("SELECT reveal_chapter_id FROM twists WHERE id = ?", (twist_id,))
+            old_row = cursor.fetchone()
+            if old_row and old_row["reveal_chapter_id"] and old_row["reveal_chapter_id"] != chapter_id:
+                # Strip the old {{twist:ID|...}} marker from the previous chapter's file
+                old_cid = old_row["reveal_chapter_id"]
+                cursor.execute("SELECT md_filename FROM chapters WHERE id = ?", (old_cid,))
+                old_ch = cursor.fetchone()
+                if old_ch:
+                    for row_info in cursor.execute("PRAGMA database_list").fetchall():
+                        proj_dir = os.path.dirname(row_info[2])
+                        old_md_path = os.path.join(proj_dir, "md", old_ch["md_filename"])
+                        if os.path.exists(old_md_path):
+                            with open(old_md_path, "r", encoding="utf-8") as f:
+                                old_content = f.read()
+                            old_content = re.sub(
+                                r'\{\{twist:' + str(twist_id) + r'\|([^}]+)\}\}',
+                                r'\1', old_content
+                            )
+                            with open(old_md_path, "w", encoding="utf-8") as f:
+                                f.write(old_content)
+                        break
+
+            # Update the twist's reveal info to point to this chapter + offset
+            cursor.execute("""
+                UPDATE twists SET reveal_chapter_id = ?, reveal_word_offset = ? WHERE id = ?
+            """, (chapter_id, word_offset, twist_id))
+
+
 def _slugify(text: str) -> str:
     """Convert text to a filename-safe slug."""
     text = text.lower().strip()
@@ -368,6 +464,9 @@ def load_chapter_content(req: ChapterLoad):
     # Convert entity markers {{char:5|Name}} to TipTap HTML spans
     content = _entity_md_to_html(content)
 
+    # Convert twist/foreshadow markers to TipTap spans
+    content = _twist_md_to_html(content)
+
     return {"content": content, "md_filename": row["md_filename"]}
 
 
@@ -385,6 +484,9 @@ def save_chapter_content(req: ChapterSave):
     # Convert entity-link HTML spans to markdown markers before writing
     md_content = _entity_html_to_md(req.content)
 
+    # Convert twist/foreshadow HTML spans to markdown markers
+    md_content = _twist_html_to_md(md_content)
+
     # Write the md file
     md_path = os.path.join(req.project_path, "md", row["md_filename"])
     os.makedirs(os.path.dirname(md_path), exist_ok=True)
@@ -393,6 +495,9 @@ def save_chapter_content(req: ChapterSave):
 
     # Track which entities appear in this chapter
     _update_entity_appearances(cursor, req.chapter_id, md_content)
+
+    # Track twist/foreshadow markers and calculate word offsets
+    _update_foreshadowings(cursor, req.chapter_id, md_content)
 
     # Update word count and timestamp
     cursor.execute("""

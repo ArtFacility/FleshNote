@@ -493,30 +493,46 @@ def generate_project_db(project_path: str, answers: dict) -> str:
     """)
 
     # ══════════════════════════════════════════════════════════
-    # TABLE 10: SECRETS
-    # Hidden information that connects to the epistemic system.
-    # Tracks what info must stay hidden until a specific reveal
-    # point. In Phase 2, the Editor AI's Leak Guard checks new
-    # prose against this table to warn about premature reveals.
+    # TABLE 10: TWISTS
+    # Major plot reveals or secrets. Used in conjunction with
+    # foreshadowings to track narrative payoff on the timeline.
     # ══════════════════════════════════════════════════════════
 
     cursor.execute("""
-        CREATE TABLE IF NOT EXISTS secrets (
+        CREATE TABLE IF NOT EXISTS twists (
             id                  INTEGER PRIMARY KEY AUTOINCREMENT,
-            title               TEXT NOT NULL,   -- e.g. 'Mystery POV is Bob'
-            description         TEXT,            -- Full details of the secret
-            secret_type         TEXT,            -- 'identity', 'motive', 'event', 'ability', 'relationship'
-            reveal_chapter_id   INTEGER,         -- When the reader learns this
-            characters_who_know TEXT,            -- JSON array of character IDs
-            danger_phrases      TEXT,            -- JSON array of phrases that could leak this
-                                                 -- e.g. '["his true name", "the real heir"]'
-                                                 -- Phase 2 Leak Guard scans prose for these
-            status              TEXT DEFAULT 'hidden',
-                                                 -- hidden | hinted | revealed
+            title               TEXT NOT NULL,
+            description         TEXT,
+            twist_type          TEXT,
+            reveal_chapter_id   INTEGER,
+            reveal_word_offset  INTEGER,
+            characters_who_know TEXT,
+            status              TEXT DEFAULT 'planned',
             notes               TEXT,
             created_at          TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
             FOREIGN KEY (reveal_chapter_id) REFERENCES chapters(id)
                 ON DELETE SET NULL
+        )
+    """)
+
+    # ══════════════════════════════════════════════════════════
+    # TABLE 10.5: FORESHADOWINGS
+    # Precise markers linking a specific word offset in a chapter
+    # to a Twist. This powers the visual lines on the planner.
+    # ══════════════════════════════════════════════════════════
+
+    cursor.execute("""
+        CREATE TABLE IF NOT EXISTS foreshadowings (
+            id                  INTEGER PRIMARY KEY AUTOINCREMENT,
+            twist_id            INTEGER NOT NULL,
+            chapter_id          INTEGER NOT NULL,
+            word_offset         INTEGER NOT NULL,
+            selected_text       TEXT,
+            created_at          TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+            FOREIGN KEY (twist_id) REFERENCES twists(id)
+                ON DELETE CASCADE,
+            FOREIGN KEY (chapter_id) REFERENCES chapters(id)
+                ON DELETE CASCADE
         )
     """)
 
@@ -694,9 +710,11 @@ def generate_project_db(project_path: str, answers: dict) -> str:
         "CREATE INDEX IF NOT EXISTS idx_milestone_chapter ON milestones(target_chapter_id);",
         "CREATE INDEX IF NOT EXISTS idx_milestone_status ON milestones(status);",
 
-        # Secrets by reveal chapter
-        "CREATE INDEX IF NOT EXISTS idx_secret_reveal ON secrets(reveal_chapter_id);",
-        "CREATE INDEX IF NOT EXISTS idx_secret_status ON secrets(status);",
+        # Twists and foreshadowings
+        "CREATE INDEX IF NOT EXISTS idx_twist_reveal ON twists(reveal_chapter_id);",
+        "CREATE INDEX IF NOT EXISTS idx_twist_status ON twists(status);",
+        "CREATE INDEX IF NOT EXISTS idx_foreshadow_twist ON foreshadowings(twist_id);",
+        "CREATE INDEX IF NOT EXISTS idx_foreshadow_chapter ON foreshadowings(chapter_id);",
 
         # Planner indexes
         "CREATE INDEX IF NOT EXISTS idx_blocks_layer ON planner_blocks(layer);",
@@ -850,6 +868,52 @@ def apply_migrations(db_path: str):
                 WHERE chapter_id = NEW.id;
             END;
         """)
+
+        # Drop secrets table
+        cursor.execute("DROP TABLE IF EXISTS secrets")
+
+        cursor.execute("""
+        CREATE TABLE IF NOT EXISTS twists (
+            id                  INTEGER PRIMARY KEY AUTOINCREMENT,
+            title               TEXT NOT NULL,
+            description         TEXT,
+            twist_type          TEXT,
+            reveal_chapter_id   INTEGER,
+            reveal_word_offset  INTEGER,
+            characters_who_know TEXT,
+            status              TEXT DEFAULT 'planned',
+            notes               TEXT,
+            created_at          TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+            FOREIGN KEY (reveal_chapter_id) REFERENCES chapters(id)
+                ON DELETE SET NULL
+        )
+        """)
+
+        # Migrate existing twists table to add reveal_word_offset if missing
+        try:
+            cursor.execute("ALTER TABLE twists ADD COLUMN reveal_word_offset INTEGER")
+        except Exception:
+            pass  # column already exists
+
+        cursor.execute("""
+        CREATE TABLE IF NOT EXISTS foreshadowings (
+            id                  INTEGER PRIMARY KEY AUTOINCREMENT,
+            twist_id            INTEGER NOT NULL,
+            chapter_id          INTEGER NOT NULL,
+            word_offset         INTEGER NOT NULL,
+            selected_text       TEXT,
+            created_at          TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+            FOREIGN KEY (twist_id) REFERENCES twists(id)
+                ON DELETE CASCADE,
+            FOREIGN KEY (chapter_id) REFERENCES chapters(id)
+                ON DELETE CASCADE
+        )
+        """)
+
+        cursor.execute("CREATE INDEX IF NOT EXISTS idx_twist_reveal ON twists(reveal_chapter_id);")
+        cursor.execute("CREATE INDEX IF NOT EXISTS idx_twist_status ON twists(status);")
+        cursor.execute("CREATE INDEX IF NOT EXISTS idx_foreshadow_twist ON foreshadowings(twist_id);")
+        cursor.execute("CREATE INDEX IF NOT EXISTS idx_foreshadow_chapter ON foreshadowings(chapter_id);")
 
         conn.commit()
     except Exception as e:

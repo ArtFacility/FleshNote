@@ -2,6 +2,7 @@ import { useState, useCallback, useEffect } from 'react'
 import { useTranslation } from 'react-i18next'
 import Editor from './Editor'
 import EntityInspectorPanel from './EntityInspectorPanel'
+import TwistInspectorPanel from './TwistInspectorPanel'
 import FleshNotePlannerDesktop from './FleshNotePlannerDesktop'
 import CustomCalendarPlanner from './CustomCalendarPlanner'
 import ProjectSettingsModal from './ProjectSettingsModal'
@@ -170,10 +171,12 @@ export default function FleshNoteIDE({ projectConfig, projectPath, onCloseProjec
   const [loading, setLoading] = useState(true)
   const [characters, setCharacters] = useState([])
   const [entities, setEntities] = useState([])
+  const [twistIds, setTwistIds] = useState([])
 
   // Left panel mode: 'chapters' or 'entity'
   const [leftPanelMode, setLeftPanelMode] = useState('chapters')
   const [inspectedEntity, setInspectedEntity] = useState(null)
+  const [inspectedTwistId, setInspectedTwistId] = useState(null)
 
   const [hoveredChapterId, setHoveredChapterId] = useState(null)
   const [deletingChapter, setDeletingChapter] = useState(null)
@@ -193,16 +196,18 @@ export default function FleshNoteIDE({ projectConfig, projectPath, onCloseProjec
 
     const loadData = async () => {
       try {
-        const [chaptersData, charsData, entData, qnData] = await Promise.all([
+        const [chaptersData, charsData, entData, qnData, twistsData] = await Promise.all([
           window.api.getChapters(projectPath),
           window.api.getCharacters(projectPath),
           window.api.getEntities(projectPath),
-          window.api.getQuickNotes(projectPath)
+          window.api.getQuickNotes(projectPath),
+          window.api.getTwists(projectPath)
         ])
 
         const chapterList = chaptersData.chapters || []
         setChapters(chapterList)
         setCharacters(charsData.characters || [])
+        setTwistIds((twistsData.twists || []).map(tw => tw.id))
 
         const loadedEntities = entData.entities || []
         const loadedQuickNotes = qnData.quick_notes || []
@@ -373,6 +378,7 @@ export default function FleshNoteIDE({ projectConfig, projectPath, onCloseProjec
   const handleBackToChapters = useCallback(() => {
     setLeftPanelMode('chapters')
     setInspectedEntity(null)
+    setInspectedTwistId(null)
   }, [])
 
   useEffect(() => {
@@ -381,21 +387,33 @@ export default function FleshNoteIDE({ projectConfig, projectPath, onCloseProjec
     return () => window.removeEventListener('forceBackToChapters', onForceBack)
   }, [handleBackToChapters])
 
+  // ── Twist click handler (from editor) ───────────────
+  const handleTwistClick = useCallback(
+    (twistRef) => {
+      // twistRef = { twistType: 'twist'|'foreshadow', twistId: 5 }
+      setInspectedTwistId(twistRef.twistId)
+      setLeftPanelMode('twist')
+    },
+    []
+  )
+
   // ── Refresh entities (after creating new ones) ─────
   const handleEntitiesChanged = useCallback(async () => {
     if (!projectPath) return
     try {
-      const [entData, charsData, qnData] = await Promise.all([
+      const [entData, charsData, qnData, twistsData] = await Promise.all([
         window.api.getEntities(projectPath),
         window.api.getCharacters(projectPath),
-        window.api.getQuickNotes(projectPath)
+        window.api.getQuickNotes(projectPath),
+        window.api.getTwists(projectPath)
       ])
       const loadedEntities = entData.entities || []
       const loadedQuickNotes = qnData.quick_notes || []
       setEntities([...loadedEntities, ...loadedQuickNotes])
       setCharacters(charsData.characters || [])
+      setTwistIds((twistsData.twists || []).map(tw => tw.id))
     } catch (err) {
-      console.error('Failed to refresh entities:', err)
+      console.error('Failed to refresh entities/twists:', err)
     }
   }, [projectPath])
 
@@ -506,6 +524,10 @@ export default function FleshNoteIDE({ projectConfig, projectPath, onCloseProjec
                   {leftPanelMode === 'chapters' ? (
                     <>
                       <Icons.BookOpen /> {t('ide.chaptersTitle', 'Chapters')}
+                    </>
+                  ) : leftPanelMode === 'twist' ? (
+                    <>
+                      <Icons.Layers /> {t('ide.twistInspectorTitle', 'Twist Inspector')}
                     </>
                   ) : (
                     <>
@@ -722,6 +744,26 @@ export default function FleshNoteIDE({ projectConfig, projectPath, onCloseProjec
                     onEntityUpdated={handleEntitiesChanged}
                   />
                 )}
+                {leftPanelMode === 'twist' && inspectedTwistId && (
+                  <TwistInspectorPanel
+                    twistId={inspectedTwistId}
+                    projectPath={projectPath}
+                    characters={characters}
+                    chapters={chapters}
+                    onNavigateChapter={(ch) => loadChapter(ch)}
+                    onTwistDeleted={async () => {
+                      setInspectedTwistId(null)
+                      setLeftPanelMode('inspector')
+                      // Refresh twist ID list so editor can strip dead links
+                      try {
+                        const twistsData = await window.api.getTwists(projectPath)
+                        setTwistIds((twistsData.twists || []).map(tw => tw.id))
+                      } catch (e) { console.error('Failed to refresh twists', e) }
+                      // Reload current chapter to reflect stripped markers
+                      if (activeChapter) loadChapter(activeChapter)
+                    }}
+                  />
+                )}
               </div>
             </div>
 
@@ -779,11 +821,13 @@ export default function FleshNoteIDE({ projectConfig, projectPath, onCloseProjec
                 onToggleFocus={toggleFocus}
                 characters={characters}
                 entities={entities}
+                twistIds={twistIds}
                 projectPath={projectPath}
                 projectConfig={projectConfig}
                 chapters={chapters}
                 onChapterMetaUpdate={handleChapterMetaUpdate}
                 onEntityClick={handleEntityClick}
+                onTwistClick={handleTwistClick}
                 onEntitiesChanged={handleEntitiesChanged}
               />
             )}

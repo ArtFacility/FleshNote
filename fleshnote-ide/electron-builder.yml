@@ -1,5 +1,5 @@
 appId: com.artfacility.fleshnote
-productName: fleshnote-ide
+productName: FleshNote
 copyright: Copyright © 2026 Artfacility
 directories:
   buildResources: build
@@ -43,7 +43,7 @@ linux:
     - snap
     - deb
     - flatpak
-  maintainer: electronjs.org
+  maintainer: Artfacility <artfacility.business@gmail.com>
   category: Utility
 appImage:
   artifactName: ${name}-${version}.${ext}
@@ -62,6 +62,3 @@ flatpak:
     - --filesystem=home
     - --talk-name=org.freedesktop.Notifications
 npmRebuild: false
-publish:
-  provider: generic
-  url: https://example.com/auto-updates

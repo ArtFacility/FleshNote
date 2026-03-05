@@ -163,7 +163,8 @@ export default function EntityContextMenu({
   onCreateEntity,
   onLinkEntity,
   onAction, // Generic action handler: onAction(actionType, data)
-  entityAtCursor // Entity link under cursor (if any): { type, id }
+  entityAtCursor, // Entity link under cursor (if any): { type, id }
+  twistAtCursor // Twist/foreshadow link under cursor (if any): { twistType, twistId }
 }) {
   const { t } = useTranslation()
   const [activeSubmenu, setActiveSubmenu] = useState(null)
@@ -430,17 +431,44 @@ export default function EntityContextMenu({
         {t('contextMenu.makeConnection', 'Make Connection')}
       </button>
 
-      {/* ── Tag as Foreshadowing ─────────────────────── */}
-      <button
-        className="context-menu-item"
-        onClick={() => onAction?.('foreshadowing', { text: selectedText })}
-        onMouseEnter={() => setActiveSubmenu(null)}
+      {/* ── Twist (Submenu) ──────────────────────────── */}
+      <div
+        className={`context-menu-item has-submenu ${activeSubmenu === 'twist' ? 'active' : ''}`}
+        onMouseEnter={() => setActiveSubmenu('twist')}
       >
         <span className="icon">
           <Icons.Shield />
         </span>
-        {t('contextMenu.tagForeshadowing', 'Tag as Foreshadowing')}
-      </button>
+        {t('contextMenu.twist', 'Twist')}
+        <span className="chevron">
+          <Icons.ChevronRight />
+        </span>
+        {activeSubmenu === 'twist' && (
+          <div
+            className={`context-menu-submenu ${submenuLeft ? 'submenu-left' : ''}`}
+            onClick={(e) => e.stopPropagation()}
+          >
+            <button
+              className="context-menu-item"
+              onClick={() => onAction?.('twistReveal', { text: selectedText })}
+            >
+              <span className="icon" style={{ color: 'var(--accent-amber)' }}>
+                <Icons.Eye />
+              </span>
+              {t('contextMenu.tagTwistReveal', 'Tag as Twist Reveal')}
+            </button>
+            <button
+              className="context-menu-item"
+              onClick={() => onAction?.('foreshadowing', { text: selectedText })}
+            >
+              <span className="icon">
+                <Icons.Shield />
+              </span>
+              {t('contextMenu.tagForeshadowing', 'Tag as Foreshadowing')}
+            </button>
+          </div>
+        )}
+      </div>
 
       {/* ── Set as POV (only if entity link is a character) ── */}
       {entityAtCursor && entityAtCursor.type === 'character' && (
@@ -481,6 +509,24 @@ export default function EntityContextMenu({
               <Icons.Unlink />
             </span>
             {t('contextMenu.removeLink', 'Remove Entity Link')}
+          </button>
+        </>
+      )}
+
+      {twistAtCursor && (
+        <>
+          <div className="context-menu-divider" />
+          <button
+            className="context-menu-item danger"
+            onClick={() => onAction?.('removeTwistLink')}
+            onMouseEnter={() => setActiveSubmenu(null)}
+          >
+            <span className="icon">
+              <Icons.Unlink />
+            </span>
+            {twistAtCursor.twistType === 'twist'
+              ? t('contextMenu.removeTwistLink', 'Remove Twist Marker')
+              : t('contextMenu.removeForeshadowLink', 'Remove Foreshadow Marker')}
           </button>
         </>
       )}

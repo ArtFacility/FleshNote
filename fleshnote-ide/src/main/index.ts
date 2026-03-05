@@ -398,6 +398,31 @@ app.whenReady().then(async () => {
     return await backendPost('/api/project/secret/update', payload)
   })
 
+  // ── Twists ──────────────────────────────────────────
+  ipcMain.handle('api:getTwists', async (_event, projectPath) => {
+    return await backendPost('/api/project/twists', { project_path: projectPath })
+  })
+
+  ipcMain.handle('api:getTwistsForPlanner', async (_event, projectPath) => {
+    return await backendPost('/api/project/twists/planner', { project_path: projectPath })
+  })
+
+  ipcMain.handle('api:createTwist', async (_event, payload) => {
+    return await backendPost('/api/project/twist/create', payload)
+  })
+
+  ipcMain.handle('api:updateTwist', async (_event, payload) => {
+    return await backendPost('/api/project/twist/update', payload)
+  })
+
+  ipcMain.handle('api:getTwistDetail', async (_event, payload) => {
+    return await backendPost('/api/project/twist/detail', payload)
+  })
+
+  ipcMain.handle('api:deleteTwist', async (_event, payload) => {
+    return await backendPost('/api/project/twist/delete', payload)
+  })
+
   // ── Calendar ───────────────────────────────────────
   ipcMain.handle('api:getCalendarConfig', async (_event, projectPath) => {
     return await backendPost('/api/project/calendar/config', { project_path: projectPath })

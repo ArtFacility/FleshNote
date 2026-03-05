@@ -340,9 +340,20 @@ def get_knowledge_for_character(req: KnowledgeForCharacter):
     if req.filter_mode == "narrative" and req.current_chapter is not None:
         # Narrative: filter by chapter order
         cursor.execute("""
-            SELECT ks.*, c.name as character_name
+            SELECT ks.*, 
+                   c.name as character_name,
+                   CASE ks.source_entity_type
+                     WHEN 'character' THEN c_src.name
+                     WHEN 'lore' THEN le.name
+                     WHEN 'location' THEN loc.name
+                     WHEN 'group' THEN g.name
+                   END as source_entity_name
             FROM knowledge_states ks
             JOIN characters c ON ks.character_id = c.id
+            LEFT JOIN characters c_src ON ks.source_entity_type = 'character' AND ks.source_entity_id = c_src.id
+            LEFT JOIN lore_entities le ON ks.source_entity_type = 'lore' AND ks.source_entity_id = le.id
+            LEFT JOIN locations loc ON ks.source_entity_type = 'location' AND ks.source_entity_id = loc.id
+            LEFT JOIN groups g ON ks.source_entity_type = 'group' AND ks.source_entity_id = g.id
             WHERE ks.character_id = ?
               AND ks.is_secret = 0
               AND (ks.learned_in_chapter <= ? OR ks.learned_in_chapter IS NULL)
@@ -352,9 +363,20 @@ def get_knowledge_for_character(req: KnowledgeForCharacter):
     elif req.filter_mode == "world_time":
         # World time: fetch all non-secret, filter in Python
         cursor.execute("""
-            SELECT ks.*, c.name as character_name
+            SELECT ks.*, 
+                   c.name as character_name,
+                   CASE ks.source_entity_type
+                     WHEN 'character' THEN c_src.name
+                     WHEN 'lore' THEN le.name
+                     WHEN 'location' THEN loc.name
+                     WHEN 'group' THEN g.name
+                   END as source_entity_name
             FROM knowledge_states ks
             JOIN characters c ON ks.character_id = c.id
+            LEFT JOIN characters c_src ON ks.source_entity_type = 'character' AND ks.source_entity_id = c_src.id
+            LEFT JOIN lore_entities le ON ks.source_entity_type = 'lore' AND ks.source_entity_id = le.id
+            LEFT JOIN locations loc ON ks.source_entity_type = 'location' AND ks.source_entity_id = loc.id
+            LEFT JOIN groups g ON ks.source_entity_type = 'group' AND ks.source_entity_id = g.id
             WHERE ks.character_id = ?
               AND ks.is_secret = 0
             ORDER BY ks.learned_in_chapter ASC
@@ -363,9 +385,20 @@ def get_knowledge_for_character(req: KnowledgeForCharacter):
     else:
         # Author: return all facts
         cursor.execute("""
-            SELECT ks.*, c.name as character_name
+            SELECT ks.*, 
+                   c.name as character_name,
+                   CASE ks.source_entity_type
+                     WHEN 'character' THEN c_src.name
+                     WHEN 'lore' THEN le.name
+                     WHEN 'location' THEN loc.name
+                     WHEN 'group' THEN g.name
+                   END as source_entity_name
             FROM knowledge_states ks
             JOIN characters c ON ks.character_id = c.id
+            LEFT JOIN characters c_src ON ks.source_entity_type = 'character' AND ks.source_entity_id = c_src.id
+            LEFT JOIN lore_entities le ON ks.source_entity_type = 'lore' AND ks.source_entity_id = le.id
+            LEFT JOIN locations loc ON ks.source_entity_type = 'location' AND ks.source_entity_id = loc.id
+            LEFT JOIN groups g ON ks.source_entity_type = 'group' AND ks.source_entity_id = g.id
             WHERE ks.character_id = ?
             ORDER BY ks.learned_in_chapter ASC
         """, (req.character_id,))
@@ -377,6 +410,7 @@ def get_knowledge_for_character(req: KnowledgeForCharacter):
     for row in rows:
         entry = _row_to_dict(row)
         entry["character_name"] = row["character_name"]
+        entry["source_entity_name"] = row["source_entity_name"]
         facts.append(entry)
 
     # Apply world_time filtering in Python

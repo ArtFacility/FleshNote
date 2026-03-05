@@ -1,6 +1,31 @@
 {
-    "currentVersion": "0.6.0",
+    "currentVersion": "0.6.5",
     "history": [
+        {
+            "version": "0.6.5",
+            "date": "2026-03-05",
+            "changes": [
+                "NEW: Twist & Foreshadow system reworked! Tag text as twist reveals or foreshadowing markers and link them to named twists.",
+                "NEW: Twist Inspector panel — view twist status, foreshadow count, distance to reveal, characters who know, and navigate to foreshadow markers.",
+                "Renamed 'Foreshadow' context menu button to 'Twist' with sub-options for Twist Reveal and Foreshadowing.",
+                "Clicking any twist or foreshadow marker in the editor now opens the Twist Inspector.",
+                "In the planner, twists are displayed as little markers on the timeline."
+            ]
+        },
+        {
+            "version": "0.6.1",
+            "date": "2026-03-04",
+            "changes": [
+                "Fixed a bug where entering and exiting the planner would overwrite the story with an old version.",
+                "Added saving indicator in the corner for peace of mind.",
+                "Kamikaze mode's timer adjusted.",
+                "Fixed Momentum mode crashing the app.",
+                "Fixed app text fields becoming uneditable if you attempt to create a project with an existing project name.",
+                "Localized strings for the planner.",
+                "Removed dummy fields from project setup like age.",
+                "Fixed bug where a chapter tagged as 'final' wouldn't show the bar on the timeline as filled up green."
+            ]
+        },
         {
             "version": "0.6.0",
             "date": "2026-03-01",

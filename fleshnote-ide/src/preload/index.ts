@@ -75,6 +75,14 @@ const api = {
   createSecret: (payload) => ipcRenderer.invoke('api:createSecret', payload),
   updateSecret: (payload) => ipcRenderer.invoke('api:updateSecret', payload),
 
+  // ── Twists ──────────────────────────────────────
+  getTwists: (projectPath) => ipcRenderer.invoke('api:getTwists', projectPath),
+  getTwistsForPlanner: (projectPath) => ipcRenderer.invoke('api:getTwistsForPlanner', projectPath),
+  createTwist: (payload) => ipcRenderer.invoke('api:createTwist', payload),
+  updateTwist: (payload) => ipcRenderer.invoke('api:updateTwist', payload),
+  getTwistDetail: (payload) => ipcRenderer.invoke('api:getTwistDetail', payload),
+  deleteTwist: (payload) => ipcRenderer.invoke('api:deleteTwist', payload),
+
   // ── Calendar ─────────────────────────────────────────
   getCalendarConfig: (projectPath) => ipcRenderer.invoke('api:getCalendarConfig', projectPath),
   updateCalendarConfig: (payload) => ipcRenderer.invoke('api:updateCalendarConfig', payload),

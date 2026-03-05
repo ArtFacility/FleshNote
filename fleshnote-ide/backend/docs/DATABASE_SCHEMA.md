@@ -242,10 +242,108 @@ Hidden information tied to the epistemic system. Phase 2 AI features use `danger
 
 ---
 
+## 11. `twists`
+
+Major plot reveals or secrets. Used in conjunction with foreshadowings to track narrative payoff on the timeline.
+
+| Column                | Type      | Constraints                           | Description                                              |
+| --------------------- | --------- | ------------------------------------- | -------------------------------------------------------- |
+| `id`                  | INTEGER   | PRIMARY KEY AUTOINCREMENT             |                                                          |
+| `title`               | TEXT      | NOT NULL                              | Twist title / name                                       |
+| `description`         | TEXT      |                                       | Explanation                                              |
+| `twist_type`          | TEXT      |                                       | Category or type of twist                                |
+| `reveal_chapter_id`   | INTEGER   | FK -> chapters(id) ON DELETE SET NULL | The chapter where the reveal happens                     |
+| `reveal_word_offset`  | INTEGER   |                                       | Precise word offset in the chapter                       |
+| `characters_who_know` | TEXT      |                                       | JSON array of characters aware                           |
+| `status`              | TEXT      | DEFAULT 'planned'                     | `planned`, `hinted`, `revealed`                          |
+| `notes`               | TEXT      |                                       | Freeform notes                                           |
+| `created_at`          | TIMESTAMP | DEFAULT CURRENT_TIMESTAMP             |                                                          |
+
+**Indexes:** `idx_twist_reveal`, `idx_twist_status`
+
+---
+
+## 11.5 `foreshadowings`
+
+Precise markers linking a specific word offset in a chapter to a Twist. This powers the visual lines on the planner.
+
+| Column          | Type      | Constraints                               | Description                                              |
+| --------------- | --------- | ----------------------------------------- | -------------------------------------------------------- |
+| `id`            | INTEGER   | PRIMARY KEY AUTOINCREMENT                 |                                                          |
+| `twist_id`      | INTEGER   | NOT NULL, FK -> twists(id) ON DELETE CASCADE | Twist this clues to                                      |
+| `chapter_id`    | INTEGER   | NOT NULL, FK -> chapters(id) ON DELETE CASCADE | Chapter where clue is placed                             |
+| `word_offset`   | INTEGER   | NOT NULL                                  | Spot in the chapter                                      |
+| `selected_text` | TEXT      |                                           | The actual clue text                                     |
+| `created_at`    | TIMESTAMP | DEFAULT CURRENT_TIMESTAMP                 |                                                          |
+
+**Indexes:** `idx_foreshadow_twist`, `idx_foreshadow_chapter`
+
+---
+
+## 12. `planner_settings`
+
+Global planner states: cursor progress, visibility, and theme description.
+
+| Column            | Type    | Constraints                               | Description                                              |
+| ----------------- | ------- | ----------------------------------------- | -------------------------------------------------------- |
+| `id`              | INTEGER | PRIMARY KEY CHECK(id = 1)                 | Singleton table (id always 1)                            |
+| `theme`           | TEXT    | DEFAULT ''                                | Max length 120                                           |
+| `cursor_pct`      | REAL    | DEFAULT 0                                 | Current reading location out of 100%                     |
+| `writing_started` | INTEGER | DEFAULT 0                                 |                                                          |
+| `shadow_visible`  | INTEGER | DEFAULT 0                                 | Toggles visibility of shadow layer elements              |
+| `updated_at`      | TEXT    | DEFAULT CURRENT_TIMESTAMP                 |                                                          |
+
+---
+
+## 13. `planner_blocks`
+
+Plot milestones and story beats in the planner. Features dynamic auto-compression if overlapping.
+
+| Column                 | Type    | Constraints                                            | Description                                              |
+| ---------------------- | ------- | ------------------------------------------------------ | -------------------------------------------------------- |
+| `id`                   | TEXT    | PRIMARY KEY                                            | Usually UUID string                                      |
+| `layer`                | TEXT    | NOT NULL DEFAULT 'surface'                             | `surface` or `shadow`                                    |
+| `block_type`           | TEXT    | NOT NULL                                               | Type of story beat                                       |
+| `label`                | TEXT    | DEFAULT ''                                             | Display label on block                                   |
+| `pct`                  | REAL    | NOT NULL                                               | Horizontal position percentage (0 to 100)                |
+| `lane`                 | INTEGER | DEFAULT 0                                              | Vertical lane (0, 1, 2)                                  |
+| `chapter_id`           | INTEGER | FK -> chapters(id) ON DELETE SET NULL                  | Linked chapter if applicable                             |
+| `chapter_status`       | TEXT    |                                                        | Tracks linked chapter's sync status                      |
+| `added_during_writing` | INTEGER | DEFAULT 0                                              |                                                          |
+| `sort_order`           | INTEGER | DEFAULT 0                                              | Rendering sort                                           |
+| `created_at`           | TEXT    | DEFAULT CURRENT_TIMESTAMP                              |                                                          |
+| `updated_at`           | TEXT    | DEFAULT CURRENT_TIMESTAMP                              |                                                          |
+
+**Indexes:** `idx_blocks_layer`, `idx_blocks_chapter`
+
+---
+
+## 14. `planner_arcs`
+
+Character arcs (surface) or hidden forces (shadow). Drawn below the main timeline rail.
+
+| Column        | Type    | Constraints                              | Description                                              |
+| ------------- | ------- | ---------------------------------------- | -------------------------------------------------------- |
+| `id`          | TEXT    | PRIMARY KEY                              | Usually UUID string                                      |
+| `layer`       | TEXT    | NOT NULL DEFAULT 'surface'               | `surface` or `shadow`                                    |
+| `name`        | TEXT    | DEFAULT ''                               | Arc name/title                                           |
+| `description` | TEXT    | DEFAULT ''                               | Additional description tooltip                           |
+| `color`       | TEXT    | NOT NULL DEFAULT '#d97706'               | Hex representation rendering color                       |
+| `start_pct`   | REAL    | NOT NULL DEFAULT 0                       | Starting timeline percentage                             |
+| `end_pct`     | REAL    | NOT NULL DEFAULT 100                     | Ending timeline percentage                               |
+| `sort_order`  | INTEGER | DEFAULT 0                                | Rendering sort                                           |
+| `created_at`  | TEXT    | DEFAULT CURRENT_TIMESTAMP                |                                                          |
+| `updated_at`  | TEXT    | DEFAULT CURRENT_TIMESTAMP                |                                                          |
+
+**Indexes:** `idx_arcs_layer`
+
+---
+
 ## Entity Relationship Diagram
 
 ```
 project_config (standalone key-value store)
+planner_settings (standalone singleton)
 
 chapters ──FK──> characters (pov_character_id)
 characters ──FK──> groups (group_id)
@@ -260,6 +358,12 @@ knowledge_states ──FK──> chapters (learned_in_chapter, reveal_in_chapter
 milestones ──FK──> chapters (target_chapter_id)
 
 secrets ──FK──> chapters (reveal_chapter_id)
+
+twists ──FK──> chapters (reveal_chapter_id)
+foreshadowings ──FK──> chapters (chapter_id)
+foreshadowings ──FK──> twists (twist_id)
+
+planner_blocks ──FK──> chapters (chapter_id)
 ```
 
 ---
@@ -277,6 +381,7 @@ Several tables use TEXT columns to store JSON arrays:
 | milestones     | prerequisites       | `["violation_count >= 3"]`         |
 | secrets        | characters_who_know | `[1, 3, 7]` (character IDs)        |
 | secrets        | danger_phrases      | `["his true name"]`                |
+| twists         | characters_who_know | `[1, 3, 7]` (character IDs)        |
 | project_config | lore_categories     | `["mechanic", "item", "artifact"]` |
 
 All JSON fields are stored with `json.dumps()` and parsed with `json.loads()` in the Python backend.

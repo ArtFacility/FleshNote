@@ -312,6 +312,48 @@
     border-bottom-style: solid;
 }
 
+/* ── TWIST / FORESHADOW LINKS IN TEXT ──────────── */
+.twist-link {
+    cursor: default;
+    transition: all 0.15s;
+    text-decoration: none;
+    border-bottom: 1.5px solid transparent;
+    padding-bottom: 0px;
+    position: relative;
+}
+
+.twist-link.twist {
+    color: var(--accent-red, #e05252);
+    border-bottom-color: var(--accent-red, #e05252);
+    border-bottom-style: solid;
+    font-weight: 500;
+}
+
+.twist-link.foreshadow {
+    color: var(--accent-purple, #a78bfa);
+    border-bottom-color: var(--accent-purple, #a78bfa);
+    border-bottom-style: dashed;
+}
+
+.twist-link:hover {
+    opacity: 0.8;
+}
+
+.twist-link.twist:hover {
+    border-bottom-width: 2px;
+}
+
+.twist-link.foreshadow:hover {
+    border-bottom-style: solid;
+}
+
+/* Hide twist colors when focus mode is active */
+.editor-area.focus-mode-active .twist-link {
+    color: inherit;
+    border-bottom: none;
+    font-weight: inherit;
+}
+
 /* ── HOVER TOOLTIP ──────────────────────────────── */
 .entity-hover-card {
     position: fixed;
@@ -409,4 +451,373 @@
         opacity: 0;
         transform: translateY(-100px) scale(1.8);
     }
+}
+
+/* ── TWIST INSPECTOR PANEL ──────────────────────── */
+.twist-inspector {
+    padding: 12px 16px;
+    display: flex;
+    flex-direction: column;
+    gap: 14px;
+    font-family: var(--font-mono);
+    font-size: 11px;
+    overflow-y: auto;
+}
+
+.twist-warnings {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+}
+
+.twist-warning-item {
+    display: flex;
+    align-items: flex-start;
+    gap: 8px;
+    padding: 8px 10px;
+    background: var(--bg-elevated);
+    border-left: 3px solid var(--accent-amber);
+    font-size: 10px;
+    line-height: 1.5;
+    color: var(--text-secondary);
+}
+
+.twist-header {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+}
+
+.twist-header-top {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 8px;
+}
+
+.twist-title {
+    font-size: 16px;
+    font-weight: 600;
+    color: var(--text-primary);
+    font-family: var(--font-sans);
+}
+
+.twist-title-input {
+    flex: 1;
+    font-size: 16px;
+    font-weight: 600;
+    color: var(--text-primary);
+    font-family: var(--font-sans);
+    background: var(--bg-deep);
+    border: 1px solid var(--border-default);
+    padding: 4px 8px;
+    outline: none;
+}
+
+.twist-title-input:focus {
+    border-color: var(--accent-amber);
+}
+
+.twist-header-actions {
+    display: flex;
+    gap: 4px;
+}
+
+.twist-icon-btn {
+    background: none;
+    border: 1px solid var(--border-subtle);
+    color: var(--text-tertiary);
+    cursor: pointer;
+    padding: 4px 6px;
+    display: flex;
+    align-items: center;
+    transition: all 0.15s;
+}
+
+.twist-icon-btn:hover {
+    color: var(--accent-amber);
+    border-color: var(--accent-amber);
+}
+
+.twist-badges {
+    display: flex;
+    gap: 6px;
+    flex-wrap: wrap;
+}
+
+.twist-badge {
+    font-size: 9px;
+    text-transform: uppercase;
+    letter-spacing: 1.2px;
+    padding: 2px 8px;
+    border: 1px solid var(--border-subtle);
+}
+
+.twist-badge.type {
+    color: var(--accent-purple);
+    border-color: var(--accent-purple);
+}
+
+.twist-badge-select {
+    font-family: var(--font-mono);
+    font-size: 10px;
+    background: var(--bg-elevated);
+    color: var(--text-secondary);
+    border: 1px solid var(--border-subtle);
+    padding: 2px 6px;
+    cursor: pointer;
+}
+
+/* ── Stats Row ─────────────────────────────── */
+.twist-stats-row {
+    display: flex;
+    gap: 4px;
+}
+
+.twist-stat {
+    flex: 1;
+    text-align: center;
+    padding: 8px 4px;
+    background: var(--bg-elevated);
+    border: 1px solid var(--border-subtle);
+}
+
+.twist-stat-value {
+    font-size: 14px;
+    font-weight: 700;
+    color: var(--accent-amber);
+}
+
+.twist-stat-label {
+    font-size: 8px;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    color: var(--text-tertiary);
+    margin-top: 2px;
+}
+
+/* ── Density Sparkline ─────────────────────── */
+.twist-density-bar {
+    padding: 4px 0;
+}
+
+.twist-density-track {
+    position: relative;
+    height: 8px;
+    background: var(--bg-elevated);
+    border: 1px solid var(--border-subtle);
+}
+
+.twist-density-dot {
+    position: absolute;
+    top: -1px;
+    width: 4px;
+    height: 10px;
+    transform: translateX(-50%);
+}
+
+.twist-density-dot.foreshadow {
+    background: var(--accent-purple, #a78bfa);
+}
+
+.twist-density-dot.reveal {
+    background: var(--accent-red, #e05252);
+    width: 6px;
+    height: 12px;
+    top: -2px;
+}
+
+/* ── Sections ──────────────────────────────── */
+.twist-section {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+}
+
+.twist-section-label {
+    font-size: 9px;
+    text-transform: uppercase;
+    letter-spacing: 1.2px;
+    color: var(--text-tertiary);
+    display: flex;
+    align-items: center;
+    gap: 6px;
+}
+
+.twist-section-content {
+    color: var(--text-secondary);
+    line-height: 1.6;
+    font-size: 11px;
+    white-space: pre-wrap;
+}
+
+.twist-empty {
+    color: var(--text-tertiary);
+    font-style: italic;
+}
+
+.twist-textarea {
+    width: 100%;
+    background: var(--bg-deep);
+    border: 1px solid var(--border-default);
+    color: var(--text-primary);
+    font-family: var(--font-mono);
+    font-size: 11px;
+    padding: 6px 8px;
+    resize: vertical;
+    outline: none;
+}
+
+.twist-textarea:focus {
+    border-color: var(--accent-amber);
+}
+
+/* ── Character Chips ───────────────────────── */
+.twist-char-chips {
+    display: flex;
+    gap: 6px;
+    flex-wrap: wrap;
+    align-items: center;
+}
+
+.twist-char-chip {
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+    padding: 3px 8px;
+    background: var(--bg-elevated);
+    border: 1px solid var(--entity-character);
+    color: var(--entity-character);
+    font-size: 10px;
+}
+
+.twist-char-chip-remove {
+    background: none;
+    border: none;
+    color: var(--text-tertiary);
+    cursor: pointer;
+    padding: 0 2px;
+    font-size: 12px;
+    line-height: 1;
+}
+
+.twist-char-chip-remove:hover {
+    color: var(--accent-red);
+}
+
+.twist-char-add-btn {
+    width: 22px;
+    height: 22px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: none;
+    border: 1px dashed var(--border-default);
+    color: var(--text-tertiary);
+    cursor: pointer;
+    transition: all 0.15s;
+}
+
+.twist-char-add-btn:hover {
+    color: var(--accent-amber);
+    border-color: var(--accent-amber);
+}
+
+.twist-char-dropdown {
+    background: var(--bg-elevated);
+    border: 1px solid var(--border-default);
+    padding: 6px;
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+    max-height: 180px;
+}
+
+.twist-char-search {
+    background: var(--bg-deep);
+    border: 1px solid var(--border-subtle);
+    color: var(--text-primary);
+    font-family: var(--font-mono);
+    font-size: 10px;
+    padding: 4px 8px;
+    outline: none;
+}
+
+.twist-char-search:focus {
+    border-color: var(--accent-amber);
+}
+
+.twist-char-list {
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+    overflow-y: auto;
+}
+
+.twist-char-list-empty {
+    color: var(--text-tertiary);
+    font-size: 10px;
+    padding: 4px;
+    text-align: center;
+}
+
+.twist-char-option {
+    text-align: left;
+    background: none;
+    border: none;
+    color: var(--entity-character);
+    font-family: var(--font-mono);
+    font-size: 10px;
+    padding: 4px 8px;
+    cursor: pointer;
+    transition: background 0.1s;
+}
+
+.twist-char-option:hover {
+    background: var(--bg-deep);
+}
+
+/* ── Foreshadow List ───────────────────────── */
+.twist-foreshadow-list {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+}
+
+.twist-foreshadow-item {
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+    padding: 8px 10px;
+    background: var(--bg-elevated);
+    border: 1px solid var(--border-subtle);
+    border-left: 3px solid var(--accent-purple, #a78bfa);
+    cursor: pointer;
+    text-align: left;
+    transition: all 0.15s;
+}
+
+.twist-foreshadow-item:hover {
+    border-color: var(--accent-amber);
+    background: var(--bg-deep);
+}
+
+.twist-fs-chapter {
+    font-size: 10px;
+    font-weight: 600;
+    color: var(--text-primary);
+}
+
+.twist-fs-text {
+    font-size: 10px;
+    color: var(--text-secondary);
+    font-style: italic;
+    line-height: 1.4;
+}
+
+.twist-fs-offset {
+    font-size: 9px;
+    color: var(--text-tertiary);
+    text-transform: uppercase;
+    letter-spacing: 1px;
 }

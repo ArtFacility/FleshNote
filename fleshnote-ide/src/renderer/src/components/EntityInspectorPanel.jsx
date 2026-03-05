@@ -499,15 +499,24 @@ export default function EntityInspectorPanel({
     if (!newFact.fact.trim() || !newFact.character_id) return
 
     try {
-      await window.api.createKnowledge({
+      const payload = {
         project_path: projectPath,
-        character_id: parseInt(newFact.character_id),
         fact: newFact.fact,
-        source_entity_type: entity.type,
-        source_entity_id: entity.id,
         learned_in_chapter: activeChapter?.id || null,
         is_secret: newFact.is_secret
-      })
+      }
+
+      if (entity.type === 'character') {
+        payload.character_id = entity.id
+        payload.source_entity_type = 'character'
+        payload.source_entity_id = parseInt(newFact.character_id)
+      } else {
+        payload.character_id = parseInt(newFact.character_id)
+        payload.source_entity_type = entity.type
+        payload.source_entity_id = entity.id
+      }
+
+      await window.api.createKnowledge(payload)
       setNewFact({ fact: '', character_id: '', is_secret: 0 })
       setAddingFact(false)
       loadKnowledgeFacts()
@@ -1059,7 +1068,11 @@ export default function EntityInspectorPanel({
               value={newFact.character_id}
               onChange={(e) => setNewFact((p) => ({ ...p, character_id: e.target.value }))}
             >
-              <option value="">{t('inspector.whoKnowsThis', 'Who knows this?')}</option>
+              <option value="">
+                {entity.type === 'character'
+                  ? t('inspector.whoIsFactAbout', 'Who is this about?')
+                  : t('inspector.whoKnowsThis', 'Who knows this?')}
+              </option>
               {characters.map((c) => (
                 <option key={c.id} value={c.id}>
                   {c.name}
@@ -1095,7 +1108,11 @@ export default function EntityInspectorPanel({
             <div className={`knowledge-fact-card ${fact.is_secret ? 'secret' : ''}`} key={fact.id}>
               <div className="knowledge-fact-text">{fact.fact}</div>
               <div className="knowledge-fact-meta">
-                <span className="knowledge-fact-who">{fact.character_name}</span>
+                <span className="knowledge-fact-who">
+                  {entity.type === 'character'
+                    ? (fact.source_entity_name || t('inspector.unknownEntity', 'Unknown'))
+                    : fact.character_name}
+                </span>
                 <span className="knowledge-fact-when">
                   {getChapterLabel(fact.learned_in_chapter)}
                 </span>

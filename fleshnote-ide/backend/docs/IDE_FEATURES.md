@@ -230,6 +230,13 @@ When clicking an entity link in the editor, the left panel switches to show:
 - Description
 - Aliases list
 
+### Twist Inspector Panel
+
+Located in the left sidebar alongside the Entity Inspector. Triggered from the IDE controls.
+- Displays all planned, hinted, and revealed twists.
+- Integrates a semantic warning engine (e.g. "Unforeshadowed", "Sparse", "Desert Gap") to grade the health of how a twist is being developed based on its associated clues.
+- Selecting a twist lists all associated Foreshadowings with chapter links and exact offsets.
+
 ### Epistemic Toggle
 
 Toggle switch at the top of the Entity Inspector:
@@ -263,6 +270,15 @@ planned -> writing -> draft -> revised -> final
 ```
 
 Status can be set to any value at any time via the dropdown.
+
+---
+
+## Plot Planner
+
+### Timeline System
+
+- A dedicated zoomable layout mapping blocks (beats, reveals) and arcs (long-running plot lines) across layers (Surface vs. Shadow) in a horizontally scrolling rail.
+- Includes a direct visual bridge to the twists system, rendering foreshadowings and twist reveals directly on the timeline track for pacing analysis.
 
 ---
 

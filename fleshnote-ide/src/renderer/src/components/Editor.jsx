@@ -5,6 +5,7 @@ import CharacterCount from '@tiptap/extension-character-count'
 import Underline from '@tiptap/extension-underline'
 import Mention from '@tiptap/extension-mention'
 import { EntityLinkMark } from '../extensions/EntityLinkMark'
+import { TwistLinkMark } from '../extensions/TwistLinkMark'
 import { TodoHighlighter } from '../extensions/TodoHighlighter'
 import { SearchAndReplace } from '../extensions/SearchAndReplace'
 import getSuggestionConfig from '../extensions/mentionSuggestion'
@@ -153,9 +154,11 @@ export default function Editor({
   onChapterMetaUpdate,
   projectPath,
   entities,
+  twistIds,
   characters,
   chapters,
   onEntityClick,
+  onTwistClick,
   onEntitiesChanged,
   projectConfig
 }) {
@@ -199,6 +202,7 @@ export default function Editor({
   const [ctxMenu, setCtxMenu] = useState(null)
   const [ctxText, setCtxText] = useState('')
   const [entityAtCursor, setEntityAtCursor] = useState(null)
+  const [twistAtCursor, setTwistAtCursor] = useState(null)
 
   // Popup state — only one popup active at a time
   const [activePopup, setActivePopup] = useState(null)
@@ -240,6 +244,7 @@ export default function Editor({
     }),
     CharacterCount,
     EntityLinkMark,
+    TwistLinkMark,
     TodoHighlighter,
     SearchAndReplace,
     Mention.configure({
@@ -277,8 +282,17 @@ export default function Editor({
           }
           return false
         },
-        // Click on entity links opens inspector
+        // Click on entity links or twist links opens inspector
         click: (_view, event) => {
+          // Check twist links first
+          const twistTarget = event.target.closest('[data-twist-type]')
+          if (twistTarget) {
+            const twistType = twistTarget.getAttribute('data-twist-type')
+            const twistId = twistTarget.getAttribute('data-twist-id')
+            onTwistClick?.({ twistType, twistId: parseInt(twistId) })
+            return true
+          }
+          // Then entity links
           const target = event.target.closest('[data-entity-type]')
           if (target) {
             const entityType = target.getAttribute('data-entity-type')
@@ -320,6 +334,17 @@ export default function Editor({
               })
             } else {
               setEntityAtCursor(null)
+            }
+
+            // Detect if right-click was on a twist/foreshadow link
+            const twistTarget = event.target.closest('[data-twist-type]')
+            if (twistTarget) {
+              setTwistAtCursor({
+                twistType: twistTarget.getAttribute('data-twist-type'),
+                twistId: parseInt(twistTarget.getAttribute('data-twist-id'))
+              })
+            } else {
+              setTwistAtCursor(null)
             }
 
             return true
@@ -430,6 +455,36 @@ export default function Editor({
     return () => clearTimeout(tm)
   }, [editor, entities])
 
+  // Cleanup dead twist/foreshadow links when twistIds update or chapter loads
+  useEffect(() => {
+    if (!editor || !twistIds) return
+    const tm = setTimeout(() => {
+      let needsUpdate = false
+      const { state, view } = editor
+      let tr = state.tr
+
+      state.doc.descendants((node, pos) => {
+        if (node.marks) {
+          node.marks.forEach((mark) => {
+            if (mark.type.name === 'twistLink') {
+              const id = mark.attrs.twistId
+              const exists = twistIds.some((tid) => String(tid) === String(id))
+              if (!exists) {
+                tr = tr.removeMark(pos, pos + node.nodeSize, mark.type)
+                needsUpdate = true
+              }
+            }
+          })
+        }
+      })
+
+      if (needsUpdate && !view.isDestroyed) {
+        view.dispatch(tr)
+      }
+    }, 300)
+    return () => clearTimeout(tm)
+  }, [editor, twistIds])
+
   // Update TipTap layout direction based on active language
   useEffect(() => {
     if (editor && !editor.isDestroyed) {
@@ -538,6 +593,10 @@ export default function Editor({
           setActivePopup({ type: 'foreshadowing', position: pos, data })
           break
 
+        case 'twistReveal':
+          setActivePopup({ type: 'twistReveal', position: pos, data })
+          break
+
         case 'addAliasSearch':
           setActivePopup({ type: 'addAliasSearch', position: pos, data })
           break
@@ -579,6 +638,12 @@ export default function Editor({
         case 'removeLink':
           if (editor) {
             editor.chain().focus().unsetEntityLink().run()
+          }
+          break
+
+        case 'removeTwistLink':
+          if (editor) {
+            editor.chain().focus().unsetTwistLink().run()
           }
           break
 
@@ -1015,6 +1080,7 @@ export default function Editor({
         onLinkEntity={handleLinkEntity}
         onAction={handleAction}
         entityAtCursor={entityAtCursor}
+        twistAtCursor={twistAtCursor}
       />
       <EntityHoverCard data={hoverCard} position={hoverPos} entities={entities} />
 
@@ -1065,13 +1131,35 @@ export default function Editor({
         />
       )}
 
-      {activePopup?.type === 'foreshadowing' && (
+      {(activePopup?.type === 'foreshadowing' || activePopup?.type === 'twistReveal') && (
         <ForeshadowingPopup
           selectedText={activePopup.data?.text || ctxText}
           position={activePopup.position}
           projectPath={projectPath}
-          entities={entities}
-          onClose={closePopup}
+          activeChapter={chapter}
+          twistMode={activePopup.type === 'twistReveal' ? 'reveal' : 'foreshadow'}
+          onClose={(result) => {
+            if (result && result.twistId && editor) {
+              const markerType = result.markerType // 'twist' or 'foreshadow'
+              const twistId = result.twistId
+              const text = result.selectedText
+
+              // Apply the twist mark to the selected text
+              editor
+                .chain()
+                .focus()
+                .setTwistLink({
+                  twistType: markerType,
+                  twistId: String(twistId)
+                })
+                .run()
+
+              if (result.isNew) {
+                onEntitiesChanged?.()
+              }
+            }
+            setActivePopup(null)
+          }}
         />
       )}
 

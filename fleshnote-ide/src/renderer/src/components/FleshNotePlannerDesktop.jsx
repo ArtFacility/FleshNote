@@ -6,6 +6,11 @@ const RAIL_Y = 240; // Shifted down so the text input doesn't overlap the top la
 const BLOCK_W = 134;
 const BLOCK_H = 52;
 
+// Twist timeline colors — 7 distinct hues for twist markers
+const TWIST_COLORS = [
+    "#e11d48", "#8b5cf6", "#0891b2", "#d97706", "#059669", "#db2777", "#4f46e5",
+];
+
 // Block lanes: 3 lanes ABOVE the rail
 const LANE_Y = [RAIL_Y - 72, RAIL_Y - 136, RAIL_Y - 200];
 
@@ -53,6 +58,11 @@ export default function FleshNotePlannerDesktop({ projectPath, chapters, activeC
     const [blocks, setBlocks] = useState([]);
     const [arcs, setArcs] = useState([]);
     const [loading, setLoading] = useState(true);
+
+    // Twist data for timeline
+    const [twistData, setTwistData] = useState([]);
+    const [hoveredTwistId, setHoveredTwistId] = useState(null);
+    const [selectedTwistId, setSelectedTwistId] = useState(null);
 
     // Active states
     const [activeLayer, setActiveLayer] = useState("surface");
@@ -136,6 +146,17 @@ export default function FleshNotePlannerDesktop({ projectPath, chapters, activeC
             }
         };
         fetchPlanner();
+
+        // Fetch twist data for timeline visualization
+        const fetchTwists = async () => {
+            try {
+                const res = await window.api.getTwistsForPlanner(projectPath);
+                if (res.twists) setTwistData(res.twists);
+            } catch (err) {
+                console.error("Failed to load twist data for planner:", err);
+            }
+        };
+        fetchTwists();
     }, [projectPath]);
 
     // Persist modifications wrapper
@@ -440,6 +461,59 @@ export default function FleshNotePlannerDesktop({ projectPath, chapters, activeC
         });
         return geom;
     }, [visibleBlocks, railGeom]);
+
+    // ─── Twist timeline positions ───
+    const twistPositions = useMemo(() => {
+        if (!twistData.length || !chapterSpans.length) return [];
+
+        return twistData.map((twist, idx) => {
+            const color = TWIST_COLORS[idx % TWIST_COLORS.length];
+
+            // Reveal position: midpoint of the reveal chapter span
+            let revealPct = null;
+            if (twist.reveal_chapter_id) {
+                const span = chapterSpans.find(s => s.id === twist.reveal_chapter_id);
+                if (span) {
+                    // If we have word offset, position within the chapter proportionally
+                    if (twist.reveal_word_offset != null) {
+                        const chapterWordCount = chapters.find(c => c.id === twist.reveal_chapter_id)?.target_word_count || 1;
+                        const ratio = Math.min(1, (twist.reveal_word_offset || 0) / chapterWordCount);
+                        revealPct = span.startPct + ratio * (span.endPct - span.startPct);
+                    } else {
+                        revealPct = (span.startPct + span.endPct) / 2;
+                    }
+                }
+            }
+
+            // Foreshadowing positions
+            const foreshadowPositions = (twist.foreshadowings || []).map(fs => {
+                const span = chapterSpans.find(s => s.id === fs.chapter_id);
+                if (!span) return null;
+                const chapterWc = fs.chapter_word_count || 1;
+                const ratio = Math.min(1, (fs.word_offset || 0) / chapterWc);
+                const pct = span.startPct + ratio * (span.endPct - span.startPct);
+                return {
+                    pct,
+                    x: railGeom.left + (pct / 100) * railGeom.width,
+                    chapterNumber: fs.chapter_number,
+                    text: fs.selected_text,
+                };
+            }).filter(Boolean);
+
+            return {
+                id: twist.id,
+                title: twist.title,
+                status: twist.status,
+                color,
+                revealPct,
+                revealX: revealPct != null ? railGeom.left + (revealPct / 100) * railGeom.width : null,
+                foreshadowings: foreshadowPositions,
+                foreshadowCount: foreshadowPositions.length,
+            };
+        });
+    }, [twistData, chapterSpans, railGeom, chapters]);
+
+    const activeTwistId = hoveredTwistId || selectedTwistId;
 
     if (loading) return <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', height: '100%', color: 'var(--text-tertiary)', fontFamily: 'var(--font-mono)', fontSize: 11 }}>{t('ide.loadingPlanner', 'Loading planner...')}</div>;
 
@@ -1019,6 +1093,151 @@ export default function FleshNotePlannerDesktop({ projectPath, chapters, activeC
                         );
                     })}
 
+                    {/* ─── Twist & Foreshadow Timeline Overlay ─── */}
+                    {twistPositions.length > 0 && (
+                        <>
+                            {/* Foreshadow dots — tiny circles on the rail */}
+                            {twistPositions.map(tp => tp.foreshadowings.map((fs, fi) => {
+                                const isActive = activeTwistId === tp.id;
+                                const isDimmed = activeTwistId && activeTwistId !== tp.id;
+                                const size = isActive ? 10 : 4;
+                                return (
+                                    <div
+                                        key={`fs-${tp.id}-${fi}`}
+                                        style={{
+                                            position: "absolute",
+                                            left: fs.x - size / 2,
+                                            top: RAIL_Y + 13 - size / 2,
+                                            width: size,
+                                            height: size,
+                                            borderRadius: "50%",
+                                            backgroundColor: tp.color,
+                                            opacity: isDimmed ? 0.1 : (isActive ? 0.9 : 0.4),
+                                            transition: "all 0.25s ease",
+                                            pointerEvents: "none",
+                                            zIndex: isActive ? 15 : 5,
+                                        }}
+                                    />
+                                );
+                            }))}
+
+                            {/* SVG arc lines — only when a twist is hovered/selected */}
+                            {activeTwistId && (() => {
+                                const tp = twistPositions.find(t => t.id === activeTwistId);
+                                if (!tp || tp.revealX == null) return null;
+                                const canvasW = Math.max(800, railGeom.right + 100);
+                                return (
+                                    <svg
+                                        style={{
+                                            position: "absolute",
+                                            left: 0,
+                                            top: 0,
+                                            width: canvasW,
+                                            height: RAIL_Y + 80,
+                                            pointerEvents: "none",
+                                            zIndex: 14,
+                                        }}
+                                    >
+                                        {tp.foreshadowings.map((fs, fi) => {
+                                            const x1 = fs.x;
+                                            const x2 = tp.revealX;
+                                            const y = RAIL_Y + 13;
+                                            const midX = (x1 + x2) / 2;
+                                            const dist = Math.abs(x2 - x1);
+                                            // Vary the arc height slightly per foreshadow to avoid overlap
+                                            const arcH = Math.min(60, 25 + dist * 0.04) + (fi % 3) * 6;
+                                            const cpY = y + arcH;
+                                            return (
+                                                <path
+                                                    key={`arc-${tp.id}-${fi}`}
+                                                    d={`M ${x1} ${y} Q ${midX} ${cpY} ${x2} ${y}`}
+                                                    fill="none"
+                                                    stroke={tp.color}
+                                                    strokeWidth="1.5"
+                                                    strokeDasharray="4 3"
+                                                    opacity="0.6"
+                                                />
+                                            );
+                                        })}
+                                    </svg>
+                                );
+                            })()}
+
+                            {/* Twist diamond markers — on the rail at reveal position */}
+                            {twistPositions.map(tp => {
+                                if (tp.revealX == null) return null;
+                                const isActive = activeTwistId === tp.id;
+                                const isDimmed = activeTwistId && activeTwistId !== tp.id;
+                                const diamondSize = isActive ? 14 : 10;
+                                const hitbox = 28;
+                                return (
+                                    <div
+                                        key={`twist-${tp.id}`}
+                                        onMouseEnter={() => setHoveredTwistId(tp.id)}
+                                        onMouseLeave={() => setHoveredTwistId(null)}
+                                        onClick={(e) => {
+                                            e.stopPropagation();
+                                            setSelectedTwistId(selectedTwistId === tp.id ? null : tp.id);
+                                        }}
+                                        style={{
+                                            position: "absolute",
+                                            left: tp.revealX - hitbox / 2,
+                                            top: RAIL_Y + 13 - hitbox / 2,
+                                            width: hitbox,
+                                            height: hitbox,
+                                            cursor: "pointer",
+                                            zIndex: 16,
+                                            display: "flex",
+                                            alignItems: "center",
+                                            justifyContent: "center",
+                                        }}
+                                    >
+                                        <div style={{
+                                            width: diamondSize,
+                                            height: diamondSize,
+                                            backgroundColor: tp.color,
+                                            transform: "rotate(45deg)",
+                                            opacity: isDimmed ? 0.2 : 1,
+                                            transition: "all 0.25s ease",
+                                            boxShadow: isActive ? `0 0 8px ${tp.color}88` : "none",
+                                            pointerEvents: "none",
+                                        }} />
+                                    </div>
+                                );
+                            })}
+
+                            {/* Twist label tooltip — shown on hover/select */}
+                            {activeTwistId && (() => {
+                                const tp = twistPositions.find(t => t.id === activeTwistId);
+                                if (!tp || tp.revealX == null) return null;
+                                return (
+                                    <div
+                                        style={{
+                                            position: "absolute",
+                                            left: tp.revealX,
+                                            top: RAIL_Y + 34,
+                                            transform: "translateX(-50%)",
+                                            background: "var(--bg-elevated)",
+                                            border: `1px solid ${tp.color}44`,
+                                            padding: "4px 10px",
+                                            zIndex: 30,
+                                            whiteSpace: "nowrap",
+                                            pointerEvents: "none",
+                                        }}
+                                    >
+                                        <div style={{ fontFamily: "var(--font-sans)", fontSize: "11px", color: tp.color, fontWeight: 600 }}>
+                                            {tp.title}
+                                        </div>
+                                        <div style={{ fontFamily: "var(--font-mono)", fontSize: "8px", color: "var(--text-tertiary)", textTransform: "uppercase", letterSpacing: "0.5px", marginTop: "2px" }}>
+                                            {t(`twist.${tp.status || "planned"}`, tp.status || "planned")} · {tp.foreshadowCount} {t('twist.foreshadows', 'foreshadow(s)')}
+                                        </div>
+                                    </div>
+                                );
+                            })()}
+                        </>
+                    )}
+
+
                     {/* Fixed Start / End Blocks */}
                     <div style={{
                         position: "absolute", left: railGeom.left - BLOCK_W / 2, top: LANE_Y[0], width: BLOCK_W, height: BLOCK_H,
@@ -1026,9 +1245,9 @@ export default function FleshNotePlannerDesktop({ projectPath, chapters, activeC
                         display: "flex", flexDirection: "column", padding: "6px 8px", zIndex: 10, opacity: 0.8
                     }}>
                         <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
-                            <span style={{ fontFamily: "var(--font-mono)", fontSize: "9px", color: "var(--text-tertiary)", textTransform: "uppercase", letterSpacing: "1px" }}>Event</span>
+                            <span style={{ fontFamily: "var(--font-mono)", fontSize: "9px", color: "var(--text-tertiary)", textTransform: "uppercase", letterSpacing: "1px" }}>{t('ide.timelineEvent', 'Event')}</span>
                         </div>
-                        <span style={{ fontFamily: "var(--font-sans)", fontSize: "12px", color: "var(--text-primary)", marginTop: "6px" }}>Start</span>
+                        <span style={{ fontFamily: "var(--font-sans)", fontSize: "12px", color: "var(--text-primary)", marginTop: "6px" }}>{t('ide.timelineStart', 'Start')}</span>
                         <div style={{ position: "absolute", left: BLOCK_W / 2, top: BLOCK_H, width: "2px", height: Math.max(0, RAIL_Y + 12 - (LANE_Y[0] + BLOCK_H)), background: "var(--text-tertiary)", opacity: 0.3 }} />
                     </div>
 
@@ -1038,9 +1257,9 @@ export default function FleshNotePlannerDesktop({ projectPath, chapters, activeC
                         display: "flex", flexDirection: "column", padding: "6px 8px", zIndex: 10, opacity: 0.8
                     }}>
                         <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
-                            <span style={{ fontFamily: "var(--font-mono)", fontSize: "9px", color: "var(--text-tertiary)", textTransform: "uppercase", letterSpacing: "1px" }}>Event</span>
+                            <span style={{ fontFamily: "var(--font-mono)", fontSize: "9px", color: "var(--text-tertiary)", textTransform: "uppercase", letterSpacing: "1px" }}>{t('ide.timelineEvent', 'Event')}</span>
                         </div>
-                        <span style={{ fontFamily: "var(--font-sans)", fontSize: "12px", color: "var(--text-primary)", marginTop: "6px" }}>End</span>
+                        <span style={{ fontFamily: "var(--font-sans)", fontSize: "12px", color: "var(--text-primary)", marginTop: "6px" }}>{t('ide.timelineEnd', 'End')}</span>
                         <div style={{ position: "absolute", left: BLOCK_W / 2, top: BLOCK_H, width: "2px", height: Math.max(0, RAIL_Y + 12 - (LANE_Y[0] + BLOCK_H)), background: "var(--text-tertiary)", opacity: 0.3 }} />
                     </div>
 
@@ -1143,7 +1362,7 @@ export default function FleshNotePlannerDesktop({ projectPath, chapters, activeC
                                                     letterSpacing: "1px",
                                                     whiteSpace: "nowrap",
                                                 }}>
-                                                    You Are Here
+                                                    {t('ide.youAreHere', 'You Are Here')}
                                                 </div>
                                                 <div style={{
                                                     width: "2px",

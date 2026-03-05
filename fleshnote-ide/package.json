@@ -1,7 +1,7 @@
 {
   "name": "fleshnote-ide",
-  "version": "0.6.0",
-  "description": "An Electron application with React and TypeScript",
+  "version": "0.6.5",
+  "description": "A write-first note-second editor with a focus on story structure and character development.",
   "main": "./out/main/index.js",
   "author": {
     "name": "Artfacility",

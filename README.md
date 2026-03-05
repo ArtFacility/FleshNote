@@ -12,6 +12,7 @@ An advanced, localized, and feature-rich writing tool for writers, and world bui
 - **Focus Sprint Modes**: Unique writing challenges including Kamikaze (stop and lose text), Fog, Hemingway, Combo, and Zen modes.
 - **Plot Planner**: A zoomable, multi-layer timeline for organizing story arcs and narrative beats.
 - **Entity Inspector**: Advanced panel for managing bio, agendas, and deep-linking between entities.
+- **Twist System**: Track major narrative reveals and their corresponding clues (foreshadowings) across chapters with heuristic analysis of your setup pacing.
 - **Export Flow**: Comprehensive export capabilities for project data (added in v0.5.0).
 - **Modern UI**: Sleek, responsive interface built with Tailwind CSS and Tiptap editor.
 

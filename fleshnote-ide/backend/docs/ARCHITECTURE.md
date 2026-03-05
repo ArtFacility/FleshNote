@@ -86,13 +86,15 @@ Responsibilities:
 FastAPI application mounting route modules:
 
 ```python
-from routes import chapters, characters, locations, entities, imports
+from routes import chapters, characters, locations, entities, imports, twists, planner
 
 app.include_router(chapters.router)
 app.include_router(characters.router)
 app.include_router(locations.router)
 app.include_router(entities.router)
 app.include_router(imports.router)
+app.include_router(twists.router)
+app.include_router(planner.router)
 ```
 
 Each route module provides its own `_get_db()` helper for SQLite connections.
@@ -111,7 +113,9 @@ fleshnote-ide/
 │   │   ├── characters.py     # Character CRUD
 │   │   ├── locations.py      # Location CRUD
 │   │   ├── entities.py       # Aggregated entity listing + lore entity CRUD
-│   │   └── imports.py        # Manuscript splitting + NER extraction
+│   │   ├── imports.py        # Manuscript splitting + NER extraction
+│   │   ├── twists.py         # Twist Inspector CRUD & Foreshadowing logic
+│   │   └── planner.py        # Timeline Planner blocks and arcs
 │   ├── docs/                 # This documentation
 │   └── .venv/                # Python virtual environment
 │

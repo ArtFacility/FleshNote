@@ -14,6 +14,7 @@ from routes.imports import router as imports_router
 from routes.groups import router as groups_router
 from routes.knowledge import router as knowledge_router
 from routes.secrets import router as secrets_router
+from routes.twists import router as twists_router
 from routes.calendar import router as calendar_router
 from routes.quick_notes import router as quick_notes_router
 from routes.settings import router as settings_router
@@ -31,6 +32,7 @@ app.include_router(imports_router)
 app.include_router(groups_router)
 app.include_router(knowledge_router)
 app.include_router(secrets_router)
+app.include_router(twists_router)
 app.include_router(calendar_router)
 app.include_router(quick_notes_router)
 app.include_router(settings_router)
