@@ -19,6 +19,8 @@ import ForeshadowingPopup from './ForeshadowingPopup'
 import QuickNotePopup from './QuickNotePopup'
 import AddAliasPopup from './AddAliasPopup'
 import FocusSelectorPopup from './FocusSelectorPopup'
+import DuplicateEntityPopup from './DuplicateEntityPopup'
+import PartialMatchEntityPopup from './PartialMatchEntityPopup'
 import HemingwayMode from './focus-modes/HemingwayMode'
 import ComboMode from './focus-modes/ComboMode'
 import ZenMode from './focus-modes/ZenMode'
@@ -96,6 +98,11 @@ const FormatIcons = {
       <line x1="12" y1="4" x2="12" y2="20" />
       <line x1="3" y1="3" x2="21" y2="21" />
     </svg>
+  ),
+  Eye: () => (
+    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+      <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z" /><circle cx="12" cy="12" r="3" />
+    </svg>
   )
 }
 
@@ -160,7 +167,8 @@ export default function Editor({
   onEntityClick,
   onTwistClick,
   onEntitiesChanged,
-  projectConfig
+  projectConfig,
+  onConfigUpdate // <-- NEW
 }) {
   const { t, i18n } = useTranslation()
   const saveTimeoutRef = useRef(null)
@@ -191,6 +199,29 @@ export default function Editor({
   const [searchResultsCount, setSearchResultsCount] = useState(0)
   const [searchCurrentIndex, setSearchCurrentIndex] = useState(0)
   const searchInputRef = useRef(null)
+
+  // Link visibility state
+  const [showEyeDropdown, setShowEyeDropdown] = useState(false)
+  const [linkVisibility, setLinkVisibility] = useState(() => {
+    return projectConfig?.link_visibility || {
+      character: true,
+      location: true,
+      lore: true,
+      twist: true,
+      quicknote: true
+    }
+  })
+
+  useEffect(() => {
+    if (projectPath && linkVisibility) {
+      window.api.updateProjectConfig(
+        projectPath,
+        'link_visibility',
+        linkVisibility,
+        'json'
+      ).catch(err => console.error("Failed saving link visibility", err))
+    }
+  }, [linkVisibility, projectPath])
 
   // Track latest entities for Mention suggestion
   const entitiesRef = useRef(entities)
@@ -501,27 +532,71 @@ export default function Editor({
   }, [])
 
   const handleCreateEntity = useCallback(
-    async (type) => {
-      if (!editor || !projectPath || !ctxText) return
+    async (type, force = false, textToCreate = ctxText) => {
+      if (!editor || !projectPath || !textToCreate) return
+
+      if (['character', 'location', 'lore'].includes(type) && !force) {
+        const textLower = textToCreate.toLowerCase().trim()
+        const existingEntities = entities.filter(e => e.type === type)
+
+        const exactMatch = existingEntities.find(e =>
+          e.name?.toLowerCase().trim() === textLower ||
+          (e.aliases && e.aliases.some(a => a.toLowerCase().trim() === textLower))
+        )
+
+        if (exactMatch) {
+          setActivePopup({
+            type: 'duplicateEntityExact',
+            position: ctxMenu || { x: 300, y: 300 },
+            data: { text: textToCreate, match: exactMatch, entityType: type }
+          })
+          closeContextMenu()
+          return
+        }
+
+        if (textLower.length > 3) {
+          const partialMatch = existingEntities.find(e => {
+            const nameLower = e.name?.toLowerCase().trim() || ''
+            if (nameLower.includes(textLower) || textLower.includes(nameLower)) return true
+            if (e.aliases) {
+              return e.aliases.some(a => {
+                const aLower = a.toLowerCase().trim()
+                return aLower.includes(textLower) || textLower.includes(aLower)
+              })
+            }
+            return false
+          })
+
+          if (partialMatch) {
+            setActivePopup({
+              type: 'duplicateEntityPartial',
+              position: ctxMenu || { x: 300, y: 300 },
+              data: { text: textToCreate, match: partialMatch, entityType: type }
+            })
+            closeContextMenu()
+            return
+          }
+        }
+      }
 
       try {
         let result
         if (type === 'character') {
           result = await window.api.createCharacter({
             project_path: projectPath,
-            name: ctxText
+            name: textToCreate
           })
           result = { ...result.character, type: 'character' }
         } else if (type === 'location') {
           result = await window.api.createLocation({
             project_path: projectPath,
-            name: ctxText
+            name: textToCreate
           })
           result = { ...result.location, type: 'location' }
         } else if (type === 'lore') {
           result = await window.api.createLoreEntity({
             project_path: projectPath,
-            name: ctxText,
+            name: textToCreate,
             category: 'item'
           })
           result = { ...result.entity, type: 'lore' }
@@ -898,6 +973,53 @@ export default function Editor({
         >
           <FormatIcons.ClearFormat />
         </button>
+
+        <div className="editor-toolbar-divider" style={{ margin: '0 4px' }} />
+
+        {/* Visibility Toggle Dropdown */}
+        <div style={{ position: 'relative' }}>
+          <button
+            className={`format-btn ${showEyeDropdown ? 'active' : ''}`}
+            onClick={() => setShowEyeDropdown(!showEyeDropdown)}
+            title={t('editor.toggleLinksTooltip', 'Highlight Options')}
+          >
+            <FormatIcons.Eye />
+          </button>
+          {showEyeDropdown && (
+            <div
+              className="popup-panel"
+              style={{
+                position: 'absolute',
+                top: 'calc(100% + 4px)',
+                right: 0,
+                width: '180px',
+                zIndex: 50,
+                padding: '8px',
+                display: 'flex',
+                flexDirection: 'column',
+                gap: '2px'
+              }}
+            >
+              {[
+                { key: 'character', label: t('editor.visCharacter', 'Characters') },
+                { key: 'location', label: t('editor.visLocation', 'Locations') },
+                { key: 'lore', label: t('editor.visLore', 'Items & Lore') },
+                { key: 'twist', label: t('editor.visTwist', 'Twists & Foreshadows') },
+                { key: 'quicknote', label: t('editor.visQuicknote', 'Quick Notes') }
+              ].map(item => (
+                <label key={item.key} style={{ display: 'flex', alignItems: 'center', gap: '8px', padding: '6px 4px', fontSize: '11px', fontFamily: 'var(--font-mono)', color: 'var(--text-secondary)', cursor: 'pointer' }}>
+                  <input
+                    type="checkbox"
+                    checked={linkVisibility[item.key]}
+                    onChange={(e) => setLinkVisibility(prev => ({ ...prev, [item.key]: e.target.checked }))}
+                    style={{ accentColor: 'var(--accent-amber)' }}
+                  />
+                  {item.label}
+                </label>
+              ))}
+            </div>
+          )}
+        </div>
       </div>
 
       {/* ── Focus Mode Overlays ────────────────────────────── */}
@@ -1001,6 +1123,7 @@ export default function Editor({
         )}
 
         <div
+          className={`editor-content-wrapper ${!linkVisibility.character ? 'hide-character-links' : ''} ${!linkVisibility.location ? 'hide-location-links' : ''} ${!linkVisibility.lore ? 'hide-lore-links' : ''} ${!linkVisibility.twist ? 'hide-twist-links' : ''} ${!linkVisibility.quicknote ? 'hide-quicknote-links' : ''}`}
           style={{
             flex: 1,
             overflowY: 'auto',
@@ -1126,8 +1249,10 @@ export default function Editor({
           position={activePopup.position}
           projectPath={projectPath}
           projectConfig={projectConfig}
+          entities={entities}
           onClose={closePopup}
           onCreated={handleCustomLoreCreated}
+          onConfigUpdate={onConfigUpdate}
         />
       )}
 
@@ -1171,6 +1296,44 @@ export default function Editor({
           entities={Object.values(entities)}
           onClose={closePopup}
           onAliasAdded={handleAliasCreated}
+        />
+      )}
+
+      {activePopup?.type === 'duplicateEntityExact' && (
+        <DuplicateEntityPopup
+          selectedText={activePopup.data.text}
+          match={activePopup.data.match}
+          position={activePopup.position}
+          onClose={closePopup}
+          onForceCreate={() => {
+            const { entityType, text } = activePopup.data
+            closePopup()
+            handleCreateEntity(entityType, true, text)
+          }}
+        />
+      )}
+
+      {activePopup?.type === 'duplicateEntityPartial' && (
+        <PartialMatchEntityPopup
+          selectedText={activePopup.data.text}
+          match={activePopup.data.match}
+          position={activePopup.position}
+          onClose={closePopup}
+          onForceCreate={() => {
+            const { entityType, text } = activePopup.data
+            closePopup()
+            handleCreateEntity(entityType, true, text)
+          }}
+          onAddAlias={async () => {
+            const { match, text } = activePopup.data
+            closePopup()
+            handleAction('addAliasDirect', { entity: match, text })
+          }}
+          onJustLink={() => {
+            const { match } = activePopup.data
+            closePopup()
+            handleLinkEntity(match)
+          }}
         />
       )}
 

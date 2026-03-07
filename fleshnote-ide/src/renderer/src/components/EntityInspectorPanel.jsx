@@ -225,8 +225,10 @@ export default function EntityInspectorPanel({
   entities,
   activeChapter,
   projectPath,
+  projectConfig,
   chapters,
-  onEntityUpdated
+  onEntityUpdated,
+  onConfigUpdate
 }) {
   const { t } = useTranslation()
   const [viewMode, setViewMode] = useState('author')  // 'author' | 'narrative' | 'world_time'
@@ -256,6 +258,20 @@ export default function EntityInspectorPanel({
   const locationData = entity?.type === 'location' ? currEntity : null
   const groupData = entity?.type === 'group' ? currEntity : null
   const loreData = (!charData && !locationData && !groupData && entity?.type !== 'quicknote') ? currEntity : null
+
+  const loreCategories = (() => {
+    const cats = new Set(['item']) // basic generic fallback
+
+    // If we wanted to check config here we'd need it passed down, but adding existing categories is safe enough
+    if (Array.isArray(entities)) {
+      entities.forEach(e => {
+        if (e.type !== 'character' && e.type !== 'location' && e.type !== 'group' && e.type !== 'quicknote' && e.category) {
+          cats.add(e.category.toLowerCase().trim())
+        }
+      })
+    }
+    return Array.from(cats).sort()
+  })()
 
   // Auto-default filterCharacterId to active chapter's POV character
   useEffect(() => {
@@ -400,6 +416,7 @@ export default function EntityInspectorPanel({
       setEditData({
         name: loreData.name || '',
         category: loreData.category || '',
+        customCategory: '',
         classification: loreData.classification || '',
         description: loreData.description || '',
         rules: loreData.rules || '',
@@ -466,11 +483,12 @@ export default function EntityInspectorPanel({
           aliases: aliasArray
         })
       } else if (loreData) {
+        const finalCategory = editData.category === 'new_category' ? (editData.customCategory || '').trim() || 'item' : editData.category
         await window.api.updateLoreEntity({
           project_path: projectPath,
           entity_id: currEntity.id,
           name: editData.name,
-          category: editData.category,
+          category: finalCategory,
           classification: editData.classification,
           description: editData.description,
           rules: editData.rules,
@@ -479,6 +497,22 @@ export default function EntityInspectorPanel({
           notes: editData.notes,
           aliases: aliasArray
         })
+
+        if (editData.category === 'new_category' && finalCategory) {
+          try {
+            const existingCats = Array.isArray(projectConfig?.lore_categories)
+              ? projectConfig.lore_categories
+              : (typeof projectConfig?.lore_categories === 'string' ? JSON.parse(projectConfig.lore_categories) : [])
+
+            if (!existingCats.includes(finalCategory)) {
+              const newCats = [...existingCats, finalCategory]
+              await window.api?.updateProjectConfig?.(projectPath, 'lore_categories', newCats, 'json')
+              onConfigUpdate?.({ ...projectConfig, lore_categories: newCats })
+            }
+          } catch (err) {
+            console.error('Failed to append new category to project config:', err)
+          }
+        }
       }
 
       setEditMode(false)
@@ -562,6 +596,25 @@ export default function EntityInspectorPanel({
   }
 
   // ── Render ────────────────────────────────────────────────────────────────
+
+  const handleConfirmDeleteEntity = async () => {
+    setShowDeleteConfirm(false)
+    try {
+      if (entity.type === 'character') {
+        await window.api.deleteCharacter({ project_path: projectPath, character_id: entity.id })
+      } else if (entity.type === 'location') {
+        await window.api.deleteLocation({ project_path: projectPath, location_id: entity.id })
+      } else if (entity.type === 'group') {
+        await window.api.deleteGroup({ project_path: projectPath, group_id: entity.id })
+      } else {
+        await window.api.deleteLoreEntity({ project_path: projectPath, entity_id: entity.id })
+      }
+      onEntityUpdated?.()
+      window.dispatchEvent(new CustomEvent('forceBackToChapters'))
+    } catch (err) {
+      console.error('Failed to delete entity:', err)
+    }
+  }
 
   const handleConfirmDeleteQuickNote = async () => {
     setShowDeleteConfirm(false)
@@ -959,7 +1012,33 @@ export default function EntityInspectorPanel({
               </div>
               {editMode ? (
                 <>
-                  {renderEditField(t('inspector.categoryLabel', 'Category'), 'category')}
+                  <div className="entity-edit-field">
+                    <label className="entity-edit-label">{t('inspector.categoryLabel', 'Category')}</label>
+                    <select
+                      className="entity-edit-input"
+                      value={editData.category || ''}
+                      onChange={(e) => handleEditField('category', e.target.value)}
+                    >
+                      <option value="">{t('inspector.selectCategory', 'Select category...')}</option>
+                      {loreCategories.map((cat) => (
+                        <option key={cat} value={cat}>
+                          {cat.charAt(0).toUpperCase() + cat.slice(1)}
+                        </option>
+                      ))}
+                      <option value="new_category">{t('inspector.newCategoryOption', '+ New Category...')}</option>
+                    </select>
+                    {editData.category === 'new_category' && (
+                      <input
+                        className="entity-edit-input"
+                        style={{ marginTop: '6px' }}
+                        type="text"
+                        value={editData.customCategory || ''}
+                        onChange={(e) => handleEditField('customCategory', e.target.value)}
+                        placeholder={t('inspector.newCategoryPlaceholder', 'Type new category...')}
+                        autoFocus
+                      />
+                    )}
+                  </div>
                   {renderEditField(t('inspector.classificationLabel', 'Classification'), 'classification')}
                   {renderEditField(t('inspector.originLabel', 'Origin'), 'origin')}
                   {renderEditField(t('inspector.rulesLabel', 'Rules / Constraints'), 'rules', true)}
@@ -1136,6 +1215,70 @@ export default function EntityInspectorPanel({
           ))
         )}
       </div>
+
+      {/* Delete Entity Section */}
+      {viewMode === 'author' && (
+        <div style={{ marginTop: '24px', display: 'flex', justifyContent: 'center' }}>
+          <button
+            onClick={() => setShowDeleteConfirm(true)}
+            className="entity-edit-btn"
+            style={{ color: 'var(--accent-red)', borderColor: 'var(--accent-red-dim)' }}
+            title={t('inspector.deleteEntityTooltip', 'Delete this entity')}
+          >
+            <Icons.Trash /> {t('inspector.deleteEntityBtn', 'Delete Entity')}
+          </button>
+        </div>
+      )}
+
+      {/* Delete Entity Confirmation Popup */}
+      {showDeleteConfirm && (
+        <div className="popup-overlay" onClick={() => setShowDeleteConfirm(false)}>
+          <div
+            className="popup-panel"
+            onClick={(e) => e.stopPropagation()}
+            style={{
+              insetInlineStart: '50%',
+              top: '50%',
+              transform: 'translate(-50%, -50%)',
+              width: '400px'
+            }}
+          >
+            <div className="popup-header">
+              <span style={{ fontSize: '16px', fontWeight: '600', color: 'var(--accent-red)' }}>{t('inspector.deleteEntityTitle', 'Delete Entity?')}</span>
+            </div>
+            <div
+              className="popup-subtitle"
+              style={{
+                whiteSpace: 'normal',
+                lineHeight: '1.5',
+                marginTop: '14px',
+                marginBottom: '20px',
+                fontSize: '14px'
+              }}
+            >
+              {t('inspector.deleteEntityWarning', 'This action is permanent. Any mentions in the text will lose their links and revert to normal text.')}
+            </div>
+            <div style={{ display: 'flex', justifyContent: 'flex-end', gap: '8px' }}>
+              <button className="entity-edit-btn" style={{ padding: '8px 16px', fontSize: '14px' }} onClick={() => setShowDeleteConfirm(false)}>
+                {t('inspector.cancel', 'Cancel')}
+              </button>
+              <button
+                className="entity-edit-btn save"
+                style={{
+                  backgroundColor: 'var(--accent-red)',
+                  borderColor: 'var(--accent-red)',
+                  color: 'var(--bg-deep)',
+                  padding: '8px 16px',
+                  fontSize: '14px'
+                }}
+                onClick={handleConfirmDeleteEntity}
+              >
+                {t('inspector.deleteEntityBtn', 'Delete Entity')}
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   )
 }

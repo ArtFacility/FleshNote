@@ -1,6 +1,21 @@
 {
-    "currentVersion": "0.6.5",
+    "currentVersion": "0.6.6",
     "history": [
+        {
+            "version": "0.6.6",
+            "date": "2026-03-07",
+            "changes": [
+                "NEW: Entity Deletion! You can now permanently delete Characters, Locations, Groups, and Lore from the Entity Inspector.",
+                "NEW: Duplicate Entity Prevention! The Editor will now intercept duplicate character/location/item creations, showing warnings for Exact Matches.",
+                "NEW: Alias Suggestions! If you create a highly similar named entity, the Editor will suggest adding it as an alias to existing ones instead.",
+                "NEW: Entity Link Visibility Toggle! You can now easily hide specific entity links (like Characters or Locations) using the Eye icon in the editor toolbar.",
+                "NEW: Dynamic Category Dropdowns! The Lore Inspector and Custom Lore popup now extract live categories from your database instead of using hardcoded lists.",
+                "Revamped Project Setup! 'Extra Lore Categories' now uses a visual chip list and includes smart 1-click genre suggestions.",
+                "Fixed glitchy animations when Editor popups appear.",
+                "Fixed Twist Inspector's save button getting pushed off-screen by long twist titles.",
+                "Cleaned up redundant 'Lore Categories' field from Project Settings window."
+            ]
+        },
         {
             "version": "0.6.5",
             "date": "2026-03-05",

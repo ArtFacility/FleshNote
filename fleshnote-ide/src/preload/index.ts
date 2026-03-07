@@ -38,21 +38,25 @@ const api = {
   createCharacter: (payload) => ipcRenderer.invoke('api:createCharacter', payload),
   bulkCreateCharacters: (payload) => ipcRenderer.invoke('api:bulkCreateCharacters', payload),
   updateCharacter: (payload) => ipcRenderer.invoke('api:updateCharacter', payload),
+  deleteCharacter: (payload) => ipcRenderer.invoke('api:deleteCharacter', payload),
 
   // ── Locations ──────────────────────────────────────
   getLocations: (projectPath) => ipcRenderer.invoke('api:getLocations', projectPath),
   createLocation: (payload) => ipcRenderer.invoke('api:createLocation', payload),
   updateLocation: (payload) => ipcRenderer.invoke('api:updateLocation', payload),
+  deleteLocation: (payload) => ipcRenderer.invoke('api:deleteLocation', payload),
 
   // ── Groups ─────────────────────────────────────────
   getGroups: (projectPath) => ipcRenderer.invoke('api:getGroups', projectPath),
   createGroup: (payload) => ipcRenderer.invoke('api:createGroup', payload),
   updateGroup: (payload) => ipcRenderer.invoke('api:updateGroup', payload),
+  deleteGroup: (payload) => ipcRenderer.invoke('api:deleteGroup', payload),
 
   // ── Entities (for linkification) ───────────────────
   getEntities: (projectPath) => ipcRenderer.invoke('api:getEntities', projectPath),
   createLoreEntity: (payload) => ipcRenderer.invoke('api:createLoreEntity', payload),
   updateLoreEntity: (payload) => ipcRenderer.invoke('api:updateLoreEntity', payload),
+  deleteLoreEntity: (payload) => ipcRenderer.invoke('api:deleteLoreEntity', payload),
   appendEntityDescription: (payload) => ipcRenderer.invoke('api:appendEntityDescription', payload),
   addEntityAlias: (payload) => ipcRenderer.invoke('api:addEntityAlias', payload),
   searchEntities: (payload) => ipcRenderer.invoke('api:searchEntities', payload),

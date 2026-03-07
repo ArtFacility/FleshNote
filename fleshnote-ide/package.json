@@ -1,6 +1,6 @@
 {
   "name": "fleshnote-ide",
-  "version": "0.6.5",
+  "version": "0.6.6",
   "description": "A write-first note-second editor with a focus on story structure and character development.",
   "main": "./out/main/index.js",
   "author": {

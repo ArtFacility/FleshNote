@@ -275,6 +275,31 @@
     font-weight: inherit;
 }
 
+/* Hide specific links from toggle */
+.editor-content-wrapper.hide-character-links .entity-link.character {
+    color: inherit;
+    border-bottom: none;
+    font-weight: inherit;
+}
+
+.editor-content-wrapper.hide-location-links .entity-link.location {
+    color: inherit;
+    border-bottom: none;
+    font-weight: inherit;
+}
+
+.editor-content-wrapper.hide-lore-links .entity-link.item,
+.editor-content-wrapper.hide-lore-links .entity-link.lore {
+    color: inherit;
+    border-bottom: none;
+    font-weight: inherit;
+}
+
+.editor-content-wrapper.hide-quicknote-links .entity-link.quicknote {
+    color: inherit;
+    border-bottom: none;
+    font-weight: inherit;
+}
 
 .entity-link.character {
     color: var(--entity-character);
@@ -348,7 +373,8 @@
 }
 
 /* Hide twist colors when focus mode is active */
-.editor-area.focus-mode-active .twist-link {
+.editor-area.focus-mode-active .twist-link,
+.editor-content-wrapper.hide-twist-links .twist-link {
     color: inherit;
     border-bottom: none;
     font-weight: inherit;
@@ -496,14 +522,20 @@
 }
 
 .twist-title {
+    flex: 1;
     font-size: 16px;
     font-weight: 600;
     color: var(--text-primary);
     font-family: var(--font-sans);
+    min-width: 0;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
 }
 
 .twist-title-input {
     flex: 1;
+    min-width: 0;
     font-size: 16px;
     font-weight: 600;
     color: var(--text-primary);
@@ -521,6 +553,7 @@
 .twist-header-actions {
     display: flex;
     gap: 4px;
+    flex-shrink: 0;
 }
 
 .twist-icon-btn {

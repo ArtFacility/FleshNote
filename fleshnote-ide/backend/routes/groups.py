@@ -38,6 +38,10 @@ class GroupUpdate(BaseModel):
     true_agenda: str | None = None
     notes: str | None = None
 
+class GroupDelete(BaseModel):
+    project_path: str
+    group_id: int
+
 
 def _get_db(project_path: str):
     db_path = os.path.join(project_path, "fleshnote.db")
@@ -145,3 +149,13 @@ def update_group(req: GroupUpdate):
         raise HTTPException(status_code=404, detail="Group not found")
 
     return {"group": _row_to_dict(row)}
+
+
+@router.post("/api/project/group/delete")
+def delete_group(req: GroupDelete):
+    conn = _get_db(req.project_path)
+    cursor = conn.cursor()
+    cursor.execute("DELETE FROM groups WHERE id = ?", (req.group_id,))
+    conn.commit()
+    conn.close()
+    return {"status": "ok"}

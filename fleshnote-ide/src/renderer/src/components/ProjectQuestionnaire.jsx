@@ -81,6 +81,14 @@ const GENRE_PRESETS = {
   }
 }
 
+const GENRE_SUGGESTIONS = {
+  fantasy: ['artifact', 'magic system', 'ritual', 'species', 'material'],
+  'sci-fi': ['technology', 'vehicle', 'weapon', 'species', 'planet'],
+  romance: ['tradition', 'location', 'event', 'social class', 'rumor'],
+  thriller: ['evidence', 'weapon', 'document', 'suspect', 'location'],
+  custom: ['concept', 'event', 'object', 'organization', 'location']
+}
+
 export default function ProjectQuestionnaire({ workspacePath, onCancel, onComplete }) {
   const { t } = useTranslation()
   const [step, setStep] = useState(1)
@@ -106,8 +114,10 @@ export default function ProjectQuestionnaire({ workspacePath, onCancel, onComple
     genre: 'custom',
     ...GENRE_PRESETS['custom'],
     default_chapter_target: 4000,
-    extra_lore: ''
+    extra_lore: [...GENRE_SUGGESTIONS['custom']]
   })
+
+  const [newCategoryInput, setNewCategoryInput] = useState('')
 
   // Auto-fill defaults when genre changes
   const handleGenreChange = (e) => {
@@ -115,7 +125,8 @@ export default function ProjectQuestionnaire({ workspacePath, onCancel, onComple
     setFormData((prev) => ({
       ...prev,
       genre: newGenre,
-      ...GENRE_PRESETS[newGenre]
+      ...GENRE_PRESETS[newGenre],
+      extra_lore: GENRE_SUGGESTIONS[newGenre] ? [...GENRE_SUGGESTIONS[newGenre]] : []
     }))
   }
 
@@ -127,12 +138,8 @@ export default function ProjectQuestionnaire({ workspacePath, onCancel, onComple
     setLoading(true)
 
     const finalLoreCategories = [...formData.lore_categories]
-    if (formData.extra_lore.trim()) {
-      const extras = formData.extra_lore
-        .split(',')
-        .map((s) => s.trim().toLowerCase())
-        .filter(Boolean)
-      finalLoreCategories.push(...extras)
+    if (formData.extra_lore.length > 0) {
+      finalLoreCategories.push(...formData.extra_lore)
     }
 
     const payload = {
@@ -510,14 +517,138 @@ export default function ProjectQuestionnaire({ workspacePath, onCancel, onComple
                 marginBottom: '6px'
               }}
             >
-              {t('q.extraLoreLabel', 'EXTRA LORE CATEGORIES (Comma separated)')}
+              {t('q.extraLoreLabel', 'EXTRA LORE CATEGORIES')}
             </label>
-            <input
-              style={inputStyle}
-              value={formData.extra_lore}
-              onChange={(e) => updateField('extra_lore', e.target.value)}
-              placeholder={t('q.extraLorePlaceholder', 'e.g. spell, cyber-implant, drug')}
-            />
+
+            <div style={{ display: 'flex', flexWrap: 'wrap', gap: '8px', marginBottom: '12px' }}>
+              {GENRE_SUGGESTIONS[formData.genre]?.map((suggestion) => (
+                <button
+                  key={suggestion}
+                  onClick={() => {
+                    if (!formData.extra_lore.includes(suggestion) && !formData.lore_categories.includes(suggestion)) {
+                      updateField('extra_lore', [...formData.extra_lore, suggestion])
+                    }
+                  }}
+                  style={{
+                    padding: '4px 10px',
+                    backgroundColor: 'var(--bg-deep)',
+                    border: '1px solid var(--border-subtle)',
+                    borderRadius: '12px',
+                    color: 'var(--text-secondary)',
+                    fontSize: '10px',
+                    fontFamily: 'var(--font-mono)',
+                    cursor: 'pointer',
+                    textTransform: 'uppercase'
+                  }}
+                  onMouseEnter={(e) => {
+                    e.currentTarget.style.borderColor = 'var(--text-secondary)'
+                    e.currentTarget.style.color = 'var(--text-primary)'
+                  }}
+                  onMouseLeave={(e) => {
+                    e.currentTarget.style.borderColor = 'var(--border-subtle)'
+                    e.currentTarget.style.color = 'var(--text-secondary)'
+                  }}
+                >
+                  + {suggestion}
+                </button>
+              ))}
+            </div>
+
+            {formData.extra_lore.length > 0 && (
+              <div style={{ display: 'flex', flexWrap: 'wrap', gap: '8px', marginBottom: '12px' }}>
+                {formData.extra_lore.map((cat, index) => (
+                  <div
+                    key={index}
+                    style={{
+                      display: 'flex',
+                      alignItems: 'center',
+                      gap: '6px',
+                      padding: '4px 8px',
+                      backgroundColor: 'var(--entity-lore)',
+                      color: 'var(--bg-deep)',
+                      borderRadius: '4px',
+                      fontSize: '11px',
+                      fontFamily: 'var(--font-mono)',
+                      fontWeight: 'bold'
+                    }}
+                  >
+                    <span>{cat}</span>
+                    <button
+                      onClick={() => {
+                        updateField(
+                          'extra_lore',
+                          formData.extra_lore.filter((_, i) => i !== index)
+                        )
+                      }}
+                      style={{
+                        background: 'transparent',
+                        border: 'none',
+                        color: 'inherit',
+                        cursor: 'pointer',
+                        padding: 0,
+                        display: 'flex',
+                        alignItems: 'center',
+                        justifyContent: 'center',
+                        opacity: 0.8
+                      }}
+                      onMouseEnter={(e) => (e.currentTarget.style.opacity = '1')}
+                      onMouseLeave={(e) => (e.currentTarget.style.opacity = '0.8')}
+                    >
+                      <Icons.X />
+                    </button>
+                  </div>
+                ))}
+              </div>
+            )}
+
+            <div style={{ display: 'flex', gap: '8px', marginBottom: '16px' }}>
+              <input
+                style={{ ...inputStyle, marginBottom: 0, flex: 1 }}
+                value={newCategoryInput}
+                onChange={(e) => setNewCategoryInput(e.target.value)}
+                onKeyDown={(e) => {
+                  if (e.key === 'Enter') {
+                    e.preventDefault()
+                    const val = newCategoryInput.trim().toLowerCase()
+                    if (val && !formData.extra_lore.includes(val) && !formData.lore_categories.includes(val)) {
+                      updateField('extra_lore', [...formData.extra_lore, val])
+                      setNewCategoryInput('')
+                    }
+                  }
+                }}
+                placeholder={t('q.extraLorePlaceholder', 'Type category & press Enter or +')}
+              />
+              <button
+                onClick={() => {
+                  const val = newCategoryInput.trim().toLowerCase()
+                  if (val && !formData.extra_lore.includes(val) && !formData.lore_categories.includes(val)) {
+                    updateField('extra_lore', [...formData.extra_lore, val])
+                    setNewCategoryInput('')
+                  }
+                }}
+                style={{
+                  padding: '10px 16px',
+                  backgroundColor: 'var(--bg-elevated)',
+                  border: '1px solid var(--border-subtle)',
+                  color: 'var(--text-primary)',
+                  cursor: 'pointer',
+                  fontWeight: 'bold',
+                  display: 'flex',
+                  alignItems: 'center',
+                  justifyContent: 'center'
+                }}
+                onMouseEnter={(e) => {
+                  e.currentTarget.style.backgroundColor = 'var(--text-secondary)'
+                  e.currentTarget.style.color = 'var(--bg-elevated)'
+                }}
+                onMouseLeave={(e) => {
+                  e.currentTarget.style.backgroundColor = 'var(--bg-elevated)'
+                  e.currentTarget.style.color = 'var(--text-primary)'
+                }}
+              >
+                +
+              </button>
+            </div>
           </div>
         )}
         {error && (

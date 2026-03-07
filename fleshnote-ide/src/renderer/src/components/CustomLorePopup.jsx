@@ -11,12 +11,15 @@ export default function CustomLorePopup({
   position,
   projectPath,
   projectConfig,
+  entities,
+  onConfigUpdate,
   onClose,
   onCreated // callback: (entity) => void — applies entity mark + refreshes
 }) {
   const { t } = useTranslation()
   const [name, setName] = useState(selectedText || '')
   const [category, setCategory] = useState('')
+  const [customCategory, setCustomCategory] = useState('')
   const [description, setDescription] = useState('')
   const [saving, setSaving] = useState(false)
   const nameRef = useRef(null)
@@ -26,16 +29,30 @@ export default function CustomLorePopup({
     setTimeout(() => nameRef.current?.focus(), 50)
   }, [])
 
-  // Parse lore categories from project config
+  // Parse lore categories from project config and existing entities
   const categories = (() => {
+    const cats = new Set()
+
+    // Add from config if any
     try {
       const raw = projectConfig?.lore_categories
-      if (Array.isArray(raw)) return raw
-      if (typeof raw === 'string') return JSON.parse(raw)
-    } catch {
-      /* ignore */
+      const configCats = Array.isArray(raw) ? raw : (typeof raw === 'string' ? JSON.parse(raw) : [])
+      configCats.forEach(c => cats.add(c.toLowerCase().trim()))
+    } catch { }
+
+    // Add from existing entities
+    if (Array.isArray(entities)) {
+      entities.forEach(e => {
+        if (e.type !== 'character' && e.type !== 'location' && e.type !== 'group' && e.type !== 'quicknote' && e.category) {
+          cats.add(e.category.toLowerCase().trim())
+        }
+      })
     }
-    return ['item', 'spell', 'artifact', 'concept', 'organization', 'event', 'custom']
+
+    // Default fallback
+    if (cats.size === 0) cats.add('item')
+
+    return Array.from(cats).sort()
   })()
 
   const handleCreate = async () => {
@@ -43,12 +60,30 @@ export default function CustomLorePopup({
 
     setSaving(true)
     try {
+      const finalCategory = (category === 'new_category' ? customCategory.trim() : category) || 'item'
       const data = await window.api.createLoreEntity({
         project_path: projectPath,
         name: name.trim(),
-        category: category || 'item',
+        category: finalCategory,
         description: description.trim() || ''
       })
+
+      if (category === 'new_category' && finalCategory) {
+        try {
+          const existingCats = Array.isArray(projectConfig?.lore_categories)
+            ? projectConfig.lore_categories
+            : (typeof projectConfig?.lore_categories === 'string' ? JSON.parse(projectConfig.lore_categories) : [])
+
+          if (!existingCats.includes(finalCategory)) {
+            const newCats = [...existingCats, finalCategory]
+            await window.api?.updateProjectConfig?.(projectPath, 'lore_categories', newCats, 'json')
+            onConfigUpdate?.({ ...projectConfig, lore_categories: newCats })
+          }
+        } catch (err) {
+          console.error('Failed to append new category to project config:', err)
+        }
+      }
+
       onCreated?.(data.entity)
       onClose()
     } catch (err) {
@@ -63,8 +98,11 @@ export default function CustomLorePopup({
         className="popup-panel"
         onClick={(e) => e.stopPropagation()}
         style={{
-          left: Math.min(position.x, window.innerWidth - 340),
-          top: Math.min(position.y, window.innerHeight - 350)
+          position: 'fixed',
+          top: '50%',
+          left: '50%',
+          transform: 'translate(-50%, -50%)',
+          margin: 0
         }}
       >
         <div className="popup-header">
@@ -102,7 +140,19 @@ export default function CustomLorePopup({
                 {cat.charAt(0).toUpperCase() + cat.slice(1)}
               </option>
             ))}
+            <option value="new_category">{t('popup.newCategoryOption', '+ New Category...')}</option>
           </select>
+          {category === 'new_category' && (
+            <input
+              className="popup-search-input"
+              style={{ marginTop: '8px' }}
+              type="text"
+              value={customCategory}
+              onChange={(e) => setCustomCategory(e.target.value)}
+              placeholder={t('popup.newCategoryPlaceholder', 'Type new category...')}
+              autoFocus
+            />
+          )}
         </div>
 
         {/* Description */}

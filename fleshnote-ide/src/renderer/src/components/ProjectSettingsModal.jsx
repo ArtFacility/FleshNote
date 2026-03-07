@@ -260,20 +260,6 @@ export default function ProjectSettingsModal({ isOpen, onClose, projectPath, onC
                                     )}
                                 </div>
 
-                                <div className="settings-card">
-                                    <div className="settings-field">
-                                        <label>{t('settings.loreCategories', 'Lore Categories (Comma separated)')}</label>
-                                        <input
-                                            type="text"
-                                            value={(config.lore_categories || []).join(', ')}
-                                            onChange={(e) => {
-                                                const arr = e.target.value.split(',').map(s => s.trim()).filter(Boolean)
-                                                handleUpdate('lore_categories', arr, 'json')
-                                            }}
-                                            placeholder="e.g. item, artifact, weapon"
-                                        />
-                                    </div>
-                                </div>
                             </div>
                         )}
 

@@ -36,6 +36,10 @@ class LocationUpdate(BaseModel):
     aliases: list[str] | None = None
     notes: str | None = None
 
+class LocationDelete(BaseModel):
+    project_path: str
+    location_id: int
+
 
 def _get_db(project_path: str):
     db_path = os.path.join(project_path, "fleshnote.db")
@@ -151,3 +155,13 @@ def update_location(req: LocationUpdate):
             "notes": row["notes"],
         }
     }
+
+
+@router.post("/api/project/location/delete")
+def delete_location(req: LocationDelete):
+    conn = _get_db(req.project_path)
+    cursor = conn.cursor()
+    cursor.execute("DELETE FROM locations WHERE id = ?", (req.location_id,))
+    conn.commit()
+    conn.close()
+    return {"status": "ok"}

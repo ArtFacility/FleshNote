@@ -1242,7 +1242,7 @@ export default function FleshNotePlannerDesktop({ projectPath, chapters, activeC
                     <div style={{
                         position: "absolute", left: railGeom.left - BLOCK_W / 2, top: LANE_Y[0], width: BLOCK_W, height: BLOCK_H,
                         backgroundColor: "var(--bg-surface)", border: "1px solid var(--border-default)", borderTop: "3px solid var(--text-tertiary)",
-                        display: "flex", flexDirection: "column", padding: "6px 8px", zIndex: 10, opacity: 0.8
+                        display: "flex", flexDirection: "column", padding: "6px 8px", zIndex: 5, opacity: 0.8, pointerEvents: "none"
                     }}>
                         <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
                             <span style={{ fontFamily: "var(--font-mono)", fontSize: "9px", color: "var(--text-tertiary)", textTransform: "uppercase", letterSpacing: "1px" }}>{t('ide.timelineEvent', 'Event')}</span>
@@ -1254,7 +1254,7 @@ export default function FleshNotePlannerDesktop({ projectPath, chapters, activeC
                     <div style={{
                         position: "absolute", left: railGeom.right - BLOCK_W / 2, top: LANE_Y[0], width: BLOCK_W, height: BLOCK_H,
                         backgroundColor: "var(--bg-surface)", border: "1px solid var(--border-default)", borderTop: "3px solid var(--text-tertiary)",
-                        display: "flex", flexDirection: "column", padding: "6px 8px", zIndex: 10, opacity: 0.8
+                        display: "flex", flexDirection: "column", padding: "6px 8px", zIndex: 5, opacity: 0.8, pointerEvents: "none"
                     }}>
                         <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
                             <span style={{ fontFamily: "var(--font-mono)", fontSize: "9px", color: "var(--text-tertiary)", textTransform: "uppercase", letterSpacing: "1px" }}>{t('ide.timelineEvent', 'Event')}</span>

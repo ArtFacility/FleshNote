@@ -315,7 +315,7 @@ export default function EntityContextMenu({
               </span>
               {t('contextMenu.createCharacter', 'Character:')} &quot;{displayText}&quot;
             </button>
-            <button className="context-menu-item" onClick={() => onCreateEntity('lore')}>
+            <button className="context-menu-item" onClick={() => onAction?.('customLore', { text: selectedText })}>
               <span className="icon" style={{ color: 'var(--entity-lore)' }}>
                 <Icons.Gem />
               </span>
@@ -326,16 +326,6 @@ export default function EntityContextMenu({
                 <Icons.MapPin />
               </span>
               {t('contextMenu.createLocation', 'Location:')} &quot;{displayText}&quot;
-            </button>
-            <div className="context-menu-divider" />
-            <button
-              className="context-menu-item"
-              onClick={() => onAction?.('customLore', { text: selectedText })}
-            >
-              <span className="icon">
-                <Icons.Gem />
-              </span>
-              {t('contextMenu.custom', 'Custom...')}
             </button>
           </div>
         )}

@@ -360,6 +360,10 @@ app.whenReady().then(async () => {
     return await backendPost('/api/project/character/update', payload)
   })
 
+  ipcMain.handle('api:deleteCharacter', async (_event, payload) => {
+    return await backendPost('/api/project/character/delete', payload)
+  })
+
   // ── Locations ──────────────────────────────────────
   ipcMain.handle('api:getLocations', async (_event, projectPath) => {
     return await backendPost('/api/project/locations', { project_path: projectPath })
@@ -371,6 +375,10 @@ app.whenReady().then(async () => {
 
   ipcMain.handle('api:updateLocation', async (_event, payload) => {
     return await backendPost('/api/project/location/update', payload)
+  })
+
+  ipcMain.handle('api:deleteLocation', async (_event, payload) => {
+    return await backendPost('/api/project/location/delete', payload)
   })
 
   // ── Groups ─────────────────────────────────────────
@@ -386,6 +394,10 @@ app.whenReady().then(async () => {
     return await backendPost('/api/project/group/update', payload)
   })
 
+  ipcMain.handle('api:deleteGroup', async (_event, payload) => {
+    return await backendPost('/api/project/group/delete', payload)
+  })
+
   // ── Entities ───────────────────────────────────────
   ipcMain.handle('api:getEntities', async (_event, projectPath) => {
     return await backendPost('/api/project/entities', { project_path: projectPath })
@@ -397,6 +409,10 @@ app.whenReady().then(async () => {
 
   ipcMain.handle('api:updateLoreEntity', async (_event, payload) => {
     return await backendPost('/api/project/lore-entity/update', payload)
+  })
+
+  ipcMain.handle('api:deleteLoreEntity', async (_event, payload) => {
+    return await backendPost('/api/project/lore-entity/delete', payload)
   })
 
   ipcMain.handle('api:appendEntityDescription', async (_event, payload) => {

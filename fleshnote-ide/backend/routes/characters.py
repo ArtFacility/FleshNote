@@ -44,6 +44,10 @@ class CharacterUpdate(BaseModel):
     aliases: list[str] | None = None
     birth_date: str | None = None
 
+class CharacterDelete(BaseModel):
+    project_path: str
+    character_id: int
+
 
 class BulkCharacterCreate(BaseModel):
     project_path: str
@@ -182,6 +186,16 @@ def update_character(req: CharacterUpdate):
             "birth_date": row["birth_date"] if "birth_date" in row.keys() else "",
         }
     }
+
+
+@router.post("/api/project/character/delete")
+def delete_character(req: CharacterDelete):
+    conn = _get_db(req.project_path)
+    cursor = conn.cursor()
+    cursor.execute("DELETE FROM characters WHERE id = ?", (req.character_id,))
+    conn.commit()
+    conn.close()
+    return {"status": "ok"}
 
 
 @router.post("/api/project/characters/bulk-create")

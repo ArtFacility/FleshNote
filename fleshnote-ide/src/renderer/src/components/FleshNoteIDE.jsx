@@ -740,8 +740,10 @@ export default function FleshNoteIDE({ projectConfig, projectPath, onCloseProjec
                     entities={entities}
                     activeChapter={activeChapter}
                     projectPath={projectPath}
+                    projectConfig={projectConfig}
                     chapters={chapters}
                     onEntityUpdated={handleEntitiesChanged}
+                    onConfigUpdate={onConfigUpdate}
                   />
                 )}
                 {leftPanelMode === 'twist' && inspectedTwistId && (
@@ -829,6 +831,7 @@ export default function FleshNoteIDE({ projectConfig, projectPath, onCloseProjec
                 onEntityClick={handleEntityClick}
                 onTwistClick={handleTwistClick}
                 onEntitiesChanged={handleEntitiesChanged}
+                onConfigUpdate={onConfigUpdate}
               />
             )}
           </>

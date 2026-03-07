@@ -29,7 +29,6 @@
     max-height: 480px;
     overflow-y: auto;
     box-shadow: 0 12px 48px rgba(0, 0, 0, 0.6);
-    animation: popup-scale-in 0.12s ease;
 }
 
 .popup-panel.popup-wide {

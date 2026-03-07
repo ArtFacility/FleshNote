@@ -46,6 +46,10 @@ class LoreEntityUpdate(BaseModel):
     aliases: list[str] | None = None
     notes: str | None = None
 
+class LoreEntityDelete(BaseModel):
+    project_path: str
+    entity_id: int
+
 
 class AppendDescriptionRequest(BaseModel):
     project_path: str
@@ -141,6 +145,16 @@ def update_lore_entity(req: LoreEntityUpdate):
             "notes": row["notes"],
         }
     }
+
+
+@router.post("/api/project/lore-entity/delete")
+def delete_lore_entity(req: LoreEntityDelete):
+    conn = _get_db(req.project_path)
+    cursor = conn.cursor()
+    cursor.execute("DELETE FROM lore_entities WHERE id = ?", (req.entity_id,))
+    conn.commit()
+    conn.close()
+    return {"status": "ok"}
 
 
 @router.post("/api/project/entity/append-description")
