@@ -127,7 +127,9 @@
     "duplicatePartialMsgAny": "\"{{matchName}}\" już istnieje w twojej bazie danych. Czy \"{{newName}}\" to alias do tego wpisu, czy nowy wpis?",
     "addAliasOption": "Dodaj alias do {{name}}",
     "justLinkOption": "Tylko link do {{name}}",
-    "newEntryOption": "Nowy wpis"
+    "newEntryOption": "Nowy wpis",
+    "cancelPartialBtn": "Anuluj",
+    "cancel": "Anuluj"
   },
   "contextMenu": {
     "linkToExisting": "Połącz z istniejącym",
@@ -665,5 +667,32 @@
     "warning_sparse": "Tylko {{count}} zapowiedzi na przestrzeni {{words}} słów — czytelnicy mogą zapomnieć o przygotowaniach.",
     "warning_clustered": "Wszystkie znaczniki są w promieniu 500 słów — rozważ rozłożenie zapowiedzi na większej przestrzeni.",
     "warning_desert_gap": "Największa przerwa między znacznikami: {{gap}} słów — długa cisza, która może sprawić, że czytelnik straci uwagę."
+  },
+  "categories": {
+    "mechanic": "mechanika",
+    "item": "przedmiot",
+    "artifact": "artefakt",
+    "creature": "stworzenie",
+    "material": "materiał",
+    "tech": "technologia",
+    "weapon": "broń",
+    "vehicle": "pojazd",
+    "tradition": "tradycja",
+    "location_detail": "szczegóły_lokacji",
+    "evidence": "dowód",
+    "document": "dokument",
+    "magic system": "system magii",
+    "ritual": "rytuał",
+    "species": "gatunek",
+    "technology": "technologia",
+    "planet": "planeta",
+    "location": "lokacja",
+    "event": "wydarzenie",
+    "social class": "klasa społeczna",
+    "rumor": "plotka",
+    "suspect": "podejrzany",
+    "concept": "koncept",
+    "object": "obiekt",
+    "organization": "organizacja"
   }
 }

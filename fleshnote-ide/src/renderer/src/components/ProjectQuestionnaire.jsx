@@ -549,7 +549,7 @@ export default function ProjectQuestionnaire({ workspacePath, onCancel, onComple
                     e.currentTarget.style.color = 'var(--text-secondary)'
                   }}
                 >
-                  + {suggestion}
+                  + {t(`categories.${suggestion}`, suggestion)}
                 </button>
               ))}
             </div>
@@ -572,7 +572,7 @@ export default function ProjectQuestionnaire({ workspacePath, onCancel, onComple
                       fontWeight: 'bold'
                     }}
                   >
-                    <span>{cat}</span>
+                    <span>{t(`categories.${cat}`, cat)}</span>
                     <button
                       onClick={() => {
                         updateField(

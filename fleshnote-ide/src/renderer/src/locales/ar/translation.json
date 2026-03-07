@@ -127,7 +127,9 @@
     "duplicatePartialMsgAny": "\"{{matchName}}\" موجود بالفعل في قاعدة البيانات الخاصة بك. هل \"{{newName}}\" اسم مستعار لهذا الإدخال، أم إدخال جديد؟",
     "addAliasOption": "إضافة اسم مستعار إلى {{name}}",
     "justLinkOption": "مجرد رابط إلى {{name}}",
-    "newEntryOption": "إدخال جديد"
+    "newEntryOption": "إدخال جديد",
+    "cancelPartialBtn": "إلغاء",
+    "cancel": "إلغاء"
   },
   "contextMenu": {
     "linkToExisting": "ربط بكيان حالي",
@@ -665,5 +667,32 @@
     "warning_sparse": "فقط {{count}} تلميح(ات) عبر {{words}} كلمة - قد ينسى القراء الإعداد.",
     "warning_clustered": "جميع العلامات تقع ضمن 500 كلمة - فكر في توزيع التلميحات بشكل أكبر.",
     "warning_desert_gap": "أكبر فجوة بين العلامات: {{gap}} كلمة - صمت طويل قد يفقد انتباه القارئ."
+  },
+  "categories": {
+    "mechanic": "آلية",
+    "item": "عنصر",
+    "artifact": "قطعة أثرية",
+    "creature": "مخلوق",
+    "material": "مادة",
+    "tech": "تقنية",
+    "weapon": "سلاح",
+    "vehicle": "مركبة",
+    "tradition": "تقليد",
+    "location_detail": "تفاصيل_الموقع",
+    "evidence": "دليل",
+    "document": "وثيقة",
+    "magic system": "نظام السحر",
+    "ritual": "طقوس",
+    "species": "أنواع",
+    "technology": "تكنولوجيا",
+    "planet": "كوكب",
+    "location": "موقع",
+    "event": "حدث",
+    "social class": "طبقة اجتماعية",
+    "rumor": "شائعة",
+    "suspect": "مشتبه به",
+    "concept": "مفهوم",
+    "object": "شيء",
+    "organization": "منظمة"
   }
 }
