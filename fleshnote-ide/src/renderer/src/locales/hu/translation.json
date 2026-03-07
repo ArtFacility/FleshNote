@@ -112,7 +112,22 @@
     "boldTooltip": "Félkövér (Ctrl+B)",
     "italicTooltip": "Dőlt (Ctrl+I)",
     "underlineTooltip": "Aláhúzott (Ctrl+U)",
-    "strikethroughTooltip": "Áthúzott"
+    "strikethroughTooltip": "Áthúzott",
+    "sprintWarning": "Írási sprintben vagy! Nem léphetsz ki a fókuszmódból, amíg nem éred el a szókeretedet.",
+    "duplicateExactTitle": "Duplikált karakter",
+    "duplicateExactTitleLoc": "Duplikált helyszín",
+    "duplicateExactTitleLore": "Duplikált történeti elem",
+    "duplicateExactMsg": "Már van egy \"{{name}}\" nevű karaktered. Biztosan újat akarsz létrehozni?",
+    "duplicateExactMsgAny": "Már van egy \"{{name}}\" nevű bejegyzésed. Biztosan újat akarsz létrehozni?",
+    "createAnyway": "Létrehozás mindenképp",
+    "duplicatePartialTitle": "Hasonló karakter található",
+    "duplicatePartialTitleLoc": "Hasonló helyszín található",
+    "duplicatePartialTitleLore": "Hasonló történeti elem található",
+    "duplicatePartialMsg": "A(z) \"{{matchName}}\" már létezik az adatbázisodban. A(z) \"{{newName}}\" egy alias ehhez a karakterhez, vagy egy új bejegyzés?",
+    "duplicatePartialMsgAny": "A(z) \"{{matchName}}\" már létezik az adatbázisodban. A(z) \"{{newName}}\" egy alias ehhez a bejegyzéshez, vagy egy új bejegyzés?",
+    "addAliasOption": "Alias hozzáadása ehhez: {{name}}",
+    "justLinkOption": "Csak hivatkozás erre: {{name}}",
+    "newEntryOption": "Új bejegyzés"
   },
   "contextMenu": {
     "linkToExisting": "Összekapcsolás létezővel",
@@ -264,7 +279,11 @@
     "viewNarrativeTooltip": "Szűrés olvasási sorrend szerint (fejezetek)",
     "viewWorldTimeTooltip": "Szűrés a világon belüli időrend szerint",
     "allCharacters": "Minden karakter",
-    "noWorldTime": "Nincs világidő megadva ehhez a fejezethez. Állíts be egy világidőt a fejezet metaadataiban a szűréshez."
+    "noWorldTime": "Nincs világidő megadva ehhez a fejezethez. Állíts be egy világidőt a fejezet metaadataiban a szűréshez.",
+    "deleteEntityBtn": "Bejegyzés törlése",
+    "deleteEntityTitle": "Törlöd a bejegyzést?",
+    "deleteEntityWarning": "Ez a művelet végleges. A szövegben lévő említések elveszítik a hivatkozásukat és normál szöveggé válnak.",
+    "deleteEntityTooltip": "Bejegyzés törlése"
   },
   "ide": {
     "saving": "Mentés...",
