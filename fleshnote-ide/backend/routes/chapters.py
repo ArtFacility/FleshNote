@@ -7,7 +7,7 @@ import os
 import sqlite3
 import re
 import uuid
-from fastapi import APIRouter, HTTPException
+from fastapi import APIRouter, HTTPException, BackgroundTasks
 from pydantic import BaseModel
 from routes.imports import _plain_text_to_html
 
@@ -112,8 +112,12 @@ def _entity_html_to_md(content: str) -> str:
 
 
 def _update_entity_appearances(cursor, chapter_id: int, md_content: str):
-    """Scan markdown content for entity links and update the entity_appearances table."""
+    """Scan markdown content for entity links and update both entity_appearances and entity_mentions."""
     cursor.execute("DELETE FROM entity_appearances WHERE chapter_id = ?", (chapter_id,))
+    cursor.execute("DELETE FROM entity_mentions WHERE chapter_id = ?", (chapter_id,))
+
+    # Strip HTML for proper word counting
+    plain = re.sub(r'<[^>]+>', ' ', md_content)
 
     pattern = r'\{\{(char|loc|item|lore|group|quicknote):(\d+)\|[^}]+\}\}'
     seen = set()
@@ -121,6 +125,20 @@ def _update_entity_appearances(cursor, chapter_id: int, md_content: str):
         short_type = match.group(1)
         entity_id = int(match.group(2))
         entity_type = _SHORT_TO_ENTITY_TYPE.get(short_type, short_type)
+
+        # Calculate word offset like we do for foreshadowing
+        char_pos = match.start()
+        text_before = re.sub(r'<[^>]+>', ' ', md_content[:char_pos])
+        text_before = re.sub(r'\{\{[^}]+\}\}', '', text_before)
+        word_offset = len(text_before.split())
+
+        # Insert into entity_mentions
+        cursor.execute("""
+            INSERT INTO entity_mentions (entity_type, entity_id, chapter_id, word_offset)
+            VALUES (?, ?, ?, ?)
+        """, (entity_type, entity_id, chapter_id, word_offset))
+
+        # First mention for entity_appearances
         key = (entity_type, entity_id)
         if key not in seen:
             seen.add(key)
@@ -128,7 +146,7 @@ def _update_entity_appearances(cursor, chapter_id: int, md_content: str):
                 INSERT OR IGNORE INTO entity_appearances
                     (entity_type, entity_id, chapter_id, first_mention_offset)
                 VALUES (?, ?, ?, ?)
-            """, (entity_type, entity_id, chapter_id, match.start()))
+            """, (entity_type, entity_id, chapter_id, word_offset))
 
 
 # ── Twist / Foreshadow Link Serialization ────────────────────────────────────
@@ -471,15 +489,17 @@ def load_chapter_content(req: ChapterLoad):
 
 
 @router.post("/api/project/chapter/save")
-def save_chapter_content(req: ChapterSave):
+def save_chapter_content(req: ChapterSave, background_tasks: BackgroundTasks):
     conn = _get_db(req.project_path)
     cursor = conn.cursor()
-    cursor.execute("SELECT md_filename FROM chapters WHERE id = ?", (req.chapter_id,))
+    cursor.execute("SELECT md_filename, word_count FROM chapters WHERE id = ?", (req.chapter_id,))
     row = cursor.fetchone()
 
     if not row:
         conn.close()
         raise HTTPException(status_code=404, detail="Chapter not found")
+
+    old_word_count = row["word_count"] or 0
 
     # Convert entity-link HTML spans to markdown markers before writing
     md_content = _entity_html_to_md(req.content)
@@ -505,6 +525,71 @@ def save_chapter_content(req: ChapterSave):
         SET word_count = ?, updated_at = CURRENT_TIMESTAMP
         WHERE id = ?
     """, (req.word_count, req.chapter_id))
+
+    # Log difference in words
+    word_diff = req.word_count - old_word_count
+    
+    if word_diff > 0:
+        cursor.execute("SELECT stat_value FROM stats WHERE stat_key = 'words_since_last_top_words_update'")
+        stat_row = cursor.fetchone()
+        current_words = int(stat_row["stat_value"]) if (stat_row and stat_row["stat_value"].isdigit()) else 0
+        current_words += word_diff
+        
+        if current_words >= 100:
+            current_words = 0
+            from routes.stats import _calculate_top_words
+            background_tasks.add_task(_calculate_top_words, req.project_path)
+            
+        if stat_row:
+            cursor.execute("UPDATE stats SET stat_value = ? WHERE stat_key = 'words_since_last_top_words_update'", (str(current_words),))
+        else:
+            cursor.execute("INSERT INTO stats (stat_key, stat_value) VALUES ('words_since_last_top_words_update', ?)", (str(current_words),))
+
+    if word_diff != 0:
+        new_words = word_diff if word_diff > 0 else 0
+        deleted_words = abs(word_diff) if word_diff < 0 else 0
+        event_ctx = f"chapter_save:{req.chapter_id}"
+
+        # Get the most recent log entry for this context
+        cursor.execute("""
+            SELECT id, timestamp, new_words, deleted_words
+            FROM stat_logs
+            WHERE event_context = ?
+            ORDER BY timestamp DESC
+            LIMIT 1
+        """, (event_ctx,))
+        last_log = cursor.fetchone()
+
+        import datetime
+
+        if last_log:
+            # Check if this log is less than 60 seconds old
+            log_time = datetime.datetime.fromisoformat(last_log["timestamp"])
+            now = datetime.datetime.utcnow()
+            diff_seconds = (now - log_time).total_seconds()
+
+            if diff_seconds < 60:
+                # Update existing row instead of spamming new rows
+                updated_new_words = last_log["new_words"] + new_words
+                updated_deleted_words = last_log["deleted_words"] + deleted_words
+                
+                cursor.execute("""
+                    UPDATE stat_logs
+                    SET new_words = ?, deleted_words = ?, timestamp = CURRENT_TIMESTAMP
+                    WHERE id = ?
+                """, (updated_new_words, updated_deleted_words, last_log["id"]))
+            else:
+                # 60s passed, create a new row
+                cursor.execute("""
+                    INSERT INTO stat_logs (new_words, deleted_words, event_context)
+                    VALUES (?, ?, ?)
+                """, (new_words, deleted_words, event_ctx))
+        else:
+             cursor.execute("""
+                INSERT INTO stat_logs (new_words, deleted_words, event_context)
+                VALUES (?, ?, ?)
+            """, (new_words, deleted_words, event_ctx))
+
     conn.commit()
     conn.close()
 

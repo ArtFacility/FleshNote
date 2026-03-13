@@ -453,6 +453,7 @@ def generate_project_db(project_path: str, answers: dict) -> str:
             reveal_in_chapter   INTEGER, -- Planned chapter for the reveal (author planning)
             notes               TEXT,
             created_at          TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+            word_offset         INTEGER, -- Optional, links fact to a textual position
             FOREIGN KEY (character_id) REFERENCES characters(id)
                 ON DELETE CASCADE,
             FOREIGN KEY (learned_in_chapter) REFERENCES chapters(id)
@@ -604,6 +605,87 @@ def generate_project_db(project_path: str, answers: dict) -> str:
     """)
 
     # ══════════════════════════════════════════════════════════
+    # TABLE 13.5: CHARACTER RELATIONSHIPS
+    # Tracks dynamic relationships between characters over time.
+    # ══════════════════════════════════════════════════════════
+
+    cursor.execute("""
+        CREATE TABLE IF NOT EXISTS character_relationships (
+            id                  INTEGER PRIMARY KEY AUTOINCREMENT,
+            character_id        INTEGER NOT NULL,
+            target_character_id INTEGER NOT NULL,
+            rel_type            TEXT NOT NULL,
+            notes               TEXT,
+            chapter_id          INTEGER,
+            word_offset         INTEGER,
+            world_time          TEXT,
+            is_one_sided        INTEGER DEFAULT 1,
+            created_at          TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+            FOREIGN KEY (character_id) REFERENCES characters(id) ON DELETE CASCADE,
+            FOREIGN KEY (target_character_id) REFERENCES characters(id) ON DELETE CASCADE,
+            FOREIGN KEY (chapter_id) REFERENCES chapters(id) ON DELETE SET NULL
+        )
+    """)
+
+    # ══════════════════════════════════════════════════════════
+    # TABLE 15: STATS (Aggregated Statistics)
+    # Simple key/value store for global project stats (e.g. days
+    # writing, total focus time, etc.)
+    # ══════════════════════════════════════════════════════════
+
+    cursor.execute("""
+        CREATE TABLE IF NOT EXISTS stats (
+            stat_key   TEXT PRIMARY KEY,
+            stat_value TEXT
+        )
+    """)
+
+    # ══════════════════════════════════════════════════════════
+    # TABLE 16: STAT_LOGS (Daily / Session Activity)
+    # Tracks writing habits over time for the GitHub-style heatmap.
+    # We store new_words and deleted_words separately at user request.
+    # ══════════════════════════════════════════════════════════
+
+    cursor.execute("""
+        CREATE TABLE IF NOT EXISTS stat_logs (
+            id                INTEGER PRIMARY KEY AUTOINCREMENT,
+            timestamp         TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+            new_words         INTEGER DEFAULT 0,
+            deleted_words     INTEGER DEFAULT 0,
+            new_entities      INTEGER DEFAULT 0,
+            deleted_entities  INTEGER DEFAULT 0,
+            new_twists        INTEGER DEFAULT 0,
+            event_context     TEXT -- e.g. "chapter_save", "focus_kamikaze", "project_init"
+        )
+    """)
+
+    # ══════════════════════════════════════════════════════════
+    # TABLE 17: ENTITY_MENTIONS (Precise Offset Tracking)
+    # Logs exact word_offset for entity mentions in chapters
+    # populated via TipTap frontend during autosaves.
+    # ══════════════════════════════════════════════════════════
+
+    cursor.execute("""
+        CREATE TABLE IF NOT EXISTS entity_mentions (
+            id            INTEGER PRIMARY KEY AUTOINCREMENT,
+            entity_type   TEXT NOT NULL,
+            entity_id     INTEGER NOT NULL,
+            chapter_id    INTEGER NOT NULL,
+            word_offset   INTEGER NOT NULL,
+            created_at    TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+            FOREIGN KEY (chapter_id) REFERENCES chapters(id) ON DELETE CASCADE
+            -- Does not enforce UNIQUE on chapter_id because entities can appear multiple times
+        );
+    """)
+
+    cursor.execute("""
+        CREATE TABLE IF NOT EXISTS achievements (
+            id TEXT PRIMARY KEY,
+            unlocked_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+        );
+    """)
+
+    # ══════════════════════════════════════════════════════════
     # TRIGGER: UPDATE_BLOCK_CHAPTER_STATUS
     # Sync planner blocks when chapter status changes natively
     # ══════════════════════════════════════════════════════════
@@ -661,12 +743,41 @@ def generate_project_db(project_path: str, answers: dict) -> str:
             {"name": "Autumn", "start_month": 7},
             {"name": "Winter", "start_month": 10},
         ])),
+        ("story_start_year", "0"),
+        ("story_start_month", "1"),
+        ("story_start_day", "1"),
     ]
 
     cursor.executemany(
         "INSERT OR IGNORE INTO calendar_config (config_key, config_value) VALUES (?, ?)",
         calendar_defaults,
     )
+
+    # ══════════════════════════════════════════════════════════
+    # HISTORY ENTRIES
+    # Timeline events for entities (characters, locations, lore).
+    # Tracks births, deaths, events, actions, and interactions
+    # across the in-universe calendar for the history timeline.
+    # ══════════════════════════════════════════════════════════
+
+    cursor.execute("""
+        CREATE TABLE IF NOT EXISTS history_entries (
+            id                   INTEGER PRIMARY KEY AUTOINCREMENT,
+            entity_type          TEXT NOT NULL,
+            entity_id            INTEGER NOT NULL,
+            title                TEXT NOT NULL,
+            description          TEXT,
+            event_type           TEXT NOT NULL,
+            date_year            INTEGER NOT NULL,
+            date_month           INTEGER,
+            date_day             INTEGER,
+            date_precise         INTEGER DEFAULT 0,
+            related_entity_type  TEXT,
+            related_entity_id    INTEGER,
+            created_at           TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+            updated_at           TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+        )
+    """)
 
     # ══════════════════════════════════════════════════════════
     # INDEXES
@@ -720,6 +831,16 @@ def generate_project_db(project_path: str, answers: dict) -> str:
         "CREATE INDEX IF NOT EXISTS idx_blocks_layer ON planner_blocks(layer);",
         "CREATE INDEX IF NOT EXISTS idx_blocks_chapter ON planner_blocks(chapter_id);",
         "CREATE INDEX IF NOT EXISTS idx_arcs_layer ON planner_arcs(layer);",
+
+        # Stats indexes
+        "CREATE INDEX IF NOT EXISTS idx_stat_logs_timestamp ON stat_logs(timestamp);",
+        "CREATE INDEX IF NOT EXISTS idx_entity_mentions_chapter ON entity_mentions(chapter_id);",
+        "CREATE INDEX IF NOT EXISTS idx_entity_mentions_entity ON entity_mentions(entity_type, entity_id);",
+
+        # History timeline indexes
+        "CREATE INDEX IF NOT EXISTS idx_history_entity ON history_entries(entity_type, entity_id);",
+        "CREATE INDEX IF NOT EXISTS idx_history_event_type ON history_entries(event_type);",
+        "CREATE INDEX IF NOT EXISTS idx_history_date ON history_entries(date_year);",
     ]
 
     for idx in indexes:
@@ -797,11 +918,54 @@ def apply_migrations(db_path: str):
         if "updated_at" not in columns:
             cursor.execute("ALTER TABLE groups ADD COLUMN updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP")
 
-        # Check knowledge_states table for world_time
+        # Check knowledge_states table for world_time and word_offset
         cursor.execute("PRAGMA table_info(knowledge_states)")
         columns = [col[1] for col in cursor.fetchall()]
         if "world_time" not in columns:
             cursor.execute("ALTER TABLE knowledge_states ADD COLUMN world_time TEXT")
+        if "word_offset" not in columns:
+            cursor.execute("ALTER TABLE knowledge_states ADD COLUMN word_offset INTEGER")
+
+        # Create new analytics tables if they don't exist
+        cursor.execute("""
+            CREATE TABLE IF NOT EXISTS stats (
+                stat_key   TEXT PRIMARY KEY,
+                stat_value TEXT
+            )
+        """)
+        cursor.execute("""
+            CREATE TABLE IF NOT EXISTS stat_logs (
+                id                INTEGER PRIMARY KEY AUTOINCREMENT,
+                timestamp         TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+                new_words         INTEGER DEFAULT 0,
+                deleted_words     INTEGER DEFAULT 0,
+                new_entities      INTEGER DEFAULT 0,
+                deleted_entities  INTEGER DEFAULT 0,
+                new_twists        INTEGER DEFAULT 0,
+                event_context     TEXT
+            )
+        """)
+        cursor.execute("""
+            CREATE TABLE IF NOT EXISTS entity_mentions (
+                id            INTEGER PRIMARY KEY AUTOINCREMENT,
+                entity_type   TEXT NOT NULL,
+                entity_id     INTEGER NOT NULL,
+                chapter_id    INTEGER NOT NULL,
+                word_offset   INTEGER NOT NULL,
+                created_at    TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+                FOREIGN KEY (chapter_id) REFERENCES chapters(id) ON DELETE CASCADE
+            );
+        """)
+        
+        cursor.execute("""
+            CREATE TABLE IF NOT EXISTS achievements (
+                id TEXT PRIMARY KEY,
+                unlocked_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+            );
+        """)
+        cursor.execute("CREATE INDEX IF NOT EXISTS idx_stat_logs_timestamp ON stat_logs(timestamp);")
+        cursor.execute("CREATE INDEX IF NOT EXISTS idx_entity_mentions_chapter ON entity_mentions(chapter_id);")
+        cursor.execute("CREATE INDEX IF NOT EXISTS idx_entity_mentions_entity ON entity_mentions(entity_type, entity_id);")
 
         # Planner Migrations (Add safely into existing DBs)
         cursor.execute("""
@@ -914,6 +1078,40 @@ def apply_migrations(db_path: str):
         cursor.execute("CREATE INDEX IF NOT EXISTS idx_twist_status ON twists(status);")
         cursor.execute("CREATE INDEX IF NOT EXISTS idx_foreshadow_twist ON foreshadowings(twist_id);")
         cursor.execute("CREATE INDEX IF NOT EXISTS idx_foreshadow_chapter ON foreshadowings(chapter_id);")
+
+        # History timeline entries
+        cursor.execute("""
+            CREATE TABLE IF NOT EXISTS history_entries (
+                id                   INTEGER PRIMARY KEY AUTOINCREMENT,
+                entity_type          TEXT NOT NULL,
+                entity_id            INTEGER NOT NULL,
+                title                TEXT NOT NULL,
+                description          TEXT,
+                event_type           TEXT NOT NULL,
+                date_year            INTEGER NOT NULL,
+                date_month           INTEGER,
+                date_day             INTEGER,
+                date_precise         INTEGER DEFAULT 0,
+                related_entity_type  TEXT,
+                related_entity_id    INTEGER,
+                created_at           TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+                updated_at           TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+            )
+        """)
+        cursor.execute("CREATE INDEX IF NOT EXISTS idx_history_entity ON history_entries(entity_type, entity_id);")
+        cursor.execute("CREATE INDEX IF NOT EXISTS idx_history_event_type ON history_entries(event_type);")
+        cursor.execute("CREATE INDEX IF NOT EXISTS idx_history_date ON history_entries(date_year);")
+
+        # Calendar defaults for story start (for existing projects)
+        cursor.execute("""
+            CREATE TABLE IF NOT EXISTS calendar_config (
+                config_key   TEXT PRIMARY KEY,
+                config_value TEXT
+            )
+        """)
+        cursor.execute("INSERT OR IGNORE INTO calendar_config (config_key, config_value) VALUES (?, ?)", ("story_start_year", "0"))
+        cursor.execute("INSERT OR IGNORE INTO calendar_config (config_key, config_value) VALUES (?, ?)", ("story_start_month", "1"))
+        cursor.execute("INSERT OR IGNORE INTO calendar_config (config_key, config_value) VALUES (?, ?)", ("story_start_day", "1"))
 
         conn.commit()
     except Exception as e:

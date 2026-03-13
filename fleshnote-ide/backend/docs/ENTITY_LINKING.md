@@ -369,3 +369,10 @@ Located in `EntityInspectorPanel.jsx`.
                     │  (custom TipTap Mark) │
                     └───────────────────────┘
 ```
+---
+
+## Related Systems
+
+- **[Relationships](RELATIONSHIPS.md)**: While Entity Linking tracks *prose mentions*, the Relationship system tracks structured *character dynamics* over time.
+- **[Statistics](STATISTICS.md)**: Appearances tracked via Entity Linking are aggregated into project-wide telemetry.
+- **[Calendar System](CALENDAR_SYSTEM.md)**: World dates assigned to entities and turning points are validated against the custom calendar configuration.

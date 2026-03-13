@@ -1,12 +1,14 @@
-import { useState, useCallback, useEffect } from 'react'
+import { useState, useCallback, useEffect, useRef } from 'react'
 import { useTranslation } from 'react-i18next'
 import Editor from './Editor'
 import EntityInspectorPanel from './EntityInspectorPanel'
 import TwistInspectorPanel from './TwistInspectorPanel'
 import FleshNotePlannerDesktop from './FleshNotePlannerDesktop'
-import CustomCalendarPlanner from './CustomCalendarPlanner'
 import ProjectSettingsModal from './ProjectSettingsModal'
 import ExportModal from './ExportModal'
+import StatsDashboard from './StatsDashboard'
+import EntityManager from './EntityManager'
+import WorldbuildAndHistory from './WorldbuildAndHistory'
 import changelogData from '../changelog.json'
 
 // ─── ICONS ──────────────────────────────────────────────────────────────────
@@ -156,6 +158,38 @@ const Icons = {
       <line x1="8" y1="2" x2="8" y2="6"></line>
       <line x1="3" y1="10" x2="21" y2="10"></line>
     </svg>
+  ),
+  Globe: () => (
+    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+      <circle cx="12" cy="12" r="10"></circle>
+      <line x1="2" y1="12" x2="22" y2="12"></line>
+      <path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"></path>
+    </svg>
+  ),
+  Users: () => (
+    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+      <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path>
+      <circle cx="9" cy="7" r="4"></circle>
+      <path d="M23 21v-2a4 4 0 0 0-3-3.87"></path>
+      <path d="M16 3.13a4 4 0 0 1 0 7.75"></path>
+    </svg>
+  ),
+  Activity: () => (
+    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+      <polyline points="22 12 18 12 15 21 9 3 6 12 2 12"></polyline>
+    </svg>
+  ),
+  Menu: () => (
+    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+      <line x1="3" y1="12" x2="21" y2="12"></line>
+      <line x1="3" y1="6" x2="21" y2="6"></line>
+      <line x1="3" y1="18" x2="21" y2="18"></line>
+    </svg>
+  ),
+  Check: () => (
+    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+      <polyline points="20 6 9 17 4 12"></polyline>
+    </svg>
   )
 }
 
@@ -172,6 +206,7 @@ export default function FleshNoteIDE({ projectConfig, projectPath, onCloseProjec
   const [characters, setCharacters] = useState([])
   const [entities, setEntities] = useState([])
   const [twistIds, setTwistIds] = useState([])
+  const [calConfig, setCalConfig] = useState(null)
 
   // Left panel mode: 'chapters' or 'entity'
   const [leftPanelMode, setLeftPanelMode] = useState('chapters')
@@ -186,6 +221,72 @@ export default function FleshNoteIDE({ projectConfig, projectPath, onCloseProjec
   const [showExportModal, setShowExportModal] = useState(false)
   const [isSaving, setIsSaving] = useState(false)
 
+  // UI Toggles & Header Menu
+  const [showHeaderMenu, setShowHeaderMenu] = useState(false)
+  const [showProgressBar, setShowProgressBar] = useState(() => {
+    const saved = localStorage.getItem('fn_showProgressBar')
+    return saved !== null ? saved === 'true' : true
+  })
+  const [showStatusBar, setShowStatusBar] = useState(() => {
+    const saved = localStorage.getItem('fn_showStatusBar')
+    return saved !== null ? saved === 'true' : true
+  })
+
+  // App scale settings
+  const [scale, setScale] = useState(1.0)
+  const isAltPressed = useRef(false)
+
+  // ── Stat Tracking: Time Auditing & Sprint Recovery ────────
+  const lastTickTimeRef = useRef(Date.now())
+  const processedSprintRef = useRef(null)
+
+  // Check for abandoned sprint on load
+  useEffect(() => {
+    if (projectPath && projectConfig?.active_sprint) {
+      if (processedSprintRef.current !== projectConfig.active_sprint) {
+        processedSprintRef.current = projectConfig.active_sprint
+        // App was closed during a sprint
+        window.api.updateStat({
+          project_path: projectPath,
+          stat_key: 'sprints_abandoned',
+          increment_by: 1
+        })
+        window.api.updateProjectConfig(projectPath, 'active_sprint', '', 'string')
+      }
+    }
+  }, [projectPath, projectConfig?.active_sprint])
+
+  // 60-second time tracking tick
+  useEffect(() => {
+    if (!projectPath) return
+
+    const tickInterval = setInterval(() => {
+      const now = Date.now()
+      const elapsedMs = now - lastTickTimeRef.current
+      lastTickTimeRef.current = now
+
+      // If more than 5 minutes elapsed between ticks, the system probably slept.
+      // Do not count that as active time.
+      if (elapsedMs > 5 * 60 * 1000) return
+
+      // Generic active time
+      window.api.updateStat({ project_path: projectPath, stat_key: 'time_total_minutes', increment_by: 1 })
+
+      // Specific module time
+      if (mainView === 'editor') {
+        window.api.updateStat({ project_path: projectPath, stat_key: 'time_editor_minutes', increment_by: 1 })
+      } else if (mainView === 'planner') {
+        window.api.updateStat({ project_path: projectPath, stat_key: 'time_planner_minutes', increment_by: 1 })
+      } else if (mainView === 'stats') {
+        window.api.updateStat({ project_path: projectPath, stat_key: 'time_stats_minutes', increment_by: 1 })
+      } else if (mainView === 'calendar') {
+        window.api.updateStat({ project_path: projectPath, stat_key: 'time_calendar_minutes', increment_by: 1 })
+      }
+    }, 60000) // 1 minute
+
+    return () => clearInterval(tickInterval)
+  }, [projectPath, mainView])
+
   const toggleFocus = useCallback((mode) => setFocusMode(mode), [])
 
   const projectName = projectConfig?.project_name || t('ide.untitledProject', 'Untitled Project')
@@ -196,12 +297,13 @@ export default function FleshNoteIDE({ projectConfig, projectPath, onCloseProjec
 
     const loadData = async () => {
       try {
-        const [chaptersData, charsData, entData, qnData, twistsData] = await Promise.all([
+        const [chaptersData, charsData, entData, qnData, twistsData, calData] = await Promise.all([
           window.api.getChapters(projectPath),
           window.api.getCharacters(projectPath),
           window.api.getEntities(projectPath),
           window.api.getQuickNotes(projectPath),
-          window.api.getTwists(projectPath)
+          window.api.getTwists(projectPath),
+          window.api.getCalendarConfig(projectPath),
         ])
 
         const chapterList = chaptersData.chapters || []
@@ -212,6 +314,7 @@ export default function FleshNoteIDE({ projectConfig, projectPath, onCloseProjec
         const loadedEntities = entData.entities || []
         const loadedQuickNotes = qnData.quick_notes || []
         setEntities([...loadedEntities, ...loadedQuickNotes])
+        setCalConfig(calData.config || {})
 
         if (chapterList.length > 0) {
           const writingChapter = chapterList.find((c) => c.status === 'writing')
@@ -420,39 +523,175 @@ export default function FleshNoteIDE({ projectConfig, projectPath, onCloseProjec
   return (
     <>
       {/* ── IDE HEADER TOOLBAR ──────────────────────── */}
-      <div className="ide-header-toolbar">
-        {projectConfig?.track_custom_calendar && (
+      <div className="ide-header-toolbar" style={{ display: 'flex', justifyContent: 'space-between', width: '100%' }}>
+
+        {/* ── LEFT SIDE BUTTONS ── */}
+        <div style={{ display: 'flex', gap: 8 }}>
           <button
             className="ide-header-btn"
-            title={t('ide.calendar', 'Custom Calendar')}
-            onClick={() => setMainView(mainView === 'calendar' ? 'editor' : 'calendar')}
-            style={{ color: mainView === 'calendar' ? 'var(--accent-amber)' : 'inherit' }}
+            title={mainView === 'stats' ? t('ide.backToWriting', 'Back to writing') : t('ide.stats', 'Stats & Analytics')}
+            onClick={() => setMainView(mainView === 'stats' ? 'editor' : 'stats')}
+            style={{
+              color: mainView === 'stats' ? 'var(--accent-amber)' : 'inherit',
+              display: 'flex',
+              alignItems: 'center',
+              gap: 8,
+              padding: '0 12px',
+              border: mainView === 'stats' ? '1px solid var(--accent-amber)' : 'none',
+              borderRadius: 0
+            }}
           >
-            <Icons.Calendar />
+            <Icons.Activity />
+            <span style={{ fontSize: 11, fontFamily: 'var(--font-mono)', textTransform: 'uppercase', letterSpacing: '0.1em' }}>
+              {mainView === 'stats' ? t('ide.backToWriting', 'Back to writing') : t('ide.stats', 'Stats & Analytics')}
+            </span>
           </button>
-        )}
-        <button className="ide-header-btn" title={t('ide.notes', 'Notes')}>
-          <Icons.FileText />
-        </button>
-        <button
-          className="ide-header-btn"
-          title={t('ide.export', 'Export')}
-          onClick={() => setShowExportModal(true)}
-        >
-          <Icons.Download />
-        </button>
-        <div className="ide-header-divider" />
-        <button
-          className="ide-header-btn"
-          title={t('ide.settings', 'Settings')}
-          onClick={() => setShowSettings(true)}
-        >
-          <Icons.Settings />
-        </button>
+
+          <button
+            className="ide-header-btn"
+            title={t('ide.worldinfo', 'World & History')}
+            onClick={() => setMainView(mainView === 'worldinfo' ? 'editor' : 'worldinfo')}
+            style={{
+              color: mainView === 'worldinfo' ? 'var(--accent-amber)' : 'inherit',
+              display: 'flex',
+              alignItems: 'center',
+              gap: 8,
+              padding: '0 12px',
+              border: mainView === 'worldinfo' ? '1px solid var(--accent-amber)' : 'none',
+              borderRadius: 0
+            }}
+          >
+            <Icons.Globe />
+            <span style={{ fontSize: 11, fontFamily: 'var(--font-mono)', textTransform: 'uppercase', letterSpacing: '0.1em' }}>
+              {mainView === 'worldinfo' ? t('ide.backToWriting', 'Back to writing') : t('ide.worldinfo', 'World & History')}
+            </span>
+          </button>
+          <button
+            className="ide-header-btn"
+            title={t('ide.entityManager', 'Entity Manager')}
+            onClick={() => setMainView(mainView === 'entities' ? 'editor' : 'entities')}
+            style={{
+              color: mainView === 'entities' ? 'var(--accent-amber)' : 'inherit',
+              display: 'flex',
+              alignItems: 'center',
+              gap: 8,
+              padding: '0 12px',
+              border: mainView === 'entities' ? '1px solid var(--accent-amber)' : 'none',
+              borderRadius: 0
+            }}
+          >
+            <Icons.Users />
+            <span style={{ fontSize: 11, fontFamily: 'var(--font-mono)', textTransform: 'uppercase', letterSpacing: '0.1em' }}>
+              {mainView === 'entities' ? t('ide.backToWriting', 'Back to writing') : t('ide.entityManager', 'Entity Manager')}
+            </span>
+          </button>
+        </div>
+
+        {/* ── RIGHT SIDE BUTTONS ── */}
+        <div style={{ display: 'flex', gap: 8, alignItems: 'center', position: 'relative' }}>
+          <button
+            className="ide-header-btn"
+            title={t('ide.optionsMenu', 'Options')}
+            onClick={() => setShowHeaderMenu(!showHeaderMenu)}
+            style={{
+              display: 'flex',
+              alignItems: 'center',
+              gap: 8,
+              padding: '0 12px'
+            }}
+          >
+            <Icons.Menu />
+            <span style={{ fontSize: 11, fontFamily: 'var(--font-mono)', textTransform: 'uppercase', letterSpacing: '0.1em' }}>
+              {t('ide.optionsMenu', 'Options')}
+            </span>
+          </button>
+
+          {showHeaderMenu && (
+            <>
+              <div
+                style={{ position: 'fixed', inset: 0, zIndex: 99 }}
+                onClick={() => setShowHeaderMenu(false)}
+              />
+              <div style={{
+                position: 'absolute',
+                top: '100%',
+                right: 0,
+                marginTop: '4px',
+                background: 'var(--bg-elevated)',
+                border: '1px solid var(--border-subtle)',
+                borderRadius: '4px',
+                padding: '8px 0',
+                minWidth: '220px',
+                zIndex: 100,
+                boxShadow: '0 8px 24px rgba(0,0,0,0.5)',
+                display: 'flex',
+                flexDirection: 'column'
+              }}>
+                <button
+                  onClick={() => { setShowHeaderMenu(false); setShowExportModal(true); }}
+                  style={{ display: 'flex', alignItems: 'center', gap: 12, padding: '8px 16px', background: 'transparent', border: 'none', color: 'var(--text-primary)', fontFamily: 'var(--font-mono)', fontSize: 12, cursor: 'pointer', textAlign: 'left', width: '100%' }}
+                  onMouseEnter={e => e.currentTarget.style.background = 'var(--bg-surface)'}
+                  onMouseLeave={e => e.currentTarget.style.background = 'transparent'}
+                >
+                  <Icons.Download /> {t('ide.export', 'Export Project...')}
+                </button>
+                <button
+                  onClick={() => { setShowHeaderMenu(false); setShowSettings(true); }}
+                  style={{ display: 'flex', alignItems: 'center', gap: 12, padding: '8px 16px', background: 'transparent', border: 'none', color: 'var(--text-primary)', fontFamily: 'var(--font-mono)', fontSize: 12, cursor: 'pointer', textAlign: 'left', width: '100%' }}
+                  onMouseEnter={e => e.currentTarget.style.background = 'var(--bg-surface)'}
+                  onMouseLeave={e => e.currentTarget.style.background = 'transparent'}
+                >
+                  <Icons.Settings /> {t('ide.settings', 'Project Settings...')}
+                </button>
+
+                <div style={{ height: 1, background: 'var(--border-subtle)', margin: '8px 0' }} />
+
+                <button
+                  onClick={() => {
+                    const next = !showProgressBar;
+                    setShowProgressBar(next);
+                    localStorage.setItem('fn_showProgressBar', next);
+                  }}
+                  style={{ display: 'flex', alignItems: 'center', gap: 12, padding: '8px 16px', background: 'transparent', border: 'none', color: 'var(--text-primary)', fontFamily: 'var(--font-mono)', fontSize: 12, cursor: 'pointer', textAlign: 'left', width: '100%' }}
+                  onMouseEnter={e => e.currentTarget.style.background = 'var(--bg-surface)'}
+                  onMouseLeave={e => e.currentTarget.style.background = 'transparent'}
+                >
+                  <div style={{ width: 14, display: 'flex', justifyContent: 'center' }}>{showProgressBar && <Icons.Check />}</div>
+                  {t('ide.toggleProgressBar', 'Show Progress Bar')}
+                </button>
+
+                <button
+                  onClick={() => {
+                    const next = !showStatusBar;
+                    setShowStatusBar(next);
+                    localStorage.setItem('fn_showStatusBar', next);
+                  }}
+                  style={{ display: 'flex', alignItems: 'center', gap: 12, padding: '8px 16px', background: 'transparent', border: 'none', color: 'var(--text-primary)', fontFamily: 'var(--font-mono)', fontSize: 12, cursor: 'pointer', textAlign: 'left', width: '100%' }}
+                  onMouseEnter={e => e.currentTarget.style.background = 'var(--bg-surface)'}
+                  onMouseLeave={e => e.currentTarget.style.background = 'transparent'}
+                >
+                  <div style={{ width: 14, display: 'flex', justifyContent: 'center' }}>{showStatusBar && <Icons.Check />}</div>
+                  {t('ide.toggleStatusBar', 'Show Status Bar')}
+                </button>
+
+                <div style={{ height: 1, background: 'var(--border-subtle)', margin: '8px 0' }} />
+
+                <button
+                  onClick={() => { setShowHeaderMenu(false); onCloseProject(); }}
+                  style={{ display: 'flex', alignItems: 'center', gap: 12, padding: '8px 16px', background: 'transparent', border: 'none', color: 'var(--accent-red)', fontFamily: 'var(--font-mono)', fontSize: 12, cursor: 'pointer', textAlign: 'left', width: '100%' }}
+                  onMouseEnter={e => e.currentTarget.style.background = 'var(--bg-surface)'}
+                  onMouseLeave={e => e.currentTarget.style.background = 'transparent'}
+                >
+                  <Icons.X /> {t('ide.closeProject', 'Close Project...')}
+                </button>
+              </div>
+            </>
+          )}
+        </div>
       </div>
 
       {/* ── PROGRESS BAR ───────────────────────────── */}
-      {chapters.length > 0 && (
+      {(chapters.length > 0 && showProgressBar) && (
         <div className="progress-bar-container">
           <button
             className="progress-label"
@@ -507,8 +746,41 @@ export default function FleshNoteIDE({ projectConfig, projectPath, onCloseProjec
 
       {/* ── MAIN BODY ──────────────────────────────── */}
       <div className="ide-body">
-        {mainView === 'calendar' ? (
-          <CustomCalendarPlanner />
+        {mainView === 'worldinfo' ? (
+          <WorldbuildAndHistory
+            projectPath={projectPath}
+            chapters={chapters}
+            entities={entities}
+            characters={characters}
+            projectConfig={projectConfig}
+            onConfigUpdate={onConfigUpdate}
+            calConfig={calConfig}
+            onCalendarChanged={() => {
+              window.api.getCalendarConfig(projectPath)
+                .then(res => setCalConfig(res.config || {}))
+                .catch(err => console.error("Failed to refresh calendar config:", err))
+            }}
+          />
+        ) : mainView === 'entities' ? (
+          <EntityManager
+            projectPath={projectPath}
+            chapters={chapters}
+            entities={entities}
+            characters={characters}
+            projectConfig={projectConfig}
+            onEntityUpdated={handleEntitiesChanged}
+            onConfigUpdate={onConfigUpdate}
+          />
+        ) : mainView === 'stats' ? (
+          <StatsDashboard
+            projectPath={projectPath}
+            chapters={chapters}
+            entities={entities}
+            characters={characters}
+            projectConfig={projectConfig}
+            onEntityUpdated={handleEntitiesChanged}
+            onConfigUpdate={onConfigUpdate}
+          />
         ) : mainView === 'planner' ? (
           <FleshNotePlannerDesktop
             projectPath={projectPath}
@@ -726,7 +998,9 @@ export default function FleshNoteIDE({ projectConfig, projectPath, onCloseProjec
                               </button>
                             </div>
                           ) : (
-                            <div className={`chapter-status ${ch.status}`}>{ch.status}</div>
+                            <div className={`chapter-status ${ch.status}`}>
+                              {t(`editor.status${ch.status.charAt(0).toUpperCase() + ch.status.slice(1)}`, ch.status)}
+                            </div>
                           )}
                         </div>
                       ))
@@ -741,6 +1015,7 @@ export default function FleshNoteIDE({ projectConfig, projectPath, onCloseProjec
                     activeChapter={activeChapter}
                     projectPath={projectPath}
                     projectConfig={projectConfig}
+                    calConfig={calConfig}
                     chapters={chapters}
                     onEntityUpdated={handleEntitiesChanged}
                     onConfigUpdate={onConfigUpdate}
@@ -826,6 +1101,7 @@ export default function FleshNoteIDE({ projectConfig, projectPath, onCloseProjec
                 twistIds={twistIds}
                 projectPath={projectPath}
                 projectConfig={projectConfig}
+                calConfig={calConfig}
                 chapters={chapters}
                 onChapterMetaUpdate={handleChapterMetaUpdate}
                 onEntityClick={handleEntityClick}
@@ -839,31 +1115,23 @@ export default function FleshNoteIDE({ projectConfig, projectPath, onCloseProjec
       </div>
 
       {/* ── STATUS BAR ─────────────────────────────── */}
-      <div className="status-bar">
-        <div className="status-bar-item">
-          <span style={{
-            opacity: isSaving ? 1 : 0,
-            transition: 'opacity 0.3s ease',
-            color: 'var(--accent-amber)',
-            fontWeight: 'bold'
-          }}>
-            {t('ide.saving', 'Saving...')}
-          </span>
-        </div>
-        <div className="status-bar-right">
-          <div className="status-bar-item">Markdown · UTF-8</div>
-          <div
-            className="status-bar-item"
-            role="button"
-            tabIndex={0}
-            style={{ cursor: 'pointer' }}
-            onClick={onCloseProject}
-            onKeyDown={(e) => e.key === 'Enter' && onCloseProject()}
-          >
-            {t('ide.closeProject', 'Close Project')}
+      {showStatusBar && (
+        <div className="status-bar">
+          <div className="status-bar-item">
+            <span style={{
+              opacity: isSaving ? 1 : 0,
+              transition: 'opacity 0.3s ease',
+              color: 'var(--accent-amber)',
+              fontWeight: 'bold'
+            }}>
+              {t('ide.saving', 'Saving...')}
+            </span>
+          </div>
+          <div className="status-bar-right">
+            <div className="status-bar-item">{t('ide.statusBarFormat', 'Markdown \u00b7 UTF-8')}</div>
           </div>
         </div>
-      </div>
+      )}
 
       {deletingChapter && (
         <div

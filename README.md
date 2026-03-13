@@ -2,19 +2,22 @@
 
 An advanced, localized, and feature-rich writing tool for writers, and world builders who actually wish to finish their story this century. Built with Electron, React, TypeScript, and FastAPI.
 
-[![License: GPL v3](https://img.shields.io/badge/License-GPLv3-blue.svg)](https://www.gnu.org/licenses/gpl-3.0)
+[![License: MPL 2.0](https://img.shields.io/badge/License-MPL_2.0-brightgreen.svg)](https://opensource.org/licenses/MPL-2.0)
 
 ## 🌟 Key Features
 
-- **Intuitive World Building**: Manage entities, characters, and items with a powerful inspector.
-- **Localization Support**: Fully translated into **Hungarian (HU)**, **English (EN)**, **Arabic (AR)** and **Polish (PL)**.
-- **Advanced Editor**: Featuring `@` inline entity mentions, `CTRL+F` search, and `#TODO` tracking.
-- **Focus Sprint Modes**: Unique writing challenges including Kamikaze (stop and lose text), Fog, Hemingway, Combo, and Zen modes.
-- **Plot Planner**: A zoomable, multi-layer timeline for organizing story arcs and narrative beats.
-- **Entity Inspector**: Advanced panel for managing bio, agendas, and deep-linking between entities.
-- **Twist System**: Track major narrative reveals and their corresponding clues (foreshadowings) across chapters with heuristic analysis of your setup pacing.
-- **Export Flow**: Comprehensive export capabilities for project data (added in v0.5.0).
-- **Modern UI**: Sleek, responsive interface built with Tailwind CSS and Tiptap editor.
+- **Advanced Manuscript Editor**: Distraction-free writing with `@` entity mentions, smart `#TODO` tracking, and real-time word count velocity.
+- **Deep World Building**: A robust **Entity Inspector** to manage character bios, agendas (surface & hidden), and geographic hierarchies.
+- **Plot Planner & Timeline**: A zoomable, multi-layer canvas for mapping story arcs, beats, and complex narrative threads.
+- **Twist & Foreshadowing Tracker**: Heuristic tools to manage major reveals, ensuring clues are paced effectively across your manuscript.
+- **Stats Dashboard & Analytics**: Visualized "Story Health" diagnostics, writing habit analysis, and entity appearance auditing.
+- **World History Timeline**: Dedicated chronological tracker for events, from centuries-old lore to the immediate sequence of story events.
+- **Non-Linear Relationships**: Track evolving character dynamics through time, including one-sided feelings and chapter-specific historical states.
+- **Custom Calendar Engine**: Beyond Earth — define unique months, seasons, and epoch systems tailored to your fictional world.
+- **Bulk Entity Management**: Powerful tools to merge duplicates, manage aliases, and perform mass-cleanup of your lore database.
+- **Gamified Progression**: An intrinsic **Achievements System** with badges for consistency, volume, and narrative complexity.
+- **Professional Export Suite**: Industry-standard manuscript exports to PDF, DOCX, and EPUB with book-ready formatting presets.
+- **Full Localization**: Seamlessly switch between **English**, **Polish**, **Hungarian**, and **Arabic (RTL)**.
 
 ## 🚀 Getting Started
 
@@ -105,7 +108,7 @@ npm run build:flatpak
 
 ## 📄 License
 
-This project is licensed under the **GNU General Public License v3**. See the [LICENSE](LICENSE) file for the full text.
+This project is licensed under the **Mozilla Public License 2.0**. See the [LICENSE](LICENSE) file for the full text.
 
 ---
 Built with ❤️ by [Artfacility](https://www.artfacility.xyz)

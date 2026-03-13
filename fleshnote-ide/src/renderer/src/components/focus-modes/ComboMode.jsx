@@ -13,7 +13,7 @@ const THRESHOLDS = [
     { count: 1300, text: 'UNSTOPPABLE!' }
 ]
 
-export default function ComboMode({ editor }) {
+export default function ComboMode({ editor, projectPath }) {
     const [comboCount, setComboCount] = useState(0)
     const [opacity, setOpacity] = useState(1)
     const [deleteCount, setDeleteCount] = useState(0)
@@ -23,6 +23,14 @@ export default function ComboMode({ editor }) {
     const lastTypeTimeRef = useRef(Date.now())
     const animationFrameRef = useRef(null)
     const currentWordRef = useRef('')
+
+    const handleComboBreak = (finalCount) => {
+        if (finalCount > 0 && projectPath) {
+            try {
+                window.api.updateStat({ project_path: projectPath, stat_key: 'max_combo', set_value: finalCount.toString(), increment_by: 0 })
+            } catch (e) { }
+        }
+    }
 
     useEffect(() => {
         if (!editor) return
@@ -48,6 +56,7 @@ export default function ComboMode({ editor }) {
                 setDeleteCount(prev => {
                     const newCount = prev + 1
                     if (newCount > 3) {
+                        handleComboBreak(comboCount)
                         setComboCount(0)
                         setActiveThreshold(null)
                         currentWordRef.current = ''
@@ -67,6 +76,7 @@ export default function ComboMode({ editor }) {
 
                     // Break combo if too many consecutive consonants (e.g. keyboard mashing 'asdfg')
                     if ((consonants > 4 && vowels === 0) || (vowels > 0 && consonants / vowels > 5)) {
+                        handleComboBreak(comboCount)
                         setComboCount(0)
                         setActiveThreshold(null)
                         currentWordRef.current = ''
@@ -86,6 +96,7 @@ export default function ComboMode({ editor }) {
                     const vowelsCount = (word.match(/[aeiouyáéíóöőúüűąę]/gi) || []).length
 
                     if (consecutiveConsonants || (word.length >= 8 && vowelsCount === 0)) {
+                        handleComboBreak(comboCount)
                         setComboCount(0)
                         setActiveThreshold(null)
                         currentWordRef.current = ''
@@ -132,6 +143,7 @@ export default function ComboMode({ editor }) {
 
                 if (idleTime > maxIdleTime) {
                     // Combo broken due to timeout
+                    handleComboBreak(comboCount)
                     setComboCount(0)
                     setOpacity(0)
                     setActiveThreshold(null)
@@ -153,6 +165,7 @@ export default function ComboMode({ editor }) {
         animationFrameRef.current = requestAnimationFrame(checkIdle)
 
         return () => {
+            handleComboBreak(comboCount) // Dispatch on unmount just in case they switch off
             if (editorDom) {
                 editorDom.removeEventListener('keydown', handleKeyDown)
             }

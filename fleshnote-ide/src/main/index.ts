@@ -281,6 +281,18 @@ app.whenReady().then(async () => {
     return await backendPost('/api/project/load', { project_path: projectPath })
   })
 
+  ipcMain.handle('api:getStats', async (_event, projectPath) => {
+    return await backendPost('/api/project/stats', { project_path: projectPath })
+  })
+
+  ipcMain.handle('api:getAchievements', async (_event, projectPath) => {
+    return await backendPost('/api/project/achievements', { project_path: projectPath })
+  })
+
+  ipcMain.handle('api:updateStat', async (_event, payload) => {
+    return await backendPost('/api/project/stats/update', payload)
+  })
+
   ipcMain.handle('api:getProjectConfig', async (_event, projectPath) => {
     return await backendPost('/api/project/config', { project_path: projectPath })
   })
@@ -427,6 +439,15 @@ app.whenReady().then(async () => {
     return await backendPost('/api/project/entities/search', payload)
   })
 
+  // ── Entity Manager ────────────────────────────────────
+  ipcMain.handle('api:bulkDeleteEntities', async (_event, payload) => {
+    return await backendPost('/api/project/entities/bulk-delete', payload)
+  })
+
+  ipcMain.handle('api:mergeEntities', async (_event, payload) => {
+    return await backendPost('/api/project/entities/merge', payload)
+  })
+
   // ── Quick Notes ────────────────────────────────────
   ipcMain.handle('api:getQuickNotes', async (_event, projectPath) => {
     return await backendPost('/api/project/quick-notes', { project_path: projectPath })
@@ -459,6 +480,23 @@ app.whenReady().then(async () => {
 
   ipcMain.handle('api:getKnowledgeForCharacter', async (_event, payload) => {
     return await backendPost('/api/project/knowledge/for-character', payload)
+  })
+
+  // ── Relationships ────────────────────────────────────
+  ipcMain.handle('api:createRelationship', async (_event, payload) => {
+    return await backendPost('/api/project/relationship/create', payload)
+  })
+
+  ipcMain.handle('api:updateRelationship', async (_event, payload) => {
+    return await backendPost('/api/project/relationship/update', payload)
+  })
+
+  ipcMain.handle('api:deleteRelationship', async (_event, payload) => {
+    return await backendPost('/api/project/relationship/delete', payload)
+  })
+
+  ipcMain.handle('api:getRelationshipsForCharacter', async (_event, payload) => {
+    return await backendPost('/api/project/relationships/for-character', payload)
   })
 
   // ── Secrets ─────────────────────────────────────────
@@ -510,6 +548,23 @@ app.whenReady().then(async () => {
 
   ipcMain.handle('api:calculateAge', async (_event, payload) => {
     return await backendPost('/api/project/calendar/calculate-age', payload)
+  })
+
+  // ── History Timeline ─────────────────────────────────
+  ipcMain.handle('api:getHistoryEntries', async (_event, payload) => {
+    return await backendPost('/api/project/history/list', payload)
+  })
+
+  ipcMain.handle('api:createHistoryEntry', async (_event, payload) => {
+    return await backendPost('/api/project/history/create', payload)
+  })
+
+  ipcMain.handle('api:updateHistoryEntry', async (_event, payload) => {
+    return await backendPost('/api/project/history/update', payload)
+  })
+
+  ipcMain.handle('api:deleteHistoryEntry', async (_event, payload) => {
+    return await backendPost('/api/project/history/delete', payload)
   })
 
   // ── Planner ────────────────────────────────────────

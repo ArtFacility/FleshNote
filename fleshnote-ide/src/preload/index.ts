@@ -14,6 +14,9 @@ const api = {
   updateProjectConfig: (projectPath, key, value, type) =>
     ipcRenderer.invoke('api:updateProjectConfig', { project_path: projectPath, config_key: key, config_value: value, config_type: type }),
   loadProject: (projectPath) => ipcRenderer.invoke('api:loadProject', projectPath),
+  getStats: (projectPath) => ipcRenderer.invoke('api:getStats', projectPath),
+  getAchievements: (projectPath) => ipcRenderer.invoke('api:getAchievements', projectPath),
+  updateStat: (payload) => ipcRenderer.invoke('api:updateStat', payload),
   deleteProject: (projectPath) => ipcRenderer.invoke('api:deleteProject', projectPath),
   loadTranslations: (lang) => ipcRenderer.invoke('api:loadTranslations', lang),
   exportProject: (payload) => ipcRenderer.invoke('api:exportProject', payload),
@@ -61,6 +64,10 @@ const api = {
   addEntityAlias: (payload) => ipcRenderer.invoke('api:addEntityAlias', payload),
   searchEntities: (payload) => ipcRenderer.invoke('api:searchEntities', payload),
 
+  // ── Entity Manager ────────────────────────────────
+  bulkDeleteEntities: (payload) => ipcRenderer.invoke('api:bulkDeleteEntities', payload),
+  mergeEntities: (payload) => ipcRenderer.invoke('api:mergeEntities', payload),
+
   // ── Quick Notes ────────────────────────────────────
   getQuickNotes: (projectPath) => ipcRenderer.invoke('api:getQuickNotes', projectPath),
   createQuickNote: (payload) => ipcRenderer.invoke('api:createQuickNote', payload),
@@ -73,6 +80,12 @@ const api = {
   getKnowledgeForEntity: (payload) => ipcRenderer.invoke('api:getKnowledgeForEntity', payload),
   getKnowledgeForCharacter: (payload) =>
     ipcRenderer.invoke('api:getKnowledgeForCharacter', payload),
+
+  // ── Relationships ──────────────────────────────────
+  createRelationship: (payload) => ipcRenderer.invoke('api:createRelationship', payload),
+  updateRelationship: (payload) => ipcRenderer.invoke('api:updateRelationship', payload),
+  deleteRelationship: (payload) => ipcRenderer.invoke('api:deleteRelationship', payload),
+  getRelationshipsForCharacter: (payload) => ipcRenderer.invoke('api:getRelationshipsForCharacter', payload),
 
   // ── Secrets ──────────────────────────────────────
   getSecrets: (projectPath) => ipcRenderer.invoke('api:getSecrets', projectPath),
@@ -91,6 +104,12 @@ const api = {
   getCalendarConfig: (projectPath) => ipcRenderer.invoke('api:getCalendarConfig', projectPath),
   updateCalendarConfig: (payload) => ipcRenderer.invoke('api:updateCalendarConfig', payload),
   calculateAge: (payload) => ipcRenderer.invoke('api:calculateAge', payload),
+
+  // ── History Timeline ────────────────────────────────
+  getHistoryEntries: (payload) => ipcRenderer.invoke('api:getHistoryEntries', payload),
+  createHistoryEntry: (payload) => ipcRenderer.invoke('api:createHistoryEntry', payload),
+  updateHistoryEntry: (payload) => ipcRenderer.invoke('api:updateHistoryEntry', payload),
+  deleteHistoryEntry: (payload) => ipcRenderer.invoke('api:deleteHistoryEntry', payload),
 
   // ── Planner ──────────────────────────────────────────
   loadPlanner: (projectPath) => ipcRenderer.invoke('api:loadPlanner', projectPath),

@@ -1,6 +1,7 @@
 {
   "name": "fleshnote-ide",
-  "version": "0.6.6",
+  "version": "0.8.3",
+  "license": "MPL-2.0",
   "description": "A write-first note-second editor with a focus on story structure and character development.",
   "main": "./out/main/index.js",
   "author": {
@@ -38,6 +39,7 @@
     "i18next": "^25.8.13",
     "kill-port": "^2.0.1",
     "react-i18next": "^16.5.4",
+    "recharts": "^3.8.0",
     "tippy.js": "^6.3.7"
   },
   "devDependencies": {

@@ -20,6 +20,11 @@ from routes.quick_notes import router as quick_notes_router
 from routes.settings import router as settings_router
 from routes.export import router as export_router
 from routes.planner import router as planner_router
+from routes.stats import router as stats_router
+from routes.achievements import router as achievements_router
+from routes.entity_manager import router as entity_manager_router
+from routes.history import router as history_router
+from routes.relationships import router as relationships_router
 
 app = FastAPI(title="FleshNote API")
 
@@ -38,6 +43,11 @@ app.include_router(quick_notes_router)
 app.include_router(settings_router)
 app.include_router(export_router)
 app.include_router(planner_router)
+app.include_router(stats_router)
+app.include_router(achievements_router)
+app.include_router(entity_manager_router)
+app.include_router(history_router)
+app.include_router(relationships_router)
 
 # Define our data models so FastAPI knows what to expect
 class WorkspaceRequest(BaseModel):

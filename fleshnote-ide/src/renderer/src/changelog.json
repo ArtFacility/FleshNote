@@ -1,6 +1,48 @@
 {
-    "currentVersion": "0.6.6",
+    "currentVersion": "0.8.3",
     "history": [
+        {
+            "version": "0.8.3",
+            "date": "2026-03-13",
+            "changes": [
+                "NEW: Non-linear Relationship Tracker! Track evolving character feelings, supporting one-sided emotions and chapter-based historical states.",
+                "NEW: Calendar Customization! Define your world's unique time system with custom months, seasons, and epoch labels.",
+                "NEW: Export Status Bar localization and general UI polish for international users.",
+                "Renamed 'Make Connection' to 'Add to Knowledge' for better clarity in the epistemic system."
+            ]
+        },
+        {
+            "version": "0.8.0",
+            "date": "2026-03-12",
+            "changes": [
+                "NEW: World History Timeline! Keep track of events that happened before your book begins or visualize your story's chronology in a dedicated panel.",
+                "Added entity-specific timeline lanes for better character and location history tracking."
+            ]
+        },
+        {
+            "version": "0.7.8",
+            "date": "2026-03-10",
+            "changes": [
+                "NEW: Entity Manager! Bulk-delete unused entries or merge duplicate characters and lore into a single primary record.",
+                "Improved entity search and filtering in the management view."
+            ]
+        },
+        {
+            "version": "0.7.5",
+            "date": "2026-03-09",
+            "changes": [
+                "NEW: Achievements System! Track your writing journey with unlockable badges for consistency, word count, and hidden milestones.",
+                "Added Achievements tab to the main sidebar for checking your progression."
+            ]
+        },
+        {
+            "version": "0.7.0",
+            "date": "2026-03-08",
+            "changes": [
+                "NEW: Stats Dashboard! Deep analytics for your project including Story Health diagnostics, writing habits, and Entity Appearance Auditor.",
+                "Visualized word count velocity and time auditing across chapters."
+            ]
+        },
         {
             "version": "0.6.6",
             "date": "2026-03-07",

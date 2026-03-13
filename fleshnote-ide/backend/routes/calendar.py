@@ -12,6 +12,29 @@ from pydantic import BaseModel
 router = APIRouter()
 
 
+import re
+
+def extract_year(text: str):
+    """Extract the most likely year number from a date string."""
+    if not text: return None
+    patterns = [
+        r'[Yy]ear\s+(\d+)',           # "Year 314"
+        r'(\d+)\s*[Ee]',              # "4E" (epoch number)
+        r'[Ee]\s*-?\s*(\d+)',         # "E-314"
+        r'\b(\d{2,})\b',             # Any 2+ digit number
+    ]
+    for pattern in patterns:
+        match = re.search(pattern, text)
+        if match:
+            return int(match.group(1))
+            
+    # Fallback to the first number found
+    match = re.search(r'\d+', text)
+    if match:
+        return int(match.group())
+        
+    return None
+
 class ProjectPath(BaseModel):
     project_path: str
 
@@ -146,25 +169,6 @@ def calculate_age(req: AgeCalculation):
                 calendar_config[row["config_key"]] = row["config_value"]
 
     conn.close()
-
-    # Try to extract numeric year values from the strings
-    # Look for patterns like "Year 314", "4E-314", "314", etc.
-    import re
-
-    def extract_year(text):
-        """Extract the most likely year number from a date string."""
-        # Pattern: explicit "year X" or "Y X" or just a standalone large number
-        patterns = [
-            r'[Yy]ear\s+(\d+)',           # "Year 314"
-            r'(\d+)\s*[Ee]',              # "4E" (epoch number)
-            r'[Ee]\s*-?\s*(\d+)',         # "E-314"
-            r'\b(\d{2,})\b',             # Any 2+ digit number (last resort)
-        ]
-        for pattern in patterns:
-            match = re.search(pattern, text)
-            if match:
-                return int(match.group(1))
-        return None
 
     birth_year = extract_year(req.birth_date)
     current_year = extract_year(req.world_time)

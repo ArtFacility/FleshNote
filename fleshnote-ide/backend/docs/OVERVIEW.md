@@ -34,17 +34,18 @@ Depending on what you need to work on, refer to these specific documentation fil
 *   **NLP spaCy Integration**: Background entity recognition dynamically powers the "Data Extractor" module, parsing raw dumped text into formatted Lore sheets.
 *   **Professional Export Pipeline**: Fully realized support for .docx (Manuscript Standard), .pdf (Print-Ready), and .epub (E-Book) formats with live preview and book-ready page layout logic. 
 *   **Plot Planner & Focus Modes**: Visualizing "Foreshadowing" links, blocks, and arcs on a timeline graph to audit narrative pacing, while Focus sprint modes (Kamikaze, Fog, Zen) gamify the writing experience workflow.
-*   **Localization & RTL Support**: An actively maintained i18next translation framework natively spanning English, Hungarian, Polish, and Arabic, automatically flipping layout constraints natively utilizing pure logical CSS properties (`inset-inline`, `margin-block`). 
+*   **Localization & RTL Support**: An actively maintained i18next translation framework natively spanning English, Hungarian, Polish, and Arabic, automatically flipping layout constraints natively utilizing pure logical CSS properties (`inset-inline`, `margin-block`).
+*   **Statistics & Custom Analytics**: A comprehensive dashboard (`StatsDashboard.jsx`) tracing writing telemetry (Sprint Consistency, Ruthless Editor Ratio, Time Auditing) and compiling an intuitive Entity Presence Matrix and World History timeline.
 
 ## Future Plans
 
 These are the upcoming systems and features planned for implementation, categorized by priority and type.
 
 ### 1. Core Features (High Priority)
-*   **Statistics Page & World History Tracker**: A comprehensive analytics dashboard to track writing habits and visualize the generated world history.
 *   **Custom Calendar Maker**: Tools for the author to build and specify custom in-universe calendar systems for tracking time.
 
 ### 2. Quality of Life (QOL) Features (Medium Priority)
+*   **Automatic Local Backups**: Silently archiving daily zip snapshots of the project database to combat user error and sync conflicts without relying on the cloud.
 *   **Right Side Panel Integration**: A dedicated right-hand sidebar that will serve as the hub for the smart link adder suggestion system (via spaCy) and a centralized warning lister.
 *   **Deep-Linked Knowledge States**: Making knowledge state references instantly clickable, taking the user directly to the exact words on the page where it's linked.
 *   **Link Coloring Toggles**: A simple button/setting to quickly disable all entity link colorings in the editor, or selectively filter certain colorings for a cleaner reading experience.

@@ -345,6 +345,16 @@ def delete_twist(req: TwistDelete):
             with open(md_path, "w", encoding="utf-8") as f:
                 f.write(new_content)
 
+    # Check if there are foreshadowings to trigger "retcon_achieved"
+    cursor.execute("SELECT COUNT(*) as f_count FROM foreshadowings WHERE twist_id = ?", (req.twist_id,))
+    f_count = cursor.fetchone()["f_count"]
+    if f_count > 0:
+        cursor.execute("SELECT stat_value FROM stats WHERE stat_key = 'retcon_achieved'")
+        if cursor.fetchone():
+            cursor.execute("UPDATE stats SET stat_value = stat_value + 1 WHERE stat_key = 'retcon_achieved'")
+        else:
+            cursor.execute("INSERT INTO stats (stat_key, stat_value) VALUES ('retcon_achieved', '1')")
+
     cursor.execute("DELETE FROM foreshadowings WHERE twist_id = ?", (req.twist_id,))
     cursor.execute("DELETE FROM twists WHERE id = ?", (req.twist_id,))
     conn.commit()

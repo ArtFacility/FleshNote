@@ -97,7 +97,7 @@ Calls `POST /api/project/init` with the questionnaire payload. This creates:
 
 1. Project directory at `{workspace}/{project_name}/`
 2. `md/` subdirectory for chapter markdown files
-3. `fleshnote.db` with all 10 tables
+3. `fleshnote.db` with all SQLite tables (currently 17)
 4. `project_config` entries populated from questionnaire answers
 
 Transitions to: `view: 'setup'`

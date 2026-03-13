@@ -78,6 +78,12 @@ export default function ForeshadowingPopup({
             : ''
         })
         twistId = result?.twist?.id
+
+        await window.api.updateStat({
+          project_path: projectPath,
+          stat_key: 'new_twists',
+          increment_by: 1
+        })
       }
 
       if (!twistId) {

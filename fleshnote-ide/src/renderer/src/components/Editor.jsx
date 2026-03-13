@@ -17,6 +17,8 @@ import MakeConnectionPopup from './MakeConnectionPopup'
 import CustomLorePopup from './CustomLorePopup'
 import ForeshadowingPopup from './ForeshadowingPopup'
 import QuickNotePopup from './QuickNotePopup'
+import RelationshipTurningPointPopup from './RelationshipTurningPointPopup'
+import CalendarDatePicker from './CalendarDatePicker'
 import AddAliasPopup from './AddAliasPopup'
 import FocusSelectorPopup from './FocusSelectorPopup'
 import DuplicateEntityPopup from './DuplicateEntityPopup'
@@ -168,6 +170,7 @@ export default function Editor({
   onTwistClick,
   onEntitiesChanged,
   projectConfig,
+  calConfig,
   onConfigUpdate // <-- NEW
 }) {
   const { t, i18n } = useTranslation()
@@ -603,6 +606,13 @@ export default function Editor({
         }
 
         if (result) {
+          // Send an update stat ping!
+          window.api.updateStat({
+            project_path: projectPath,
+            stat_key: 'new_entities',
+            increment_by: 1
+          });
+
           editor
             .chain()
             .focus()
@@ -659,6 +669,17 @@ export default function Editor({
         case 'makeConnection':
           setActivePopup({ type: 'makeConnection', position: pos, data })
           break
+
+        case 'relationshipTurningPoint': {
+          let wordOffset = 0
+          if (editor) {
+            const selectionFrom = editor.state.selection.from
+            const textBefore = editor.state.doc.textBetween(0, selectionFrom, ' ')
+            wordOffset = textBefore.trim().split(/\s+/).filter(w => w.length > 0).length
+          }
+          setActivePopup({ type: 'relationshipTurningPoint', position: pos, data: { ...data, wordOffset } })
+          break
+        }
 
         case 'customLore':
           setActivePopup({ type: 'customLore', position: pos, data })
@@ -879,15 +900,13 @@ export default function Editor({
         <div className="editor-toolbar-divider" />
         <div className="editor-toolbar-group">
           <span className="editor-toolbar-label">{t('editor.timeLabel', 'TIME:')}</span>
-          <input
-            className="editor-toolbar-input"
-            type="text"
-            placeholder={t('editor.worldTimePlaceholder', 'World time...')}
+          <CalendarDatePicker
             value={chapter.world_time || ''}
-            onChange={(e) => {
-              onChapterMetaUpdate?.({ world_time: e.target.value })
-            }}
-            title={t('editor.timeTooltip', 'In-universe date/time for this chapter')}
+            onChange={(v) => onChapterMetaUpdate?.({ world_time: v })}
+            calConfig={calConfig}
+            projectPath={projectPath}
+            compact={true}
+            placeholder={t('editor.worldTimePlaceholder', 'World time...')}
           />
         </div>
 
@@ -917,6 +936,31 @@ export default function Editor({
             onClick={() => {
               if (focusMode?.active) {
                 if (canExitFocus) {
+                  // SPRINT COMPLETED: Calculate velocity and log success!
+                  if (focusMode.goal && focusMode.startTime) {
+                    const elapsedMs = Date.now() - focusMode.startTime;
+                    const elapsedMinutes = elapsedMs / 60000;
+                    const wordsWritten = wordCount - focusMode.startWordCount;
+
+                    // Only track velocity if they actually spent at least 1 minute writing
+                    if (elapsedMinutes > 1 && wordsWritten > 0) {
+                      const wpm = Math.round(wordsWritten / elapsedMinutes);
+                      window.api.updateStat({ project_path: projectPath, stat_key: 'sprint_velocity_sum', increment_by: wpm });
+                      window.api.updateStat({ project_path: projectPath, stat_key: 'sprint_velocity_count', increment_by: 1 });
+                    }
+                    window.api.updateStat({ project_path: projectPath, stat_key: 'sprints_completed', increment_by: 1 });
+
+                    // Easter egg stats
+                    if (focusMode.id === 'zen' && wordsWritten >= 400) {
+                      window.api.updateStat({ project_path: projectPath, stat_key: 'zen_sprints_400', increment_by: 1 });
+                    }
+                    if (focusMode.id === 'hemingway' && wordsWritten >= 1000) {
+                      window.api.updateStat({ project_path: projectPath, stat_key: 'hemingway_sprints_1000', increment_by: 1 });
+                    }
+                  }
+
+                  // Clear the recovery token
+                  window.api.updateProjectConfig(projectPath, 'active_sprint', '', 'string');
                   onToggleFocus(null) // Exit focus mode
                 } else {
                   // Provide feedback that they can't exit yet? Could add a toast later.
@@ -1025,7 +1069,7 @@ export default function Editor({
       {/* ── Focus Mode Overlays ────────────────────────────── */}
       {focusMode?.active && focusMode.type === 'momentum' && <MomentumMode editor={editor} />}
       {focusMode?.active && focusMode.type === 'hemingway' && <HemingwayMode editor={editor} />}
-      {focusMode?.active && focusMode.type === 'combo' && <ComboMode editor={editor} />}
+      {focusMode?.active && focusMode.type === 'combo' && <ComboMode editor={editor} projectPath={projectPath} />}
       {focusMode?.active && focusMode.type === 'zen' && (
         <ZenMode
           currentWords={editor.storage.characterCount.words()}
@@ -1239,7 +1283,22 @@ export default function Editor({
           characters={characters}
           chapters={chapters}
           entities={entities}
+          calConfig={calConfig}
           onClose={closePopup}
+        />
+      )}
+
+      {activePopup?.type === 'relationshipTurningPoint' && (
+        <RelationshipTurningPointPopup
+          selectedText={activePopup.data?.text || ctxText}
+          wordOffset={activePopup.data?.wordOffset}
+          chapterId={chapter?.id}
+          worldTime={chapter?.world_time}
+          position={activePopup.position}
+          projectPath={projectPath}
+          calConfig={calConfig}
+          onClose={closePopup}
+          onSuccess={() => onEntitiesChanged?.()}
         />
       )}
 
@@ -1341,12 +1400,18 @@ export default function Editor({
         <FocusSelectorPopup
           onClose={closePopup}
           onSelectMode={({ type, goal }) => {
+            const startTime = Date.now()
             onToggleFocus({
               active: true,
               type,
               goal,
-              startWordCount: editor ? editor.storage.characterCount.words() : 0
+              startWordCount: editor ? editor.storage.characterCount.words() : 0,
+              startTime
             })
+            if (goal) {
+              window.api.updateProjectConfig(projectPath, 'active_sprint', startTime.toString(), 'string')
+              window.api.updateStat({ project_path: projectPath, stat_key: 'sprints_started', increment_by: 1 })
+            }
             closePopup()
           }}
         />

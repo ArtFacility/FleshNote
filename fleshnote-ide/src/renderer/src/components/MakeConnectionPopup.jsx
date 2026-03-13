@@ -1,5 +1,6 @@
 import { useState, useEffect, useRef } from 'react'
 import { useTranslation } from 'react-i18next'
+import CalendarDatePicker from './CalendarDatePicker'
 
 /**
  * Popup for "Make Connection" action.
@@ -14,6 +15,7 @@ export default function MakeConnectionPopup({
   characters = [],
   chapters = [],
   entities = [],
+  calConfig,
   onClose
 }) {
   const { t } = useTranslation()
@@ -240,11 +242,11 @@ export default function MakeConnectionPopup({
             {t('popup.worldTime', 'World time')}
             <span className="popup-optional">{t('popup.optional', '(optional)')}</span>
           </label>
-          <input
-            className="popup-search-input"
-            type="text"
+          <CalendarDatePicker
             value={worldTime}
-            onChange={(e) => setWorldTime(e.target.value)}
+            onChange={setWorldTime}
+            calConfig={calConfig}
+            projectPath={projectPath}
             placeholder={t('popup.worldTimePlaceholder', 'In-universe time (auto-filled from chapter)')}
           />
         </div>

@@ -1,9 +1,19 @@
 import { useState, useEffect, useCallback } from 'react'
 import { useTranslation } from 'react-i18next'
+import RelationshipTurningPointPopup from './RelationshipTurningPointPopup'
+import CalendarDatePicker from './CalendarDatePicker'
 
 // ── Inline SVG Icons ────────────────────────────────────────────────────────
 
 const Icons = {
+  Users: () => (
+    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+      <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2" />
+      <circle cx="9" cy="7" r="4" />
+      <path d="M23 21v-2a4 4 0 0 0-3-3.87" />
+      <path d="M16 3.13a4 4 0 0 1 0 7.75" />
+    </svg>
+  ),
   User: () => (
     <svg
       width="14"
@@ -226,6 +236,7 @@ export default function EntityInspectorPanel({
   activeChapter,
   projectPath,
   projectConfig,
+  calConfig,
   chapters,
   onEntityUpdated,
   onConfigUpdate
@@ -234,6 +245,7 @@ export default function EntityInspectorPanel({
   const [viewMode, setViewMode] = useState('author')  // 'author' | 'narrative' | 'world_time'
   const [filterCharacterId, setFilterCharacterId] = useState(null)
   const [editMode, setEditMode] = useState(false)
+  const [activeTab, setActiveTab] = useState('overview') // 'overview' | 'knowledge'
   const [editData, setEditData] = useState({})
   const [saving, setSaving] = useState(false)
   const [knowledgeFacts, setKnowledgeFacts] = useState([])
@@ -241,6 +253,8 @@ export default function EntityInspectorPanel({
   const [newFact, setNewFact] = useState({ fact: '', character_id: '', is_secret: 0 })
   const [calculatedAge, setCalculatedAge] = useState(null)
   const [showDeleteConfirm, setShowDeleteConfirm] = useState(false)
+  const [relationships, setRelationships] = useState([])
+  const [editRelPopup, setEditRelPopup] = useState(null)
 
   // ── Derived Data ──────────────────────────────────────────────────────────
 
@@ -310,11 +324,11 @@ export default function EntityInspectorPanel({
         }
         if (viewMode !== 'author') {
           params.filter_character_id = filterCharacterId || null
-          if (viewMode === 'narrative' && activeChapter?.chapter_number) {
-            params.current_chapter = activeChapter.chapter_number
-          } else if (viewMode === 'world_time') {
-            params.current_world_time = activeChapter?.world_time || null
-          }
+        }
+        if (viewMode === 'narrative' && activeChapter?.chapter_number) {
+          params.current_chapter = activeChapter.chapter_number
+        } else if (viewMode === 'world_time' || (viewMode === 'author' && activeChapter?.world_time)) {
+          params.current_world_time = activeChapter?.world_time || null
         }
         result = await window.api.getKnowledgeForEntity(params)
       }
@@ -337,6 +351,32 @@ export default function EntityInspectorPanel({
   useEffect(() => {
     loadKnowledgeFacts()
   }, [loadKnowledgeFacts, currEntity?.updated_at]) // Reload when entity is updated
+
+  const loadRelationships = useCallback(async () => {
+    if (entity?.type !== 'character' || !projectPath) return
+
+    try {
+      const params = {
+        project_path: projectPath,
+        character_id: entity.id,
+        filter_mode: viewMode
+      }
+      if (viewMode === 'narrative' && activeChapter?.chapter_number) {
+        params.current_chapter = activeChapter.chapter_number
+      } else if (viewMode === 'world_time' || (viewMode === 'author' && activeChapter?.world_time)) {
+        params.current_world_time = activeChapter?.world_time || null
+      }
+      const result = await window.api.getRelationshipsForCharacter(params)
+      setRelationships(result?.relationships || [])
+    } catch (err) {
+      console.error('Failed to load relationships:', err)
+      setRelationships([])
+    }
+  }, [entity?.id, entity?.type, projectPath, viewMode, activeChapter?.chapter_number, activeChapter?.world_time])
+
+  useEffect(() => {
+    loadRelationships()
+  }, [loadRelationships, currEntity?.updated_at])
 
   // Calculate age if character has birth_date and chapter has world_time
   useEffect(() => {
@@ -571,6 +611,32 @@ export default function EntityInspectorPanel({
     }
   }
 
+  const handleDeleteRelationship = async (relId) => {
+    try {
+      await window.api.deleteRelationship({
+        project_path: projectPath,
+        relationship_id: relId
+      })
+      loadRelationships()
+    } catch (err) {
+      console.error('Failed to delete relationship:', err)
+    }
+  }
+
+  const getRelColor = (type) => {
+    const typeLower = type?.toLowerCase() || ''
+    switch (typeLower) {
+      case 'friendship': return 'var(--accent-green, #4ade80)'
+      case 'love': return 'var(--accent-red, #f43f5e)'
+      case 'hate': return 'var(--accent-red, #f43f5e)' // Reusing red for hate
+      case 'spite': return 'var(--accent-purple, #a855f7)'
+      case 'guilt': return 'var(--accent-blue, #3b82f6)'
+      case 'trust': return 'var(--accent-cyan, #06b6d4)'
+      case 'distrust': return 'var(--accent-orange, #f97316)'
+      default: return 'var(--text-secondary, #9ca3af)'
+    }
+  }
+
   // ── Render Helpers ────────────────────────────────────────────────────────
 
   const renderEditField = (label, field, multiline = false) => {
@@ -609,6 +675,13 @@ export default function EntityInspectorPanel({
       } else {
         await window.api.deleteLoreEntity({ project_path: projectPath, entity_id: entity.id })
       }
+
+      await window.api.updateStat({
+        project_path: projectPath,
+        stat_key: 'deleted_entities',
+        increment_by: 1
+      })
+
       onEntityUpdated?.()
       window.dispatchEvent(new CustomEvent('forceBackToChapters'))
     } catch (err) {
@@ -803,482 +876,721 @@ export default function EntityInspectorPanel({
         )}
       </div>
 
-      {/* ═══ CHARACTER SECTIONS ═══ */}
-      {charData && (
-        <>
-          {/* Bio */}
-          <div className="entity-section">
-            <div className="entity-section-title">
-              <Icons.BookOpen /> {t('inspector.bioSection', 'Bio')}
-            </div>
-            {editMode ? (
-              renderEditField('', 'bio', true)
-            ) : (
-              <div className="entity-bio">{charData.bio || t('inspector.noBio', 'No bio yet.')}</div>
-            )}
-          </div>
-
-          {/* Agendas */}
-          <div className="entity-section">
-            <div className="entity-section-title">
-              <Icons.Target /> {t('inspector.agendasSection', 'Agendas')}
-            </div>
-            {editMode ? (
-              <>
-                {renderEditField(t('inspector.surfaceGoalLabel', 'Surface Goal'), 'surface_goal', true)}
-                {renderEditField(t('inspector.trueGoalLabel', 'True Goal (Author Only)'), 'true_goal', true)}
-              </>
-            ) : (
-              <>
-                {charData.surface_goal && (
-                  <div className="entity-agenda-row">
-                    <div className="entity-agenda-icon" style={{ color: 'var(--accent-green)' }}>
-                      <Icons.Eye />
-                    </div>
-                    <div>
-                      <div className="entity-agenda-label">{t('inspector.surfaceGoal', 'Surface Goal')}</div>
-                      <div className="entity-agenda-text">{charData.surface_goal}</div>
-                    </div>
-                  </div>
-                )}
-                {charData.true_goal && (
-                  <div className="entity-agenda-row">
-                    <div className="entity-agenda-icon" style={{ color: 'var(--accent-red)' }}>
-                      <Icons.EyeOff />
-                    </div>
-                    <div>
-                      <div className="entity-agenda-label">{t('inspector.trueGoal', 'True Goal (Author Only)')}</div>
-                      <div className="entity-agenda-text">{charData.true_goal}</div>
-                    </div>
-                  </div>
-                )}
-              </>
-            )}
-          </div>
-
-          {/* Known details */}
-          <div className="entity-section">
-            <div className="entity-section-title">
-              <Icons.Eye /> {t('inspector.knownDetailsSection', 'Known Details')}
-            </div>
-            {editMode ? (
-              <>
-                {renderEditField(t('inspector.roleLabel', 'Role'), 'role')}
-                {renderEditField(t('inspector.statusLabel', 'Status'), 'status')}
-                {renderEditField(t('inspector.speciesLabel', 'Species'), 'species')}
-                {renderEditField(t('inspector.birthDateLabel', 'Birth Date (in-world)'), 'birth_date')}
-                {renderEditField(t('inspector.aliasesLabel', 'Aliases (comma-separated)'), 'aliases')}
-              </>
-            ) : (
-              <>
-                {charData.status && (
-                  <div className="entity-detail-row">
-                    <div className="entity-detail-label">{t('inspector.status', 'Status')}</div>
-                    <div className="entity-detail-value">{charData.status}</div>
-                  </div>
-                )}
-                {charData.species && (
-                  <div className="entity-detail-row">
-                    <div className="entity-detail-label">{t('inspector.species', 'Species')}</div>
-                    <div className="entity-detail-value">{charData.species}</div>
-                  </div>
-                )}
-                {charData.birth_date && (
-                  <div className="entity-detail-row">
-                    <div className="entity-detail-label">{t('inspector.birthDate', 'Birth Date')}</div>
-                    <div className="entity-detail-value">
-                      {charData.birth_date}
-                      {calculatedAge?.calculated && (
-                        <span style={{ color: 'var(--accent-amber)', marginInlineStart: '6px' }}>
-                          ({t('inspector.agePrefix', 'age:')} {calculatedAge.age_text})
-                        </span>
-                      )}
-                    </div>
-                  </div>
-                )}
-                {charData.aliases && charData.aliases.length > 0 && (
-                  <div className="entity-detail-row">
-                    <div className="entity-detail-label">{t('inspector.aliases', 'Aliases')}</div>
-                    <div className="entity-detail-value">{charData.aliases.join(', ')}</div>
-                  </div>
-                )}
-              </>
-            )}
-          </div>
-
-          {/* Notes */}
-          <div className="entity-section">
-            <div className="entity-section-title">
-              <Icons.Feather /> {t('inspector.authorNotesSection', 'Author Notes')}
-            </div>
-            {editMode ? (
-              renderEditField('', 'notes', true)
-            ) : (
-              <div className="entity-narrative-note">{charData.notes || t('inspector.noNotes', 'No notes.')}</div>
-            )}
-          </div>
-        </>
-      )}
-
-      {/* ═══ LORE / LOCATION / GROUP SECTIONS ═══ */}
-      {(loreData || locationData || groupData) && (
-        <>
-          <div className="entity-section">
-            <div className="entity-section-title">
-              <Icons.BookOpen /> {t('inspector.descriptionSection', 'Description')}
-            </div>
-            {editMode ? (
-              renderEditField('', 'description', true)
-            ) : (
-              <div className="entity-bio">
-                {(locationData || loreData || groupData).description || t('inspector.noDescription', 'No description yet.')}
-              </div>
-            )}
-          </div>
-
-          {locationData && (
-            <div className="entity-section">
-              <div className="entity-section-title">
-                <Icons.Target /> {t('inspector.locationDetails', 'Location Details')}
-              </div>
-              {editMode ? (
-                <>
-                  {renderEditField(t('inspector.regionLabel', 'Region'), 'region')}
-                  {renderEditField(t('inspector.parentLocationId', 'Parent Location ID (optional)'), 'parent_location_id')}
-                </>
-              ) : (
-                <>
-                  {locationData.region && (
-                    <div className="entity-detail-row">
-                      <div className="entity-detail-label">{t('inspector.region', 'Region')}</div>
-                      <div className="entity-detail-value">{locationData.region}</div>
-                    </div>
-                  )}
-                  {locationData.parent_location_id && (
-                    <div className="entity-detail-row">
-                      <div className="entity-detail-label">{t('inspector.parentLocation', 'Parent ID')}</div>
-                      <div className="entity-detail-value">#{locationData.parent_location_id}</div>
-                    </div>
-                  )}
-                </>
-              )}
-            </div>
-          )}
-
-          {groupData && (
-            <div className="entity-section">
-              <div className="entity-section-title">
-                <Icons.Target /> {t('inspector.agendasSection', 'Agendas')}
-              </div>
-              {editMode ? (
-                <>
-                  {renderEditField(t('inspector.groupTypeLabel', 'Group Type'), 'group_type')}
-                  {renderEditField(t('inspector.surfaceAgendaLabel', 'Surface Agenda'), 'surface_agenda', true)}
-                  {renderEditField(t('inspector.trueAgendaLabel', 'True Agenda (Author Only)'), 'true_agenda', true)}
-                </>
-              ) : (
-                <>
-                  {groupData.surface_agenda && (
-                    <div className="entity-agenda-row">
-                      <div className="entity-agenda-icon" style={{ color: 'var(--accent-green)' }}>
-                        <Icons.Eye />
-                      </div>
-                      <div>
-                        <div className="entity-agenda-label">{t('inspector.surfaceAgenda', 'Surface Agenda')}</div>
-                        <div className="entity-agenda-text">{groupData.surface_agenda}</div>
-                      </div>
-                    </div>
-                  )}
-                  {groupData.true_agenda && (
-                    <div className="entity-agenda-row">
-                      <div className="entity-agenda-icon" style={{ color: 'var(--accent-red)' }}>
-                        <Icons.EyeOff />
-                      </div>
-                      <div>
-                        <div className="entity-agenda-label">{t('inspector.trueAgenda', 'True Agenda (Author Only)')}</div>
-                        <div className="entity-agenda-text">{groupData.true_agenda}</div>
-                      </div>
-                    </div>
-                  )}
-                </>
-              )}
-            </div>
-          )}
-
-          {loreData && (
-            <div className="entity-section">
-              <div className="entity-section-title">
-                <Icons.Target /> {t('inspector.loreDetails', 'Lore Details')}
-              </div>
-              {editMode ? (
-                <>
-                  <div className="entity-edit-field">
-                    <label className="entity-edit-label">{t('inspector.categoryLabel', 'Category')}</label>
-                    <select
-                      className="entity-edit-input"
-                      value={editData.category || ''}
-                      onChange={(e) => handleEditField('category', e.target.value)}
-                    >
-                      <option value="">{t('inspector.selectCategory', 'Select category...')}</option>
-                      {loreCategories.map((cat) => (
-                        <option key={cat} value={cat}>
-                          {cat.charAt(0).toUpperCase() + cat.slice(1)}
-                        </option>
-                      ))}
-                      <option value="new_category">{t('inspector.newCategoryOption', '+ New Category...')}</option>
-                    </select>
-                    {editData.category === 'new_category' && (
-                      <input
-                        className="entity-edit-input"
-                        style={{ marginTop: '6px' }}
-                        type="text"
-                        value={editData.customCategory || ''}
-                        onChange={(e) => handleEditField('customCategory', e.target.value)}
-                        placeholder={t('inspector.newCategoryPlaceholder', 'Type new category...')}
-                        autoFocus
-                      />
-                    )}
-                  </div>
-                  {renderEditField(t('inspector.classificationLabel', 'Classification'), 'classification')}
-                  {renderEditField(t('inspector.originLabel', 'Origin'), 'origin')}
-                  {renderEditField(t('inspector.rulesLabel', 'Rules / Constraints'), 'rules', true)}
-                  {renderEditField(t('inspector.limitationsLabel', 'Limitations'), 'limitations', true)}
-                </>
-              ) : (
-                <>
-                  {loreData.origin && (
-                    <div className="entity-detail-row">
-                      <div className="entity-detail-label">{t('inspector.origin', 'Origin')}</div>
-                      <div className="entity-detail-value">{loreData.origin}</div>
-                    </div>
-                  )}
-                  {loreData.rules && (
-                    <div className="entity-detail-row">
-                      <div className="entity-detail-label">{t('inspector.rules', 'Rules')}</div>
-                      <div className="entity-detail-value" style={{ whiteSpace: 'pre-wrap' }}>{loreData.rules}</div>
-                    </div>
-                  )}
-                  {loreData.limitations && (
-                    <div className="entity-detail-row">
-                      <div className="entity-detail-label" style={{ color: 'var(--accent-red)' }}>{t('inspector.limitations', 'Limitations')}</div>
-                      <div className="entity-detail-value" style={{ whiteSpace: 'pre-wrap' }}>{loreData.limitations}</div>
-                    </div>
-                  )}
-                </>
-              )}
-            </div>
-          )}
-
-          <div className="entity-section">
-            <div className="entity-section-title">
-              <Icons.Eye /> {t('inspector.aliasesSection', 'Aliases')}
-            </div>
-            {editMode ? (
-              renderEditField(t('inspector.commaSeparated', 'Comma-separated'), 'aliases')
-            ) : currEntity.aliases && currEntity.aliases.length > 0 ? (
-              <div style={{ display: 'flex', flexWrap: 'wrap', gap: '4px' }}>
-                {currEntity.aliases.map((a, i) => (
-                  <div className="entity-property-item" key={i}>
-                    {a}
-                  </div>
-                ))}
-              </div>
-            ) : (
-              <div className="entity-detail-value" style={{ opacity: 0.5 }}>
-                {t('inspector.none', 'None')}
-              </div>
-            )}
-          </div>
-
-          <div className="entity-section">
-            <div className="entity-section-title">
-              <Icons.Feather /> {t('inspector.authorNotesSection', 'Author Notes')}
-            </div>
-            {editMode ? (
-              renderEditField('', 'notes', true)
-            ) : (
-              <div className="entity-narrative-note">
-                {(locationData || loreData || groupData).notes || t('inspector.noNotes', 'No notes.')}
-              </div>
-            )}
-          </div>
-        </>
-      )}
-
-      {/* ═══ KNOWLEDGE FACTS SECTION ═══ */}
-      <div className="entity-section">
-        <div
-          className="entity-section-title"
-          style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}
+      <div className="inspector-tabs" style={{ display: 'flex', borderBottom: '1px solid var(--border-subtle)', margin: '16px -16px 16px', padding: '0 16px', gap: '16px' }}>
+        <button
+          onClick={() => setActiveTab('overview')}
+          style={{
+            background: 'transparent', border: 'none', padding: '8px 0', cursor: 'pointer',
+            color: activeTab === 'overview' ? 'var(--accent-amber)' : 'var(--text-secondary)',
+            borderBottom: activeTab === 'overview' ? '2px solid var(--accent-amber)' : '2px solid transparent',
+            fontFamily: 'var(--font-mono)', fontSize: '11px', textTransform: 'uppercase', letterSpacing: '1px',
+            display: 'flex', alignItems: 'center'
+          }}
+          title={t('inspector.tabOverview', 'Overview')}
         >
-          <span>
-            <Icons.Brain /> {t('inspector.knowledgeSection', 'Knowledge')}
-          </span>
-          {viewMode === 'author' && (
-            <button
-              className="entity-edit-toggle"
-              onClick={() => setAddingFact(!addingFact)}
-              title={t('inspector.addFactTooltip', 'Add Fact')}
-              style={{ marginInlineStart: 'auto' }}
-            >
-              <Icons.Plus />
-            </button>
-          )}
-        </div>
-
-        {viewMode === 'world_time' && !activeChapter?.world_time && (
-          <div className="knowledge-no-pov">
-            {t('inspector.noWorldTime', 'No world time set for this chapter. Set a world time in the chapter metadata to filter.')}
-          </div>
-        )}
-
-        {/* Add fact form */}
-        {addingFact && viewMode === 'author' && (
-          <div className="knowledge-add-form">
-            <textarea
-              className="entity-edit-textarea"
-              placeholder={t('inspector.whatIsFact', 'What is the fact?')}
-              value={newFact.fact}
-              onChange={(e) => setNewFact((p) => ({ ...p, fact: e.target.value }))}
-              rows={2}
-            />
-            <select
-              className="knowledge-select"
-              value={newFact.character_id}
-              onChange={(e) => setNewFact((p) => ({ ...p, character_id: e.target.value }))}
-            >
-              <option value="">
-                {entity.type === 'character'
-                  ? t('inspector.whoIsFactAbout', 'Who is this about?')
-                  : t('inspector.whoKnowsThis', 'Who knows this?')}
-              </option>
-              {characters.map((c) => (
-                <option key={c.id} value={c.id}>
-                  {c.name}
-                </option>
-              ))}
-            </select>
-            <label className="knowledge-secret-toggle">
-              <input
-                type="checkbox"
-                checked={newFact.is_secret === 1}
-                onChange={(e) => setNewFact((p) => ({ ...p, is_secret: e.target.checked ? 1 : 0 }))}
-              />
-              {t('inspector.secretToggle', 'Secret (author-only)')}
-            </label>
-            <div className="knowledge-add-actions">
-              <button className="entity-edit-btn save" onClick={handleAddFact}>
-                {t('inspector.add', 'Add')}
-              </button>
-              <button className="entity-edit-btn" onClick={() => setAddingFact(false)}>
-                {t('inspector.cancel', 'Cancel')}
-              </button>
-            </div>
-          </div>
-        )}
-
-        {/* Knowledge facts list */}
-        {knowledgeFacts.length === 0 ? (
-          <div className="entity-detail-value" style={{ opacity: 0.5, fontSize: '11px' }}>
-            {t('inspector.noKnowledge', 'No knowledge entries yet.')}
-          </div>
-        ) : (
-          knowledgeFacts.map((fact) => (
-            <div className={`knowledge-fact-card ${fact.is_secret ? 'secret' : ''}`} key={fact.id}>
-              <div className="knowledge-fact-text">{fact.fact}</div>
-              <div className="knowledge-fact-meta">
-                <span className="knowledge-fact-who">
-                  {entity.type === 'character'
-                    ? (fact.source_entity_name || t('inspector.unknownEntity', 'Unknown'))
-                    : fact.character_name}
-                </span>
-                <span className="knowledge-fact-when">
-                  {getChapterLabel(fact.learned_in_chapter)}
-                </span>
-                {fact.world_time && (
-                  <span className="knowledge-fact-when" title={t('inspector.worldTimeLabel', 'World time')}>
-                    {fact.world_time}
-                  </span>
-                )}
-                {fact.is_secret && <span className="knowledge-fact-badge secret">{t('inspector.secretBadge', 'SECRET')}</span>}
-              </div>
-              {viewMode === 'author' && (
-                <button
-                  className="knowledge-fact-delete"
-                  onClick={() => handleDeleteFact(fact.id)}
-                  title={t('inspector.deleteFactTooltip', 'Delete fact')}
-                >
-                  <Icons.Trash />
-                </button>
-              )}
-            </div>
-          ))
+          <Icons.BookOpen style={{ width: 14, height: 14, marginRight: activeTab === 'overview' ? 4 : 0 }} /> 
+          {activeTab === 'overview' && t('inspector.tabOverview', 'Overview')}
+        </button>
+        <button
+          onClick={() => setActiveTab('knowledge')}
+          style={{
+            background: 'transparent', border: 'none', padding: '8px 0', cursor: 'pointer',
+            color: activeTab === 'knowledge' ? 'var(--accent-amber)' : 'var(--text-secondary)',
+            borderBottom: activeTab === 'knowledge' ? '2px solid var(--accent-amber)' : '2px solid transparent',
+            fontFamily: 'var(--font-mono)', fontSize: '11px', textTransform: 'uppercase', letterSpacing: '1px',
+            display: 'flex', alignItems: 'center'
+          }}
+          title={t('inspector.tabKnowledge', 'Knowledge Database')}
+        >
+          <Icons.Brain style={{ width: 14, height: 14, marginRight: activeTab === 'knowledge' ? 4 : 0 }} />
+          {activeTab === 'knowledge' && t('inspector.tabKnowledge', 'Knowledge Database')}
+        </button>
+        {entity.type === 'character' && (
+          <button
+            onClick={() => setActiveTab('relationships')}
+            style={{
+              background: 'transparent', border: 'none', padding: '8px 0', cursor: 'pointer',
+              color: activeTab === 'relationships' ? 'var(--accent-amber)' : 'var(--text-secondary)',
+              borderBottom: activeTab === 'relationships' ? '2px solid var(--accent-amber)' : '2px solid transparent',
+              fontFamily: 'var(--font-mono)', fontSize: '11px', textTransform: 'uppercase', letterSpacing: '1px',
+              display: 'flex', alignItems: 'center'
+            }}
+            title={t('inspector.tabRelationships', 'Relationships')}
+          >
+            <Icons.Users style={{ width: 14, height: 14, marginRight: activeTab === 'relationships' ? 4 : 0 }} />
+            {activeTab === 'relationships' && t('inspector.tabRelationships', 'Relationships')}
+          </button>
         )}
       </div>
 
-      {/* Delete Entity Section */}
-      {viewMode === 'author' && (
-        <div style={{ marginTop: '24px', display: 'flex', justifyContent: 'center' }}>
-          <button
-            onClick={() => setShowDeleteConfirm(true)}
-            className="entity-edit-btn"
-            style={{ color: 'var(--accent-red)', borderColor: 'var(--accent-red-dim)' }}
-            title={t('inspector.deleteEntityTooltip', 'Delete this entity')}
+      {activeTab === 'overview' && (
+        <>
+          {/* ═══ CHARACTER SECTIONS ═══ */}
+          {charData && (
+            <>
+              {/* Bio */}
+              <div className="entity-section">
+                <div className="entity-section-title">
+                  <Icons.BookOpen /> {t('inspector.bioSection', 'Bio')}
+                </div>
+                {editMode ? (
+                  renderEditField('', 'bio', true)
+                ) : (
+                  <div className="entity-bio">{charData.bio || t('inspector.noBio', 'No bio yet.')}</div>
+                )}
+              </div>
+
+              {/* Agendas */}
+              <div className="entity-section">
+                <div className="entity-section-title">
+                  <Icons.Target /> {t('inspector.agendasSection', 'Agendas')}
+                </div>
+                {editMode ? (
+                  <>
+                    {renderEditField(t('inspector.surfaceGoalLabel', 'Surface Goal'), 'surface_goal', true)}
+                    {renderEditField(t('inspector.trueGoalLabel', 'True Goal (Author Only)'), 'true_goal', true)}
+                  </>
+                ) : (
+                  <>
+                    {charData.surface_goal && (
+                      <div className="entity-agenda-row">
+                        <div className="entity-agenda-icon" style={{ color: 'var(--accent-green)' }}>
+                          <Icons.Eye />
+                        </div>
+                        <div>
+                          <div className="entity-agenda-label">{t('inspector.surfaceGoal', 'Surface Goal')}</div>
+                          <div className="entity-agenda-text">{charData.surface_goal}</div>
+                        </div>
+                      </div>
+                    )}
+                    {charData.true_goal && (
+                      <div className="entity-agenda-row">
+                        <div className="entity-agenda-icon" style={{ color: 'var(--accent-red)' }}>
+                          <Icons.EyeOff />
+                        </div>
+                        <div>
+                          <div className="entity-agenda-label">{t('inspector.trueGoal', 'True Goal (Author Only)')}</div>
+                          <div className="entity-agenda-text">{charData.true_goal}</div>
+                        </div>
+                      </div>
+                    )}
+                  </>
+                )}
+              </div>
+
+              {/* Known details */}
+              <div className="entity-section">
+                <div className="entity-section-title">
+                  <Icons.Eye /> {t('inspector.knownDetailsSection', 'Known Details')}
+                </div>
+                {editMode ? (
+                  <>
+                    {renderEditField(t('inspector.roleLabel', 'Role'), 'role')}
+                    {renderEditField(t('inspector.statusLabel', 'Status'), 'status')}
+                    {renderEditField(t('inspector.speciesLabel', 'Species'), 'species')}
+                    <div className="entity-edit-field">
+                      <label className="entity-edit-label">{t('inspector.birthDateLabel', 'Birth Date (in-world)')}</label>
+                      <CalendarDatePicker
+                        value={editData.birth_date || ''}
+                        onChange={(v) => handleEditField('birth_date', v)}
+                        calConfig={calConfig}
+                        projectPath={projectPath}
+                      />
+                    </div>
+                    {renderEditField(t('inspector.aliasesLabel', 'Aliases (comma-separated)'), 'aliases')}
+                  </>
+                ) : (
+                  <>
+                    {charData.status && (
+                      <div className="entity-detail-row">
+                        <div className="entity-detail-label">{t('inspector.status', 'Status')}</div>
+                        <div className="entity-detail-value">{charData.status}</div>
+                      </div>
+                    )}
+                    {charData.species && (
+                      <div className="entity-detail-row">
+                        <div className="entity-detail-label">{t('inspector.species', 'Species')}</div>
+                        <div className="entity-detail-value">{charData.species}</div>
+                      </div>
+                    )}
+                    {charData.birth_date && (
+                      <div className="entity-detail-row">
+                        <div className="entity-detail-label">{t('inspector.birthDate', 'Birth Date')}</div>
+                        <div className="entity-detail-value">
+                          {charData.birth_date}
+                          {calculatedAge?.calculated && (
+                            <span style={{ color: 'var(--accent-amber)', marginInlineStart: '6px' }}>
+                              ({t('inspector.agePrefix', 'age:')} {calculatedAge.age_text})
+                            </span>
+                          )}
+                        </div>
+                      </div>
+                    )}
+                    {charData.aliases && charData.aliases.length > 0 && (
+                      <div className="entity-detail-row">
+                        <div className="entity-detail-label">{t('inspector.aliases', 'Aliases')}</div>
+                        <div className="entity-detail-value">{charData.aliases.join(', ')}</div>
+                      </div>
+                    )}
+                  </>
+                )}
+              </div>
+
+              {/* Notes */}
+              <div className="entity-section">
+                <div className="entity-section-title">
+                  <Icons.Feather /> {t('inspector.authorNotesSection', 'Author Notes')}
+                </div>
+                {editMode ? (
+                  renderEditField('', 'notes', true)
+                ) : (
+                  <div className="entity-narrative-note">{charData.notes || t('inspector.noNotes', 'No notes.')}</div>
+                )}
+              </div>
+            </>
+          )}
+
+          {/* ═══ LORE / LOCATION / GROUP SECTIONS ═══ */}
+          {(loreData || locationData || groupData) && (
+            <>
+              <div className="entity-section">
+                <div className="entity-section-title">
+                  <Icons.BookOpen /> {t('inspector.descriptionSection', 'Description')}
+                </div>
+                {editMode ? (
+                  renderEditField('', 'description', true)
+                ) : (
+                  <div className="entity-bio">
+                    {(locationData || loreData || groupData).description || t('inspector.noDescription', 'No description yet.')}
+                  </div>
+                )}
+              </div>
+
+              {locationData && (
+                <div className="entity-section">
+                  <div className="entity-section-title">
+                    <Icons.Target /> {t('inspector.locationDetails', 'Location Details')}
+                  </div>
+                  {editMode ? (
+                    <>
+                      {renderEditField(t('inspector.regionLabel', 'Region'), 'region')}
+                      {renderEditField(t('inspector.parentLocationId', 'Parent Location ID (optional)'), 'parent_location_id')}
+                    </>
+                  ) : (
+                    <>
+                      {locationData.region && (
+                        <div className="entity-detail-row">
+                          <div className="entity-detail-label">{t('inspector.region', 'Region')}</div>
+                          <div className="entity-detail-value">{locationData.region}</div>
+                        </div>
+                      )}
+                      {locationData.parent_location_id && (
+                        <div className="entity-detail-row">
+                          <div className="entity-detail-label">{t('inspector.parentLocation', 'Parent ID')}</div>
+                          <div className="entity-detail-value">#{locationData.parent_location_id}</div>
+                        </div>
+                      )}
+                    </>
+                  )}
+                </div>
+              )}
+
+              {groupData && (
+                <div className="entity-section">
+                  <div className="entity-section-title">
+                    <Icons.Target /> {t('inspector.agendasSection', 'Agendas')}
+                  </div>
+                  {editMode ? (
+                    <>
+                      {renderEditField(t('inspector.groupTypeLabel', 'Group Type'), 'group_type')}
+                      {renderEditField(t('inspector.surfaceAgendaLabel', 'Surface Agenda'), 'surface_agenda', true)}
+                      {renderEditField(t('inspector.trueAgendaLabel', 'True Agenda (Author Only)'), 'true_agenda', true)}
+                    </>
+                  ) : (
+                    <>
+                      {groupData.surface_agenda && (
+                        <div className="entity-agenda-row">
+                          <div className="entity-agenda-icon" style={{ color: 'var(--accent-green)' }}>
+                            <Icons.Eye />
+                          </div>
+                          <div>
+                            <div className="entity-agenda-label">{t('inspector.surfaceAgenda', 'Surface Agenda')}</div>
+                            <div className="entity-agenda-text">{groupData.surface_agenda}</div>
+                          </div>
+                        </div>
+                      )}
+                      {groupData.true_agenda && (
+                        <div className="entity-agenda-row">
+                          <div className="entity-agenda-icon" style={{ color: 'var(--accent-red)' }}>
+                            <Icons.EyeOff />
+                          </div>
+                          <div>
+                            <div className="entity-agenda-label">{t('inspector.trueAgenda', 'True Agenda (Author Only)')}</div>
+                            <div className="entity-agenda-text">{groupData.true_agenda}</div>
+                          </div>
+                        </div>
+                      )}
+                    </>
+                  )}
+                </div>
+              )}
+
+              {loreData && (
+                <div className="entity-section">
+                  <div className="entity-section-title">
+                    <Icons.Target /> {t('inspector.loreDetails', 'Lore Details')}
+                  </div>
+                  {editMode ? (
+                    <>
+                      <div className="entity-edit-field">
+                        <label className="entity-edit-label">{t('inspector.categoryLabel', 'Category')}</label>
+                        <select
+                          className="entity-edit-input"
+                          value={editData.category || ''}
+                          onChange={(e) => handleEditField('category', e.target.value)}
+                        >
+                          <option value="">{t('inspector.selectCategory', 'Select category...')}</option>
+                          {loreCategories.map((cat) => (
+                            <option key={cat} value={cat}>
+                              {cat.charAt(0).toUpperCase() + cat.slice(1)}
+                            </option>
+                          ))}
+                          <option value="new_category">{t('inspector.newCategoryOption', '+ New Category...')}</option>
+                        </select>
+                        {editData.category === 'new_category' && (
+                          <input
+                            className="entity-edit-input"
+                            style={{ marginTop: '6px' }}
+                            type="text"
+                            value={editData.customCategory || ''}
+                            onChange={(e) => handleEditField('customCategory', e.target.value)}
+                            placeholder={t('inspector.newCategoryPlaceholder', 'Type new category...')}
+                            autoFocus
+                          />
+                        )}
+                      </div>
+                      {renderEditField(t('inspector.classificationLabel', 'Classification'), 'classification')}
+                      {renderEditField(t('inspector.originLabel', 'Origin'), 'origin')}
+                      {renderEditField(t('inspector.rulesLabel', 'Rules / Constraints'), 'rules', true)}
+                      {renderEditField(t('inspector.limitationsLabel', 'Limitations'), 'limitations', true)}
+                    </>
+                  ) : (
+                    <>
+                      {loreData.origin && (
+                        <div className="entity-detail-row">
+                          <div className="entity-detail-label">{t('inspector.origin', 'Origin')}</div>
+                          <div className="entity-detail-value">{loreData.origin}</div>
+                        </div>
+                      )}
+                      {loreData.rules && (
+                        <div className="entity-detail-row">
+                          <div className="entity-detail-label">{t('inspector.rules', 'Rules')}</div>
+                          <div className="entity-detail-value" style={{ whiteSpace: 'pre-wrap' }}>{loreData.rules}</div>
+                        </div>
+                      )}
+                      {loreData.limitations && (
+                        <div className="entity-detail-row">
+                          <div className="entity-detail-label" style={{ color: 'var(--accent-red)' }}>{t('inspector.limitations', 'Limitations')}</div>
+                          <div className="entity-detail-value" style={{ whiteSpace: 'pre-wrap' }}>{loreData.limitations}</div>
+                        </div>
+                      )}
+                    </>
+                  )}
+                </div>
+              )}
+
+              <div className="entity-section">
+                <div className="entity-section-title">
+                  <Icons.Eye /> {t('inspector.aliasesSection', 'Aliases')}
+                </div>
+                {editMode ? (
+                  renderEditField(t('inspector.commaSeparated', 'Comma-separated'), 'aliases')
+                ) : currEntity.aliases && currEntity.aliases.length > 0 ? (
+                  <div style={{ display: 'flex', flexWrap: 'wrap', gap: '4px' }}>
+                    {currEntity.aliases.map((a, i) => (
+                      <div className="entity-property-item" key={i}>
+                        {a}
+                      </div>
+                    ))}
+                  </div>
+                ) : (
+                  <div className="entity-detail-value" style={{ opacity: 0.5 }}>
+                    {t('inspector.none', 'None')}
+                  </div>
+                )}
+              </div>
+
+              <div className="entity-section">
+                <div className="entity-section-title">
+                  <Icons.Feather /> {t('inspector.authorNotesSection', 'Author Notes')}
+                </div>
+                {editMode ? (
+                  renderEditField('', 'notes', true)
+                ) : (
+                  <div className="entity-narrative-note">
+                    {(locationData || loreData || groupData).notes || t('inspector.noNotes', 'No notes.')}
+                  </div>
+                )}
+              </div>
+            </>
+          )}
+
+        </>
+      )}
+
+      {activeTab === 'knowledge' && (
+        <div className="entity-section" style={{ marginTop: 0 }}>
+          {/* ═══ KNOWLEDGE FACTS SECTION ═══ */}
+          <div
+            className="entity-section-title"
+            style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}
           >
-            <Icons.Trash /> {t('inspector.deleteEntityBtn', 'Delete Entity')}
-          </button>
+            <span>
+              <Icons.Brain /> {t('inspector.knowledgeSection', 'Knowledge')}
+            </span>
+            {viewMode === 'author' && (
+              <button
+                className="entity-edit-toggle"
+                onClick={() => setAddingFact(!addingFact)}
+                title={t('inspector.addFactTooltip', 'Add Fact')}
+                style={{ marginInlineStart: 'auto' }}
+              >
+                <Icons.Plus />
+              </button>
+            )}
+          </div>
+
+          {viewMode === 'world_time' && !activeChapter?.world_time && (
+            <div className="knowledge-no-pov">
+              {t('inspector.noWorldTime', 'No world time set for this chapter. Set a world time in the chapter metadata to filter.')}
+            </div>
+          )}
+
+          {/* Add fact form */}
+          {addingFact && viewMode === 'author' && (
+            <div className="knowledge-add-form">
+              <textarea
+                className="entity-edit-textarea"
+                placeholder={t('inspector.whatIsFact', 'What is the fact?')}
+                value={newFact.fact}
+                onChange={(e) => setNewFact((p) => ({ ...p, fact: e.target.value }))}
+                rows={2}
+              />
+              <select
+                className="knowledge-select"
+                value={newFact.character_id}
+                onChange={(e) => setNewFact((p) => ({ ...p, character_id: e.target.value }))}
+              >
+                <option value="">
+                  {entity.type === 'character'
+                    ? t('inspector.whoIsFactAbout', 'Who is this about?')
+                    : t('inspector.whoKnowsThis', 'Who knows this?')}
+                </option>
+                {characters.map((c) => (
+                  <option key={c.id} value={c.id}>
+                    {c.name}
+                  </option>
+                ))}
+              </select>
+              <label className="knowledge-secret-toggle">
+                <input
+                  type="checkbox"
+                  checked={newFact.is_secret === 1}
+                  onChange={(e) => setNewFact((p) => ({ ...p, is_secret: e.target.checked ? 1 : 0 }))}
+                />
+                {t('inspector.secretToggle', 'Secret (author-only)')}
+              </label>
+              <div className="knowledge-add-actions">
+                <button className="entity-edit-btn save" onClick={handleAddFact}>
+                  {t('inspector.add', 'Add')}
+                </button>
+                <button className="entity-edit-btn" onClick={() => setAddingFact(false)}>
+                  {t('inspector.cancel', 'Cancel')}
+                </button>
+              </div>
+            </div>
+          )}
+
+          {/* Knowledge facts list */}
+          {knowledgeFacts.length === 0 ? (
+            <div className="entity-detail-value" style={{ opacity: 0.5, fontSize: '11px' }}>
+              {t('inspector.noKnowledge', 'No knowledge entries yet.')}
+            </div>
+          ) : (
+            knowledgeFacts.map((fact) => (
+              <div className={`knowledge-fact-card ${fact.is_secret ? 'secret' : ''}`} key={fact.id}>
+                <div className="knowledge-fact-text">{fact.fact}</div>
+                <div className="knowledge-fact-meta">
+                  <span className="knowledge-fact-who">
+                    {entity.type === 'character'
+                      ? (fact.source_entity_name || t('inspector.unknownEntity', 'Unknown'))
+                      : fact.character_name}
+                  </span>
+                  <span className="knowledge-fact-when">
+                    {getChapterLabel(fact.learned_in_chapter)}
+                  </span>
+                  {fact.world_time && (
+                    <span className="knowledge-fact-when" title={t('inspector.worldTimeLabel', 'World time')}>
+                      {fact.world_time}
+                    </span>
+                  )}
+                  {fact.is_secret && <span className="knowledge-fact-badge secret">{t('inspector.secretBadge', 'SECRET')}</span>}
+                </div>
+                {viewMode === 'author' && (
+                  <button
+                    className="knowledge-fact-delete"
+                    onClick={() => handleDeleteFact(fact.id)}
+                    title={t('inspector.deleteFactTooltip', 'Delete fact')}
+                  >
+                    <Icons.Trash />
+                  </button>
+                )}
+              </div>
+            ))
+          )}
         </div>
       )}
 
-      {/* Delete Entity Confirmation Popup */}
-      {showDeleteConfirm && (
-        <div className="popup-overlay" onClick={() => setShowDeleteConfirm(false)}>
+      {activeTab === 'relationships' && (
+        <div className="entity-section" style={{ marginTop: 0 }}>
           <div
-            className="popup-panel"
-            onClick={(e) => e.stopPropagation()}
-            style={{
-              insetInlineStart: '50%',
-              top: '50%',
-              transform: 'translate(-50%, -50%)',
-              width: '400px'
-            }}
+            className="entity-section-title"
+            style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}
           >
-            <div className="popup-header">
-              <span style={{ fontSize: '16px', fontWeight: '600', color: 'var(--accent-red)' }}>{t('inspector.deleteEntityTitle', 'Delete Entity?')}</span>
-            </div>
-            <div
-              className="popup-subtitle"
-              style={{
-                whiteSpace: 'normal',
-                lineHeight: '1.5',
-                marginTop: '14px',
-                marginBottom: '20px',
-                fontSize: '14px'
-              }}
-            >
-              {t('inspector.deleteEntityWarning', 'This action is permanent. Any mentions in the text will lose their links and revert to normal text.')}
-            </div>
-            <div style={{ display: 'flex', justifyContent: 'flex-end', gap: '8px' }}>
-              <button className="entity-edit-btn" style={{ padding: '8px 16px', fontSize: '14px' }} onClick={() => setShowDeleteConfirm(false)}>
-                {t('inspector.cancel', 'Cancel')}
-              </button>
-              <button
-                className="entity-edit-btn save"
-                style={{
-                  backgroundColor: 'var(--accent-red)',
-                  borderColor: 'var(--accent-red)',
-                  color: 'var(--bg-deep)',
-                  padding: '8px 16px',
-                  fontSize: '14px'
-                }}
-                onClick={handleConfirmDeleteEntity}
-              >
-                {t('inspector.deleteEntityBtn', 'Delete Entity')}
-              </button>
-            </div>
+            <span>
+              <Icons.Users /> {t('inspector.relationshipsSection', 'Relationships')}
+            </span>
           </div>
+
+          {viewMode === 'world_time' && !activeChapter?.world_time && (
+            <div className="knowledge-no-pov">
+              {t('inspector.noWorldTime', 'No world time set for this chapter. Set a world time in the chapter metadata to filter.')}
+            </div>
+          )}
+
+          {relationships.length === 0 ? (
+            <div className="entity-detail-value" style={{ opacity: 0.5, fontSize: '11px' }}>
+              {t('inspector.noRelationships', 'No relationships yet.')}
+            </div>
+          ) : (
+            relationships.map((relItem) => {
+              const activeState = relItem.current_state || relItem.ghost_state;
+              if (!activeState) return null;
+
+              let wordsAgoText = null;
+              if (activeChapter && activeState.chapter_id === activeChapter.id && activeState.word_offset != null) {
+                wordsAgoText = t('inspector.inThisChapter', 'In this chapter');
+              } else if (activeState.chapter_id) {
+                wordsAgoText = getChapterLabel(activeState.chapter_id)
+              }
+
+              return (
+                <div className="knowledge-fact-card" key={relItem.target_character_id}>
+                  
+                  <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '16px', marginBottom: '12px', marginTop: '4px' }}>
+                    {/* Left Character (Selected) */}
+                    <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', width: '60px' }}>
+                      <div style={{ width: '32px', height: '32px', borderRadius: '50%', backgroundColor: 'var(--bg-deep)', display: 'flex', alignItems: 'center', justifyContent: 'center', border: '1px solid var(--border-subtle)' }}>
+                        <Icons.User style={{ width: '16px', height: '16px', color: 'var(--text-secondary)' }} />
+                      </div>
+                      <span style={{ fontSize: '11px', color: 'var(--text-primary)', marginTop: '4px', textAlign: 'center', textOverflow: 'ellipsis', overflow: 'hidden', whiteSpace: 'nowrap', width: '100%' }} title={entity.name}>
+                        {entity.name}
+                      </span>
+                    </div>
+
+                    {/* Arrows Middle Section */}
+                    <div style={{ flex: 1, display: 'flex', flexDirection: 'column', gap: '12px', position: 'relative' }}>
+                      {/* Top Arrow: Left to Right (Current Char -> Target Char) */}
+                      <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
+                        <span style={{ fontSize: '10px', color: getRelColor(activeState.rel_type), textTransform: 'uppercase', fontWeight: 'bold' }}>
+                          {t(`relType.${activeState.rel_type.toLowerCase()}`, activeState.rel_type)}
+                        </span>
+                        <div style={{ width: '100%', height: '2px', backgroundColor: getRelColor(activeState.rel_type), position: 'relative', marginTop: '2px' }}>
+                          <div style={{ position: 'absolute', right: '-2px', top: '-4px', width: '0', height: '0', borderTop: '5px solid transparent', borderBottom: '5px solid transparent', borderLeft: `6px solid ${getRelColor(activeState.rel_type)}` }}></div>
+                        </div>
+                      </div>
+
+                      {/* Bottom Arrow: Right to Left (Target Char -> Current Char) */}
+                      <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
+                        <div style={{ width: '100%', height: '2px', backgroundColor: relItem.reverse_state ? getRelColor(relItem.reverse_state.rel_type) : 'var(--border-subtle)', position: 'relative', marginBottom: '2px' }}>
+                          <div style={{ position: 'absolute', left: '-2px', top: '-4px', width: '0', height: '0', borderTop: '5px solid transparent', borderBottom: '5px solid transparent', borderRight: `6px solid ${relItem.reverse_state ? getRelColor(relItem.reverse_state.rel_type) : 'var(--border-subtle)'}` }}></div>
+                        </div>
+                        <span style={{ fontSize: '10px', color: relItem.reverse_state ? getRelColor(relItem.reverse_state.rel_type) : 'var(--text-secondary)', textTransform: 'uppercase', fontWeight: relItem.reverse_state ? 'bold' : 'normal' }}>
+                          {relItem.reverse_state ? relItem.reverse_state.rel_type : t('inspector.unknownRel', 'Unknown')}
+                        </span>
+                      </div>
+                    </div>
+
+                    {/* Right Character (Target) */}
+                    <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', width: '60px' }}>
+                      <div style={{ width: '32px', height: '32px', borderRadius: '50%', backgroundColor: 'var(--bg-deep)', display: 'flex', alignItems: 'center', justifyContent: 'center', border: '1px solid var(--border-subtle)' }}>
+                         <Icons.User style={{ width: '16px', height: '16px', color: 'var(--text-secondary)' }} />
+                      </div>
+                      <span style={{ fontSize: '11px', color: 'var(--text-primary)', marginTop: '4px', textAlign: 'center', textOverflow: 'ellipsis', overflow: 'hidden', whiteSpace: 'nowrap', width: '100%' }} title={relItem.target_character_name}>
+                        {relItem.target_character_name}
+                      </span>
+                    </div>
+                  </div>
+                  
+                  {activeState.notes && (
+                    <div className="knowledge-fact-text" style={{ fontStyle: 'italic', marginBottom: '6px', textAlign: 'center' }}>
+                      "{activeState.notes}"
+                    </div>
+                  )}
+
+                  <div className="knowledge-fact-meta" style={{ justifyContent: 'center' }}>
+                    {wordsAgoText && <span className="knowledge-fact-when">{wordsAgoText}</span>}
+                    {activeState.world_time && (
+                      <span className="knowledge-fact-when" title={t('inspector.worldTimeLabel', 'World time')}>
+                        {activeState.world_time}
+                      </span>
+                    )}
+                  </div>
+
+                  {/* Render Ghost State */}
+                  {relItem.ghost_state && (
+                     <div style={{ marginTop: '8px', padding: '6px', background: 'rgba(255,255,255,0.05)', borderRadius: '4px', border: '1px dashed var(--border-subtle)' }}>
+                        <div style={{ fontSize: '10px', color: 'var(--text-tertiary)', textTransform: 'uppercase', marginBottom: '4px' }}>
+                          {t('inspector.ghostStateNarrative', 'Narrative Reality')}
+                        </div>
+                        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+                          <span className="knowledge-fact-badge" style={{ opacity: 0.7 }}>
+                            {t(`relType.${relItem.ghost_state.rel_type.toLowerCase()}`, relItem.ghost_state.rel_type)}
+                          </span>
+                        </div>
+                        {relItem.ghost_state.notes && (
+                          <div style={{ fontSize: '11px', color: 'var(--text-secondary)', fontStyle: 'italic', marginTop: '4px' }}>
+                            "{relItem.ghost_state.notes}"
+                          </div>
+                        )}
+                        {viewMode === 'author' && (
+                          <div style={{ textAlign: 'right', marginTop: '4px', display: 'flex', justifyContent: 'flex-end', gap: '4px' }}>
+                            <button
+                              className="knowledge-fact-delete"
+                              style={{ color: 'var(--text-secondary)' }}
+                              onClick={() => setEditRelPopup(relItem.ghost_state)}
+                              title={t('inspector.editRelTooltip', 'Edit relationship data')}
+                            >
+                              <Icons.Edit />
+                            </button>
+                            <button
+                              className="knowledge-fact-delete"
+                              onClick={() => handleDeleteRelationship(relItem.ghost_state.id)}
+                              title={t('inspector.deleteRelTooltip', 'Delete relationship data')}
+                            >
+                              <Icons.Trash />
+                            </button>
+                          </div>
+                        )}
+                     </div>
+                  )}
+                  {viewMode === 'author' && (
+                    <div style={{ position: 'absolute', top: '8px', right: '8px', display: 'flex', gap: '4px' }}>
+                      <button
+                        className="knowledge-fact-delete"
+                        style={{ color: 'var(--text-secondary)' }}
+                        onClick={() => setEditRelPopup(activeState)}
+                        title={t('inspector.editRelTooltip', 'Edit relationship data')}
+                      >
+                        <Icons.Edit />
+                      </button>
+                      <button
+                        className="knowledge-fact-delete"
+                        onClick={() => handleDeleteRelationship(activeState.id)}
+                        title={t('inspector.deleteRelTooltip', 'Delete relationship data')}
+                      >
+                        <Icons.Trash />
+                      </button>
+                    </div>
+                  )}
+                </div>
+              )
+            })
+          )}
         </div>
       )}
-    </div>
+
+      {/* Delete Entity Section */}
+      {
+        viewMode === 'author' && (
+          <div style={{ marginTop: '24px', display: 'flex', justifyContent: 'center' }}>
+            <button
+              onClick={() => setShowDeleteConfirm(true)}
+              className="entity-edit-btn"
+              style={{ color: 'var(--accent-red)', borderColor: 'var(--accent-red-dim)' }}
+              title={t('inspector.deleteEntityTooltip', 'Delete this entity')}
+            >
+              <Icons.Trash /> {t('inspector.deleteEntityBtn', 'Delete Entity')}
+            </button>
+          </div>
+        )
+      }
+
+      {/* Delete Entity Confirmation Popup */}
+      {
+        showDeleteConfirm && (
+          <div className="popup-overlay" onClick={() => setShowDeleteConfirm(false)}>
+            <div
+              className="popup-panel"
+              onClick={(e) => e.stopPropagation()}
+              style={{
+                insetInlineStart: '50%',
+                top: '50%',
+                transform: 'translate(-50%, -50%)',
+                width: '400px'
+              }}
+            >
+              <div className="popup-header">
+                <span style={{ fontSize: '16px', fontWeight: '600', color: 'var(--accent-red)' }}>{t('inspector.deleteEntityTitle', 'Delete Entity?')}</span>
+              </div>
+              <div
+                className="popup-subtitle"
+                style={{
+                  whiteSpace: 'normal',
+                  lineHeight: '1.5',
+                  marginTop: '14px',
+                  marginBottom: '20px',
+                  fontSize: '14px'
+                }}
+              >
+                {t('inspector.deleteEntityWarning', 'This action is permanent. Any mentions in the text will lose their links and revert to normal text.')}
+              </div>
+              <div style={{ display: 'flex', justifyContent: 'flex-end', gap: '8px' }}>
+                <button className="entity-edit-btn" style={{ padding: '8px 16px', fontSize: '14px' }} onClick={() => setShowDeleteConfirm(false)}>
+                  {t('inspector.cancel', 'Cancel')}
+                </button>
+                <button
+                  className="entity-edit-btn save"
+                  style={{
+                    backgroundColor: 'var(--accent-red)',
+                    borderColor: 'var(--accent-red)',
+                    color: 'var(--bg-deep)',
+                    padding: '8px 16px',
+                    fontSize: '14px'
+                  }}
+                  onClick={handleConfirmDeleteEntity}
+                >
+                  {t('inspector.deleteEntityBtn', 'Delete Entity')}
+                </button>
+              </div>
+            </div>
+          </div>
+        )
+      }
+
+      {editRelPopup && (
+        <RelationshipTurningPointPopup
+          projectPath={projectPath}
+          calConfig={calConfig}
+          existingRel={editRelPopup}
+          position={{ x: window.innerWidth / 2 - 180, y: window.innerHeight / 2 - 200 }}
+          onClose={() => setEditRelPopup(null)}
+          onSuccess={() => {
+            loadRelationships()
+            setEditRelPopup(null)
+          }}
+        />
+      )}
+    </div >
   )
 }

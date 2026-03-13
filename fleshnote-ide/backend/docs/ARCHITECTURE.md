@@ -68,6 +68,7 @@ Exposes `window.api` object to renderer via Electron's `contextBridge`. Each met
 | Locations  | `getLocations()`, `createLocation()`                                                                                          |
 | Entities   | `getEntities()`, `createLoreEntity()`                                                                                         |
 | Import     | `openFile()`, `importSplitPreview()`, `importConfirmSplits()`, `importNerExtract()`                                           |
+| Calendar   | `getCalendarConfig()`, `updateCalendarConfig()`                                                                       |
 | Window     | `minimizeWindow()`, `maximizeWindow()`, `closeWindow()`                                                                       |
 
 ### Main Process (`src/main/index.ts`)
@@ -115,7 +116,8 @@ fleshnote-ide/
 │   │   ├── entities.py       # Aggregated entity listing + lore entity CRUD
 │   │   ├── imports.py        # Manuscript splitting + NER extraction
 │   │   ├── twists.py         # Twist Inspector CRUD & Foreshadowing logic
-│   │   └── planner.py        # Timeline Planner blocks and arcs
+│   │   ├── planner.py        # Timeline Planner blocks and arcs
+│   │   └── stats.py          # Custom Analytics & Telemetry
 │   ├── docs/                 # This documentation
 │   └── .venv/                # Python virtual environment
 │
@@ -136,14 +138,38 @@ fleshnote-ide/
 │           │   ├── EntityContextMenu.jsx      # Right-click entity creation
 │           │   ├── EntityInspectorPanel.jsx   # Entity detail in left sidebar
 │           │   ├── ProjectQuestionnaire.jsx   # 3-step onboarding wizard
-│           │   └── ProjectSetup.jsx           # Post-questionnaire setup
-│           └── extensions/
-│               └── EntityLinkMark.js          # Custom TipTap mark
+│           │   ├── ProjectSetup.jsx           # Post-questionnaire setup
+│           │   ├── StatsDashboard.jsx         # Custom Analytics & Habits Dashboard
+│           │   ├── CalendarDatePicker.jsx     # Reusable world date input
+│           │   └── CustomCalendarPlanner.jsx  # Schema editor for world time
+│           ├── extensions/
+│           │   └── EntityLinkMark.js          # Custom TipTap mark
+│           └── utils/
+│               └── calendarUtils.js           # World calendar math & projection
+│
 │
 ├── resources/                # App icons
 ├── package.json
 └── electron.vite.config.ts
 ```
+
+---
+
+## The Two Timelines
+
+FleshNote is built on the philosophy that worldbuilding and plotting are distinct but overlapping activities. This is reflected in the dual-timeline architecture:
+
+1.  **Narrative Timeline (Plot Planner)**:
+    *   **Data Model**: `planner_blocks`, `planner_arcs`.
+    *   **Unit**: 0-100% of the manuscript.
+    *   **Purpose**: Structural pacing, story beats, and reveal sequence.
+    *   **Logic**: Anchored to **Chapters**.
+
+2.  **World Timeline (World History)**:
+    *   **Data Model**: `history_entries`.
+    *   **Unit**: Absolute dates (Years/Months/Days).
+    *   **Purpose**: Character lifespans, geopolitical history, and causal consistency.
+    *   **Logic**: Anchored to the **Custom Calendar**.
 
 ---
 
@@ -324,6 +350,21 @@ Optional: NER entity extraction
 - `spacy` — NLP/NER processing
 - `en_core_web_sm` — English language model
 - `python-docx` — DOCX file reading (optional)
+
+### Calendar Configuration Flow
+
+```
+User opens Calendar Planner
+  -> CustomCalendarPlanner.jsx mounts
+  -> window.api.getCalendarConfig(projectPath)
+  -> Returns { config: { months, seasons... } }
+User modifies month lengths
+  -> Local state updates
+  -> 800ms debounce auto-save
+  -> window.api.updateCalendarConfig({ project_path, updates })
+  -> IPC -> backend updates 'config' table in SQLite
+  -> onCalendarChanged() event broadcast to all instances
+```
 
 ---
 

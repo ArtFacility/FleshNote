@@ -166,7 +166,6 @@ Junction table tracking which entities appear in which chapters. Auto-populated 
 | `first_mention_offset` | INTEGER |                                                | Character position in markdown file      |
 
 **Constraints:** `UNIQUE(entity_type, entity_id, chapter_id)` prevents duplicates.
-
 **Indexes:** `idx_appearances_entity`, `idx_appearances_chapter`
 
 ---
@@ -183,9 +182,11 @@ Epistemic filtering system. Tracks what each character knows and when they learn
 | `source_entity_type` | TEXT      |                                                  | What entity this fact is about                |
 | `source_entity_id`   | INTEGER   |                                                  | FK to the source entity                       |
 | `learned_in_chapter` | INTEGER   | FK -> chapters(id) ON DELETE SET NULL            | `NULL` = knows from the start                 |
+| `world_time`         | TEXT      |                                                  | In-universe time when character learned this  |
 | `is_secret`          | INTEGER   | DEFAULT 0                                        | `1` = author-only, character cannot know this |
 | `reveal_in_chapter`  | INTEGER   | FK -> chapters(id) ON DELETE SET NULL            | Planned reveal chapter                        |
 | `notes`              | TEXT      |                                                  |                                               |
+| `word_offset`        | INTEGER   |                                                  | Links fact to a textual position              |
 | `created_at`         | TIMESTAMP | DEFAULT CURRENT_TIMESTAMP                        |                                               |
 
 **POV filtering query:**
@@ -221,28 +222,7 @@ Plot points with prerequisites. Prerequisites stored as JSON for Phase 1 flexibi
 
 ---
 
-## 10. `secrets`
-
-Hidden information tied to the epistemic system. Phase 2 AI features use `danger_phrases` to detect accidental reveals in prose.
-
-| Column                | Type      | Constraints                           | Description                                              |
-| --------------------- | --------- | ------------------------------------- | -------------------------------------------------------- |
-| `id`                  | INTEGER   | PRIMARY KEY AUTOINCREMENT             |                                                          |
-| `title`               | TEXT      | NOT NULL                              | e.g. `"Mystery POV is Bob"`                              |
-| `description`         | TEXT      |                                       |                                                          |
-| `secret_type`         | TEXT      |                                       | `identity`, `motive`, `event`, `ability`, `relationship` |
-| `reveal_chapter_id`   | INTEGER   | FK -> chapters(id) ON DELETE SET NULL | When it gets revealed                                    |
-| `characters_who_know` | TEXT      |                                       | JSON array of character IDs                              |
-| `danger_phrases`      | TEXT      |                                       | JSON array: `["his true name", "the real heir"]`         |
-| `status`              | TEXT      |                                       | `hidden`, `hinted`, `revealed`                           |
-| `notes`               | TEXT      |                                       |                                                          |
-| `created_at`          | TIMESTAMP | DEFAULT CURRENT_TIMESTAMP             |                                                          |
-
-**Indexes:** `idx_secret_reveal`, `idx_secret_status`
-
----
-
-## 11. `twists`
+## 10. `twists`
 
 Major plot reveals or secrets. Used in conjunction with foreshadowings to track narrative payoff on the timeline.
 
@@ -263,56 +243,56 @@ Major plot reveals or secrets. Used in conjunction with foreshadowings to track 
 
 ---
 
-## 11.5 `foreshadowings`
+## 11. `foreshadowings`
 
 Precise markers linking a specific word offset in a chapter to a Twist. This powers the visual lines on the planner.
 
-| Column          | Type      | Constraints                               | Description                                              |
-| --------------- | --------- | ----------------------------------------- | -------------------------------------------------------- |
-| `id`            | INTEGER   | PRIMARY KEY AUTOINCREMENT                 |                                                          |
+| Column          | Type      | Constraints                                 | Description                                              |
+| --------------- | --------- | ------------------------------------------- | -------------------------------------------------------- |
+| `id`            | INTEGER   | PRIMARY KEY AUTOINCREMENT                   |                                                          |
 | `twist_id`      | INTEGER   | NOT NULL, FK -> twists(id) ON DELETE CASCADE | Twist this clues to                                      |
 | `chapter_id`    | INTEGER   | NOT NULL, FK -> chapters(id) ON DELETE CASCADE | Chapter where clue is placed                             |
-| `word_offset`   | INTEGER   | NOT NULL                                  | Spot in the chapter                                      |
-| `selected_text` | TEXT      |                                           | The actual clue text                                     |
-| `created_at`    | TIMESTAMP | DEFAULT CURRENT_TIMESTAMP                 |                                                          |
+| `word_offset`   | INTEGER   | NOT NULL                                    | Spot in the chapter                                      |
+| `selected_text` | TEXT      |                                             | The actual clue text                                     |
+| `created_at`    | TIMESTAMP | DEFAULT CURRENT_TIMESTAMP                   |                                                          |
 
 **Indexes:** `idx_foreshadow_twist`, `idx_foreshadow_chapter`
 
 ---
 
-## 12. `planner_settings`
+## 12. `planner_settings` (Singleton)
 
 Global planner states: cursor progress, visibility, and theme description.
 
-| Column            | Type    | Constraints                               | Description                                              |
-| ----------------- | ------- | ----------------------------------------- | -------------------------------------------------------- |
-| `id`              | INTEGER | PRIMARY KEY CHECK(id = 1)                 | Singleton table (id always 1)                            |
-| `theme`           | TEXT    | DEFAULT ''                                | Max length 120                                           |
-| `cursor_pct`      | REAL    | DEFAULT 0                                 | Current reading location out of 100%                     |
-| `writing_started` | INTEGER | DEFAULT 0                                 |                                                          |
-| `shadow_visible`  | INTEGER | DEFAULT 0                                 | Toggles visibility of shadow layer elements              |
-| `updated_at`      | TEXT    | DEFAULT CURRENT_TIMESTAMP                 |                                                          |
+| Column            | Type    | Constraints               | Description                                |
+| ----------------- | ------- | ------------------------- | ------------------------------------------ |
+| `id`              | INTEGER | PRIMARY KEY CHECK(id = 1) | Singleton table (id always 1)              |
+| `theme`           | TEXT    | DEFAULT ''                | Max length 120                             |
+| `cursor_pct`      | REAL    | DEFAULT 0                 | Current reading location out of 100%       |
+| `writing_started` | INTEGER | DEFAULT 0                 | Boolean-as-int                             |
+| `shadow_visible`  | INTEGER | DEFAULT 0                 | Toggles visibility of shadow layer elements|
+| `updated_at`      | TEXT    | DEFAULT CURRENT_TIMESTAMP |                                            |
 
 ---
 
 ## 13. `planner_blocks`
 
-Plot milestones and story beats in the planner. Features dynamic auto-compression if overlapping.
+Plot milestones and story beats in the planner.
 
-| Column                 | Type    | Constraints                                            | Description                                              |
-| ---------------------- | ------- | ------------------------------------------------------ | -------------------------------------------------------- |
-| `id`                   | TEXT    | PRIMARY KEY                                            | Usually UUID string                                      |
-| `layer`                | TEXT    | NOT NULL DEFAULT 'surface'                             | `surface` or `shadow`                                    |
-| `block_type`           | TEXT    | NOT NULL                                               | Type of story beat                                       |
-| `label`                | TEXT    | DEFAULT ''                                             | Display label on block                                   |
-| `pct`                  | REAL    | NOT NULL                                               | Horizontal position percentage (0 to 100)                |
-| `lane`                 | INTEGER | DEFAULT 0                                              | Vertical lane (0, 1, 2)                                  |
-| `chapter_id`           | INTEGER | FK -> chapters(id) ON DELETE SET NULL                  | Linked chapter if applicable                             |
-| `chapter_status`       | TEXT    |                                                        | Tracks linked chapter's sync status                      |
-| `added_during_writing` | INTEGER | DEFAULT 0                                              |                                                          |
-| `sort_order`           | INTEGER | DEFAULT 0                                              | Rendering sort                                           |
-| `created_at`           | TEXT    | DEFAULT CURRENT_TIMESTAMP                              |                                                          |
-| `updated_at`           | TEXT    | DEFAULT CURRENT_TIMESTAMP                              |                                                          |
+| Column                 | Type    | Constraints                           | Description                               |
+| ---------------------- | ------- | ------------------------------------- | ----------------------------------------- |
+| `id`                   | TEXT    | PRIMARY KEY                           | UUID                                      |
+| `layer`                | TEXT    | DEFAULT 'surface'                     | `surface` or `shadow`                     |
+| `block_type`           | TEXT    | NOT NULL                              |                                           |
+| `label`                | TEXT    | DEFAULT ''                            | Max length 50                             |
+| `pct`                  | REAL    | NOT NULL                              | Horizontal position %                     |
+| `lane`                 | INTEGER | DEFAULT 0                             | Vertical lane (0, 1, 2)                   |
+| `chapter_id`           | INTEGER | FK -> chapters(id) ON DELETE SET NULL | Linked chapter                            |
+| `chapter_status`       | TEXT    |                                       | Tracks chapter status                     |
+| `added_during_writing` | INTEGER | DEFAULT 0                             |                                           |
+| `sort_order`           | INTEGER | DEFAULT 0                             |                                           |
+| `created_at`           | TEXT    | DEFAULT CURRENT_TIMESTAMP             |                                           |
+| `updated_at`           | TEXT    | DEFAULT CURRENT_TIMESTAMP             |                                           |
 
 **Indexes:** `idx_blocks_layer`, `idx_blocks_chapter`
 
@@ -320,22 +300,104 @@ Plot milestones and story beats in the planner. Features dynamic auto-compressio
 
 ## 14. `planner_arcs`
 
-Character arcs (surface) or hidden forces (shadow). Drawn below the main timeline rail.
-
-| Column        | Type    | Constraints                              | Description                                              |
-| ------------- | ------- | ---------------------------------------- | -------------------------------------------------------- |
-| `id`          | TEXT    | PRIMARY KEY                              | Usually UUID string                                      |
-| `layer`       | TEXT    | NOT NULL DEFAULT 'surface'               | `surface` or `shadow`                                    |
-| `name`        | TEXT    | DEFAULT ''                               | Arc name/title                                           |
-| `description` | TEXT    | DEFAULT ''                               | Additional description tooltip                           |
-| `color`       | TEXT    | NOT NULL DEFAULT '#d97706'               | Hex representation rendering color                       |
-| `start_pct`   | REAL    | NOT NULL DEFAULT 0                       | Starting timeline percentage                             |
-| `end_pct`     | REAL    | NOT NULL DEFAULT 100                     | Ending timeline percentage                               |
-| `sort_order`  | INTEGER | DEFAULT 0                                | Rendering sort                                           |
-| `created_at`  | TEXT    | DEFAULT CURRENT_TIMESTAMP                |                                                          |
-| `updated_at`  | TEXT    | DEFAULT CURRENT_TIMESTAMP                |                                                          |
+| Column        | Type    | Constraints                | Description                |
+| ------------- | ------- | -------------------------- | -------------------------- |
+| `id`          | TEXT    | PRIMARY KEY                | UUID                       |
+| `layer`       | TEXT    | DEFAULT 'surface'          | `surface` or `shadow`      |
+| `name`        | TEXT    | DEFAULT ''                 | Max length 24              |
+| `description` | TEXT    | DEFAULT ''                 | Max length 80              |
+| `color`       | TEXT    | DEFAULT '#d97706'          | Hex color                  |
+| `start_pct`   | REAL    | NOT NULL DEFAULT 0         | Start %                    |
+| `end_pct`     | REAL    | NOT NULL DEFAULT 100       | End %                      |
+| `sort_order`  | INTEGER | DEFAULT 0                  |                            |
+| `created_at`  | TEXT    | DEFAULT CURRENT_TIMESTAMP  |                            |
+| `updated_at`  | TEXT    | DEFAULT CURRENT_TIMESTAMP  |                            |
 
 **Indexes:** `idx_arcs_layer`
+
+---
+
+## 15. `character_relationships`
+
+Tracks evolving dynamics between characters.
+
+| Column | Type | Constraints | Description |
+| :--- | :--- | :--- | :--- |
+| `id` | INTEGER | PRIMARY KEY AUTOINCREMENT | |
+| `character_id` | INTEGER | NOT NULL, FK -> characters(id) | Source character |
+| `target_character_id` | INTEGER | NOT NULL, FK -> characters(id) | Target character |
+| `rel_type` | TEXT | NOT NULL | Dynamic labels |
+| `notes` | TEXT | | Author context |
+| `chapter_id` | INTEGER | FK -> chapters(id) | Where the shift happened |
+| `word_offset` | INTEGER | | Precise position |
+| `world_time` | TEXT | | Custom world date |
+| `is_one_sided` | INTEGER | DEFAULT 1 | 1=Unidirectional, 0=Mutual |
+| `created_at` | TIMESTAMP | DEFAULT CURRENT_TIMESTAMP | |
+
+---
+
+## 16. `calendar_config`
+
+Stores custom world-building calendar definitions.
+
+| Column | Type | Constraints | Description |
+| :--- | :--- | :--- | :--- |
+| `config_key` | TEXT | PRIMARY KEY | E.g., `months`, `seasons` |
+| `config_value` | TEXT | | JSON or string values |
+
+---
+
+## 17. `stats` & `stat_logs`
+
+**`stats`**: Global project metrics.
+- `stat_key` (TEXT PK)
+- `stat_value` (TEXT)
+
+**`stat_logs`**: Daily activity feed.
+- `timestamp`: AUTO PK
+- `new_words`, `deleted_words`, `new_entities`, `deleted_entities`, `new_twists`
+- `event_context`: Origin of the log (e.g., `chapter_save`)
+
+---
+
+## 18. `entity_mentions`
+
+Precise tracking of entity markers within chapters. Powers the Entity Auditor.
+
+| Column | Type | Constraints | Description |
+| :--- | :--- | :--- | :--- |
+| `id` | INTEGER | PRIMARY KEY | |
+| `entity_type` | TEXT | | `character`, `lore`, etc |
+| `entity_id` | INTEGER | | |
+| `chapter_id` | INTEGER | FK -> chapters(id) | |
+| `word_offset` | INTEGER | | Precise location |
+
+---
+
+## 19. `achievements`
+
+| Column | Type | Description |
+| :--- | :--- | :--- |
+| `id` | TEXT | PRIMARY KEY (Hardcoded ID) |
+| `unlocked_at` | TIMESTAMP | Timestamp of completion |
+
+---
+
+## 20. `history_entries`
+
+Timeline events for the world-building visualization.
+
+| Column | Type | Description |
+| :--- | :--- | :--- |
+| `id` | INTEGER | PRIMARY KEY |
+| `entity_type` | TEXT | |
+| `entity_id` | INTEGER | |
+| `title` | TEXT | |
+| `event_type` | TEXT | |
+| `date_year` | INTEGER | |
+| `date_month` | INTEGER | |
+| `date_day` | INTEGER | |
+| `date_precise`| INTEGER | Boolean check |
 
 ---
 

@@ -4,6 +4,14 @@ import { useTranslation } from 'react-i18next'
 // ── Inline SVG Icons ────────────────────────────────────────────────────────
 
 const Icons = {
+  Users: () => (
+    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+      <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2" />
+      <circle cx="9" cy="7" r="4" />
+      <path d="M23 21v-2a4 4 0 0 0-3-3.87" />
+      <path d="M16 3.13a4 4 0 0 1 0 7.75" />
+    </svg>
+  ),
   User: () => (
     <svg
       width="14"
@@ -285,7 +293,7 @@ export default function EntityContextMenu({
                 )}
               </span>
               {e.name}
-              <span className="shortcut">{e.type}</span>
+              <span className="shortcut">{t(`extractor.type${e.type.charAt(0).toUpperCase() + e.type.slice(1)}`, e.type)}</span>
             </button>
           ))}
           <div className="context-menu-divider" />
@@ -319,7 +327,7 @@ export default function EntityContextMenu({
               <span className="icon" style={{ color: 'var(--entity-lore)' }}>
                 <Icons.Gem />
               </span>
-              {t('contextMenu.createLore', 'Item:')} &quot;{displayText}&quot;
+              {t('contextMenu.createLore', 'Item/Lore:')} &quot;{displayText}&quot;
             </button>
             <button className="context-menu-item" onClick={() => onCreateEntity('location')}>
               <span className="icon" style={{ color: 'var(--entity-location)' }}>
@@ -368,7 +376,7 @@ export default function EntityContextMenu({
                     )}
                   </span>
                   {e.name}
-                  <span className="shortcut">{e.type}</span>
+                  <span className="shortcut">{t(`extractor.type${e.type.charAt(0).toUpperCase() + e.type.slice(1)}`, e.type)}</span>
                 </button>
               ))}
               <div className="context-menu-divider" />
@@ -419,6 +427,18 @@ export default function EntityContextMenu({
           <Icons.Link />
         </span>
         {t('contextMenu.makeConnection', 'Make Connection')}
+      </button>
+
+      {/* ── Relationship Turning Point ────────────────── */}
+      <button
+        className="context-menu-item"
+        onClick={() => onAction?.('relationshipTurningPoint', { text: selectedText })}
+        onMouseEnter={() => setActiveSubmenu(null)}
+      >
+        <span className="icon" style={{ color: 'var(--accent-amber)' }}>
+          <Icons.Users />
+        </span>
+        {t('contextMenu.relationshipTurningPoint', 'Relationship Turning Point')}
       </button>
 
       {/* ── Twist (Submenu) ──────────────────────────── */}

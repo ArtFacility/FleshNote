@@ -701,3 +701,82 @@ Run spaCy Named Entity Recognition on text.
 **Label mapping:** `PERSON` -> character, `GPE`/`LOC`/`FAC` -> location, `ORG` -> group.
 
 **Dependency:** Requires `spacy` and `en_core_web_sm` model installed in `backend/.venv/`.
+
+---
+
+## Analytics & Telemetry
+
+Defined in `backend/routes/stats.py`.
+
+### `POST /api/project/stats`
+
+Retrieve global writing statistics, daily logs, and entity mention offsets for the Analytics Dashboard.
+
+**Request:**
+
+```json
+{ "project_path": "C:/.../My Novel" }
+```
+
+**Response:**
+
+```json
+{
+  "global_stats": {
+    "sprints_started": "12",
+    "sprints_completed": "9",
+    "sprints_abandoned": "3",
+    "time_editor_minutes": "145",
+    "time_planner_minutes": "20"
+  },
+  "stat_logs": [
+    {
+      "log_date": "2026-03-08",
+      "new_words": 1500,
+      "deleted_words": 300,
+      "new_entities": 2,
+      "deleted_entities": 0,
+      "new_twists": 0
+    }
+  ],
+  "entity_mentions": [
+    {
+      "id": 1,
+      "entity_type": "character",
+      "entity_id": 5,
+      "chapter_id": 2,
+      "word_offset": 124,
+      "created_at": "2026-03-08T..."
+    }
+  ]
+}
+```
+
+---
+
+### `POST /api/project/stats/update`
+
+Increment or set a global key-value statistic directly in the SQLite schema over IPC bindings. Solves race conditions by avoiding overlapping saves.
+
+**Request:**
+
+```json
+{
+  "project_path": "C:/.../My Novel",
+  "stat_key": "time_editor_minutes",
+  "increment_by": 1,
+  "set_value": ""
+}
+```
+
+If `increment_by` is not 0, it adds to the existing value (falling back to setting it if not numeric). Otherwise, it sets the value equal to `set_value`.
+
+**Response:**
+
+```json
+{ 
+  "status": "ok", 
+  "stat_key": "time_editor_minutes", 
+  "new_value": "12" 
+}
+```
