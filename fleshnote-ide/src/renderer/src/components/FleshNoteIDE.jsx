@@ -212,6 +212,8 @@ export default function FleshNoteIDE({ projectConfig, projectPath, onCloseProjec
   const [leftPanelMode, setLeftPanelMode] = useState('chapters')
   const [inspectedEntity, setInspectedEntity] = useState(null)
   const [inspectedTwistId, setInspectedTwistId] = useState(null)
+  const [inspectorInitialTab, setInspectorInitialTab] = useState(null)
+  const [scrollToWordOffset, setScrollToWordOffset] = useState(null)
 
   const [hoveredChapterId, setHoveredChapterId] = useState(null)
   const [deletingChapter, setDeletingChapter] = useState(null)
@@ -466,13 +468,18 @@ export default function FleshNoteIDE({ projectConfig, projectPath, onCloseProjec
   // ── Entity click handler (from editor) ─────────────
   const handleEntityClick = useCallback(
     (entityRef) => {
-      // entityRef = { type: 'character', id: 5 }
+      // entityRef = { type: 'character', id: 5, tab?: 'knowledge' | 'relationships' }
       const entity = entities.find(
         (e) => String(e.id) === String(entityRef.id) && e.type === entityRef.type
       )
       if (entity) {
         setInspectedEntity(entity)
         setLeftPanelMode('entity')
+        if (entityRef.tab) {
+          setInspectorInitialTab(entityRef.tab)
+        } else {
+          setInspectorInitialTab(null)
+        }
       }
     },
     [entities]
@@ -498,6 +505,21 @@ export default function FleshNoteIDE({ projectConfig, projectPath, onCloseProjec
       setLeftPanelMode('twist')
     },
     []
+  )
+
+  // ── Navigate to mark (from inspector click) ────────
+  const handleNavigateToMark = useCallback(
+    async ({ chapterId, wordOffset }) => {
+      const targetChapter = chapters.find(ch => ch.id === chapterId)
+      if (!targetChapter) return
+      // Load the chapter if it's not the current one
+      if (!activeChapter || activeChapter.id !== chapterId) {
+        await loadChapter(targetChapter)
+      }
+      // Signal editor to scroll to word offset
+      setScrollToWordOffset({ wordOffset, timestamp: Date.now() })
+    },
+    [chapters, activeChapter]
   )
 
   // ── Refresh entities (after creating new ones) ─────
@@ -1019,6 +1041,8 @@ export default function FleshNoteIDE({ projectConfig, projectPath, onCloseProjec
                     chapters={chapters}
                     onEntityUpdated={handleEntitiesChanged}
                     onConfigUpdate={onConfigUpdate}
+                    initialTab={inspectorInitialTab}
+                    onNavigateToMark={handleNavigateToMark}
                   />
                 )}
                 {leftPanelMode === 'twist' && inspectedTwistId && (
@@ -1108,6 +1132,7 @@ export default function FleshNoteIDE({ projectConfig, projectPath, onCloseProjec
                 onTwistClick={handleTwistClick}
                 onEntitiesChanged={handleEntitiesChanged}
                 onConfigUpdate={onConfigUpdate}
+                scrollToWordOffset={scrollToWordOffset}
               />
             )}
           </>

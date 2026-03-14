@@ -80,7 +80,7 @@ export default function MakeConnectionPopup({
 
     setSaving(true)
     try {
-      await window.api.createKnowledge({
+      const result = await window.api.createKnowledge({
         project_path: projectPath,
         character_id: parseInt(characterId),
         fact: fact.trim(),
@@ -91,7 +91,10 @@ export default function MakeConnectionPopup({
         is_secret: isSecret ? 1 : 0,
         reveal_in_chapter: revealChapter ? parseInt(revealChapter) : null
       })
-      onClose()
+      onClose({
+        knowledgeId: result?.knowledge_state?.id,
+        characterId: parseInt(characterId)
+      })
     } catch (err) {
       console.error('Failed to create knowledge:', err)
     }

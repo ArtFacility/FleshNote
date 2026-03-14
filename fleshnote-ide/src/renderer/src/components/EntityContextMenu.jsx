@@ -172,7 +172,9 @@ export default function EntityContextMenu({
   onLinkEntity,
   onAction, // Generic action handler: onAction(actionType, data)
   entityAtCursor, // Entity link under cursor (if any): { type, id }
-  twistAtCursor // Twist/foreshadow link under cursor (if any): { twistType, twistId }
+  twistAtCursor, // Twist/foreshadow link under cursor (if any): { twistType, twistId }
+  knowledgeAtCursor, // Knowledge link under cursor (if any): { knowledgeId }
+  relationshipAtCursor // Relationship link under cursor (if any): { relationshipId }
 }) {
   const { t } = useTranslation()
   const [activeSubmenu, setActiveSubmenu] = useState(null)
@@ -537,6 +539,38 @@ export default function EntityContextMenu({
             {twistAtCursor.twistType === 'twist'
               ? t('contextMenu.removeTwistLink', 'Remove Twist Marker')
               : t('contextMenu.removeForeshadowLink', 'Remove Foreshadow Marker')}
+          </button>
+        </>
+      )}
+
+      {knowledgeAtCursor && (
+        <>
+          <div className="context-menu-divider" />
+          <button
+            className="context-menu-item danger"
+            onClick={() => onAction?.('removeKnowledgeLink')}
+            onMouseEnter={() => setActiveSubmenu(null)}
+          >
+            <span className="icon">
+              <Icons.Unlink />
+            </span>
+            {t('contextMenu.removeKnowledgeLink', 'Remove Knowledge Marker')}
+          </button>
+        </>
+      )}
+
+      {relationshipAtCursor && (
+        <>
+          <div className="context-menu-divider" />
+          <button
+            className="context-menu-item danger"
+            onClick={() => onAction?.('removeRelationshipLink')}
+            onMouseEnter={() => setActiveSubmenu(null)}
+          >
+            <span className="icon">
+              <Icons.Unlink />
+            </span>
+            {t('contextMenu.removeRelationshipLink', 'Remove Relationship Marker')}
           </button>
         </>
       )}

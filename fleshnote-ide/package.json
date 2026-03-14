@@ -1,6 +1,6 @@
 {
   "name": "fleshnote-ide",
-  "version": "0.8.3",
+  "version": "0.8.4",
   "license": "MPL-2.0",
   "description": "A write-first note-second editor with a focus on story structure and character development.",
   "main": "./out/main/index.js",

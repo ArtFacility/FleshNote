@@ -132,7 +132,14 @@
     "newEntryOption": "Nowy wpis",
     "cancelPartialBtn": "Anuluj",
     "untitledChapter": "Rozdział bez tytułu",
-    "cancel": "Anuluj"
+    "cancel": "Anuluj",
+    "visCharacter": "Postacie",
+    "visLocation": "Lokalizacje",
+    "visLore": "Przedmioty i wiedza",
+    "visTwist": "Zwroty i zapowiedzi",
+    "visQuicknote": "Szybkie notatki",
+    "visKnowledge": "Znaczniki wiedzy",
+    "visRelationship": "Znaczniki relacji"
   },
   "contextMenu": {
     "linkToExisting": "Połącz z istniejącym",
@@ -155,7 +162,9 @@
     "quickNote": "Szybka notatka",
     "removeLink": "Usuń link do jednostki",
     "removeTwistLink": "Usuń znacznik zwrotu",
-    "removeForeshadowLink": "Usuń znacznik zapowiedzi"
+    "removeForeshadowLink": "Usuń znacznik zapowiedzi",
+    "removeKnowledgeLink": "Usuń znacznik wiedzy",
+    "removeRelationshipLink": "Usuń znacznik relacji"
   },
   "extractor": {
     "title": "Wykrywanie Jednostek",
@@ -301,7 +310,8 @@
     "deleteEntityBtn": "Usuń wpis",
     "deleteEntityTitle": "Usunąć wpis?",
     "deleteEntityWarning": "Ta akcja jest nieodwracalna. Wszelkie wzmianki w tekście stracą swoje linki i powrócą do zwykłego tekstu.",
-    "deleteEntityTooltip": "Usuń ten wpis"
+    "deleteEntityTooltip": "Usuń ten wpis",
+    "clickToNavigate": "Kliknij, aby przejść do tekstu"
   },
   "ide": {
     "saving": "Zapisywanie...",
@@ -1056,5 +1066,12 @@
     "worldTimePlaceholder": "np. 1999, Rok 40, itp (Opcjonalnie)",
     "oneSided": "Relacja jednostronna",
     "notesPlaceholder": "Dodatkowe notatki... (Ctrl+Enter aby zapisać)"
+  },
+  "synonym": {
+    "title": "Synonimy",
+    "loading": "Wyszukiwanie...",
+    "error": "Nie udało się załadować synonimów.",
+    "noResults": "Nie znaleziono synonimów.",
+    "dismiss": "Zamknij"
   }
 }

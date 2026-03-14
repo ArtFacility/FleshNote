@@ -239,13 +239,15 @@ export default function EntityInspectorPanel({
   calConfig,
   chapters,
   onEntityUpdated,
-  onConfigUpdate
+  onConfigUpdate,
+  initialTab,
+  onNavigateToMark
 }) {
   const { t } = useTranslation()
   const [viewMode, setViewMode] = useState('author')  // 'author' | 'narrative' | 'world_time'
   const [filterCharacterId, setFilterCharacterId] = useState(null)
   const [editMode, setEditMode] = useState(false)
-  const [activeTab, setActiveTab] = useState('overview') // 'overview' | 'knowledge'
+  const [activeTab, setActiveTab] = useState(initialTab || 'overview') // 'overview' | 'knowledge' | 'relationships'
   const [editData, setEditData] = useState({})
   const [saving, setSaving] = useState(false)
   const [knowledgeFacts, setKnowledgeFacts] = useState([])
@@ -255,6 +257,11 @@ export default function EntityInspectorPanel({
   const [showDeleteConfirm, setShowDeleteConfirm] = useState(false)
   const [relationships, setRelationships] = useState([])
   const [editRelPopup, setEditRelPopup] = useState(null)
+
+  // Switch tab when initialTab prop changes (e.g. from marker click)
+  useEffect(() => {
+    if (initialTab) setActiveTab(initialTab)
+  }, [initialTab])
 
   // ── Derived Data ──────────────────────────────────────────────────────────
 
@@ -1318,7 +1325,17 @@ export default function EntityInspectorPanel({
             </div>
           ) : (
             knowledgeFacts.map((fact) => (
-              <div className={`knowledge-fact-card ${fact.is_secret ? 'secret' : ''}`} key={fact.id}>
+              <div
+                className={`knowledge-fact-card ${fact.is_secret ? 'secret' : ''}`}
+                key={fact.id}
+                style={fact.word_offset != null && fact.learned_in_chapter ? { cursor: 'pointer' } : undefined}
+                onClick={() => {
+                  if (fact.word_offset != null && fact.learned_in_chapter && onNavigateToMark) {
+                    onNavigateToMark({ chapterId: fact.learned_in_chapter, wordOffset: fact.word_offset })
+                  }
+                }}
+                title={fact.word_offset != null && fact.learned_in_chapter ? t('inspector.clickToNavigate', 'Click to navigate to text') : undefined}
+              >
                 <div className="knowledge-fact-text">{fact.fact}</div>
                 <div className="knowledge-fact-meta">
                   <span className="knowledge-fact-who">
@@ -1385,8 +1402,19 @@ export default function EntityInspectorPanel({
               }
 
               return (
-                <div className="knowledge-fact-card" key={relItem.target_character_id}>
-                  
+                <div
+                  className="knowledge-fact-card"
+                  key={relItem.target_character_id}
+                  style={activeState.word_offset != null && activeState.chapter_id ? { cursor: 'pointer' } : undefined}
+                  onClick={(e) => {
+                    if (e.target.closest('button')) return
+                    if (activeState.word_offset != null && activeState.chapter_id && onNavigateToMark) {
+                      onNavigateToMark({ chapterId: activeState.chapter_id, wordOffset: activeState.word_offset })
+                    }
+                  }}
+                  title={activeState.word_offset != null && activeState.chapter_id ? t('inspector.clickToNavigate', 'Click to navigate to text') : undefined}
+                >
+
                   <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '16px', marginBottom: '12px', marginTop: '4px' }}>
                     {/* Left Character (Selected) */}
                     <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', width: '60px' }}>

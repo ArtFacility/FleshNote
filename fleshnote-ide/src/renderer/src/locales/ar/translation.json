@@ -132,7 +132,14 @@
     "newEntryOption": "إدخال جديد",
     "cancelPartialBtn": "إلغاء",
     "untitledChapter": "فصل بدون عنوان",
-    "cancel": "إلغاء"
+    "cancel": "إلغاء",
+    "visCharacter": "الشخصيات",
+    "visLocation": "المواقع",
+    "visLore": "العناصر والمعارف",
+    "visTwist": "التحولات والتلميحات",
+    "visQuicknote": "الملاحظات السريعة",
+    "visKnowledge": "علامات المعرفة",
+    "visRelationship": "علامات العلاقات"
   },
   "contextMenu": {
     "linkToExisting": "ربط بكيان حالي",
@@ -155,7 +162,9 @@
     "quickNote": "ملاحظة سريعة",
     "removeLink": "إزالة الرابط بالكيان",
     "removeTwistLink": "إزالة علامة التحول",
-    "removeForeshadowLink": "إزالة علامة التلميح"
+    "removeForeshadowLink": "إزالة علامة التلميح",
+    "removeKnowledgeLink": "إزالة علامة المعرفة",
+    "removeRelationshipLink": "إزالة علامة العلاقة"
   },
   "extractor": {
     "title": "كشف الكيانات",
@@ -301,7 +310,8 @@
     "deleteEntityBtn": "حذف الإدخال",
     "deleteEntityTitle": "حذف الإدخال؟",
     "deleteEntityWarning": "هذا الإجراء نهائي. ستفقد أي إشارات في النص روابطها وتعود إلى نص عادي.",
-    "deleteEntityTooltip": "حذف هذا الإدخال"
+    "deleteEntityTooltip": "حذف هذا الإدخال",
+    "clickToNavigate": "انقر للانتقال إلى النص"
   },
   "ide": {
     "saving": "جاري الحفظ...",
@@ -1056,5 +1066,12 @@
     "worldTimePlaceholder": "مثال: 1999، السنة 40، إلخ (اختياري)",
     "oneSided": "علاقة من طرف واحد",
     "notesPlaceholder": "ملاحظات إضافية... (Ctrl+Enter للحفظ)"
+  },
+  "synonym": {
+    "title": "مرادفات",
+    "loading": "جارٍ البحث...",
+    "error": "فشل تحميل المرادفات.",
+    "noResults": "لم يتم العثور على مرادفات.",
+    "dismiss": "إغلاق"
   }
 }

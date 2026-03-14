@@ -131,7 +131,14 @@
     "justLinkOption": "Just link to {{name}}",
     "newEntryOption": "New entry",
     "cancelPartialBtn": "Cancel",
-    "untitledChapter": "Untitled Chapter"
+    "untitledChapter": "Untitled Chapter",
+    "visCharacter": "Characters",
+    "visLocation": "Locations",
+    "visLore": "Items & Lore",
+    "visTwist": "Twists & Foreshadows",
+    "visQuicknote": "Quick Notes",
+    "visKnowledge": "Knowledge Markers",
+    "visRelationship": "Relationship Markers"
   },
   "contextMenu": {
     "linkToExisting": "Link to Existing",
@@ -154,7 +161,9 @@
     "quickNote": "Quick Note",
     "removeLink": "Remove Entity Link",
     "removeTwistLink": "Remove Twist Marker",
-    "removeForeshadowLink": "Remove Foreshadow Marker"
+    "removeForeshadowLink": "Remove Foreshadow Marker",
+    "removeKnowledgeLink": "Remove Knowledge Marker",
+    "removeRelationshipLink": "Remove Relationship Marker"
   },
   "extractor": {
     "title": "Entity Detection",
@@ -300,7 +309,8 @@
     "noRelationships": "No relationships yet.",
     "inThisChapter": "In this chapter",
     "unknownEntity": "Unknown",
-    "worldTimeLabel": "World time"
+    "worldTimeLabel": "World time",
+    "clickToNavigate": "Click to navigate to text"
   },
   "ide": {
     "saving": "Saving...",
@@ -584,6 +594,20 @@
   },
   "mention": {
     "noResult": "No results found"
+  },
+  "synonym": {
+    "title": "Synonyms",
+    "word": "Word",
+    "loading": "Looking up...",
+    "error": "Failed to load synonyms.",
+    "noResults": "No synonyms found.",
+    "dismiss": "Dismiss",
+    "pos": {
+      "noun": "Noun",
+      "verb": "Verb",
+      "adj": "Adjective",
+      "adv": "Adverb"
+    }
   },
   "focus": {
     "selectMode": "Select Focus Mode",

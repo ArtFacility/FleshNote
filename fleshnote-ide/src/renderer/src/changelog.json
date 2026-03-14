@@ -1,6 +1,15 @@
 {
-    "currentVersion": "0.8.3",
+    "currentVersion": "0.8.4",
     "history": [
+        {
+            "version": "0.8.4",
+            "date": "2026-03-14",
+            "changes": [
+                "NEW: Synonym Lookup! Select a word and look up synonyms directly in the editor, fully localized and supporting context-aware languages (including Hungarian!).",
+                "NEW: Editor Markers for Knowledge and Relationships! Knowledge and relationship states are now visually linked in the editor, similar to characters and twists.",
+                "Expanded the Entity Link Visibility Toggle to include Quick Notes, Knowledge Markers, and Relationship Markers."
+            ]
+        },
         {
             "version": "0.8.3",
             "date": "2026-03-13",

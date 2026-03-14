@@ -380,6 +380,78 @@
     font-weight: inherit;
 }
 
+/* ── KNOWLEDGE MARKERS IN TEXT ─────────────────── */
+.knowledge-link {
+    cursor: default;
+    position: relative;
+    border-bottom: 1px dotted var(--text-tertiary);
+    transition: all 0.15s;
+}
+
+.knowledge-link::before {
+    content: '𐲧';
+    position: absolute;
+    top: -8px;
+    inset-inline-start: 0;
+    font-size: 8px;
+    line-height: 1;
+    color: var(--accent-amber);
+    opacity: 0.6;
+    pointer-events: none;
+}
+
+.knowledge-link:hover {
+    border-bottom-color: var(--accent-amber);
+    border-bottom-style: solid;
+}
+
+/* Hide knowledge links when toggle is off or focus mode active */
+.editor-area.focus-mode-active .knowledge-link,
+.editor-content-wrapper.hide-knowledge-links .knowledge-link {
+    color: inherit;
+    border-bottom: none;
+}
+.editor-area.focus-mode-active .knowledge-link::before,
+.editor-content-wrapper.hide-knowledge-links .knowledge-link::before {
+    display: none;
+}
+
+/* ── RELATIONSHIP MARKERS IN TEXT ──────────────── */
+.relationship-link {
+    cursor: default;
+    position: relative;
+    border-bottom: 1px dotted var(--text-tertiary);
+    transition: all 0.15s;
+}
+
+.relationship-link::before {
+    content: '𐲆';
+    position: absolute;
+    top: -8px;
+    inset-inline-start: 0;
+    font-size: 8px;
+    line-height: 1;
+    color: var(--accent-purple);
+    opacity: 0.6;
+    pointer-events: none;
+}
+
+.relationship-link:hover {
+    border-bottom-color: var(--accent-purple);
+    border-bottom-style: solid;
+}
+
+/* Hide relationship links when toggle is off or focus mode active */
+.editor-area.focus-mode-active .relationship-link,
+.editor-content-wrapper.hide-relationship-links .relationship-link {
+    color: inherit;
+    border-bottom: none;
+}
+.editor-area.focus-mode-active .relationship-link::before,
+.editor-content-wrapper.hide-relationship-links .relationship-link::before {
+    display: none;
+}
+
 /* ── HOVER TOOLTIP ──────────────────────────────── */
 .entity-hover-card {
     position: fixed;

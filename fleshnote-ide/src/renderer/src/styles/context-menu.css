@@ -115,3 +115,142 @@
 .context-menu-item.danger:hover {
     background: var(--accent-red-dim);
 }
+
+/* ── SYNONYM POPUP ──────────────────────────────── */
+
+.synonym-popup {
+    position: fixed;
+    z-index: 2000;
+    background: var(--bg-elevated);
+    border: 1px solid var(--border-default);
+    min-width: 260px;
+    max-width: 340px;
+    max-height: 420px;
+    display: flex;
+    flex-direction: column;
+    animation: ctx-in 0.1s ease;
+    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.5);
+}
+
+.synonym-popup-header {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 10px 14px 8px;
+    font-family: var(--font-mono);
+    font-size: 11px;
+    text-transform: uppercase;
+    letter-spacing: 1.5px;
+    color: var(--text-tertiary);
+    border-bottom: 1px solid var(--border-subtle);
+}
+
+.synonym-popup-word {
+    color: var(--accent-amber);
+    font-weight: 600;
+    text-transform: none;
+    letter-spacing: 0;
+    font-size: 12px;
+}
+
+.synonym-popup-header .popup-close {
+    margin-inline-start: auto;
+}
+
+.synonym-popup-body {
+    overflow-y: auto;
+    padding: 4px 0;
+    flex: 1;
+    min-height: 0;
+}
+
+.synonym-popup-loading,
+.synonym-popup-empty {
+    padding: 16px 14px;
+    font-family: var(--font-mono);
+    font-size: 11px;
+    color: var(--text-tertiary);
+    text-align: center;
+}
+
+.synonym-group {
+    padding: 4px 0;
+}
+
+.synonym-group+.synonym-group {
+    border-top: 1px solid var(--border-subtle);
+}
+
+.synonym-group-header {
+    padding: 6px 14px 4px;
+    display: flex;
+    align-items: baseline;
+    gap: 8px;
+}
+
+.synonym-pos {
+    font-family: var(--font-mono);
+    font-size: 9px;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    color: var(--accent-amber);
+    flex-shrink: 0;
+}
+
+.synonym-definition {
+    font-size: 11px;
+    color: var(--text-tertiary);
+    font-style: italic;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+.synonym-items {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 4px;
+    padding: 4px 14px 8px;
+}
+
+.synonym-item {
+    padding: 4px 10px;
+    font-size: 12px;
+    font-family: var(--font-sans);
+    color: var(--text-secondary);
+    background: var(--bg-surface);
+    border: 1px solid var(--border-subtle);
+    cursor: pointer;
+    transition: all 0.1s;
+}
+
+.synonym-item:hover {
+    background: var(--bg-hover);
+    color: var(--text-primary);
+    border-color: var(--accent-amber);
+}
+
+.synonym-popup-footer {
+    padding: 6px 14px;
+    border-top: 1px solid var(--border-subtle);
+    display: flex;
+    justify-content: flex-end;
+}
+
+.synonym-dismiss {
+    padding: 4px 12px;
+    font-family: var(--font-mono);
+    font-size: 10px;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    color: var(--text-tertiary);
+    background: none;
+    border: 1px solid var(--border-subtle);
+    cursor: pointer;
+    transition: all 0.1s;
+}
+
+.synonym-dismiss:hover {
+    color: var(--text-secondary);
+    border-color: var(--border-default);
+}

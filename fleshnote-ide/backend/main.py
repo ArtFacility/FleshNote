@@ -25,6 +25,7 @@ from routes.achievements import router as achievements_router
 from routes.entity_manager import router as entity_manager_router
 from routes.history import router as history_router
 from routes.relationships import router as relationships_router
+from routes.synonyms import router as synonyms_router
 
 app = FastAPI(title="FleshNote API")
 
@@ -48,6 +49,7 @@ app.include_router(achievements_router)
 app.include_router(entity_manager_router)
 app.include_router(history_router)
 app.include_router(relationships_router)
+app.include_router(synonyms_router)
 
 # Define our data models so FastAPI knows what to expect
 class WorkspaceRequest(BaseModel):

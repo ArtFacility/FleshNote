@@ -50,10 +50,19 @@ hidden_imports = [
     'reportlab.graphics.barcode.lto',
     'reportlab.graphics.barcode.usps',
     'reportlab.graphics.barcode.usps4s',
+    # NLTK synonyms
+    'routes.synonyms',
+    'nltk_manager',
+    'nltk',
+    'nltk.corpus',
+    'nltk.corpus.reader',
+    'nltk.corpus.reader.wordnet',
 ]
 
 datas = [
     ('export/templates/manuscript.css', 'export/templates'),
+    # Bundled NLTK WordNet data — English synonyms available offline
+    ('nltk_data', 'nltk_data'),
 ]
 
 from PyInstaller.utils.hooks import collect_submodules

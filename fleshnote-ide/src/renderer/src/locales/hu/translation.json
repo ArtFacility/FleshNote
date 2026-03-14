@@ -132,7 +132,14 @@
     "newEntryOption": "Új bejegyzés",
     "cancelPartialBtn": "Mégse",
     "untitledChapter": "Cím nélküli fejezet",
-    "cancel": "Mégse"
+    "cancel": "Mégse",
+    "visCharacter": "Karakterek",
+    "visLocation": "Helyszínek",
+    "visLore": "Tárgyak és lore",
+    "visTwist": "Csavarok és előreutalások",
+    "visQuicknote": "Gyorsjegyzetek",
+    "visKnowledge": "Tudás jelölők",
+    "visRelationship": "Kapcsolat jelölők"
   },
   "contextMenu": {
     "linkToExisting": "Összekapcsolás létezővel",
@@ -155,7 +162,9 @@
     "quickNote": "Gyorsjegyzet",
     "removeLink": "Projekt link eltávolítása",
     "removeTwistLink": "Csavar jelölő eltávolítása",
-    "removeForeshadowLink": "Előreutalás jelölő eltávolítása"
+    "removeForeshadowLink": "Előreutalás jelölő eltávolítása",
+    "removeKnowledgeLink": "Tudás jelölő eltávolítása",
+    "removeRelationshipLink": "Kapcsolat jelölő eltávolítása"
   },
   "extractor": {
     "title": "Entitás Felismerés",
@@ -301,7 +310,8 @@
     "deleteEntityBtn": "Bejegyzés törlése",
     "deleteEntityTitle": "Törlöd a bejegyzést?",
     "deleteEntityWarning": "Ez a művelet végleges. A szövegben lévő említések elveszítik a hivatkozásukat és normál szöveggé válnak.",
-    "deleteEntityTooltip": "Bejegyzés törlése"
+    "deleteEntityTooltip": "Bejegyzés törlése",
+    "clickToNavigate": "Kattints a szöveghez navigáláshoz"
   },
   "ide": {
     "saving": "Mentés...",
@@ -367,7 +377,7 @@
     "optionsMenu": "Beállítások",
     "toggleProgressBar": "Progress bar megjelenítése",
     "toggleStatusBar": "Status bar megjelenítése",
-    "statusBarFormat": "Markdown \u00b7 UTF-8"
+    "statusBarFormat": "Markdown · UTF-8"
   },
   "picker": {
     "title": "FleshNote Projektek",
@@ -985,7 +995,7 @@
     "noEventsInspector": "Nincsenek események.",
     "autoDetectedLabel": "auto"
   },
-    "calendar": {
+  "calendar": {
     "title": "Világnaptár",
     "subtitle": "Határozd meg a világod időszámítását — hónapokat, heteket, évszakokat és korszakokat.",
     "saving": "Mentés...",
@@ -1056,5 +1066,19 @@
     "worldTimePlaceholder": "pl. 1999, 40. év, stb. (Opcionális)",
     "oneSided": "Egyoldalú kapcsolat",
     "notesPlaceholder": "További jegyzetek... (Ctrl+Enter a mentéshez)"
+  },
+  "synonym": {
+    "title": "Szinonimák",
+    "word": "Szó",
+    "loading": "Keresés...",
+    "error": "Nem sikerült betölteni a szinonimákat.",
+    "noResults": "Nincsenek találatok.",
+    "dismiss": "Bezár",
+    "pos": {
+      "noun": "Főnév",
+      "verb": "Ige",
+      "adj": "Melléknév",
+      "adv": "Határozószó"
+    }
   }
 }

@@ -172,11 +172,19 @@ function createWindow(): void {
 
 // ── Global Config ────────────────────────────────────────────────────────────
 
+const DEFAULT_HOTKEYS = {
+  synonym_lookup: 'Alt+s',
+  search: 'Ctrl+f'
+}
+
 function getGlobalConfig() {
+  let config: any = { workspacePath: null }
   if (fs.existsSync(globalConfigPath)) {
-    return JSON.parse(fs.readFileSync(globalConfigPath, 'utf-8'))
+    config = JSON.parse(fs.readFileSync(globalConfigPath, 'utf-8'))
   }
-  return { workspacePath: null }
+  // Ensure hotkeys always have defaults backfilled
+  config.hotkeys = { ...DEFAULT_HOTKEYS, ...(config.hotkeys || {}) }
+  return config
 }
 
 function updateGlobalConfig(newConfig) {
@@ -621,6 +629,19 @@ app.whenReady().then(async () => {
 
   ipcMain.handle('api:loadNlpModel', async (_event, language) => {
     return await backendPost('/api/nlp/load', { language })
+  })
+
+  // ── Synonyms ────────────────────────────────────────
+  ipcMain.handle('api:synonymLookup', async (_event, payload) => {
+    return await backendPost('/api/synonyms/lookup', payload)
+  })
+
+  ipcMain.handle('api:checkWordnetData', async () => {
+    return await backendPost('/api/synonyms/check-data', {})
+  })
+
+  ipcMain.handle('api:ensureWordnetData', async () => {
+    return await backendPost('/api/synonyms/ensure-data', {})
   })
 
   // ── Dev Tools ──────────────────────────────────────

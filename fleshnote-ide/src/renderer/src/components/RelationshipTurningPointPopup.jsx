@@ -163,7 +163,7 @@ export default function RelationshipTurningPointPopup({
           world_time: currentWorldTime.trim() === '' ? null : currentWorldTime.trim(),
           is_one_sided: isOneSided ? 1 : 0
         })
-        onSuccess?.(resp.relationship)
+        onSuccess?.({ relationshipId: resp.relationship.id, characterId: parseInt(characterId, 10) })
       } else {
         const resp = await window.api.createRelationship({
           project_path: projectPath,
@@ -176,7 +176,7 @@ export default function RelationshipTurningPointPopup({
           world_time: currentWorldTime.trim() === '' ? null : currentWorldTime.trim(),
           is_one_sided: isOneSided ? 1 : 0
         })
-        onSuccess?.(resp.relationship)
+        onSuccess?.({ relationshipId: resp.relationship.id, characterId: parseInt(characterId, 10) })
       }
       onClose()
     } catch (err) {

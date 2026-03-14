@@ -3,6 +3,7 @@ import sqlite3
 
 # Patterns matching chapters.py markers: {{char:2|Sophia}}
 _FLESHNOTE_MARKER_PATTERN = re.compile(r'\{\{(char|loc|item|lore|group|quicknote|secret):(\d+)\|([^}]+)\}\}')
+_KNOWLEDGE_REL_PATTERN = re.compile(r'\{\{(knowledge|relationship):(\d+):(\d+)\|([^}]+)\}\}')
 _EPISTEMIC_PATTERN = re.compile(r'\{(secret|knows|believes):([^}]+)\}')
 _HTML_TAG_PATTERN = re.compile(r'<[^>]+>')
 _TODO_PATTERN = re.compile(r'#TODO.*?(?=\u200B|</p>|<br>|<br/>|\n|$)', re.IGNORECASE)
@@ -62,8 +63,14 @@ def strip_todo(text: str) -> tuple[str, int]:
     text = _TODO_PATTERN.sub('', text)
     return text, todos_found
 
+def _strip_knowledge_rel_markers(text: str) -> str:
+    """Strip knowledge/relationship markers to plain text (author-only metadata)."""
+    return _KNOWLEDGE_REL_PATTERN.sub(r'\4', text)
+
+
 def strip_prose(text: str, db_conn, remove_html: bool = True) -> str:
     """Prose Only mode: removing all markers, converting links to plain text."""
+    text = _strip_knowledge_rel_markers(text)
     text = _EPISTEMIC_PATTERN.sub('', text)
     
     def resolve_marker(match):
@@ -85,6 +92,7 @@ def strip_prose(text: str, db_conn, remove_html: bool = True) -> str:
 
 def strip_notes(text: str, db_conn, remove_html: bool = True) -> tuple[str, list[str]]:
     """With Annotations mode: export annotations -> footnotes. Quick notes removed."""
+    text = _strip_knowledge_rel_markers(text)
     text = _EPISTEMIC_PATTERN.sub('', text)
     
     notes_extracted = []
@@ -116,7 +124,8 @@ def strip_notes(text: str, db_conn, remove_html: bool = True) -> tuple[str, list
 
 def strip_full(text: str, db_conn, remove_html: bool = False) -> tuple[str, list[str]]:
     """Full Annotated mode: epistemic markers and entity links are preserved for the renderer."""
-    
+    text = _strip_knowledge_rel_markers(text)
+
     def resolve_marker(match):
         stype = match.group(1)
         sid = match.group(2)

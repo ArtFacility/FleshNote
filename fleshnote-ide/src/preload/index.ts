@@ -136,6 +136,11 @@ const api = {
     return () => ipcRenderer.removeListener('language-download-progress', listener)
   },
 
+  // ── Synonyms ──────────────────────────────────────
+  synonymLookup: (payload) => ipcRenderer.invoke('api:synonymLookup', payload),
+  checkWordnetData: () => ipcRenderer.invoke('api:checkWordnetData'),
+  ensureWordnetData: () => ipcRenderer.invoke('api:ensureWordnetData'),
+
   // ── Window Controls ────────────────────────────────
   minimizeWindow: () => ipcRenderer.invoke('window:minimize'),
   maximizeWindow: () => ipcRenderer.invoke('window:maximize'),

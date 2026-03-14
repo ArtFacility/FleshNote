@@ -245,6 +245,110 @@ def _update_foreshadowings(cursor, chapter_id: int, md_content: str):
             """, (chapter_id, word_offset, twist_id))
 
 
+# ── Knowledge / Relationship Link Serialization ──────────────────────────────
+# Markdown format: {{knowledge:5:2|text}}  {{relationship:3:7|text}}
+# TipTap HTML:     <span data-knowledge-id="5" data-character-id="2" class="knowledge-link">text</span>
+#                  <span data-relationship-id="3" data-character-id="7" class="relationship-link">text</span>
+
+
+def _knowledge_md_to_html(content: str) -> str:
+    """Convert {{knowledge:id:charId|text}} markers to TipTap spans on load."""
+    pattern = r'\{\{knowledge:(\d+):(\d+)\|([^}]+)\}\}'
+
+    def replacer(match):
+        knowledge_id = match.group(1)
+        character_id = match.group(2)
+        text = match.group(3)
+        return (
+            f'<span data-knowledge-id="{knowledge_id}" data-character-id="{character_id}" '
+            f'class="knowledge-link">{text}</span>'
+        )
+
+    return re.sub(pattern, replacer, content)
+
+
+def _knowledge_html_to_md(content: str) -> str:
+    """Convert TipTap knowledge-link spans to {{knowledge:id:charId|text}} markers on save."""
+    pattern = r'<span[^>]*?data-knowledge-id="(\d+)"[^>]*?data-character-id="(\d+)"[^>]*?>([^<]+)</span>'
+
+    def replacer(match):
+        knowledge_id = match.group(1)
+        character_id = match.group(2)
+        text = match.group(3)
+        return f'{{{{knowledge:{knowledge_id}:{character_id}|{text}}}}}'
+
+    return re.sub(pattern, replacer, content)
+
+
+def _relationship_md_to_html(content: str) -> str:
+    """Convert {{relationship:id:charId|text}} markers to TipTap spans on load."""
+    pattern = r'\{\{relationship:(\d+):(\d+)\|([^}]+)\}\}'
+
+    def replacer(match):
+        rel_id = match.group(1)
+        character_id = match.group(2)
+        text = match.group(3)
+        return (
+            f'<span data-relationship-id="{rel_id}" data-character-id="{character_id}" '
+            f'class="relationship-link">{text}</span>'
+        )
+
+    return re.sub(pattern, replacer, content)
+
+
+def _relationship_html_to_md(content: str) -> str:
+    """Convert TipTap relationship-link spans to {{relationship:id:charId|text}} markers on save."""
+    pattern = r'<span[^>]*?data-relationship-id="(\d+)"[^>]*?data-character-id="(\d+)"[^>]*?>([^<]+)</span>'
+
+    def replacer(match):
+        rel_id = match.group(1)
+        character_id = match.group(2)
+        text = match.group(3)
+        return f'{{{{relationship:{rel_id}:{character_id}|{text}}}}}'
+
+    return re.sub(pattern, replacer, content)
+
+
+def _update_knowledge_offsets(cursor, chapter_id: int, md_content: str):
+    """Scan markdown for {{knowledge:id:charId|text}} markers and update word offsets."""
+    pattern = r'\{\{knowledge:(\d+):(\d+)\|([^}]+)\}\}'
+    for match in re.finditer(pattern, md_content):
+        knowledge_id = int(match.group(1))
+
+        # Calculate word offset
+        char_pos = match.start()
+        text_before = re.sub(r'<[^>]+>', ' ', md_content[:char_pos])
+        text_before = re.sub(r'\{\{[^}]+\}\}', '', text_before)
+        word_offset = len(text_before.split())
+
+        # Update the knowledge state with the word offset and chapter
+        cursor.execute("""
+            UPDATE knowledge_states
+            SET word_offset = ?, learned_in_chapter = ?
+            WHERE id = ?
+        """, (word_offset, chapter_id, knowledge_id))
+
+
+def _update_relationship_offsets(cursor, chapter_id: int, md_content: str):
+    """Scan markdown for {{relationship:id:charId|text}} markers and update word offsets."""
+    pattern = r'\{\{relationship:(\d+):(\d+)\|([^}]+)\}\}'
+    for match in re.finditer(pattern, md_content):
+        rel_id = int(match.group(1))
+
+        # Calculate word offset
+        char_pos = match.start()
+        text_before = re.sub(r'<[^>]+>', ' ', md_content[:char_pos])
+        text_before = re.sub(r'\{\{[^}]+\}\}', '', text_before)
+        word_offset = len(text_before.split())
+
+        # Update the relationship with the word offset and chapter
+        cursor.execute("""
+            UPDATE character_relationships
+            SET word_offset = ?, chapter_id = ?
+            WHERE id = ?
+        """, (word_offset, chapter_id, rel_id))
+
+
 def _slugify(text: str) -> str:
     """Convert text to a filename-safe slug."""
     text = text.lower().strip()
@@ -485,6 +589,10 @@ def load_chapter_content(req: ChapterLoad):
     # Convert twist/foreshadow markers to TipTap spans
     content = _twist_md_to_html(content)
 
+    # Convert knowledge/relationship markers to TipTap spans
+    content = _knowledge_md_to_html(content)
+    content = _relationship_md_to_html(content)
+
     return {"content": content, "md_filename": row["md_filename"]}
 
 
@@ -507,6 +615,10 @@ def save_chapter_content(req: ChapterSave, background_tasks: BackgroundTasks):
     # Convert twist/foreshadow HTML spans to markdown markers
     md_content = _twist_html_to_md(md_content)
 
+    # Convert knowledge/relationship HTML spans to markdown markers
+    md_content = _knowledge_html_to_md(md_content)
+    md_content = _relationship_html_to_md(md_content)
+
     # Write the md file
     md_path = os.path.join(req.project_path, "md", row["md_filename"])
     os.makedirs(os.path.dirname(md_path), exist_ok=True)
@@ -518,6 +630,10 @@ def save_chapter_content(req: ChapterSave, background_tasks: BackgroundTasks):
 
     # Track twist/foreshadow markers and calculate word offsets
     _update_foreshadowings(cursor, req.chapter_id, md_content)
+
+    # Track knowledge/relationship markers and update word offsets
+    _update_knowledge_offsets(cursor, req.chapter_id, md_content)
+    _update_relationship_offsets(cursor, req.chapter_id, md_content)
 
     # Update word count and timestamp
     cursor.execute("""

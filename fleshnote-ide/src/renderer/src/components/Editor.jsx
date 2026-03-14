@@ -6,6 +6,8 @@ import Underline from '@tiptap/extension-underline'
 import Mention from '@tiptap/extension-mention'
 import { EntityLinkMark } from '../extensions/EntityLinkMark'
 import { TwistLinkMark } from '../extensions/TwistLinkMark'
+import { KnowledgeLinkMark } from '../extensions/KnowledgeLinkMark'
+import { RelationshipLinkMark } from '../extensions/RelationshipLinkMark'
 import { TodoHighlighter } from '../extensions/TodoHighlighter'
 import { SearchAndReplace } from '../extensions/SearchAndReplace'
 import getSuggestionConfig from '../extensions/mentionSuggestion'
@@ -29,6 +31,10 @@ import ZenMode from './focus-modes/ZenMode'
 import KamikazeMode from './focus-modes/KamikazeMode'
 import FogMode from './focus-modes/FogMode'
 import MomentumMode from './focus-modes/MomentumMode'
+import SynonymPopup from './SynonymPopup'
+import { matchesHotkey } from '../utils/hotkeyMatcher'
+import KarolyEasterEgg from './KarolyEasterEgg'
+
 
 // ── Inline SVG Icons ────────────────────────────────────────────────────────
 
@@ -153,6 +159,8 @@ function EntityHoverCard({ data, position, entities }) {
   )
 }
 
+
+
 // ── Main Component ──────────────────────────────────────────────────────────
 
 export default function Editor({
@@ -171,7 +179,8 @@ export default function Editor({
   onEntitiesChanged,
   projectConfig,
   calConfig,
-  onConfigUpdate // <-- NEW
+  onConfigUpdate,
+  scrollToWordOffset // { wordOffset, timestamp } — triggers scroll to word position
 }) {
   const { t, i18n } = useTranslation()
   const saveTimeoutRef = useRef(null)
@@ -211,7 +220,9 @@ export default function Editor({
       location: true,
       lore: true,
       twist: true,
-      quicknote: true
+      quicknote: true,
+      knowledge: true,
+      relationship: true
     }
   })
 
@@ -237,10 +248,26 @@ export default function Editor({
   const [ctxText, setCtxText] = useState('')
   const [entityAtCursor, setEntityAtCursor] = useState(null)
   const [twistAtCursor, setTwistAtCursor] = useState(null)
+  const [knowledgeAtCursor, setKnowledgeAtCursor] = useState(null)
+  const [relationshipAtCursor, setRelationshipAtCursor] = useState(null)
 
   // Popup state — only one popup active at a time
   const [activePopup, setActivePopup] = useState(null)
   // activePopup = { type: 'appendDescription' | 'quickNote' | 'makeConnection' | 'customLore' | 'foreshadowing' | 'focusSelector', position, data }
+
+  // Synonym popup state (context-menu-style, separate from modal-style activePopup)
+  const [synonymState, setSynonymState] = useState(null)
+  // synonymState = { word, position, groups: [], loading: bool, error: bool }
+  const [showKaroly, setShowKaroly] = useState(false)
+
+
+  // Configurable hotkeys from global config
+  const [hotkeys, setHotkeys] = useState({ synonym_lookup: 'Alt+s', search: 'Ctrl+f' })
+  useEffect(() => {
+    window.api.getGlobalConfig().then(config => {
+      if (config?.hotkeys) setHotkeys(config.hotkeys)
+    })
+  }, [])
 
   // Hover card state
   const [hoverCard, setHoverCard] = useState(null)
@@ -279,6 +306,8 @@ export default function Editor({
     CharacterCount,
     EntityLinkMark,
     TwistLinkMark,
+    KnowledgeLinkMark,
+    RelationshipLinkMark,
     TodoHighlighter,
     SearchAndReplace,
     Mention.configure({
@@ -318,7 +347,25 @@ export default function Editor({
         },
         // Click on entity links or twist links opens inspector
         click: (_view, event) => {
-          // Check twist links first
+          // Check knowledge links first
+          const knowledgeTarget = event.target.closest('[data-knowledge-id]')
+          if (knowledgeTarget) {
+            const characterId = knowledgeTarget.getAttribute('data-character-id')
+            if (characterId) {
+              onEntityClick?.({ type: 'character', id: parseInt(characterId), tab: 'knowledge' })
+            }
+            return true
+          }
+          // Check relationship links
+          const relTarget = event.target.closest('[data-relationship-id]')
+          if (relTarget) {
+            const characterId = relTarget.getAttribute('data-character-id')
+            if (characterId) {
+              onEntityClick?.({ type: 'character', id: parseInt(characterId), tab: 'relationships' })
+            }
+            return true
+          }
+          // Check twist links
           const twistTarget = event.target.closest('[data-twist-type]')
           if (twistTarget) {
             const twistType = twistTarget.getAttribute('data-twist-type')
@@ -381,6 +428,26 @@ export default function Editor({
               setTwistAtCursor(null)
             }
 
+            // Detect if right-click was on a knowledge link
+            const knowledgeTarget = event.target.closest('[data-knowledge-id]')
+            if (knowledgeTarget) {
+              setKnowledgeAtCursor({
+                knowledgeId: parseInt(knowledgeTarget.getAttribute('data-knowledge-id'))
+              })
+            } else {
+              setKnowledgeAtCursor(null)
+            }
+
+            // Detect if right-click was on a relationship link
+            const relTarget = event.target.closest('[data-relationship-id]')
+            if (relTarget) {
+              setRelationshipAtCursor({
+                relationshipId: parseInt(relTarget.getAttribute('data-relationship-id'))
+              })
+            } else {
+              setRelationshipAtCursor(null)
+            }
+
             return true
           }
           return false
@@ -410,17 +477,29 @@ export default function Editor({
     }
   })
 
-  // Search keyboard shortcut and focus behavior
+  // Keyboard shortcuts (configurable via global config)
   useEffect(() => {
     const handleGlobalKeyDown = (e) => {
-      if (e.ctrlKey && e.key === 'f') {
+      if (matchesHotkey(e, hotkeys.search)) {
         e.preventDefault()
         setShowSearch(prev => !prev)
+        return
+      }
+      if (matchesHotkey(e, hotkeys.synonym_lookup)) {
+        e.preventDefault()
+        triggerSynonymLookup()
+        return
+      }
+      if (matchesHotkey(e, 'Ctrl+Alt+Shift+k') && i18n.language === 'hu') {
+        e.preventDefault()
+        setShowKaroly(true)
+        return
       }
     }
+
     window.addEventListener('keydown', handleGlobalKeyDown)
     return () => window.removeEventListener('keydown', handleGlobalKeyDown)
-  }, [])
+  }, [hotkeys, editor])
 
   useEffect(() => {
     if (showSearch && searchInputRef.current) {
@@ -526,12 +605,59 @@ export default function Editor({
     }
   }, [editor, i18n.language])
 
+  // Scroll to word offset when requested (from inspector navigation)
+  useEffect(() => {
+    if (!editor || !scrollToWordOffset || !scrollToWordOffset.wordOffset) return
+
+    // Walk the document to find the text position at the given word offset
+    const targetOffset = scrollToWordOffset.wordOffset
+    let wordCount = 0
+    let targetPos = null
+
+    editor.state.doc.descendants((node, pos) => {
+      if (targetPos !== null) return false // already found
+      if (node.isText) {
+        const words = node.text.split(/\s+/).filter(w => w.length > 0)
+        for (let i = 0; i < words.length; i++) {
+          wordCount++
+          if (wordCount >= targetOffset) {
+            targetPos = pos
+            return false
+          }
+        }
+      }
+    })
+
+    if (targetPos !== null) {
+      // Set selection and scroll into view
+      setTimeout(() => {
+        editor.commands.setTextSelection(targetPos)
+        editor.commands.scrollIntoView()
+
+        // Brief highlight flash via a temporary CSS class
+        const domPos = editor.view.domAtPos(targetPos)
+        if (domPos && domPos.node) {
+          const el = domPos.node.nodeType === Node.TEXT_NODE ? domPos.node.parentElement : domPos.node
+          if (el) {
+            el.style.transition = 'background 0.3s'
+            el.style.background = 'rgba(196, 167, 76, 0.3)'
+            setTimeout(() => {
+              el.style.background = ''
+            }, 2000)
+          }
+        }
+      }, 100)
+    }
+  }, [editor, scrollToWordOffset])
+
   // ── Context menu handlers ───────────────────────────
 
   const closeContextMenu = useCallback(() => {
     setCtxMenu(null)
     setCtxText('')
     setEntityAtCursor(null)
+    setKnowledgeAtCursor(null)
+    setRelationshipAtCursor(null)
   }, [])
 
   const handleCreateEntity = useCallback(
@@ -743,6 +869,18 @@ export default function Editor({
           }
           break
 
+        case 'removeKnowledgeLink':
+          if (editor) {
+            editor.chain().focus().unsetKnowledgeLink().run()
+          }
+          break
+
+        case 'removeRelationshipLink':
+          if (editor) {
+            editor.chain().focus().unsetRelationshipLink().run()
+          }
+          break
+
         default:
           break
       }
@@ -755,6 +893,90 @@ export default function Editor({
   const closePopup = useCallback(() => {
     setActivePopup(null)
   }, [])
+
+  // ── Synonym lookup ──────────────────────────────────────
+
+  // Map story language codes to WordNet language codes
+  const WORDNET_LANG_MAP = { en: 'eng', pl: 'pol', hu: 'hun', ar: 'ara' }
+
+  const triggerSynonymLookup = useCallback(() => {
+    if (!editor) return
+
+    const { from, to, empty } = editor.state.selection
+    let word = ''
+
+    if (!empty) {
+      word = editor.state.doc.textBetween(from, to, ' ').trim()
+    } else {
+      // Expand to word boundaries
+      const $pos = editor.state.doc.resolve(from)
+      const textBefore = $pos.parent.textBetween(0, $pos.parentOffset)
+      const textAfter = $pos.parent.textBetween($pos.parentOffset, $pos.parent.content.size)
+      const beforeMatch = textBefore.match(/\w+$/)
+      const afterMatch = textAfter.match(/^\w+/)
+      word = (beforeMatch ? beforeMatch[0] : '') + (afterMatch ? afterMatch[0] : '')
+    }
+
+    if (!word) return
+
+    // Get cursor screen position for popup placement
+    const coords = editor.view.coordsAtPos(from)
+    const position = { x: coords.left, y: coords.bottom + 4 }
+
+    // Determine WordNet language from project config
+    const storyLang = projectConfig?.story_language || 'en'
+    const wnLang = WORDNET_LANG_MAP[storyLang] || 'eng'
+
+    setSynonymState({ word, position, groups: [], loading: true, error: false })
+
+    window.api
+      .synonymLookup({ word, lang: wnLang })
+      .then((result) => {
+        if (result?.status === 'ok') {
+          setSynonymState((prev) =>
+            prev ? { ...prev, groups: result.groups || [], loading: false } : null
+          )
+        }
+      })
+      .catch((err) => {
+        console.error('Synonym lookup failed:', err)
+        setSynonymState((prev) =>
+          prev ? { ...prev, loading: false, error: true } : null
+        )
+      })
+  }, [editor, projectConfig])
+
+  const handleSynonymSelect = useCallback(
+    (synonym) => {
+      if (!editor) return
+
+      const { from, to, empty } = editor.state.selection
+      if (!empty) {
+        // Replace the current selection
+        editor.chain().focus().deleteSelection().insertContent(synonym).run()
+      } else {
+        // Select the word at cursor, then replace
+        const $pos = editor.state.doc.resolve(from)
+        const textBefore = $pos.parent.textBetween(0, $pos.parentOffset)
+        const textAfter = $pos.parent.textBetween($pos.parentOffset, $pos.parent.content.size)
+        const beforeMatch = textBefore.match(/\w+$/)
+        const afterMatch = textAfter.match(/^\w+/)
+        const wordStart = from - (beforeMatch ? beforeMatch[0].length : 0)
+        const wordEnd = from + (afterMatch ? afterMatch[0].length : 0)
+
+        editor
+          .chain()
+          .focus()
+          .setTextSelection({ from: wordStart, to: wordEnd })
+          .deleteSelection()
+          .insertContent(synonym)
+          .run()
+      }
+
+      setSynonymState(null)
+    },
+    [editor]
+  )
 
   // ── Custom lore creation callback ─────────────────────
 
@@ -1049,7 +1271,9 @@ export default function Editor({
                 { key: 'location', label: t('editor.visLocation', 'Locations') },
                 { key: 'lore', label: t('editor.visLore', 'Items & Lore') },
                 { key: 'twist', label: t('editor.visTwist', 'Twists & Foreshadows') },
-                { key: 'quicknote', label: t('editor.visQuicknote', 'Quick Notes') }
+                { key: 'quicknote', label: t('editor.visQuicknote', 'Quick Notes') },
+                { key: 'knowledge', label: t('editor.visKnowledge', 'Knowledge Markers') },
+                { key: 'relationship', label: t('editor.visRelationship', 'Relationship Markers') }
               ].map(item => (
                 <label key={item.key} style={{ display: 'flex', alignItems: 'center', gap: '8px', padding: '6px 4px', fontSize: '11px', fontFamily: 'var(--font-mono)', color: 'var(--text-secondary)', cursor: 'pointer' }}>
                   <input
@@ -1167,7 +1391,7 @@ export default function Editor({
         )}
 
         <div
-          className={`editor-content-wrapper ${!linkVisibility.character ? 'hide-character-links' : ''} ${!linkVisibility.location ? 'hide-location-links' : ''} ${!linkVisibility.lore ? 'hide-lore-links' : ''} ${!linkVisibility.twist ? 'hide-twist-links' : ''} ${!linkVisibility.quicknote ? 'hide-quicknote-links' : ''}`}
+          className={`editor-content-wrapper ${!linkVisibility.character ? 'hide-character-links' : ''} ${!linkVisibility.location ? 'hide-location-links' : ''} ${!linkVisibility.lore ? 'hide-lore-links' : ''} ${!linkVisibility.twist ? 'hide-twist-links' : ''} ${!linkVisibility.quicknote ? 'hide-quicknote-links' : ''} ${!linkVisibility.knowledge ? 'hide-knowledge-links' : ''} ${!linkVisibility.relationship ? 'hide-relationship-links' : ''}`}
           style={{
             flex: 1,
             overflowY: 'auto',
@@ -1248,8 +1472,23 @@ export default function Editor({
         onAction={handleAction}
         entityAtCursor={entityAtCursor}
         twistAtCursor={twistAtCursor}
+        knowledgeAtCursor={knowledgeAtCursor}
+        relationshipAtCursor={relationshipAtCursor}
       />
       <EntityHoverCard data={hoverCard} position={hoverPos} entities={entities} />
+
+      {/* ── Synonym Popup ──────────────────────────────────── */}
+      {synonymState && (
+        <SynonymPopup
+          word={synonymState.word}
+          position={synonymState.position}
+          synonymGroups={synonymState.groups}
+          loading={synonymState.loading}
+          error={synonymState.error}
+          onSelect={handleSynonymSelect}
+          onClose={() => setSynonymState(null)}
+        />
+      )}
 
       {/* ── Popup Overlays ─────────────────────────────────── */}
       {activePopup?.type === 'appendDescription' && (
@@ -1284,7 +1523,20 @@ export default function Editor({
           chapters={chapters}
           entities={entities}
           calConfig={calConfig}
-          onClose={closePopup}
+          onClose={(result) => {
+            if (result && result.knowledgeId && result.characterId && editor) {
+              editor
+                .chain()
+                .focus()
+                .setKnowledgeLink({
+                  knowledgeId: String(result.knowledgeId),
+                  characterId: String(result.characterId)
+                })
+                .run()
+              onEntitiesChanged?.()
+            }
+            setActivePopup(null)
+          }}
         />
       )}
 
@@ -1298,7 +1550,19 @@ export default function Editor({
           projectPath={projectPath}
           calConfig={calConfig}
           onClose={closePopup}
-          onSuccess={() => onEntitiesChanged?.()}
+          onSuccess={(result) => {
+            if (result && result.relationshipId && result.characterId && editor) {
+              editor
+                .chain()
+                .focus()
+                .setRelationshipLink({
+                  relationshipId: String(result.relationshipId),
+                  characterId: String(result.characterId)
+                })
+                .run()
+            }
+            onEntitiesChanged?.()
+          }}
         />
       )}
 
@@ -1416,6 +1680,8 @@ export default function Editor({
           }}
         />
       )}
+      {showKaroly && <KarolyEasterEgg onComplete={() => setShowKaroly(false)} />}
     </div>
   )
 }
+

@@ -1,0 +1,38 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(xargs grep -l \"timeline\\\\|history\\\\|world\")",
+      "Bash(xargs grep -l \"project/config\\\\|project_config\")",
+      "Bash(ls -la /c/Gamedev/FleshNote/fleshnote-ide/backend/routes/*.py)",
+      "Bash(npx electron-vite build)",
+      "Bash(grep -r \"addEventListener\\\\|keydown\\\\|keyCode\\\\|keyup\\\\|keypress\" /c/Gamedev/FleshNote/fleshnote-ide/src/renderer/src/components/*.jsx)",
+      "Bash(xargs grep -l \"getGlobalConfig\\\\|updateGlobalConfig\")",
+      "Bash(.venv/Scripts/python -m py_compile nltk_manager.py)",
+      "Bash(.venv/Scripts/python -m py_compile routes/synonyms.py)",
+      "Bash(.venv/Scripts/python -m py_compile main.py)",
+      "Bash(node -e \"JSON.parse\\(require\\(''fs''\\).readFileSync\\(''src/renderer/src/locales/en/translation.json'',''utf8''\\)\\); console.log\\(''en OK''\\)\")",
+      "Bash(node -e \"JSON.parse\\(require\\(''fs''\\).readFileSync\\(''src/renderer/src/locales/pl/translation.json'',''utf8''\\)\\); console.log\\(''pl OK''\\)\")",
+      "Bash(node -e \"JSON.parse\\(require\\(''fs''\\).readFileSync\\(''src/renderer/src/locales/hu/translation.json'',''utf8''\\)\\); console.log\\(''hu OK''\\)\")",
+      "Bash(node -e \"JSON.parse\\(require\\(''fs''\\).readFileSync\\(''src/renderer/src/locales/ar/translation.json'',''utf8''\\)\\); console.log\\(''ar OK''\\)\")",
+      "Bash(.venv/Scripts/python -c \"import nltk; print\\(''nltk version:'', nltk.__version__\\)\")",
+      "Bash(.venv/Scripts/pip install nltk==3.9.1)",
+      "Bash(.venv/Scripts/python -c \":*)",
+      "Bash(.venv/Scripts/python -m py_compile build_backend.py)",
+      "Bash(xargs grep -l \"wordOffset\\\\|word_offset\")",
+      "Bash(python -m py_compile backend/routes/chapters.py)",
+      "Bash(python -m py_compile backend/export/strip.py)",
+      "Bash(node -e \"try { require\\(''./src/renderer/src/locales/en/translation.json''\\); console.log\\(''en OK''\\); } catch\\(e\\) { console.error\\(''en FAIL:'', e.message\\); }\")",
+      "Bash(node -e \"try { require\\(''./src/renderer/src/locales/hu/translation.json''\\); console.log\\(''hu OK''\\); } catch\\(e\\) { console.error\\(''hu FAIL:'', e.message\\); }\")",
+      "Bash(node -e \"try { require\\(''./src/renderer/src/locales/ar/translation.json''\\); console.log\\(''ar OK''\\); } catch\\(e\\) { console.error\\(''ar FAIL:'', e.message\\); }\")",
+      "Bash(node -e \"try { require\\(''./src/renderer/src/locales/pl/translation.json''\\); console.log\\(''pl OK''\\); } catch\\(e\\) { console.error\\(''pl FAIL:'', e.message\\); }\")",
+      "Bash(node -e \"require\\(''acorn''\\).parse\\(require\\(''fs''\\).readFileSync\\(''src/renderer/src/extensions/KnowledgeLinkMark.js'',''utf8''\\),{sourceType:''module'',ecmaVersion:2022}\\); console.log\\(''KnowledgeLinkMark.js OK''\\)\")",
+      "Bash(node -e \"require\\(''acorn''\\).parse\\(require\\(''fs''\\).readFileSync\\(''src/renderer/src/extensions/RelationshipLinkMark.js'',''utf8''\\),{sourceType:''module'',ecmaVersion:2022}\\); console.log\\(''RelationshipLinkMark.js OK''\\)\")",
+      "Bash(node -e \"const {Parser}=require\\(''acorn''\\); const jsx=require\\(''acorn-jsx''\\); const MyParser=Parser.extend\\(jsx\\(\\)\\); MyParser.parse\\(require\\(''fs''\\).readFileSync\\(''src/renderer/src/components/RelationshipTurningPointPopup.jsx'',''utf8''\\),{sourceType:''module'',ecmaVersion:2022}\\); console.log\\(''RelationshipTurningPointPopup.jsx OK''\\)\")",
+      "Bash(node -e \"const {Parser}=require\\(''acorn''\\); const jsx=require\\(''acorn-jsx''\\); const MyParser=Parser.extend\\(jsx\\(\\)\\); MyParser.parse\\(require\\(''fs''\\).readFileSync\\(''src/renderer/src/components/EntityInspectorPanel.jsx'',''utf8''\\),{sourceType:''module'',ecmaVersion:2022}\\); console.log\\(''EntityInspectorPanel.jsx OK''\\)\")",
+      "Bash(node -e \"const {Parser}=require\\(''acorn''\\); const jsx=require\\(''acorn-jsx''\\); const MyParser=Parser.extend\\(jsx\\(\\)\\); MyParser.parse\\(require\\(''fs''\\).readFileSync\\(''src/renderer/src/components/FleshNoteIDE.jsx'',''utf8''\\),{sourceType:''module'',ecmaVersion:2022}\\); console.log\\(''FleshNoteIDE.jsx OK''\\)\")",
+      "Bash(node -e \"const {Parser}=require\\(''acorn''\\); const jsx=require\\(''acorn-jsx''\\); const MyParser=Parser.extend\\(jsx\\(\\)\\); MyParser.parse\\(require\\(''fs''\\).readFileSync\\(''src/renderer/src/components/EntityContextMenu.jsx'',''utf8''\\),{sourceType:''module'',ecmaVersion:2022}\\); console.log\\(''EntityContextMenu.jsx OK''\\)\")",
+      "Bash(node -e \"const {Parser}=require\\(''acorn''\\); const jsx=require\\(''acorn-jsx''\\); const MyParser=Parser.extend\\(jsx\\(\\)\\); MyParser.parse\\(require\\(''fs''\\).readFileSync\\(''src/renderer/src/components/MakeConnectionPopup.jsx'',''utf8''\\),{sourceType:''module'',ecmaVersion:2022}\\); console.log\\(''MakeConnectionPopup.jsx OK''\\)\")",
+      "Bash(node -e \"const {Parser}=require\\(''acorn''\\); const jsx=require\\(''acorn-jsx''\\); const MyParser=Parser.extend\\(jsx\\(\\)\\); MyParser.parse\\(require\\(''fs''\\).readFileSync\\(''src/renderer/src/components/Editor.jsx'',''utf8''\\),{sourceType:''module'',ecmaVersion:2022}\\); console.log\\(''Editor.jsx OK''\\)\")"
+    ]
+  }
+}

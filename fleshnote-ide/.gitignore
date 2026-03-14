@@ -11,6 +11,7 @@ __pycache__/
 *$py.class
 backend/build/
 backend/dist/
+backend/nltk_data/
 # *.spec (removed to allow tracking backend.spec)
 .venv
 env/
