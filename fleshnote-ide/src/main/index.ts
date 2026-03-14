@@ -275,10 +275,21 @@ app.whenReady().then(async () => {
   })
 
   ipcMain.handle('api:getTutorialPath', async () => {
+    let sourcePath = join(__dirname, '../../backend/Tutorial')
     if (app.isPackaged) {
-      return join(process.resourcesPath, 'Tutorial')
+      sourcePath = join(process.resourcesPath, 'Tutorial')
     }
-    return join(__dirname, '../../backend/Tutorial')
+    const userDataTutorial = join(app.getPath('userData'), 'Tutorial')
+    // Always ensure the tutorial exists in the user's writable data directory.
+    if (!fs.existsSync(userDataTutorial)) {
+      try {
+        fs.cpSync(sourcePath, userDataTutorial, { recursive: true })
+      } catch (err) {
+        console.error('Failed to copy tutorial to userData:', err)
+        return sourcePath // fallback to read-only, though it might fail
+      }
+    }
+    return userDataTutorial
   })
 
   ipcMain.handle('api:initProject', async (_event, payload) => {
