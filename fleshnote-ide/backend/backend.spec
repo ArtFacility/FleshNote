@@ -16,6 +16,7 @@ hidden_imports = [
     'routes.secrets',
     'routes.calendar',
     'routes.quick_notes',
+    'routes.annotations',
     'routes.settings',
     'routes.export',
     'export.render_txt',
@@ -57,6 +58,12 @@ hidden_imports = [
     'nltk.corpus',
     'nltk.corpus.reader',
     'nltk.corpus.reader.wordnet',
+    # Spell check
+    'routes.spellcheck',
+    'phunspell',
+    'spylls',
+    'spylls.spellcheck',
+    'spylls.spellcheck.dictionary',
 ]
 
 datas = [
@@ -65,9 +72,12 @@ datas = [
     ('nltk_data', 'nltk_data'),
 ]
 
-from PyInstaller.utils.hooks import collect_submodules
+from PyInstaller.utils.hooks import collect_submodules, collect_data_files
 
 hidden_imports.extend(collect_submodules('numpy'))
+
+# Bundle phunspell Hunspell dictionaries (.dic/.aff files)
+datas += collect_data_files('phunspell')
 hidden_imports.extend(collect_submodules('spacy'))
 hidden_imports.extend(collect_submodules('thinc'))
 

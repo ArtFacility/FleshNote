@@ -98,11 +98,15 @@ def _row_to_dict(row):
         "reveal_in_chapter": row["reveal_in_chapter"],
         "notes": row["notes"],
     }
-    # world_time may not exist on older DBs before migration runs
+    # world_time and word_offset may not exist on older DBs before migration runs
     try:
         d["world_time"] = row["world_time"]
     except (IndexError, KeyError):
         d["world_time"] = None
+    try:
+        d["word_offset"] = row["word_offset"]
+    except (IndexError, KeyError):
+        d["word_offset"] = None
     return d
 
 

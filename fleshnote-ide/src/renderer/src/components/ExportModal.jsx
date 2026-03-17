@@ -1,4 +1,4 @@
-import { useState, useMemo, useCallback } from "react";
+import { useState, useMemo, useCallback, useEffect } from "react";
 import { useTranslation } from "react-i18next";
 
 /* ============================================================
@@ -308,7 +308,7 @@ export default function ExportModal({ isOpen, onClose, projectPath, projectConfi
   const projectWordCount = useMemo(() => chapters?.reduce((acc, ch) => acc + (ch.word_count || 0), 0) || 0, [chapters]);
   const chapterCount = chapters?.length || 0;
 
-  const annotationCount = entities?.filter(e => e.type === 'secret' || e.type === 'lore').length || 0;
+  const annotationCount = entities?.filter(e => e.type === 'annotation').length || 0;
   const quickNoteCount = entities?.filter(e => e.type === 'quick_note').length || 0;
   const entityCount = entities?.length || 0;
 
@@ -321,21 +321,43 @@ export default function ExportModal({ isOpen, onClose, projectPath, projectConfi
   const [bookView, setBookView] = useState("closed");
   const [showGuides, setShowGuides] = useState(true);
   const [exporting, setExporting] = useState(false);
-  const [notification, setNotification] = useState(null); // { message, type: 'success' | 'error' }
+  const [notification, setNotification] = useState(null); // { message, type: 'success' | 'error', filepath? }
+  const [lastExportedPath, setLastExportedPath] = useState(null);
   const [previewHtml, setPreviewHtml] = useState("");
   const [loadingPreview, setLoadingPreview] = useState(false);
+  const [rightTab, setRightTab] = useState("preview"); // 'preview' | 'book'
+  const [showChapterSelect, setShowChapterSelect] = useState(false);
+  const [selectedChapterIds, setSelectedChapterIds] = useState(null); // null = all
 
   const [overrideFontSize, setOverrideFontSize] = useState(null);
   const [overrideGutter, setOverrideGutter] = useState(null);
+
+  // Init selected chapters when chapters prop changes
+  useEffect(() => {
+    if (chapters && chapters.length > 0 && selectedChapterIds === null) {
+      setSelectedChapterIds(new Set(chapters.map(ch => ch.id)));
+    }
+  }, [chapters]);
 
   const metrics = useMemo(() => getBookMetrics(projectWordCount, trimKey), [projectWordCount, trimKey]);
   const isBookFormat = format === "pdf" || format === "docx";
   const autoTrimRecommended = metrics.recommendedTrim !== trimKey;
 
+  // null means all chapters — only send array if it's a subset
+  const chapterIdsPayload = useMemo(() => {
+    if (!selectedChapterIds || !chapters) return null;
+    if (selectedChapterIds.size === chapters.length) return null;
+    return Array.from(selectedChapterIds);
+  }, [selectedChapterIds, chapters]);
+
+  const allChaptersSelected = !chapterIdsPayload;
+  const noChaptersSelected = selectedChapterIds && selectedChapterIds.size === 0;
+
   const effectiveFontSize = overrideFontSize ?? metrics.fontSize;
   const effectiveGutter = overrideGutter ?? metrics.gutterIn;
 
   const handleExport = useCallback(async () => {
+    if (noChaptersSelected) return;
     setExporting(true);
     try {
       const payload = {
@@ -346,7 +368,8 @@ export default function ExportModal({ isOpen, onClose, projectPath, projectConfi
         trim: trimKey,
         font_size: effectiveFontSize,
         gutter: effectiveGutter,
-        outer: metrics.outerIn
+        outer: metrics.outerIn,
+        chapter_ids: chapterIdsPayload,
       };
 
       const res = await window.api.exportProject(payload);
@@ -360,7 +383,8 @@ export default function ExportModal({ isOpen, onClose, projectPath, projectConfi
           msg += `\n\n⚠️ ${res.warnings}`;
         }
 
-        setNotification({ message: msg, type: res.warnings ? 'warning' : 'success' });
+        setLastExportedPath(res.filepath);
+        setNotification({ message: msg, type: res.warnings ? 'warning' : 'success', filepath: res.filepath });
         console.log("Export successful:", res.filepath);
       } else {
         setNotification({ message: "Export failed or returned incomplete status.", type: 'error' });
@@ -371,7 +395,7 @@ export default function ExportModal({ isOpen, onClose, projectPath, projectConfi
     } finally {
       setExporting(false);
     }
-  }, [projectPath, contentMode, format, trimKey, bookReady, effectiveFontSize, effectiveGutter]);
+  }, [projectPath, contentMode, format, trimKey, bookReady, effectiveFontSize, effectiveGutter, chapterIdsPayload, noChaptersSelected]);
 
   // Live Preview Effect
   useMemo(() => {
@@ -382,14 +406,15 @@ export default function ExportModal({ isOpen, onClose, projectPath, projectConfi
         const payload = {
           project_path: projectPath,
           content_mode: contentMode,
-          format: 'html', // Preview is always HTML
+          format: format,
           book_ready: bookReady,
           trim: trimKey,
           font_size: effectiveFontSize,
           gutter: effectiveGutter,
-          outer: metrics.outerIn
+          outer: metrics.outerIn,
+          chapter_ids: chapterIdsPayload,
         };
-        const res = await window.api.exportPreview?.(payload) || await window.api.exportProject({ ...payload, preview: true });
+        const res = await window.api.exportPreview?.(payload);
         if (active && res && res.status === 'success') {
           setPreviewHtml(res.html);
         }
@@ -405,7 +430,7 @@ export default function ExportModal({ isOpen, onClose, projectPath, projectConfi
       active = false;
       clearTimeout(timer);
     };
-  }, [projectPath, contentMode, bookReady, trimKey, effectiveFontSize, effectiveGutter]);
+  }, [projectPath, contentMode, format, bookReady, trimKey, effectiveFontSize, effectiveGutter, chapterIdsPayload]);
 
   // Auto-hide notification
   useMemo(() => {
@@ -444,10 +469,23 @@ export default function ExportModal({ isOpen, onClose, projectPath, projectConfi
             position: 'absolute', top: 80, left: '50%', transform: 'translateX(-50%)',
             zIndex: 1000, background: notification.type === 'error' ? 'var(--accent-red)' : notification.type === 'warning' ? '#d9a040' : 'var(--accent-green)',
             color: 'var(--bg-deep)', padding: '10px 16px', borderRadius: 8,
-            boxShadow: '0 4px 16px rgba(0,0,0,0.4)', fontWeight: 600, fontSize: 11,
-            ...mono, transition: 'all 0.3s ease', textAlign: 'center', whiteSpace: 'pre-wrap'
+            boxShadow: '0 4px 16px rgba(0,0,0,0.4)', fontSize: 11,
+            ...mono, transition: 'all 0.3s ease', textAlign: 'center', whiteSpace: 'pre-wrap',
+            display: 'flex', alignItems: 'center', gap: 12,
           }}>
-            {notification.message}
+            <span style={{ fontWeight: 600 }}>{notification.message}</span>
+            {notification.filepath && (
+              <button
+                onClick={() => window.api.showItemInFolder(notification.filepath)}
+                style={{
+                  background: 'rgba(0,0,0,0.2)', border: '1px solid rgba(0,0,0,0.25)', borderRadius: 4,
+                  color: 'var(--bg-deep)', fontSize: 11, ...mono, cursor: 'pointer',
+                  padding: '4px 10px', fontWeight: 700, whiteSpace: 'nowrap', flexShrink: 0,
+                }}
+              >
+                {t('exportModal.showInFolder', "Show in Folder")}
+              </button>
+            )}
           </div>
         )}
 
@@ -500,10 +538,61 @@ export default function ExportModal({ isOpen, onClose, projectPath, projectConfi
               </div>
             </div>
 
+            {/* Chapter Selection */}
+            {chapters && chapters.length > 1 && (
+              <div style={{ marginBottom: 28 }}>
+                <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+                  <SectionLabel>{t('exportModal.step2bTitle', "3 · Chapter Selection")}</SectionLabel>
+                  <span style={{ fontSize: 10, ...mono, color: allChaptersSelected ? 'var(--text-tertiary)' : 'var(--accent-amber)' }}>
+                    {allChaptersSelected
+                      ? t('exportModal.allChapters', 'All {{n}} chapters', { n: chapters.length })
+                      : t('exportModal.someChapters', '{{n}} / {{total}} chapters', { n: selectedChapterIds?.size ?? 0, total: chapters.length })}
+                  </span>
+                </div>
+                <button onClick={() => setShowChapterSelect(v => !v)} style={{ background: 'none', border: 'none', color: 'var(--text-tertiary)', cursor: 'pointer', fontSize: 11, ...mono, padding: 0, marginBottom: showChapterSelect ? 10 : 0 }}>
+                  {showChapterSelect ? '▾' : '▸'} {t('exportModal.selectChapters', "Select chapters to include")}
+                </button>
+                {showChapterSelect && (
+                  <div style={{ border: '1px solid var(--border-subtle)', background: 'var(--bg-surface)', maxHeight: 220, overflowY: 'auto' }}>
+                    <div style={{ padding: '6px 12px', borderBottom: '1px solid var(--border-subtle)', display: 'flex', gap: 12 }}>
+                      <button onClick={() => setSelectedChapterIds(new Set(chapters.map(ch => ch.id)))} style={{ background: 'none', border: 'none', color: 'var(--accent-amber)', cursor: 'pointer', fontSize: 10, ...mono, padding: 0 }}>
+                        {t('exportModal.selectAll', "Select all")}
+                      </button>
+                      <button onClick={() => setSelectedChapterIds(new Set())} style={{ background: 'none', border: 'none', color: 'var(--text-tertiary)', cursor: 'pointer', fontSize: 10, ...mono, padding: 0 }}>
+                        {t('exportModal.selectNone', "None")}
+                      </button>
+                    </div>
+                    {chapters.map((ch) => {
+                      const checked = selectedChapterIds?.has(ch.id) ?? true;
+                      return (
+                        <label key={ch.id} style={{ display: 'flex', alignItems: 'center', gap: 10, padding: '7px 12px', borderBottom: '1px solid var(--border-subtle)', cursor: 'pointer', background: checked ? 'transparent' : 'rgba(0,0,0,0.15)' }}>
+                          <input type="checkbox" checked={checked} style={{ accentColor: 'var(--accent-amber)', flexShrink: 0 }}
+                            onChange={e => {
+                              setSelectedChapterIds(prev => {
+                                const next = new Set(prev);
+                                if (e.target.checked) next.add(ch.id); else next.delete(ch.id);
+                                return next;
+                              });
+                            }} />
+                          <span style={{ fontSize: 12, color: checked ? 'var(--text-primary)' : 'var(--text-tertiary)', flex: 1, overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>{ch.title || `Chapter ${ch.chapter_number}`}</span>
+                          {ch.word_count > 0 && <span style={{ fontSize: 10, ...mono, color: 'var(--text-tertiary)', flexShrink: 0 }}>{ch.word_count.toLocaleString()}w</span>}
+                        </label>
+                      );
+                    })}
+                  </div>
+                )}
+                {noChaptersSelected && (
+                  <div style={{ marginTop: 6, fontSize: 11, color: 'var(--accent-red)', ...mono }}>
+                    {t('exportModal.noChaptersWarning', "⚠ Select at least one chapter to export.")}
+                  </div>
+                )}
+              </div>
+            )}
+
             {isBookFormat && (
               <div style={{ marginBottom: 28, background: "var(--bg-surface)", borderRadius: 0, padding: "20px", border: "1px solid var(--border-subtle)" }}>
                 <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 16 }}>
-                  <SectionLabel>{t('exportModal.step3Title', "3 · Book-Ready Formatting")}</SectionLabel>
+                  <SectionLabel>{t('exportModal.step3Title', "4 · Book-Ready Formatting")}</SectionLabel>
                   <label style={{ display: "flex", alignItems: "center", gap: 6, cursor: "pointer", fontSize: 11, ...mono, color: bookReady ? "var(--accent-amber)" : "var(--text-tertiary)" }}>
                     <input type="checkbox" checked={bookReady} onChange={e => setBookReady(e.target.checked)} style={{ accentColor: "var(--accent-amber)" }} />
                     {t('exportModal.enabled', "Enabled")}
@@ -577,10 +666,10 @@ export default function ExportModal({ isOpen, onClose, projectPath, projectConfi
               </div>
 
               <div style={{ display: "flex", gap: 10 }}>
-                <button onClick={handleExport} disabled={exporting} style={{
-                  flex: 1, padding: "12px 24px", background: exporting ? "var(--bg-elevated)" : "var(--accent-amber)",
-                  border: "none", borderRadius: 0, color: exporting ? "var(--text-secondary)" : "var(--bg-deep)",
-                  fontSize: 12, fontWeight: 600, ...mono, cursor: exporting ? "wait" : "pointer",
+                <button onClick={handleExport} disabled={exporting || noChaptersSelected} style={{
+                  flex: 1, padding: "12px 24px", background: (exporting || noChaptersSelected) ? "var(--bg-elevated)" : "var(--accent-amber)",
+                  border: "none", borderRadius: 0, color: (exporting || noChaptersSelected) ? "var(--text-secondary)" : "var(--bg-deep)",
+                  fontSize: 12, fontWeight: 600, ...mono, cursor: (exporting || noChaptersSelected) ? "not-allowed" : "pointer",
                   transition: "all 0.15s ease", letterSpacing: "1px", textTransform: "uppercase"
                 }}>
                   {exporting ? t('exportModal.exportingBtn', "Exporting…") : t('exportModal.exportBtn', "Export .{{format}}", { format: format })}
@@ -605,102 +694,116 @@ export default function ExportModal({ isOpen, onClose, projectPath, projectConfi
 
           </div>
 
-          {/* RIGHT: Preview Panel */}
-          <div style={{ flex: '1 1 50%', padding: '32px', overflowY: 'auto', background: 'var(--bg-deep)', display: 'flex', flexDirection: 'column' }}>
+          {/* RIGHT: Preview / Book tabs */}
+          <div style={{ flex: '1 1 50%', display: 'flex', flexDirection: 'column', background: 'var(--bg-deep)', overflow: 'hidden' }}>
 
-            {/* BOOK VISUALIZER */}
-            {isBookFormat && bookReady && (
-              <div style={{ marginBottom: 28 }}>
-                <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 12 }}>
-                  <div style={{ display: "flex", gap: 4, background: "var(--bg-surface)", borderRadius: 0, padding: 3 }}>
-                    <button onClick={() => setBookView("closed")} style={{ padding: "6px 14px", background: bookView === "closed" ? "var(--accent-amber-dim)" : "transparent", border: bookView === "closed" ? "1px solid var(--accent-amber)" : "1px solid transparent", borderRadius: 0, color: bookView === "closed" ? "var(--accent-amber)" : "var(--text-tertiary)", fontSize: 11, ...mono, cursor: "pointer", transition: "all 0.15s ease" }}>{t('exportModal.viewCover', "Cover")}</button>
-                    <button onClick={() => setBookView("open")} style={{ padding: "6px 14px", background: bookView === "open" ? "var(--accent-amber-dim)" : "transparent", border: bookView === "open" ? "1px solid var(--accent-amber)" : "1px solid transparent", borderRadius: 0, color: bookView === "open" ? "var(--accent-amber)" : "var(--text-tertiary)", fontSize: 11, ...mono, cursor: "pointer", transition: "all 0.15s ease" }}>{t('exportModal.viewSpread', "Spread")}</button>
-                  </div>
-                  {bookView === "closed" ? (
-                    <div style={{ display: "flex", gap: 4, alignItems: "center" }}>
-                      <span style={{ fontSize: 9, ...mono, color: "var(--text-tertiary)", marginRight: 2 }}>{t('exportModal.cover', "COVER")}</span>
-                      {coverColors.map(c => (
-                        <button key={c} onClick={() => setCoverColor(c)} style={{ width: 16, height: 16, borderRadius: 0, background: c, border: coverColor === c ? "2px solid var(--accent-amber)" : "2px solid transparent", cursor: "pointer", padding: 0 }} />
-                      ))}
+            {/* Tab bar */}
+            <div style={{ display: 'flex', borderBottom: '1px solid var(--border-subtle)', flexShrink: 0 }}>
+              {[
+                { key: 'preview', label: t('exportModal.previewTab', 'Live Preview') },
+                ...(isBookFormat && bookReady ? [{ key: 'book', label: t('exportModal.bookTab', 'Book View') }] : []),
+              ].map(tab => (
+                <button key={tab.key} onClick={() => setRightTab(tab.key)} style={{
+                  padding: '14px 24px', background: 'none', border: 'none', borderBottom: rightTab === tab.key ? '2px solid var(--accent-amber)' : '2px solid transparent',
+                  color: rightTab === tab.key ? 'var(--accent-amber)' : 'var(--text-tertiary)',
+                  fontSize: 12, ...mono, cursor: 'pointer', transition: 'all 0.15s ease', marginBottom: -1,
+                }}>
+                  {tab.label}
+                </button>
+              ))}
+            </div>
+
+            {/* Live Preview Tab */}
+            {rightTab === 'preview' && (
+              <div style={{ flex: 1, display: 'flex', flexDirection: 'column', overflow: 'hidden', padding: '16px 24px' }}>
+                <div style={{
+                  flex: 1, border: '1px solid var(--border-subtle)', background: 'var(--bg-deep)',
+                  borderRadius: 0, overflow: 'hidden', position: 'relative', minHeight: 200,
+                }}>
+                  {loadingPreview && (
+                    <div style={{ position: 'absolute', inset: 0, background: 'var(--bg-deep)', display: 'flex', alignItems: 'center', justifyContent: 'center', zIndex: 10, opacity: 0.8 }}>
+                      <div className="spinner" style={{ width: 30, height: 30, border: '3px solid var(--border-subtle)', borderTopColor: 'var(--accent-amber)', borderRadius: '50%', animation: 'spin 1s linear infinite' }} />
                     </div>
+                  )}
+                  {previewHtml ? (
+                    <iframe
+                      title="Export Preview"
+                      srcDoc={previewHtml}
+                      style={{ width: '100%', height: '100%', border: 'none' }}
+                      sandbox="allow-same-origin"
+                    />
                   ) : (
-                    <label style={{ display: "flex", alignItems: "center", gap: 5, cursor: "pointer", fontSize: 10, ...mono, color: "var(--text-tertiary)" }}>
-                      <input type="checkbox" checked={showGuides} onChange={e => setShowGuides(e.target.checked)} style={{ accentColor: "var(--accent-amber)" }} />
-                      {t('exportModal.marginsLabel', "Margins")}
-                    </label>
+                    <div style={{ textAlign: 'center', color: '#999', padding: 40 }}>
+                      {t('exportModal.previewLoading', 'Generating preview...')}
+                    </div>
+                  )}
+                </div>
+                <div style={{ marginTop: 8, fontSize: 10, ...mono, color: 'var(--text-tertiary)' }}>
+                  {t('exportModal.previewNote', 'Preview shows first selected chapter only')}
+                </div>
+                <style>{`@keyframes spin { to { transform: rotate(360deg); } }`}</style>
+              </div>
+            )}
+
+            {/* Book View Tab */}
+            {rightTab === 'book' && isBookFormat && bookReady && (
+              <div style={{ flex: 1, overflowY: 'auto', padding: '24px 32px' }}>
+                <div style={{ marginBottom: 20 }}>
+                  <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 12 }}>
+                    <div style={{ display: "flex", gap: 4, background: "var(--bg-surface)", borderRadius: 0, padding: 3 }}>
+                      <button onClick={() => setBookView("closed")} style={{ padding: "6px 14px", background: bookView === "closed" ? "var(--accent-amber-dim)" : "transparent", border: bookView === "closed" ? "1px solid var(--accent-amber)" : "1px solid transparent", borderRadius: 0, color: bookView === "closed" ? "var(--accent-amber)" : "var(--text-tertiary)", fontSize: 11, ...mono, cursor: "pointer", transition: "all 0.15s ease" }}>{t('exportModal.viewCover', "Cover")}</button>
+                      <button onClick={() => setBookView("open")} style={{ padding: "6px 14px", background: bookView === "open" ? "var(--accent-amber-dim)" : "transparent", border: bookView === "open" ? "1px solid var(--accent-amber)" : "1px solid transparent", borderRadius: 0, color: bookView === "open" ? "var(--accent-amber)" : "var(--text-tertiary)", fontSize: 11, ...mono, cursor: "pointer", transition: "all 0.15s ease" }}>{t('exportModal.viewSpread', "Spread")}</button>
+                    </div>
+                    {bookView === "closed" ? (
+                      <div style={{ display: "flex", gap: 4, alignItems: "center" }}>
+                        <span style={{ fontSize: 9, ...mono, color: "var(--text-tertiary)", marginRight: 2 }}>{t('exportModal.cover', "COVER")}</span>
+                        {coverColors.map(c => (
+                          <button key={c} onClick={() => setCoverColor(c)} style={{ width: 16, height: 16, borderRadius: 0, background: c, border: coverColor === c ? "2px solid var(--accent-amber)" : "2px solid transparent", cursor: "pointer", padding: 0 }} />
+                        ))}
+                      </div>
+                    ) : (
+                      <label style={{ display: "flex", alignItems: "center", gap: 5, cursor: "pointer", fontSize: 10, ...mono, color: "var(--text-tertiary)" }}>
+                        <input type="checkbox" checked={showGuides} onChange={e => setShowGuides(e.target.checked)} style={{ accentColor: "var(--accent-amber)" }} />
+                        {t('exportModal.marginsLabel', "Margins")}
+                      </label>
+                    )}
+                  </div>
+
+                  <div style={{ background: bookView === "open" ? "var(--bg-deep)" : "var(--bg-surface)", borderRadius: 0, padding: bookView === "open" ? "12px 4px" : "20px 12px", display: "flex", justifyContent: "center", alignItems: "center", minHeight: 300, border: "1px solid var(--border-subtle)", overflow: "hidden" }}>
+                    {bookView === "closed"
+                      ? <ClosedBookSVG trimKey={trimKey} metrics={metrics} accentColor={coverColor} title={projectTitle} author={authorName} />
+                      : <OpenBookSVG trimKey={trimKey} pageCount={metrics.pageCount} accentColor={coverColor} showGuides={showGuides} />}
+                  </div>
+
+                  {bookView === "open" && showGuides && (
+                    <div style={{ display: "flex", gap: 14, justifyContent: "center", marginTop: 8, fontSize: 9, ...mono, color: "var(--text-tertiary)" }}>
+                      <span><span style={{ display: "inline-block", width: 10, height: 2.5, background: "var(--text-tertiary)", opacity: 0.5, marginRight: 4, verticalAlign: "middle" }} />{t('exportModal.legendText', "Text")}</span>
+                      <span><span style={{ display: "inline-block", width: 10, height: 0, borderTop: "1px dashed var(--accent-red)", opacity: 0.6, marginRight: 4, verticalAlign: "middle" }} />{t('exportModal.legendMargins', "Margins")}</span>
+                      <span><span style={{ display: "inline-block", width: 10, height: 7, background: "repeating-linear-gradient(45deg,transparent,transparent 1.5px,rgba(196,92,92,0.25) 1.5px,rgba(196,92,92,0.25) 3px)", marginRight: 4, verticalAlign: "middle" }} />{t('exportModal.legendDanger', "Danger Zone")}</span>
+                    </div>
                   )}
                 </div>
 
-                <div style={{ background: bookView === "open" ? "var(--bg-deep)" : "var(--bg-surface)", borderRadius: 0, padding: bookView === "open" ? "12px 4px" : "20px 12px", display: "flex", justifyContent: "center", alignItems: "center", minHeight: 300, border: "1px solid var(--border-subtle)", overflow: "hidden", transition: "background 0.2s" }}>
-                  {bookView === "closed"
-                    ? <ClosedBookSVG trimKey={trimKey} metrics={metrics} accentColor={coverColor} title={projectTitle} author={authorName} />
-                    : <OpenBookSVG trimKey={trimKey} pageCount={metrics.pageCount} accentColor={coverColor} showGuides={showGuides} />}
+                <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr 1fr", gap: 10, marginBottom: 20 }}>
+                  <MetricCard label={t('exportModal.metricPages', "Pages")} value={`~${metrics.pageCount}`} />
+                  <MetricCard label={t('exportModal.metricSpine', "Spine")} value={`${metrics.spineInches.toFixed(2)}"`} />
+                  <MetricCard label={t('exportModal.metricFont', "Font")} value={`${effectiveFontSize}pt`} />
+                  <MetricCard label={t('exportModal.metricGutter', "Gutter")} value={`${effectiveGutter}"`} />
+                  <MetricCard label={t('exportModal.metricOuter', "Outer")} value={`${metrics.outerIn}"`} />
+                  <MetricCard label={t('exportModal.metricTextWidth', "Text Width")} value={`${(TRIM_SIZES[trimKey].w - effectiveGutter - metrics.outerIn).toFixed(2)}"`}
+                    warn={(TRIM_SIZES[trimKey].w - effectiveGutter - metrics.outerIn) < 2.4} />
                 </div>
 
-                {bookView === "open" && showGuides && (
-                  <div style={{ display: "flex", gap: 14, justifyContent: "center", marginTop: 8, fontSize: 9, ...mono, color: "var(--text-tertiary)" }}>
-                    <span><span style={{ display: "inline-block", width: 10, height: 2.5, background: "var(--text-tertiary)", opacity: 0.5, marginRight: 4, verticalAlign: "middle", borderRadius: 0 }} />{t('exportModal.legendText', "Text")}</span>
-                    <span><span style={{ display: "inline-block", width: 10, height: 0, borderTop: "1px dashed var(--accent-red)", opacity: 0.6, marginRight: 4, verticalAlign: "middle" }} />{t('exportModal.legendMargins', "Margins")}</span>
-                    <span><span style={{ display: "inline-block", width: 10, height: 7, background: "repeating-linear-gradient(45deg,transparent,transparent 1.5px,rgba(196,92,92,0.25) 1.5px,rgba(196,92,92,0.25) 3px)", marginRight: 4, verticalAlign: "middle" }} />{t('exportModal.legendDanger', "Danger Zone")}</span>
+                {autoTrimRecommended && (
+                  <div style={{ background: "var(--accent-amber-dim)", border: "1px solid var(--accent-amber)", borderRadius: 0, padding: "12px 16px" }}>
+                    <div style={{ fontSize: 10, ...mono, color: "var(--accent-amber)", textTransform: "uppercase", letterSpacing: "0.1em", marginBottom: 4, fontWeight: 600 }}>{t('exportModal.considerAlternative', "◆ Consider Alternatives")}</div>
+                    <div style={{ fontSize: 13, color: "var(--text-secondary)", lineHeight: 1.5 }}>
+                      {t('exportModal.alternativeDesc', "{{pages}} pages in {{currentTrim}} trim might not be ideal. {{recTrim}} ({{recSub}}) would give you a more natural book feel.", { pages: metrics.pageCount, currentTrim: TRIM_SIZES[trimKey].label, recTrim: TRIM_SIZES[metrics.recommendedTrim].label, recSub: TRIM_SIZES[metrics.recommendedTrim].sub })}
+                    </div>
                   </div>
                 )}
               </div>
             )}
-
-            {isBookFormat && bookReady && (
-              <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr 1fr", gap: 10, marginBottom: 24 }}>
-                <MetricCard label={t('exportModal.metricPages', "Pages")} value={`~${metrics.pageCount}`} />
-                <MetricCard label={t('exportModal.metricSpine', "Spine")} value={`${metrics.spineInches.toFixed(2)}"`} />
-                <MetricCard label={t('exportModal.metricFont', "Font")} value={`${effectiveFontSize}pt`} />
-                <MetricCard label={t('exportModal.metricGutter', "Gutter")} value={`${effectiveGutter}"`} />
-                <MetricCard label={t('exportModal.metricOuter', "Outer")} value={`${metrics.outerIn}"`} />
-                <MetricCard label={t('exportModal.metricTextWidth', "Text Width")} value={`${(TRIM_SIZES[trimKey].w - effectiveGutter - metrics.outerIn).toFixed(2)}"`}
-                  warn={(TRIM_SIZES[trimKey].w - effectiveGutter - metrics.outerIn) < 2.4} />
-              </div>
-            )}
-
-            {isBookFormat && bookReady && autoTrimRecommended && (
-              <div style={{ background: "var(--accent-amber-dim)", border: "1px solid var(--accent-amber)", borderRadius: 0, padding: "12px 16px", marginBottom: 20 }}>
-                <div style={{ fontSize: 10, ...mono, color: "var(--accent-amber)", textTransform: "uppercase", letterSpacing: "0.1em", marginBottom: 4, fontWeight: 600 }}>{t('exportModal.considerAlternative', "◆ Consider Alternatives")}</div>
-                <div style={{ fontSize: 13, color: "var(--text-secondary)", lineHeight: 1.5 }}>
-                  {t('exportModal.alternativeDesc', "{{pages}} pages in {{currentTrim}} trim might not be ideal. {{recTrim}} ({{recSub}}) would give you a more natural book feel.", { pages: metrics.pageCount, currentTrim: TRIM_SIZES[trimKey].label, recTrim: TRIM_SIZES[metrics.recommendedTrim].label, recSub: TRIM_SIZES[metrics.recommendedTrim].sub })}
-                </div>
-              </div>
-            )}
-
-            <div style={{ marginTop: 'auto', paddingTop: 20, flex: 1, display: 'flex', flexDirection: 'column', minHeight: 0 }}>
-              <SectionLabel>{t('exportModal.previewTab', 'Live Preview')}</SectionLabel>
-              <div style={{
-                flex: 1,
-                border: '1px solid var(--border-subtle)',
-                background: 'var(--bg-deep)',
-                borderRadius: 0,
-                overflow: 'hidden',
-                position: 'relative',
-                minHeight: 300
-              }}>
-                {loadingPreview && (
-                  <div style={{ position: 'absolute', inset: 0, background: 'var(--bg-deep)', display: 'flex', alignItems: 'center', justifyContent: 'center', zIndex: 10, opacity: 0.8 }}>
-                    <div className="spinner" style={{ width: 30, height: 30, border: '3px solid var(--border-subtle)', borderTopColor: 'var(--accent-amber)', borderRadius: '50%', animation: 'spin 1s linear infinite' }} />
-                  </div>
-                )}
-                {previewHtml ? (
-                  <iframe
-                    title="Export Preview"
-                    srcDoc={previewHtml}
-                    style={{ width: '100%', height: '100%', border: 'none' }}
-                    sandbox="allow-same-origin"
-                  />
-                ) : (
-                  <div style={{ textAlign: 'center', color: '#999', padding: 40 }}>
-                    {t('exportModal.previewLoading', 'Generating preview...')}
-                  </div>
-                )}
-              </div>
-              <style>{`
-                @keyframes spin { to { transform: rotate(360deg); } }
-              `}</style>
-            </div>
 
           </div>
         </div>

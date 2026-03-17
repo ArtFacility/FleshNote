@@ -8,6 +8,7 @@ import { EntityLinkMark } from '../extensions/EntityLinkMark'
 import { TwistLinkMark } from '../extensions/TwistLinkMark'
 import { KnowledgeLinkMark } from '../extensions/KnowledgeLinkMark'
 import { RelationshipLinkMark } from '../extensions/RelationshipLinkMark'
+import { TimeLinkMark } from '../extensions/TimeLinkMark'
 import { TodoHighlighter } from '../extensions/TodoHighlighter'
 import { SearchAndReplace } from '../extensions/SearchAndReplace'
 import getSuggestionConfig from '../extensions/mentionSuggestion'
@@ -19,7 +20,9 @@ import MakeConnectionPopup from './MakeConnectionPopup'
 import CustomLorePopup from './CustomLorePopup'
 import ForeshadowingPopup from './ForeshadowingPopup'
 import QuickNotePopup from './QuickNotePopup'
+import AnnotationPopup from './AnnotationPopup'
 import RelationshipTurningPointPopup from './RelationshipTurningPointPopup'
+import TimeOverridePopup from './TimeOverridePopup'
 import CalendarDatePicker from './CalendarDatePicker'
 import AddAliasPopup from './AddAliasPopup'
 import FocusSelectorPopup from './FocusSelectorPopup'
@@ -32,6 +35,7 @@ import KamikazeMode from './focus-modes/KamikazeMode'
 import FogMode from './focus-modes/FogMode'
 import MomentumMode from './focus-modes/MomentumMode'
 import SynonymPopup from './SynonymPopup'
+import TimeGutter from './TimeGutter'
 import { matchesHotkey } from '../utils/hotkeyMatcher'
 import KarolyEasterEgg from './KarolyEasterEgg'
 
@@ -154,7 +158,21 @@ function EntityHoverCard({ data, position, entities }) {
           </div>
         )
       }
-      <div className="hover-card-hint">{t('editor.clickToInspect', 'Click to inspect')}</div>
+      {
+        data.entityType === 'annotation' && (
+          <div
+            className="hover-card-detail"
+            style={{ whiteSpace: 'pre-wrap', fontStyle: 'italic', marginTop: '6px', color: 'var(--accent-annotation)' }}
+          >
+            {entity.content}
+          </div>
+        )
+      }
+      <div className="hover-card-hint">
+        {data.entityType === 'annotation'
+          ? t('editor.clickToViewAnnotation', 'Click to view/edit')
+          : t('editor.clickToInspect', 'Click to inspect')}
+      </div>
     </div >
   )
 }
@@ -221,8 +239,10 @@ export default function Editor({
       lore: true,
       twist: true,
       quicknote: true,
+      annotation: true,
       knowledge: true,
-      relationship: true
+      relationship: true,
+      spellcheck: true
     }
   })
 
@@ -258,6 +278,8 @@ export default function Editor({
   // Synonym popup state (context-menu-style, separate from modal-style activePopup)
   const [synonymState, setSynonymState] = useState(null)
   // synonymState = { word, position, groups: [], loading: bool, error: bool }
+  const [typoSuggestions, setTypoSuggestions] = useState(null)
+  // typoSuggestions = { word, suggestions: [] } | null
   const [showKaroly, setShowKaroly] = useState(false)
 
 
@@ -281,6 +303,28 @@ export default function Editor({
     move: 'var(--accent-blue)',
   }
   const [chapterBeats, setChapterBeats] = useState([])
+  const [gutterVisible, setGutterVisible] = useState(false)
+  const [timeMarkers, setTimeMarkers] = useState([])
+  const [activeTimeMarkerId, setActiveTimeMarkerId] = useState(null)
+  const [gutterMeasureTick, setGutterMeasureTick] = useState(0)
+  const editorColumnRef = useRef(null)
+  const gutterMeasureTimeoutRef = useRef(null)
+
+  useEffect(() => {
+    if (!projectPath || !chapter?.id) { setTimeMarkers([]); return }
+    window.api.getWorldTimes({ project_path: projectPath, chapter_id: chapter.id })
+      .then(res => setTimeMarkers(res.markers || []))
+      .catch(() => {})
+  }, [projectPath, chapter?.id])
+
+  const effectiveWorldTime = useMemo(() => {
+    if (activeTimeMarkerId) {
+      const m = timeMarkers.find(m => String(m.id) === String(activeTimeMarkerId))
+      if (m) return m.world_date
+    }
+    return chapter?.world_time || ''
+  }, [activeTimeMarkerId, timeMarkers, chapter?.world_time])
+
   useEffect(() => {
     if (!projectPath || !chapter?.id) { setChapterBeats([]); return }
     window.api.loadPlanner(projectPath).then(res => {
@@ -308,6 +352,7 @@ export default function Editor({
     TwistLinkMark,
     KnowledgeLinkMark,
     RelationshipLinkMark,
+    TimeLinkMark,
     TodoHighlighter,
     SearchAndReplace,
     Mention.configure({
@@ -378,6 +423,17 @@ export default function Editor({
           if (target) {
             const entityType = target.getAttribute('data-entity-type')
             const entityId = target.getAttribute('data-entity-id')
+
+            if (entityType === 'annotation') {
+              const rect = target.getBoundingClientRect()
+              setActivePopup({
+                type: 'annotationView',
+                position: { x: rect.left, y: rect.bottom + 6 },
+                data: { entityId, entityType }
+              })
+              return true
+            }
+
             onEntityClick?.({ type: entityType, id: parseInt(entityId) })
             return true
           }
@@ -448,6 +504,27 @@ export default function Editor({
               setRelationshipAtCursor(null)
             }
 
+            // Fetch typo suggestions for the right-clicked word (single word only)
+            const singleWord = text.trim().split(/\s+/)
+            if (singleWord.length === 1 && projectPath) {
+              const word = singleWord[0].replace(/[^a-zA-ZÀ-ÿ\u0600-\u06FF\u0100-\u017E]/g, '')
+              if (word.length >= 2) {
+                window.api.spellCheck({ project_path: projectPath, word })
+                  .then(res => {
+                    if (res && !res.is_correct && res.suggestions.length > 0) {
+                      setTypoSuggestions({ word, suggestions: res.suggestions })
+                    } else {
+                      setTypoSuggestions(null)
+                    }
+                  })
+                  .catch(() => setTypoSuggestions(null))
+              } else {
+                setTypoSuggestions(null)
+              }
+            } else {
+              setTypoSuggestions(null)
+            }
+
             return true
           }
           return false
@@ -468,6 +545,17 @@ export default function Editor({
           latestContentRef.current.isDirty = false
         }, 500)
       }
+      // Debounced gutter re-measure on content change
+      if (gutterMeasureTimeoutRef.current) clearTimeout(gutterMeasureTimeoutRef.current)
+      gutterMeasureTimeoutRef.current = setTimeout(() => setGutterMeasureTick(t => t + 1), 100)
+    },
+    onSelectionUpdate: ({ editor }) => {
+      try {
+        const { from } = editor.state.selection
+        const resolvedPos = editor.state.doc.resolve(from)
+        const timeMark = resolvedPos.marks().find(m => m.type.name === 'timeLink')
+        setActiveTimeMarkerId(timeMark?.attrs.timeId || null)
+      } catch (e) { /* ignore */ }
     },
     onTransaction: ({ editor }) => {
       if (editor.storage.searchAndReplace) {
@@ -605,6 +693,13 @@ export default function Editor({
     }
   }, [editor, i18n.language])
 
+  // Toggle native browser spellcheck based on visibility setting
+  useEffect(() => {
+    if (editor && !editor.isDestroyed) {
+      editor.view.dom.setAttribute('spellcheck', linkVisibility.spellcheck !== false ? 'true' : 'false')
+    }
+  }, [editor, linkVisibility.spellcheck])
+
   // Scroll to word offset when requested (from inspector navigation)
   useEffect(() => {
     if (!editor || !scrollToWordOffset || !scrollToWordOffset.wordOffset) return
@@ -658,6 +753,7 @@ export default function Editor({
     setEntityAtCursor(null)
     setKnowledgeAtCursor(null)
     setRelationshipAtCursor(null)
+    setTypoSuggestions(null)
   }, [])
 
   const handleCreateEntity = useCallback(
@@ -792,8 +888,16 @@ export default function Editor({
           setActivePopup({ type: 'quickNote', position: pos, data })
           break
 
+        case 'annotation':
+          setActivePopup({ type: 'annotation', position: pos, data })
+          break
+
         case 'makeConnection':
           setActivePopup({ type: 'makeConnection', position: pos, data })
+          break
+
+        case 'timeOverride':
+          setActivePopup({ type: 'timeOverride', position: pos, data })
           break
 
         case 'relationshipTurningPoint': {
@@ -1008,6 +1112,24 @@ export default function Editor({
         .setEntityLink({
           entityType: 'quicknote',
           entityId: String(note.id)
+        })
+        .run()
+
+      onEntitiesChanged?.()
+    },
+    [editor, onEntitiesChanged]
+  )
+
+  const handleAnnotationCreated = useCallback(
+    (annotation) => {
+      if (!editor || !annotation) return
+
+      editor
+        .chain()
+        .focus()
+        .setEntityLink({
+          entityType: 'annotation',
+          entityId: String(annotation.id)
         })
         .run()
 
@@ -1272,8 +1394,10 @@ export default function Editor({
                 { key: 'lore', label: t('editor.visLore', 'Items & Lore') },
                 { key: 'twist', label: t('editor.visTwist', 'Twists & Foreshadows') },
                 { key: 'quicknote', label: t('editor.visQuicknote', 'Quick Notes') },
+                { key: 'annotation', label: t('editor.visAnnotation', 'Annotations') },
                 { key: 'knowledge', label: t('editor.visKnowledge', 'Knowledge Markers') },
-                { key: 'relationship', label: t('editor.visRelationship', 'Relationship Markers') }
+                { key: 'relationship', label: t('editor.visRelationship', 'Relationship Markers') },
+                { key: 'spellcheck', label: t('editor.visSpellcheck', 'Spell Check Underlines') }
               ].map(item => (
                 <label key={item.key} style={{ display: 'flex', alignItems: 'center', gap: '8px', padding: '6px 4px', fontSize: '11px', fontFamily: 'var(--font-mono)', color: 'var(--text-secondary)', cursor: 'pointer' }}>
                   <input
@@ -1288,6 +1412,16 @@ export default function Editor({
             </div>
           )}
         </div>
+
+        <div className="editor-toolbar-divider" style={{ margin: '0 4px' }} />
+        <button
+          className={`format-btn ${gutterVisible ? 'active' : ''}`}
+          onClick={() => setGutterVisible(v => !v)}
+          title="Toggle Timeline Gutter"
+          style={{ fontFamily: 'inherit', fontSize: '14px', lineHeight: 1 }}
+        >
+          𐲎
+        </button>
       </div>
 
       {/* ── Focus Mode Overlays ────────────────────────────── */}
@@ -1391,17 +1525,38 @@ export default function Editor({
         )}
 
         <div
-          className={`editor-content-wrapper ${!linkVisibility.character ? 'hide-character-links' : ''} ${!linkVisibility.location ? 'hide-location-links' : ''} ${!linkVisibility.lore ? 'hide-lore-links' : ''} ${!linkVisibility.twist ? 'hide-twist-links' : ''} ${!linkVisibility.quicknote ? 'hide-quicknote-links' : ''} ${!linkVisibility.knowledge ? 'hide-knowledge-links' : ''} ${!linkVisibility.relationship ? 'hide-relationship-links' : ''}`}
+          className={`editor-content-wrapper ${!linkVisibility.character ? 'hide-character-links' : ''} ${!linkVisibility.location ? 'hide-location-links' : ''} ${!linkVisibility.lore ? 'hide-lore-links' : ''} ${!linkVisibility.twist ? 'hide-twist-links' : ''} ${!linkVisibility.quicknote ? 'hide-quicknote-links' : ''} ${!linkVisibility.annotation ? 'hide-annotation-links' : ''} ${!linkVisibility.knowledge ? 'hide-knowledge-links' : ''} ${!linkVisibility.relationship ? 'hide-relationship-links' : ''}`}
           style={{
             flex: 1,
             overflowY: 'auto',
             overflowX: 'hidden',
-            padding: focusMode ? `0 ${projectConfig?.editor_padding || '15%'}` : '0',
             height: '100%',
             display: 'flex',
-            flexDirection: 'column'
+            flexDirection: 'row'
           }}
         >
+          {gutterVisible && chapter?.id && (
+            <TimeGutter
+              markers={timeMarkers}
+              onMarkersChange={setTimeMarkers}
+              projectPath={projectPath}
+              chapterId={chapter.id}
+              calConfig={calConfig}
+              editorColumnRef={editorColumnRef}
+              measureTick={gutterMeasureTick}
+              onRemoveById={(id) => editor?.commands.removeTimeLinkById(id)}
+              onUpdateColorById={(id, ci) => editor?.commands.updateTimeLinkColorById(id, ci)}
+            />
+          )}
+          <div
+            ref={editorColumnRef}
+            style={{
+              flex: 1,
+              display: 'flex',
+              flexDirection: 'column',
+              padding: focusMode ? `0 ${projectConfig?.editor_padding || '15%'}` : '0',
+            }}
+          >
           <div className="editor-chapter-heading" style={{ padding: '40px 64px 0' }}>
             {t('editor.chapterPrefix', 'Chapter ')}{chapter.chapter_number}
           </div>
@@ -1458,6 +1613,7 @@ export default function Editor({
             </div>
           )}
           <EditorContent editor={editor} />
+          </div>
         </div>
       </div>
 
@@ -1474,6 +1630,31 @@ export default function Editor({
         twistAtCursor={twistAtCursor}
         knowledgeAtCursor={knowledgeAtCursor}
         relationshipAtCursor={relationshipAtCursor}
+        typoSuggestions={typoSuggestions}
+        onApplyTypoFix={(word, fix) => {
+          if (!editor) return
+          const { from, to, empty } = editor.state.selection
+          if (!empty) {
+            editor.chain().focus().deleteSelection().insertContent(fix).run()
+          } else {
+            // Find and replace the word around cursor
+            const $pos = editor.state.doc.resolve(from)
+            const textBefore = $pos.parent.textBetween(0, $pos.parentOffset)
+            const textAfter = $pos.parent.textBetween($pos.parentOffset, $pos.parent.content.size)
+            const beforeMatch = textBefore.match(/\w+$/)
+            const afterMatch = textAfter.match(/^\w+/)
+            const wordStart = from - (beforeMatch ? beforeMatch[0].length : 0)
+            const wordEnd = from + (afterMatch ? afterMatch[0].length : 0)
+            editor.chain().focus().setTextSelection({ from: wordStart, to: wordEnd }).deleteSelection().insertContent(fix).run()
+          }
+          closeContextMenu()
+        }}
+        onMarkNotTypo={(word) => {
+          if (!projectPath) return
+          window.api.spellCheckIgnore({ project_path: projectPath, word })
+            .catch(err => console.error('Failed to add to ignore list:', err))
+          closeContextMenu()
+        }}
       />
       <EntityHoverCard data={hoverCard} position={hoverPos} entities={entities} />
 
@@ -1513,12 +1694,44 @@ export default function Editor({
         />
       )}
 
+      {activePopup?.type === 'annotation' && (
+        <AnnotationPopup
+          selectedText={activePopup.data?.text || ctxText}
+          position={activePopup.position}
+          projectPath={projectPath}
+          onClose={closePopup}
+          onSuccess={handleAnnotationCreated}
+        />
+      )}
+
+      {activePopup?.type === 'annotationView' && (() => {
+        const ann = entities?.find(
+          e => String(e.id) === String(activePopup.data?.entityId) && e.type === 'annotation'
+        )
+        return (
+          <AnnotationPopup
+            selectedText=""
+            position={activePopup.position}
+            projectPath={projectPath}
+            onClose={closePopup}
+            annotation={ann}
+            onDelete={() => {
+              if (editor) {
+                editor.chain().focus().unsetEntityLink().run()
+              }
+              closePopup()
+              onEntitiesChanged?.()
+            }}
+          />
+        )
+      })()}
+
       {activePopup?.type === 'makeConnection' && (
         <MakeConnectionPopup
           selectedText={activePopup.data?.text || ctxText}
           position={activePopup.position}
           projectPath={projectPath}
-          activeChapter={chapter}
+          activeChapter={{ ...chapter, world_time: effectiveWorldTime }}
           characters={characters}
           chapters={chapters}
           entities={entities}
@@ -1545,7 +1758,7 @@ export default function Editor({
           selectedText={activePopup.data?.text || ctxText}
           wordOffset={activePopup.data?.wordOffset}
           chapterId={chapter?.id}
-          worldTime={chapter?.world_time}
+          worldTime={effectiveWorldTime}
           position={activePopup.position}
           projectPath={projectPath}
           calConfig={calConfig}
@@ -1562,6 +1775,27 @@ export default function Editor({
                 .run()
             }
             onEntitiesChanged?.()
+          }}
+        />
+      )}
+
+      {activePopup?.type === 'timeOverride' && (
+        <TimeOverridePopup
+          selectedText={activePopup.data?.text || ctxText}
+          position={activePopup.position}
+          projectPath={projectPath}
+          chapterId={chapter?.id}
+          defaultWorldDate={effectiveWorldTime}
+          calConfig={calConfig}
+          existingMarkers={timeMarkers}
+          onClose={() => setActivePopup(null)}
+          onCreated={(marker) => {
+            setTimeMarkers(prev => [...prev, marker])
+            editor?.chain().focus().setTimeLink({
+              timeId: String(marker.id),
+              colorIndex: marker.color_index,
+            }).run()
+            setActivePopup(null)
           }}
         />
       )}

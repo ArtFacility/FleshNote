@@ -174,7 +174,10 @@ export default function EntityContextMenu({
   entityAtCursor, // Entity link under cursor (if any): { type, id }
   twistAtCursor, // Twist/foreshadow link under cursor (if any): { twistType, twistId }
   knowledgeAtCursor, // Knowledge link under cursor (if any): { knowledgeId }
-  relationshipAtCursor // Relationship link under cursor (if any): { relationshipId }
+  relationshipAtCursor, // Relationship link under cursor (if any): { relationshipId }
+  typoSuggestions, // { word, suggestions: [] } | null
+  onApplyTypoFix, // (word, fix) => void
+  onMarkNotTypo // (word) => void
 }) {
   const { t } = useTranslation()
   const [activeSubmenu, setActiveSubmenu] = useState(null)
@@ -275,6 +278,37 @@ export default function EntityContextMenu({
       }}
       onClick={(e) => e.stopPropagation()}
     >
+      {/* ── Typo Fix Suggestions ─────────────────────── */}
+      {typoSuggestions && typoSuggestions.suggestions.length > 0 && (
+        <>
+          <div className="context-menu-header" style={{ color: 'var(--accent-red)' }}>
+            {t('contextMenu.typoSuggestions', 'Did you mean?')}
+          </div>
+          {typoSuggestions.suggestions.map((s) => (
+            <button
+              key={s}
+              className="context-menu-item"
+              onClick={() => onApplyTypoFix?.(typoSuggestions.word, s)}
+            >
+              <span className="icon" style={{ color: 'var(--accent-red)', fontSize: '11px', fontWeight: 'bold' }}>→</span>
+              {s}
+            </button>
+          ))}
+          <button
+            className="context-menu-item"
+            style={{ fontSize: '10px', opacity: 0.7 }}
+            onClick={() => onMarkNotTypo?.(typoSuggestions.word)}
+            onMouseEnter={() => setActiveSubmenu(null)}
+          >
+            <span className="icon">
+              <Icons.Unlink />
+            </span>
+            {t('contextMenu.markNotTypo', 'Mark as not a typo')}
+          </button>
+          <div className="context-menu-divider" />
+        </>
+      )}
+
       {/* ── Link to existing entity if match found ────── */}
       {matchingEntities.length > 0 && (
         <>
@@ -496,6 +530,18 @@ export default function EntityContextMenu({
         </button>
       )}
 
+      {/* ── Time Override ─────────────────────────────── */}
+      <button
+        className="context-menu-item"
+        onClick={() => onAction?.('timeOverride', { text: selectedText })}
+        onMouseEnter={() => setActiveSubmenu(null)}
+      >
+        <span className="icon" style={{ color: 'var(--accent-amber)' }}>
+          <span style={{ fontFamily: 'inherit', fontSize: '13px', lineHeight: 1 }}>𐲎</span>
+        </span>
+        {t('timeGutter.contextMenuLabel', 'Time Override')}
+      </button>
+
       {/* ── Quick Note ──────────────────────────────── */}
       <button
         className="context-menu-item"
@@ -506,6 +552,24 @@ export default function EntityContextMenu({
           <Icons.Feather />
         </span>
         {t('contextMenu.quickNote', 'Quick Note')}
+      </button>
+
+      {/* ── Annotation (Footnote) ────────────────────── */}
+      <button
+        className="context-menu-item"
+        onClick={() => onAction?.('annotation', { text: selectedText })}
+        onMouseEnter={() => setActiveSubmenu(null)}
+        style={{ color: 'var(--accent-annotation)' }}
+      >
+        <span className="icon" style={{ color: 'var(--accent-annotation)' }}>
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+            <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z" />
+            <polyline points="14 2 14 8 20 8" />
+            <line x1="8" y1="13" x2="16" y2="13" />
+            <line x1="8" y1="17" x2="11" y2="17" />
+          </svg>
+        </span>
+        {t('contextMenu.annotation', 'Add Annotation')}
       </button>
 
       {/* ── Remove Entity Link ──────────────────────── */}

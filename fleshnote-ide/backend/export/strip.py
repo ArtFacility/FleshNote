@@ -2,8 +2,10 @@ import re
 import sqlite3
 
 # Patterns matching chapters.py markers: {{char:2|Sophia}}
-_FLESHNOTE_MARKER_PATTERN = re.compile(r'\{\{(char|loc|item|lore|group|quicknote|secret):(\d+)\|([^}]+)\}\}')
+_FLESHNOTE_MARKER_PATTERN = re.compile(r'\{\{(char|loc|item|lore|group|quicknote|secret|annotation):(\d+)\|([^}]+)\}\}')
+_TWIST_MARKER_PATTERN = re.compile(r'\{\{(twist|foreshadow):(\d+)\|([^}]+)\}\}')
 _KNOWLEDGE_REL_PATTERN = re.compile(r'\{\{(knowledge|relationship):(\d+):(\d+)\|([^}]+)\}\}')
+_TIME_MARKER_PATTERN = re.compile(r'\{\{time:\d+:\d+\|([^}]*)\}\}')
 _EPISTEMIC_PATTERN = re.compile(r'\{(secret|knows|believes):([^}]+)\}')
 _HTML_TAG_PATTERN = re.compile(r'<[^>]+>')
 _TODO_PATTERN = re.compile(r'#TODO.*?(?=\u200B|</p>|<br>|<br/>|\n|$)', re.IGNORECASE)
@@ -39,7 +41,11 @@ def _resolve_entity_name(db_conn, entity_id: str, short_type: str) -> str:
 def _resolve_annotation_content(db_conn, entity_id: str, short_type: str) -> str:
     cursor = db_conn.cursor()
     try:
-        if short_type == 'secret':
+        if short_type == 'annotation':
+            cursor.execute("SELECT content FROM annotations WHERE id = ?", (entity_id,))
+            row = cursor.fetchone()
+            if row: return row[0]
+        elif short_type == 'secret':
             cursor.execute("SELECT description FROM secrets WHERE id = ?", (entity_id,))
             row = cursor.fetchone()
             if row: return row[0]
@@ -70,51 +76,48 @@ def _strip_knowledge_rel_markers(text: str) -> str:
 
 def strip_prose(text: str, db_conn, remove_html: bool = True) -> str:
     """Prose Only mode: removing all markers, converting links to plain text."""
+    text = _TIME_MARKER_PATTERN.sub(r'\1', text)
     text = _strip_knowledge_rel_markers(text)
     text = _EPISTEMIC_PATTERN.sub('', text)
-    
+    # Strip twist/foreshadow markers to plain text
+    text = _TWIST_MARKER_PATTERN.sub(r'\3', text)
+
     def resolve_marker(match):
-        stype = match.group(1)
-        sid = match.group(2)
-        original_text = match.group(3)
-        
-        # In prose mode, we just want the text. 
-        # But we check if we should resolve it to the "Official" name if it's different?
-        # Usually we keep the text the user wrote in the prose.
-        return original_text
-        
+        return match.group(3)
+
     text = _FLESHNOTE_MARKER_PATTERN.sub(resolve_marker, text)
-    
+
     if remove_html:
         text = strip_html(text)
-        
+
     return text
 
 def strip_notes(text: str, db_conn, remove_html: bool = True) -> tuple[str, list[str]]:
     """With Annotations mode: export annotations -> footnotes. Quick notes removed."""
+    text = _TIME_MARKER_PATTERN.sub(r'\1', text)
     text = _strip_knowledge_rel_markers(text)
     text = _EPISTEMIC_PATTERN.sub('', text)
-    
+    # Strip twist/foreshadow markers to plain text in annotation-only mode
+    text = _TWIST_MARKER_PATTERN.sub(r'\3', text)
+
     notes_extracted = []
-    
+
     def resolve_marker(match):
         stype = match.group(1)
         sid = match.group(2)
         original_text = match.group(3)
-        
-        if stype in ('secret', 'lore', 'item'):
-            # These can be annotations
+
+        if stype == 'annotation':
             content = _resolve_annotation_content(db_conn, sid, stype)
-            if content:
-                notes_extracted.append(content)
-                idx = len(notes_extracted)
-                return f"{original_text}[[FOOTNOTE_REF:{idx}]]"
-        
+            notes_extracted.append(content if content else original_text)
+            idx = len(notes_extracted)
+            return f"{original_text}[[FOOTNOTE_REF:{idx}]]"
+
         if stype == 'quicknote':
-            return "" # Strip quicknotes in this mode
-            
+            return ""  # Quick notes are author-only, never exported
+
         return original_text
-        
+
     text = _FLESHNOTE_MARKER_PATTERN.sub(resolve_marker, text)
     
     if remove_html:
@@ -123,34 +126,39 @@ def strip_notes(text: str, db_conn, remove_html: bool = True) -> tuple[str, list
     return text, notes_extracted
 
 def strip_full(text: str, db_conn, remove_html: bool = False) -> tuple[str, list[str]]:
-    """Full Annotated mode: epistemic markers and entity links are preserved for the renderer."""
+    """Full Annotated mode: annotations become footnotes, entity/twist links preserved."""
+    text = _TIME_MARKER_PATTERN.sub(r'\1', text)
     text = _strip_knowledge_rel_markers(text)
+
+    notes_extracted = []
+
+    # In full mode, preserve twist/foreshadow as styled tokens for the renderer
+    text = _TWIST_MARKER_PATTERN.sub(lambda m: f"[[TWIST_REF:{m.group(1)}:{m.group(3)}]]", text)
 
     def resolve_marker(match):
         stype = match.group(1)
         sid = match.group(2)
         original_text = match.group(3)
-        
+
+        if stype == 'annotation':
+            content = _resolve_annotation_content(db_conn, sid, stype)
+            notes_extracted.append(content if content else original_text)
+            idx = len(notes_extracted)
+            return f"{original_text}[[FOOTNOTE_REF:{idx}]]"
+
         if stype == 'quicknote':
-            return "" # Author only
-            
-        # For full mode, we keep a more descriptive internal tag for the renderer
+            return ""  # Author only
+
         desc = _resolve_annotation_content(db_conn, sid, stype)
-        
+
         if stype in ('secret', 'lore', 'item') and desc:
-            # Also treat it as a footnote in addition to being a link?
-            # Or just a link with a hover. Renderer will decide.
             return f"[[ENTITY_LINK:{stype}:{sid}:{original_text}:{desc}]]"
-        
+
         return f"[[ENTITY_REF:{stype}:{original_text}]]"
 
     text = _FLESHNOTE_MARKER_PATTERN.sub(resolve_marker, text)
-    
-    # Footnotes for secrets/lore if they have descriptions
-    notes_extracted = []
-    # (Actually we might have already handled this above by passing desc to the renderer)
-    
+
     if remove_html:
         text = strip_html(text)
-        
+
     return text, notes_extracted

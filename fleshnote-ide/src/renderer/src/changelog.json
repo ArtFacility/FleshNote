@@ -1,6 +1,47 @@
 {
-    "currentVersion": "0.8.4",
+    "currentVersion": "0.8.7",
     "history": [
+        {
+            "version": "0.8.7",
+            "date": "2026-03-17",
+            "changes": [
+                "NEW: Daily writing prompt popup — context-aware scene, character, and worldbuilding prompts when you open a project after a break.",
+                "NEW: Annotation system — right-click text to attach an inline note. Annotations export as numbered footnotes in DOCX, HTML, PDF, and EPUB.",
+                "Modified: Entity Extractor now has flip alias-name option, and a wider window for comfortable extraction",
+                "Export modal: Live Preview and Book View are now separate tabs; preview is shown by default.",
+                "Export modal: chapter selection — choose which chapters to include via checkbox list.",
+                "Export modal: TXT and MD previews now show plain monospace output instead of styled HTML.",
+                "Export modal: 'Show in Folder' button in the success notification.",
+                "FIX: twist and foreshadow markers now strip cleanly in Prose and With Annotations modes.",
+                "FIX: Full Annotated mode preserves entity and twist styling in DOCX instead of flattening to plain text.",
+                "FIX: DOCX margins corrected to industry-standard values with mirror layout for book binding.",
+                "FIX: Default World Calendar now uses the correct default month names.",
+                "FIX: Removed legacy 'Milestones' checkbox during project onboarding, and project settings."
+            ]
+        },
+        {
+            "version": "0.8.6",
+            "date": "2026-03-15",
+            "changes": [
+                "NEW: Sketchboards! Create unlimited visual node-graph boards to map systems, magic, relationships, and lore. Right-click the canvas to add nodes (link to existing entities or create standalone concepts), draw connections with customizable dash styles and 16-color palette, and auto-staggered parallel connections prevent overlap. Boards persist to the project database.",
+                "Sketchboard enhancements: board icons are now clickable to open a symbol picker with Old Hungarian Unicode characters, Egyptian hieroglyphs, and technical symbols (using the bundled NotoSansOldHungarian font). Time spent in Sketchboards counts toward Plotting time in Analytics.",
+                "All Time Gutter and Time Override UI strings fully translated to Hungarian, Polish, and Arabic.",
+                "Focus/Sprint mode selector is now a two-step flow: pick your mode first, then set your word count goal — so you're never forced into a default you didn't intend.",
+                "Stats, World & History, and Entity Manager buttons are now locked while a focus or sprint mode is active. Finish your sprint to access them.",
+                "Knowledge state entries are now clickable — clicking one navigates to the exact position in the chapter where it was linked.",
+                "Knowledge state entries now have an Edit button, so you can fix the fact text or secret flag without deleting and recreating.",
+                "Fixed relationship card Edit and Delete buttons overlapping each other — they now sit in a clear bottom bar alongside the chapter and world-time info."
+            ]
+        },
+        {
+            "version": "0.8.5",
+            "date": "2026-03-15",
+            "changes": [
+                "NEW: Time Overrides! Mark passages with different in-universe dates directly in the editor (for flashbacks, memories, and timeskips). Select text, right-click, and choose 'Time Override'. The time gutter shows colored bars aligned to marked text and updates automatically as you edit.",
+                "Relationship turning point and knowledge state popups now auto-fill the world date from the active time override at cursor position.",
+                "Time overrides persist per-chapter across sessions."
+            ]
+        },
         {
             "version": "0.8.4",
             "date": "2026-03-14",
@@ -127,44 +168,6 @@
                 "Added 'Book-Ready' formatting logic for industry-standard print exports.",
                 "Added Live Export Preview with real-time formatting visualization.",
                 "Enhanced PDF export stability and CSS variable resolution."
-            ]
-        },
-        {
-            "version": "0.3.1-alpha",
-            "date": "2026-02-25",
-            "changes": [
-                "Added 'About' modal providing fundamental application context and developer attribution.",
-                "Added 'Load Tutorial' quick-start button for a mock project workspace."
-            ]
-        },
-        {
-            "version": "0.3.0-alpha",
-            "date": "2026-02-25",
-            "changes": [
-                "Full support for Arabic RTL localization and CSS UI flipping.",
-                "Moved NLP model downloads to OS user directories (AppData) to drastically reduce executable sizes on Windows and Linux.",
-                "Added direct HuSpaCy package integration for Hungarian text parsing and tokenization natively.",
-                "Enhanced project configurations to never fail load states when creating new projects.",
-                "Resolved internal background TCP binding collisions on local server execution."
-            ]
-        },
-        {
-            "version": "0.2.0-alpha",
-            "date": "2026-02-23",
-            "changes": [
-                "Enabled standalone executable building for Windows (.exe) and Linux.",
-                "Integrated Python backend natively into the Electron application.",
-                "Added external changelog and version tracking.",
-                "Added 'What's New' viewing panel on the startup screen."
-            ]
-        },
-        {
-            "version": "0.1.2-alpha",
-            "date": "2026-02-20",
-            "changes": [
-                "Added global context menus for text editing.",
-                "Refactored Entity Inspector Panel.",
-                "Added Quick Notes system."
             ]
         }
     ]

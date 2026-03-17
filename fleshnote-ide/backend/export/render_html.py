@@ -85,24 +85,19 @@ def render(project_title, author_name, chapters, content_mode, overrides=None, f
         html.append(f"<h3 class='author'>{author_name}</h3>")
     html.append("</header>")
     
-    global_footnotes = []
-    
     for idx, chapter in enumerate(chapters):
         title = chapter.get('title', f"Chapter {idx+1}")
         html.append(f"<section class='chapter'>")
         html.append(f"<h2>{title}</h2>")
-            
+
         text = chapter.get('text', '')
         footnotes = chapter.get('footnotes', [])
-        
-        # Merge footnotes
-        current_fn_offset = len(global_footnotes)
+
+        # Replace per-chapter footnote placeholders (local 1-based indices)
         for i, fn in enumerate(footnotes):
-            global_footnotes.append(fn)
-            fn_idx = current_fn_offset + i + 1
-            # Replace placeholder in text
-            text = text.replace(f"[[FOOTNOTE_REF:{i+1}]]", f"<sup><a href='#fn{fn_idx}' id='ref{fn_idx}'>[{fn_idx}]</a></sup>")
-            
+            fn_idx = i + 1
+            text = text.replace(f"[[FOOTNOTE_REF:{fn_idx}]]", f"<sup><a href='#ch{idx+1}fn{fn_idx}' id='ch{idx+1}ref{fn_idx}'>[{fn_idx}]</a></sup>")
+
         # Process markers
         def entity_replacer(match):
             etype = match.group(1)
@@ -110,31 +105,32 @@ def render(project_title, author_name, chapters, content_mode, overrides=None, f
             name = match.group(3)
             desc = match.group(4)
             return f'<span class="entity {etype}" title="{desc}">{name}</span>'
-            
+
         text = re.sub(r'\[\[ENTITY_LINK:([^:]+):([^:]+):([^:]+):([^\]]*)\]\]', entity_replacer, text)
         text = re.sub(r'\[\[ENTITY_REF:[^:]+:([^\]]+)\]\]', r'<span class="entity">\1</span>', text)
-        
+        text = re.sub(r'\[\[TWIST_REF:twist:([^\]]+)\]\]', r'<span class="twist">\1</span>', text)
+        text = re.sub(r'\[\[TWIST_REF:foreshadow:([^\]]+)\]\]', r'<span class="foreshadow">\1</span>', text)
+
         # Epistemic markers processing
         if content_mode == 'full':
             text = re.sub(r'\{(secret|knows|believes):([^}]+)\}', r'<aside class="epistemic"><strong>\1:</strong> \2</aside>', text)
         else:
             text = re.sub(r'\{(secret|knows|believes):([^}]+)\}', r'', text)
-            
-        # TipTap HTML usually already has <p> tags if we didn't strip them.
-        # But if we did strip them (e.g. for MD/TXT consistency), we might need to re-wrap.
-        # In strip.py for HTML, we set remove_html=False, so we have tags.
-        
+
         html.append(text)
+
+        # Per-chapter footnotes immediately after chapter body
+        if footnotes:
+            html.append("<div class='footnotes'>")
+            html.append("<hr>")
+            html.append("<ol>")
+            for i, fn in enumerate(footnotes):
+                fn_idx = i + 1
+                html.append(f"<li id='ch{idx+1}fn{fn_idx}'><a href='#ch{idx+1}ref{fn_idx}'>^</a> {fn}</li>")
+            html.append("</ol>")
+            html.append("</div>")
+
         html.append("</section>")
-                
-    if global_footnotes:
-        html.append("<footer class='footnotes'>")
-        html.append("<hr>")
-        html.append("<ol>")
-        for i, fn in enumerate(global_footnotes):
-            html.append(f"<li id='fn{i+1}'><a href='#ref{i+1}'>^</a> {fn}</li>")
-        html.append("</ol>")
-        html.append("</footer>")
         
     html.append("</body>")
     html.append("</html>")

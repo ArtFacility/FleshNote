@@ -27,7 +27,6 @@ Key-value store for all project settings and UI toggles.
 | `genre`                  | meta   | `"fantasy"`                      | Genre baseline                        |
 | `track_species`          | toggle | `"true"`                         | Enable species field on characters    |
 | `track_groups`           | toggle | `"true"`                         | Enable groups/factions                |
-| `track_milestones`       | toggle | `"true"`                         | Enable milestone tracking             |
 | `track_knowledge`        | toggle | `"true"`                         | Enable epistemic filtering            |
 | `track_dual_timeline`    | toggle | `"true"`                         | Enable world_time + narrative_time    |
 | `species_label`          | label  | `"Species"`                      | UI label for species field            |
@@ -199,26 +198,6 @@ WHERE character_id = :pov_id
 ```
 
 **Indexes:** `idx_knowledge_char`, `idx_knowledge_chapter`, `idx_knowledge_source`
-
----
-
-## 9. `milestones`
-
-Plot points with prerequisites. Prerequisites stored as JSON for Phase 1 flexibility.
-
-| Column              | Type      | Constraints                           | Description                                               |
-| ------------------- | --------- | ------------------------------------- | --------------------------------------------------------- |
-| `id`                | INTEGER   | PRIMARY KEY AUTOINCREMENT             |                                                           |
-| `title`             | TEXT      | NOT NULL                              | Milestone title                                           |
-| `description`       | TEXT      |                                       |                                                           |
-| `target_chapter_id` | INTEGER   | FK -> chapters(id) ON DELETE SET NULL | Chapter where this should trigger                         |
-| `prerequisites`     | TEXT      |                                       | JSON array: `["violation_count >= 3", "knows_secret_12"]` |
-| `status`            | TEXT      |                                       | `pending`, `ready`, `triggered`, `abandoned`              |
-| `priority`          | TEXT      |                                       | `low`, `normal`, `high`, `critical`                       |
-| `notes`             | TEXT      |                                       |                                                           |
-| `created_at`        | TIMESTAMP | DEFAULT CURRENT_TIMESTAMP             |                                                           |
-
-**Indexes:** `idx_milestone_chapter`, `idx_milestone_status`
 
 ---
 
@@ -401,6 +380,83 @@ Timeline events for the world-building visualization.
 
 ---
 
+## 21. `world_times` (Time Overrides)
+
+Lets writers mark paragraph ranges as flashbacks, timeskips, or memories with a different in-universe date.
+
+| Column | Type | Constraints | Description |
+| :--- | :--- | :--- | :--- |
+| `id` | INTEGER | PRIMARY KEY AUTOINCREMENT | |
+| `chapter_id` | INTEGER | NOT NULL, FK -> chapters(id) ON DELETE CASCADE | |
+| `world_date` | TEXT | NOT NULL | Custom world date string |
+| `label` | TEXT | | User description |
+| `color_index` | INTEGER | NOT NULL DEFAULT 0 | Color for the time gutter |
+| `created_at` | TEXT | DEFAULT CURRENT_TIMESTAMP | |
+
+---
+
+## 22. `boards` (Sketchboards)
+
+Visual node-graph boards for mapping systems and relationships.
+
+| Column | Type | Constraints | Description |
+| :--- | :--- | :--- | :--- |
+| `id` | INTEGER | PRIMARY KEY AUTOINCREMENT | |
+| `name` | TEXT | NOT NULL DEFAULT 'New Board' | |
+| `board_type` | TEXT | NOT NULL DEFAULT 'custom' | |
+| `icon` | TEXT | DEFAULT '✦' | Clickable to pick symbols |
+| `zoom` | REAL | DEFAULT 1.0 | |
+| `pan_x` | REAL | DEFAULT 0.0 | |
+| `pan_y` | REAL | DEFAULT 0.0 | |
+| `created_at` | TEXT | DEFAULT CURRENT_TIMESTAMP | |
+| `updated_at` | TEXT | DEFAULT CURRENT_TIMESTAMP | |
+
+---
+
+## 23. `board_items`
+
+Nodes placed on a Sketchboard.
+
+| Column | Type | Constraints | Description |
+| :--- | :--- | :--- | :--- |
+| `id` | INTEGER | PRIMARY KEY AUTOINCREMENT | |
+| `board_id` | INTEGER | NOT NULL, FK -> boards(id) ON DELETE CASCADE | |
+| `name` | TEXT | NOT NULL | |
+| `item_type` | TEXT | NOT NULL DEFAULT 'concept' | |
+| `entity_id` | INTEGER | DEFAULT NULL | FK to entities if linked |
+| `entity_type` | TEXT | DEFAULT NULL | |
+| `description` | TEXT | DEFAULT '' | |
+| `pos_x` | REAL | NOT NULL DEFAULT 0 | |
+| `pos_y` | REAL | NOT NULL DEFAULT 0 | |
+| `size_x` | REAL | NOT NULL DEFAULT 140 | |
+| `size_y` | REAL | NOT NULL DEFAULT 60 | |
+| `color` | TEXT | NOT NULL DEFAULT '#888888' | |
+| `z_index` | INTEGER | NOT NULL DEFAULT 0 | |
+
+**Index:** `idx_board_items_board`
+
+---
+
+## 24. `item_connections`
+
+Lines drawn between Sketchboard nodes.
+
+| Column | Type | Constraints | Description |
+| :--- | :--- | :--- | :--- |
+| `id` | INTEGER | PRIMARY KEY AUTOINCREMENT | |
+| `board_id` | INTEGER | NOT NULL, FK -> boards(id) ON DELETE CASCADE | |
+| `item_start_id` | INTEGER | NOT NULL, FK -> board_items(id) ON DELETE CASCADE | |
+| `item_end_id` | INTEGER | NOT NULL, FK -> board_items(id) ON DELETE CASCADE | |
+| `conn_type` | TEXT | NOT NULL DEFAULT 'solid' | |
+| `conn_color` | TEXT | NOT NULL DEFAULT '#888888' | |
+| `title` | TEXT | DEFAULT '' | |
+| `directed` | INTEGER | NOT NULL DEFAULT 1 | 0 = bidirectional |
+| `curve_offset` | REAL | NOT NULL DEFAULT 0.0 | |
+
+**Index:** `idx_connections_board`
+
+---
+
 ## Entity Relationship Diagram
 
 ```
@@ -416,8 +472,6 @@ entity_appearances ──FK──> chapters (chapter_id, CASCADE)
 
 knowledge_states ──FK──> characters (character_id, CASCADE)
 knowledge_states ──FK──> chapters (learned_in_chapter, reveal_in_chapter)
-
-milestones ──FK──> chapters (target_chapter_id)
 
 secrets ──FK──> chapters (reveal_chapter_id)
 
@@ -440,7 +494,6 @@ Several tables use TEXT columns to store JSON arrays:
 | groups         | aliases             | `["High Council"]`                 |
 | lore_entities  | aliases             | `["the Compass"]`                  |
 | locations      | aliases             | `["Academis Arcana"]`              |
-| milestones     | prerequisites       | `["violation_count >= 3"]`         |
 | secrets        | characters_who_know | `[1, 3, 7]` (character IDs)        |
 | secrets        | danger_phrases      | `["his true name"]`                |
 | twists         | characters_who_know | `[1, 3, 7]` (character IDs)        |

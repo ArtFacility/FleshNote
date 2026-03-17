@@ -257,6 +257,8 @@ export default function EntityInspectorPanel({
   const [showDeleteConfirm, setShowDeleteConfirm] = useState(false)
   const [relationships, setRelationships] = useState([])
   const [editRelPopup, setEditRelPopup] = useState(null)
+  const [editingFactId, setEditingFactId] = useState(null)
+  const [editFactData, setEditFactData] = useState({ fact: '', is_secret: 0 })
 
   // Switch tab when initialTab prop changes (e.g. from marker click)
   useEffect(() => {
@@ -615,6 +617,22 @@ export default function EntityInspectorPanel({
       loadKnowledgeFacts()
     } catch (err) {
       console.error('Failed to delete knowledge state:', err)
+    }
+  }
+
+  const handleUpdateFact = async () => {
+    if (!editingFactId || !editFactData.fact.trim()) return
+    try {
+      await window.api.updateKnowledge({
+        project_path: projectPath,
+        knowledge_state_id: editingFactId,
+        fact: editFactData.fact,
+        is_secret: editFactData.is_secret
+      })
+      setEditingFactId(null)
+      loadKnowledgeFacts()
+    } catch (err) {
+      console.error('Failed to update knowledge state:', err)
     }
   }
 
@@ -1324,46 +1342,93 @@ export default function EntityInspectorPanel({
               {t('inspector.noKnowledge', 'No knowledge entries yet.')}
             </div>
           ) : (
-            knowledgeFacts.map((fact) => (
-              <div
-                className={`knowledge-fact-card ${fact.is_secret ? 'secret' : ''}`}
-                key={fact.id}
-                style={fact.word_offset != null && fact.learned_in_chapter ? { cursor: 'pointer' } : undefined}
-                onClick={() => {
-                  if (fact.word_offset != null && fact.learned_in_chapter && onNavigateToMark) {
-                    onNavigateToMark({ chapterId: fact.learned_in_chapter, wordOffset: fact.word_offset })
-                  }
-                }}
-                title={fact.word_offset != null && fact.learned_in_chapter ? t('inspector.clickToNavigate', 'Click to navigate to text') : undefined}
-              >
-                <div className="knowledge-fact-text">{fact.fact}</div>
-                <div className="knowledge-fact-meta">
-                  <span className="knowledge-fact-who">
-                    {entity.type === 'character'
-                      ? (fact.source_entity_name || t('inspector.unknownEntity', 'Unknown'))
-                      : fact.character_name}
-                  </span>
-                  <span className="knowledge-fact-when">
-                    {getChapterLabel(fact.learned_in_chapter)}
-                  </span>
-                  {fact.world_time && (
-                    <span className="knowledge-fact-when" title={t('inspector.worldTimeLabel', 'World time')}>
-                      {fact.world_time}
-                    </span>
+            knowledgeFacts.map((fact) => {
+              const isEditing = editingFactId === fact.id
+              const canNavigate = fact.learned_in_chapter && onNavigateToMark
+              return (
+                <div
+                  className={`knowledge-fact-card ${fact.is_secret ? 'secret' : ''}`}
+                  key={fact.id}
+                  style={{ cursor: canNavigate && !isEditing ? 'pointer' : 'default' }}
+                  onClick={() => {
+                    if (!isEditing && canNavigate) {
+                      onNavigateToMark({ chapterId: fact.learned_in_chapter, wordOffset: fact.word_offset ?? null })
+                    }
+                  }}
+                  title={canNavigate && !isEditing ? t('inspector.clickToNavigate', 'Click to navigate to text') : undefined}
+                >
+                  {isEditing ? (
+                    <div onClick={(e) => e.stopPropagation()} style={{ display: 'flex', flexDirection: 'column', gap: '6px' }}>
+                      <textarea
+                        className="entity-edit-textarea"
+                        value={editFactData.fact}
+                        onChange={(e) => setEditFactData(p => ({ ...p, fact: e.target.value }))}
+                        rows={2}
+                        autoFocus
+                      />
+                      <label style={{ display: 'flex', alignItems: 'center', gap: '6px', fontSize: '11px', color: 'var(--text-secondary)', cursor: 'pointer' }}>
+                        <input
+                          type="checkbox"
+                          checked={editFactData.is_secret === 1}
+                          onChange={(e) => setEditFactData(p => ({ ...p, is_secret: e.target.checked ? 1 : 0 }))}
+                        />
+                        {t('inspector.secretToggle', 'Secret (author-only)')}
+                      </label>
+                      <div style={{ display: 'flex', gap: '6px', justifyContent: 'flex-end' }}>
+                        <button className="entity-edit-btn" onClick={() => setEditingFactId(null)}>
+                          {t('inspector.cancel', 'Cancel')}
+                        </button>
+                        <button className="entity-edit-btn save" onClick={handleUpdateFact}>
+                          {t('inspector.save', 'Save')}
+                        </button>
+                      </div>
+                    </div>
+                  ) : (
+                    <>
+                      <div className="knowledge-fact-text">{fact.fact}</div>
+                      <div className="knowledge-fact-meta">
+                        <span className="knowledge-fact-who">
+                          {entity.type === 'character'
+                            ? (fact.source_entity_name || t('inspector.unknownEntity', 'Unknown'))
+                            : fact.character_name}
+                        </span>
+                        <span className="knowledge-fact-when">
+                          {getChapterLabel(fact.learned_in_chapter)}
+                        </span>
+                        {fact.world_time && (
+                          <span className="knowledge-fact-when" title={t('inspector.worldTimeLabel', 'World time')}>
+                            {fact.world_time}
+                          </span>
+                        )}
+                        {fact.is_secret && <span className="knowledge-fact-badge secret">{t('inspector.secretBadge', 'SECRET')}</span>}
+                      </div>
+                      {viewMode === 'author' && (
+                        <div style={{ display: 'flex', gap: '2px', justifyContent: 'flex-end', marginTop: '4px' }}>
+                          <button
+                            onClick={(e) => { e.stopPropagation(); setEditingFactId(fact.id); setEditFactData({ fact: fact.fact, is_secret: fact.is_secret ? 1 : 0 }) }}
+                            title={t('inspector.editFactTooltip', 'Edit fact')}
+                            style={{ background: 'none', border: 'none', color: 'var(--text-tertiary)', cursor: 'pointer', padding: '2px' }}
+                            onMouseEnter={e => e.currentTarget.style.color = 'var(--text-secondary)'}
+                            onMouseLeave={e => e.currentTarget.style.color = 'var(--text-tertiary)'}
+                          >
+                            <Icons.Edit />
+                          </button>
+                          <button
+                            onClick={(e) => { e.stopPropagation(); handleDeleteFact(fact.id) }}
+                            title={t('inspector.deleteFactTooltip', 'Delete fact')}
+                            style={{ background: 'none', border: 'none', color: 'var(--text-tertiary)', cursor: 'pointer', padding: '2px' }}
+                            onMouseEnter={e => e.currentTarget.style.color = 'var(--accent-red)'}
+                            onMouseLeave={e => e.currentTarget.style.color = 'var(--text-tertiary)'}
+                          >
+                            <Icons.Trash />
+                          </button>
+                        </div>
+                      )}
+                    </>
                   )}
-                  {fact.is_secret && <span className="knowledge-fact-badge secret">{t('inspector.secretBadge', 'SECRET')}</span>}
                 </div>
-                {viewMode === 'author' && (
-                  <button
-                    className="knowledge-fact-delete"
-                    onClick={() => handleDeleteFact(fact.id)}
-                    title={t('inspector.deleteFactTooltip', 'Delete fact')}
-                  >
-                    <Icons.Trash />
-                  </button>
-                )}
-              </div>
-            ))
+              )
+            })
           )}
         </div>
       )}
@@ -1466,15 +1531,6 @@ export default function EntityInspectorPanel({
                     </div>
                   )}
 
-                  <div className="knowledge-fact-meta" style={{ justifyContent: 'center' }}>
-                    {wordsAgoText && <span className="knowledge-fact-when">{wordsAgoText}</span>}
-                    {activeState.world_time && (
-                      <span className="knowledge-fact-when" title={t('inspector.worldTimeLabel', 'World time')}>
-                        {activeState.world_time}
-                      </span>
-                    )}
-                  </div>
-
                   {/* Render Ghost State */}
                   {relItem.ghost_state && (
                      <div style={{ marginTop: '8px', padding: '6px', background: 'rgba(255,255,255,0.05)', borderRadius: '4px', border: '1px dashed var(--border-subtle)' }}>
@@ -1485,52 +1541,70 @@ export default function EntityInspectorPanel({
                           <span className="knowledge-fact-badge" style={{ opacity: 0.7 }}>
                             {t(`relType.${relItem.ghost_state.rel_type.toLowerCase()}`, relItem.ghost_state.rel_type)}
                           </span>
+                          {viewMode === 'author' && (
+                            <div style={{ display: 'flex', gap: '2px' }}>
+                              <button
+                                onClick={(e) => { e.stopPropagation(); setEditRelPopup(relItem.ghost_state) }}
+                                title={t('inspector.editRelTooltip', 'Edit relationship data')}
+                                style={{ background: 'none', border: 'none', color: 'var(--text-tertiary)', cursor: 'pointer', padding: '2px' }}
+                                onMouseEnter={e => e.currentTarget.style.color = 'var(--text-secondary)'}
+                                onMouseLeave={e => e.currentTarget.style.color = 'var(--text-tertiary)'}
+                              >
+                                <Icons.Edit />
+                              </button>
+                              <button
+                                onClick={(e) => { e.stopPropagation(); handleDeleteRelationship(relItem.ghost_state.id) }}
+                                title={t('inspector.deleteRelTooltip', 'Delete relationship data')}
+                                style={{ background: 'none', border: 'none', color: 'var(--text-tertiary)', cursor: 'pointer', padding: '2px' }}
+                                onMouseEnter={e => e.currentTarget.style.color = 'var(--accent-red)'}
+                                onMouseLeave={e => e.currentTarget.style.color = 'var(--text-tertiary)'}
+                              >
+                                <Icons.Trash />
+                              </button>
+                            </div>
+                          )}
                         </div>
                         {relItem.ghost_state.notes && (
                           <div style={{ fontSize: '11px', color: 'var(--text-secondary)', fontStyle: 'italic', marginTop: '4px' }}>
                             "{relItem.ghost_state.notes}"
                           </div>
                         )}
-                        {viewMode === 'author' && (
-                          <div style={{ textAlign: 'right', marginTop: '4px', display: 'flex', justifyContent: 'flex-end', gap: '4px' }}>
-                            <button
-                              className="knowledge-fact-delete"
-                              style={{ color: 'var(--text-secondary)' }}
-                              onClick={() => setEditRelPopup(relItem.ghost_state)}
-                              title={t('inspector.editRelTooltip', 'Edit relationship data')}
-                            >
-                              <Icons.Edit />
-                            </button>
-                            <button
-                              className="knowledge-fact-delete"
-                              onClick={() => handleDeleteRelationship(relItem.ghost_state.id)}
-                              title={t('inspector.deleteRelTooltip', 'Delete relationship data')}
-                            >
-                              <Icons.Trash />
-                            </button>
-                          </div>
-                        )}
                      </div>
                   )}
-                  {viewMode === 'author' && (
-                    <div style={{ position: 'absolute', top: '8px', right: '8px', display: 'flex', gap: '4px' }}>
-                      <button
-                        className="knowledge-fact-delete"
-                        style={{ color: 'var(--text-secondary)' }}
-                        onClick={() => setEditRelPopup(activeState)}
-                        title={t('inspector.editRelTooltip', 'Edit relationship data')}
-                      >
-                        <Icons.Edit />
-                      </button>
-                      <button
-                        className="knowledge-fact-delete"
-                        onClick={() => handleDeleteRelationship(activeState.id)}
-                        title={t('inspector.deleteRelTooltip', 'Delete relationship data')}
-                      >
-                        <Icons.Trash />
-                      </button>
+
+                  {/* Bottom bar: meta + action buttons */}
+                  <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginTop: '8px' }}>
+                    <div className="knowledge-fact-meta">
+                      {wordsAgoText && <span className="knowledge-fact-when">{wordsAgoText}</span>}
+                      {activeState.world_time && (
+                        <span className="knowledge-fact-when" title={t('inspector.worldTimeLabel', 'World time')}>
+                          {activeState.world_time}
+                        </span>
+                      )}
                     </div>
-                  )}
+                    {viewMode === 'author' && (
+                      <div style={{ display: 'flex', gap: '2px', flexShrink: 0 }}>
+                        <button
+                          onClick={(e) => { e.stopPropagation(); setEditRelPopup(activeState) }}
+                          title={t('inspector.editRelTooltip', 'Edit relationship data')}
+                          style={{ background: 'none', border: 'none', color: 'var(--text-tertiary)', cursor: 'pointer', padding: '2px' }}
+                          onMouseEnter={e => e.currentTarget.style.color = 'var(--text-secondary)'}
+                          onMouseLeave={e => e.currentTarget.style.color = 'var(--text-tertiary)'}
+                        >
+                          <Icons.Edit />
+                        </button>
+                        <button
+                          onClick={(e) => { e.stopPropagation(); handleDeleteRelationship(activeState.id) }}
+                          title={t('inspector.deleteRelTooltip', 'Delete relationship data')}
+                          style={{ background: 'none', border: 'none', color: 'var(--text-tertiary)', cursor: 'pointer', padding: '2px' }}
+                          onMouseEnter={e => e.currentTarget.style.color = 'var(--accent-red)'}
+                          onMouseLeave={e => e.currentTarget.style.color = 'var(--text-tertiary)'}
+                        >
+                          <Icons.Trash />
+                        </button>
+                      </div>
+                    )}
+                  </div>
                 </div>
               )
             })

@@ -301,6 +301,35 @@
     font-weight: inherit;
 }
 
+.editor-content-wrapper.hide-annotation-links .entity-link.annotation {
+    color: inherit;
+    border-bottom: none;
+    font-style: inherit;
+}
+
+/* ── ANNOTATION LINKS ───────────────────────────── */
+.entity-link.annotation {
+    color: var(--accent-annotation);
+    border-bottom: 1.5px solid var(--accent-annotation);
+    border-bottom-style: solid;
+    font-style: italic;
+    background: var(--accent-annotation-dim);
+    padding: 0 1px;
+    border-radius: 1px;
+}
+
+.entity-link.annotation:hover {
+    opacity: 0.85;
+    background: rgba(201, 146, 42, 0.22);
+}
+
+.editor-area.focus-mode-active .entity-link.annotation {
+    color: inherit;
+    border-bottom: none;
+    font-style: inherit;
+    background: transparent;
+}
+
 .entity-link.character {
     color: var(--entity-character);
     border-bottom-color: var(--entity-character);

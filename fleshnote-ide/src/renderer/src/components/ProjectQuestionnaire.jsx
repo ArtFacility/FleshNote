@@ -26,7 +26,6 @@ const GENRE_PRESETS = {
     mechanic_label: 'Magic System',
     track_groups: true,
     group_label: 'Factions',
-    track_milestones: true,
     track_knowledge: true,
     track_dual_timeline: true,
     lore_categories: ['mechanic', 'item', 'artifact', 'creature', 'material']
@@ -38,7 +37,6 @@ const GENRE_PRESETS = {
     mechanic_label: 'Technology',
     track_groups: true,
     group_label: 'Organizations',
-    track_milestones: true,
     track_knowledge: true,
     track_dual_timeline: true,
     lore_categories: ['tech', 'item', 'weapon', 'vehicle', 'material']
@@ -50,7 +48,6 @@ const GENRE_PRESETS = {
     mechanic_label: '',
     track_groups: false,
     group_label: 'Social Circles',
-    track_milestones: true,
     track_knowledge: true,
     track_dual_timeline: false,
     lore_categories: ['item', 'tradition', 'location_detail']
@@ -62,7 +59,6 @@ const GENRE_PRESETS = {
     mechanic_label: '',
     track_groups: true,
     group_label: 'Organizations',
-    track_milestones: true,
     track_knowledge: true,
     track_dual_timeline: true,
     lore_categories: ['item', 'evidence', 'weapon', 'document']
@@ -74,7 +70,6 @@ const GENRE_PRESETS = {
     mechanic_label: '',
     track_groups: false,
     group_label: 'Groups',
-    track_milestones: true,
     track_knowledge: true,
     track_dual_timeline: false,
     lore_categories: ['item']
@@ -114,6 +109,7 @@ export default function ProjectQuestionnaire({ workspacePath, onCancel, onComple
     genre: 'custom',
     ...GENRE_PRESETS['custom'],
     default_chapter_target: 4000,
+    story_start_date: '2016-05-28',
     extra_lore: [...GENRE_SUGGESTIONS['custom']]
   })
 
@@ -142,11 +138,16 @@ export default function ProjectQuestionnaire({ workspacePath, onCancel, onComple
       finalLoreCategories.push(...formData.extra_lore)
     }
 
+    const dateParts = (formData.story_start_date || '2016-05-28').split('-')
+
     const payload = {
       workspace_path: workspacePath,
       project_name: formData.project_name || 'Untitled Project',
       questionnaire: {
         ...formData,
+        story_start_year: parseInt(dateParts[0], 10) || 2016,
+        story_start_month: parseInt(dateParts[1], 10) || 5,
+        story_start_day: parseInt(dateParts[2], 10) || 28,
         lore_categories: finalLoreCategories
       }
     }
@@ -442,28 +443,6 @@ export default function ProjectQuestionnaire({ workspacePath, onCancel, onComple
                 </select>
               </div>
 
-              {/* Milestones */}
-              <div style={{ flex: '1 1 45%' }}>
-                <label
-                  style={{
-                    display: 'block',
-                    color: 'var(--text-secondary)',
-                    fontSize: '11px',
-                    marginBottom: '6px'
-                  }}
-                >
-                  {t('q.milestonesLabel', 'PLOT MILESTONES')}
-                </label>
-                <select
-                  style={selectStyle}
-                  value={formData.track_milestones ? 'yes' : 'no'}
-                  onChange={(e) => updateField('track_milestones', e.target.value === 'yes')}
-                >
-                  <option value="yes">{t('q.enabled', 'Enabled')}</option>
-                  <option value="no">{t('q.disabled', 'Disabled')}</option>
-                </select>
-              </div>
-
               {/* Dual Timeline */}
               <div style={{ flex: '1 1 45%' }}>
                 <label
@@ -485,6 +464,28 @@ export default function ProjectQuestionnaire({ workspacePath, onCancel, onComple
                   <option value="no">{t('q.disabled', 'Disabled')}</option>
                 </select>
               </div>
+
+              {/* Story Start Date */}
+              {formData.track_dual_timeline && (
+                <div style={{ flex: '1 1 45%' }}>
+                  <label
+                    style={{
+                      display: 'block',
+                      color: 'var(--text-secondary)',
+                      fontSize: '11px',
+                      marginBottom: '6px'
+                    }}
+                  >
+                    {t('q.startDateLabel', 'STORY START DATE')}
+                  </label>
+                  <input
+                    type="date"
+                    style={inputStyle}
+                    value={formData.story_start_date}
+                    onChange={(e) => updateField('story_start_date', e.target.value)}
+                  />
+                </div>
+              )}
 
               {/* Chapter Target */}
               <div style={{ flex: '1 1 45%' }}>

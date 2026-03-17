@@ -127,6 +127,26 @@ function AnimatedTitle() {
   )
 }
 
+// ─── Relative time formatter ──────────────────────────────────────────────────
+
+function formatRelativeTime(tsMs, t) {
+  if (!tsMs) return t('picker.neverOpened', 'Never opened')
+  const diffMs = Date.now() - tsMs
+  const diffMins = Math.floor(diffMs / 60000)
+  const diffHours = Math.floor(diffMs / 3600000)
+  const diffDays = Math.floor(diffMs / 86400000)
+
+  if (diffMins < 2) return t('picker.justNow', 'Just now')
+  if (diffMins < 60) return t('picker.minutesAgo', '{{n}} minutes ago', { n: diffMins })
+  if (diffHours < 24) return t('picker.hoursAgo', '{{n}} hours ago', { n: diffHours })
+  if (diffDays === 1) return t('picker.yesterday', 'Yesterday')
+  if (diffDays < 30) return t('picker.daysAgo', '{{n}} days ago', { n: diffDays })
+  const diffMonths = Math.floor(diffDays / 30)
+  if (diffMonths < 12) return t('picker.monthsAgo', '{{n}} months ago', { n: diffMonths })
+  const diffYears = Math.floor(diffDays / 365)
+  return t('picker.yearsAgo', '{{n}} years ago', { n: diffYears })
+}
+
 // ─── Main Component ───────────────────────────────────────────────────────────
 
 export default function ProjectPicker({
@@ -290,7 +310,7 @@ export default function ProjectPicker({
                 <div style={{ flex: 1, cursor: 'pointer' }} onClick={() => onSelectProject(proj.path)}>
                   <div style={{ color: 'var(--text-primary)', fontWeight: 500 }}>{proj.name}</div>
                   <div style={{ color: 'var(--text-tertiary)', fontSize: '12px', fontFamily: 'var(--font-mono)', marginTop: 4 }}>
-                    {t('picker.lastEdited', 'Last edited:')} {proj.lastModified}
+                    {t('picker.lastOpened', 'Last opened:')} {formatRelativeTime(proj.lastOpened, t)}
                   </div>
                 </div>
 

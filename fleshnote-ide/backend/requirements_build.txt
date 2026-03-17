@@ -12,4 +12,5 @@ thinc==8.3.4
 blis==1.0.1
 numpy<2.0.0
 nltk==3.9.1
+phunspell==0.1.6
 pyinstaller==6.12.0

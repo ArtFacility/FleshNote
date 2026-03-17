@@ -17,6 +17,7 @@ from routes.secrets import router as secrets_router
 from routes.twists import router as twists_router
 from routes.calendar import router as calendar_router
 from routes.quick_notes import router as quick_notes_router
+from routes.annotations import router as annotations_router
 from routes.settings import router as settings_router
 from routes.export import router as export_router
 from routes.planner import router as planner_router
@@ -26,6 +27,9 @@ from routes.entity_manager import router as entity_manager_router
 from routes.history import router as history_router
 from routes.relationships import router as relationships_router
 from routes.synonyms import router as synonyms_router
+from routes.spellcheck import router as spellcheck_router
+from routes.world_times import router as world_times_router
+from routes.boards import router as boards_router
 
 app = FastAPI(title="FleshNote API")
 
@@ -41,6 +45,7 @@ app.include_router(secrets_router)
 app.include_router(twists_router)
 app.include_router(calendar_router)
 app.include_router(quick_notes_router)
+app.include_router(annotations_router)
 app.include_router(settings_router)
 app.include_router(export_router)
 app.include_router(planner_router)
@@ -50,6 +55,9 @@ app.include_router(entity_manager_router)
 app.include_router(history_router)
 app.include_router(relationships_router)
 app.include_router(synonyms_router)
+app.include_router(spellcheck_router)
+app.include_router(world_times_router)
+app.include_router(boards_router)
 
 # Define our data models so FastAPI knows what to expect
 class WorkspaceRequest(BaseModel):
@@ -81,6 +89,29 @@ def read_root():
   return {"status": "FleshNote Backend is alive"}
 
 
+def _get_project_last_opened(project_path: str) -> int | None:
+  """
+  Returns the last-opened timestamp (Unix ms) for a project.
+  Reads last_opened_at from project_config; falls back to fleshnote.db mtime.
+  Returns None if no DB exists (not a FleshNote project).
+  """
+  db_path = os.path.join(project_path, "fleshnote.db")
+  if not os.path.exists(db_path):
+    return None
+  try:
+    conn = sqlite3.connect(db_path)
+    row = conn.execute(
+      "SELECT config_value FROM project_config WHERE config_key = 'last_opened_at'"
+    ).fetchone()
+    conn.close()
+    if row and row[0]:
+      return int(row[0])
+  except Exception:
+    pass
+  # Fall back to DB file modification time
+  return int(os.path.getmtime(db_path) * 1000)
+
+
 @app.post("/api/projects")
 def scan_workspace(request: WorkspaceRequest):
   """Scans the given workspace path for valid FleshNote projects."""
@@ -91,17 +122,21 @@ def scan_workspace(request: WorkspaceRequest):
 
   projects = []
 
-  # Very basic scan: look for directories inside the workspace
   try:
     for item in os.listdir(path):
       item_path = os.path.join(path, item)
-      if os.path.isdir(item_path):
-        # We'll refine this later to only check for folders with a valid sqlite DB
-        projects.append({
-          "name": item,
-          "path": item_path,
-          "lastModified": "Just now"  # Will implement actual stat checks later
-        })
+      if not os.path.isdir(item_path):
+        continue
+      last_opened = _get_project_last_opened(item_path)
+      if last_opened is None:
+        continue  # Skip non-FleshNote directories
+      projects.append({
+        "name": item,
+        "path": item_path,
+        "lastOpened": last_opened  # Unix ms timestamp — formatted by frontend
+      })
+    # Sort most-recently-opened first
+    projects.sort(key=lambda p: p["lastOpened"], reverse=True)
     return {"projects": projects}
   except Exception as e:
     raise HTTPException(status_code=500, detail=str(e))
@@ -190,7 +225,6 @@ def get_project_config(request: ProjectConfigRequest):
       "mechanic_label": "System",
       "lore_categories": ["item", "artifact", "material"],
       "track_knowledge": False,
-      "track_milestones": False,
       "track_dual_timeline": False,
       "track_custom_calendar": False,
       "story_language": "en",

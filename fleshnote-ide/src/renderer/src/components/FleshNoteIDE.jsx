@@ -10,6 +10,7 @@ import StatsDashboard from './StatsDashboard'
 import EntityManager from './EntityManager'
 import WorldbuildAndHistory from './WorldbuildAndHistory'
 import changelogData from '../changelog.json'
+import WelcomeBackPrompt from './WelcomeBackPrompt'
 
 // ─── ICONS ──────────────────────────────────────────────────────────────────
 
@@ -218,6 +219,9 @@ export default function FleshNoteIDE({ projectConfig, projectPath, onCloseProjec
   const [hoveredChapterId, setHoveredChapterId] = useState(null)
   const [deletingChapter, setDeletingChapter] = useState(null)
 
+  // Welcome-back writing prompt
+  const [showWelcomeBack, setShowWelcomeBack] = useState(false)
+
   // Settings modal state
   const [showSettings, setShowSettings] = useState(false)
   const [showExportModal, setShowExportModal] = useState(false)
@@ -257,6 +261,18 @@ export default function FleshNoteIDE({ projectConfig, projectPath, onCloseProjec
       }
     }
   }, [projectPath, projectConfig?.active_sprint])
+
+  // Welcome-back prompt: show if last open was 24h+ ago
+  useEffect(() => {
+    if (loading || !projectPath) return
+    const now = Date.now()
+    const lastOpened = projectConfig?.last_opened_at
+    // Update the timestamp immediately so the next launch uses today's value
+    window.api.updateProjectConfig(projectPath, 'last_opened_at', now.toString(), 'string').catch(() => {})
+    if (lastOpened && (now - parseInt(lastOpened)) > 24 * 60 * 60 * 1000) {
+      setShowWelcomeBack(true)
+    }
+  }, [loading, projectPath])
 
   // 60-second time tracking tick
   useEffect(() => {
@@ -299,11 +315,12 @@ export default function FleshNoteIDE({ projectConfig, projectPath, onCloseProjec
 
     const loadData = async () => {
       try {
-        const [chaptersData, charsData, entData, qnData, twistsData, calData] = await Promise.all([
+        const [chaptersData, charsData, entData, qnData, annData, twistsData, calData] = await Promise.all([
           window.api.getChapters(projectPath),
           window.api.getCharacters(projectPath),
           window.api.getEntities(projectPath),
           window.api.getQuickNotes(projectPath),
+          window.api.getAnnotations(projectPath),
           window.api.getTwists(projectPath),
           window.api.getCalendarConfig(projectPath),
         ])
@@ -315,7 +332,8 @@ export default function FleshNoteIDE({ projectConfig, projectPath, onCloseProjec
 
         const loadedEntities = entData.entities || []
         const loadedQuickNotes = qnData.quick_notes || []
-        setEntities([...loadedEntities, ...loadedQuickNotes])
+        const loadedAnnotations = annData.annotations || []
+        setEntities([...loadedEntities, ...loadedQuickNotes, ...loadedAnnotations])
         setCalConfig(calData.config || {})
 
         if (chapterList.length > 0) {
@@ -526,15 +544,17 @@ export default function FleshNoteIDE({ projectConfig, projectPath, onCloseProjec
   const handleEntitiesChanged = useCallback(async () => {
     if (!projectPath) return
     try {
-      const [entData, charsData, qnData, twistsData] = await Promise.all([
+      const [entData, charsData, qnData, annData, twistsData] = await Promise.all([
         window.api.getEntities(projectPath),
         window.api.getCharacters(projectPath),
         window.api.getQuickNotes(projectPath),
+        window.api.getAnnotations(projectPath),
         window.api.getTwists(projectPath)
       ])
       const loadedEntities = entData.entities || []
       const loadedQuickNotes = qnData.quick_notes || []
-      setEntities([...loadedEntities, ...loadedQuickNotes])
+      const loadedAnnotations = annData.annotations || []
+      setEntities([...loadedEntities, ...loadedQuickNotes, ...loadedAnnotations])
       setCharacters(charsData.characters || [])
       setTwistIds((twistsData.twists || []).map(tw => tw.id))
     } catch (err) {
@@ -551,16 +571,18 @@ export default function FleshNoteIDE({ projectConfig, projectPath, onCloseProjec
         <div style={{ display: 'flex', gap: 8 }}>
           <button
             className="ide-header-btn"
-            title={mainView === 'stats' ? t('ide.backToWriting', 'Back to writing') : t('ide.stats', 'Stats & Analytics')}
-            onClick={() => setMainView(mainView === 'stats' ? 'editor' : 'stats')}
+            title={focusMode?.active ? t('ide.focusModeLocked', 'Finish your sprint to access this') : mainView === 'stats' ? t('ide.backToWriting', 'Back to writing') : t('ide.stats', 'Stats & Analytics')}
+            onClick={() => { if (!focusMode?.active) setMainView(mainView === 'stats' ? 'editor' : 'stats') }}
             style={{
-              color: mainView === 'stats' ? 'var(--accent-amber)' : 'inherit',
+              color: focusMode?.active ? 'var(--text-tertiary)' : mainView === 'stats' ? 'var(--accent-amber)' : 'inherit',
               display: 'flex',
               alignItems: 'center',
               gap: 8,
               padding: '0 12px',
-              border: mainView === 'stats' ? '1px solid var(--accent-amber)' : 'none',
-              borderRadius: 0
+              border: !focusMode?.active && mainView === 'stats' ? '1px solid var(--accent-amber)' : 'none',
+              borderRadius: 0,
+              opacity: focusMode?.active ? 0.4 : 1,
+              cursor: focusMode?.active ? 'not-allowed' : 'pointer'
             }}
           >
             <Icons.Activity />
@@ -571,16 +593,18 @@ export default function FleshNoteIDE({ projectConfig, projectPath, onCloseProjec
 
           <button
             className="ide-header-btn"
-            title={t('ide.worldinfo', 'World & History')}
-            onClick={() => setMainView(mainView === 'worldinfo' ? 'editor' : 'worldinfo')}
+            title={focusMode?.active ? t('ide.focusModeLocked', 'Finish your sprint to access this') : t('ide.worldinfo', 'World & History')}
+            onClick={() => { if (!focusMode?.active) setMainView(mainView === 'worldinfo' ? 'editor' : 'worldinfo') }}
             style={{
-              color: mainView === 'worldinfo' ? 'var(--accent-amber)' : 'inherit',
+              color: focusMode?.active ? 'var(--text-tertiary)' : mainView === 'worldinfo' ? 'var(--accent-amber)' : 'inherit',
               display: 'flex',
               alignItems: 'center',
               gap: 8,
               padding: '0 12px',
-              border: mainView === 'worldinfo' ? '1px solid var(--accent-amber)' : 'none',
-              borderRadius: 0
+              border: !focusMode?.active && mainView === 'worldinfo' ? '1px solid var(--accent-amber)' : 'none',
+              borderRadius: 0,
+              opacity: focusMode?.active ? 0.4 : 1,
+              cursor: focusMode?.active ? 'not-allowed' : 'pointer'
             }}
           >
             <Icons.Globe />
@@ -590,16 +614,18 @@ export default function FleshNoteIDE({ projectConfig, projectPath, onCloseProjec
           </button>
           <button
             className="ide-header-btn"
-            title={t('ide.entityManager', 'Entity Manager')}
-            onClick={() => setMainView(mainView === 'entities' ? 'editor' : 'entities')}
+            title={focusMode?.active ? t('ide.focusModeLocked', 'Finish your sprint to access this') : t('ide.entityManager', 'Entity Manager')}
+            onClick={() => { if (!focusMode?.active) setMainView(mainView === 'entities' ? 'editor' : 'entities') }}
             style={{
-              color: mainView === 'entities' ? 'var(--accent-amber)' : 'inherit',
+              color: focusMode?.active ? 'var(--text-tertiary)' : mainView === 'entities' ? 'var(--accent-amber)' : 'inherit',
               display: 'flex',
               alignItems: 'center',
               gap: 8,
               padding: '0 12px',
-              border: mainView === 'entities' ? '1px solid var(--accent-amber)' : 'none',
-              borderRadius: 0
+              border: !focusMode?.active && mainView === 'entities' ? '1px solid var(--accent-amber)' : 'none',
+              borderRadius: 0,
+              opacity: focusMode?.active ? 0.4 : 1,
+              cursor: focusMode?.active ? 'not-allowed' : 'pointer'
             }}
           >
             <Icons.Users />
@@ -912,7 +938,14 @@ export default function FleshNoteIDE({ projectConfig, projectPath, onCloseProjec
                             </div>
                           </div>
 
-                          {hoveredChapterId === ch.id ? (
+                          <div
+                            className={`chapter-status ${ch.status}`}
+                            style={{ visibility: hoveredChapterId === ch.id ? 'hidden' : 'visible' }}
+                          >
+                            {t(`editor.status${ch.status.charAt(0).toUpperCase() + ch.status.slice(1)}`, ch.status)}
+                          </div>
+
+                          {hoveredChapterId === ch.id && (
                             <div
                               style={{
                                 display: 'flex',
@@ -922,7 +955,8 @@ export default function FleshNoteIDE({ projectConfig, projectPath, onCloseProjec
                                 background: 'var(--bg-elevated)',
                                 padding: '2px 4px',
                                 borderRadius: '4px',
-                                boxShadow: '0 2px 4px rgba(0,0,0,0.5)'
+                                boxShadow: '0 2px 4px rgba(0,0,0,0.5)',
+                                zIndex: 10
                               }}
                             >
                               <button
@@ -1018,10 +1052,6 @@ export default function FleshNoteIDE({ projectConfig, projectPath, onCloseProjec
                                   <path d="M3 6h18M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2M10 11v6M14 11v6" />
                                 </svg>
                               </button>
-                            </div>
-                          ) : (
-                            <div className={`chapter-status ${ch.status}`}>
-                              {t(`editor.status${ch.status.charAt(0).toUpperCase() + ch.status.slice(1)}`, ch.status)}
                             </div>
                           )}
                         </div>
@@ -1214,6 +1244,25 @@ export default function FleshNoteIDE({ projectConfig, projectPath, onCloseProjec
             </div>
           </div>
         </div>
+      )}
+
+      {/* ── WELCOME BACK WRITING PROMPT ───────────── */}
+      {showWelcomeBack && (
+        <WelcomeBackPrompt
+          projectPath={projectPath}
+          chapters={chapters}
+          characters={characters}
+          twistIds={twistIds}
+          onClose={() => setShowWelcomeBack(false)}
+          onEntitiesChanged={handleEntitiesChanged}
+          onChapterModified={(chapterId) => {
+            // Reload the active chapter if it matches, so the quicknote link appears
+            if (activeChapter?.id === chapterId) {
+              const ch = chapters.find(c => c.id === chapterId)
+              if (ch) loadChapter(ch)
+            }
+          }}
+        />
       )}
 
       {/* ── PROJECT SETTINGS MODAL ────────────────── */}

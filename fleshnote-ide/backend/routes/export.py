@@ -15,12 +15,13 @@ class ExportRequest(BaseModel):
     font_size: float | None = None
     gutter: float | None = None
     outer: float | None = None
+    chapter_ids: list[int] | None = None  # None = export all chapters
 
 @router.post("/api/project/export")
 def export_project(request: ExportRequest):
     if not os.path.exists(request.project_path):
         raise HTTPException(status_code=404, detail="Project path not found")
-        
+
     try:
         pipeline = ExportPipeline(request.project_path)
         overrides = {
@@ -29,23 +30,24 @@ def export_project(request: ExportRequest):
             "outer": request.outer,
             "trim": request.trim
         }
-        
+
         filepath, todo_count = pipeline.run(
             content_mode=request.content_mode,
             fmt=request.format,
             book_ready=request.book_ready,
-            overrides=overrides
+            overrides=overrides,
+            chapter_ids=request.chapter_ids
         )
-        
+
         response = {
             "status": "success",
             "message": "Export completed successfully.",
             "filepath": filepath
         }
-        
+
         if todo_count > 0:
             response["warnings"] = f"Removed {todo_count} #TODO tag(s) from the exported text."
-            
+
         return response
     except Exception as e:
         import traceback
@@ -56,20 +58,23 @@ def export_project(request: ExportRequest):
 def export_preview(request: ExportRequest):
     if not os.path.exists(request.project_path):
         raise HTTPException(status_code=404, detail="Project path not found")
-        
+
     try:
         pipeline = ExportPipeline(request.project_path)
         overrides = {
             "font_size": request.font_size,
             "gutter": request.gutter,
+            "outer": request.outer,
             "trim": request.trim
         }
-        
+
         html_preview = pipeline.get_preview(
             content_mode=request.content_mode,
-            overrides=overrides
+            fmt=request.format,
+            overrides=overrides,
+            chapter_ids=request.chapter_ids
         )
-        
+
         return {
             "status": "success",
             "html": html_preview

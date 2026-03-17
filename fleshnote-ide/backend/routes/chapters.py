@@ -75,6 +75,7 @@ _ENTITY_TYPE_TO_SHORT = {
     "lore": "item",
     "group": "group",
     "quicknote": "quicknote",
+    "annotation": "annotation",
 }
 
 _SHORT_TO_ENTITY_TYPE = {v: k for k, v in _ENTITY_TYPE_TO_SHORT.items()}
@@ -82,7 +83,7 @@ _SHORT_TO_ENTITY_TYPE = {v: k for k, v in _ENTITY_TYPE_TO_SHORT.items()}
 
 def _entity_md_to_html(content: str) -> str:
     """Convert {{type:id|text}} markers to TipTap entity-link spans during chapter load."""
-    pattern = r'\{\{(char|loc|item|lore|group|quicknote):(\d+)\|([^}]+)\}\}'
+    pattern = r'\{\{(char|loc|item|lore|group|quicknote|annotation):(\d+)\|([^}]+)\}\}'
 
     def replacer(match):
         short_type = match.group(1)
@@ -119,7 +120,7 @@ def _update_entity_appearances(cursor, chapter_id: int, md_content: str):
     # Strip HTML for proper word counting
     plain = re.sub(r'<[^>]+>', ' ', md_content)
 
-    pattern = r'\{\{(char|loc|item|lore|group|quicknote):(\d+)\|[^}]+\}\}'
+    pattern = r'\{\{(char|loc|item|lore|group|quicknote|annotation):(\d+)\|[^}]+\}\}'
     seen = set()
     for match in re.finditer(pattern, md_content):
         short_type = match.group(1)
@@ -307,6 +308,28 @@ def _relationship_html_to_md(content: str) -> str:
         return f'{{{{relationship:{rel_id}:{character_id}|{text}}}}}'
 
     return re.sub(pattern, replacer, content)
+
+
+def _time_md_to_html(content: str) -> str:
+    """Convert {{time:ID:colorIndex|text}} markers to TipTap time-link spans on load."""
+    pattern = r'\{\{time:(\d+):(\d+)\|([^}]*)\}\}'
+    def replace(m):
+        time_id = m.group(1)
+        color_index = m.group(2)
+        text = m.group(3)
+        return f'<span data-time-id="{time_id}" data-color-index="{color_index}" class="time-link">{text}</span>'
+    return re.sub(pattern, replace, content)
+
+
+def _time_html_to_md(content: str) -> str:
+    """Convert TipTap time-link spans to {{time:ID:colorIndex|text}} markers on save."""
+    pattern = r'<span[^>]*?data-time-id="(\d+)"[^>]*?data-color-index="(\d+)"[^>]*?>([^<]*)</span>'
+    def replace(m):
+        time_id = m.group(1)
+        color_index = m.group(2)
+        text = m.group(3)
+        return f'{{{{time:{time_id}:{color_index}|{text}}}}}'
+    return re.sub(pattern, replace, content)
 
 
 def _update_knowledge_offsets(cursor, chapter_id: int, md_content: str):
@@ -592,6 +615,7 @@ def load_chapter_content(req: ChapterLoad):
     # Convert knowledge/relationship markers to TipTap spans
     content = _knowledge_md_to_html(content)
     content = _relationship_md_to_html(content)
+    content = _time_md_to_html(content)
 
     return {"content": content, "md_filename": row["md_filename"]}
 
@@ -618,6 +642,7 @@ def save_chapter_content(req: ChapterSave, background_tasks: BackgroundTasks):
     # Convert knowledge/relationship HTML spans to markdown markers
     md_content = _knowledge_html_to_md(md_content)
     md_content = _relationship_html_to_md(md_content)
+    md_content = _time_html_to_md(md_content)
 
     # Write the md file
     md_path = os.path.join(req.project_path, "md", row["md_filename"])

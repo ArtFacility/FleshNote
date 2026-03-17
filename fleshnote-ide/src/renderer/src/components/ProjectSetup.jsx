@@ -388,7 +388,7 @@ export default function ProjectSetup({ projectPath, projectConfig, onComplete, o
   if (mode === 'fresh') {
     return (
       <div className="setup-overlay">
-        <div className="setup-card">
+        <div className="setup-card" style={{ maxWidth: (step === 2 && showExtractor) ? 900 : undefined, transition: 'max-width 0.3s ease' }}>
           <div className="setup-logo">
             <span>{step}/3</span> {t('setup.projectSetupLabel', 'PROJECT SETUP')}
           </div>
@@ -597,7 +597,7 @@ export default function ProjectSetup({ projectPath, projectConfig, onComplete, o
   if (mode === 'import') {
     return (
       <div className="setup-overlay">
-        <div className="setup-card" style={{ maxWidth: 700 }}>
+        <div className="setup-card" style={{ maxWidth: step === 2 ? 900 : 700, transition: 'max-width 0.3s ease' }}>
           <div className="setup-logo">
             <span>{step}/3</span> {t('setup.importTitleLabel', 'IMPORT STORY')}
           </div>

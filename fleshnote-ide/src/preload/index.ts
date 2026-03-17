@@ -21,6 +21,7 @@ const api = {
   loadTranslations: (lang) => ipcRenderer.invoke('api:loadTranslations', lang),
   exportProject: (payload) => ipcRenderer.invoke('api:exportProject', payload),
   exportPreview: (payload) => ipcRenderer.invoke('api:exportPreview', payload),
+  showItemInFolder: (filepath) => ipcRenderer.invoke('api:showItemInFolder', filepath),
 
   // ── Chapters ───────────────────────────────────────
   getChapters: (projectPath) => ipcRenderer.invoke('api:getChapters', projectPath),
@@ -73,6 +74,12 @@ const api = {
   createQuickNote: (payload) => ipcRenderer.invoke('api:createQuickNote', payload),
   deleteQuickNote: (payload) => ipcRenderer.invoke('api:deleteQuickNote', payload),
 
+  // ── Annotations ────────────────────────────────────
+  getAnnotations: (projectPath) => ipcRenderer.invoke('api:getAnnotations', projectPath),
+  createAnnotation: (payload) => ipcRenderer.invoke('api:createAnnotation', payload),
+  updateAnnotation: (payload) => ipcRenderer.invoke('api:updateAnnotation', payload),
+  deleteAnnotation: (payload) => ipcRenderer.invoke('api:deleteAnnotation', payload),
+
   // ── Knowledge States ──────────────────────────────
   createKnowledge: (payload) => ipcRenderer.invoke('api:createKnowledge', payload),
   updateKnowledge: (payload) => ipcRenderer.invoke('api:updateKnowledge', payload),
@@ -111,6 +118,25 @@ const api = {
   updateHistoryEntry: (payload) => ipcRenderer.invoke('api:updateHistoryEntry', payload),
   deleteHistoryEntry: (payload) => ipcRenderer.invoke('api:deleteHistoryEntry', payload),
 
+  // ── World Times ─────────────────────────────────────
+  getWorldTimes: (p) => ipcRenderer.invoke('api:getWorldTimes', p),
+  createWorldTime: (p) => ipcRenderer.invoke('api:createWorldTime', p),
+  updateWorldTime: (p) => ipcRenderer.invoke('api:updateWorldTime', p),
+  deleteWorldTime: (p) => ipcRenderer.invoke('api:deleteWorldTime', p),
+
+  // ── Sketchboards ───────────────────────────────────
+  listBoards: (p) => ipcRenderer.invoke('api:listBoards', p),
+  createBoard: (p) => ipcRenderer.invoke('api:createBoard', p),
+  updateBoard: (p) => ipcRenderer.invoke('api:updateBoard', p),
+  deleteBoard: (p) => ipcRenderer.invoke('api:deleteBoard', p),
+  loadBoard: (p) => ipcRenderer.invoke('api:loadBoard', p),
+  createBoardItem: (p) => ipcRenderer.invoke('api:createBoardItem', p),
+  updateBoardItem: (p) => ipcRenderer.invoke('api:updateBoardItem', p),
+  deleteBoardItem: (p) => ipcRenderer.invoke('api:deleteBoardItem', p),
+  createBoardConnection: (p) => ipcRenderer.invoke('api:createBoardConnection', p),
+  updateBoardConnection: (p) => ipcRenderer.invoke('api:updateBoardConnection', p),
+  deleteBoardConnection: (p) => ipcRenderer.invoke('api:deleteBoardConnection', p),
+
   // ── Planner ──────────────────────────────────────────
   loadPlanner: (projectPath) => ipcRenderer.invoke('api:loadPlanner', projectPath),
   updatePlannerSettings: (payload) => ipcRenderer.invoke('api:updatePlannerSettings', payload),
@@ -140,6 +166,8 @@ const api = {
   synonymLookup: (payload) => ipcRenderer.invoke('api:synonymLookup', payload),
   checkWordnetData: () => ipcRenderer.invoke('api:checkWordnetData'),
   ensureWordnetData: () => ipcRenderer.invoke('api:ensureWordnetData'),
+  spellCheck: (payload) => ipcRenderer.invoke('api:spellCheck', payload),
+  spellCheckIgnore: (payload) => ipcRenderer.invoke('api:spellCheckIgnore', payload),
 
   // ── Window Controls ────────────────────────────────
   minimizeWindow: () => ipcRenderer.invoke('window:minimize'),

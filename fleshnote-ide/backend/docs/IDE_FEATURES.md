@@ -54,6 +54,10 @@ Three-panel layout with title bar, progress bar, and status bar:
 
 ## Project Management
 
+### Daily Writing Prompts
+
+- Context-aware scene, character, and worldbuilding prompts automatically pop up when opening a project after a break to help build momentum.
+
 ### Project Picker (Landing Screen)
 
 - Lists all available projects in the workspace.
@@ -101,11 +105,20 @@ Because of this, changing the document reading direction physically mirrors ever
 - Header: "Entity Inspector" with X button to return to chapters
 - Epistemic toggle (Author View / POV Filter)
 - Full entity detail card (see Entity Inspector section below)
+- Note: Entity knowledge states are clickable directly from here to edit them or navigate to their exact chapter position.
+
+### Sketchboards
+
+- Visual node-graph boards accessible via the UI.
+- Unlimited canvas to map systems, magic, relationships, and lore.
+- Time spent in Sketchboards counts toward Plotting time in Analytics.
 
 ### Focus Mode
 
 - When enabled, left panel collapses (CSS class `collapsed`)
 - Toggled via "Focus" / "Exit Focus" button in editor toolbar
+- Two-step flow: pick your mode first (Kamikaze, Fog, Hemingway, Combo, Zen), then set your word count goal.
+- Stats, World & History, and Entity Manager panels are locked while a focus or sprint mode is active.
 - Applies dynamic inline padding to the editor area to dramatically center your text according to `projectConfig_editor_padding`.
 
 ---
@@ -123,6 +136,14 @@ Because of this, changing the document reading direction physically mirrors ever
 - **SearchAndReplace** for `CTRL+F` inline search
 - **Placeholder**: "Begin writing..."
 - Content format: HTML with entity-link spans
+
+### Time Overrides
+- Mark passages with different in-universe dates directly in the editor (for flashbacks, memories, and timeskips) by right-clicking text and choosing 'Time Override'.
+- The **Time Gutter** shows colored bars aligned to marked text and updates automatically as you edit.
+
+### Inline Annotations
+- Right-click text to attach an inline note.
+- Annotations export as numbered footnotes depending on Export mode configuration.
 
 ### Metadata Toolbar
 
@@ -289,6 +310,16 @@ Status can be set to any value at any time via the dropdown.
 - Saved to database on every auto-save
 - Aggregated across chapters in progress bar: `{total} / {total_target} words`
 - Per-chapter progress visualized as fill percentage in progress bar segments
+
+---
+
+## Export Modal
+
+- Professional Export Module supporting TXT, MD, HTML, DOCX, and EPUB.
+- **Live Preview:** Real-time formatting visualization of the output on a dedicated tab.
+- **Chapter Selection:** Choose which chapters to include via checkbox list.
+- Plain monospace output preview for TXT and MD; styles rendered for HTML/DOCX/EPUB.
+- Export success notification includes a 'Show in Folder' shortcut.
 
 ---
 

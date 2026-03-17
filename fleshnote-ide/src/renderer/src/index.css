@@ -59,6 +59,15 @@
 }
 
 @font-face {
+  font-family: 'NotoOldHungarian';
+  src: url('./assets/fonts/NotoSansOldHungarian-Regular.ttf') format('truetype');
+  font-weight: 400;
+  font-style: normal;
+  font-display: block;
+  unicode-range: U+10C80-U+10CFF;
+}
+
+@font-face {
   font-family: 'Noto Sans Old Hungarian';
   src: url('./assets/fonts/NotoSansOldHungarian-Regular.ttf') format('truetype');
   font-weight: normal;
@@ -121,6 +130,8 @@
   --entity-lore: #5d8fc5;
   --entity-location: #5c9e6e;
   --entity-quicknote: #8b6ec4;
+  --accent-annotation: #c9922a;
+  --accent-annotation-dim: rgba(201, 146, 42, 0.12);
   --font-mono: 'JetBrains Mono', monospace;
   --font-sans: 'Inter', sans-serif;
   --font-serif: 'Crimson Pro', serif;
@@ -239,6 +250,17 @@ body {
   color: var(--entity-quicknote);
   background: var(--bg-elevated);
   border: 1px solid var(--border-default);
+}
+
+.entity-type-badge.annotation {
+  color: var(--accent-annotation);
+  background: var(--accent-annotation-dim);
+}
+
+.hover-card-type.annotation {
+  color: var(--accent-annotation);
+  background: var(--bg-elevated);
+  border: 1px solid var(--accent-annotation);
 }
 
 .entity-name {

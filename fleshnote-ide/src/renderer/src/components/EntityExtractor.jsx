@@ -153,15 +153,34 @@ function FrequencyBar({ frequency, maxFreq }) {
   )
 }
 
-function AliasChip({ name, accepted, onToggle }) {
+function AliasChip({ name, accepted, onToggle, onFlip, t }) {
   return (
-    <button
-      className={`ner-alias-chip ${accepted ? 'accepted' : 'rejected'}`}
-      onClick={onToggle}
-    >
-      {accepted ? <Icons.Check /> : <Icons.X />}
-      {name}
-    </button>
+    <div style={{ display: 'inline-flex', alignItems: 'center' }}>
+      <button
+        className={`ner-alias-chip ${accepted ? 'accepted' : 'rejected'}`}
+        onClick={onToggle}
+        style={onFlip ? { borderTopRightRadius: 0, borderBottomRightRadius: 0, borderRight: 'none' } : {}}
+      >
+        {accepted ? <Icons.Check /> : <Icons.X />}
+        {name}
+      </button>
+      {onFlip && (
+        <button
+          className={`ner-alias-chip ${accepted ? 'accepted' : 'rejected'}`}
+          onClick={onFlip}
+          title={t ? t('extractor.swapAlias', 'Swap with entity name') : 'Swap with entity name'}
+          style={{ 
+            borderTopLeftRadius: 0, 
+            borderBottomLeftRadius: 0,
+            paddingLeft: 6, 
+            paddingRight: 6, 
+            opacity: 0.8
+          }}
+        >
+          &#x21C4;
+        </button>
+      )}
+    </div>
   )
 }
 
@@ -348,7 +367,7 @@ function EntityCard({
   const color = TYPE_COLORS[edit.type] || TYPE_COLORS.skip
 
   return (
-    <div className="ner-entity-card" data-skipped={isSkipped}>
+    <div className="ner-entity-card" data-skipped={isSkipped} id={`ner-card-${entity.name}`}>
       {/* Accent bar at top */}
       {!isSkipped && edit.type && (
         <div
@@ -396,6 +415,8 @@ function EntityCard({
                   name={alias}
                   accepted={edit.aliasesAccepted?.[i] !== false}
                   onToggle={() => onToggleAlias(entity.name, i)}
+                  onFlip={() => onToggleAlias(entity.name, i, true)}
+                  t={t}
                 />
               ))}
             </div>
@@ -466,7 +487,17 @@ function ProcessedSidebar({ entities, entityEdits, loreCategories, t }) {
               loreCategories={loreCategories}
               t={t}
             />
-            <span className="ner-sidebar-name" title={displayName}>{displayName}</span>
+            <span 
+              className="ner-sidebar-name" 
+              title={displayName}
+              onClick={() => {
+                const el = document.getElementById(`ner-card-${entity.name}`);
+                if (el) el.scrollIntoView({ behavior: 'smooth', block: 'center' });
+              }}
+              style={{ cursor: 'pointer' }}
+            >
+              {displayName}
+            </span>
             {aliasCount > 0 && (
               <span className="ner-sidebar-alias-count">+{aliasCount}</span>
             )}
@@ -550,6 +581,8 @@ function FocusView({
               name={alias}
               accepted={edit.aliasesAccepted?.[i] !== false}
               onToggle={() => onToggleAlias(entity.name, i)}
+              onFlip={() => onToggleAlias(entity.name, i, true)}
+              t={t}
             />
           ))}
         </div>
@@ -623,7 +656,7 @@ export default function EntityExtractor({ projectPath, projectConfig, onDone, on
   useEffect(() => { setLocalLoreCategories(parsedLoreCategories) }, [parsedLoreCategories])
 
   // Feature 3: sidebar
-  const [sidebarOpen, setSidebarOpen] = useState(false)
+  const [sidebarOpen, setSidebarOpen] = useState(true)
 
   // Feature 4: focus view
   const [viewMode, setViewMode] = useState('card') // 'card' | 'focus'
@@ -707,7 +740,38 @@ export default function EntityExtractor({ projectPath, projectConfig, onDone, on
     }))
   }
 
-  const handleToggleAlias = (entityName, aliasIndex) => {
+  const handleToggleAlias = (entityName, aliasIndex, flip = false) => {
+    if (flip) {
+      const swapEntityInfo = (list, setter) => {
+        const idx = list.findIndex(e => e.name === entityName);
+        if (idx === -1) return false;
+        
+        const entity = list[idx];
+        const newName = entity.aliases[aliasIndex];
+        const newAliases = [...entity.aliases];
+        newAliases[aliasIndex] = entity.name;
+        
+        const newEntity = { ...entity, name: newName, aliases: newAliases };
+        const newList = [...list];
+        newList[idx] = newEntity;
+        setter(newList);
+        
+        setEntityEdits(prev => {
+          const next = { ...prev };
+          const edit = next[entityName] || {};
+          next[newName] = { ...edit, nameOverride: null }; 
+          delete next[entityName];
+          return next;
+        });
+        return true;
+      };
+      
+      if (!swapEntityInfo(confidentEntities, setConfidentEntities)) {
+        swapEntityInfo(lowConfEntities, setLowConfEntities);
+      }
+      return;
+    }
+
     setEntityEdits((prev) => {
       const accepted = [...(prev[entityName]?.aliasesAccepted || [])]
       accepted[aliasIndex] = !accepted[aliasIndex]

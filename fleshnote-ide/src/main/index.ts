@@ -341,6 +341,10 @@ app.whenReady().then(async () => {
     return await backendPost('/api/project/export/preview', payload)
   })
 
+  ipcMain.handle('api:showItemInFolder', (_event, filepath: string) => {
+    shell.showItemInFolder(filepath)
+  })
+
   // ── Chapters ───────────────────────────────────────
   ipcMain.handle('api:getChapters', async (_event, projectPath) => {
     return await backendPost('/api/project/chapters', { project_path: projectPath })
@@ -480,6 +484,23 @@ app.whenReady().then(async () => {
     return await backendPost('/api/project/quick-note/delete', payload)
   })
 
+  // ── Annotations ────────────────────────────────────
+  ipcMain.handle('api:getAnnotations', async (_event, projectPath) => {
+    return await backendPost('/api/project/annotations', { project_path: projectPath })
+  })
+
+  ipcMain.handle('api:createAnnotation', async (_event, payload) => {
+    return await backendPost('/api/project/annotation/create', payload)
+  })
+
+  ipcMain.handle('api:updateAnnotation', async (_event, payload) => {
+    return await backendPost('/api/project/annotation/update', payload)
+  })
+
+  ipcMain.handle('api:deleteAnnotation', async (_event, payload) => {
+    return await backendPost('/api/project/annotation/delete', payload)
+  })
+
   // ── Knowledge States ─────────────────────────────────
   ipcMain.handle('api:createKnowledge', async (_event, payload) => {
     return await backendPost('/api/project/knowledge/create', payload)
@@ -586,6 +607,25 @@ app.whenReady().then(async () => {
     return await backendPost('/api/project/history/delete', payload)
   })
 
+  // ── World Times ────────────────────────────────────
+  ipcMain.handle('api:getWorldTimes', async (_e, p) => backendPost('/api/project/world-times/list', p))
+  ipcMain.handle('api:createWorldTime', async (_e, p) => backendPost('/api/project/world-times/create', p))
+  ipcMain.handle('api:updateWorldTime', async (_e, p) => backendPost('/api/project/world-times/update', p))
+  ipcMain.handle('api:deleteWorldTime', async (_e, p) => backendPost('/api/project/world-times/delete', p))
+
+  // ── Sketchboards ───────────────────────────────────
+  ipcMain.handle('api:listBoards', async (_e, p) => backendPost('/api/project/boards/list', p))
+  ipcMain.handle('api:createBoard', async (_e, p) => backendPost('/api/project/boards/create', p))
+  ipcMain.handle('api:updateBoard', async (_e, p) => backendPost('/api/project/boards/update', p))
+  ipcMain.handle('api:deleteBoard', async (_e, p) => backendPost('/api/project/boards/delete', p))
+  ipcMain.handle('api:loadBoard', async (_e, p) => backendPost('/api/project/boards/load', p))
+  ipcMain.handle('api:createBoardItem', async (_e, p) => backendPost('/api/project/boards/items/create', p))
+  ipcMain.handle('api:updateBoardItem', async (_e, p) => backendPost('/api/project/boards/items/update', p))
+  ipcMain.handle('api:deleteBoardItem', async (_e, p) => backendPost('/api/project/boards/items/delete', p))
+  ipcMain.handle('api:createBoardConnection', async (_e, p) => backendPost('/api/project/boards/connections/create', p))
+  ipcMain.handle('api:updateBoardConnection', async (_e, p) => backendPost('/api/project/boards/connections/update', p))
+  ipcMain.handle('api:deleteBoardConnection', async (_e, p) => backendPost('/api/project/boards/connections/delete', p))
+
   // ── Planner ────────────────────────────────────────
   ipcMain.handle('api:loadPlanner', async (_event, projectPath) => {
     return await backendPost('/api/project/planner/load', { project_path: projectPath })
@@ -653,6 +693,15 @@ app.whenReady().then(async () => {
 
   ipcMain.handle('api:ensureWordnetData', async () => {
     return await backendPost('/api/synonyms/ensure-data', {})
+  })
+
+  // ── Spell Check ────────────────────────────────────
+  ipcMain.handle('api:spellCheck', async (_event, payload) => {
+    return await backendPost('/api/project/spellcheck', payload)
+  })
+
+  ipcMain.handle('api:spellCheckIgnore', async (_event, payload) => {
+    return await backendPost('/api/project/spellcheck/ignore', payload)
   })
 
   // ── Dev Tools ──────────────────────────────────────

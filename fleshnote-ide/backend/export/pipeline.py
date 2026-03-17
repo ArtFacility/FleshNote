@@ -40,25 +40,29 @@ class ExportPipeline:
         except:
             pass
 
-    def get_chapters_ordered(self):
-        """Retrieve all chapters from DB ordered by chapter_number"""
+    def get_chapters_ordered(self, chapter_ids: list = None):
+        """Retrieve chapters from DB ordered by chapter_number. Optionally filter by IDs."""
         conn = sqlite3.connect(self.db_path)
         cursor = conn.cursor()
         cursor.execute("SELECT id, title, chapter_number, md_filename FROM chapters ORDER BY chapter_number ASC")
         rows = cursor.fetchall()
-        
+
+        id_set = set(chapter_ids) if chapter_ids else None
+
         chapters = []
         for row in rows:
             chapter_id, title, chapter_number, md_filename = row
-            
-            # Read the .md source of truth
+
+            if id_set is not None and chapter_id not in id_set:
+                continue
+
             file_path = os.path.join(self.md_dir, md_filename)
             if os.path.exists(file_path):
                 with open(file_path, 'r', encoding='utf-8') as f:
                     text = f.read()
             else:
                 text = ""
-                
+
             chapters.append({
                 'id': chapter_id,
                 'title': title,
@@ -66,41 +70,62 @@ class ExportPipeline:
                 'text': text,
                 'footnotes': []
             })
-            
+
         conn.close()
         return chapters
 
-    def get_preview(self, content_mode: str, overrides: dict = None):
+    def get_preview(self, content_mode: str, fmt: str = 'html', overrides: dict = None, chapter_ids: list = None):
         """Returns HTML for the first chapter for preview purposes."""
-        chapters = self.get_chapters_ordered()
+        chapters = self.get_chapters_ordered(chapter_ids)
         if not chapters:
             return "<p>No chapters to preview.</p>"
-            
-        # Only preview the first chapter
+
         preview_chapter = chapters[0]
         conn = sqlite3.connect(self.db_path)
-        
+
+        # For plain-text formats (txt, md) strip HTML tags; otherwise keep them for HTML rendering
+        plain_formats = ('txt', 'md')
+        remove_html = fmt in plain_formats
+
         text = apply_typography(preview_chapter['text'])
-        text, _ = strip_todo(text) # Strip TODOs for preview too
-        
+        text, _ = strip_todo(text)
+
         if content_mode == 'prose':
-            text = strip_prose(text, conn, remove_html=False) # Keep tags for HTML preview
+            text = strip_prose(text, conn, remove_html=remove_html)
             footnotes = []
         elif content_mode == 'notes':
-            text, footnotes = strip_notes(text, conn, remove_html=False)
+            text, footnotes = strip_notes(text, conn, remove_html=remove_html)
         else:
-            text, footnotes = strip_full(text, conn, remove_html=False)
-            
+            text, footnotes = strip_full(text, conn, remove_html=remove_html)
+
         preview_chapter['text'] = text
         preview_chapter['footnotes'] = footnotes
         conn.close()
-        
-        # Render a mini version of HTML
+
+        if fmt == 'txt':
+            plain = render_txt.render([preview_chapter], content_mode)
+            return (
+                "<html><body style='margin:0;background:#111;'>"
+                "<pre style='font-family:monospace;font-size:13px;color:#ccc;"
+                "padding:20px;white-space:pre-wrap;word-break:break-word;'>"
+                + plain.replace('&', '&amp;').replace('<', '&lt;').replace('>', '&gt;')
+                + "</pre></body></html>"
+            )
+        if fmt == 'md':
+            md_text = render_md.render(self.project_title, self.author_name, [preview_chapter], content_mode)
+            return (
+                "<html><body style='margin:0;background:#111;'>"
+                "<pre style='font-family:monospace;font-size:13px;color:#ccc;"
+                "padding:20px;white-space:pre-wrap;word-break:break-word;'>"
+                + md_text.replace('&', '&amp;').replace('<', '&lt;').replace('>', '&gt;')
+                + "</pre></body></html>"
+            )
+
         return render_html.render(self.project_title, self.author_name, [preview_chapter], content_mode, overrides)
 
-    def run(self, content_mode: str, fmt: str, book_ready: bool = False, overrides: dict = None):
+    def run(self, content_mode: str, fmt: str, book_ready: bool = False, overrides: dict = None, chapter_ids: list = None):
         """Executes the export pipeline returning the output filepath"""
-        chapters = self.get_chapters_ordered()
+        chapters = self.get_chapters_ordered(chapter_ids)
         conn = sqlite3.connect(self.db_path)
         
         # --- STAGE 2: RENDER ---

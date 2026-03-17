@@ -6,17 +6,17 @@ An advanced, localized, and feature-rich writing tool for writers, and world bui
 
 ## 🌟 Key Features
 
-- **Advanced Manuscript Editor**: Distraction-free writing with `@` entity mentions, smart `#TODO` tracking, and real-time word count velocity.
-- **Deep World Building**: A robust **Entity Inspector** to manage character bios, agendas (surface & hidden), and geographic hierarchies.
+- **Advanced Manuscript Editor**: Distraction-free writing with strict focus sprints (like Hemingway or Kamikaze), `@` entity mentions, `#TODO` tracking, and real-time word count velocity.
+- **NLP-Driven Extraction**: Import your chaotic notes and use local NLP analysis (spaCy) to automatically detect characters, locations, and lore items — complete with lightning-fast alias management and split-pane triage.
+- **Deep World Building & Epistemic UI**: A robust **Entity Inspector** to manage character bios, agendas (surface & hidden), and geographic hierarchies. Filter truth vs. narrative deception by tracking exactly _who knows what_.
+- **Annotation & Footnote Engine**: Attach contextual quick-notes or research directly to your markdown text. Annotations elegantly export as numbered footnotes to DOCX, HTML, PDF, and EPUB.
 - **Plot Planner & Timeline**: A zoomable, multi-layer canvas for mapping story arcs, beats, and complex narrative threads.
-- **Twist & Foreshadowing Tracker**: Heuristic tools to manage major reveals, ensuring clues are paced effectively across your manuscript.
-- **Stats Dashboard & Analytics**: Visualized "Story Health" diagnostics, writing habit analysis, and entity appearance auditing.
-- **World History Timeline**: Dedicated chronological tracker for events, from centuries-old lore to the immediate sequence of story events.
+- **Twist & Foreshadow Tracker**: Heuristic tools to manage major reveals, ensuring narrative clues are paced effectively across your manuscript.
 - **Non-Linear Relationships**: Track evolving character dynamics through time, including one-sided feelings and chapter-specific historical states.
-- **Custom Calendar Engine**: Beyond Earth — define unique months, seasons, and epoch systems tailored to your fictional world.
-- **Bulk Entity Management**: Powerful tools to merge duplicates, manage aliases, and perform mass-cleanup of your lore database.
-- **Gamified Progression**: An intrinsic **Achievements System** with badges for consistency, volume, and narrative complexity.
-- **Professional Export Suite**: Industry-standard manuscript exports to PDF, DOCX, and EPUB with book-ready formatting presets.
+- **Custom Calendar Engine & Dual Timeline**: Go beyond Earth — define unique months, seasons, and epochs. Monitor your story's progression across both the natural reading order and strict in-universe chronologies.
+- **Stats Dashboard**: Visualized "Story Health" diagnostics, writing habit analysis, and entity appearance auditing.
+- **Gamified Progression**: Keep up your writing momentum through an intrinsic **Achievements System** rewarding consistency and volume.
+- **Professional Export Suite**: Industry-standard manuscript exports to PDF, DOCX, and EPUB with book-ready formatting presets, selective chapter inclusion, and a gorgeous live WYSIWYG book preview.
 - **Full Localization**: Seamlessly switch between **English**, **Polish**, **Hungarian**, and **Arabic (RTL)**.
 
 ## 🚀 Getting Started

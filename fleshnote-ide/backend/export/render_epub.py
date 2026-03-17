@@ -32,24 +32,40 @@ def render(project_title, author_name, chapters, content_mode) -> bytes:
         content_html.append(f"<h1>{title}</h1>")
         
         text = chapter.get('text', '')
-        # Clean markers
+        footnotes = chapter.get('footnotes', [])
+
+        # Replace footnote ref placeholders with inline superscript links
+        for i, fn in enumerate(footnotes):
+            fn_idx = i + 1
+            text = text.replace(
+                f"[[FOOTNOTE_REF:{fn_idx}]]",
+                f'<sup><a href="#fn{fn_idx}" id="ref{fn_idx}" epub:type="noteref">[{fn_idx}]</a></sup>'
+            )
+
+        # Clean remaining markers
         text = re.sub(r'\[\[ENTITY_REF:[^:]+:([^\]]+)\]\]', r'\1', text)
         text = re.sub(r'\[\[ENTITY_LINK:[^:]+:[^:]+:([^:]+):[^\]]*\]\]', r'\1', text)
+        text = re.sub(r'\[\[TWIST_REF:([^:]+):([^\]]+)\]\]', r'\2', text)
         text = re.sub(r'\{(secret|knows|believes):([^}]+)\}', r'', text)
-        
-        # EPUB is basically XHTML. We can wrap text in <p> if it's raw, 
-        # but FleshNote text often has <p> tags already if we didn't strip them.
-        # Strip.py remove_html=False for EPUB? 
-        # Let's assume text has tags or we wrap blocks.
+
         if '<p>' not in text:
-            # Wrap in paragraphs
             blocks = text.split('\n')
             for b in blocks:
                 if b.strip():
                     content_html.append(f"<p>{b.strip()}</p>")
         else:
             content_html.append(text)
-            
+
+        # Per-chapter footnotes as EPUB aside
+        if footnotes:
+            content_html.append('<aside epub:type="footnote">')
+            content_html.append('<ol class="footnotes">')
+            for i, fn in enumerate(footnotes):
+                fn_idx = i + 1
+                content_html.append(f'<li id="fn{fn_idx}"><a href="#ref{fn_idx}">^</a> {fn}</li>')
+            content_html.append('</ol>')
+            content_html.append('</aside>')
+
         c.content = u"<html><body>" + u"".join(content_html) + u"</body></html>"
         
         # Add to book

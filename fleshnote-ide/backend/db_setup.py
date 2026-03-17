@@ -30,7 +30,6 @@ GENRE_PRESETS = {
         "mechanic_label": "Magic System",
         "track_groups": True,
         "group_label": "Factions",
-        "track_milestones": True,
         "track_knowledge": True,
         "track_dual_timeline": True,
         "default_lore_categories": ["mechanic", "item", "artifact", "creature", "material"],
@@ -42,7 +41,6 @@ GENRE_PRESETS = {
         "mechanic_label": "Technology",
         "track_groups": True,
         "group_label": "Organizations",
-        "track_milestones": True,
         "track_knowledge": True,
         "track_dual_timeline": True,
         "default_lore_categories": ["tech", "item", "weapon", "vehicle", "material"],
@@ -54,7 +52,6 @@ GENRE_PRESETS = {
         "mechanic_label": "",
         "track_groups": False,
         "group_label": "Social Circles",
-        "track_milestones": True,
         "track_knowledge": True,
         "track_dual_timeline": False,
         "default_lore_categories": ["item", "tradition", "location_detail"],
@@ -66,7 +63,6 @@ GENRE_PRESETS = {
         "mechanic_label": "",
         "track_groups": True,
         "group_label": "Organizations",
-        "track_milestones": True,
         "track_knowledge": True,  # Thrillers NEED epistemic tracking
         "track_dual_timeline": True,  # Flashbacks, reveals, etc.
         "default_lore_categories": ["item", "evidence", "weapon", "document"],
@@ -78,7 +74,6 @@ GENRE_PRESETS = {
         "mechanic_label": "",
         "track_groups": False,
         "group_label": "Groups",
-        "track_milestones": True,
         "track_knowledge": True,
         "track_dual_timeline": False,
         "default_lore_categories": ["item"],
@@ -175,12 +170,8 @@ def run_onboarding() -> dict:
         answers["group_label"] = preset["group_label"]
 
     # ── Advanced Features ─────────────────────────────────────
+    # Advanced Features
     print("\n  Advanced features (recommended for complex narratives):")
-
-    # Milestones
-    ms_default = "Y" if preset["track_milestones"] else "N"
-    ms_input = input(f"  Track plot milestones & prerequisites? [{ms_default}] (Y/N): ").strip().upper()
-    answers["track_milestones"] = (ms_input == "Y") if ms_input else preset["track_milestones"]
 
     # Knowledge states / epistemic filtering
     ks_default = "Y" if preset["track_knowledge"] else "N"
@@ -210,7 +201,6 @@ def run_onboarding() -> dict:
     print(f"  Species:    {'ON' if answers['track_species'] else 'OFF'}")
     print(f"  Mechanic:   {answers.get('mechanic_label', 'None') or 'None'}")
     print(f"  Groups:     {'ON — ' + answers['group_label'] if answers['track_groups'] else 'OFF'}")
-    print(f"  Milestones: {'ON' if answers['track_milestones'] else 'OFF'}")
     print(f"  Epistemic:  {'ON' if answers['track_knowledge'] else 'OFF'}")
     print(f"  Dual Time:  {'ON' if answers['track_dual_timeline'] else 'OFF'}")
     print(f"  Ch. Target: {answers['default_chapter_target']} words")
@@ -464,36 +454,6 @@ def generate_project_db(project_path: str, answers: dict) -> str:
     """)
 
     # ══════════════════════════════════════════════════════════
-    # TABLE 9: MILESTONES
-    # Future plot points with prerequisites. The progress bar
-    # can optionally show milestone markers on the chapter
-    # timeline. Prerequisites are stored as JSON for Phase 1
-    # flexibility — Phase 2's Editor AI can parse these for
-    # automated readiness checking.
-    #
-    # Toggled via config: track_milestones
-    # ══════════════════════════════════════════════════════════
-
-    cursor.execute("""
-        CREATE TABLE IF NOT EXISTS milestones (
-            id                  INTEGER PRIMARY KEY AUTOINCREMENT,
-            title               TEXT NOT NULL,
-            description         TEXT,
-            target_chapter_id   INTEGER, -- Planned chapter for this event
-            prerequisites       TEXT,    -- JSON array of conditions:
-                                         -- e.g. '["violation_count >= 3", "knows_secret_12"]'
-            status              TEXT DEFAULT 'pending',
-                                         -- pending | ready | triggered | abandoned
-            priority            TEXT DEFAULT 'normal',
-                                         -- low | normal | high | critical
-            notes               TEXT,
-            created_at          TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-            FOREIGN KEY (target_chapter_id) REFERENCES chapters(id)
-                ON DELETE SET NULL
-        )
-    """)
-
-    # ══════════════════════════════════════════════════════════
     # TABLE 10: TWISTS
     # Major plot reveals or secrets. Used in conjunction with
     # foreshadowings to track narrative payoff on the timeline.
@@ -628,6 +588,77 @@ def generate_project_db(project_path: str, answers: dict) -> str:
     """)
 
     # ══════════════════════════════════════════════════════════
+    # TABLE: WORLD_TIMES (Paragraph-level time overrides)
+    # Lets writers mark paragraph ranges as flashbacks, timeskips,
+    # or memories with a different in-universe date.
+    # ══════════════════════════════════════════════════════════
+
+    cursor.execute("""
+        CREATE TABLE IF NOT EXISTS world_times (
+            id          INTEGER PRIMARY KEY AUTOINCREMENT,
+            chapter_id  INTEGER NOT NULL REFERENCES chapters(id) ON DELETE CASCADE,
+            world_date  TEXT NOT NULL,
+            label       TEXT,
+            color_index INTEGER NOT NULL DEFAULT 0,
+            created_at  TEXT DEFAULT (datetime('now'))
+        )
+    """)
+
+    # ══════════════════════════════════════════════════════════
+    # SKETCHBOARDS: boards, board_items, item_connections
+    # Visual node-graph boards for mapping systems and relationships.
+    # ══════════════════════════════════════════════════════════
+
+    cursor.execute("""
+        CREATE TABLE IF NOT EXISTS boards (
+            id         INTEGER PRIMARY KEY AUTOINCREMENT,
+            name       TEXT NOT NULL DEFAULT 'New Board',
+            board_type TEXT NOT NULL DEFAULT 'custom',
+            icon       TEXT DEFAULT '✦',
+            zoom       REAL DEFAULT 1.0,
+            pan_x      REAL DEFAULT 0.0,
+            pan_y      REAL DEFAULT 0.0,
+            created_at TEXT DEFAULT (datetime('now')),
+            updated_at TEXT DEFAULT (datetime('now'))
+        )
+    """)
+
+    cursor.execute("""
+        CREATE TABLE IF NOT EXISTS board_items (
+            id          INTEGER PRIMARY KEY AUTOINCREMENT,
+            board_id    INTEGER NOT NULL REFERENCES boards(id) ON DELETE CASCADE,
+            name        TEXT NOT NULL,
+            item_type   TEXT NOT NULL DEFAULT 'concept',
+            entity_id   INTEGER DEFAULT NULL,
+            entity_type TEXT DEFAULT NULL,
+            description TEXT DEFAULT '',
+            pos_x       REAL NOT NULL DEFAULT 0,
+            pos_y       REAL NOT NULL DEFAULT 0,
+            size_x      REAL NOT NULL DEFAULT 140,
+            size_y      REAL NOT NULL DEFAULT 60,
+            color       TEXT NOT NULL DEFAULT '#888888',
+            z_index     INTEGER NOT NULL DEFAULT 0
+        )
+    """)
+
+    cursor.execute("""
+        CREATE TABLE IF NOT EXISTS item_connections (
+            id            INTEGER PRIMARY KEY AUTOINCREMENT,
+            board_id      INTEGER NOT NULL REFERENCES boards(id) ON DELETE CASCADE,
+            item_start_id INTEGER NOT NULL REFERENCES board_items(id) ON DELETE CASCADE,
+            item_end_id   INTEGER NOT NULL REFERENCES board_items(id) ON DELETE CASCADE,
+            conn_type     TEXT NOT NULL DEFAULT 'solid',
+            conn_color    TEXT NOT NULL DEFAULT '#888888',
+            title         TEXT DEFAULT '',
+            directed      INTEGER NOT NULL DEFAULT 1,
+            curve_offset  REAL NOT NULL DEFAULT 0.0
+        )
+    """)
+
+    cursor.execute("CREATE INDEX IF NOT EXISTS idx_board_items_board ON board_items(board_id);")
+    cursor.execute("CREATE INDEX IF NOT EXISTS idx_connections_board ON item_connections(board_id);")
+
+    # ══════════════════════════════════════════════════════════
     # TABLE 15: STATS (Aggregated Statistics)
     # Simple key/value store for global project stats (e.g. days
     # writing, total focus time, etc.)
@@ -717,35 +748,34 @@ def generate_project_db(project_path: str, answers: dict) -> str:
         )
     """)
 
-    # Default calendar configuration
     calendar_defaults = [
         ("calendar_enabled", "false"),
         ("epoch_label", "Age"),
         ("months", json.dumps([
-            {"name": "Month 1", "days": 30},
-            {"name": "Month 2", "days": 30},
-            {"name": "Month 3", "days": 30},
-            {"name": "Month 4", "days": 30},
-            {"name": "Month 5", "days": 30},
-            {"name": "Month 6", "days": 30},
-            {"name": "Month 7", "days": 30},
-            {"name": "Month 8", "days": 30},
-            {"name": "Month 9", "days": 30},
-            {"name": "Month 10", "days": 30},
-            {"name": "Month 11", "days": 30},
-            {"name": "Month 12", "days": 30},
+            {"name": "January", "days": 31},
+            {"name": "February", "days": 28},
+            {"name": "March", "days": 31},
+            {"name": "April", "days": 30},
+            {"name": "May", "days": 31},
+            {"name": "June", "days": 30},
+            {"name": "July", "days": 31},
+            {"name": "August", "days": 31},
+            {"name": "September", "days": 30},
+            {"name": "October", "days": 31},
+            {"name": "November", "days": 30},
+            {"name": "December", "days": 31},
         ])),
         ("days_per_week", "7"),
-        ("week_day_names", json.dumps(["Day 1", "Day 2", "Day 3", "Day 4", "Day 5", "Day 6", "Day 7"])),
+        ("week_day_names", json.dumps(["Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Sunday"])),
         ("seasons", json.dumps([
-            {"name": "Spring", "start_month": 1},
-            {"name": "Summer", "start_month": 4},
-            {"name": "Autumn", "start_month": 7},
-            {"name": "Winter", "start_month": 10},
+            {"name": "Spring", "start_month": 3},
+            {"name": "Summer", "start_month": 6},
+            {"name": "Autumn", "start_month": 9},
+            {"name": "Winter", "start_month": 12},
         ])),
-        ("story_start_year", "0"),
-        ("story_start_month", "1"),
-        ("story_start_day", "1"),
+        ("story_start_year", str(answers.get("story_start_year", "2016"))),
+        ("story_start_month", str(answers.get("story_start_month", "5"))),
+        ("story_start_day", str(answers.get("story_start_day", "28"))),
     ]
 
     cursor.executemany(
@@ -817,10 +847,6 @@ def generate_project_db(project_path: str, answers: dict) -> str:
         "CREATE INDEX IF NOT EXISTS idx_knowledge_chapter ON knowledge_states(character_id, learned_in_chapter);",
         "CREATE INDEX IF NOT EXISTS idx_knowledge_source ON knowledge_states(source_entity_type, source_entity_id);",
 
-        # Milestones by chapter
-        "CREATE INDEX IF NOT EXISTS idx_milestone_chapter ON milestones(target_chapter_id);",
-        "CREATE INDEX IF NOT EXISTS idx_milestone_status ON milestones(status);",
-
         # Twists and foreshadowings
         "CREATE INDEX IF NOT EXISTS idx_twist_reveal ON twists(reveal_chapter_id);",
         "CREATE INDEX IF NOT EXISTS idx_twist_status ON twists(status);",
@@ -860,7 +886,6 @@ def generate_project_db(project_path: str, answers: dict) -> str:
         # ── Feature Toggles ───────────────────────────────────
         ("track_species", str(answers.get("track_species", False)).lower(), "toggle"),
         ("track_groups", str(answers.get("track_groups", False)).lower(), "toggle"),
-        ("track_milestones", str(answers.get("track_milestones", True)).lower(), "toggle"),
         ("track_knowledge", str(answers.get("track_knowledge", True)).lower(), "toggle"),
         ("track_dual_timeline", str(answers.get("track_dual_timeline", False)).lower(), "toggle"),
         ("track_custom_calendar", str(answers.get("track_custom_calendar", False)).lower(), "toggle"),
@@ -1112,6 +1137,72 @@ def apply_migrations(db_path: str):
         cursor.execute("INSERT OR IGNORE INTO calendar_config (config_key, config_value) VALUES (?, ?)", ("story_start_year", "0"))
         cursor.execute("INSERT OR IGNORE INTO calendar_config (config_key, config_value) VALUES (?, ?)", ("story_start_month", "1"))
         cursor.execute("INSERT OR IGNORE INTO calendar_config (config_key, config_value) VALUES (?, ?)", ("story_start_day", "1"))
+
+        # World times (paragraph-level time overrides)
+        cursor.execute("""
+            CREATE TABLE IF NOT EXISTS world_times (
+                id          INTEGER PRIMARY KEY AUTOINCREMENT,
+                chapter_id  INTEGER NOT NULL REFERENCES chapters(id) ON DELETE CASCADE,
+                world_date  TEXT NOT NULL,
+                label       TEXT,
+                color_index INTEGER NOT NULL DEFAULT 0,
+                created_at  TEXT DEFAULT (datetime('now'))
+            )
+        """)
+
+        cursor.execute("""
+            CREATE TABLE IF NOT EXISTS boards (
+                id         INTEGER PRIMARY KEY AUTOINCREMENT,
+                name       TEXT NOT NULL DEFAULT 'New Board',
+                board_type TEXT NOT NULL DEFAULT 'custom',
+                icon       TEXT DEFAULT '✦',
+                zoom       REAL DEFAULT 1.0,
+                pan_x      REAL DEFAULT 0.0,
+                pan_y      REAL DEFAULT 0.0,
+                created_at TEXT DEFAULT (datetime('now')),
+                updated_at TEXT DEFAULT (datetime('now'))
+            )
+        """)
+
+        cursor.execute("""
+            CREATE TABLE IF NOT EXISTS board_items (
+                id          INTEGER PRIMARY KEY AUTOINCREMENT,
+                board_id    INTEGER NOT NULL REFERENCES boards(id) ON DELETE CASCADE,
+                name        TEXT NOT NULL,
+                item_type   TEXT NOT NULL DEFAULT 'concept',
+                entity_id   INTEGER DEFAULT NULL,
+                entity_type TEXT DEFAULT NULL,
+                description TEXT DEFAULT '',
+                pos_x       REAL NOT NULL DEFAULT 0,
+                pos_y       REAL NOT NULL DEFAULT 0,
+                size_x      REAL NOT NULL DEFAULT 140,
+                size_y      REAL NOT NULL DEFAULT 60,
+                color       TEXT NOT NULL DEFAULT '#888888',
+                z_index     INTEGER NOT NULL DEFAULT 0
+            )
+        """)
+
+        cursor.execute("""
+            CREATE TABLE IF NOT EXISTS item_connections (
+                id            INTEGER PRIMARY KEY AUTOINCREMENT,
+                board_id      INTEGER NOT NULL REFERENCES boards(id) ON DELETE CASCADE,
+                item_start_id INTEGER NOT NULL REFERENCES board_items(id) ON DELETE CASCADE,
+                item_end_id   INTEGER NOT NULL REFERENCES board_items(id) ON DELETE CASCADE,
+                conn_type     TEXT NOT NULL DEFAULT 'solid',
+                conn_color    TEXT NOT NULL DEFAULT '#888888',
+                title         TEXT DEFAULT '',
+                directed      INTEGER NOT NULL DEFAULT 1,
+                curve_offset  REAL NOT NULL DEFAULT 0.0
+            )
+        """)
+        # Add conn_color to existing item_connections tables (safe if column already exists)
+        try:
+            cursor.execute("ALTER TABLE item_connections ADD COLUMN conn_color TEXT NOT NULL DEFAULT '#888888'")
+        except Exception:
+            pass
+
+        cursor.execute("CREATE INDEX IF NOT EXISTS idx_board_items_board ON board_items(board_id);")
+        cursor.execute("CREATE INDEX IF NOT EXISTS idx_connections_board ON item_connections(board_id);")
 
         conn.commit()
     except Exception as e:

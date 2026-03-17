@@ -283,19 +283,6 @@ export default function ProjectSettingsModal({ isOpen, onClose, projectPath, onC
                                     <label className="checkbox-label">
                                         <input
                                             type="checkbox"
-                                            checked={config.track_milestones || false}
-                                            onChange={() => handleToggle('track_milestones')}
-                                        />
-                                        <div>
-                                            <strong>{t('settings.milestones', 'Plot Milestones')}</strong>
-                                            <p className="settings-desc">{t('settings.milestonesDesc', 'Track future plot points and their prerequisites.')}</p>
-                                        </div>
-                                    </label>
-                                </div>
-                                <div className="settings-card">
-                                    <label className="checkbox-label">
-                                        <input
-                                            type="checkbox"
                                             checked={config.track_dual_timeline || false}
                                             onChange={() => handleToggle('track_dual_timeline')}
                                         />

@@ -8,6 +8,7 @@ import {
     parseBirthYear as _parseBirthYear,
 } from "../utils/calendarUtils";
 import CustomCalendarPlanner from "./CustomCalendarPlanner";
+import Sketchboards from './Sketchboards';
 
 const T = {
     amber: "var(--accent-amber)",
@@ -257,43 +258,54 @@ function HistoryEntryPopup({ entry, entities, calConfig, projectPath, onSaved, o
 }
 
 // ══════════════════════════════════════════════════════════════
-// CHARACTER TIMELINE TAB
+// CHARACTER TIMELINE TAB (Rewritten for stability)
 // ══════════════════════════════════════════════════════════════
 
 function CharacterTimelineTab({ projectPath, chapters, entities, characters, projectConfig, onConfigUpdate }) {
     const { t } = useTranslation();
+
+    // Data state
     const [historyEntries, setHistoryEntries] = useState([]);
     const [calConfig, setCalConfig] = useState(null);
     const [loading, setLoading] = useState(true);
+
+    // View state
     const [zoom, setZoom] = useState(1);
-    const [leftPadding, setLeftPadding] = useState(10); // extra years before earliest event
+    const [leftPadding, setLeftPadding] = useState(10);
     const [visibleIds, setVisibleIds] = useState([]);
-    const [selectedEntity, setSelectedEntity] = useState(null);
+    const [bookStartYear, setBookStartYear] = useState(null);
+
+    // Selection state - use a unique key for selection
+    const [selectedKey, setSelectedKey] = useState(null); // "type-id" format
     const [selectedLinearDay, setSelectedLinearDay] = useState(null);
-    const [showPopup, setShowPopup] = useState(null); // null | { entry? }
-    const [bookStartYear, setBookStartYear] = useState(null); // the editable "Story Year"
 
-    // Drag/Pan state
-    const [isCanvasPanning, setIsCanvasPanning] = useState(false);
-    const [panStart, setPanStart] = useState({ x: 0, scrollLeft: 0 });
-    const [panMoved, setPanMoved] = useState(false);
-
-    // Autocomplete search
+    // UI state
+    const [showPopup, setShowPopup] = useState(null);
+    const [contextMenu, setContextMenu] = useState(null);
     const [entitySearchQuery, setEntitySearchQuery] = useState("");
     const [searchFocused, setSearchFocused] = useState(false);
 
-    // Context menu
-    const [contextMenu, setContextMenu] = useState(null); // { x, y, entityType, entityId, linearDay }
+    // Interaction state
+    const [isPanning, setIsPanning] = useState(false);
+    const [panStart, setPanStart] = useState({ x: 0, scrollLeft: 0 });
+    const [didPan, setDidPan] = useState(false);
+    const [altDrag, setAltDrag] = useState(null);
 
-    // Alt+Drag for interaction creation
-    const [altDrag, setAltDrag] = useState(null); // { startEntityType, startEntityId, startLinearDay }
+    // Init flag
+    const [initialized, setInitialized] = useState(false);
 
-    // Persistence guard
-    const [initializedFromConfig, setInitializedFromConfig] = useState(false);
-
-    const scrollRef = useRef(null);
+    // Refs
+    const scrollContainerRef = useRef(null);
     const inspectorRef = useRef(null);
     const saveTimerRef = useRef(null);
+
+    // Helper to create entity key
+    const makeKey = (type, id) => `${type}-${id}`;
+    const parseKey = (key) => {
+        if (!key) return null;
+        const idx = key.lastIndexOf('-');
+        return { type: key.slice(0, idx), id: parseInt(key.slice(idx + 1)) };
+    };
 
     // Fetch data
     const fetchEntries = useCallback(async () => {
@@ -314,24 +326,23 @@ function CharacterTimelineTab({ projectPath, chapters, entities, characters, pro
 
     useEffect(() => { fetchEntries(); }, [fetchEntries]);
 
-    // Initialize bookStartYear once from DB → chapter world_time → fallback
+    // Initialize bookStartYear once
     useEffect(() => {
         if (calConfig && bookStartYear === null) {
             const dbVal = parseInt(calConfig.story_start_year);
             if (dbVal > 0) {
                 setBookStartYear(dbVal);
-            } else if (chapters && chapters.length > 0) {
+            } else if (chapters?.length > 0) {
                 const ch1 = chapters.find(c => c.chapter_number === 1) || chapters[0];
                 const match = ch1?.world_time?.match(/(\d+)/);
-                if (match) { setBookStartYear(parseInt(match[1], 10)); }
-                else { setBookStartYear(2000); }
+                setBookStartYear(match ? parseInt(match[1], 10) : 2000);
             } else {
                 setBookStartYear(2000);
             }
         }
     }, [calConfig, chapters, bookStartYear]);
 
-    // Persist story start year to calendar_config on blur/Enter
+    // Persist story start year
     const saveBookStartYear = useCallback(async (year) => {
         if (!projectPath || !year || year <= 0) return;
         try {
@@ -474,9 +485,9 @@ function CharacterTimelineTab({ projectPath, chapters, entities, characters, pro
         return lines;
     }, [allEntries, displayEntities, parsedCal, toX]);
 
-    // --- Drag/Pan: Ctrl+Wheel zoom (non-passive) ---
+    // --- Zoom via Ctrl+Wheel ---
     useEffect(() => {
-        const el = scrollRef.current;
+        const el = scrollContainerRef.current;
         if (!el) return;
         const handleWheel = (e) => {
             if (e.ctrlKey || e.metaKey) {
@@ -487,42 +498,42 @@ function CharacterTimelineTab({ projectPath, chapters, entities, characters, pro
         };
         el.addEventListener('wheel', handleWheel, { passive: false });
         return () => el.removeEventListener('wheel', handleWheel);
-    }, [displayEntities.length]);
+    }, []);
 
-    // --- Drag/Pan: global mouse handlers ---
-    const onPanMouseMove = useCallback((e) => {
-        if (isCanvasPanning && scrollRef.current) {
+    // --- Pan handlers ---
+    const handleMouseMove = useCallback((e) => {
+        if (isPanning && scrollContainerRef.current) {
             const dx = e.clientX - panStart.x;
-            scrollRef.current.scrollLeft = panStart.scrollLeft - dx;
-            if (Math.abs(dx) > 3) setPanMoved(true);
+            scrollContainerRef.current.scrollLeft = panStart.scrollLeft - dx;
+            if (Math.abs(dx) > 3) setDidPan(true);
         }
-        setAltDrag(prev => {
-            if (!prev || !scrollRef.current) return prev;
-            const sRect = scrollRef.current.getBoundingClientRect();
-            const innerX = e.clientX - sRect.left + scrollRef.current.scrollLeft;
-            const innerY = e.clientY - sRect.top + scrollRef.current.scrollTop;
-            return { ...prev, currentX: innerX, currentY: innerY };
-        });
-    }, [isCanvasPanning, panStart]);
+        if (altDrag && scrollContainerRef.current) {
+            const LABELS_WIDTH = 140;
+            const rect = scrollContainerRef.current.getBoundingClientRect();
+            setAltDrag(prev => prev ? {
+                ...prev,
+                currentX: e.clientX - rect.left + scrollContainerRef.current.scrollLeft - LABELS_WIDTH,
+                currentY: e.clientY - rect.top + scrollContainerRef.current.scrollTop,
+            } : null);
+        }
+    }, [isPanning, panStart, altDrag]);
 
-    const onPanMouseUp = useCallback((e) => {
-        if (isCanvasPanning) setIsCanvasPanning(false);
+    const handleMouseUp = useCallback((e) => {
+        setIsPanning(false);
 
-        // Handle Alt+Drag completion (interaction creation)
-        if (altDrag && scrollRef.current) {
-            const lanes = scrollRef.current.querySelectorAll('[data-lane-entity-id]');
-            let targetEntityType = null, targetEntityId = null;
-            if (lanes) {
-                for (const lane of lanes) {
-                    const rect = lane.getBoundingClientRect();
-                    if (e.clientY >= rect.top && e.clientY <= rect.bottom) {
-                        targetEntityType = lane.dataset.laneEntityType;
-                        targetEntityId = parseInt(lane.dataset.laneEntityId);
-                        break;
-                    }
+        // Complete alt-drag interaction
+        if (altDrag && scrollContainerRef.current && parsedCal) {
+            const lanes = scrollContainerRef.current.querySelectorAll('[data-lane-key]');
+            let targetKey = null;
+            for (const lane of lanes) {
+                const rect = lane.getBoundingClientRect();
+                if (e.clientY >= rect.top && e.clientY <= rect.bottom) {
+                    targetKey = lane.dataset.laneKey;
+                    break;
                 }
             }
-            if (targetEntityId && targetEntityId !== altDrag.startEntityId && parsedCal) {
+            if (targetKey && targetKey !== makeKey(altDrag.startEntityType, altDrag.startEntityId)) {
+                const target = parseKey(targetKey);
                 const dateInfo = _linearToDisplay(altDrag.startLinearDay, parsedCal);
                 setShowPopup({
                     entry: {
@@ -534,106 +545,102 @@ function CharacterTimelineTab({ projectPath, chapters, entities, characters, pro
                         date_month: dateInfo.month,
                         date_day: dateInfo.day,
                         date_precise: 2,
-                        related_entity_type: targetEntityType,
-                        related_entity_id: targetEntityId,
+                        related_entity_type: target.type,
+                        related_entity_id: target.id,
                     },
                 });
             }
             setAltDrag(null);
         }
-    }, [isCanvasPanning, altDrag, parsedCal]);
+    }, [altDrag, parsedCal]);
 
     useEffect(() => {
-        window.addEventListener("mousemove", onPanMouseMove);
-        window.addEventListener("mouseup", onPanMouseUp);
+        window.addEventListener("mousemove", handleMouseMove);
+        window.addEventListener("mouseup", handleMouseUp);
         return () => {
-            window.removeEventListener("mousemove", onPanMouseMove);
-            window.removeEventListener("mouseup", onPanMouseUp);
+            window.removeEventListener("mousemove", handleMouseMove);
+            window.removeEventListener("mouseup", handleMouseUp);
         };
-    }, [onPanMouseMove, onPanMouseUp]);
+    }, [handleMouseMove, handleMouseUp]);
 
-    // --- Persist timeline state to project_config (debounced) ---
-    const persistTimelineState = useCallback((key, value, type) => {
+    // --- Persist state ---
+    const persistState = useCallback((key, value, type) => {
         if (!projectPath) return;
         clearTimeout(saveTimerRef.current);
         saveTimerRef.current = setTimeout(async () => {
             try {
                 await window.api.updateProjectConfig(projectPath, key, value, type);
-                if (onConfigUpdate) onConfigUpdate(prev => ({ ...prev, [key]: value }));
+                onConfigUpdate?.(prev => ({ ...prev, [key]: value }));
             } catch (err) {
                 console.error("Failed to persist timeline state:", err);
             }
         }, 500);
     }, [projectPath, onConfigUpdate]);
 
-    // Save zoom on change
     useEffect(() => {
-        if (initializedFromConfig) persistTimelineState('timeline_zoom', String(zoom), 'meta');
-    }, [zoom, initializedFromConfig, persistTimelineState]);
+        if (initialized) persistState('timeline_zoom', String(zoom), 'meta');
+    }, [zoom, initialized, persistState]);
 
-    // Save selected entities on change
     useEffect(() => {
-        if (!initializedFromConfig) return;
+        if (!initialized) return;
         const selected = displayEntities.map(e => ({
             type: e.type === "character" ? "character" : e.type === "location" ? "location" : "lore_entity",
             id: e.id,
         }));
-        persistTimelineState('timeline_selected_entities', JSON.stringify(selected), 'json');
-    }, [visibleIds, displayEntities, initializedFromConfig, persistTimelineState]);
+        persistState('timeline_selected_entities', JSON.stringify(selected), 'json');
+    }, [visibleIds, displayEntities, initialized, persistState]);
 
-    // --- Restore from project_config on init ---
+    // --- Restore from config on init ---
     useEffect(() => {
-        if (initializedFromConfig || !projectConfig || !entities || entities.length === 0) return;
+        if (initialized || !projectConfig || !entities?.length) return;
 
-        // Restore zoom
         const savedZoom = parseFloat(projectConfig.timeline_zoom);
         if (savedZoom > 0) setZoom(savedZoom);
 
-        // Restore selected entities
         let savedEntities = projectConfig.timeline_selected_entities;
         if (typeof savedEntities === "string") {
             try { savedEntities = JSON.parse(savedEntities); } catch { savedEntities = null; }
         }
         if (Array.isArray(savedEntities) && savedEntities.length > 0) {
-            const validObjs = savedEntities
+            const valid = savedEntities
                 .filter(se => entities.find(e => e.type === se.type && e.id === se.id))
                 .map(se => ({ type: se.type, id: se.id }));
-            if (validObjs.length > 0) {
-                setVisibleIds(validObjs);
-                setInitializedFromConfig(true);
+            if (valid.length > 0) {
+                setVisibleIds(valid);
+                setInitialized(true);
                 return;
             }
         }
 
-        // Fallback to top 10 if nothing saved
-        const sorted = [...entities.filter(e => e.type !== "group" && e.type !== "quicknote" && e.type !== "quick_note")].sort((a, b) => {
+        // Fallback to top 10
+        const sorted = [...entities.filter(e => !["group", "quicknote", "quick_note"].includes(e.type))].sort((a, b) => {
             if (a.type === "character" && b.type === "character") {
                 const ai = ROLE_PRIORITY.indexOf(a.role || "");
                 const bi = ROLE_PRIORITY.indexOf(b.role || "");
                 return (ai === -1 ? 99 : ai) - (bi === -1 ? 99 : bi);
             }
-            const typeOrder = { character: 0, location: 1 };
-            return (typeOrder[a.type] ?? 2) - (typeOrder[b.type] ?? 2);
+            const order = { character: 0, location: 1 };
+            return (order[a.type] ?? 2) - (order[b.type] ?? 2);
         });
         setVisibleIds(sorted.slice(0, 10).map(e => ({ type: e.type, id: e.id })));
-        setInitializedFromConfig(true);
-    }, [projectConfig, entities, initializedFromConfig]);
+        setInitialized(true);
+    }, [projectConfig, entities, initialized]);
 
-    const handleLaneClick = (entityType, entityId, e) => {
+    const handleLaneClick = (entType, entId, e) => {
         // Suppress click if we were panning
-        if (panMoved) { setPanMoved(false); return; }
+        if (didPan) { setDidPan(false); return; }
 
         const rect = e.currentTarget.getBoundingClientRect();
         const x = e.clientX - rect.left;
         const ld = fromX(x);
 
-        if (e.altKey) {
-            // Alt+Click: quick-add event at this position
+        if (e.altKey && parsedCal) {
+            // Alt+Click: quick-add event
             const dateInfo = _linearToDisplay(ld, parsedCal);
             setShowPopup({
                 entry: {
-                    entity_type: entityType,
-                    entity_id: entityId,
+                    entity_type: entType,
+                    entity_id: entId,
                     event_type: "event",
                     title: "",
                     date_year: dateInfo.year,
@@ -645,22 +652,19 @@ function CharacterTimelineTab({ projectPath, chapters, entities, characters, pro
             return;
         }
 
-        // Normal click: select entity + day
-        setSelectedEntity({ type: entityType, id: entityId });
+        // Normal click: select this entity
+        setSelectedKey(makeKey(entType, entId));
         setSelectedLinearDay(ld);
-    };
-
-    const toggleEntityVisible = (type, id) => {
-        setVisibleIds(prev => {
-            if (prev.find(v => v.type === type && v.id === id)) return prev.filter(x => !(x.type === type && x.id === id));
-            if (prev.length >= 10) return prev;
-            return [...prev, { type, id }];
-        });
     };
 
     const handlePopupSaved = () => {
         setShowPopup(null);
         fetchEntries();
+    };
+
+    const clearSelection = () => {
+        setSelectedKey(null);
+        setSelectedLinearDay(null);
     };
 
     if (loading || !parsedCal) {
@@ -788,65 +792,75 @@ function CharacterTimelineTab({ projectPath, chapters, entities, characters, pro
                 </div>
             )}
 
-            {/* Timeline area */}
+            {/* Timeline area - unified scroll container */}
             {displayEntities.length > 0 && (
-                <div style={{ 
-                    flex: 1, 
-                    overflow: "auto", 
-                    position: "relative",
-                    background: T.bg1,
-                    border: `1px solid ${T.bg3}`
-                }} onClick={() => contextMenu && setContextMenu(null)}>
-                    
-                    <div style={{ 
-                        display: "flex", 
-                        minWidth: "100%", 
+                <div
+                    ref={scrollContainerRef}
+                    style={{
+                        flex: 1,
+                        overflow: "auto",
+                        position: "relative",
+                        background: T.bg1,
+                        border: `1px solid ${T.bg3}`,
+                        cursor: altDrag ? "crosshair" : isPanning ? "grabbing" : "grab",
+                    }}
+                    onClick={() => contextMenu && setContextMenu(null)}
+                    onMouseDown={e => {
+                        if (!e.altKey && e.button === 0 && scrollContainerRef.current) {
+                            setIsPanning(true);
+                            setDidPan(false);
+                            setPanStart({ x: e.clientX, scrollLeft: scrollContainerRef.current.scrollLeft });
+                        }
+                    }}
+                >
+                    <div style={{
+                        display: "flex",
+                        minWidth: "100%",
                         width: "max-content",
-                        minHeight: "100%" 
+                        minHeight: "100%"
                     }}>
                         {/* Labels column - STICKY LEFT */}
-                        <div style={{ 
-                            width: 130, 
-                            flexShrink: 0, 
-                            paddingTop: 24, 
-                            position: "sticky", 
-                            left: 0, 
-                            zIndex: 15, 
+                        <div style={{
+                            width: 140,
+                            flexShrink: 0,
+                            paddingTop: 24,
+                            position: "sticky",
+                            left: 0,
+                            zIndex: 15,
                             background: T.bg1,
                             borderRight: `1px solid ${T.bg3}`
                         }}>
-                            {displayEntities.map(ent => (
-                                <div key={`${ent.type}-${ent.id}`} style={{ height: LANE_H, display: "flex", alignItems: "center", paddingInlineEnd: 10, borderBottom: `1px solid ${T.bg3}` }}>
-                                    <div style={{ display: "flex", alignItems: "center", gap: 6 }}>
-                                        {ent.type === "character" ? (
-                                            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeOpacity={0.6}><path strokeLinecap="round" strokeLinejoin="round" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" /></svg>
-                                        ) : ent.type === "location" ? (
-                                            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeOpacity={0.6}><path strokeLinecap="round" strokeLinejoin="round" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z" /><path strokeLinecap="round" strokeLinejoin="round" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z" /></svg>
-                                        ) : (
-                                            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeOpacity={0.6}><path strokeLinecap="round" strokeLinejoin="round" d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253" /></svg>
-                                        )}
-                                        <div>
-                                            <div style={{
-                                                fontFamily: T.serif, fontSize: 13, cursor: "pointer",
-                                                color: selectedEntity?.id === ent.id && selectedEntity?.type === ent.type ? T.amber : T.text,
-                                            }} onClick={() => { setSelectedEntity({ type: ent.type === "character" ? "character" : ent.type === "location" ? "location" : "lore_entity", id: ent.id }); setSelectedLinearDay(null); }}>
-                                                {ent.name.length > 14 ? ent.name.split(" ")[0] : ent.name}
+                            {displayEntities.map(ent => {
+                                const entType = ent.type === "character" ? "character" : ent.type === "location" ? "location" : "lore_entity";
+                                const entKey = makeKey(entType, ent.id);
+                                const isSelected = selectedKey === entKey;
+                                return (
+                                    <div key={entKey} style={{ height: LANE_H, display: "flex", alignItems: "center", paddingInlineStart: 10, paddingInlineEnd: 10, borderBottom: `1px solid ${T.bg3}`, background: isSelected ? T.amberDim : "transparent" }}>
+                                        <div style={{ display: "flex", alignItems: "center", gap: 6 }}>
+                                            {ent.type === "character" ? (
+                                                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeOpacity={0.6}><path strokeLinecap="round" strokeLinejoin="round" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" /></svg>
+                                            ) : ent.type === "location" ? (
+                                                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeOpacity={0.6}><path strokeLinecap="round" strokeLinejoin="round" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z" /><path strokeLinecap="round" strokeLinejoin="round" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z" /></svg>
+                                            ) : (
+                                                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeOpacity={0.6}><path strokeLinecap="round" strokeLinejoin="round" d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253" /></svg>
+                                            )}
+                                            <div>
+                                                <div style={{
+                                                    fontFamily: T.serif, fontSize: 13, cursor: "pointer",
+                                                    color: isSelected ? T.amber : T.text,
+                                                }} onClick={e => { e.stopPropagation(); setSelectedKey(entKey); setSelectedLinearDay(null); }}>
+                                                    {ent.name.length > 14 ? ent.name.split(" ")[0] : ent.name}
+                                                </div>
+                                                {ent.role && <div style={{ fontFamily: T.mono, fontSize: 8, color: T.textDim }}>{ent.role}</div>}
                                             </div>
-                                            {ent.role && <div style={{ fontFamily: T.mono, fontSize: 8, color: T.textDim }}>{ent.role}</div>}
                                         </div>
                                     </div>
-                                </div>
-                            ))}
+                                );
+                            })}
                         </div>
 
-                        {/* Timeline Data — Shared scrolling */}
-                        <div ref={scrollRef}
-                            style={{
-                                flex: 1, 
-                                minWidth: tlWidth + 60,
-                                position: "relative",
-                                cursor: altDrag ? "crosshair" : isCanvasPanning ? "grabbing" : "grab",
-                            }}>
+                        {/* Timeline Data */}
+                        <div style={{ flex: 1, minWidth: tlWidth + 60, position: "relative" }}>
                             <div style={{ width: tlWidth + 60, minHeight: displayEntities.length * LANE_H + 28, position: "relative" }}>
 
                             {/* Year tick header */}
@@ -875,6 +889,8 @@ function CharacterTimelineTab({ projectPath, chapters, entities, characters, pro
                             {/* Swimlanes */}
                             {displayEntities.map((ent, idx) => {
                                 const entType = ent.type === "character" ? "character" : ent.type === "location" ? "location" : "lore_entity";
+                                const entKey = makeKey(entType, ent.id);
+                                const isSelected = selectedKey === entKey;
                                 const entries = getEntriesForEntity(entType, ent.id);
                                 const birthEntry = entries.find(e => e.event_type === "birth");
                                 const deathEntry = entries.find(e => e.event_type === "death");
@@ -882,15 +898,13 @@ function CharacterTimelineTab({ projectPath, chapters, entities, characters, pro
                                 const deathX = deathEntry ? toX(_entryToLinear(deathEntry, parsedCal)) : tlWidth;
 
                                 return (
-                                    <div key={`${entType}-${ent.id}`}
+                                    <div key={entKey}
+                                        data-lane-key={entKey}
                                         style={{
                                             width: "100%", height: LANE_H, position: "absolute", top: (24 + idx * LANE_H),
                                             borderBottom: `1px solid ${T.bg3}`,
-                                            cursor: altDrag ? "crosshair" : isCanvasPanning ? "grabbing" : "grab",
-                                            background: selectedEntity?.id === ent.id ? T.amberDim : "transparent",
+                                            background: isSelected ? T.amberDim : "transparent",
                                         }}
-                                        data-lane-entity-type={entType}
-                                        data-lane-entity-id={ent.id}
                                         onClick={e => handleLaneClick(entType, ent.id, e)}
                                         onContextMenu={e => {
                                             e.preventDefault();
@@ -900,15 +914,17 @@ function CharacterTimelineTab({ projectPath, chapters, entities, characters, pro
                                             setContextMenu({ x: e.clientX, y: e.clientY, entityType: entType, entityId: ent.id, linearDay: ld });
                                         }}
                                         onMouseDown={e => {
-                                            if (e.altKey && e.button === 0) {
-                                                e.stopPropagation(); // prevent pan
+                                            if (e.altKey && e.button === 0 && scrollContainerRef.current) {
+                                                e.stopPropagation();
                                                 const rect = e.currentTarget.getBoundingClientRect();
                                                 const x = e.clientX - rect.left;
                                                 const ld = fromX(x);
 
-                                                const sRect = scrollRef.current.getBoundingClientRect();
-                                                const innerX = e.clientX - sRect.left + scrollRef.current.scrollLeft;
-                                                const innerY = e.clientY - sRect.top + scrollRef.current.scrollTop;
+                                                // Calculate relative to the timeline area (excluding labels column)
+                                                const LABELS_WIDTH = 140;
+                                                const sRect = scrollContainerRef.current.getBoundingClientRect();
+                                                const innerX = e.clientX - sRect.left + scrollContainerRef.current.scrollLeft - LABELS_WIDTH;
+                                                const innerY = e.clientY - sRect.top + scrollContainerRef.current.scrollTop;
 
                                                 setAltDrag({
                                                     startEntityType: entType,
@@ -934,18 +950,17 @@ function CharacterTimelineTab({ projectPath, chapters, entities, characters, pro
                                             }} />
                                         )}
 
-                                        {/* Event markers — click selects in inspector (Improvement 7) */}
-                                        {entries.map((ev, idx) => {
+                                        {/* Event markers */}
+                                        {entries.map((ev, evIdx) => {
                                             const x = toX(_entryToLinear(ev, parsedCal));
                                             const isAuto = ev._auto;
                                             return (
-                                                <div key={ev.id || `auto-${idx}`}
+                                                <div key={ev.id || `auto-${evIdx}`}
                                                     title={`${ev.title}\n${ev.description || ""}`}
                                                     onClick={e => {
                                                         e.stopPropagation();
                                                         if (!isAuto) {
-                                                            // Select entity + highlight event in inspector (not edit popup)
-                                                            setSelectedEntity({ type: entType, id: ent.id });
+                                                            setSelectedKey(entKey);
                                                             setSelectedLinearDay(_entryToLinear(ev, parsedCal));
                                                             setTimeout(() => {
                                                                 inspectorRef.current?.scrollIntoView({ behavior: "smooth", block: "nearest" });
@@ -965,19 +980,19 @@ function CharacterTimelineTab({ projectPath, chapters, entities, characters, pro
                                         })}
 
                                         {/* Imprecise date indicators */}
-                                        {entries.filter(e => e.date_precise === 0).map((ev, idx) => {
+                                        {entries.filter(e => e.date_precise === 0).map((ev, i) => {
                                             const x = toX(_entryToLinear(ev, parsedCal));
-                                            return <div key={`imp-${ev.id || idx}`} style={{
+                                            return <div key={`imp-${ev.id || i}`} style={{
                                                 position: "absolute", left: x - 12, top: 40,
                                                 fontFamily: T.mono, fontSize: 7, color: T.textDim, pointerEvents: "none",
                                             }}>~</div>;
                                         })}
 
                                         {/* Auto-detect save button */}
-                                        {entries.filter(e => e._auto).map((ev, idx) => {
+                                        {entries.filter(e => e._auto).map((ev, i) => {
                                             const x = toX(_entryToLinear(ev, parsedCal));
                                             return (
-                                                <div key={`save-${idx}`}
+                                                <div key={`save-${i}`}
                                                     onClick={e => {
                                                         e.stopPropagation();
                                                         setShowPopup({ entry: { ...ev, _auto: undefined, id: undefined } });
@@ -1044,66 +1059,72 @@ function CharacterTimelineTab({ projectPath, chapters, entities, characters, pro
             </div>
 
             {/* Inspector panel */}
-            {selectedEntity && (
-                <div ref={inspectorRef} style={{ background: T.bg2, border: `1px solid ${T.bg3}`, padding: 16, marginTop: 14 }}>
-                    <div style={{ fontFamily: T.mono, fontSize: 12, color: T.amber, marginBottom: 10, display: "flex", gap: 12, alignItems: "baseline" }}>
-                        <span>{entities.find(e => e.id === selectedEntity.id)?.name || "—"}</span>
-                        {selectedLinearDay !== null && parsedCal && (
-                            <span style={{ fontSize: 10, color: T.textDim }}>
-                                — {_linearToDisplay(selectedLinearDay, parsedCal).display}
-                            </span>
-                        )}
-                        <button onClick={() => { setSelectedEntity(null); setSelectedLinearDay(null); }} style={{
-                            marginInlineStart: "auto", background: "none", border: "none", color: T.textDim, fontFamily: T.mono, fontSize: 10, cursor: "pointer",
-                        }}>{t('stats.closeInspector', 'Close')} &times;</button>
-                    </div>
+            {selectedKey && (() => {
+                const sel = parseKey(selectedKey);
+                if (!sel) return null;
+                const selectedEnt = entities.find(e => {
+                    const eType = e.type === "character" ? "character" : e.type === "location" ? "location" : "lore_entity";
+                    return eType === sel.type && e.id === sel.id;
+                });
+                return (
+                    <div ref={inspectorRef} style={{ background: T.bg2, border: `1px solid ${T.bg3}`, padding: 16, marginTop: 14 }}>
+                        <div style={{ fontFamily: T.mono, fontSize: 12, color: T.amber, marginBottom: 10, display: "flex", gap: 12, alignItems: "baseline" }}>
+                            <span>{selectedEnt?.name || "—"}</span>
+                            {selectedLinearDay !== null && parsedCal && (
+                                <span style={{ fontSize: 10, color: T.textDim }}>
+                                    — {_linearToDisplay(selectedLinearDay, parsedCal).display}
+                                </span>
+                            )}
+                            <button onClick={clearSelection} style={{
+                                marginInlineStart: "auto", background: "none", border: "none", color: T.textDim, fontFamily: T.mono, fontSize: 10, cursor: "pointer",
+                            }}>{t('stats.closeInspector', 'Close')} &times;</button>
+                        </div>
 
-                    <div style={{ fontFamily: T.mono, fontSize: 11, color: T.textDim, marginBottom: 10 }}>
-                        {t('stats.eventHistoryLabel', 'Event History')}:
-                    </div>
-                    {(() => {
-                        const entries = getEntriesForEntity(selectedEntity.type, selectedEntity.id)
-                            .sort((a, b) => _entryToLinear(a, parsedCal) - _entryToLinear(b, parsedCal));
-                        if (entries.length === 0) return <div style={{ fontFamily: T.mono, fontSize: 11, color: T.textDim, fontStyle: "italic" }}>{t('stats.noEventsInspector', 'No events.')}</div>;
-                        return entries.map((ev, i) => {
-                            const dateStr = ev.date_precise === 0 ? `~${ev.date_year}${parsedCal.epoch_label ? " " + parsedCal.epoch_label : ""}` :
-                                ev.date_precise === 1 ? `${parsedCal.months[(ev.date_month || 1) - 1]?.name || "?"} ${ev.date_year}` :
-                                    _linearToDisplay(_entryToLinear(ev, parsedCal), parsedCal).display;
+                        <div style={{ fontFamily: T.mono, fontSize: 11, color: T.textDim, marginBottom: 10 }}>
+                            {t('stats.eventHistoryLabel', 'Event History')}:
+                        </div>
+                        {(() => {
+                            const inspectorEntries = getEntriesForEntity(sel.type, sel.id)
+                                .sort((a, b) => _entryToLinear(a, parsedCal) - _entryToLinear(b, parsedCal));
+                            if (inspectorEntries.length === 0) return <div style={{ fontFamily: T.mono, fontSize: 11, color: T.textDim, fontStyle: "italic" }}>{t('stats.noEventsInspector', 'No events.')}</div>;
+                            return inspectorEntries.map((ev, i) => {
+                                const dateStr = ev.date_precise === 0 ? `~${ev.date_year}${parsedCal.epoch_label ? " " + parsedCal.epoch_label : ""}` :
+                                    ev.date_precise === 1 ? `${parsedCal.months[(ev.date_month || 1) - 1]?.name || "?"} ${ev.date_year}` :
+                                        _linearToDisplay(_entryToLinear(ev, parsedCal), parsedCal).display;
 
-                            // Find related entity name for interactions
-                            let relatedName = "";
-                            if (ev.event_type === "interaction" && ev.related_entity_id) {
-                                const rel = entities.find(e => e.id === ev.related_entity_id);
-                                if (rel) relatedName = ` \u2192 ${rel.name}`;
-                            }
+                                let relatedName = "";
+                                if (ev.event_type === "interaction" && ev.related_entity_id) {
+                                    const rel = entities.find(e => e.id === ev.related_entity_id);
+                                    if (rel) relatedName = ` \u2192 ${rel.name}`;
+                                }
 
-                            // Highlight event matching the selected linear day from marker click
-                            const evLinear = _entryToLinear(ev, parsedCal);
-                            const isHighlighted = selectedLinearDay !== null && Math.abs(evLinear - selectedLinearDay) < 1;
+                                const evLinear = _entryToLinear(ev, parsedCal);
+                                const isHighlighted = selectedLinearDay !== null && Math.abs(evLinear - selectedLinearDay) < 1;
 
-                            return (
-                                <div key={ev.id || `auto-${i}`}
-                                    onClick={() => { if (!ev._auto) setShowPopup({ entry: ev }); }}
-                                    style={{
-                                        display: "flex", gap: 10, alignItems: "flex-start", marginBottom: 6,
-                                        cursor: ev._auto ? "default" : "pointer", padding: "4px 6px", transition: "background 0.15s",
-                                        background: isHighlighted ? "rgba(212,160,56,0.15)" : "transparent",
-                                        borderInlineStart: isHighlighted ? `2px solid ${T.amber}` : "2px solid transparent",
-                                    }}
-                                    onMouseOver={e => { if (!ev._auto && !isHighlighted) e.currentTarget.style.background = T.bg1; }}
-                                    onMouseOut={e => { if (!isHighlighted) e.currentTarget.style.background = "transparent"; }}>
-                                    <span style={{ color: EVENT_COLORS[ev.event_type], fontSize: 13, flexShrink: 0, marginTop: 1 }}>{EVENT_ICONS[ev.event_type]}</span>
-                                    <div style={{ flex: 1 }}>
-                                        <span style={{ fontFamily: T.mono, fontSize: 11, color: T.text }}>{ev.title}{relatedName}</span>
-                                        <span style={{ fontFamily: T.mono, fontSize: 9, color: T.textDim, marginInlineStart: 8 }}>{dateStr}</span>
-                                        {ev._auto && <span style={{ fontFamily: T.mono, fontSize: 8, color: "var(--accent-green)", marginInlineStart: 6 }}>({t('stats.autoDetectedLabel', 'auto')})</span>}
+                                return (
+                                    <div key={ev.id || `auto-${i}`}
+                                        onClick={() => { if (!ev._auto) setShowPopup({ entry: ev }); }}
+                                        style={{
+                                            display: "flex", gap: 10, alignItems: "flex-start", marginBottom: 6,
+                                            cursor: ev._auto ? "default" : "pointer", padding: "4px 6px", transition: "background 0.15s",
+                                            background: isHighlighted ? "rgba(212,160,56,0.15)" : "transparent",
+                                            borderInlineStart: isHighlighted ? `2px solid ${T.amber}` : "2px solid transparent",
+                                        }}
+                                        onMouseOver={e => { if (!ev._auto && !isHighlighted) e.currentTarget.style.background = T.bg1; }}
+                                        onMouseOut={e => { if (!isHighlighted) e.currentTarget.style.background = "transparent"; }}>
+                                        <span style={{ color: EVENT_COLORS[ev.event_type], fontSize: 13, flexShrink: 0, marginTop: 1 }}>{EVENT_ICONS[ev.event_type]}</span>
+                                        <div style={{ flex: 1 }}>
+                                            <span style={{ fontFamily: T.mono, fontSize: 11, color: T.text }}>{ev.title}{relatedName}</span>
+                                            <span style={{ fontFamily: T.mono, fontSize: 9, color: T.textDim, marginInlineStart: 8 }}>{dateStr}</span>
+                                            {ev._auto && <span style={{ fontFamily: T.mono, fontSize: 8, color: "var(--accent-green)", marginInlineStart: 6 }}>({t('stats.autoDetectedLabel', 'auto')})</span>}
+                                        </div>
                                     </div>
-                                </div>
-                            );
-                        });
-                    })()}
-                </div>
-            )}
+                                );
+                            });
+                        })()}
+                    </div>
+                );
+            })()}
 
             {/* Right-click context menu */}
             {contextMenu && (
@@ -1197,6 +1218,17 @@ export default function WorldbuildAndHistory({ projectPath, chapters, entities, 
                 >
                     {t('calendar.title', 'World Calendar')}
                 </button>
+                <button
+                    onClick={() => setActiveTab("sketchboards")}
+                    style={{
+                        padding: "16px 8px", background: "none", border: "none",
+                        borderBottom: activeTab === "sketchboards" ? `2px solid ${T.amber}` : "2px solid transparent",
+                        color: activeTab === "sketchboards" ? T.amber : T.textDim, fontFamily: T.mono, fontSize: 13,
+                        cursor: "pointer", transition: "all 0.2s"
+                    }}
+                >
+                    Sketchboards
+                </button>
             </div>
 
             {/* Content Area */}
@@ -1213,6 +1245,9 @@ export default function WorldbuildAndHistory({ projectPath, chapters, entities, 
                 )}
                 {activeTab === "calendar" && (
                     <CustomCalendarPlanner projectPath={projectPath} onCalendarChanged={onCalendarChanged} />
+                )}
+                {activeTab === "sketchboards" && (
+                    <Sketchboards projectPath={projectPath} entities={entities} />
                 )}
             </div>
         </div>

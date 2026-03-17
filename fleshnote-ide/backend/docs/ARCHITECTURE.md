@@ -171,7 +171,17 @@ FleshNote is built on the philosophy that worldbuilding and plotting are distinc
     *   **Purpose**: Character lifespans, geopolitical history, and causal consistency.
     *   **Logic**: Anchored to the **Custom Calendar**.
 
+*Note: The **Time Overrides** feature dynamically intercepts the World Timeline at the paragraph level (via the `world_times` table). This allows a single chapter to contain multiple distinct in-universe dates for flashbacks, memories, and timeskips, overriding the chapter's nominal world time.*
+
 ---
+
+## Sketchboards Architecture
+
+Sketchboards provide visual, node-graph mapping of systems, logic, and relationships.
+- **Data Model**: `boards`, `board_items`, `item_connections`
+- Nodes can act as abstract concepts or link directly to project entities (`entity_id`).
+- All coordinates, pan/zoom viewports, and color metadata are written directly to SQLite, bypassing localized file storage to ensure seamless sync and immediate access.
+
 
 ## Project Data Structure
 
