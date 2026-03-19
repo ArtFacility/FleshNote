@@ -162,12 +162,26 @@ const api = {
     return () => ipcRenderer.removeListener('language-download-progress', listener)
   },
 
+  // ── Janitor ────────────────────────────────────────
+  janitorAnalyze: (payload) => ipcRenderer.invoke('api:janitorAnalyze', payload),
+  janitorSensesOverview: (payload) => ipcRenderer.invoke('api:janitorSensesOverview', payload),
+
   // ── Synonyms ──────────────────────────────────────
   synonymLookup: (payload) => ipcRenderer.invoke('api:synonymLookup', payload),
   checkWordnetData: () => ipcRenderer.invoke('api:checkWordnetData'),
   ensureWordnetData: () => ipcRenderer.invoke('api:ensureWordnetData'),
   spellCheck: (payload) => ipcRenderer.invoke('api:spellCheck', payload),
   spellCheckIgnore: (payload) => ipcRenderer.invoke('api:spellCheckIgnore', payload),
+
+  // ── Auto Updater ───────────────────────────────────
+  checkForUpdates: () => ipcRenderer.invoke('api:checkForUpdates'),
+  downloadUpdate: () => ipcRenderer.invoke('api:downloadUpdate'),
+  installUpdate: () => ipcRenderer.invoke('api:installUpdate'),
+  onUpdateEvent: (callback) => {
+    const listener = (_event, value) => callback(value)
+    ipcRenderer.on('update-event', listener)
+    return () => ipcRenderer.removeListener('update-event', listener)
+  },
 
   // ── Window Controls ────────────────────────────────
   minimizeWindow: () => ipcRenderer.invoke('window:minimize'),

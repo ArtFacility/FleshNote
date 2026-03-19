@@ -1,6 +1,20 @@
 {
-    "currentVersion": "0.8.7",
+    "currentVersion": "0.9.0",
     "history": [
+        {
+            "version": "0.9.0",
+            "date": "2026-03-19",
+            "changes": [
+                "NEW: The Janitor — a smart right panel that passively analyzes your chapter and surfaces actionable writing suggestions. Unlinked entity names, spelling errors, weak word overuse, and Show/Don't Tell patterns are detected and can be fixed with one click.",
+                "Janitor detects unlinked entity names and offers one-click linking; identifies entity name fragments and suggests aliases; flags misspelled words with Hunspell spell-checking.",
+                "Janitor analyzes Show/Don't Tell patterns including emotion labeling, filter verbs, cognitive verbs, and emotion adverbs on speech. Four independent detection modes are toggleable in Project Settings with a sensitivity slider.",
+                "Janitor also detects weak adverbs and passive voice as separate suggestion types, each with distinct icons and colors.",
+                "Suggested words are highlighted in context snippets; clicking navigates to that word. Analysis runs automatically after 100 new words or 10 seconds of inactivity.",
+                "Dismissed suggestions are remembered per chapter. Alt+J opens the panel with keyboard navigation support (arrow keys to move, Y to accept, N to dismiss).",
+                "NEW: App Update Checker — users are now notified when a new FleshNote IDE release is available.",
+                "Janitor panels are completely hidden during focus/sprint modes. Panel collapse state is saved between sessions."
+            ]
+        },
         {
             "version": "0.8.7",
             "date": "2026-03-17",

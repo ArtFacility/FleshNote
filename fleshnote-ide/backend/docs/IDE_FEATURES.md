@@ -303,6 +303,21 @@ Status can be set to any value at any time via the dropdown.
 
 ---
 
+## The Janitor
+
+A background stylistic and worldbuilding analysis assistant that provides unobtrusive suggestions while you write.
+- **Entity Linking**: Suggests linking unlinked names to existing lore.
+- **New Entities**: Identifies repeated capitalized nouns that should probably be added to your lore db.
+- **Aliases & Synonyms**: Suggests alternative names or stronger word choices.
+- **Typos**: Basic spellchecking.
+- **Show, Don't Tell**: Flags weak adverbs or passive language for rewrite.
+- **Pacing & Rhythm**: Detects structural repetition (e.g. 3 consecutive sentences starting with the same word).
+- Suggestions appear in their own non-modal side panel.
+- Fully configurable via the Project Settings modal.
+- Handled primarily by the `backend/routes/janitor.py` processor using `spaCy`. (See [docs/JANITOR.md](./JANITOR.md) for technical deep-dives on the NLP rules).
+
+---
+
 ## Word Count Tracking
 
 - TipTap's `CharacterCount` extension provides real-time word count

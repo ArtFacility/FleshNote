@@ -117,7 +117,9 @@ fleshnote-ide/
 │   │   ├── imports.py        # Manuscript splitting + NER extraction
 │   │   ├── twists.py         # Twist Inspector CRUD & Foreshadowing logic
 │   │   ├── planner.py        # Timeline Planner blocks and arcs
-│   │   └── stats.py          # Custom Analytics & Telemetry
+│   │   ├── stats.py          # Custom Analytics & Telemetry
+│   │   ├── janitor.py        # Background text analysis & suggestion routing
+│   │   └── hun_janitor.py    # Hungarian-specific NLP rules
 │   ├── docs/                 # This documentation
 │   └── .venv/                # Python virtual environment
 │

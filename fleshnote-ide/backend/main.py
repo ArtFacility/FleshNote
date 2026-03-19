@@ -30,6 +30,7 @@ from routes.synonyms import router as synonyms_router
 from routes.spellcheck import router as spellcheck_router
 from routes.world_times import router as world_times_router
 from routes.boards import router as boards_router
+from routes.janitor import router as janitor_router
 
 app = FastAPI(title="FleshNote API")
 
@@ -58,6 +59,7 @@ app.include_router(synonyms_router)
 app.include_router(spellcheck_router)
 app.include_router(world_times_router)
 app.include_router(boards_router)
+app.include_router(janitor_router)
 
 # Define our data models so FastAPI knows what to expect
 class WorkspaceRequest(BaseModel):

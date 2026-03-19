@@ -162,6 +162,7 @@ export default function ProjectPicker({
   const [deletingProject, setDeletingProject] = useState(null)
   const [showChangelog, setShowChangelog] = useState(false)
   const [showAbout, setShowAbout] = useState(false)
+  const [updateState, setUpdateState] = useState({ status: 'idle' })
 
   const fetchProjects = async (path) => {
     setLoading(true)
@@ -177,6 +178,30 @@ export default function ProjectPicker({
   useEffect(() => {
     if (window.api.onDownloadProgress) {
       const unsub = window.api.onDownloadProgress((progress) => setDownloadProgress(progress))
+      return () => unsub()
+    }
+  }, [])
+
+  useEffect(() => {
+    if (window.api.onUpdateEvent) {
+      const unsub = window.api.onUpdateEvent((payload) => {
+        if (payload.type === 'update-available') {
+          setUpdateState({ 
+            status: 'available', 
+            version: payload.info.version,
+            canAutoUpdate: payload.canAutoUpdate
+          })
+        } else if (payload.type === 'download-progress') {
+          setUpdateState(prev => ({ ...prev, status: 'downloading', progress: payload.progress }))
+        } else if (payload.type === 'update-downloaded') {
+          setUpdateState(prev => ({ ...prev, status: 'downloaded' }))
+        } else if (payload.type === 'error') {
+          console.error("Updater error:", payload.message)
+        }
+      })
+      if (window.api.checkForUpdates) {
+        window.api.checkForUpdates()
+      }
       return () => unsub()
     }
   }, [])
@@ -229,6 +254,73 @@ export default function ProjectPicker({
           gap: '20px',
         }}
       >
+
+        {/* Update Banner */}
+        {updateState.status !== 'idle' && updateState.status !== 'error' && (
+          <div style={{ 
+            padding: '12px 16px', 
+            backgroundColor: 'var(--bg-elevated)', 
+            border: '1px solid var(--accent-green)', 
+            borderRadius: '4px',
+            display: 'flex', 
+            justifyContent: 'space-between', 
+            alignItems: 'center',
+            gap: '12px'
+          }}>
+            <div style={{ display: 'flex', flexDirection: 'column', gap: '4px' }}>
+              <span style={{ color: 'var(--text-primary)', fontWeight: 'bold', fontSize: '14px' }}>
+                {t('picker.updateFound', 'New Update Available!')} 
+                <span style={{ color: 'var(--accent-green)', marginLeft: '8px', fontFamily: 'var(--font-mono)' }}>v{updateState.version}</span>
+              </span>
+              <span style={{ color: 'var(--text-tertiary)', fontSize: '12px' }}>
+                {updateState.canAutoUpdate ? t('picker.updateAutoDesc', 'Download and install directly from here.') : t('picker.updateManualDesc', 'Update available on GitHub Releases.')}
+              </span>
+            </div>
+
+            <button
+              onClick={() => {
+                if (updateState.status === 'available') {
+                  if (updateState.canAutoUpdate) {
+                     window.api.downloadUpdate()
+                     setUpdateState(prev => ({ ...prev, status: 'downloading', progress: 0 }))
+                  } else {
+                     window.open('https://github.com/ArtFacility/FleshNote/releases/latest', '_blank')
+                  }
+                } else if (updateState.status === 'downloaded') {
+                  window.api.installUpdate()
+                }
+              }}
+              disabled={updateState.status === 'downloading'}
+              style={{
+                padding: '8px 16px',
+                backgroundColor: 'var(--accent-green)', 
+                color: 'var(--bg-deep)',
+                border: 'none',
+                borderRadius: '4px',
+                cursor: updateState.status === 'downloading' ? 'wait' : 'pointer',
+                fontFamily: 'var(--font-mono)',
+                fontSize: '12px',
+                fontWeight: 'bold',
+                textTransform: 'uppercase',
+                position: 'relative',
+                overflow: 'hidden'
+              }}
+            >
+              {updateState.status === 'downloading' && (
+                 <div style={{ position: 'absolute', top: 0, left: 0, height: '100%', width: `${updateState.progress || 0}%`, backgroundColor: 'rgba(0,0,0,0.1)' }} />
+              )}
+              <span style={{ position: 'relative', zIndex: 1 }}>
+                {updateState.status === 'available' && !updateState.canAutoUpdate 
+                  ? t('picker.updateManualBtn', 'View Release')
+                  : updateState.status === 'available'
+                  ? t('picker.updateDownloadBtn', 'Download')
+                  : updateState.status === 'downloading'
+                  ? t('picker.updateDownloadingBtn', `Downloading (${Math.round(updateState.progress || 0)}%)`)
+                  : t('picker.updateInstallBtn', 'Restart & Install')}
+              </span>
+            </button>
+          </div>
+        )}
 
         {/* Workspace Path Picker */}
         <div style={{ display: 'flex', gap: '10px', alignItems: 'center' }}>

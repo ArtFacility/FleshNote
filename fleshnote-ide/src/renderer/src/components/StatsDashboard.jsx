@@ -1,6 +1,6 @@
 import { useState, useMemo, useEffect, useCallback, useRef } from "react";
 import { useTranslation } from "react-i18next";
-import { BarChart, Bar, LineChart, Line, PieChart, Pie, XAxis, YAxis, Tooltip as RechartsTooltip, ResponsiveContainer, Cell } from "recharts";
+import { BarChart, Bar, LineChart, Line, PieChart, Pie, RadarChart, Radar, PolarGrid, PolarAngleAxis, XAxis, YAxis, Tooltip as RechartsTooltip, ResponsiveContainer, Cell } from "recharts";
 import EntityInspectorPanel from "./EntityInspectorPanel";
 
 // ══════════════════════════════════════════════════════════════
@@ -770,6 +770,274 @@ function EntityAuditorTab({ entities, mentions, chapters, projectConfig }) {
 }
 
 // ══════════════════════════════════════════════════════════════
+// SENSES TAB
+// ══════════════════════════════════════════════════════════════
+
+const SENSE_COLORS = {
+    sight:   "var(--accent-amber)",
+    sound:   "#3b82f6",
+    smell:   "#22c55e",
+    touch:   "#f97316",
+    taste:   "#ec4899",
+    // Hungarian labels
+    "látás":    "var(--accent-amber)",
+    "hallás":   "#3b82f6",
+    "szaglás":  "#22c55e",
+    "tapintás": "#f97316",
+    "ízlelés":  "#ec4899",
+};
+
+const FK_LABEL_COLOR = {
+    very_easy: "var(--accent-green)",
+    easy: "var(--accent-green)",
+    fairly_easy: "#84cc16",
+    standard: "var(--accent-amber)",
+    fairly_difficult: "#f97316",
+    difficult: "var(--accent-red)",
+    very_difficult: "var(--accent-red)",
+};
+
+function SensesTab({ projectPath, projectConfig }) {
+    const { t } = useTranslation();
+    const [data, setData] = useState(null);
+    const [loading, setLoading] = useState(true);
+    const [selectedIds, setSelectedIds] = useState(null); // null = all chapters
+
+    const language = projectConfig?.story_language || "en";
+
+    useEffect(() => {
+        async function fetchSenses() {
+            try {
+                const res = await window.api.janitorSensesOverview({ project_path: projectPath, language });
+                if (res?.status === "ok") {
+                    setData(res.chapters || []);
+                    setSelectedIds(null);
+                }
+            } catch (err) {
+                console.error("Senses overview failed:", err);
+            } finally {
+                setLoading(false);
+            }
+        }
+        fetchSenses();
+    }, [projectPath, language]);
+
+    const chapters = data || [];
+
+    const toggleChapter = (id) => {
+        setSelectedIds(prev => {
+            const all = new Set(chapters.map(c => c.chapter_id));
+            const current = prev ?? all;
+            const next = new Set(current);
+            if (next.has(id)) {
+                next.delete(id);
+            } else {
+                next.add(id);
+            }
+            // If all selected, reset to null (all)
+            if (next.size === all.size) return null;
+            if (next.size === 0) return new Set([id]); // prevent empty
+            return next;
+        });
+    };
+
+    const activeChapters = useMemo(() => {
+        if (!selectedIds) return chapters;
+        return chapters.filter(c => selectedIds.has(c.chapter_id));
+    }, [chapters, selectedIds]);
+
+    const senseKeys = useMemo(() => {
+        if (!chapters.length) return [];
+        return Object.keys(chapters[0]?.senses || {});
+    }, [chapters]);
+
+    const radarData = useMemo(() => {
+        return senseKeys.map(sense => {
+            const total = activeChapters.reduce((sum, ch) => sum + (ch.senses[sense] || 0), 0);
+            const avg = activeChapters.length > 0 ? total / activeChapters.length : 0;
+            return { sense, value: Math.round(avg * 10) / 10 };
+        });
+    }, [activeChapters, senseKeys]);
+
+    const maxVal = useMemo(() => Math.max(...radarData.map(d => d.value), 1), [radarData]);
+
+    if (loading) {
+        return <div style={{ padding: 40, color: T.textDim, fontFamily: T.mono, fontSize: 12 }}>{t('stats.analyzingSenses', 'Analyzing senses...')}</div>;
+    }
+    if (!chapters.length) {
+        return <div style={{ padding: 40, color: T.textDim, fontFamily: T.mono, fontSize: 12 }}>{t('stats.noChaptersYet', 'No chapters to analyze yet.')}</div>;
+    }
+
+    return (
+        <div style={{ padding: 40, display: "flex", flexDirection: "column", gap: 40, maxWidth: 1200, width: "100%", margin: "0 auto" }}>
+            {/* Header */}
+            <div>
+                <h3 style={{ fontFamily: T.serif, fontSize: 24, color: T.text, margin: 0, fontWeight: "normal" }}>
+                    {t('stats.sensoryAnalysis', 'Sensory Analysis')}
+                </h3>
+                <p style={{ color: T.textDim, fontSize: 12, marginTop: 4, fontFamily: T.mono }}>
+                    {t('stats.sensoryAnalysisDesc', 'Distribution of the five senses across your manuscript, based on sensory vocabulary.')}
+                </p>
+            </div>
+
+            {/* Chapter toggles */}
+            <div>
+                <div style={{ fontFamily: T.mono, fontSize: 11, color: T.textDim, textTransform: "uppercase", letterSpacing: "0.1em", marginBottom: 8 }}>
+                    {t('stats.filterChapters', 'Filter Chapters')}
+                </div>
+                <div style={{ display: "flex", gap: 4, flexWrap: "wrap" }}>
+                    <button
+                        onClick={() => setSelectedIds(null)}
+                        style={{ padding: "4px 10px", background: !selectedIds ? T.amber : T.bg2, color: !selectedIds ? T.bg0 : T.text, border: `1px solid ${!selectedIds ? T.amber : T.bg3}`, fontFamily: T.mono, fontSize: 11, cursor: "pointer", textTransform: "uppercase" }}
+                    >
+                        {t('stats.all', 'All')}
+                    </button>
+                    {chapters.map(ch => {
+                        const isActive = !selectedIds || selectedIds.has(ch.chapter_id);
+                        return (
+                            <button
+                                key={ch.chapter_id}
+                                onClick={() => toggleChapter(ch.chapter_id)}
+                                title={ch.title}
+                                style={{ padding: "4px 10px", background: isActive ? T.bg2 : "transparent", color: isActive ? T.text : T.textDim, border: `1px solid ${isActive ? T.bg3 : "transparent"}`, fontFamily: T.mono, fontSize: 11, cursor: "pointer" }}
+                            >
+                                {t('editor.chapterPrefixShort', 'Ch.')} {ch.chapter_number}
+                            </button>
+                        );
+                    })}
+                </div>
+            </div>
+
+            {/* Radar Chart + Stats side by side */}
+            <div style={{ display: "flex", gap: 32, flexWrap: "wrap", alignItems: "flex-start" }}>
+                {/* Radar */}
+                <div style={{ background: T.bg1, border: `1px solid ${T.bg3}`, padding: "24px", flex: "1 1 320px", minWidth: 280 }}>
+                    <div style={{ fontFamily: T.mono, fontSize: 11, color: T.textDim, textTransform: "uppercase", letterSpacing: "0.1em", marginBottom: 16 }}>
+                        {t('stats.averageSenseBalance', 'Sense Balance (Avg per chapter)')}
+                    </div>
+                    <ResponsiveContainer width="100%" height={280}>
+                        <RadarChart data={radarData} margin={{ top: 10, right: 30, bottom: 10, left: 30 }}>
+                            <PolarGrid stroke={T.bg3} />
+                            <PolarAngleAxis dataKey="sense" tick={{ fill: T.textDim, fontFamily: T.mono, fontSize: 11 }} />
+                            <Radar
+                                name={t('stats.senses', 'Senses')}
+                                dataKey="value"
+                                stroke={T.amber}
+                                fill={T.amber}
+                                fillOpacity={0.25}
+                                dot={{ fill: T.amber, r: 3 }}
+                            />
+                            <RechartsTooltip
+                                contentStyle={{ background: T.bg2, border: `1px solid ${T.bg3}`, borderRadius: 0, fontFamily: T.mono, fontSize: 12 }}
+                                itemStyle={{ color: T.amber }}
+                                formatter={(value) => [value.toFixed(1), t('stats.avgWords', 'avg words')]}
+                            />
+                        </RadarChart>
+                    </ResponsiveContainer>
+                </div>
+
+                {/* Per-sense breakdown bars */}
+                <div style={{ flex: "1 1 300px", display: "flex", flexDirection: "column", gap: 12 }}>
+                    <div style={{ fontFamily: T.mono, fontSize: 11, color: T.textDim, textTransform: "uppercase", letterSpacing: "0.1em", marginBottom: 4 }}>
+                        {t('stats.senseBreakdown', 'Sense Breakdown')}
+                    </div>
+                    {radarData.map(({ sense, value }) => {
+                        const pct = maxVal > 0 ? (value / maxVal) * 100 : 0;
+                        const color = SENSE_COLORS[sense] || T.amber;
+                        return (
+                            <div key={sense}>
+                                <div style={{ display: "flex", justifyContent: "space-between", fontFamily: T.mono, fontSize: 11, marginBottom: 4 }}>
+                                    <span style={{ color: T.text, textTransform: "capitalize" }}>{sense}</span>
+                                    <span style={{ color: T.textDim }}>{value.toFixed(1)}</span>
+                                </div>
+                                <div style={{ height: 8, background: T.bg2, border: `1px solid ${T.bg3}` }}>
+                                    <div style={{ height: "100%", width: `${pct}%`, background: color, opacity: 0.8, transition: "width 0.3s" }} />
+                                </div>
+                            </div>
+                        );
+                    })}
+                    {radarData.some(d => d.value === 0) && (
+                        <div style={{ marginTop: 8, padding: "8px 12px", background: "rgba(244,63,94,0.08)", border: "1px solid rgba(244,63,94,0.3)", fontFamily: T.mono, fontSize: 11, color: "var(--accent-red)" }}>
+                            ⚠ {t('stats.someSensesAbsent', 'Some senses are completely absent from the selected chapters.')}
+                        </div>
+                    )}
+                </div>
+            </div>
+
+            {/* Per-chapter table */}
+            <div>
+                <div style={{ fontFamily: T.mono, fontSize: 11, color: T.textDim, textTransform: "uppercase", letterSpacing: "0.1em", marginBottom: 12 }}>
+                    {t('stats.perChapterSenses', 'Per-Chapter Senses')}
+                </div>
+                <div style={{ overflowX: "auto" }}>
+                    <table style={{ borderCollapse: "collapse", width: "100%", fontSize: 12, fontFamily: T.mono }}>
+                        <thead>
+                            <tr>
+                                <th style={{ textAlign: "left", padding: "8px 12px", borderBottom: `1px solid ${T.bg3}`, color: T.textDim, fontWeight: "normal" }}>{t('stats.chapter', 'Chapter')}</th>
+                                {senseKeys.map(s => (
+                                    <th key={s} style={{ textAlign: "center", padding: "8px 10px", borderBottom: `1px solid ${T.bg3}`, color: SENSE_COLORS[s] || T.amber, fontWeight: "normal", textTransform: "capitalize" }}>{s}</th>
+                                ))}
+                                {language === "en" && (
+                                    <th style={{ textAlign: "center", padding: "8px 12px", borderBottom: `1px solid ${T.bg3}`, color: T.textDim, fontWeight: "normal" }}>{t('stats.readingLevel', 'Reading Level')}</th>
+                                )}
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {chapters.map(ch => {
+                                const isActive = !selectedIds || selectedIds.has(ch.chapter_id);
+                                const fkColor = ch.readability?.label ? FK_LABEL_COLOR[ch.readability.label] : T.textDim;
+                                return (
+                                    <tr key={ch.chapter_id} style={{ opacity: isActive ? 1 : 0.35, borderBottom: `1px solid ${T.bg3}40` }}>
+                                        <td style={{ padding: "8px 12px", color: T.text }}>
+                                            <span style={{ color: T.textDim, marginRight: 6 }}>{ch.chapter_number}.</span>
+                                            {ch.title}
+                                        </td>
+                                        {senseKeys.map(s => {
+                                            const v = ch.senses[s] || 0;
+                                            const color = SENSE_COLORS[s] || T.amber;
+                                            return (
+                                                <td key={s} style={{ textAlign: "center", padding: "8px 10px" }}>
+                                                    <span style={{ color: v === 0 ? "var(--accent-red)" : color, opacity: v === 0 ? 0.7 : 1 }}>
+                                                        {v === 0 ? "—" : v}
+                                                    </span>
+                                                </td>
+                                            );
+                                        })}
+                                        {language === "en" && (
+                                            <td style={{ textAlign: "center", padding: "8px 12px" }}>
+                                                {ch.readability?.grade != null
+                                                    ? <span style={{ color: fkColor }}>Gr.{ch.readability.grade}</span>
+                                                    : <span style={{ color: T.textDim }}>—</span>
+                                                }
+                                            </td>
+                                        )}
+                                    </tr>
+                                );
+                            })}
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+            {/* Reading level legend (EN only) */}
+            {language === "en" && (
+                <div style={{ display: "flex", gap: 12, flexWrap: "wrap" }}>
+                    {Object.entries(FK_LABEL_COLOR).map(([label, color]) => (
+                        <div key={label} style={{ display: "flex", alignItems: "center", gap: 6, fontFamily: T.mono, fontSize: 10, color: T.textDim }}>
+                            <span style={{ width: 8, height: 8, background: color, display: "inline-block", borderRadius: 2 }} />
+                            {label.replace(/_/g, ' ')}
+                        </div>
+                    ))}
+                    <span style={{ fontFamily: T.mono, fontSize: 10, color: T.textDim, marginLeft: 8 }}>
+                        {t('stats.fkNote', '(Flesch-Kincaid grade level)')}
+                    </span>
+                </div>
+            )}
+        </div>
+    );
+}
+
+// ══════════════════════════════════════════════════════════════
 // MAIN COMPONENT
 // ══════════════════════════════════════════════════════════════
 
@@ -798,6 +1066,7 @@ export default function StatsDashboard({ projectPath, chapters, entities, charac
         { id: "habits", label: t('stats.analyticsHabits', 'Analytics & Habits'), icon: <Icons.Activity /> },
         { id: "entities", label: t('stats.entityAuditor', 'Entity Auditor'), icon: <Icons.Users /> },
         { id: "health", label: t('stats.storyHealth', 'Story Health'), icon: <Icons.HeartPulse /> },
+        { id: "senses", label: t('stats.sensoryAnalysis', 'Sensory Analysis'), icon: <span style={{ fontFamily: "var(--font-runes)", fontSize: 14 }}>ᛉ</span> },
         { id: "achievements", label: t('stats.achievements', 'Achievements'), icon: <Icons.Award /> },
     ];
 
@@ -811,7 +1080,8 @@ export default function StatsDashboard({ projectPath, chapters, entities, charac
             <div style={{ flex: 1, overflowY: "auto", overflowX: "hidden" }}>
                 {activeTab === "habits" && <HabitsTab statLogs={statsData.stat_logs} globalStats={statsData.global_stats} chapters={chapters} />}
                 {activeTab === "entities" && <EntityAuditorTab entities={entities} mentions={statsData.entity_mentions} chapters={chapters} projectConfig={projectConfig} />}
-                {activeTab === "health" && <StoryHealthTab entities={entities} chapters={chapters} mentions={statsData.entity_mentions || []} projectPath={projectPath} />}
+                {activeTab === "health" && <StoryHealthTab entities={entities} chapters={chapters} mentions={statsData.entity_mentions || []} projectPath={projectPath} projectConfig={projectConfig} />}
+                {activeTab === "senses" && <SensesTab projectPath={projectPath} projectConfig={projectConfig} />}
                 {activeTab === "achievements" && <AchievementsTab projectPath={projectPath} />}
             </div>
         </div>
@@ -825,11 +1095,30 @@ export default function StatsDashboard({ projectPath, chapters, entities, charac
 const SEVERITY_ORDER = { danger: 0, warning: 1, info: 2 };
 const SEVERITY_COLOR = { danger: "var(--accent-red)", warning: "var(--accent-amber)", info: "var(--accent-purple)" };
 
-function StoryHealthTab({ entities, chapters, mentions, projectPath }) {
+// Senses that matter for literary quality, and their penalty weights
+const SENSE_HEALTH = {
+    // EN keys
+    sight:  { weight: 5, severity: "warning" },
+    sound:  { weight: 5, severity: "warning" },
+    touch:  { weight: 3, severity: "info" },
+    smell:  { weight: 0, severity: "info" },
+    taste:  { weight: 0, severity: "info" },
+    // HU keys
+    "látás":    { weight: 5, severity: "warning" },
+    "hallás":   { weight: 5, severity: "warning" },
+    "tapintás": { weight: 3, severity: "info" },
+    "szaglás":  { weight: 0, severity: "info" },
+    "ízlelés":  { weight: 0, severity: "info" },
+};
+
+function StoryHealthTab({ entities, chapters, mentions, projectPath, projectConfig }) {
     const { t } = useTranslation();
     const [twistData, setTwistData] = useState([]);
     const [loadingTwists, setLoadingTwists] = useState(true);
+    const [sensesData, setSensesData] = useState(null);
     const [severityFilter, setSeverityFilter] = useState("all");
+
+    const language = projectConfig?.story_language || "en";
 
     // Fetch twist diagnostics
     useEffect(() => {
@@ -855,6 +1144,18 @@ function StoryHealthTab({ entities, chapters, mentions, projectPath }) {
         }
         fetchTwistDiagnostics();
     }, [projectPath]);
+
+    // Fetch senses overview for health scoring
+    useEffect(() => {
+        async function fetchSenses() {
+            if (!projectPath) return;
+            try {
+                const res = await window.api.janitorSensesOverview({ project_path: projectPath, language });
+                if (res?.status === "ok") setSensesData(res.chapters || []);
+            } catch { /* non-fatal */ }
+        }
+        fetchSenses();
+    }, [projectPath, language]);
 
     // Compute all diagnostics
     const diagnostics = useMemo(() => {
@@ -899,19 +1200,22 @@ function StoryHealthTab({ entities, chapters, mentions, projectPath }) {
         // 3. Entity introductions per chapter
         const introsByChapter = {};
         const sortedChapters = [...chapters].sort((a, b) => a.chapter_number - b.chapter_number);
+        // Only chapters with real content count for structural diagnostics
+        const ACTIVE_STATUSES = new Set(["draft", "revised", "final"]);
+        const activeChapters = sortedChapters.filter(ch => ACTIVE_STATUSES.has(ch.status));
 
         nonQuickEntities.forEach(ent => {
             const entMentions = mentions.filter(m => String(m.entity_id) === String(ent.id) && m.entity_type === ent.type);
             if (!entMentions.length) return;
             const mentionChapterIds = new Set(entMentions.map(m => m.chapter_id));
-            const firstCh = sortedChapters.find(ch => mentionChapterIds.has(ch.id));
+            const firstCh = activeChapters.find(ch => mentionChapterIds.has(ch.id));
             if (firstCh) {
                 if (!introsByChapter[firstCh.id]) introsByChapter[firstCh.id] = [];
                 introsByChapter[firstCh.id].push(ent);
             }
         });
 
-        sortedChapters.forEach(ch => {
+        activeChapters.forEach(ch => {
             const intros = introsByChapter[ch.id] || [];
             if (intros.length >= 6) {
                 issues.push({
@@ -928,8 +1232,8 @@ function StoryHealthTab({ entities, chapters, mentions, projectPath }) {
             }
         });
 
-        // 4. Chapter balance — flag chapters with >50% deviation from target
-        sortedChapters.forEach(ch => {
+        // 4. Chapter balance — only active (draft/revised/final) chapters
+        activeChapters.forEach(ch => {
             if (!ch.target_word_count || ch.target_word_count <= 0 || !ch.word_count) return;
             const ratio = ch.word_count / ch.target_word_count;
             if (ratio > 1.5) {
@@ -963,11 +1267,38 @@ function StoryHealthTab({ entities, chapters, mentions, projectPath }) {
             }
         });
 
+        // 5. Senses coverage — only flag if we have enough chapters (≥2) with content
+        const missingSenses = [];
+        if (sensesData && sensesData.length >= 2) {
+            const allSenseKeys = Object.keys(sensesData[0]?.senses || {});
+            allSenseKeys.forEach(sense => {
+                const totalCount = sensesData.reduce((sum, ch) => sum + (ch.senses[sense] || 0), 0);
+                if (totalCount === 0) {
+                    missingSenses.push(sense);
+                    const cfg = SENSE_HEALTH[sense];
+                    if (cfg) {
+                        const msgKey = cfg.weight > 0 ? "stats.healthMissingSenseCore" : "stats.healthMissingSenseOptional";
+                        issues.push({
+                            severity: cfg.severity,
+                            category: "senses",
+                            message: t(msgKey, {
+                                defaultValue: cfg.weight > 0
+                                    ? `"${sense}" is absent from all chapters — consider weaving in some ${sense}-related description.`
+                                    : `"${sense}" never appears — not a dealbreaker, but it can add vivid atmosphere.`,
+                                sense,
+                            }),
+                            key: `sense-${sense}`,
+                        });
+                    }
+                }
+            });
+        }
+
         // Sort by severity
         issues.sort((a, b) => (SEVERITY_ORDER[a.severity] ?? 9) - (SEVERITY_ORDER[b.severity] ?? 9));
 
-        return { issues, orphans, introsByChapter };
-    }, [entities, chapters, mentions, twistData, t]);
+        return { issues, orphans, introsByChapter, missingSenses, activeChapters };
+    }, [entities, chapters, mentions, twistData, sensesData, t]);
 
     // Health score
     const healthScore = useMemo(() => {
@@ -985,24 +1316,44 @@ function StoryHealthTab({ entities, chapters, mentions, projectPath }) {
         const orphanPenalty = Math.min(25, diagnostics.orphans.length * 3);
         score -= orphanPenalty;
 
-        // Intro overload penalties
-        const sortedChapters = [...chapters].sort((a, b) => a.chapter_number - b.chapter_number);
-        sortedChapters.forEach(ch => {
+        // Intro overload penalties — active chapters only
+        const activeChapters = diagnostics.activeChapters || [];
+        activeChapters.forEach(ch => {
             const intros = diagnostics.introsByChapter[ch.id] || [];
             if (intros.length >= 6) score -= 10;
         });
 
-        // Chapter balance penalties (capped at -20)
+        // Chapter balance penalties — active chapters only, capped at -20
         let balancePenalty = 0;
-        sortedChapters.forEach(ch => {
+        activeChapters.forEach(ch => {
             if (!ch.target_word_count || ch.target_word_count <= 0 || !ch.word_count) return;
             const ratio = ch.word_count / ch.target_word_count;
             if (ratio > 1.5 || (ratio < 0.5 && ch.word_count > 0)) balancePenalty += 5;
         });
         score -= Math.min(20, balancePenalty);
 
-        return Math.max(0, Math.round(score));
-    }, [twistData, diagnostics, chapters]);
+        // Senses penalties (capped at -10 total)
+        const sensesPenalty = (diagnostics.missingSenses || []).reduce((sum, sense) => {
+            return sum + (SENSE_HEALTH[sense]?.weight || 0);
+        }, 0);
+        score -= Math.min(10, sensesPenalty);
+
+        // ── Positive bonuses ─────────────────────────────────────────────
+        // Revised/final chapters reward (capped at +20)
+        const polishedCount = chapters.filter(ch => ch.status === "revised" || ch.status === "final").length;
+        score += Math.min(20, polishedCount * 2);
+
+        // Entity coverage bonus: ≥75% of entities have at least one mention
+        const nonQuickEntities = entities.filter(e => e.type !== "quick_note" && e.type !== "quicknote");
+        if (nonQuickEntities.length > 0) {
+            const mentionedCount = nonQuickEntities.filter(ent =>
+                mentions.some(m => String(m.entity_id) === String(ent.id) && m.entity_type === ent.type)
+            ).length;
+            if (mentionedCount / nonQuickEntities.length >= 0.75) score += 5;
+        }
+
+        return Math.max(0, Math.min(100, Math.round(score)));
+    }, [twistData, diagnostics, chapters, entities, mentions]);
 
     const scoreColor = healthScore >= 80 ? "var(--accent-green)" : healthScore >= 50 ? "var(--accent-amber)" : "var(--accent-red)";
     const scoreLabel = healthScore >= 80 ? t('stats.healthGood', 'Good') : healthScore >= 50 ? t('stats.healthFair', 'Fair') : t('stats.healthPoor', 'Poor');

@@ -9,6 +9,7 @@ import ExportModal from './ExportModal'
 import StatsDashboard from './StatsDashboard'
 import EntityManager from './EntityManager'
 import WorldbuildAndHistory from './WorldbuildAndHistory'
+import JanitorPanel from './JanitorPanel'
 import changelogData from '../changelog.json'
 import WelcomeBackPrompt from './WelcomeBackPrompt'
 
@@ -242,6 +243,18 @@ export default function FleshNoteIDE({ projectConfig, projectPath, onCloseProjec
   const [scale, setScale] = useState(1.0)
   const isAltPressed = useRef(false)
 
+  // ── Janitor Panel State ────────────────────────────
+  const [janitorCollapsed, setJanitorCollapsed] = useState(
+    () => localStorage.getItem('fn_janitorCollapsed') !== 'false' // default closed
+  )
+  const [janitorSuggestions, setJanitorSuggestions] = useState([])
+  const [janitorLoading, setJanitorLoading] = useState(false)
+  const [janitorFocusSignal, setJanitorFocusSignal] = useState(0)
+  const janitorActionsRef = useRef(null)
+  const lastAnalyzedHtmlRef = useRef('')
+  const janitorPanelActivityRef = useRef(0) // timestamp of last user interaction inside the panel
+  const janitorPendingRetryRef = useRef(null) // deferred retry when panel is active
+
   // ── Stat Tracking: Time Auditing & Sprint Recovery ────────
   const lastTickTimeRef = useRef(Date.now())
   const processedSprintRef = useRef(null)
@@ -268,7 +281,7 @@ export default function FleshNoteIDE({ projectConfig, projectPath, onCloseProjec
     const now = Date.now()
     const lastOpened = projectConfig?.last_opened_at
     // Update the timestamp immediately so the next launch uses today's value
-    window.api.updateProjectConfig(projectPath, 'last_opened_at', now.toString(), 'string').catch(() => {})
+    window.api.updateProjectConfig(projectPath, 'last_opened_at', now.toString(), 'string').catch(() => { })
     if (lastOpened && (now - parseInt(lastOpened)) > 24 * 60 * 60 * 1000) {
       setShowWelcomeBack(true)
     }
@@ -562,6 +575,140 @@ export default function FleshNoteIDE({ projectConfig, projectPath, onCloseProjec
     }
   }, [projectPath])
 
+  // ── Janitor Analysis ──────────────────────────────
+  const triggerJanitorAnalysis = useCallback(async () => {
+    if (focusMode) return
+    if (!activeChapter || !projectPath) return
+    if (mainView !== 'editor') return
+    if (!chapterContent?.content) return
+    // Skip if content hasn't changed since last analysis (prevents 10s timer re-analyzing same text)
+    if (chapterContent.content === lastAnalyzedHtmlRef.current) return
+    // Don't refresh while user is actively browsing the panel — defer until they're done
+    if (Date.now() - janitorPanelActivityRef.current < 8000) {
+      if (janitorPendingRetryRef.current) clearTimeout(janitorPendingRetryRef.current)
+      janitorPendingRetryRef.current = setTimeout(() => triggerJanitorAnalysis(), 8000)
+      return
+    }
+
+    const htmlToAnalyze = chapterContent.content
+    setJanitorLoading(true)
+    try {
+      const result = await window.api.janitorAnalyze({
+        project_path: projectPath,
+        chapter_id: activeChapter.id,
+        html: htmlToAnalyze,
+        language: projectConfig?.story_language || 'en',
+        confidence_threshold: projectConfig?.janitor_sdt_confidence ?? 0.5,
+      })
+      if (result?.status === 'ok') {
+        lastAnalyzedHtmlRef.current = htmlToAnalyze
+        // Filter out already-dismissed suggestions so badge count matches panel count
+        const dismissKey = `fn_janitor_dismissed_${btoa(projectPath.slice(-20))}_${activeChapter.id}`
+        const dismissed = new Set(
+          JSON.parse(localStorage.getItem(dismissKey) || '[]').map(i => i.id)
+        )
+        setJanitorSuggestions((result.suggestions || []).filter(s => !dismissed.has(s.id)))
+      }
+    } catch (err) {
+      console.error('Janitor analysis failed:', err)
+    } finally {
+      setJanitorLoading(false)
+    }
+  }, [focusMode, activeChapter, projectPath, chapterContent, mainView, projectConfig])
+
+  const handleJanitorDismiss = useCallback((suggestion) => {
+    if (!projectPath || !activeChapter) return
+    const key = `fn_janitor_dismissed_${btoa(projectPath.slice(-20))}_${activeChapter.id}`
+    const existing = JSON.parse(localStorage.getItem(key) || '[]')
+    existing.push({ id: suggestion.id })
+    localStorage.setItem(key, JSON.stringify(existing))
+    setJanitorSuggestions(prev => prev.filter(s => s.id !== suggestion.id))
+  }, [projectPath, activeChapter])
+
+  const handleJanitorAccept = useCallback(async (suggestion) => {
+    const actions = janitorActionsRef.current
+    if (!actions) return
+
+    switch (suggestion.type) {
+      case 'link_existing':
+        actions.linkEntityAtOffset(suggestion.char_offset, suggestion.matched_text, suggestion.entity_type, suggestion.entity_id)
+        break
+      case 'create_entity': {
+        const createFn = {
+          character: window.api.createCharacter,
+          location: window.api.createLocation,
+          lore: window.api.createLoreEntity,
+        }[suggestion.entity_type]
+        if (createFn) {
+          const result = await createFn({ project_path: projectPath, name: suggestion.matched_text })
+          // Each API returns the id nested: { character: {id} }, { location: {id} }, { entity: {id} }
+          const newId = result?.character?.id ?? result?.location?.id ?? result?.entity?.id
+          if (newId) {
+            actions.linkEntityAtOffset(suggestion.char_offset, suggestion.matched_text, suggestion.entity_type, newId)
+            handleEntitiesChanged()
+            // Reset last-analyzed so the next trigger re-analyzes with the newly created entity
+            lastAnalyzedHtmlRef.current = ''
+          }
+        }
+        break
+      }
+      case 'alias':
+        await window.api.addEntityAlias({
+          project_path: projectPath,
+          entity_type: suggestion.entity_type,
+          entity_id: suggestion.entity_id,
+          alias: suggestion.matched_text
+        })
+        handleEntitiesChanged()
+        break
+      case 'typo':
+      case 'synonym':
+        if (suggestion.replacement) {
+          actions.replaceAtOffset(suggestion.char_offset, suggestion.matched_text, suggestion.replacement)
+        }
+        break
+      case 'show_dont_tell':
+      case 'pacing':
+        actions.navigateToCharOffset(suggestion.char_offset, suggestion.matched_text || '')
+        break
+      case 'five_senses':
+      case 'readability':
+        // Advisory only — just dismiss
+        break
+    }
+    handleJanitorDismiss(suggestion)
+  }, [janitorActionsRef, projectPath, handleEntitiesChanged, handleJanitorDismiss])
+
+  // Clear janitor on chapter change or focus mode entry
+  useEffect(() => {
+    setJanitorSuggestions([])
+    setJanitorLoading(false)
+    lastAnalyzedHtmlRef.current = ''
+  }, [activeChapter?.id])
+
+  useEffect(() => {
+    if (focusMode) {
+      setJanitorSuggestions([])
+      setJanitorLoading(false)
+    }
+  }, [focusMode])
+
+  // ── Alt+J global hotkey: open janitor and focus it ────
+  useEffect(() => {
+    const handleAltJ = (e) => {
+      if (e.altKey && (e.key === 'j' || e.key === 'J') && !focusMode) {
+        e.preventDefault()
+        if (janitorCollapsed) {
+          setJanitorCollapsed(false)
+          localStorage.setItem('fn_janitorCollapsed', 'false')
+        }
+        setJanitorFocusSignal(s => s + 1)
+      }
+    }
+    window.addEventListener('keydown', handleAltJ)
+    return () => window.removeEventListener('keydown', handleAltJ)
+  }, [focusMode, janitorCollapsed])
+
   return (
     <>
       {/* ── IDE HEADER TOOLBAR ──────────────────────── */}
@@ -637,6 +784,33 @@ export default function FleshNoteIDE({ projectConfig, projectPath, onCloseProjec
 
         {/* ── RIGHT SIDE BUTTONS ── */}
         <div style={{ display: 'flex', gap: 8, alignItems: 'center', position: 'relative' }}>
+          {!focusMode && mainView === 'editor' && (
+            <button
+              className="ide-header-btn"
+              title={t('janitor.toggleTitle', 'Toggle Janitor Panel')}
+              onClick={() => {
+                const next = !janitorCollapsed
+                setJanitorCollapsed(next)
+                localStorage.setItem('fn_janitorCollapsed', next)
+              }}
+              style={{
+                display: 'flex',
+                alignItems: 'center',
+                gap: 6,
+                padding: '0 12px',
+                color: janitorSuggestions.length > 0 ? 'var(--accent-amber)' : 'inherit'
+              }}
+            >
+              <span style={{ fontFamily: 'var(--font-mono)', fontSize: 14 }}>𐲟</span>
+              <span style={{ fontSize: 11, fontFamily: 'var(--font-mono)', textTransform: 'uppercase', letterSpacing: '0.1em' }}>
+                {t('janitor.title', 'Janitor')}
+              </span>
+              {janitorSuggestions.length > 0 && (
+                <span className="janitor-badge">{janitorSuggestions.length}</span>
+              )}
+            </button>
+          )}
+
           <button
             className="ide-header-btn"
             title={t('ide.optionsMenu', 'Options')}
@@ -1145,25 +1319,52 @@ export default function FleshNoteIDE({ projectConfig, projectPath, onCloseProjec
                 </div>
               </div>
             ) : (
-              <Editor
-                chapter={chapterContent}
-                onUpdate={handleEditorUpdate}
-                focusMode={focusMode}
-                onToggleFocus={toggleFocus}
-                characters={characters}
-                entities={entities}
-                twistIds={twistIds}
-                projectPath={projectPath}
-                projectConfig={projectConfig}
-                calConfig={calConfig}
-                chapters={chapters}
-                onChapterMetaUpdate={handleChapterMetaUpdate}
-                onEntityClick={handleEntityClick}
-                onTwistClick={handleTwistClick}
-                onEntitiesChanged={handleEntitiesChanged}
-                onConfigUpdate={onConfigUpdate}
-                scrollToWordOffset={scrollToWordOffset}
-              />
+              <>
+                <Editor
+                  chapter={chapterContent}
+                  onUpdate={handleEditorUpdate}
+                  focusMode={focusMode}
+                  onToggleFocus={toggleFocus}
+                  characters={characters}
+                  entities={entities}
+                  twistIds={twistIds}
+                  projectPath={projectPath}
+                  projectConfig={projectConfig}
+                  calConfig={calConfig}
+                  chapters={chapters}
+                  onChapterMetaUpdate={handleChapterMetaUpdate}
+                  onEntityClick={handleEntityClick}
+                  onTwistClick={handleTwistClick}
+                  onEntitiesChanged={handleEntitiesChanged}
+                  onConfigUpdate={onConfigUpdate}
+                  scrollToWordOffset={scrollToWordOffset}
+                  janitorActionsRef={janitorActionsRef}
+                  onJanitorTrigger={focusMode ? null : triggerJanitorAnalysis}
+                />
+                {!focusMode && (
+                  <JanitorPanel
+                    suggestions={janitorSuggestions}
+                    isLoading={janitorLoading}
+                    isCollapsed={janitorCollapsed}
+                    onToggle={() => {
+                      const next = !janitorCollapsed
+                      setJanitorCollapsed(next)
+                      localStorage.setItem('fn_janitorCollapsed', next)
+                    }}
+                    onDismiss={handleJanitorDismiss}
+                    onAccept={handleJanitorAccept}
+                    onNavigate={(suggestion) => {
+                      janitorActionsRef.current?.navigateToCharOffset(suggestion.char_offset, suggestion.matched_text || '')
+                    }}
+                    chapterId={activeChapter?.id}
+                    projectPath={projectPath}
+                    projectConfig={projectConfig}
+                    autoFocusSignal={janitorFocusSignal}
+                    onReturnFocus={() => janitorActionsRef.current?.focusEditor()}
+                    onActivity={() => { janitorPanelActivityRef.current = Date.now() }}
+                  />
+                )}
+              </>
             )}
           </>
         )}

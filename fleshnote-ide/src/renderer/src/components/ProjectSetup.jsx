@@ -1,6 +1,7 @@
 import { useState, useCallback } from 'react'
 import { useTranslation } from 'react-i18next'
 import EntityExtractor from './EntityExtractor'
+import ImportManuscript from './ImportManuscript'
 
 // ─── ICONS ──────────────────────────────────────────────────────────────────
 
@@ -164,9 +165,7 @@ export default function ProjectSetup({ projectPath, projectConfig, onComplete, o
   const [customChapterCount, setCustomChapterCount] = useState(25)
 
   // ── Import Path State ───────────────────────────────
-  const [importFile, setImportFile] = useState(null)
   const [splits, setSplits] = useState([])
-  const [importLoading, setImportLoading] = useState(false)
   const [showExtractor, setShowExtractor] = useState(false)
 
   const genre = projectConfig?.genre || 'custom'
@@ -241,53 +240,6 @@ export default function ProjectSetup({ projectPath, projectConfig, onComplete, o
     } finally {
       setLoading(false)
     }
-  }
-
-  // ── Import: Select file (appends to existing splits) ─
-  const handleSelectFile = async () => {
-    const filePath = await window.api.openFile([
-      { name: 'Manuscripts', extensions: ['txt', 'md', 'docx'] },
-      { name: 'All Files', extensions: ['*'] }
-    ])
-    if (filePath) {
-      setImportFile(filePath)
-      setImportLoading(true)
-      try {
-        const result = await window.api.importSplitPreview({
-          project_path: projectPath,
-          file_path: filePath
-        })
-        const newSplits = result.splits || []
-        // Append to existing splits so users can load multiple files in order
-        setSplits((prev) => [...prev, ...newSplits])
-      } catch (err) {
-        console.error('Split preview failed:', err)
-        alert('Failed to parse file: ' + err.message)
-      } finally {
-        setImportLoading(false)
-      }
-    }
-  }
-
-  // ── Import: Merge two splits ────────────────────────
-  const mergeSplit = (index) => {
-    if (index <= 0 || index >= splits.length) return
-    setSplits((prev) => {
-      const newSplits = [...prev]
-      const merged = {
-        title: newSplits[index - 1].title,
-        content: newSplits[index - 1].content + '\n\n' + newSplits[index].content,
-        preview: newSplits[index - 1].preview,
-        word_count: newSplits[index - 1].word_count + newSplits[index].word_count
-      }
-      newSplits.splice(index - 1, 2, merged)
-      return newSplits
-    })
-  }
-
-  // ── Import: Rename a split ──────────────────────────
-  const renameSplit = (index, newTitle) => {
-    setSplits((prev) => prev.map((s, i) => (i === index ? { ...s, title: newTitle } : s)))
   }
 
   // ── Import: Confirm splits ──────────────────────────
@@ -604,97 +556,14 @@ export default function ProjectSetup({ projectPath, projectConfig, onComplete, o
 
           {/* Step 1: Chapter Import */}
           {step === 1 && (
-            <>
-              <h2 className="setup-title">{t('setup.importManuscriptTitle', 'Import Manuscript')}</h2>
-              <p className="setup-subtitle">
-                {t('setup.importManuscriptSubtitle', 'Select your manuscript file. We\'ll attempt to split it into chapters automatically.')}
-              </p>
-
-              <div style={{ display: 'flex', gap: 12, marginBottom: 16 }}>
-                <button
-                  className="setup-btn secondary"
-                  onClick={handleSelectFile}
-                  style={{ flex: 1 }}
-                >
-                  <Icons.Upload /> {t('setup.selectFile', 'Select File (.txt, .md, .docx)')}
-                </button>
-              </div>
-
-              {importFile && (
-                <div
-                  style={{
-                    fontFamily: 'var(--font-mono)',
-                    fontSize: 11,
-                    color: 'var(--text-secondary)',
-                    marginBottom: 16,
-                    padding: '8px 12px',
-                    background: 'var(--bg-elevated)',
-                    border: '1px solid var(--border-subtle)'
-                  }}
-                >
-                  {importFile}
-                </div>
-              )}
-
-              {importLoading && (
-                <div
-                  style={{
-                    textAlign: 'center',
-                    padding: 32,
-                    color: 'var(--accent-amber)',
-                    fontFamily: 'var(--font-mono)',
-                    fontSize: 12
-                  }}
-                >
-                  {t('setup.analyzingFile', 'Analyzing file and detecting chapters...')}
-                </div>
-              )}
-
-              {splits.length > 0 && !importLoading && (
-                <>
-                  <div
-                    style={{
-                      fontFamily: 'var(--font-mono)',
-                      fontSize: 11,
-                      color: 'var(--text-tertiary)',
-                      marginBottom: 12
-                    }}
-                  >
-                    {t('setup.foundChapters', 'Found {{count}} chapters · {{words}} words total', {
-                      count: splits.length,
-                      words: splits.reduce((s, c) => s + c.word_count, 0).toLocaleString()
-                    })}
-                  </div>
-
-                  <div className="setup-splits-list">
-                    {splits.map((split, i) => (
-                      <div key={i}>
-                        {i > 0 && (
-                          <div className="setup-split-action">
-                            <button className="setup-split-btn" onClick={() => mergeSplit(i)}>
-                              {t('setup.mergePrevious', 'Merge with previous')}
-                            </button>
-                          </div>
-                        )}
-                        <div className="setup-split-item">
-                          <div className="setup-split-header">
-                            <input
-                              className="setup-split-title-input"
-                              value={split.title}
-                              onChange={(e) => renameSplit(i, e.target.value)}
-                            />
-                            <span className="setup-split-words">
-                              {t('setup.wordsUnit', '{{count}} words', { count: split.word_count.toLocaleString() })}
-                            </span>
-                          </div>
-                          <div className="setup-split-preview">{split.preview}...</div>
-                        </div>
-                      </div>
-                    ))}
-                  </div>
-                </>
-              )}
-            </>
+            <ImportManuscript 
+              projectPath={projectPath} 
+              splits={splits} 
+              setSplits={setSplits} 
+              onCancel={() => setMode(null)} 
+              onConfirm={handleConfirmSplits} 
+              loading={loading} 
+            />
           )}
 
           {/* Step 2: Entity Detection */}
@@ -779,28 +648,15 @@ export default function ProjectSetup({ projectPath, projectConfig, onComplete, o
             </>
           )}
 
-          {/* Navigation (hidden on step 2 since EntityExtractor has its own) */}
-          {step !== 2 && (
+          {/* Navigation (hidden on step 1 and 2 since they have their own) */}
+          {step === 3 && (
             <div style={{ display: 'flex', gap: 12, marginTop: 32 }}>
               <button
                 className="setup-btn secondary"
-                onClick={() => {
-                  if (step > 1) setStep(step - 1)
-                  else setMode(null)
-                }}
+                onClick={() => setStep(step - 1)}
               >
-                {step > 1 ? t('setup.back', 'Back') : t('setup.cancel', 'Cancel')}
+                {t('setup.back', 'Back')}
               </button>
-
-              {step === 1 && splits.length > 0 && (
-                <button
-                  className="setup-btn primary"
-                  onClick={handleConfirmSplits}
-                  disabled={loading}
-                >
-                  {loading ? t('setup.importing', 'Importing...') : t('setup.confirmChapters', 'Confirm {{count}} Chapters', { count: splits.length })}
-                </button>
-              )}
 
               {step === 3 && (
                 <button

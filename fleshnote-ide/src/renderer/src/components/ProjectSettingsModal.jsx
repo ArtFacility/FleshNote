@@ -145,6 +145,12 @@ export default function ProjectSettingsModal({ isOpen, onClose, projectPath, onC
                         >
                             {t('settings.tabAccessibility', 'Accessibility')}
                         </button>
+                        <button
+                            className={activeTab === 'janitor' ? 'active' : ''}
+                            onClick={() => setActiveTab('janitor')}
+                        >
+                            {t('settings.tabJanitor', 'The Janitor')}
+                        </button>
                     </div>
 
                     <div className="settings-content">
@@ -380,6 +386,59 @@ export default function ProjectSettingsModal({ isOpen, onClose, projectPath, onC
                                     </label>
                                 </div>
 
+                            </div>
+                        )}
+
+                        {activeTab === 'janitor' && (
+                            <div className="settings-section">
+                                <h3>{t('settings.janitorTitle', 'Janitor Suggestion Types')}</h3>
+                                <p className="settings-desc mb-4">{t('settings.janitorDesc', 'Choose which types of suggestions The Janitor shows in the side panel.')}</p>
+
+                                {[
+                                    ['janitor_show_link_existing', 'janitor.types.link_existing', 'Link'],
+                                    ['janitor_show_create_entity', 'janitor.types.create_entity', 'New Entity'],
+                                    ['janitor_show_alias', 'janitor.types.alias', 'Alias'],
+                                    ['janitor_show_typo', 'janitor.types.typo', 'Typo'],
+                                    ['janitor_show_synonym', 'janitor.types.synonym', 'Synonym'],
+                                    ['janitor_show_weak_adverbs', 'janitor.types.weak_adverbs', 'Weak Adverbs'],
+                                    ['janitor_show_passive_voice', 'janitor.types.passive_voice', 'Passive Voice'],
+                                    ['janitor_show_show_dont_tell', 'janitor.types.show_dont_tell', "Show, Don't Tell"],
+                                    ['janitor_show_pacing', 'janitor.types.pacing', 'Pacing & Rhythm'],
+                                ].map(([key, labelKey, fallback]) => (
+                                    <div className="settings-card" key={key}>
+                                        <label className="checkbox-label">
+                                            <input
+                                                type="checkbox"
+                                                checked={config[key] !== false}
+                                                onChange={() => handleUpdate(key, config[key] !== false ? false : true, 'toggle')}
+                                            />
+                                            <div>
+                                                <strong>{t(labelKey, fallback)}</strong>
+                                            </div>
+                                        </label>
+                                    </div>
+                                ))}
+
+                                {config.janitor_show_show_dont_tell !== false && (
+                                    <div className="settings-card">
+                                        <label style={{ display: 'block', marginBottom: 6 }}>
+                                            <strong>{t('settings.janitorSdtConfidence', "Show, Don't Tell — Detection Sensitivity")}</strong>
+                                        </label>
+                                        <div style={{ display: 'flex', alignItems: 'center', gap: 10 }}>
+                                            <input
+                                                type="range"
+                                                min={0.3} max={0.9} step={0.05}
+                                                value={config.janitor_sdt_confidence ?? 0.5}
+                                                onChange={(e) => handleUpdate('janitor_sdt_confidence', parseFloat(e.target.value), 'meta')}
+                                                style={{ flex: 1 }}
+                                            />
+                                            <span style={{ fontFamily: 'var(--font-mono)', fontSize: 12, minWidth: 36 }}>
+                                                {(((config.janitor_sdt_confidence ?? 0.5) * 100).toFixed(0))}%
+                                            </span>
+                                        </div>
+                                        <p className="settings-desc">{t('settings.janitorSdtConfidenceDesc', 'Lower = more suggestions (may include false positives). Higher = only high-confidence tells.')}</p>
+                                    </div>
+                                )}
                             </div>
                         )}
 

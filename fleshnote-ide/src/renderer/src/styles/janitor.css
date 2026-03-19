@@ -1,0 +1,76 @@
+.janitor-rune {
+    font-size: 16px;
+    color: var(--text-secondary);
+    font-family: 'Segoe UI Symbol', 'Noto Sans Runic', sans-serif;
+    margin-inline-end: 2px;
+}
+
+.janitor-context {
+    font-size: 12px;
+    font-family: var(--font-serif);
+    color: var(--text-secondary);
+    line-height: 1.6;
+    padding: 6px 8px;
+    margin-bottom: 10px;
+    background: var(--bg-deep);
+    border: 1px solid var(--border-subtle);
+    cursor: pointer;
+    transition: border-color 0.15s;
+}
+.janitor-context:hover { border-color: var(--accent-amber); }
+
+.janitor-context-highlight {
+    background: rgba(196, 167, 76, 0.25);
+    color: var(--accent-amber);
+    font-weight: 600;
+    border-radius: 2px;
+    padding: 0 2px;
+}
+
+.janitor-card-selected {
+    background: rgba(196, 167, 76, 0.06) !important;
+    outline: 1px solid rgba(196, 167, 76, 0.25);
+    outline-offset: -1px;
+}
+
+.janitor-scanning {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 12px;
+    color: var(--text-tertiary);
+    font-family: var(--font-mono);
+    font-size: 10px;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+}
+
+.janitor-scanning-dot {
+    width: 6px;
+    height: 6px;
+    background: var(--accent-amber);
+    border-radius: 50%;
+    animation: janitor-pulse 1.5s ease infinite;
+    flex-shrink: 0;
+}
+
+@keyframes janitor-pulse {
+    0%, 100% { opacity: 0.3; }
+    50% { opacity: 1; }
+}
+
+.janitor-badge {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    min-width: 16px;
+    height: 16px;
+    padding: 0 4px;
+    background: var(--accent-amber);
+    color: var(--bg-deep);
+    border-radius: 8px;
+    font-size: 10px;
+    font-weight: 700;
+    font-family: var(--font-mono);
+    line-height: 1;
+}

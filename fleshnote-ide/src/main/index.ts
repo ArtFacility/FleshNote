@@ -5,6 +5,7 @@ import { electronApp, optimizer, is } from '@electron-toolkit/utils'
 import icon from '../../resources/icon.png?asset'
 import { spawn, ChildProcessWithoutNullStreams } from 'child_process'
 import killPort from 'kill-port'
+import { autoUpdater } from 'electron-updater'
 
 let pythonProcess: ChildProcessWithoutNullStreams | null = null
 let backendStderr = ''
@@ -702,6 +703,66 @@ app.whenReady().then(async () => {
 
   ipcMain.handle('api:spellCheckIgnore', async (_event, payload) => {
     return await backendPost('/api/project/spellcheck/ignore', payload)
+  })
+
+  // ── Janitor ────────────────────────────────────────
+  ipcMain.handle('api:janitorAnalyze', async (_event, payload) => {
+    return await backendPost('/api/project/janitor/analyze', payload)
+  })
+  ipcMain.handle('api:janitorSensesOverview', async (_event, payload) => {
+    return await backendPost('/api/project/janitor/senses-overview', payload)
+  })
+
+  // ── Auto Updater ───────────────────────────────────
+  ipcMain.handle('api:checkForUpdates', () => {
+    if (!app.isPackaged) return // don't check in dev mode
+
+    const isAppImage = process.env.APPIMAGE !== undefined
+    const canAutoUpdate = process.platform === 'win32' || isAppImage
+
+    autoUpdater.autoDownload = false
+    autoUpdater.autoInstallOnAppQuit = false
+
+    if (!autoUpdater.listenerCount('update-available')) {
+      autoUpdater.on('update-available', (info) => {
+        BrowserWindow.getAllWindows().forEach((win) => {
+          win.webContents.send('update-event', { type: 'update-available', info, canAutoUpdate })
+        })
+      })
+      autoUpdater.on('update-not-available', (info) => {
+        BrowserWindow.getAllWindows().forEach((win) => {
+          win.webContents.send('update-event', { type: 'update-not-available', info })
+        })
+      })
+      autoUpdater.on('error', (err) => {
+        console.error('Updater error:', err)
+        BrowserWindow.getAllWindows().forEach((win) => {
+          win.webContents.send('update-event', { type: 'error', message: err.message })
+        })
+      })
+      autoUpdater.on('download-progress', (progressObj) => {
+        BrowserWindow.getAllWindows().forEach((win) => {
+          win.webContents.send('update-event', { type: 'download-progress', progress: progressObj.percent })
+        })
+      })
+      autoUpdater.on('update-downloaded', (info) => {
+        BrowserWindow.getAllWindows().forEach((win) => {
+          win.webContents.send('update-event', { type: 'update-downloaded', info })
+        })
+      })
+    }
+
+    autoUpdater.checkForUpdates().catch((err) => {
+      console.error('Failed to check for updates:', err)
+    })
+  })
+
+  ipcMain.handle('api:downloadUpdate', () => {
+    autoUpdater.downloadUpdate().catch((err) => console.error('Failed to download update:', err))
+  })
+
+  ipcMain.handle('api:installUpdate', () => {
+    autoUpdater.quitAndInstall()
   })
 
   // ── Dev Tools ──────────────────────────────────────

@@ -198,13 +198,17 @@ export default function Editor({
   projectConfig,
   calConfig,
   onConfigUpdate,
-  scrollToWordOffset // { wordOffset, timestamp } — triggers scroll to word position
+  scrollToWordOffset, // { wordOffset, timestamp } — triggers scroll to word position
+  janitorActionsRef,  // ref that receives { navigateToCharOffset, linkEntityAtOffset, replaceAtOffset }
+  onJanitorTrigger    // called when 100-word boundary crossed or 10s idle
 }) {
   const { t, i18n } = useTranslation()
   const saveTimeoutRef = useRef(null)
 
   const latestContentRef = useRef({ html: '', words: 0, isDirty: false })
   const onUpdateRef = useRef(onUpdate)
+  const lastJanitorWordCountRef = useRef(0)
+  const janitorInactivityTimerRef = useRef(null)
 
   useEffect(() => {
     onUpdateRef.current = onUpdate
@@ -544,7 +548,19 @@ export default function Editor({
           onUpdate(html, words)
           latestContentRef.current.isDirty = false
         }, 500)
+
+        // Janitor: trigger at 100-word boundaries
+        const prevBoundary = Math.floor(lastJanitorWordCountRef.current / 100)
+        const currBoundary = Math.floor(words / 100)
+        if (currBoundary > prevBoundary) {
+          lastJanitorWordCountRef.current = words
+          onJanitorTrigger?.()
+        }
       }
+      // Janitor: 10-second inactivity trigger
+      if (janitorInactivityTimerRef.current) clearTimeout(janitorInactivityTimerRef.current)
+      janitorInactivityTimerRef.current = setTimeout(() => onJanitorTrigger?.(), 10000)
+
       // Debounced gutter re-measure on content change
       if (gutterMeasureTimeoutRef.current) clearTimeout(gutterMeasureTimeoutRef.current)
       gutterMeasureTimeoutRef.current = setTimeout(() => setGutterMeasureTick(t => t + 1), 100)
@@ -744,6 +760,144 @@ export default function Editor({
       }, 100)
     }
   }, [editor, scrollToWordOffset])
+
+  // ── Janitor actions ref population ──────────────────
+  useEffect(() => {
+    if (!janitorActionsRef) return
+
+    janitorActionsRef.current = {
+      navigateToCharOffset(charOffset, matchedText = '') {
+        if (!editor || editor.isDestroyed) return
+        let plain = 0
+        let approxPos = null
+        editor.state.doc.descendants((node, pos) => {
+          if (!node.isText) return
+          const end = plain + node.text.length
+          if (charOffset >= plain && charOffset <= end && approxPos === null) {
+            approxPos = pos + Math.min(charOffset - plain, node.text.length)
+          }
+          plain = end
+        })
+        if (approxPos === null) return
+        
+        let targetFrom = approxPos
+        let targetTo = approxPos + (matchedText ? matchedText.length : 0)
+
+        if (matchedText) {
+          const radius = 40
+          const searchFrom = Math.max(0, approxPos - radius)
+          const searchTo = Math.min(editor.state.doc.content.size, approxPos + matchedText.length + radius)
+          let foundFrom = null
+          let foundTo = null
+          editor.state.doc.nodesBetween(searchFrom, searchTo, (node, pos) => {
+            if (foundFrom !== null) return false
+            if (!node.isText) return
+            const nodeFrom = Math.max(0, searchFrom - pos)
+            const slice = node.text.slice(nodeFrom)
+            const idx = slice.toLowerCase().indexOf(matchedText.toLowerCase())
+            if (idx !== -1) {
+              foundFrom = pos + nodeFrom + idx
+              foundTo = foundFrom + matchedText.length
+            }
+          })
+          if (foundFrom !== null) {
+            targetFrom = foundFrom
+            targetTo = foundTo
+          }
+        }
+
+        setTimeout(() => {
+          editor.commands.focus()
+          if (matchedText && targetTo > targetFrom) {
+            editor.commands.setTextSelection({ from: targetFrom, to: targetTo })
+          } else {
+            editor.commands.setTextSelection(targetFrom)
+          }
+          editor.commands.scrollIntoView()
+        }, 100)
+      },
+      linkEntityAtOffset(charOffset, matchedText, entityType, entityId) {
+        if (!editor || editor.isDestroyed) return
+        // Walk text nodes to find approximate TipTap position
+        let plain = 0
+        let approxPos = null
+        editor.state.doc.descendants((node, pos) => {
+          if (!node.isText) return
+          const end = plain + node.text.length
+          if (charOffset >= plain && charOffset <= end && approxPos === null) {
+            approxPos = pos + Math.min(charOffset - plain, node.text.length)
+          }
+          plain = end
+        })
+        if (approxPos === null) return
+        // Search for matchedText in a window around approxPos (handles minor offset drift)
+        const radius = 40
+        const searchFrom = Math.max(0, approxPos - radius)
+        const searchTo = Math.min(editor.state.doc.content.size, approxPos + matchedText.length + radius)
+        let foundFrom = null
+        let foundTo = null
+        editor.state.doc.nodesBetween(searchFrom, searchTo, (node, pos) => {
+          if (foundFrom !== null) return false
+          if (!node.isText) return
+          // Skip nodes already carrying an entityLink mark
+          if (node.marks.some(m => m.type.name === 'entityLink')) return
+          const nodeFrom = Math.max(0, searchFrom - pos)
+          const slice = node.text.slice(nodeFrom)
+          const idx = slice.toLowerCase().indexOf(matchedText.toLowerCase())
+          if (idx !== -1) {
+            foundFrom = pos + nodeFrom + idx
+            foundTo = foundFrom + matchedText.length
+          }
+        })
+        if (foundFrom !== null) {
+          editor.chain()
+            .setTextSelection({ from: foundFrom, to: foundTo })
+            .setEntityLink({ entityType, entityId })
+            .run()
+        }
+      },
+      replaceAtOffset(charOffset, matchedText, replacement) {
+        if (!editor || editor.isDestroyed) return
+        let plain = 0
+        let approxPos = null
+        editor.state.doc.descendants((node, pos) => {
+          if (!node.isText) return
+          const end = plain + node.text.length
+          if (charOffset >= plain && charOffset <= end && approxPos === null) {
+            approxPos = pos + Math.min(charOffset - plain, node.text.length)
+          }
+          plain = end
+        })
+        if (approxPos === null) return
+        const radius = 40
+        const searchFrom = Math.max(0, approxPos - radius)
+        const searchTo = Math.min(editor.state.doc.content.size, approxPos + matchedText.length + radius)
+        let foundFrom = null
+        let foundTo = null
+        editor.state.doc.nodesBetween(searchFrom, searchTo, (node, pos) => {
+          if (foundFrom !== null) return false
+          if (!node.isText) return
+          const nodeFrom = Math.max(0, searchFrom - pos)
+          const slice = node.text.slice(nodeFrom)
+          const idx = slice.toLowerCase().indexOf(matchedText.toLowerCase())
+          if (idx !== -1) {
+            foundFrom = pos + nodeFrom + idx
+            foundTo = foundFrom + matchedText.length
+          }
+        })
+        if (foundFrom !== null) {
+          editor.chain()
+            .setTextSelection({ from: foundFrom, to: foundTo })
+            .insertContent(replacement)
+            .run()
+        }
+      },
+      focusEditor() {
+        if (!editor || editor.isDestroyed) return
+        editor.commands.focus()
+      }
+    }
+  }, [editor, janitorActionsRef])
 
   // ── Context menu handlers ───────────────────────────
 

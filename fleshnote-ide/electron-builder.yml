@@ -1,6 +1,10 @@
 appId: com.artfacility.fleshnote
 productName: FleshNote
 copyright: Copyright © 2026 Artfacility
+publish:
+  provider: github
+  owner: ArtFacility
+  repo: FleshNote
 directories:
   buildResources: build
 files:
