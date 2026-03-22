@@ -62,3 +62,11 @@ The "Story Health" tab provides an automated structural audit by cross-referenci
 - **Orphan Entities**: Flags Characters or Locations that have been created in the database but have zero mentions (`entity_mentions`) in the current manuscript.
 - **Introduction Overload**: Detects "info-dump" chapters where more than 6 new entities are introduced for the first time, warning about potential reader cognitive load.
 - **Pacing Balance**: Compares actual word counts against user-defined Chapter Targets, flagging chapters that deviate by more than 50% as potential pacing red flags.
+
+---
+
+## 6. Sensory Analysis & Readability
+FleshNote provides deep linguistic feedback to improve prose quality:
+
+- **Sensory Analysis (The 5 Senses)**: Analyzes the distribution of sensory vocabulary (sight, sound, smell, touch, taste) across the manuscript. Flags chapters where specific senses are completely absent, helping authors avoid "white room syndrome" and create more immersive settings.
+- **Readability**: Computes text complexity metrics and highlights structural issues to ensure the prose remains engaging without being overly dense.

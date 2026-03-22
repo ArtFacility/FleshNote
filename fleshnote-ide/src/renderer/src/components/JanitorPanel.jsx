@@ -1,6 +1,7 @@
 import { useMemo, useState, useEffect, useRef, useCallback } from 'react'
 import { useTranslation } from 'react-i18next'
 import '../styles/janitor.css'
+import { matchesHotkey } from '../utils/hotkeyMatcher'
 
 const RUNE_ICONS = {
   link_existing: 'ᚠ',
@@ -79,6 +80,7 @@ export default function JanitorPanel({
   autoFocusSignal,
   onReturnFocus,
   onActivity,
+  hotkeys = { janitor_accept: 'y', janitor_dismiss: 'n' },
 }) {
   const { t } = useTranslation()
   const panelRef = useRef(null)
@@ -141,11 +143,11 @@ export default function JanitorPanel({
     } else if (e.key === 'ArrowUp') {
       e.preventDefault()
       setSelectedIndex(i => Math.max(i - 1, 0))
-    } else if (e.key === 'y' || e.key === 'Y') {
+    } else if (matchesHotkey(e, hotkeys.janitor_accept)) {
       e.preventDefault()
       const s = visibleSuggestions[selectedIndex]
       if (s) onAccept(s)
-    } else if (e.key === 'n' || e.key === 'N') {
+    } else if (matchesHotkey(e, hotkeys.janitor_dismiss)) {
       e.preventDefault()
       const s = visibleSuggestions[selectedIndex]
       if (s) onDismiss(s)
@@ -153,7 +155,7 @@ export default function JanitorPanel({
       e.preventDefault()
       onReturnFocus?.()
     }
-  }, [visibleSuggestions, selectedIndex, onAccept, onDismiss, onReturnFocus])
+  }, [visibleSuggestions, selectedIndex, onAccept, onDismiss, onReturnFocus, hotkeys])
 
   const acceptLabel = (type) => {
     switch (type) {

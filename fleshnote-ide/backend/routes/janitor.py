@@ -981,6 +981,9 @@ def janitor_senses_overview(req: SensesOverviewRequest):
             if req.language == "hu":
                 from routes.hun_janitor import _count_senses_hu
                 senses = _count_senses_hu(plain)
+            elif req.language == "pl":
+                from routes.pol_janitor import _count_senses_pl
+                senses = _count_senses_pl(plain)
             else:
                 words = set(re.findall(r'\b[a-zA-Z]+\b', plain.lower()))
                 senses = {sense: len(words & lexicon) for sense, lexicon in EN_SENSES.items()}
@@ -1027,6 +1030,19 @@ def janitor_analyze(req: JanitorRequest):
             sdt = _analyze_show_dont_tell_hu(plain_text, req.language, req.confidence_threshold)
             pacing = _analyze_pacing_hu(plain_text, req.language)
             five_senses = _analyze_five_senses_hu(plain_text, req.language)
+        elif req.language == "pl":
+            from routes.pol_janitor import (
+                _analyze_weak_adverbs_pl,
+                _analyze_passive_voice_pl,
+                _analyze_show_dont_tell_pl,
+                _analyze_pacing_pl,
+                _analyze_five_senses_pl,
+            )
+            weak_adverbs = _analyze_weak_adverbs_pl(plain_text, req.language)
+            passive_voice = _analyze_passive_voice_pl(plain_text, req.language)
+            sdt = _analyze_show_dont_tell_pl(plain_text, req.language, req.confidence_threshold)
+            pacing = _analyze_pacing_pl(plain_text, req.language)
+            five_senses = _analyze_five_senses_pl(plain_text, req.language)
         else:
             weak_adverbs = _analyze_weak_adverbs(plain_text, req.language)
             passive_voice = _analyze_passive_voice(plain_text, req.language)

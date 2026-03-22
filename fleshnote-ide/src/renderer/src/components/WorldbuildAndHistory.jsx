@@ -1244,7 +1244,11 @@ export default function WorldbuildAndHistory({ projectPath, chapters, entities, 
                     />
                 )}
                 {activeTab === "calendar" && (
-                    <CustomCalendarPlanner projectPath={projectPath} onCalendarChanged={onCalendarChanged} />
+                    <CustomCalendarPlanner
+                        projectPath={projectPath}
+                        onCalendarChanged={onCalendarChanged}
+                        projectConfig={projectConfig}
+                    />
                 )}
                 {activeTab === "sketchboards" && (
                     <Sketchboards projectPath={projectPath} entities={entities} />

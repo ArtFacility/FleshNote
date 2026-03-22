@@ -162,6 +162,7 @@ export default function ProjectPicker({
   const [deletingProject, setDeletingProject] = useState(null)
   const [showChangelog, setShowChangelog] = useState(false)
   const [showAbout, setShowAbout] = useState(false)
+  const [showCredits, setShowCredits] = useState(false)
   const [updateState, setUpdateState] = useState({ status: 'idle' })
 
   const fetchProjects = async (path) => {
@@ -563,7 +564,7 @@ export default function ProjectPicker({
                 </a>
               </div>
 
-              <a href="https://artfacility.xyz" target="_blank" rel="noreferrer" style={{ color: 'var(--accent-amber)', textDecoration: 'none', fontSize: '13px', fontFamily: 'var(--font-mono)', display: 'flex', alignItems: 'center', gap: '8px' }}>
+              <a href="https://artfacility.xyz" target="_blank" rel="noreferrer" style={{ color: 'var(--accent-amber)', textDecoration: 'none', fontSize: '13px', fontFamily: 'var(--font-mono)', display: 'flex', alignItems: 'center', gap: '8px', marginBottom: '16px' }}>
                 <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
                   <path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"></path>
                   <polyline points="15 3 21 3 21 9"></polyline>
@@ -571,6 +572,69 @@ export default function ProjectPicker({
                 </svg>
                 {t('picker.websiteLink', 'Visit artfacility.xyz')}
               </a>
+
+              <button
+                onClick={() => setShowCredits(true)}
+                style={{
+                  padding: '10px 16px',
+                  backgroundColor: 'var(--bg-elevated)',
+                  border: '1px solid var(--border-subtle)',
+                  color: 'var(--text-secondary)',
+                  borderRadius: '4px',
+                  fontFamily: 'var(--font-mono)',
+                  fontSize: '12px',
+                  cursor: 'pointer',
+                  transition: 'all 0.2s',
+                  width: '100%',
+                  textAlign: 'center',
+                  fontWeight: 'bold',
+                  textTransform: 'uppercase'
+                }}
+                onMouseEnter={(e) => { e.currentTarget.style.color = 'var(--text-primary)'; e.currentTarget.style.borderColor = 'var(--text-primary)' }}
+                onMouseLeave={(e) => { e.currentTarget.style.color = 'var(--text-secondary)'; e.currentTarget.style.borderColor = 'var(--border-subtle)' }}
+              >
+                {t('picker.thirdPartyCreditsBtn', 'Third-Party Licenses & Credits')}
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* ── Credits Modal ── */}
+      {showCredits && (
+        <div className="popup-overlay" onClick={() => setShowCredits(false)} style={{ zIndex: 10000 }}>
+          <div className="popup-panel" onClick={(e) => e.stopPropagation()} style={{ position: 'relative', width: 500, maxHeight: '80vh', display: 'flex', flexDirection: 'column' }}>
+            <div className="popup-header" style={{ marginBottom: 12 }}>
+              <span style={{ color: 'var(--accent-amber)' }}>{t('picker.creditsTitle', 'Third-Party Licenses')}</span>
+              <button className="popup-close" onClick={() => setShowCredits(false)}>&times;</button>
+            </div>
+            <div style={{ overflowY: 'auto', paddingInline: '20px', paddingBottom: '20px', color: 'var(--text-secondary)', fontSize: '12px', fontFamily: 'var(--font-mono)', lineHeight: 1.6, whiteSpace: 'pre-wrap' }}>
+              {`FleshNote is made possible by the following incredible open-source projects:
+
+--- FRONTEND (MIT License) ---
+• React & React DOM
+• Electron & Electron-Vite
+• TipTap Editor (and extensions)
+• TailwindCSS
+• Recharts
+• i18next
+• Tippy.js
+
+--- BACKEND (MIT / BSD / Apache 2.0) ---
+• FastAPI & Uvicorn
+• Pydantic
+• spaCy & huSpaCy
+• NLTK (Apache 2.0)
+• python-docx & lxml
+• xhtml2pdf 
+• phunspell (Hunspell wrappers)
+
+--- SPECIAL LICENSES ---
+• ebooklib (AGPL-3.0) - The FleshNote backend is open-source, complying with AGPL-3.0 terms for this dependency.
+• PyInstaller (GPL-2.0 w/ Bootloader Exception) - Used to freeze the offline Python environment securely.
+• Hunspell Dictionaries - Varies by language (MPL, LGPL, GPL).
+
+All trademarks and copyrights belong to their respective owners. Support open source!`}
             </div>
           </div>
         </div>

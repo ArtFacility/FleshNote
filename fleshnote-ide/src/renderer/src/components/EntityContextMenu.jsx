@@ -209,7 +209,7 @@ export default function EntityContextMenu({
 
       setAdjustedPos({ x, y })
     }
-  }, [position])
+  }, [position, typoSuggestions])
 
   // Close on any outside click or Escape
   useEffect(() => {
@@ -274,7 +274,7 @@ export default function EntityContextMenu({
       style={{
         left: adjustedPos?.x || position.x,
         top: adjustedPos?.y || position.y,
-        visibility: adjustedPos ? 'visible' : 'hidden'
+        visibility: adjustedPos ? 'visible' : 'hidden',
       }}
       onClick={(e) => e.stopPropagation()}
     >
@@ -284,7 +284,7 @@ export default function EntityContextMenu({
           <div className="context-menu-header" style={{ color: 'var(--accent-red)' }}>
             {t('contextMenu.typoSuggestions', 'Did you mean?')}
           </div>
-          {typoSuggestions.suggestions.map((s) => (
+          {typoSuggestions.suggestions.slice(0, 5).map((s) => (
             <button
               key={s}
               className="context-menu-item"

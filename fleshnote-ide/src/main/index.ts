@@ -175,7 +175,14 @@ function createWindow(): void {
 
 const DEFAULT_HOTKEYS = {
   synonym_lookup: 'Alt+s',
-  search: 'Ctrl+f'
+  search: 'Ctrl+f',
+  todo_marker: 'Alt+t',
+  janitor_open: 'Alt+j',
+  janitor_accept: 'y',
+  janitor_dismiss: 'n',
+  entity_palette: 'Alt+e',
+  quick_note_popup: 'Alt+q',
+  focus_normal: 'Alt+f',
 }
 
 function getGlobalConfig() {
@@ -351,6 +358,10 @@ app.whenReady().then(async () => {
     return await backendPost('/api/project/chapters', { project_path: projectPath })
   })
 
+  ipcMain.handle('api:getTodos', async (_event, projectPath) => {
+    return await backendPost('/api/project/todos', { project_path: projectPath })
+  })
+
   ipcMain.handle('api:createChapter', async (_event, payload) => {
     return await backendPost('/api/project/chapter/create', payload)
   })
@@ -479,6 +490,10 @@ app.whenReady().then(async () => {
 
   ipcMain.handle('api:createQuickNote', async (_event, payload) => {
     return await backendPost('/api/project/quick-note/create', payload)
+  })
+
+  ipcMain.handle('api:updateQuickNote', async (_event, payload) => {
+    return await backendPost('/api/project/quick-note/update', payload)
   })
 
   ipcMain.handle('api:deleteQuickNote', async (_event, payload) => {

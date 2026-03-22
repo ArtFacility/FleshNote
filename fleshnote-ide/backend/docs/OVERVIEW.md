@@ -31,27 +31,22 @@ Depending on what you need to work on, refer to these specific documentation fil
 *   **Split-Pane IDE Layout**: A robust Electron/React shell encompassing a dual-pane view: the Manuscript Markdown editor versus the Entity Inspector/Setup workflow menus.
 *   **TipTap Entity & Twist Linking**: The primary prose editor integrates TipTap, allowing authors to natively `@mention` or `Command+Click` highlighted text to magically spawn aliases, links, or quick notes. Handles `{{twist:ID}}` and `{{foreshadow:ID}}` markers.
 *   **Python WAL SQLite Database**: A localized Python backend powered by FastAPI securely manages the deeply interconnected graph of relations, notes, chapters, and properties via SQLite Write-Ahead Logging for robust concurrency.
-*   **NLP spaCy Integration**: Background entity recognition dynamically powers the "Data Extractor" module, parsing raw dumped text into formatted Lore sheets.
+*   **NLP spaCy & NLTK Integration**: Background language processing dynamically pulls in required models (spaCy wheels, NLTK WordNet) for spelling, synonyms, weak adverb detection, and semantic entity extraction.
 *   **Professional Export Pipeline**: Fully realized support for .docx (Manuscript Standard), .pdf (Print-Ready), and .epub (E-Book) formats with live preview and book-ready page layout logic. 
 *   **Plot Planner & Focus Modes**: Visualizing "Foreshadowing" links, blocks, and arcs on a timeline graph to audit narrative pacing, while Focus sprint modes (Kamikaze, Fog, Zen) gamify the writing experience workflow.
 *   **Localization & RTL Support**: An actively maintained i18next translation framework natively spanning English, Hungarian, Polish, and Arabic, automatically flipping layout constraints natively utilizing pure logical CSS properties (`inset-inline`, `margin-block`).
-*   **Statistics & Custom Analytics**: A comprehensive dashboard (`StatsDashboard.jsx`) tracing writing telemetry (Sprint Consistency, Ruthless Editor Ratio, Time Auditing) and compiling an intuitive Entity Presence Matrix and World History timeline.
+*   **Statistics & Custom Analytics**: A comprehensive dashboard tracing writing telemetry, Entity Presence Matrix, Readability scores, and "5 Senses" sensory vocabulary tracking across the manuscript.
+*   **Custom Calendar Maker**: Tools for the author to build and specify custom in-universe calendar systems for tracking time, calculating ages, and charting the World History timeline.
+*   **Unified Entity Manager**: A tabbed Project Manager allowing bulk database operations (merging characters, deleting nodes) seamlessly integrated into the React frontend.
 
 ## Future Plans
 
 These are the upcoming systems and features planned for implementation, categorized by priority and type.
 
-### 1. Core Features (High Priority)
-*   **Custom Calendar Maker**: Tools for the author to build and specify custom in-universe calendar systems for tracking time.
-
-### 2. Quality of Life (QOL) Features (Medium Priority)
+### 1. Quality of Life (QOL) Features
 *   **Automatic Local Backups**: Silently archiving daily zip snapshots of the project database to combat user error and sync conflicts without relying on the cloud.
-*   **Right Side Panel Integration**: A dedicated right-hand sidebar that will serve as the hub for the smart link adder suggestion system (via spaCy) and a centralized warning lister.
-*   **Deep-Linked Knowledge States**: Making knowledge state references instantly clickable, taking the user directly to the exact words on the page where it's linked.
 *   **Link Coloring Toggles**: A simple button/setting to quickly disable all entity link colorings in the editor, or selectively filter certain colorings for a cleaner reading experience.
 
-### 3. "Cool" Smart Features (Lower Priority)
+### 2. "Cool" Smart Features
 *   **Smart IDE Dialogue Highlighting**: Special Editor highlighting specifically distinguishing spoken dialogue from prose.
 *   **Dialogue Collector & Tone Analyzer**: Automatically collecting a character's dialogue across the manuscript to analyze and display their specific "tone", showing the writer how differently their characters sound from one another.
-*   **Synonym & Adjective Suggestor**: The right panel proactively suggesting changes to weak adjectives (and their modifiers) to punch up the prose.
-*   **Typo & Most Used Words**: Basic typo fix suggestions and a tracker for the author's most overused words.

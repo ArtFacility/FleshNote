@@ -1,6 +1,20 @@
 {
-    "currentVersion": "0.9.0",
+    "currentVersion": "1.0.0",
     "history": [
+        {
+            "version": "1.0.0",
+            "date": "2026-03-22",
+            "changes": [
+                "NEW: Reworked Entity Manager — entities now display as visual card grids with separate layouts for characters, locations, groups, and lore; notes, twists, and TODOs remain as compact list rows; annotations have their own inspector view.",
+                "NEW: Entity Command Palette (Alt+E) — floating search popup to filter and link existing entities or create new ones; fully keyboard navigable.",
+                "NEW: configurable keyboard shortcuts in Project Settings → Hotkeys.",
+                "NEW: Quick Note popup type badge (Note / Fix / Suggestion / Idea) with Tab to cycle — type is saved as prefix on the note.",
+                "Settings: NLP tab now shows a language capability matrix with model install status instead of checkboxes; Advanced tab: epistemic filtering toggle removed; Hotkeys tab added with all shortcuts editable inline.",
+                "Settings: Species/Race field hidden when disabled; 'World Time' tab hidden when Dual Timeline disabled; Custom Calendar config hidden when disabled; model download prompt now says 'Required for analysis features'.",
+                "Project setup questionnaire now includes Story Language selector.",
+                "FIX: Context menu no longer clips off-screen with many typo suggestions."
+            ]
+        },
         {
             "version": "0.9.0",
             "date": "2026-03-19",

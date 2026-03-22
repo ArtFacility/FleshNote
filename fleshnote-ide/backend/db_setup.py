@@ -907,6 +907,9 @@ def generate_project_db(project_path: str, answers: dict) -> str:
 
         # ── Chapter Defaults ──────────────────────────────────
         ("default_chapter_target", str(answers.get("default_chapter_target", 4000)), "meta"),
+
+        # ── NLP ───────────────────────────────────────────────
+        ("story_language", answers.get("story_language", "en"), "meta"),
     ]
 
     cursor.executemany(

@@ -2,7 +2,7 @@
 
 SQLite database at `{project_path}/fleshnote.db`. WAL mode enabled for concurrent reads.
 
-All 10 tables are always created regardless of feature toggles. Features are enabled/disabled via `project_config` entries, not schema changes. This allows retroactive feature enabling without migrations.
+All ~24 tables are always created regardless of feature toggles. Features are enabled/disabled via `project_config` entries, not schema changes. This allows retroactive feature enabling without migrations.
 
 Defined in `backend/db_setup.py`.
 
@@ -83,6 +83,7 @@ Character profiles. All fields always present; optional fields toggled via `proj
 | `true_goal`    | TEXT      |                                     | Hidden goal (author-only, shown in Author View)      |
 | `bio`          | TEXT      |                                     | Character biography                                  |
 | `notes`        | TEXT      |                                     | Author's private notes                               |
+| `birth_date`   | TEXT      |                                     | In-universe birth date (custom calendar string)      |
 | `created_at`   | TIMESTAMP | DEFAULT CURRENT_TIMESTAMP           |                                                      |
 | `updated_at`   | TIMESTAMP | DEFAULT CURRENT_TIMESTAMP           |                                                      |
 
@@ -454,6 +455,20 @@ Lines drawn between Sketchboard nodes.
 | `curve_offset` | REAL | NOT NULL DEFAULT 0.0 | |
 
 **Index:** `idx_connections_board`
+
+---
+
+## 25. `quick_notes`
+
+Short, contextual text notes attached to the project.
+
+| Column | Type | Constraints | Description |
+| :--- | :--- | :--- | :--- |
+| `id` | INTEGER | PRIMARY KEY AUTOINCREMENT | |
+| `content` | TEXT | NOT NULL | The text content |
+| `note_type` | TEXT | NOT NULL DEFAULT 'Note' | |
+| `created_at` | TIMESTAMP | DEFAULT CURRENT_TIMESTAMP | |
+| `updated_at` | TIMESTAMP | DEFAULT CURRENT_TIMESTAMP | |
 
 ---
 

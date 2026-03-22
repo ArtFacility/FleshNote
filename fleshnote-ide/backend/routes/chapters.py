@@ -81,18 +81,26 @@ _ENTITY_TYPE_TO_SHORT = {
 _SHORT_TO_ENTITY_TYPE = {v: k for k, v in _ENTITY_TYPE_TO_SHORT.items()}
 
 
-def _entity_md_to_html(content: str) -> str:
+def _entity_md_to_html(content: str, quicknote_types: dict = None) -> str:
     """Convert {{type:id|text}} markers to TipTap entity-link spans during chapter load."""
     pattern = r'\{\{(char|loc|item|lore|group|quicknote|annotation):(\d+)\|([^}]+)\}\}'
+    note_types = quicknote_types or {}
 
     def replacer(match):
         short_type = match.group(1)
         entity_id = match.group(2)
         text = match.group(3)
         full_type = _SHORT_TO_ENTITY_TYPE.get(short_type, short_type)
+        extra = ''
+        if full_type == 'quicknote' and entity_id in note_types:
+            nt = note_types[entity_id]
+            extra = f' data-note-type="{nt}"'
+            css_class = f'entity-link {full_type} note-type-{nt.lower()}'
+        else:
+            css_class = f'entity-link {full_type}'
         return (
-            f'<span data-entity-type="{full_type}" data-entity-id="{entity_id}" '
-            f'class="entity-link {full_type}">{text}</span>'
+            f'<span data-entity-type="{full_type}" data-entity-id="{entity_id}"{extra} '
+            f'class="{css_class}">{text}</span>'
         )
 
     return re.sub(pattern, replacer, content)
@@ -591,6 +599,14 @@ def load_chapter_content(req: ChapterLoad):
     cursor = conn.cursor()
     cursor.execute("SELECT md_filename FROM chapters WHERE id = ?", (req.chapter_id,))
     row = cursor.fetchone()
+    # Fetch quicknote types for note-type coloring
+    quicknote_types = {}
+    try:
+        cursor.execute("SELECT id, note_type FROM quick_notes")
+        for qn in cursor.fetchall():
+            quicknote_types[str(qn["id"])] = qn["note_type"] or "Note"
+    except Exception:
+        pass
     conn.close()
 
     if not row:
@@ -607,7 +623,7 @@ def load_chapter_content(req: ChapterLoad):
     content = _plain_text_to_html(content)
 
     # Convert entity markers {{char:5|Name}} to TipTap HTML spans
-    content = _entity_md_to_html(content)
+    content = _entity_md_to_html(content, quicknote_types)
 
     # Convert twist/foreshadow markers to TipTap spans
     content = _twist_md_to_html(content)
@@ -857,3 +873,56 @@ def insert_chapter(req: ChapterInsert):
         raise e
     finally:
         conn.close()
+
+
+@router.post("/api/project/todos")
+def get_todos(req: ProjectPath):
+    """Scan all chapter markdown files for TODO markers."""
+    conn = _get_db(req.project_path)
+    cursor = conn.cursor()
+    cursor.execute("SELECT id, chapter_number, title, md_filename FROM chapters ORDER BY chapter_number ASC")
+    db_chapters = cursor.fetchall()
+    conn.close()
+
+    import html
+    # Use regular string (no 'r') so \u200b is interpreted as a unicode character
+    pattern = re.compile('#TODO(.*?)(?=\u200b|\n|$)', re.IGNORECASE)
+    todos = []
+
+    for ch in db_chapters:
+        md_filename = ch["md_filename"]
+        if not md_filename:
+            continue
+        md_path = os.path.join(req.project_path, "md", md_filename)
+        if not os.path.exists(md_path):
+            continue
+
+        with open(md_path, "r", encoding="utf-8") as f:
+            content = f.read()
+
+        # Preserve paragraph breaks as newlines before stripping other HTML tags
+        plain = re.sub(r'</(p|div|h[1-6])>', '\n', content, flags=re.IGNORECASE)
+        plain = re.sub(r'<br\s*/?>', '\n', plain, flags=re.IGNORECASE)
+        plain = html.unescape(re.sub(r'<[^>]+>', ' ', plain))
+
+        for match in pattern.finditer(plain):
+            text = match.group(1).strip()
+            if not text:
+                continue
+            
+            # Calculate word offset
+            text_before = plain[:match.start()]
+            word_offset = len(text_before.split())
+
+            todos.append({
+                "id": f"todo-{ch['id']}-{match.start()}",
+                "type": "todo",
+                "chapter_id": ch["id"],
+                "chapter_number": ch["chapter_number"],
+                "chapter_title": ch["title"],
+                "content": text,
+                "word_offset": word_offset,
+                "name": text[:60] + ("..." if len(text) > 60 else "")
+            })
+
+    return {"todos": todos}

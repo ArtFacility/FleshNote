@@ -38,6 +38,7 @@ import SynonymPopup from './SynonymPopup'
 import TimeGutter from './TimeGutter'
 import { matchesHotkey } from '../utils/hotkeyMatcher'
 import KarolyEasterEgg from './KarolyEasterEgg'
+import EntityCommandPalette from './EntityCommandPalette'
 
 
 // ── Inline SVG Icons ────────────────────────────────────────────────────────
@@ -149,14 +150,16 @@ function EntityHoverCard({ data, position, entities }) {
       <div className="hover-card-name">{entity.name}</div>
       {entity.category && <div className="hover-card-detail">{entity.category}</div>}
       {
-        data.entityType === 'quicknote' && (
-          <div
-            className="hover-card-detail"
-            style={{ whiteSpace: 'pre-wrap', fontStyle: 'italic', marginTop: '6px' }}
-          >
-            {entity.content}
-          </div>
-        )
+        data.entityType === 'quicknote' && (() => {
+          const NOTE_TYPE_COLORS = { Note: 'var(--accent-amber)', Fix: 'var(--accent-red)', Suggestion: 'var(--accent-blue)', Idea: '#4ade80' }
+          const nt = entity.note_type || 'Note'
+          return (
+            <>
+              <span style={{ fontSize: 10, color: NOTE_TYPE_COLORS[nt] || 'var(--accent-amber)', fontFamily: 'var(--font-mono)', fontWeight: 600, letterSpacing: '0.05em' }}>{nt}</span>
+              <div className="hover-card-detail" style={{ whiteSpace: 'pre-wrap', fontStyle: 'italic', marginTop: '4px' }}>{entity.content}</div>
+            </>
+          )
+        })()
       }
       {
         data.entityType === 'annotation' && (
@@ -279,6 +282,11 @@ export default function Editor({
   const [activePopup, setActivePopup] = useState(null)
   // activePopup = { type: 'appendDescription' | 'quickNote' | 'makeConnection' | 'customLore' | 'foreshadowing' | 'focusSelector', position, data }
 
+  // Entity command palette state
+  const [entityPalette, setEntityPalette] = useState(null) // { x, y, text }
+  // Saved selection for hotkey-triggered popups (restored before applying marks)
+  const savedSelectionRef = useRef(null) // { from, to } | null
+
   // Synonym popup state (context-menu-style, separate from modal-style activePopup)
   const [synonymState, setSynonymState] = useState(null)
   // synonymState = { word, position, groups: [], loading: bool, error: bool }
@@ -288,11 +296,14 @@ export default function Editor({
 
 
   // Configurable hotkeys from global config
-  const [hotkeys, setHotkeys] = useState({ synonym_lookup: 'Alt+s', search: 'Ctrl+f' })
+  const [hotkeys, setHotkeys] = useState({ synonym_lookup: 'Alt+s', search: 'Ctrl+f', todo_marker: 'Alt+t', entity_palette: 'Alt+e', quick_note_popup: 'Alt+q', focus_normal: 'Alt+f' })
   useEffect(() => {
     window.api.getGlobalConfig().then(config => {
       if (config?.hotkeys) setHotkeys(config.hotkeys)
     })
+    const onHotkeysChanged = (e) => setHotkeys(prev => ({ ...prev, ...e.detail }))
+    window.addEventListener('fleshnote:hotkeys-changed', onHotkeysChanged)
+    return () => window.removeEventListener('fleshnote:hotkeys-changed', onHotkeysChanged)
   }, [])
 
   // Hover card state
@@ -581,6 +592,27 @@ export default function Editor({
     }
   })
 
+  // Update quicknote type on all matching marks when changed from inspector
+  useEffect(() => {
+    const handler = (e) => {
+      const { noteId, noteType } = e.detail
+      if (!editor) return
+      editor.chain().command(({ tr, state }) => {
+        state.doc.descendants((node, pos) => {
+          node.marks.forEach(mark => {
+            if (mark.type.name === 'entityLink' && mark.attrs.entityType === 'quicknote' && String(mark.attrs.entityId) === String(noteId)) {
+              const newMark = mark.type.create({ ...mark.attrs, noteType })
+              tr.addMark(pos, pos + node.nodeSize, newMark)
+            }
+          })
+        })
+        return true
+      }).run()
+    }
+    window.addEventListener('fleshnote:quicknote-type-changed', handler)
+    return () => window.removeEventListener('fleshnote:quicknote-type-changed', handler)
+  }, [editor])
+
   // Keyboard shortcuts (configurable via global config)
   useEffect(() => {
     const handleGlobalKeyDown = (e) => {
@@ -599,11 +631,91 @@ export default function Editor({
         setShowKaroly(true)
         return
       }
+      // TODO marker
+      if (matchesHotkey(e, hotkeys.todo_marker)) {
+        e.preventDefault()
+        if (editor) {
+          editor.chain().focus().insertContent('#TODO ').run()
+        }
+        return
+      }
+      // Entity palette
+      if (matchesHotkey(e, hotkeys.entity_palette)) {
+        e.preventDefault()
+        if (editor) {
+          const { from, to } = editor.state.selection
+          let selFrom = from, selTo = to, text = ''
+          if (from !== to) {
+            text = editor.state.doc.textBetween(from, to)
+            selFrom = from; selTo = to
+          } else {
+            // find word boundaries at cursor
+            const $pos = editor.state.doc.resolve(from)
+            const nodeText = $pos.parent.textContent
+            const offset = $pos.parentOffset
+            let start = offset
+            while (start > 0 && !/\s/.test(nodeText[start - 1])) start--
+            let end = offset
+            while (end < nodeText.length && !/\s/.test(nodeText[end])) end++
+            text = nodeText.slice(start, end)
+            const nodeStart = from - offset
+            selFrom = nodeStart + start; selTo = nodeStart + end
+          }
+          // Select the word so TipTap knows what to mark
+          if (selFrom !== selTo) {
+            editor.chain().setTextSelection({ from: selFrom, to: selTo }).run()
+          }
+          savedSelectionRef.current = { from: selFrom, to: selTo }
+          const coords = editor.view.coordsAtPos(selFrom)
+          setEntityPalette({ x: coords.left, y: coords.bottom + 4, text })
+        }
+        return
+      }
+      // Quick note popup from hotkey
+      if (matchesHotkey(e, hotkeys.quick_note_popup)) {
+        e.preventDefault()
+        if (editor) {
+          const { from, to } = editor.state.selection
+          let selFrom = from, selTo = to, text = ''
+          if (from !== to) {
+            text = editor.state.doc.textBetween(from, to)
+          } else {
+            // select word under cursor
+            const $pos = editor.state.doc.resolve(from)
+            const nodeText = $pos.parent.textContent
+            const offset = $pos.parentOffset
+            let start = offset
+            while (start > 0 && !/\s/.test(nodeText[start - 1])) start--
+            let end = offset
+            while (end < nodeText.length && !/\s/.test(nodeText[end])) end++
+            text = nodeText.slice(start, end)
+            const nodeStart = from - offset
+            selFrom = nodeStart + start; selTo = nodeStart + end
+            if (selFrom !== selTo) {
+              editor.chain().setTextSelection({ from: selFrom, to: selTo }).run()
+            }
+          }
+          savedSelectionRef.current = { from: selFrom, to: selTo }
+          const coords = editor.view.coordsAtPos(selFrom)
+          setActivePopup({ type: 'quickNote', position: { x: coords.left, y: coords.bottom + 4 }, data: { text } })
+        }
+        return
+      }
+      // Focus normal mode toggle
+      if (matchesHotkey(e, hotkeys.focus_normal)) {
+        e.preventDefault()
+        if (focusMode?.active) {
+          onToggleFocus(null)
+        } else {
+          onToggleFocus({ active: true, type: 'normal', goal: null, startWordCount: editor ? editor.storage.characterCount.words() : 0 })
+        }
+        return
+      }
     }
 
     window.addEventListener('keydown', handleGlobalKeyDown)
     return () => window.removeEventListener('keydown', handleGlobalKeyDown)
-  }, [hotkeys, editor])
+  }, [hotkeys, editor, focusMode, onToggleFocus])
 
   useEffect(() => {
     if (showSearch && searchInputRef.current) {
@@ -1004,6 +1116,7 @@ export default function Editor({
         console.error('Failed to create entity:', err)
       }
 
+      savedSelectionRef.current = null
       closeContextMenu()
     },
     [editor, projectPath, ctxText, closeContextMenu, onEntitiesChanged]
@@ -1013,14 +1126,12 @@ export default function Editor({
     (entity) => {
       if (!editor) return
 
-      editor
-        .chain()
-        .focus()
-        .setEntityLink({
-          entityType: entity.type,
-          entityId: String(entity.id)
-        })
-        .run()
+      const chain = editor.chain().focus()
+      if (savedSelectionRef.current) {
+        chain.setTextSelection(savedSelectionRef.current)
+        savedSelectionRef.current = null
+      }
+      chain.setEntityLink({ entityType: entity.type, entityId: String(entity.id) }).run()
 
       closeContextMenu()
     },
@@ -1260,14 +1371,12 @@ export default function Editor({
     (note) => {
       if (!editor || !note) return
 
-      editor
-        .chain()
-        .focus()
-        .setEntityLink({
-          entityType: 'quicknote',
-          entityId: String(note.id)
-        })
-        .run()
+      const chain = editor.chain().focus()
+      if (savedSelectionRef.current) {
+        chain.setTextSelection(savedSelectionRef.current)
+        savedSelectionRef.current = null
+      }
+      chain.setEntityLink({ entityType: 'quicknote', entityId: String(note.id), noteType: note.note_type || 'Note' }).run()
 
       onEntitiesChanged?.()
     },
@@ -2069,6 +2178,24 @@ export default function Editor({
         />
       )}
       {showKaroly && <KarolyEasterEgg onComplete={() => setShowKaroly(false)} />}
+      {entityPalette && (
+        <EntityCommandPalette
+          position={entityPalette}
+          selectedText={entityPalette.text}
+          entities={entities || []}
+          onClose={() => setEntityPalette(null)}
+          onLink={(entity) => {
+            handleLinkEntity(entity)
+            setEntityPalette(null)
+          }}
+          onCreate={(type) => {
+            if (entityPalette.text) {
+              handleCreateEntity(type, false, entityPalette.text)
+            }
+            setEntityPalette(null)
+          }}
+        />
+      )}
     </div>
   )
 }

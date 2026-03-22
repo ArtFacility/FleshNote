@@ -259,11 +259,19 @@ export default function EntityInspectorPanel({
   const [editRelPopup, setEditRelPopup] = useState(null)
   const [editingFactId, setEditingFactId] = useState(null)
   const [editFactData, setEditFactData] = useState({ fact: '', is_secret: 0 })
+  const [localNoteType, setLocalNoteType] = useState(entity?.note_type || 'Note')
 
   // Switch tab when initialTab prop changes (e.g. from marker click)
   useEffect(() => {
     if (initialTab) setActiveTab(initialTab)
   }, [initialTab])
+
+  // Sync localNoteType when entity changes (quicknote inspector)
+  useEffect(() => {
+    if (entity?.type === 'quicknote') {
+      setLocalNoteType(entity.note_type || 'Note')
+    }
+  }, [entity?.id, entity?.type, entity?.note_type])
 
   // ── Derived Data ──────────────────────────────────────────────────────────
 
@@ -280,7 +288,7 @@ export default function EntityInspectorPanel({
   const charData = entity?.type === 'character' ? currEntity : null
   const locationData = entity?.type === 'location' ? currEntity : null
   const groupData = entity?.type === 'group' ? currEntity : null
-  const loreData = (!charData && !locationData && !groupData && entity?.type !== 'quicknote') ? currEntity : null
+  const loreData = (!charData && !locationData && !groupData && entity?.type !== 'quicknote' && entity?.type !== 'annotation') ? currEntity : null
 
   const loreCategories = (() => {
     const cats = new Set(['item']) // basic generic fallback
@@ -288,7 +296,7 @@ export default function EntityInspectorPanel({
     // If we wanted to check config here we'd need it passed down, but adding existing categories is safe enough
     if (Array.isArray(entities)) {
       entities.forEach(e => {
-        if (e.type !== 'character' && e.type !== 'location' && e.type !== 'group' && e.type !== 'quicknote' && e.category) {
+        if (e.type !== 'character' && e.type !== 'location' && e.type !== 'group' && e.type !== 'quicknote' && e.type !== 'annotation' && e.category) {
           cats.add(e.category.toLowerCase().trim())
         }
       })
@@ -413,6 +421,13 @@ export default function EntityInspectorPanel({
     setEditMode(false)
     setAddingFact(false)
   }, [entity?.id, entity?.type])
+
+  // Reset world_time view if dual timeline is disabled
+  useEffect(() => {
+    if (!projectConfig?.track_dual_timeline && viewMode === 'world_time') {
+      setViewMode('author')
+    }
+  }, [projectConfig?.track_dual_timeline])
 
   if (!entity) return null
 
@@ -728,7 +743,104 @@ export default function EntityInspectorPanel({
     }
   }
 
+  const handleConfirmDeleteAnnotation = async () => {
+    setShowDeleteConfirm(false)
+    try {
+      await window.api.deleteAnnotation({
+        project_path: projectPath,
+        annotation_id: entity.id
+      })
+      onEntityUpdated?.()
+      window.dispatchEvent(new CustomEvent('forceBackToChapters'))
+    } catch (err) {
+      console.error('Failed to delete annotation:', err)
+    }
+  }
+
+  if (entity.type === 'annotation') {
+    return (
+      <div>
+        {showDeleteConfirm && (
+          <div className="popup-overlay" onClick={() => setShowDeleteConfirm(false)}>
+            <div
+              className="popup-panel"
+              onClick={(e) => e.stopPropagation()}
+              style={{ insetInlineStart: '50%', top: '50%', transform: 'translate(-50%, -50%)', width: '320px' }}
+            >
+              <div className="popup-header">
+                <span style={{ color: 'var(--accent-red)' }}>{t('inspector.deleteAnnotationTitle', 'Delete Annotation?')}</span>
+              </div>
+              <div className="popup-subtitle" style={{ whiteSpace: 'normal', lineHeight: '1.5', marginTop: '12px', marginBottom: '16px' }}>
+                {t('inspector.deleteAnnotationWarning', 'This action is permanent. The annotation will be removed and its anchor in the text will lose its reference.')}
+              </div>
+              <div style={{ display: 'flex', justifyContent: 'flex-end', gap: '8px' }}>
+                <button className="entity-edit-btn" onClick={() => setShowDeleteConfirm(false)}>
+                  {t('inspector.cancel', 'Cancel')}
+                </button>
+                <button
+                  className="entity-edit-btn save"
+                  style={{ backgroundColor: 'var(--accent-red)', borderColor: 'var(--accent-red)', color: 'var(--bg-deep)' }}
+                  onClick={handleConfirmDeleteAnnotation}
+                >
+                  {t('inspector.deleteAnnotationBtn', 'Delete Annotation')}
+                </button>
+              </div>
+            </div>
+          </div>
+        )}
+
+        <div className="entity-header" style={{ marginBottom: '12px' }}>
+          <div className="entity-type-badge annotation">
+            <TypeIcon type="annotation" /> {t('inspector.typeAnnotation', 'Footnote Annotation')}
+          </div>
+        </div>
+        <div
+          className="entity-narrative-note"
+          style={{
+            background: 'var(--bg-elevated)',
+            borderInlineStart: '2px solid var(--accent-annotation)',
+            color: 'var(--text-primary)',
+            fontSize: '12px',
+            whiteSpace: 'pre-wrap'
+          }}
+        >
+          {entity.content}
+        </div>
+        <div style={{ marginTop: '8px', fontFamily: 'var(--font-mono)', fontSize: '10px', color: 'var(--text-secondary)', lineHeight: 1.5 }}>
+          {t('inspector.annotationExportNote', 'This annotation will appear as a footnote at the bottom of its page when exported.')}
+        </div>
+        <div style={{ marginTop: '16px', display: 'flex', justifyContent: 'flex-end' }}>
+          <button
+            onClick={() => setShowDeleteConfirm(true)}
+            className="entity-edit-btn"
+            style={{ color: 'var(--accent-red)', borderColor: 'var(--accent-red-dim)' }}
+          >
+            <Icons.Trash /> {t('inspector.deleteAnnotationBtn', 'Delete Annotation')}
+          </button>
+        </div>
+      </div>
+    )
+  }
+
   if (entity.type === 'quicknote') {
+    const NOTE_TYPE_OPTIONS = [
+      { label: 'Note',       color: 'var(--accent-amber)' },
+      { label: 'Fix',        color: 'var(--accent-red)'   },
+      { label: 'Suggestion', color: 'var(--accent-blue)'  },
+      { label: 'Idea',       color: '#4ade80'              },
+    ]
+    const currentNoteType = NOTE_TYPE_OPTIONS.find(o => o.label === localNoteType) || NOTE_TYPE_OPTIONS[0]
+    const handleChangeNoteType = async (label) => {
+      setLocalNoteType(label)
+      try {
+        await window.api.updateQuickNote({ project_path: projectPath, note_id: entity.id, note_type: label })
+        window.dispatchEvent(new CustomEvent('fleshnote:quicknote-type-changed', { detail: { noteId: entity.id, noteType: label } }))
+        onEntityUpdated?.()
+      } catch (err) {
+        console.error('Failed to update note type:', err)
+        setLocalNoteType(entity.note_type || 'Note') // revert on error
+      }
+    }
     return (
       <div>
         {showDeleteConfirm && (
@@ -782,11 +894,35 @@ export default function EntityInspectorPanel({
             <TypeIcon type={entity.type} /> {typeLabel}
           </div>
         </div>
+
+        {/* Note type selector */}
+        <div style={{ display: 'flex', gap: 6, marginBottom: 12, flexWrap: 'wrap' }}>
+          {NOTE_TYPE_OPTIONS.map(opt => (
+            <button
+              key={opt.label}
+              onClick={() => handleChangeNoteType(opt.label)}
+              style={{
+                padding: '3px 10px',
+                background: 'transparent',
+                border: `1px solid ${opt.label === currentNoteType.label ? opt.color : 'var(--border-subtle)'}`,
+                borderRadius: 12,
+                color: opt.label === currentNoteType.label ? opt.color : 'var(--text-tertiary)',
+                cursor: 'pointer',
+                fontFamily: 'var(--font-mono)',
+                fontSize: 11,
+                fontWeight: opt.label === currentNoteType.label ? 600 : 400,
+              }}
+            >
+              {opt.label}
+            </button>
+          ))}
+        </div>
+
         <div
           className="entity-narrative-note"
           style={{
             background: 'var(--bg-elevated)',
-            borderInlineStart: '2px solid var(--entity-quicknote)',
+            borderInlineStart: `2px solid ${currentNoteType.color}`,
             color: 'var(--text-primary)',
             fontSize: '12px',
             whiteSpace: 'pre-wrap'
@@ -826,13 +962,15 @@ export default function EntityInspectorPanel({
         >
           <Icons.BookOpen /> {t('inspector.viewNarrativeShort', 'Narrative')}
         </button>
-        <button
-          className={`epistemic-mode-btn ${viewMode === 'world_time' ? 'active' : ''}`}
-          onClick={() => setViewMode('world_time')}
-          title={t('inspector.viewWorldTimeTooltip', 'Filter by in-universe chronological time')}
-        >
-          <Icons.Clock /> {t('inspector.viewWorldTimeShort', 'World Time')}
-        </button>
+        {projectConfig?.track_dual_timeline && (
+          <button
+            className={`epistemic-mode-btn ${viewMode === 'world_time' ? 'active' : ''}`}
+            onClick={() => setViewMode('world_time')}
+            title={t('inspector.viewWorldTimeTooltip', 'Filter by in-universe chronological time')}
+          >
+            <Icons.Clock /> {t('inspector.viewWorldTimeShort', 'World Time')}
+          </button>
+        )}
       </div>
       {/* Character filter for non-character entities in filtered modes */}
       {viewMode !== 'author' && entity.type !== 'character' && (
@@ -1012,7 +1150,9 @@ export default function EntityInspectorPanel({
                   <>
                     {renderEditField(t('inspector.roleLabel', 'Role'), 'role')}
                     {renderEditField(t('inspector.statusLabel', 'Status'), 'status')}
-                    {renderEditField(t('inspector.speciesLabel', 'Species'), 'species')}
+                    {projectConfig?.track_species && (
+                      renderEditField(projectConfig?.species_label || t('inspector.speciesLabel', 'Species'), 'species')
+                    )}
                     <div className="entity-edit-field">
                       <label className="entity-edit-label">{t('inspector.birthDateLabel', 'Birth Date (in-world)')}</label>
                       <CalendarDatePicker
@@ -1032,9 +1172,9 @@ export default function EntityInspectorPanel({
                         <div className="entity-detail-value">{charData.status}</div>
                       </div>
                     )}
-                    {charData.species && (
+                    {projectConfig?.track_species && charData.species && (
                       <div className="entity-detail-row">
-                        <div className="entity-detail-label">{t('inspector.species', 'Species')}</div>
+                        <div className="entity-detail-label">{projectConfig?.species_label || t('inspector.species', 'Species')}</div>
                         <div className="entity-detail-value">{charData.species}</div>
                       </div>
                     )}

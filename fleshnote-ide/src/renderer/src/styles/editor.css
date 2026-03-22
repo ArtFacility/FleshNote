@@ -272,6 +272,7 @@
 .editor-area.focus-mode-active .entity-link {
     color: inherit;
     border-bottom: none;
+    background: none;
     font-weight: inherit;
 }
 
@@ -295,9 +296,34 @@
     font-weight: inherit;
 }
 
+/* ── QUICKNOTE TYPE COLORS ───────────────────────── */
+.entity-link.quicknote {
+    border-bottom: 1.5px dashed var(--accent-amber);
+    background: rgba(212, 160, 82, 0.1);
+    border-radius: 2px;
+    padding: 0 1px;
+}
+.entity-link.quicknote.note-type-note {
+    border-bottom-color: var(--accent-amber);
+    background: rgba(212, 160, 82, 0.1);
+}
+.entity-link.quicknote.note-type-fix {
+    border-bottom-color: var(--accent-red);
+    background: rgba(196, 92, 92, 0.12);
+}
+.entity-link.quicknote.note-type-suggestion {
+    border-bottom-color: var(--accent-blue);
+    background: rgba(92, 142, 196, 0.12);
+}
+.entity-link.quicknote.note-type-idea {
+    border-bottom-color: #4ade80;
+    background: rgba(74, 222, 128, 0.1);
+}
+
 .editor-content-wrapper.hide-quicknote-links .entity-link.quicknote {
     color: inherit;
     border-bottom: none;
+    background: none;
     font-weight: inherit;
 }
 

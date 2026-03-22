@@ -780,3 +780,163 @@ If `increment_by` is not 0, it adds to the existing value (falling back to setti
   "new_value": "12" 
 }
 ```
+
+---
+
+## Annotations
+
+Defined in `backend/routes/annotations.py`.
+
+### `POST /api/project/annotations/list`
+Fetch all generic annotations for a chapter.
+**Request:** `{ "project_path": "...", "chapter_id": 1 }`
+**Response:** `{ "annotations": [ { "id": 1, ... } ] }`
+
+### `POST /api/project/annotations/create`
+Create a new annotation linked to a specific text offset.
+**Request:** `{ "project_path": "...", "chapter_id": 1, "text_quote": "...", "note": "...", "word_offset": 100 }`
+**Response:** `{ "annotation": { ... } }`
+
+### `POST /api/project/annotations/update`
+Update an annotation's note text.
+**Request:** `{ "project_path": "...", "annotation_id": 1, "note": "Updated note" }`
+**Response:** `{ "status": "ok" }`
+
+### `POST /api/project/annotations/delete`
+Delete an annotation by ID.
+**Request:** `{ "project_path": "...", "annotation_id": 1 }`
+**Response:** `{ "status": "ok" }`
+
+---
+
+## Sketchboards
+
+Defined in `backend/routes/boards.py`. Provides endpoints for creating node-graph maps.
+
+- `POST /api/project/boards/list`: Returns list of all sketchboards.
+- `POST /api/project/boards/create`: Creates a new board `{ "name": "...", "board_type": "custom" }`.
+- `POST /api/project/boards/update`: Updates board metadata (name, focus, zoom).
+- `POST /api/project/boards/delete`: Deletes a board.
+- `POST /api/project/boards/get`: Returns full board state `{ "board": {...}, "items": [...], "connections": [...] }`.
+- `POST /api/project/boards/items/create`: Creates a node on a board.
+- `POST /api/project/boards/items/update`: Updates a node's position, size, text, or color.
+- `POST /api/project/boards/items/delete`: Deletes a node.
+- `POST /api/project/boards/connections/create`: Creates a connecting line between two nodes.
+- `POST /api/project/boards/connections/update`: Modifies a connection (curve offset, color, label).
+- `POST /api/project/boards/connections/delete`: Removes a connection line.
+
+---
+
+## Twists & Foreshadowing
+
+Defined in `backend/routes/twists.py`.
+
+- `POST /api/project/twists`: Lists all twists.
+- `POST /api/project/twist/create`: Creates a twist (requires `title`, `reveal_chapter_id`).
+- `POST /api/project/twist/update`: Updates twist metadata or status (`planned`, `hinted`, `revealed`).
+- `POST /api/project/twist/delete`: Deletes a twist (cascades to foreshadowings).
+- `POST /api/project/foreshadows`: Lists all foreshadowing hints for the project.
+- `POST /api/project/foreshadow/create`: Creates a new hint linking a target twist to a specific chapter/offset.
+- `POST /api/project/foreshadow/update`: Updates a hint's exact offset or text selection.
+- `POST /api/project/foreshadow/delete`: Removes a hint.
+- `POST /api/project/twists/stats`: Computes spacing and density metrics (e.g., detecting missing clues or bad spacing).
+
+---
+
+## Planner Integration
+
+Defined in `backend/routes/planner.py`.
+
+- `POST /api/project/planner/settings/get`: Gets singleton planner UI settings (theme, cursor_pct).
+- `POST /api/project/planner/settings/update`: Saves toggles (e.g., `shadow_visible`).
+- `POST /api/project/planner/blocks`: Lists all surface and shadow blocks.
+- `POST /api/project/planner/block/save`: Creates or updates a plot block. Returns row status.
+- `POST /api/project/planner/block/delete`: Deletes a plot block via UUID.
+- `POST /api/project/planner/arcs`: Lists all character/narrative arcs.
+- `POST /api/project/planner/arc/save`: Creates/updates arc lines.
+- `POST /api/project/planner/arc/delete`: Remvoes an arc layer via UUID.
+
+---
+
+## Achievements
+
+Defined in `backend/routes/achievements.py`. Computes and awards gamification badges.
+
+- `POST /api/project/achievements/progress`: Computes current unlock percentages for all badges based on SQLite aggregates (e.g., total words written, items deleted).
+- `POST /api/project/achievements/award`: Explictly persists a newly unlocked tier into the database to prevent re-triggering animations.
+
+---
+
+## Calendar & Time
+
+Defined in `backend/routes/calendar.py` and `backend/routes/world_times.py`.
+
+- `POST /api/project/calendar/config/get`: Retrieves the custom world-building calendar configuration (months, days, seasons).
+- `POST /api/project/calendar/config/update`: Updates calendar structure keys.
+- `POST /api/project/calendar/age`: Computes a character's exact age in years based on a custom `birth_date` string and a target `current_date` string.
+- `POST /api/project/world-times/list`: Gets paragraph-level time overrides (flashbacks, memories) for a specific chapter.
+- `POST /api/project/world-times/create`: Creates a time override marker linked to a chapter.
+- `POST /api/project/world-times/update`: Modifies an override's label or assigned color.
+- `POST /api/project/world-times/delete`: Deletes a time override marker.
+
+---
+
+## Entity Manager & Groups
+
+Defined in `backend/routes/entity_manager.py` and `backend/routes/groups.py`.
+
+- `POST /api/project/entities/bulk-delete`: Deletes multiple entities mapping across characters, lore, and locations. Cleans up dependent tables safely.
+- `POST /api/project/entities/merge`: Consolidates duplicate entities. Rewrites `entity_mentions` and inline markdown links inside chapters. Absorbs distinct aliases and notes.
+- `POST /api/project/groups`: Lists all factions/groups.
+- `POST /api/project/group/create`: Creates a new group.
+- `POST /api/project/group/update`: Updates group metadata (true_agenda, surface_agenda).
+- `POST /api/project/group/delete`: Deletes a group.
+
+---
+
+## History Timeline (World Events)
+
+Defined in `backend/routes/history.py`.
+
+- `POST /api/project/history/entries`: Fetches all timeline events, filterable by `entity_type`, `entity_id`, or `event_type`.
+- `POST /api/project/history/entry/create`: Adds a discrete event tied to an in-universe year/date.
+- `POST /api/project/history/entry/update`: Modifies event properties.
+- `POST /api/project/history/entry/delete`: Deletes a timeline event.
+
+---
+
+## Knowledge States (Epistemic Filtering)
+
+Defined in `backend/routes/knowledge.py`.
+
+- `POST /api/project/knowledge`: Lists all known facts for a project.
+- `POST /api/project/knowledge/create`: Asserts that a Character learned a Fact about a Source Entity. Optionally pins this to a `learned_in_chapter` or `world_time`.
+- `POST /api/project/knowledge/update`: Modifies fact text, secret status, or learned locations.
+- `POST /api/project/knowledge/delete`: Removes a fact.
+- `POST /api/project/knowledge/for_character`: Retrieves filtered knowledge for the Entity POV inspector, dynamically constrained by `narrative_time` (chapter limits) or `world_time`.
+
+---
+
+## Quick Notes & Secrets
+
+Defined in `backend/routes/quick_notes.py` and `backend/routes/secrets.py`.
+
+- `POST /api/project/quick-notes`: Lists all floating sticky notes.
+- `POST /api/project/quick-note/create`: Creates a note of a specific `note_type` (e.g., TODO, Note).
+- `POST /api/project/quick-note/update`: Re-categorizes a note's type.
+- `POST /api/project/quick-note/delete`: Deletes a note.
+- `POST /api/project/secrets`: Lists all author-level secrets.
+- `POST /api/project/secret/create`: Creates a secret tracked via `characters_who_know` and `danger_phrases`.
+- `POST /api/project/secret/update`: Updates secret status (`hidden`, `hinted`, `revealed`) or linked reveal chapters.
+
+---
+
+## NLP Utilities (Spellcheck & Synonyms)
+
+Defined in `backend/routes/spellcheck.py` and `backend/routes/synonyms.py`.
+
+- `POST /api/project/spellcheck`: Checks a single word against local dictionaries `(OOMW / Hunspell)` and project `ignore_list`. Returns top 6 typo suggestions.
+- `POST /api/project/spellcheck/ignore`: Appends a valid custom word to the project's permanent safe-list.
+- `POST /api/synonyms/lookup`: Returns WordNet synsets (definitions and synonyms) for a selected word, falling back to English automatically if language-specific data yields nothing.
+- `POST /api/synonyms/check-data`: Checks if NLTK `omw-1.4` and extended data is downloaded.
+- `POST /api/synonyms/ensure-data`: Non-blocking endpoint to kick off NLTK corpus downloads into the user's `AppData`.

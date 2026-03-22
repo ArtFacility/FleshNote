@@ -109,7 +109,7 @@ const btnAccent = {
 // COMPONENT
 // ═══════════════════════════════════════════════════════════
 
-export default function CustomCalendarPlanner({ projectPath, onCalendarChanged }) {
+export default function CustomCalendarPlanner({ projectPath, onCalendarChanged, projectConfig }) {
     const { t } = useTranslation();
     const [loading, setLoading] = useState(true);
     const [dirty, setDirty] = useState(false);
@@ -390,6 +390,9 @@ export default function CustomCalendarPlanner({ projectPath, onCalendarChanged }
                 </div>
             </div>
 
+            {projectConfig?.track_custom_calendar ? (
+            <>
+
             {/* ── Months ──────────────────────────────────── */}
             <div style={{ ...card, marginBottom: 16 }}>
                 <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 14 }}>
@@ -600,6 +603,12 @@ export default function CustomCalendarPlanner({ projectPath, onCalendarChanged }
                         ))}
                     </div>
                 </div>
+            )}
+
+            </> ) : (
+            <div style={{ color: '#6b7280', fontSize: 12, textAlign: 'center', padding: 24 }}>
+                {t('calendar.disabledHint', 'Custom Calendar is disabled. Enable it in Project Settings → Advanced to configure months, weeks, and seasons.')}
+            </div>
             )}
         </div>
     );

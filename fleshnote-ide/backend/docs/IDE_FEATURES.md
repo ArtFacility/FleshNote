@@ -113,6 +113,13 @@ Because of this, changing the document reading direction physically mirrors ever
 - Unlimited canvas to map systems, magic, relationships, and lore.
 - Time spent in Sketchboards counts toward Plotting time in Analytics.
 
+### Project / Entity Manager
+
+- The central command hub for auditing the entire database structure.
+- Tabbed tables for Characters, Groups, Locations, Lore, Twists, and QuickNotes.
+- Allows for bulk deletion and entity merging directly from the list views.
+- Consolidates "floating" project-level TODOs and Quick Notes.
+
 ### Focus Mode
 
 - When enabled, left panel collapses (CSS class `collapsed`)
@@ -312,6 +319,8 @@ A background stylistic and worldbuilding analysis assistant that provides unobtr
 - **Typos**: Basic spellchecking.
 - **Show, Don't Tell**: Flags weak adverbs or passive language for rewrite.
 - **Pacing & Rhythm**: Detects structural repetition (e.g. 3 consecutive sentences starting with the same word).
+- **Missing Senses**: Flags paragraphs or chapters that systematically lack references to the five senses (sight, sound, smell, touch, taste) to prevent "white room syndrome".
+- **Readability**: Offers text complexity grades and density scores.
 - Suggestions appear in their own non-modal side panel.
 - Fully configurable via the Project Settings modal.
 - Handled primarily by the `backend/routes/janitor.py` processor using `spaCy`. (See [docs/JANITOR.md](./JANITOR.md) for technical deep-dives on the NLP rules).

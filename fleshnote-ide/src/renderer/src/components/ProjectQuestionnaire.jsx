@@ -110,7 +110,8 @@ export default function ProjectQuestionnaire({ workspacePath, onCancel, onComple
     ...GENRE_PRESETS['custom'],
     default_chapter_target: 4000,
     story_start_date: '2016-05-28',
-    extra_lore: [...GENRE_SUGGESTIONS['custom']]
+    extra_lore: [...GENRE_SUGGESTIONS['custom']],
+    story_language: 'en'
   })
 
   const [newCategoryInput, setNewCategoryInput] = useState('')
@@ -421,7 +422,7 @@ export default function ProjectQuestionnaire({ workspacePath, onCancel, onComple
             </p>
 
             <div style={{ display: 'flex', flexWrap: 'wrap', gap: '16px', marginBottom: '24px' }}>
-              {/* Epistemic */}
+              {/* Story Language */}
               <div style={{ flex: '1 1 45%' }}>
                 <label
                   style={{
@@ -431,15 +432,17 @@ export default function ProjectQuestionnaire({ workspacePath, onCancel, onComple
                     marginBottom: '6px'
                   }}
                 >
-                  {t('q.epistemicLabel', 'EPISTEMIC FILTERING (Who knows what)')}
+                  {t('q.storyLanguageLabel', 'STORY LANGUAGE')}
                 </label>
                 <select
                   style={selectStyle}
-                  value={formData.track_knowledge ? 'yes' : 'no'}
-                  onChange={(e) => updateField('track_knowledge', e.target.value === 'yes')}
+                  value={formData.story_language}
+                  onChange={(e) => updateField('story_language', e.target.value)}
                 >
-                  <option value="yes">{t('q.enabled', 'Enabled')}</option>
-                  <option value="no">{t('q.disabled', 'Disabled')}</option>
+                  <option value="en">English</option>
+                  <option value="hu">Magyar</option>
+                  <option value="pl">Polski</option>
+                  <option value="ar">عربي</option>
                 </select>
               </div>
 

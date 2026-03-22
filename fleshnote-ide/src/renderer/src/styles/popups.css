@@ -662,3 +662,15 @@
     border: 1px solid var(--border-subtle);
     border-radius: 2px;
 }
+
+kbd.hotkey-kbd {
+    display: inline-block; padding: 2px 7px;
+    font-family: var(--font-mono); font-size: 11px;
+    background: var(--bg-elevated); border: 1px solid var(--border-subtle);
+    border-bottom-width: 2px; border-radius: 4px; color: var(--text-primary);
+}
+.hotkeys-table { width: 100%; border-collapse: collapse; }
+.hotkeys-table td { vertical-align: top; padding-bottom: 6px; }
+.nlp-matrix td, .nlp-matrix th { border-bottom: 1px solid var(--border-subtle); padding: 5px 4px; }
+.nlp-matrix tr:last-child td { border-bottom: none; }
+.nlp-matrix .selected-lang { border-left: 2px solid var(--accent-amber); }

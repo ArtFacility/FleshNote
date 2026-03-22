@@ -1,5 +1,6 @@
 import { useState, useCallback, useEffect, useRef } from 'react'
 import { useTranslation } from 'react-i18next'
+import { matchesHotkey } from '../utils/hotkeyMatcher'
 import Editor from './Editor'
 import EntityInspectorPanel from './EntityInspectorPanel'
 import TwistInspectorPanel from './TwistInspectorPanel'
@@ -252,6 +253,9 @@ export default function FleshNoteIDE({ projectConfig, projectPath, onCloseProjec
   const [janitorFocusSignal, setJanitorFocusSignal] = useState(0)
   const janitorActionsRef = useRef(null)
   const lastAnalyzedHtmlRef = useRef('')
+
+  // ── IDE-level configurable hotkeys ────────────────
+  const [ideHotkeys, setIdeHotkeys] = useState({ janitor_open: 'Alt+j', focus_normal: 'Alt+f' })
   const janitorPanelActivityRef = useRef(0) // timestamp of last user interaction inside the panel
   const janitorPendingRetryRef = useRef(null) // deferred retry when panel is active
 
@@ -693,21 +697,34 @@ export default function FleshNoteIDE({ projectConfig, projectPath, onCloseProjec
     }
   }, [focusMode])
 
+  // ── Load IDE-level hotkeys from global config ─────
+  useEffect(() => {
+    window.api?.getGlobalConfig?.().then(cfg => {
+      if (cfg?.hotkeys) setIdeHotkeys(prev => ({ ...prev, ...cfg.hotkeys }))
+    })
+    const onChanged = (e) => setIdeHotkeys(prev => ({ ...prev, ...e.detail }))
+    window.addEventListener('fleshnote:hotkeys-changed', onChanged)
+    return () => window.removeEventListener('fleshnote:hotkeys-changed', onChanged)
+  }, [])
+
   // ── Alt+J global hotkey: open janitor and focus it ────
   useEffect(() => {
     const handleAltJ = (e) => {
-      if (e.altKey && (e.key === 'j' || e.key === 'J') && !focusMode) {
+      if (matchesHotkey(e, ideHotkeys.janitor_open) && !focusMode) {
         e.preventDefault()
         if (janitorCollapsed) {
           setJanitorCollapsed(false)
           localStorage.setItem('fn_janitorCollapsed', 'false')
+          setJanitorFocusSignal(s => s + 1)
+        } else {
+          setJanitorCollapsed(true)
+          localStorage.setItem('fn_janitorCollapsed', 'true')
         }
-        setJanitorFocusSignal(s => s + 1)
       }
     }
     window.addEventListener('keydown', handleAltJ)
     return () => window.removeEventListener('keydown', handleAltJ)
-  }, [focusMode, janitorCollapsed])
+  }, [focusMode, janitorCollapsed, ideHotkeys.janitor_open])
 
   return (
     <>
@@ -992,6 +1009,10 @@ export default function FleshNoteIDE({ projectConfig, projectPath, onCloseProjec
             projectConfig={projectConfig}
             onEntityUpdated={handleEntitiesChanged}
             onConfigUpdate={onConfigUpdate}
+            onNavigate={(chapterId, wordOffset) => {
+              setMainView('editor')
+              handleNavigateToMark({ chapterId, wordOffset })
+            }}
           />
         ) : mainView === 'stats' ? (
           <StatsDashboard
@@ -1362,6 +1383,7 @@ export default function FleshNoteIDE({ projectConfig, projectPath, onCloseProjec
                     autoFocusSignal={janitorFocusSignal}
                     onReturnFocus={() => janitorActionsRef.current?.focusEditor()}
                     onActivity={() => { janitorPanelActivityRef.current = Date.now() }}
+                    hotkeys={ideHotkeys}
                   />
                 )}
               </>

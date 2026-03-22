@@ -1,8 +1,91 @@
 import { useState, useEffect } from 'react'
 import { useTranslation } from 'react-i18next'
 
+const SupportBadge = ({ level }) => {
+    if (level === 'full')    return <span title="Full support"    style={{ color: '#4ade80', fontSize: 14 }}>●</span>;
+    if (level === 'partial') return <span title="Partial support" style={{ color: '#fbbf24', fontSize: 14 }}>◐</span>;
+    if (level === 'none')    return <span title="Not supported"   style={{ color: '#6b7280', fontSize: 14 }}>○</span>;
+    if (level === 'soon')    return <span title="Coming soon"     style={{ color: '#60a5fa', fontSize: 14 }}>◌</span>;
+    return null;
+};
+
+const NLP_FEATURE_MATRIX = [
+    { key: 'humanUi',      label: 'Human-translated UI',          en: 'full',    hu: 'full',    pl: 'partial', ar: 'none'    },
+    { key: 'ner',          label: 'Entity name recognition (NER)',  en: 'full',    hu: 'full',    pl: 'partial', ar: 'partial' },
+    { key: 'sensory',      label: 'Sensory check',                  en: 'full',    hu: 'full',    pl: 'none',    ar: 'none'    },
+    { key: 'typo',         label: 'Typo check',                     en: 'full',    hu: 'full',    pl: 'full',    ar: 'full'    },
+    { key: 'synonym',      label: 'Synonym suggestion',             en: 'full',    hu: 'full',    pl: 'full',    ar: 'partial' },
+    { key: 'flesch',       label: 'Flesch-Kincaid readability',     en: 'full',    hu: 'partial', pl: 'partial', ar: 'partial' },
+    { key: 'passive',      label: 'Janitor: Passive voice check',   en: 'full',    hu: 'full',    pl: 'none',    ar: 'none'    },
+    { key: 'showDontTell', label: "Janitor: Show don't tell check", en: 'full',    hu: 'full',    pl: 'none',    ar: 'none'    },
+    { key: 'voiceConsist', label: 'Character voice consistency',   en: 'soon',    hu: 'soon',    pl: 'soon',    ar: 'soon'    },
+];
+
+const EditableHotkeyRow = ({ hotkeyKey, action, hotkeys, editingHotkey, pendingKey, setEditingHotkey, setPendingKey, onSave }) => (
+    <tr>
+        <td style={{ paddingBottom: 8, paddingRight: 16, whiteSpace: 'nowrap' }}>
+            {editingHotkey === hotkeyKey ? (
+                <input
+                    autoFocus
+                    value={pendingKey}
+                    placeholder="Press keys…"
+                    style={{ width: 110, fontSize: 11, fontFamily: 'var(--font-mono)', background: 'var(--bg-elevated)', border: '1px solid var(--accent-amber)', borderRadius: 4, padding: '2px 6px', color: 'var(--text-primary)', outline: 'none' }}
+                    onKeyDown={e => {
+                        e.preventDefault()
+                        const parts = []
+                        if (e.ctrlKey) parts.push('Ctrl')
+                        if (e.altKey) parts.push('Alt')
+                        if (e.shiftKey) parts.push('Shift')
+                        if (e.key && e.key !== 'Control' && e.key !== 'Alt' && e.key !== 'Shift') parts.push(e.key.length === 1 ? e.key.toUpperCase() : e.key)
+                        if (parts.length) setPendingKey(parts.join('+'))
+                    }}
+                    onBlur={() => {
+                        const val = pendingKey || hotkeys[hotkeyKey]
+                        onSave(hotkeyKey, val)
+                        setEditingHotkey(null)
+                        setPendingKey('')
+                    }}
+                    onChange={() => {}}
+                />
+            ) : (
+                <span
+                    title="Click to change"
+                    style={{ cursor: 'pointer' }}
+                    onClick={() => { setEditingHotkey(hotkeyKey); setPendingKey(hotkeys[hotkeyKey] || '') }}
+                >
+                    {(hotkeys[hotkeyKey] || '?').split('+').map((k, i) => (
+                        <span key={i}>
+                            {i > 0 && <span style={{ margin: '0 2px', opacity: 0.5 }}>+</span>}
+                            <kbd className="hotkey-kbd" style={{ borderColor: 'var(--accent-amber)' }}>{k}</kbd>
+                        </span>
+                    ))}
+                </span>
+            )}
+        </td>
+        <td style={{ paddingBottom: 8, color: 'inherit' }}>{action}</td>
+    </tr>
+)
+
+const HotkeyRow = ({ keys, action, configurable }) => (
+    <tr>
+        <td style={{ paddingBottom: 8, paddingRight: 16, whiteSpace: 'nowrap' }}>
+            {keys.map((k, i) => (
+                <span key={i}>
+                    {i > 0 && <span style={{ margin: '0 2px', opacity: 0.5 }}>+</span>}
+                    <kbd className="hotkey-kbd">{k}</kbd>
+                </span>
+            ))}
+        </td>
+        <td style={{ paddingBottom: 8, color: 'inherit' }}>
+            {action}
+            {configurable && <span style={{ fontSize: 10, opacity: 0.5, marginLeft: 6 }}>(configurable)</span>}
+        </td>
+    </tr>
+);
+
 export default function ProjectSettingsModal({ isOpen, onClose, projectPath, onConfigUpdate }) {
-    const { t } = useTranslation()
+    const { t, i18n } = useTranslation()
+    const currentLang = i18n.language?.slice(0, 2) || 'en'
     const [activeTab, setActiveTab] = useState('general')
     const [config, setConfig] = useState(null)
     const [loading, setLoading] = useState(true)
@@ -11,6 +94,15 @@ export default function ProjectSettingsModal({ isOpen, onClose, projectPath, onC
     const [modelExists, setModelExists] = useState(false)
     const [isDownloading, setIsDownloading] = useState(false)
     const [downloadProgress, setDownloadProgress] = useState(0)
+    const [nlpModelStatus, setNlpModelStatus] = useState({ en: null, hu: null, pl: null, ar: null })
+    const [hotkeys, setHotkeys] = useState({
+        synonym_lookup: 'Alt+S', search: 'Ctrl+F',
+        todo_marker: 'Alt+T', entity_palette: 'Alt+E',
+        quick_note_popup: 'Alt+Q', focus_normal: 'Alt+F',
+        janitor_open: 'Alt+J', janitor_accept: 'Y', janitor_dismiss: 'N'
+    })
+    const [editingHotkey, setEditingHotkey] = useState(null)
+    const [pendingKey, setPendingKey] = useState('')
 
     // Load config when opened
     useEffect(() => {
@@ -36,6 +128,34 @@ export default function ProjectSettingsModal({ isOpen, onClose, projectPath, onC
                 .catch(err => console.error("Could not check NLP model status", err))
         }
     }, [config?.story_language, isOpen])
+
+    // Load hotkeys from global config when hotkeys tab is active
+    useEffect(() => {
+        if (activeTab === 'hotkeys' && isOpen) {
+            window.api?.getGlobalConfig?.()
+                .then(cfg => {
+                    if (cfg?.hotkeys) setHotkeys({
+                        synonym_lookup: 'Alt+S', search: 'Ctrl+F',
+                        todo_marker: 'Alt+T', entity_palette: 'Alt+E',
+                        quick_note_popup: 'Alt+Q', focus_normal: 'Alt+F',
+                        janitor_open: 'Alt+J', janitor_accept: 'Y', janitor_dismiss: 'N',
+                        ...cfg.hotkeys
+                    })
+                })
+                .catch(() => {})
+        }
+    }, [activeTab, isOpen])
+
+    // Check all language models when NLP tab is active
+    useEffect(() => {
+        if (activeTab === 'nlp' && isOpen) {
+            ;['en', 'hu', 'pl', 'ar'].forEach(lang => {
+                window.api?.checkNlpModel?.(lang)
+                    .then(res => setNlpModelStatus(prev => ({ ...prev, [lang]: res?.exists || false })))
+                    .catch(() => setNlpModelStatus(prev => ({ ...prev, [lang]: false })))
+            })
+        }
+    }, [activeTab, isOpen])
 
     // Listen for model download progress
     useEffect(() => {
@@ -150,6 +270,12 @@ export default function ProjectSettingsModal({ isOpen, onClose, projectPath, onC
                             onClick={() => setActiveTab('janitor')}
                         >
                             {t('settings.tabJanitor', 'The Janitor')}
+                        </button>
+                        <button
+                            className={activeTab === 'hotkeys' ? 'active' : ''}
+                            onClick={() => setActiveTab('hotkeys')}
+                        >
+                            {t('settings.tabHotkeys', 'Hotkeys')}
                         </button>
                     </div>
 
@@ -276,19 +402,6 @@ export default function ProjectSettingsModal({ isOpen, onClose, projectPath, onC
                                     <label className="checkbox-label">
                                         <input
                                             type="checkbox"
-                                            checked={config.track_knowledge || false}
-                                            onChange={() => handleToggle('track_knowledge')}
-                                        />
-                                        <div>
-                                            <strong>{t('settings.epistemicFiltering', 'Epistemic Filtering (Knowledge States)')}</strong>
-                                            <p className="settings-desc">{t('settings.epistemicDesc', 'Track who knows what, and filter the entity inspector based on the current POV character.')}</p>
-                                        </div>
-                                    </label>
-                                </div>
-                                <div className="settings-card">
-                                    <label className="checkbox-label">
-                                        <input
-                                            type="checkbox"
                                             checked={config.track_dual_timeline || false}
                                             onChange={() => handleToggle('track_dual_timeline')}
                                         />
@@ -350,40 +463,55 @@ export default function ProjectSettingsModal({ isOpen, onClose, projectPath, onC
                                                     {isDownloading ? `${t('settings.downloading', 'Downloading...')} ${downloadProgress}%` : t('settings.downloadModel', 'Download Language Model')}
                                                 </button>
                                                 {!isDownloading && (
-                                                    <span style={{ fontSize: 12, color: 'var(--text-tertiary)' }}>{t('settings.modelRequiredText', 'Required for advanced AI features.')}</span>
+                                                    <span style={{ fontSize: 12, color: 'var(--text-tertiary)' }}>{t('settings.modelRequiredText', 'Required for analysis features.')}</span>
                                                 )}
                                             </div>
                                         )}
                                     </div>
                                 </div>
 
-                                <div className="settings-card">
-                                    <h4>{t('settings.experimentalFeatures', 'Experimental Analysis Features')}</h4>
-                                    <p className="settings-desc mb-4">{t('settings.experimentalDesc', 'These features require a downloaded model for full capabilities.')}</p>
-
-                                    <label className="checkbox-label mb-3">
-                                        <input
-                                            type="checkbox"
-                                            checked={config.feature_sensory_check || false}
-                                            onChange={() => handleToggle('feature_sensory_check')}
-                                        />
-                                        <div>
-                                            <strong>{t('settings.sensoryCheck', 'Sensory Description Checker')}</strong>
-                                            <p className="settings-desc">{t('settings.sensoryCheckDesc', 'Analyze prose for balance of sight, sound, smell, touch, and taste.')}</p>
-                                        </div>
-                                    </label>
-
-                                    <label className="checkbox-label">
-                                        <input
-                                            type="checkbox"
-                                            checked={config.feature_voice_detector || false}
-                                            onChange={() => handleToggle('feature_voice_detector')}
-                                        />
-                                        <div>
-                                            <strong>{t('settings.voiceDetector', 'Character Voice Consistency')}</strong>
-                                            <p className="settings-desc">{t('settings.voiceDetectorDesc', 'Detect variations in dialogue vocabulary and structure between characters.')}</p>
-                                        </div>
-                                    </label>
+                                {/* NLP Capabilities matrix */}
+                                <div style={{ marginBottom: 20 }}>
+                                    <div style={{ fontSize: 13, fontWeight: 600, color: 'var(--text-primary)', marginBottom: 8 }}>
+                                        {t('settings.nlpMatrixTitle', 'Language Capabilities')}
+                                    </div>
+                                    {/* Model status row */}
+                                    <div style={{ display: 'flex', gap: 16, marginBottom: 12, fontSize: 11, color: 'var(--text-secondary)', fontFamily: 'var(--font-mono)' }}>
+                                        {['en', 'hu', 'pl', 'ar'].map(lang => (
+                                            <span key={lang}>
+                                                {lang.toUpperCase()}: {nlpModelStatus[lang] === true ? <span style={{ color: '#4ade80' }}>● installed</span> : nlpModelStatus[lang] === false ? <span style={{ color: '#6b7280' }}>○ not installed</span> : <span>…</span>}
+                                            </span>
+                                        ))}
+                                    </div>
+                                    {/* Legend */}
+                                    <div style={{ display: 'flex', gap: 16, marginBottom: 10, fontSize: 11, color: 'var(--text-secondary)' }}>
+                                        <span><span style={{ color: '#4ade80' }}>●</span> {t('settings.nlpLegendFull', 'Full')}</span>
+                                        <span><span style={{ color: '#fbbf24' }}>◐</span> {t('settings.nlpLegendPartial', 'Partial')}</span>
+                                        <span><span style={{ color: '#6b7280' }}>○</span> {t('settings.nlpLegendNone', 'None')}</span>
+                                        <span><span style={{ color: '#60a5fa' }}>◌</span> {t('settings.nlpLegendSoon', 'Soon')}</span>
+                                    </div>
+                                    <table className="nlp-matrix" style={{ width: '100%', borderCollapse: 'collapse', fontSize: 12 }}>
+                                        <thead>
+                                            <tr>
+                                                <th style={{ textAlign: 'left', padding: '5px 4px', color: 'var(--text-secondary)', fontWeight: 500 }}>{t('settings.nlpTableHeaderFeature', 'Feature')}</th>
+                                                {['en', 'hu', 'pl', 'ar'].map(lang => (
+                                                    <th key={lang} className={currentLang === lang ? 'selected-lang' : ''} style={{ textAlign: 'center', padding: '5px 4px', color: 'var(--text-secondary)', fontWeight: 500, width: 48 }}>{lang.toUpperCase()}</th>
+                                                ))}
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            {NLP_FEATURE_MATRIX.map(row => (
+                                                <tr key={row.key}>
+                                                    <td className="nlp-matrix" style={{ padding: '5px 4px', color: 'var(--text-primary)' }}>{t(`settings.nlpFeatures.${row.key}`, row.label)}</td>
+                                                    {['en', 'hu', 'pl', 'ar'].map(lang => (
+                                                        <td key={lang} className={currentLang === lang ? 'selected-lang' : ''} style={{ textAlign: 'center', padding: '5px 4px' }}>
+                                                            <SupportBadge level={row[lang]} />
+                                                        </td>
+                                                    ))}
+                                                </tr>
+                                            ))}
+                                        </tbody>
+                                    </table>
                                 </div>
 
                             </div>
@@ -463,6 +591,59 @@ export default function ProjectSettingsModal({ isOpen, onClose, projectPath, onC
                                 </div>
                             </div>
                         )}
+
+                        {activeTab === 'hotkeys' && (() => {
+                            const saveHotkey = (key, val) => {
+                                const updated = { ...hotkeys, [key]: val }
+                                setHotkeys(updated)
+                                window.api?.updateGlobalConfig?.({ hotkeys: updated })
+                                window.dispatchEvent(new CustomEvent('fleshnote:hotkeys-changed', { detail: updated }))
+                            }
+                            const rowProps = { hotkeys, editingHotkey, pendingKey, setEditingHotkey, setPendingKey, onSave: saveHotkey }
+                            return (
+                            <div>
+                                <div style={{ fontSize: 15, fontWeight: 600, color: 'var(--text-primary)', marginBottom: 4 }}>
+                                    {t('settings.hotkeysTitle', 'Keyboard Shortcuts')}
+                                </div>
+                                <div style={{ fontSize: 12, color: 'var(--text-secondary)', marginBottom: 20 }}>
+                                    {t('settings.hotkeysDesc', 'The two highlighted shortcuts can be customised — click a key combo to change it.')}
+                                </div>
+
+                                <div style={{ fontSize: 13, fontWeight: 600, color: 'var(--text-primary)', marginBottom: 10 }}>
+                                    {t('settings.hotkeysGroupEditor', 'Writing & Editor')}
+                                </div>
+                                <table className="hotkeys-table" style={{ marginBottom: 24 }}>
+                                    <tbody>
+                                        <EditableHotkeyRow hotkeyKey="todo_marker" action={t('settings.hotkeyTodo', 'Insert #TODO marker')} {...rowProps} />
+                                        <EditableHotkeyRow hotkeyKey="synonym_lookup" action={t('settings.hotkeySynonym', 'Open synonym lookup')} {...rowProps} />
+                                        <EditableHotkeyRow hotkeyKey="search" action={t('settings.hotkeySearch', 'Find & replace')} {...rowProps} />
+                                        <EditableHotkeyRow hotkeyKey="entity_palette" action={t('settings.hotkeyEntityPalette', 'Open entity command palette')} {...rowProps} />
+                                        <EditableHotkeyRow hotkeyKey="quick_note_popup" action={t('settings.hotkeyQuickNotePopup', 'Quick note on selection')} {...rowProps} />
+                                        <EditableHotkeyRow hotkeyKey="focus_normal" action={t('settings.hotkeyFocusNormal', 'Toggle focus (normal) mode')} {...rowProps} />
+                                        <HotkeyRow keys={['Ctrl', 'B']} action={t('settings.hotkeyBold', 'Bold')} />
+                                        <HotkeyRow keys={['Ctrl', 'I']} action={t('settings.hotkeyItalic', 'Italic')} />
+                                        <HotkeyRow keys={['Ctrl', 'U']} action={t('settings.hotkeyUnderline', 'Underline')} />
+                                    </tbody>
+                                </table>
+
+                                <div style={{ fontSize: 13, fontWeight: 600, color: 'var(--text-primary)', marginBottom: 10 }}>
+                                    {t('settings.hotkeysGroupJanitor', 'Janitor Panel (when focused)')}
+                                </div>
+                                <div style={{ fontSize: 11, color: 'var(--text-secondary)', marginBottom: 8 }}>
+                                    {t('settings.hotkeysJanitorNote', 'These shortcuts are active while the Janitor sidebar is open and focused.')}
+                                </div>
+                                <table className="hotkeys-table">
+                                    <tbody>
+                                        <EditableHotkeyRow hotkeyKey="janitor_open" action={t('settings.hotkeyOpenJanitorEditable', 'Open Janitor & focus it')} {...rowProps} />
+                                        <EditableHotkeyRow hotkeyKey="janitor_accept" action={t('settings.hotkeyAccept', 'Accept selected suggestion')} {...rowProps} />
+                                        <EditableHotkeyRow hotkeyKey="janitor_dismiss" action={t('settings.hotkeyDismiss', 'Dismiss selected suggestion')} {...rowProps} />
+                                        <HotkeyRow keys={['↑ / ↓']} action={t('settings.hotkeyNavigate', 'Navigate suggestions')} />
+                                        <HotkeyRow keys={['Esc']} action={t('settings.hotkeyReturn', 'Return focus to editor')} />
+                                    </tbody>
+                                </table>
+                            </div>
+                            )
+                        })()}
                     </div>
                 </div>
             </div>

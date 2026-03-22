@@ -1,25 +1,62 @@
 # FleshNote IDE
 
-An advanced, localized, and feature-rich writing tool for writers, and world builders who actually wish to finish their story this century. Built with Electron, React, TypeScript, and FastAPI.
+An advanced, no-bullshit writing tool for novelists and world builders who actually want to finish their draft this century. Built with Electron, React, TypeScript, and FastAPI.
 
 [![License: MPL 2.0](https://img.shields.io/badge/License-MPL_2.0-brightgreen.svg)](https://opensource.org/licenses/MPL-2.0)
 
-## 🌟 Key Features
+![FleshNote IDE](assets/full_ide.png)
 
-- **Advanced Manuscript Editor**: Distraction-free writing with strict focus sprints (like Hemingway or Kamikaze), `@` entity mentions, `#TODO` tracking, and real-time word count velocity.
-- **NLP-Driven Extraction**: Import your chaotic notes and use local NLP analysis (spaCy) to automatically detect characters, locations, and lore items — complete with lightning-fast alias management and split-pane triage.
-- **Deep World Building & Epistemic UI**: A robust **Entity Inspector** to manage character bios, agendas (surface & hidden), and geographic hierarchies. Filter truth vs. narrative deception by tracking exactly _who knows what_.
-- **Annotation & Footnote Engine**: Attach contextual quick-notes or research directly to your markdown text. Annotations elegantly export as numbered footnotes to DOCX, HTML, PDF, and EPUB.
-- **Plot Planner & Timeline**: A zoomable, multi-layer canvas for mapping story arcs, beats, and complex narrative threads.
-- **Twist & Foreshadow Tracker**: Heuristic tools to manage major reveals, ensuring narrative clues are paced effectively across your manuscript.
-- **Non-Linear Relationships**: Track evolving character dynamics through time, including one-sided feelings and chapter-specific historical states.
-- **Custom Calendar Engine & Dual Timeline**: Go beyond Earth — define unique months, seasons, and epochs. Monitor your story's progression across both the natural reading order and strict in-universe chronologies.
-- **Stats Dashboard**: Visualized "Story Health" diagnostics, writing habit analysis, and entity appearance auditing.
-- **Gamified Progression**: Keep up your writing momentum through an intrinsic **Achievements System** rewarding consistency and volume.
-- **Professional Export Suite**: Industry-standard manuscript exports to PDF, DOCX, and EPUB with book-ready formatting presets, selective chapter inclusion, and a gorgeous live WYSIWYG book preview.
-- **Full Localization**: Seamlessly switch between **English**, **Polish**, **Hungarian**, and **Arabic (RTL)**.
+## 🌟 Why FleshNote?
+
+FleshNote was built by writers, for writers. I created this app mainly for myself to help me write my novel, but I decided to make it open source so that other writers can benefit from it as well.
+
+### 🧹 The Janitor (Your Smart Editing Assistant)
+Write now, edit later. The built-in Janitor actively reads your chapters in the background using local, offline linguistic analysis (spaCy & NLTK) to offer structural suggestions without ever interrupting your flow:
+- **Sensory Analysis**: Avoid "White Room Syndrome." The Janitor tracks if your scene is missing descriptions of Smell, Taste, Touch, Sound, or Sight.
+- **Show, Don't Tell**: Detects weak adverbs and passive voice.
+- **Readability & Pacing**: Grades your chapter complexity and warns you if you start three sentences in a row with the exact same word.
+
+![Sensory Analysis](assets/sensory_analysis.png)
+
+### 🏃‍♂️ Hardcore Sprint Modes
+Sometimes you just need a little push to get drafted. FleshNote gamifies the writing process with specialized, un-exitable Focus Modes:
+- **Hemingway Mode**: The backspace and delete keys are completely disabled. No inner-editor allowed. You can only move forward!
+- **Zen Mode**: Relax and watch a procedural tree grow on your screen as you hit your word count goals. Hitting your target makes the tree bloom.
+- **Kamikaze Mode**: Stop typing for too long, and your text turns red before being permanently deleted. Survive the sprint!
+- **Fog Mode**: Previous sentences fade into a thick fog, keeping your eyes locked on the *current* sentence so you don't scroll up.
+
+![Zen Mode Timelapse](assets/zen_mode_timelapse.gif)
+
+### 🧠 Epistemic UI (Who Knows What?)
+Track exactly what a character knows at any given point in your timeline. Use the **Entity Inspector** to lock away a character's "True Goal" while they lie to the reader, visually tracking narrative deception across chapters.
+
+![Knowledge State](assets/knowledge_state.png)
+
+### 🗺️ Timeline & Plot Planner
+A zoomable, multi-layer canvas for mapping out your story beats, arcs, and foreshadowing natively injected straight into the manuscript. 
+
+![Plot Planner](assets/plot_planner.png)
+
+### 📜 World History Timeline
+Track what happened with your characters and items before the book even begins. Build a deep chronological history by dragging relationships and pinning major backstory events across an interactive, visual timeline.
+
+![History Timeline](assets/history_timeline.gif)
+
+### 📂 Unified Entity & Twist Tracking
+Dumping lore into your project is easy. Managing it is easier. The codebase features a robust tabbed dashboard to manage Characters, Locations, Twists, and Quick Notes with bulk operations and inline tagging (`@mention` any character right in the editor).
+
+![Entity Manager](assets/entity_manager.png)
+
+### 📚 Professional Book Export
+Export straight to industry-standard formatting. Generates print-ready PDFs, standard DOCX files, and EPUBs with a WYSIWYG  live preview.
+
+![File Export](assets/file_export.png)
+
+---
 
 ## 🚀 Getting Started
+
+> ⚠️ **Windows Users:** I'm a solo indie dev and I don't plan on buying an expensive Windows Code Signing Certificate. When installing the app, Windows SmartScreen will show a scary blue pop-up warning you about an "unrecognized app". Simply click **More info** -> **Run anyway** to proceed with the installation!
 
 ### Prerequisites
 
@@ -46,7 +83,6 @@ An advanced, localized, and feature-rich writing tool for writers, and world bui
    ```
 
 ### Development
-
 Run the application in development mode:
 ```bash
 npm run dev
@@ -54,7 +90,9 @@ npm run dev
 
 ## 📦 Building for Production
 
-You can build the production installer using the provided platform-specific scripts or npm commands.
+You can build the production installer using the provided platform-specific scripts or npm commands. 
+
+**IMPORTANT**: When building the app manually (via npm), you *must* also manually freeze the Python backend using PyInstaller first. The provided build scripts (`build.bat` and `build.sh`) handle this dual-compilation step for you automatically!
 
 ### Using Build Scripts (Recommended)
 
@@ -70,6 +108,8 @@ chmod +x build.sh
 ```
 
 ### Manual Build Commands
+
+*(Remember to run PyInstaller on the backend first!)*
 
 **Windows**
 ```bash

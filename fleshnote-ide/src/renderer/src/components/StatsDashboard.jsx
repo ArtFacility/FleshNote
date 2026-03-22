@@ -977,9 +977,6 @@ function SensesTab({ projectPath, projectConfig }) {
                                 {senseKeys.map(s => (
                                     <th key={s} style={{ textAlign: "center", padding: "8px 10px", borderBottom: `1px solid ${T.bg3}`, color: SENSE_COLORS[s] || T.amber, fontWeight: "normal", textTransform: "capitalize" }}>{s}</th>
                                 ))}
-                                {language === "en" && (
-                                    <th style={{ textAlign: "center", padding: "8px 12px", borderBottom: `1px solid ${T.bg3}`, color: T.textDim, fontWeight: "normal" }}>{t('stats.readingLevel', 'Reading Level')}</th>
-                                )}
                             </tr>
                         </thead>
                         <tbody>
@@ -1003,14 +1000,6 @@ function SensesTab({ projectPath, projectConfig }) {
                                                 </td>
                                             );
                                         })}
-                                        {language === "en" && (
-                                            <td style={{ textAlign: "center", padding: "8px 12px" }}>
-                                                {ch.readability?.grade != null
-                                                    ? <span style={{ color: fkColor }}>Gr.{ch.readability.grade}</span>
-                                                    : <span style={{ color: T.textDim }}>—</span>
-                                                }
-                                            </td>
-                                        )}
                                     </tr>
                                 );
                             })}
@@ -1019,20 +1008,6 @@ function SensesTab({ projectPath, projectConfig }) {
                 </div>
             </div>
 
-            {/* Reading level legend (EN only) */}
-            {language === "en" && (
-                <div style={{ display: "flex", gap: 12, flexWrap: "wrap" }}>
-                    {Object.entries(FK_LABEL_COLOR).map(([label, color]) => (
-                        <div key={label} style={{ display: "flex", alignItems: "center", gap: 6, fontFamily: T.mono, fontSize: 10, color: T.textDim }}>
-                            <span style={{ width: 8, height: 8, background: color, display: "inline-block", borderRadius: 2 }} />
-                            {label.replace(/_/g, ' ')}
-                        </div>
-                    ))}
-                    <span style={{ fontFamily: T.mono, fontSize: 10, color: T.textDim, marginLeft: 8 }}>
-                        {t('stats.fkNote', '(Flesch-Kincaid grade level)')}
-                    </span>
-                </div>
-            )}
         </div>
     );
 }
@@ -1117,6 +1092,7 @@ function StoryHealthTab({ entities, chapters, mentions, projectPath, projectConf
     const [loadingTwists, setLoadingTwists] = useState(true);
     const [sensesData, setSensesData] = useState(null);
     const [severityFilter, setSeverityFilter] = useState("all");
+    const [isDiagnosticsOpen, setIsDiagnosticsOpen] = useState(true);
 
     const language = projectConfig?.story_language || "en";
 
@@ -1294,11 +1270,33 @@ function StoryHealthTab({ entities, chapters, mentions, projectPath, projectConf
             });
         }
 
+        // 6. Reading level warnings
+        const readingIssues = [];
+        if (sensesData && language === "en") {
+            sensesData.forEach(ch => {
+                const label = ch.readability?.label;
+                if (label === "difficult" || label === "very_difficult") {
+                    issues.push({
+                        severity: "warning",
+                        category: "readability",
+                        message: t('stats.healthReadingLevelDifficult', {
+                            defaultValue: `Ch.${ch.chapter_number} "${ch.title}" has a difficult reading level (Gr.${ch.readability.grade}).`,
+                            num: ch.chapter_number,
+                            title: ch.title,
+                            grade: ch.readability.grade,
+                        }),
+                        key: `readability-${ch.chapter_id}`,
+                    });
+                    readingIssues.push(ch);
+                }
+            });
+        }
+
         // Sort by severity
         issues.sort((a, b) => (SEVERITY_ORDER[a.severity] ?? 9) - (SEVERITY_ORDER[b.severity] ?? 9));
 
-        return { issues, orphans, introsByChapter, missingSenses, activeChapters };
-    }, [entities, chapters, mentions, twistData, sensesData, t]);
+        return { issues, orphans, introsByChapter, missingSenses, activeChapters, readingIssues };
+    }, [entities, chapters, mentions, twistData, sensesData, language, t]);
 
     // Health score
     const healthScore = useMemo(() => {
@@ -1338,6 +1336,10 @@ function StoryHealthTab({ entities, chapters, mentions, projectPath, projectConf
         }, 0);
         score -= Math.min(10, sensesPenalty);
 
+        // Reading level penalties (capped at -10 total)
+        const readingPenalty = (diagnostics.readingIssues || []).length * 2;
+        score -= Math.min(10, readingPenalty);
+
         // ── Positive bonuses ─────────────────────────────────────────────
         // Revised/final chapters reward (capped at +20)
         const polishedCount = chapters.filter(ch => ch.status === "revised" || ch.status === "final").length;
@@ -1365,6 +1367,20 @@ function StoryHealthTab({ entities, chapters, mentions, projectPath, projectConf
         const totalRatio = withTargets.reduce((sum, ch) => sum + (ch.word_count / ch.target_word_count), 0);
         return Math.round((totalRatio / withTargets.length) * 100);
     }, [chapters]);
+
+    // Avg reading grade
+    const avgReadingGrade = useMemo(() => {
+        if (!sensesData || language !== "en") return null;
+        let total = 0;
+        let count = 0;
+        sensesData.forEach(ch => {
+            if (ch.readability?.grade != null) {
+                total += ch.readability.grade;
+                count++;
+            }
+        });
+        return count > 0 ? Math.round((total / count) * 10) / 10 : null;
+    }, [sensesData, language]);
 
     // Filtered issues for display
     const filteredIssues = useMemo(() => {
@@ -1427,15 +1443,33 @@ function StoryHealthTab({ entities, chapters, mentions, projectPath, projectConf
                     sub={t('stats.vsTarget', 'vs target')}
                     color={avgCompletion >= 80 ? "var(--accent-green)" : avgCompletion >= 50 ? "var(--accent-amber)" : "var(--accent-red)"}
                 />
+                {language === "en" && avgReadingGrade !== null && (
+                    <StatCard
+                        label={t('stats.readingLevel', 'Reading Level')}
+                        value={`Grade ${avgReadingGrade}`}
+                        sub={t('stats.fkNoteShort', 'Flesch-Kincaid')}
+                        color="var(--accent-purple)"
+                    />
+                )}
             </div>
 
             {/* Story Diagnostics */}
             <div>
                 <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 16 }}>
-                    <div style={{ fontFamily: T.mono, fontSize: 11, color: T.textDim, textTransform: "uppercase", letterSpacing: "0.1em" }}>
+                    <div 
+                        onClick={() => setIsDiagnosticsOpen(!isDiagnosticsOpen)}
+                        style={{ fontFamily: T.mono, fontSize: 11, color: T.textDim, textTransform: "uppercase", letterSpacing: "0.1em", cursor: "pointer", display: "flex", alignItems: "center", gap: 8, userSelect: "none" }}
+                    >
+                        <span>{isDiagnosticsOpen ? "▼" : "▶"}</span>
                         {t('stats.storyDiagnostics', 'Story Diagnostics')}
+                        {!isDiagnosticsOpen && filteredIssues.length > 0 && (
+                            <span style={{ background: T.bg2, padding: "2px 6px", borderRadius: 4, color: T.text, fontSize: 10 }}>
+                                {filteredIssues.length} {filteredIssues.length === 1 ? t('stats.warning', 'warning') : t('stats.warnings', 'warnings')}
+                            </span>
+                        )}
                     </div>
-                    <div style={{ display: "flex", gap: 4 }}>
+                    {isDiagnosticsOpen && (
+                        <div style={{ display: "flex", gap: 4 }}>
                         {["all", "warning", "danger"].map(f => (
                             <button
                                 key={f}
@@ -1458,6 +1492,7 @@ function StoryHealthTab({ entities, chapters, mentions, projectPath, projectConf
                             </button>
                         ))}
                     </div>
+                    )}
                 </div>
 
                 {loadingTwists ? (
@@ -1475,7 +1510,7 @@ function StoryHealthTab({ entities, chapters, mentions, projectPath, projectConf
                             {t('stats.noIssuesFound', 'No issues found — your story is looking healthy!')}
                         </span>
                     </div>
-                ) : (
+                ) : isDiagnosticsOpen ? (
                     <div style={{ display: "flex", flexDirection: "column", gap: 6 }}>
                         {filteredIssues.map(issue => (
                             <div
@@ -1499,7 +1534,7 @@ function StoryHealthTab({ entities, chapters, mentions, projectPath, projectConf
                             </div>
                         ))}
                     </div>
-                )}
+                ) : null}
             </div>
 
             {/* Chapter Balance */}

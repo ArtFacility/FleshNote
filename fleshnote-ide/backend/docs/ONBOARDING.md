@@ -73,9 +73,11 @@ A 3-step wizard that collects project metadata and worldbuilding configuration.
 
 | Field                 | Type                 | Default varies by genre                   |
 | --------------------- | -------------------- | ----------------------------------------- |
+| Story Language        | Select               | Default: English (en)                     |
 | Epistemic Filtering   | Toggle               | Fantasy/Sci-Fi/Thriller: on, Romance: on  |
 | Plot Milestones       | Toggle               | All: on                                   |
 | Dual Timeline         | Toggle               | Fantasy/Sci-Fi/Thriller: on, Romance: off |
+| Story Start Date      | Date input           | Default: 2016-05-28 (if Dual Timeline on) |
 | Chapter Target        | Number input         | Default: 4000                             |
 | Extra Lore Categories | Comma-separated text | Varies by genre                           |
 

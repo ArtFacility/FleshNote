@@ -25,6 +25,7 @@ const api = {
 
   // ── Chapters ───────────────────────────────────────
   getChapters: (projectPath) => ipcRenderer.invoke('api:getChapters', projectPath),
+  getTodos: (projectPath) => ipcRenderer.invoke('api:getTodos', projectPath),
   createChapter: (payload) => ipcRenderer.invoke('api:createChapter', payload),
   bulkCreateChapters: (payload) => ipcRenderer.invoke('api:bulkCreateChapters', payload),
   loadChapterContent: (projectPath, chapterId) =>
@@ -72,6 +73,7 @@ const api = {
   // ── Quick Notes ────────────────────────────────────
   getQuickNotes: (projectPath) => ipcRenderer.invoke('api:getQuickNotes', projectPath),
   createQuickNote: (payload) => ipcRenderer.invoke('api:createQuickNote', payload),
+  updateQuickNote: (payload) => ipcRenderer.invoke('api:updateQuickNote', payload),
   deleteQuickNote: (payload) => ipcRenderer.invoke('api:deleteQuickNote', payload),
 
   // ── Annotations ────────────────────────────────────

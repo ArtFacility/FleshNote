@@ -387,10 +387,13 @@ To prevent massive native executable bloat from packaging heavy NLP datasets dir
 ```
 1. Frontend checks window.api.checkNlpModel(langCode)
 2. If missing, window.api.loadNlpModel(language) fires
-3. Python backend (nlp_manager.py) determines the optimal pip strategy:
-   - Official models: Uses spacy.cli.download to map to explicit explosion tarballs on Github
+3. Python backend (`nlp_manager.py` or `nltk_manager.py`) determines the optimal pipeline strategy:
+   - Official spaCy models: Uses `spacy.cli.download` to map to explicit explosion tarballs on Github
    - Custom variants (like 'huspacy' for Hungarian): explicitly queries the huggingface latest wheel
-4. Launches an asynchronous subprocess.Popen running `pip install --target {app_data_models_dir}`
-5. Yields DOWNLOAD_PROGRESS stdout logs parsed automatically by IPC back to the React UI
+   - NLTK Data: Fetches WordNet and OMW corpora packages natively.
+4. If in a frozen environment, unpacks downloads directly into `AppData`. If in development, launches a subprocess running `pip install --target`.
+5. Yields `DOWNLOAD_PROGRESS` stdout logs parsed automatically by IPC back to the React UI.
+
+*For more details on NLP architecture, see `NLP_INFRASTRUCTURE.md`.*
 ```
 This architecture keeps the base application slim while reliably caching language AI toolings system-wide.

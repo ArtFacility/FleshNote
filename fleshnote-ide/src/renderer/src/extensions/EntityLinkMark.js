@@ -34,6 +34,13 @@ export const EntityLinkMark = Mark.create({
         renderHTML: (attributes) => ({
           'data-entity-id': attributes.entityId
         })
+      },
+      noteType: {
+        default: null,
+        parseHTML: (element) => element.getAttribute('data-note-type'),
+        renderHTML: (attributes) => attributes.noteType
+          ? { 'data-note-type': attributes.noteType }
+          : {}
       }
     }
   },
@@ -48,10 +55,12 @@ export const EntityLinkMark = Mark.create({
 
   renderHTML({ HTMLAttributes }) {
     const type = HTMLAttributes['data-entity-type'] || 'character'
+    const noteType = HTMLAttributes['data-note-type']
+    const noteClass = noteType ? ` note-type-${noteType.toLowerCase()}` : ''
     return [
       'span',
       mergeAttributes(this.options.HTMLAttributes, HTMLAttributes, {
-        class: `entity-link ${type}`,
+        class: `entity-link ${type}${noteClass}`,
         'data-entity-type': type,
         'data-entity-id': HTMLAttributes['data-entity-id']
       }),
