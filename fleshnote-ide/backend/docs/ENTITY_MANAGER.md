@@ -36,6 +36,15 @@ When duplicates are created (e.g. creating "The King" and then later creating "K
   3. **Link Rewriting**: Crucially, the backend scans every markdown chapter file `md/*.md` and regex-replaces the source entity marker `{{char:2|King}}` with the target marker `{{char:5|King}}`.
   4. **Drop**: The source entity is safely deleted.
 
+### Entity Renaming Workflow
+When an author edits an entity's name (whether a Character, Location, Lore element, or Group) via the Entity Inspector Panel, the system automatically triggers the **Entity Rename Popup**. This intelligent workflow prevents orphaned text references and broken narrative flow.
+- **Scanning**: The backend parses all markdown chapters via `/api/project/entities/scan-references`, searching for the entity's exact ID, the old name, and partial unique overlaps.
+- **Exact vs Unique Matches**:
+  - *Exact Matches*: Any markdown text explicitly using the exact old name of the entity.
+  - *Unique Matches*: Variations or partial matches of the old name found in the manuscript.
+- **Frontend Resolution**: The `EntityRenamePopup` provides a UI wizard showing all discovered references. The author can decide on a case-by-case basis whether to update the text to the new name, keep it, or automatically add the text as a new alias.
+- **Execution**: The `/api/project/entities/replace-references` endpoint executes the approved replacements across all markdown files simultaneously.
+
 ---
 
 ## 3. Integrated TODOs and Quick Notes

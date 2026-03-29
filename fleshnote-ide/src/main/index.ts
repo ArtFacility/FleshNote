@@ -474,6 +474,15 @@ app.whenReady().then(async () => {
     return await backendPost('/api/project/entities/search', payload)
   })
 
+  ipcMain.handle('api:scanEntityReferences', async (_event, payload) => {
+    return await backendPost('/api/project/entity/scan-references', payload)
+  })
+
+  ipcMain.handle('api:replaceEntityReferences', async (_event, payload) => {
+    return await backendPost('/api/project/entity/replace-references', payload)
+  })
+
+
   // ── Entity Manager ────────────────────────────────────
   ipcMain.handle('api:bulkDeleteEntities', async (_event, payload) => {
     return await backendPost('/api/project/entities/bulk-delete', payload)

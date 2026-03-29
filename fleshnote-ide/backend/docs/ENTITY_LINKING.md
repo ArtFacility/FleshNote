@@ -223,6 +223,31 @@ To keep documents pristine when deleting entities globally:
 
 ---
 
+## Renaming Linked Entities
+
+When an entity's name changes in the Inspector, the text values of existing links across the manuscript must dynamically update to prevent them from displaying the old name.
+
+**Component:** `src/renderer/src/components/EntityRenamePopup.jsx`
+
+**Trigger:** Saving an entity edit in `EntityInspectorPanel.jsx` where the new name differs from the old name.
+
+**Flow:**
+
+```text
+User renames "Sophia" to "Seraphina" and clicks Save
+  -> EntityInspectorPanel detects the name change and mounts EntityRenamePopup
+  -> Frontend calls window.api.scanEntityReferences with the old and new names
+  -> Backend scans all `.md` files for links matching the entity ID
+  -> Popup categorizes matches into Exact Matches and Unique Matches
+  -> User toggles which instances to replace and optionally adds old text as aliases
+  -> Frontend calls window.api.replaceEntityReferences with the mapped replacements
+  -> Backend opens affected `.md` chapters and regex-replaces the inner text of the markers
+```
+
+This structural update ensures the visual text inside the `<span data-entity-type="...` updates dynamically and across the entire project, while preserving the ID bounds.
+
+---
+
 ## Hover Cards
 
 Inline component in `Editor.jsx`.

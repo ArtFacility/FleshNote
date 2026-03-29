@@ -112,6 +112,32 @@ export const SearchAndReplace = Extension.create({
                 }
                 return true
             },
+            replaceCurrent: (replaceTerm) => ({ tr, dispatch, editor }) => {
+                const { results, currentIndex } = editor.storage.searchAndReplace
+                if (results.length === 0 || currentIndex < 0) return false
+                const result = results[currentIndex]
+                if (!result) return false
+
+                if (dispatch) {
+                    tr.insertText(replaceTerm, result.from, result.to)
+                    tr.setMeta(searchAndReplacePluginKey, { type: 'SET_INDEX', index: currentIndex })
+                }
+                return true
+            },
+            replaceAll: (replaceTerm) => ({ tr, dispatch, editor }) => {
+                const { results } = editor.storage.searchAndReplace
+                if (results.length === 0) return false
+
+                if (dispatch) {
+                    // Apply replacements in reverse order so positions stay valid
+                    const sorted = [...results].sort((a, b) => b.from - a.from)
+                    for (const result of sorted) {
+                        tr.insertText(replaceTerm, result.from, result.to)
+                    }
+                    tr.setMeta(searchAndReplacePluginKey, { type: 'SET_INDEX', index: 0 })
+                }
+                return true
+            },
         }
     },
 

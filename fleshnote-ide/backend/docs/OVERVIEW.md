@@ -37,7 +37,7 @@ Depending on what you need to work on, refer to these specific documentation fil
 *   **Localization & RTL Support**: An actively maintained i18next translation framework natively spanning English, Hungarian, Polish, and Arabic, automatically flipping layout constraints natively utilizing pure logical CSS properties (`inset-inline`, `margin-block`).
 *   **Statistics & Custom Analytics**: A comprehensive dashboard tracing writing telemetry, Entity Presence Matrix, Readability scores, and "5 Senses" sensory vocabulary tracking across the manuscript.
 *   **Custom Calendar Maker**: Tools for the author to build and specify custom in-universe calendar systems for tracking time, calculating ages, and charting the World History timeline.
-*   **Unified Entity Manager**: A tabbed Project Manager allowing bulk database operations (merging characters, deleting nodes) seamlessly integrated into the React frontend.
+*   **Unified Entity Manager & Renaming Workflow**: A tabbed Project Manager and Entity Inspector allowing bulk database operations (merging characters, intelligent global entity renaming, deleting nodes) seamlessly integrated into the React frontend.
 
 ## Future Plans
 

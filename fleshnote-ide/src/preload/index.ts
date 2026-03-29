@@ -65,6 +65,8 @@ const api = {
   appendEntityDescription: (payload) => ipcRenderer.invoke('api:appendEntityDescription', payload),
   addEntityAlias: (payload) => ipcRenderer.invoke('api:addEntityAlias', payload),
   searchEntities: (payload) => ipcRenderer.invoke('api:searchEntities', payload),
+  scanEntityReferences: (payload) => ipcRenderer.invoke('api:scanEntityReferences', payload),
+  replaceEntityReferences: (payload) => ipcRenderer.invoke('api:replaceEntityReferences', payload),
 
   // ── Entity Manager ────────────────────────────────
   bulkDeleteEntities: (payload) => ipcRenderer.invoke('api:bulkDeleteEntities', payload),

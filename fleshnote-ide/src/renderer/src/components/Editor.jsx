@@ -11,6 +11,7 @@ import { RelationshipLinkMark } from '../extensions/RelationshipLinkMark'
 import { TimeLinkMark } from '../extensions/TimeLinkMark'
 import { TodoHighlighter } from '../extensions/TodoHighlighter'
 import { SearchAndReplace } from '../extensions/SearchAndReplace'
+import EditorSearchBar from './EditorSearchBar'
 import getSuggestionConfig from '../extensions/mentionSuggestion'
 import { useEffect, useRef, useState, useCallback, useMemo } from 'react'
 import { useTranslation } from 'react-i18next'
@@ -217,6 +218,26 @@ export default function Editor({
     onUpdateRef.current = onUpdate
   }, [onUpdate])
 
+  // Expose flush method via janitorActionsRef (shared ref for editor actions)
+  useEffect(() => {
+    if (janitorActionsRef) {
+      const prev = janitorActionsRef.current || {}
+      janitorActionsRef.current = {
+        ...prev,
+        flushSave: async () => {
+          if (saveTimeoutRef.current) {
+            clearTimeout(saveTimeoutRef.current)
+            saveTimeoutRef.current = null
+          }
+          if (latestContentRef.current.isDirty && onUpdateRef.current) {
+            await onUpdateRef.current(latestContentRef.current.html, latestContentRef.current.words)
+            latestContentRef.current.isDirty = false
+          }
+        }
+      }
+    }
+  }, [janitorActionsRef])
+
   useEffect(() => {
     return () => {
       // Flush any unsaved changes on unmount
@@ -230,12 +251,8 @@ export default function Editor({
     }
   }, [])
 
-  // Search state
+  // Search state: false | 'search' | 'replace'
   const [showSearch, setShowSearch] = useState(false)
-  const [searchTerm, setSearchTerm] = useState('')
-  const [searchResultsCount, setSearchResultsCount] = useState(0)
-  const [searchCurrentIndex, setSearchCurrentIndex] = useState(0)
-  const searchInputRef = useRef(null)
 
   // Link visibility state
   const [showEyeDropdown, setShowEyeDropdown] = useState(false)
@@ -329,7 +346,7 @@ export default function Editor({
     if (!projectPath || !chapter?.id) { setTimeMarkers([]); return }
     window.api.getWorldTimes({ project_path: projectPath, chapter_id: chapter.id })
       .then(res => setTimeMarkers(res.markers || []))
-      .catch(() => {})
+      .catch(() => { })
   }, [projectPath, chapter?.id])
 
   const effectiveWorldTime = useMemo(() => {
@@ -584,12 +601,6 @@ export default function Editor({
         setActiveTimeMarkerId(timeMark?.attrs.timeId || null)
       } catch (e) { /* ignore */ }
     },
-    onTransaction: ({ editor }) => {
-      if (editor.storage.searchAndReplace) {
-        setSearchResultsCount(editor.storage.searchAndReplace.results.length)
-        setSearchCurrentIndex(editor.storage.searchAndReplace.currentIndex)
-      }
-    }
   })
 
   // Update quicknote type on all matching marks when changed from inspector
@@ -618,7 +629,12 @@ export default function Editor({
     const handleGlobalKeyDown = (e) => {
       if (matchesHotkey(e, hotkeys.search)) {
         e.preventDefault()
-        setShowSearch(prev => !prev)
+        setShowSearch(prev => prev ? false : 'search')
+        return
+      }
+      if (matchesHotkey(e, 'Ctrl+h')) {
+        e.preventDefault()
+        setShowSearch(prev => prev ? false : 'replace')
         return
       }
       if (matchesHotkey(e, hotkeys.synonym_lookup)) {
@@ -717,41 +733,19 @@ export default function Editor({
     return () => window.removeEventListener('keydown', handleGlobalKeyDown)
   }, [hotkeys, editor, focusMode, onToggleFocus])
 
+  // Clear search highlights when search bar is closed
   useEffect(() => {
-    if (showSearch && searchInputRef.current) {
-      searchInputRef.current.focus()
+    if (!showSearch && editor) {
+      editor.commands.clearSearch()
     }
-  }, [showSearch])
+  }, [showSearch, editor])
 
-  // Sync search term to Tiptap
-  useEffect(() => {
-    if (editor) {
-      if (showSearch) {
-        editor.commands.setSearchTerm(searchTerm)
-      } else {
-        editor.commands.clearSearch()
-      }
-    }
-  }, [searchTerm, showSearch, editor])
-
-  // Auto-scroll to active search result
-  useEffect(() => {
-    if (showSearch) {
-      setTimeout(() => {
-        const activeEl = document.querySelector('.search-result-active')
-        if (activeEl) {
-          activeEl.scrollIntoView({ behavior: 'smooth', block: 'center' })
-        }
-      }, 50)
-    }
-  }, [searchCurrentIndex, showSearch])
-
-  // When chapter changes, load new content
+  // When chapter changes (or is reloaded from disk), load new content
   useEffect(() => {
     if (editor && chapter?.content !== undefined) {
       editor.commands.setContent(chapter.content || '')
     }
-  }, [editor, chapter?.id])
+  }, [editor, chapter?.id, chapter?._rev])
 
   // Cleanup dead links when entities update (e.g. deletion)
   useEffect(() => {
@@ -891,7 +885,7 @@ export default function Editor({
           plain = end
         })
         if (approxPos === null) return
-        
+
         let targetFrom = approxPos
         let targetTo = approxPos + (matchedText ? matchedText.length : 0)
 
@@ -1709,88 +1703,20 @@ export default function Editor({
       {/* ── Scrollable Editor Content ─────────────────────── */}
       <div style={{ flex: 1, display: 'flex', flexDirection: 'column', minHeight: 0, position: 'relative' }}>
 
-        {/* Search Bar Overlay */}
+        {/* Search & Replace Bar */}
         {showSearch && (
-          <div className="search-overlay" style={{
-            position: 'absolute',
-            top: '20px',
-            right: '40px',
-            background: 'var(--bg-elevated)',
-            border: '1px solid var(--border-subtle)',
-            borderRadius: '2px',
-            padding: '8px 12px',
-            display: 'flex',
-            alignItems: 'center',
-            gap: '12px',
-            boxShadow: '0 8px 24px rgba(0,0,0,0.5)',
-            zIndex: 100,
-            fontFamily: 'var(--font-mono)'
-          }}>
-            <input
-              ref={searchInputRef}
-              type="text"
-              placeholder={t('editor.search', 'Search...')}
-              value={searchTerm}
-              onChange={(e) => setSearchTerm(e.target.value)}
-              onKeyDown={(e) => {
-                if (e.key === 'Enter') {
-                  e.preventDefault()
-                  if (e.shiftKey) {
-                    editor.commands.previousSearchResult()
-                  } else {
-                    editor.commands.nextSearchResult()
-                  }
-                }
-                if (e.key === 'Escape') {
-                  setShowSearch(false)
-                }
-              }}
-              style={{
-                background: 'var(--bg-deep)',
-                border: '1px solid var(--border-default)',
-                color: 'var(--text-primary)',
-                padding: '4px 8px',
-                borderRadius: '2px',
-                outline: 'none',
-                width: '160px',
-                fontSize: '12px'
-              }}
-            />
-
-            <div style={{ fontSize: '10px', color: 'var(--text-tertiary)', minWidth: '40px', textAlign: 'center' }}>
-              {searchResultsCount > 0 ? `${searchCurrentIndex + 1} / ${searchResultsCount}` : '0 / 0'}
-            </div>
-
-            <div style={{ display: 'flex', gap: '4px' }}>
-              <button
-                onClick={() => editor.commands.previousSearchResult()}
-                title={t('editor.previousSearchResult', 'Previous (Shift+Enter)')}
-                style={{ background: 'none', border: 'none', color: 'var(--text-secondary)', cursor: 'pointer', padding: '4px' }}
-              >
-                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><polyline points="18 15 12 9 6 15"></polyline></svg>
-              </button>
-              <button
-                onClick={() => editor.commands.nextSearchResult()}
-                title={t('editor.nextSearchResult', 'Next (Enter)')}
-                style={{ background: 'none', border: 'none', color: 'var(--text-secondary)', cursor: 'pointer', padding: '4px' }}
-              >
-                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><polyline points="6 9 12 15 18 9"></polyline></svg>
-              </button>
-              <button
-                onClick={() => setShowSearch(false)}
-                title={t('editor.closeSearch', 'Close (Esc)')}
-                style={{ background: 'none', border: 'none', color: 'var(--text-secondary)', cursor: 'pointer', padding: '4px', marginLeft: '4px' }}
-              >
-                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>
-              </button>
-            </div>
-          </div>
+          <EditorSearchBar
+            editor={editor}
+            initialMode={showSearch}
+            onClose={() => setShowSearch(false)}
+          />
         )}
 
         <div
           className={`editor-content-wrapper ${!linkVisibility.character ? 'hide-character-links' : ''} ${!linkVisibility.location ? 'hide-location-links' : ''} ${!linkVisibility.lore ? 'hide-lore-links' : ''} ${!linkVisibility.twist ? 'hide-twist-links' : ''} ${!linkVisibility.quicknote ? 'hide-quicknote-links' : ''} ${!linkVisibility.annotation ? 'hide-annotation-links' : ''} ${!linkVisibility.knowledge ? 'hide-knowledge-links' : ''} ${!linkVisibility.relationship ? 'hide-relationship-links' : ''}`}
           style={{
             flex: 1,
+            minWidth: 0,
             overflowY: 'auto',
             overflowX: 'hidden',
             height: '100%',
@@ -1815,67 +1741,68 @@ export default function Editor({
             ref={editorColumnRef}
             style={{
               flex: 1,
+              minWidth: 0,
               display: 'flex',
               flexDirection: 'column',
               padding: focusMode ? `0 ${projectConfig?.editor_padding || '15%'}` : '0',
             }}
           >
-          <div className="editor-chapter-heading" style={{ padding: '40px 64px 0' }}>
-            {t('editor.chapterPrefix', 'Chapter ')}{chapter.chapter_number}
-          </div>
-          <div className="editor-chapter-title" style={{ padding: '0 64px', marginBottom: '0' }}>
-            <input
-              type="text"
-              value={chapter.title || ''}
-              placeholder={`${t('editor.chapterPrefix', 'Chapter ')}${chapter.chapter_number}`}
-              onChange={(e) => onChapterMetaUpdate?.({ title: e.target.value })}
-              style={{
-                background: 'transparent',
-                border: 'none',
-                color: 'var(--text-primary)',
-                fontFamily: 'inherit',
-                fontSize: 'inherit',
-                fontWeight: 'bold',
-                width: '100%',
-                outline: 'none',
-                padding: '0'
-              }}
-            />
-          </div>
-          {chapterBeats.length > 0 && (
-            <div style={{
-              padding: '6px 64px 0',
-              display: 'flex',
-              flexWrap: 'wrap',
-              gap: '6px',
-              alignItems: 'center',
-            }}>
-              <span style={{
-                fontFamily: 'var(--font-mono)',
-                fontSize: '9px',
-                color: 'var(--text-tertiary)',
-                textTransform: 'uppercase',
-                letterSpacing: '0.5px',
-                marginRight: '2px',
-              }}>Beats</span>
-              {chapterBeats.map(beat => (
-                <span key={beat.id} title={`${beat.block_type} · ${Math.round(beat.pct)}%`} style={{
+            <div className="editor-chapter-heading" style={{ padding: '40px 64px 0' }}>
+              {t('editor.chapterPrefix', 'Chapter ')}{chapter.chapter_number}
+            </div>
+            <div className="editor-chapter-title" style={{ padding: '0 64px', marginBottom: '0' }}>
+              <input
+                type="text"
+                value={chapter.title || ''}
+                placeholder={`${t('editor.chapterPrefix', 'Chapter ')}${chapter.chapter_number}`}
+                onChange={(e) => onChapterMetaUpdate?.({ title: e.target.value })}
+                style={{
+                  background: 'transparent',
+                  border: 'none',
+                  color: 'var(--text-primary)',
+                  fontFamily: 'inherit',
+                  fontSize: 'inherit',
+                  fontWeight: 'bold',
+                  width: '100%',
+                  outline: 'none',
+                  padding: '0'
+                }}
+              />
+            </div>
+            {chapterBeats.length > 0 && (
+              <div style={{
+                padding: '6px 64px 0',
+                display: 'flex',
+                flexWrap: 'wrap',
+                gap: '6px',
+                alignItems: 'center',
+              }}>
+                <span style={{
                   fontFamily: 'var(--font-mono)',
                   fontSize: '9px',
-                  padding: '2px 6px',
-                  background: 'var(--bg-elevated)',
-                  border: '1px solid var(--border-subtle)',
-                  color: BEAT_COLORS[beat.block_type] || 'var(--accent-amber)',
+                  color: 'var(--text-tertiary)',
                   textTransform: 'uppercase',
                   letterSpacing: '0.5px',
-                  whiteSpace: 'nowrap',
-                }}>
-                  {beat.label}
-                </span>
-              ))}
-            </div>
-          )}
-          <EditorContent editor={editor} />
+                  marginRight: '2px',
+                }}>Beats</span>
+                {chapterBeats.map(beat => (
+                  <span key={beat.id} title={`${beat.block_type} · ${Math.round(beat.pct)}%`} style={{
+                    fontFamily: 'var(--font-mono)',
+                    fontSize: '9px',
+                    padding: '2px 6px',
+                    background: 'var(--bg-elevated)',
+                    border: '1px solid var(--border-subtle)',
+                    color: BEAT_COLORS[beat.block_type] || 'var(--accent-amber)',
+                    textTransform: 'uppercase',
+                    letterSpacing: '0.5px',
+                    whiteSpace: 'nowrap',
+                  }}>
+                    {beat.label}
+                  </span>
+                ))}
+              </div>
+            )}
+            <EditorContent editor={editor} />
           </div>
         </div>
       </div>

@@ -1,6 +1,14 @@
 {
-    "currentVersion": "1.0.0",
+    "currentVersion": "1.0.1",
     "history": [
+        {
+            "version": "1.0.1",
+            "date": "2026-03-29",
+            "changes": [
+                "NEW: Linked name replacement suggestions: If you rename an entity, the app will now suggest replacements for any links related to it!",
+                "NEW: Search and Replace: Added a new search and replace feature to the editor"
+            ]
+        },
         {
             "version": "1.0.0",
             "date": "2026-03-22",

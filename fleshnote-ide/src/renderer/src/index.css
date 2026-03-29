@@ -382,6 +382,11 @@ body {
   opacity: 0.7;
 }
 
+.ProseMirror {
+  overflow-wrap: break-word;
+  word-break: break-word;
+}
+
 .ProseMirror:focus {
   outline: none;
 }

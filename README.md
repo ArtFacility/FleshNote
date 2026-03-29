@@ -1,4 +1,4 @@
-# FleshNote IDE
+# FleshNote IDE (v1.0.1 Beta)
 
 An advanced, no-bullshit writing tool for novelists and world builders who actually want to finish their draft this century. Built with Electron, React, TypeScript, and FastAPI.
 

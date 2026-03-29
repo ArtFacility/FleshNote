@@ -2,6 +2,7 @@ import { useState, useEffect, useCallback } from 'react'
 import { useTranslation } from 'react-i18next'
 import RelationshipTurningPointPopup from './RelationshipTurningPointPopup'
 import CalendarDatePicker from './CalendarDatePicker'
+import EntityRenamePopup from './EntityRenamePopup'
 
 // ── Inline SVG Icons ────────────────────────────────────────────────────────
 
@@ -241,7 +242,9 @@ export default function EntityInspectorPanel({
   onEntityUpdated,
   onConfigUpdate,
   initialTab,
-  onNavigateToMark
+  onNavigateToMark,
+  onReloadCurrentChapter,
+  onFlushEditorSave
 }) {
   const { t } = useTranslation()
   const [viewMode, setViewMode] = useState('author')  // 'author' | 'narrative' | 'world_time'
@@ -260,6 +263,7 @@ export default function EntityInspectorPanel({
   const [editingFactId, setEditingFactId] = useState(null)
   const [editFactData, setEditFactData] = useState({ fact: '', is_secret: 0 })
   const [localNoteType, setLocalNoteType] = useState(entity?.note_type || 'Note')
+  const [renameData, setRenameData] = useState(null)
 
   // Switch tab when initialTab prop changes (e.g. from marker click)
   useEffect(() => {
@@ -579,8 +583,25 @@ export default function EntityInspectorPanel({
         }
       }
 
-      setEditMode(false)
-      onEntityUpdated?.()
+      const oldName = entity.name
+      const newName = editData.name
+      const nameChanged = oldName !== newName && !!oldName && !!newName && !aliasArray.includes(newName)
+
+      // Always refresh entities immediately so the inspector shows the updated name
+      await onEntityUpdated?.()
+
+      if (nameChanged && ['character', 'location', 'lore', 'group'].includes(entity.type)) {
+        // Flush any pending editor save so the current chapter's MD file is up-to-date on disk
+        // before we scan for references
+        await onFlushEditorSave?.()
+        setRenameData({
+          oldName,
+          newName,
+          entity: { ...entity, name: newName }
+        })
+      } else {
+        setEditMode(false)
+      }
     } catch (err) {
       console.error('Failed to save entity:', err)
     }
@@ -1022,7 +1043,7 @@ export default function EntityInspectorPanel({
         {editMode ? (
           renderEditField(t('inspector.nameLabel', 'Name'), 'name')
         ) : (
-          <div className="entity-name">{entity.name}</div>
+          <div className="entity-name">{currEntity?.name || entity.name}</div>
         )}
 
         {!editMode && charData?.role && <div className="entity-subtitle">{charData.role}</div>}
@@ -1626,8 +1647,8 @@ export default function EntityInspectorPanel({
                       <div style={{ width: '32px', height: '32px', borderRadius: '50%', backgroundColor: 'var(--bg-deep)', display: 'flex', alignItems: 'center', justifyContent: 'center', border: '1px solid var(--border-subtle)' }}>
                         <Icons.User style={{ width: '16px', height: '16px', color: 'var(--text-secondary)' }} />
                       </div>
-                      <span style={{ fontSize: '11px', color: 'var(--text-primary)', marginTop: '4px', textAlign: 'center', textOverflow: 'ellipsis', overflow: 'hidden', whiteSpace: 'nowrap', width: '100%' }} title={entity.name}>
-                        {entity.name}
+                      <span style={{ fontSize: '11px', color: 'var(--text-primary)', marginTop: '4px', textAlign: 'center', textOverflow: 'ellipsis', overflow: 'hidden', whiteSpace: 'nowrap', width: '100%' }} title={currEntity?.name || entity.name}>
+                        {currEntity?.name || entity.name}
                       </span>
                     </div>
 
@@ -1830,6 +1851,24 @@ export default function EntityInspectorPanel({
           onSuccess={() => {
             loadRelationships()
             setEditRelPopup(null)
+          }}
+        />
+      )}
+
+      {renameData && (
+        <EntityRenamePopup
+          projectPath={projectPath}
+          entity={renameData.entity}
+          oldName={renameData.oldName}
+          newName={renameData.newName}
+          onClose={() => {
+            setRenameData(null)
+            setEditMode(false)
+          }}
+          onSuccess={(didReplace) => {
+            setRenameData(null)
+            setEditMode(false)
+            if (didReplace) onReloadCurrentChapter?.()
           }}
         />
       )}

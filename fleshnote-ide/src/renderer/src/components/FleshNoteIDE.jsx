@@ -375,11 +375,12 @@ export default function FleshNoteIDE({ projectConfig, projectPath, onCloseProjec
       const data = await window.api.loadChapterContent(projectPath, chapter.id)
       setChapterContent({
         ...chapter,
-        content: data.content || ''
+        content: data.content || '',
+        _rev: Date.now()
       })
     } catch (err) {
       console.error('Failed to load chapter content:', err)
-      setChapterContent({ ...chapter, content: '' })
+      setChapterContent({ ...chapter, content: '', _rev: Date.now() })
     }
   }
 
@@ -1265,6 +1266,8 @@ export default function FleshNoteIDE({ projectConfig, projectPath, onCloseProjec
                     calConfig={calConfig}
                     chapters={chapters}
                     onEntityUpdated={handleEntitiesChanged}
+                    onReloadCurrentChapter={() => { if (activeChapter) loadChapter(activeChapter) }}
+                    onFlushEditorSave={async () => { await janitorActionsRef.current?.flushSave?.() }}
                     onConfigUpdate={onConfigUpdate}
                     initialTab={inspectorInitialTab}
                     onNavigateToMark={handleNavigateToMark}

@@ -6,6 +6,7 @@ Aggregated entity listing for the linkification engine.
 import os
 import json
 import sqlite3
+import re
 from fastapi import APIRouter, HTTPException
 from pydantic import BaseModel
 
@@ -70,6 +71,28 @@ class EntitySearchRequest(BaseModel):
     query: str = ""
     selected_text: str = ""
     limit: int = 20
+
+class ScanReferencesRequest(BaseModel):
+    project_path: str
+    entity_type: str
+    entity_id: int
+    old_name: str
+    new_name: str
+
+class ReplaceReferencesRequest(BaseModel):
+    project_path: str
+    entity_type: str
+    entity_id: int
+    replacements: dict[str, dict] # maps linked_text to {"new_text": ..., "add_alias": bool}
+
+_ENTITY_TYPE_TO_SHORT = {
+    "character": "char",
+    "location": "loc",
+    "lore": "item",
+    "group": "group",
+    "quicknote": "quicknote",
+    "annotation": "annotation",
+}
 
 
 @router.post("/api/project/lore-entity/create")
@@ -389,3 +412,127 @@ def get_all_entities(req: ProjectPath):
 
     conn.close()
     return {"entities": entities}
+
+
+@router.post("/api/project/entity/scan-references")
+def scan_entity_references(req: ScanReferencesRequest):
+    conn = _get_db(req.project_path)
+    cursor = conn.cursor()
+    cursor.execute("SELECT md_filename FROM chapters WHERE md_filename IS NOT NULL")
+    files = cursor.fetchall()
+    conn.close()
+
+    short_type = _ENTITY_TYPE_TO_SHORT.get(req.entity_type, req.entity_type)
+    # The markdown format is {{char:5|Text}}
+    pattern = re.compile(r'\{\{' + re.escape(short_type) + r':' + str(req.entity_id) + r'\|([^}]*)\}\}')
+    
+    unique_matches = {}
+
+    for row in files:
+        md_file = os.path.join(req.project_path, "md", row["md_filename"])
+        if not os.path.exists(md_file):
+            continue
+        with open(md_file, "r", encoding="utf-8") as f:
+            content = f.read()
+
+        for match in pattern.finditer(content):
+            linked_text = match.group(1)
+            unique_matches[linked_text] = unique_matches.get(linked_text, 0) + 1
+
+    exact_matches = {"count": 0, "linkedString": req.old_name, "autoReplaceWith": req.new_name}
+    if req.old_name in unique_matches:
+        exact_matches["count"] = unique_matches.pop(req.old_name)
+
+    unique_list = []
+    import re as re_mod
+    for text, count in unique_matches.items():
+        # Heuristic for suggested text (e.g. for Jo's -> Richard's)
+        suggested = re_mod.sub(re_mod.escape(req.old_name), req.new_name, text, flags=re_mod.IGNORECASE)
+        # If no heuristic match overlap, default to entire new name to be safe
+        if suggested.lower() == text.lower() and req.old_name.lower() not in text.lower():
+            suggested = req.new_name
+            
+        unique_list.append({
+            "linkedString": text,
+            "count": count,
+            "suggestedText": suggested
+        })
+
+    return {
+        "exactMatches": exact_matches,
+        "uniqueMatches": unique_list
+    }
+
+
+@router.post("/api/project/entity/replace-references")
+def replace_entity_references(req: ReplaceReferencesRequest):
+    conn = _get_db(req.project_path)
+    cursor = conn.cursor()
+    cursor.execute("SELECT id, md_filename FROM chapters WHERE md_filename IS NOT NULL")
+    files = cursor.fetchall()
+
+    short_type = _ENTITY_TYPE_TO_SHORT.get(req.entity_type, req.entity_type)
+    from routes.chapters import _update_entity_appearances, _update_foreshadowings, _update_knowledge_offsets, _update_relationship_offsets
+    
+    aliases_to_add = set()
+
+    for row in files:
+        md_file = os.path.join(req.project_path, "md", row["md_filename"])
+        if not os.path.exists(md_file):
+            continue
+            
+        with open(md_file, "r", encoding="utf-8") as f:
+            content = f.read()
+
+        changed = False
+
+        def repl(match):
+            nonlocal changed
+            linked_text = match.group(1)
+            if linked_text in req.replacements:
+                rep_data = req.replacements[linked_text]
+                if rep_data.get("add_alias"):
+                    aliases_to_add.add(rep_data.get("new_text"))
+                changed = True
+                new_text = rep_data.get("new_text", linked_text)
+                return f'{{{{{short_type}:{req.entity_id}|{new_text}}}}}'
+            return match.group(0)
+            
+        pattern = re.compile(r'\{\{' + re.escape(short_type) + r':' + str(req.entity_id) + r'\|([^}]*)\}\}')
+        new_content = pattern.sub(repl, content)
+
+        if changed:
+            with open(md_file, "w", encoding="utf-8") as f:
+                f.write(new_content)
+                
+            plain = re.sub(r'<[^>]+>', ' ', new_content)
+            plain = re.sub(r'\{\{[^}]+\}\}', '', plain)
+            word_count = len(plain.split())
+            
+            _update_entity_appearances(cursor, row["id"], new_content)
+            _update_foreshadowings(cursor, row["id"], new_content)
+            _update_knowledge_offsets(cursor, row["id"], new_content)
+            _update_relationship_offsets(cursor, row["id"], new_content)
+            
+            cursor.execute("UPDATE chapters SET word_count = ?, updated_at = CURRENT_TIMESTAMP WHERE id = ?", (word_count, row["id"]))
+
+    if aliases_to_add:
+        table_map = {
+            "character": "characters",
+            "lore": "lore_entities",
+            "location": "locations",
+            "group": "groups",
+        }
+        if req.entity_type in table_map:
+            table = table_map[req.entity_type]
+            cursor.execute(f"SELECT aliases FROM {table} WHERE id = ?", (req.entity_id,))
+            alias_row = cursor.fetchone()
+            if alias_row:
+                import json
+                existing = json.loads(alias_row["aliases"]) if alias_row["aliases"] else []
+                new_aliases = list(set(existing) | aliases_to_add)
+                cursor.execute(f"UPDATE {table} SET aliases = ? WHERE id = ?", (json.dumps(new_aliases), req.entity_id))
+
+    conn.commit()
+    conn.close()
+    return {"status": "ok"}
