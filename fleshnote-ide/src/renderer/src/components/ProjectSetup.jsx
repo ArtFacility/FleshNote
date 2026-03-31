@@ -193,12 +193,34 @@ export default function ProjectSetup({ projectPath, projectConfig, onComplete, o
   const handleFreshComplete = async () => {
     setLoading(true)
     try {
-      // 1. Create location if provided
+      // 1. Create Location Hierarchy (World -> Region -> Starting Location)
+      let currentParentId = null
+
+      if (worldName.trim()) {
+        const wwRes = await window.api.createLocation({
+          project_path: projectPath,
+          name: worldName.trim(),
+          region: ''
+        })
+        currentParentId = wwRes.location.id
+      }
+
+      if (locationRegion.trim()) {
+        const regRes = await window.api.createLocation({
+          project_path: projectPath,
+          name: locationRegion.trim(),
+          region: '',
+          parent_location_id: currentParentId
+        })
+        currentParentId = regRes.location.id
+      }
+
       if (locationName.trim()) {
         await window.api.createLocation({
           project_path: projectPath,
           name: locationName.trim(),
-          region: locationRegion.trim()
+          region: '',
+          parent_location_id: currentParentId
         })
       }
 

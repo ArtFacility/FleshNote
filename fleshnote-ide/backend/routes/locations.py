@@ -40,6 +40,29 @@ class LocationDelete(BaseModel):
     project_path: str
     location_id: int
 
+class WeatherStateCreate(BaseModel):
+    project_path: str
+    location_id: int
+    world_time: str
+    weather: str = ""
+    temperature: str = ""
+    moisture: str = ""
+
+class WeatherStateUpdate(BaseModel):
+    project_path: str
+    weather_state_id: int
+    world_time: str | None = None
+    weather: str | None = None
+    temperature: str | None = None
+    moisture: str | None = None
+
+class WeatherStateDelete(BaseModel):
+    project_path: str
+    weather_state_id: int
+
+class WeatherStateListQuery(BaseModel):
+    project_path: str
+    location_id: int
 
 def _get_db(project_path: str):
     db_path = os.path.join(project_path, "fleshnote.db")
@@ -162,6 +185,113 @@ def delete_location(req: LocationDelete):
     conn = _get_db(req.project_path)
     cursor = conn.cursor()
     cursor.execute("DELETE FROM locations WHERE id = ?", (req.location_id,))
+    conn.commit()
+    conn.close()
+    return {"status": "ok"}
+
+
+@router.post("/api/project/location/weather")
+def get_weather_states(req: WeatherStateListQuery):
+    conn = _get_db(req.project_path)
+    cursor = conn.cursor()
+    cursor.execute(
+        "SELECT * FROM location_weather_states WHERE location_id = ? ORDER BY world_time ASC",
+        (req.location_id,)
+    )
+    rows = cursor.fetchall()
+    conn.close()
+
+    states = []
+    for row in rows:
+        states.append({
+            "id": row["id"],
+            "location_id": row["location_id"],
+            "world_time": row["world_time"],
+            "weather": row["weather"],
+            "temperature": row["temperature"],
+            "moisture": row["moisture"],
+        })
+    return {"weather_states": states}
+
+
+@router.post("/api/project/location/weather/create")
+def create_weather_state(req: WeatherStateCreate):
+    conn = _get_db(req.project_path)
+    cursor = conn.cursor()
+
+    cursor.execute("""
+        INSERT INTO location_weather_states (location_id, world_time, weather, temperature, moisture)
+        VALUES (?, ?, ?, ?, ?)
+    """, (req.location_id, req.world_time, req.weather, req.temperature, req.moisture))
+    
+    state_id = cursor.lastrowid
+    conn.commit()
+    conn.close()
+
+    return {
+        "weather_state": {
+            "id": state_id,
+            "location_id": req.location_id,
+            "world_time": req.world_time,
+            "weather": req.weather,
+            "temperature": req.temperature,
+            "moisture": req.moisture,
+        }
+    }
+
+
+@router.post("/api/project/location/weather/update")
+def update_weather_state(req: WeatherStateUpdate):
+    conn = _get_db(req.project_path)
+    cursor = conn.cursor()
+
+    fields = []
+    values = []
+
+    for field_name in ["world_time", "weather", "temperature", "moisture"]:
+        val = getattr(req, field_name)
+        if val is not None:
+            fields.append(f"{field_name} = ?")
+            values.append(val)
+
+    fields.append("updated_at = CURRENT_TIMESTAMP")
+
+    if not fields:
+        conn.close()
+        raise HTTPException(status_code=400, detail="No fields to update")
+
+    values.append(req.weather_state_id)
+
+    cursor.execute(
+        f"UPDATE location_weather_states SET {', '.join(fields)} WHERE id = ?",
+        values
+    )
+    conn.commit()
+
+    cursor.execute("SELECT * FROM location_weather_states WHERE id = ?", (req.weather_state_id,))
+    row = cursor.fetchone()
+    conn.close()
+
+    if not row:
+        raise HTTPException(status_code=404, detail="Weather state not found")
+
+    return {
+        "weather_state": {
+            "id": row["id"],
+            "location_id": row["location_id"],
+            "world_time": row["world_time"],
+            "weather": row["weather"],
+            "temperature": row["temperature"],
+            "moisture": row["moisture"],
+        }
+    }
+
+
+@router.post("/api/project/location/weather/delete")
+def delete_weather_state(req: WeatherStateDelete):
+    conn = _get_db(req.project_path)
+    cursor = conn.cursor()
+    cursor.execute("DELETE FROM location_weather_states WHERE id = ?", (req.weather_state_id,))
     conn.commit()
     conn.close()
     return {"status": "ok"}

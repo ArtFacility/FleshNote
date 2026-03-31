@@ -1,6 +1,16 @@
 {
-    "currentVersion": "1.0.2",
+    "currentVersion": "1.0.3",
     "history": [
+        {
+            "version": "1.0.3",
+            "date": "2026-03-31",
+            "changes": [
+                "NEW: Mark down the weather of the location! Works with chapter timing",
+                "NEW: World time in the inspector panels now reacts to time overrides! Move your cursor on a flashback, and see the character knowledge disappear, the relationships/weather/character age change",
+                "FIX: Fixed the location entities not showing their parent/child connections",
+                "FIX: Fixed some location not being created during project setup"
+            ]
+        },
         {
             "version": "1.0.2",
             "date": "2026-03-31",

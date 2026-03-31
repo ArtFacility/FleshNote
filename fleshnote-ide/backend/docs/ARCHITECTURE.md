@@ -65,7 +65,7 @@ Exposes `window.api` object to renderer via Electron's `contextBridge`. Each met
 | Workspace  | `selectFolder()`, `getProjects()`, `initProject()`, `getGlobalConfig()`, `updateGlobalConfig()`, `loadProject()`              |
 | Chapters   | `getChapters()`, `createChapter()`, `bulkCreateChapters()`, `loadChapterContent()`, `saveChapterContent()`, `updateChapter()` |
 | Characters | `getCharacters()`, `createCharacter()`, `bulkCreateCharacters()`                                                              |
-| Locations  | `getLocations()`, `createLocation()`                                                                                          |
+| Locations  | `getLocations()`, `createLocation()`, `getWeatherStates()`, `createWeatherState()`, `updateWeatherState()`, `deleteWeatherState()` |
 | Entities   | `getEntities()`, `createLoreEntity()`                                                                                         |
 | Import     | `openFile()`, `importSplitPreview()`, `importConfirmSplits()`, `importNerExtract()`                                           |
 | Calendar   | `getCalendarConfig()`, `updateCalendarConfig()`                                                                       |
@@ -135,10 +135,15 @@ fleshnote-ide/
 │           ├── index.css     # Global CSS variables and base styles
 │           ├── main.tsx      # React entry point
 │           ├── components/
+│           │   ├── ide-panels/                # Refactored inspector modules (As of v1.0.2)
+│           │   │   ├── CharacterInspectorPanel.jsx
+│           │   │   ├── LocationInspectorPanel.jsx
+│           │   │   ├── TwistInspectorPanel.jsx
+│           │   │   ├── QuickNoteInspectorPanel.jsx
+│           │   │   ├── AnnotationInspectorPanel.jsx
+│           │   │   └── EntityInspectorPanel.jsx    # Generic/Lore fallback
 │           │   ├── FleshNoteIDE.jsx           # Main IDE shell
 │           │   ├── Editor.jsx                 # TipTap editor with toolbars
-│           │   ├── EntityContextMenu.jsx      # Right-click entity creation
-│           │   ├── EntityInspectorPanel.jsx   # Entity detail in left sidebar
 │           │   ├── ProjectQuestionnaire.jsx   # 3-step onboarding wizard
 │           │   ├── ProjectSetup.jsx           # Post-questionnaire setup
 │           │   ├── StatsDashboard.jsx         # Custom Analytics & Habits Dashboard
@@ -173,7 +178,7 @@ FleshNote is built on the philosophy that worldbuilding and plotting are distinc
     *   **Purpose**: Character lifespans, geopolitical history, and causal consistency.
     *   **Logic**: Anchored to the **Custom Calendar**.
 
-*Note: The **Time Overrides** feature dynamically intercepts the World Timeline at the paragraph level (via the `world_times` table). This allows a single chapter to contain multiple distinct in-universe dates for flashbacks, memories, and timeskips, overriding the chapter's nominal world time.*
+*Note: The **Time Overrides** feature dynamically intercepts the World Timeline at the paragraph level (via the `world_times` table). This allows a single chapter to contain multiple distinct in-universe dates for flashbacks, memories, and timeskips. The TipTap editor tracks the cursor position and emits an `onEffectiveTimeChange` event, which the IDE shell uses to update the global cursor context (passing it down to Entity Inspectors for filtered knowledge and weather states).*
 
 ---
 

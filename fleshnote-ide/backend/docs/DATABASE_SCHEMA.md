@@ -153,6 +153,23 @@ Hierarchical location tree via self-referencing foreign key.
 
 ---
 
+## 6.5. `location_weather_states`
+
+Tracks weather, temperature, and moisture for specific locations at specific world times. Supports inheritance (children locations check parent locations for weather if no state is defined for the child).
+
+| Column        | Type      | Constraints                          | Description                               |
+| ------------- | --------- | ------------------------------------ | ----------------------------------------- |
+| `id`          | INTEGER   | PRIMARY KEY AUTOINCREMENT            |                                           |
+| `location_id` | INTEGER   | NOT NULL, FK -> locations(id) CASCADE | The location this weather state applies to |
+| `world_time`  | TEXT      | NOT NULL                             | In-universe date (e.g. `"4E-314, Day 17"`) |
+| `weather`     | TEXT      |                                      | Current weather (e.g. `"Sunny"`, `"Rainy"`) |
+| `temperature` | TEXT      |                                      | e.g. `"24°C"`, `"Cold"`                   |
+| `moisture`    | TEXT      |                                      | e.g. `"Humid"`, `"Dry"`                   |
+| `created_at`  | TIMESTAMP | DEFAULT CURRENT_TIMESTAMP            |                                           |
+| `updated_at`  | TIMESTAMP | DEFAULT CURRENT_TIMESTAMP            |                                           |
+
+---
+
 ## 7. `entity_appearances`
 
 Junction table tracking which entities appear in which chapters. Auto-populated on chapter save by scanning markdown for `{{type:id|text}}` markers.
@@ -481,6 +498,7 @@ planner_settings (standalone singleton)
 chapters ──FK──> characters (pov_character_id)
 characters ──FK──> groups (group_id)
 locations ──FK──> locations (parent_location_id, self-referencing)
+locations ──FK──> location_weather_states (location_id, CASCADE)
 
 entity_appearances ──FK──> chapters (chapter_id, CASCADE)
   links to: characters | lore_entities | locations | groups (via entity_type + entity_id)

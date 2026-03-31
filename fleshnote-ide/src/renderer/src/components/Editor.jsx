@@ -204,7 +204,8 @@ export default function Editor({
   onConfigUpdate,
   scrollToWordOffset, // { wordOffset, timestamp } — triggers scroll to word position
   janitorActionsRef,  // ref that receives { navigateToCharOffset, linkEntityAtOffset, replaceAtOffset }
-  onJanitorTrigger    // called when 100-word boundary crossed or 10s idle
+  onJanitorTrigger,   // called when 100-word boundary crossed or 10s idle
+  onEffectiveTimeChange // called when cursor time changes
 }) {
   const { t, i18n } = useTranslation()
   const saveTimeoutRef = useRef(null)
@@ -356,6 +357,10 @@ export default function Editor({
     }
     return chapter?.world_time || ''
   }, [activeTimeMarkerId, timeMarkers, chapter?.world_time])
+
+  useEffect(() => {
+    onEffectiveTimeChange?.(effectiveWorldTime)
+  }, [effectiveWorldTime, onEffectiveTimeChange])
 
   useEffect(() => {
     if (!projectPath || !chapter?.id) { setChapterBeats([]); return }

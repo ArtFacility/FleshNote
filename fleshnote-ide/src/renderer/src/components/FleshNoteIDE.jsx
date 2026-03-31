@@ -232,12 +232,12 @@ export default function FleshNoteIDE({ projectConfig, projectPath, onCloseProjec
   const [twistIds, setTwistIds] = useState([])
   const [calConfig, setCalConfig] = useState(null)
 
-  // Left panel mode: 'chapters' or 'entity'
   const [leftPanelMode, setLeftPanelMode] = useState('chapters')
   const [inspectedEntity, setInspectedEntity] = useState(null)
   const [inspectedTwistId, setInspectedTwistId] = useState(null)
   const [inspectorInitialTab, setInspectorInitialTab] = useState(null)
   const [scrollToWordOffset, setScrollToWordOffset] = useState(null)
+  const [cursorWorldTime, setCursorWorldTime] = useState('')
 
   const [hoveredChapterId, setHoveredChapterId] = useState(null)
   const [deletingChapter, setDeletingChapter] = useState(null)
@@ -1294,7 +1294,7 @@ export default function FleshNoteIDE({ projectConfig, projectPath, onCloseProjec
                     <CharacterInspectorPanel
                       entity={inspectedEntity}
                       characters={characters}
-                      activeChapter={activeChapter}
+                      activeChapter={{...activeChapter, world_time: cursorWorldTime || activeChapter?.world_time}}
                       projectPath={projectPath}
                       projectConfig={projectConfig}
                       calConfig={calConfig}
@@ -1310,15 +1310,17 @@ export default function FleshNoteIDE({ projectConfig, projectPath, onCloseProjec
                       entity={inspectedEntity}
                       entities={entities}
                       characters={characters}
-                      activeChapter={activeChapter}
+                      activeChapter={{...activeChapter, world_time: cursorWorldTime || activeChapter?.world_time}}
                       projectPath={projectPath}
                       projectConfig={projectConfig}
+                      calConfig={calConfig}
                       chapters={chapters}
                       onEntityUpdated={handleEntitiesChanged}
                       onReloadCurrentChapter={() => { if (activeChapter) loadChapter(activeChapter) }}
                       onFlushEditorSave={async () => { await janitorActionsRef.current?.flushSave?.() }}
                       initialTab={inspectorInitialTab}
                       onNavigateToMark={handleNavigateToMark}
+                      onNavigateToEntity={handleEntityClick}
                     />
                   ) : inspectedEntity.type === 'quicknote' || inspectedEntity.type === 'quick_note' ? (
                     <QuickNoteInspectorPanel
@@ -1337,7 +1339,7 @@ export default function FleshNoteIDE({ projectConfig, projectPath, onCloseProjec
                       entity={inspectedEntity}
                       characters={characters}
                       entities={entities}
-                      activeChapter={activeChapter}
+                      activeChapter={{...activeChapter, world_time: cursorWorldTime || activeChapter?.world_time}}
                       projectPath={projectPath}
                       projectConfig={projectConfig}
                       calConfig={calConfig}
@@ -1442,6 +1444,7 @@ export default function FleshNoteIDE({ projectConfig, projectPath, onCloseProjec
                   scrollToWordOffset={scrollToWordOffset}
                   janitorActionsRef={janitorActionsRef}
                   onJanitorTrigger={focusMode ? null : triggerJanitorAnalysis}
+                  onEffectiveTimeChange={setCursorWorldTime}
                 />
                 {!focusMode && (
                   <JanitorPanel

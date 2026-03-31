@@ -50,6 +50,10 @@ const api = {
   createLocation: (payload) => ipcRenderer.invoke('api:createLocation', payload),
   updateLocation: (payload) => ipcRenderer.invoke('api:updateLocation', payload),
   deleteLocation: (payload) => ipcRenderer.invoke('api:deleteLocation', payload),
+  getWeatherStates: (payload) => ipcRenderer.invoke('api:getWeatherStates', payload),
+  createWeatherState: (payload) => ipcRenderer.invoke('api:createWeatherState', payload),
+  updateWeatherState: (payload) => ipcRenderer.invoke('api:updateWeatherState', payload),
+  deleteWeatherState: (payload) => ipcRenderer.invoke('api:deleteWeatherState', payload),
 
   // ── Groups ─────────────────────────────────────────
   getGroups: (projectPath) => ipcRenderer.invoke('api:getGroups', projectPath),

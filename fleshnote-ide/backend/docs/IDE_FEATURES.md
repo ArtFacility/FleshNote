@@ -104,7 +104,11 @@ Because of this, changing the document reading direction physically mirrors ever
 - Triggered by clicking an entity link in the editor
 - Header: "Entity Inspector" with X button to return to chapters
 - Epistemic toggle (Author View / POV Filter)
-- Full entity detail card (see Entity Inspector section below)
+- **Specialized Panels**: As of `v1.0.3`, the inspector uses dedicated components for each entity type (Refactored in `v1.0.2` from the monolithic `EntityInspectorPanel.jsx`):
+  - `CharacterInspectorPanel`: Focuses on goals, bio, and relationship turning points.
+  - `LocationInspectorPanel`: Features the Weather & Environment tracking system.
+  - `TwistInspectorPanel`: Grades plot reveal health.
+  - `LoreInspectorPanel`: Generic fallback for items and concepts.
 - Note: Entity knowledge states are clickable directly from here to edit them or navigate to their exact chapter position.
 
 ### Sketchboards
@@ -257,6 +261,12 @@ When clicking an entity link in the editor, the left panel switches to show:
 - Type badge + name + category/region
 - Description
 - Aliases list
+
+**Weather & Environment Tracking:**
+
+- **Time-linked States**: Add weather, temperature, and moisture states for specific world times.
+- **Weather Inheritance**: Sub-locations (e.g., "The Tavern") automatically inherit the weather of their parent location (e.g., "The Village") if no specific state is defined for the child.
+- **Contextual Display**: The inspector automatically displays the weather state matching the current **Effective World Time** (determined by the editor cursor position).
 
 ### Twist Inspector Panel
 

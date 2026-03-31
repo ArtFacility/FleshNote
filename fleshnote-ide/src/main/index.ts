@@ -428,6 +428,22 @@ app.whenReady().then(async () => {
     return await backendPost('/api/project/location/delete', payload)
   })
 
+  ipcMain.handle('api:getWeatherStates', async (_event, payload) => {
+    return await backendPost('/api/project/location/weather', payload)
+  })
+
+  ipcMain.handle('api:createWeatherState', async (_event, payload) => {
+    return await backendPost('/api/project/location/weather/create', payload)
+  })
+
+  ipcMain.handle('api:updateWeatherState', async (_event, payload) => {
+    return await backendPost('/api/project/location/weather/update', payload)
+  })
+
+  ipcMain.handle('api:deleteWeatherState', async (_event, payload) => {
+    return await backendPost('/api/project/location/weather/delete', payload)
+  })
+
   // ── Groups ─────────────────────────────────────────
   ipcMain.handle('api:getGroups', async (_event, projectPath) => {
     return await backendPost('/api/project/groups', { project_path: projectPath })

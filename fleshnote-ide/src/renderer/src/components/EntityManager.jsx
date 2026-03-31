@@ -306,6 +306,159 @@ function CreationCard({ tabType, loreCategories, onConfirm, onCancel }) {
     );
 }
 
+// ─── LOCATION TREE VIEW ───────────────────────────────────────────────────────
+function LocationTreeNode({ entity, childrenNodes, depth = 0, inspectedEntity, selectedIds, setInspectedEntity, toggleSelect, getMentions, firstAppearanceMap, onNavigate, onDropNode, defaultExpanded = true }) {
+    const { t } = useTranslation();
+    const [expanded, setExpanded] = useState(defaultExpanded)
+    const isInspected = inspectedEntity && String(inspectedEntity.id) === String(entity.id)
+    const isSelected = selectedIds.has(`location-${entity.id}`)
+    
+    // Drag & Drop
+    const [isDragOver, setIsDragOver] = useState(false)
+
+    const handleDragStart = (e) => {
+        // Stop collapsing/expanding when dragging
+        e.stopPropagation()
+        e.dataTransfer.setData('text/plain', JSON.stringify({ id: entity.id, type: 'location' }))
+        e.dataTransfer.effectAllowed = 'move'
+    }
+
+    const handleDragOver = (e) => {
+        e.preventDefault()
+        e.dataTransfer.dropEffect = 'move'
+    }
+
+    const handleDragEnter = (e) => {
+        e.preventDefault()
+        setIsDragOver(true)
+    }
+
+    const handleDragLeave = (e) => {
+        e.preventDefault()
+        setIsDragOver(false)
+    }
+
+    const handleDrop = (e) => {
+        e.preventDefault()
+        e.stopPropagation()
+        setIsDragOver(false)
+        try {
+            const data = JSON.parse(e.dataTransfer.getData('text/plain'))
+            if (data && data.type === 'location' && String(data.id) !== String(entity.id)) {
+                onDropNode(data.id, entity.id)
+            }
+        } catch(err) { console.error('Drop parse error', err) }
+    }
+
+    return (
+        <div>
+            <div
+                draggable
+                onDragStart={handleDragStart}
+                onDragOver={handleDragOver}
+                onDragEnter={handleDragEnter}
+                onDragLeave={handleDragLeave}
+                onDrop={handleDrop}
+                onClick={() => setInspectedEntity(entity)}
+                style={{
+                    display: 'flex', alignItems: 'center', gap: 8,
+                    padding: `8px 12px 8px ${12 + depth * 24}px`,
+                    background: isDragOver ? T.amberDim : (isSelected ? T.amberDim : (isInspected ? T.bg2 : 'transparent')),
+                    borderLeft: isInspected ? `2px solid ${T.amber}` : '2px solid transparent',
+                    cursor: 'grab',
+                    userSelect: 'none',
+                    borderBottom: `1px solid ${T.bg3}40`
+                }}
+            >
+                {childrenNodes?.length > 0 ? (
+                    <div onClick={(e) => { e.stopPropagation(); setExpanded(!expanded) }} style={{ width: 14, height: 14, display: 'flex', alignItems: 'center', justifyContent: 'center', cursor: 'pointer', color: T.textDim }}>
+                        <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3" style={{ transform: expanded ? 'rotate(90deg)' : 'none', transition: 'transform 0.1s' }}>
+                            <polyline points="9 18 15 12 9 6"></polyline>
+                        </svg>
+                    </div>
+                ) : (
+                    <div style={{ width: 14 }} />
+                )}
+                
+                <Checkbox checked={isSelected} onToggle={() => toggleSelect(entity)} onClick={(e) => e.stopPropagation()} />
+                <span style={{ color: getEntityColor('location') }}><EntityTypeIcon type="location" /></span>
+                <span style={{ fontSize: 13, color: T.text, fontWeight: isInspected ? 600 : 400 }}>{entity.name}</span>
+                {entity.region && <span style={{ fontSize: 11, color: T.textDim }}>— {entity.region}</span>}
+                <div style={{ flex: 1 }} />
+                
+                {getMentions('location', entity.id) > 0 && (
+                    <div
+                        onClick={(e) => {
+                            e.stopPropagation()
+                            const fa = firstAppearanceMap[`location-${entity.id}`]
+                            if (fa) onNavigate?.(fa.chapter_id, fa.word_offset)
+                        }}
+                        style={{ fontSize: 10, color: T.textDim, fontFamily: T.mono, cursor: 'pointer' }}
+                        title={t('stats.emJumpToFirstAppearance', 'Jump to first appearance')}
+                    >
+                        {getMentions('location', entity.id)}×
+                    </div>
+                )}
+            </div>
+            {expanded && childrenNodes?.length > 0 && (
+                <div>
+                    {childrenNodes.map(child => (
+                        <LocationTreeNode
+                            key={child.entity.id}
+                            entity={child.entity}
+                            childrenNodes={child.children}
+                            depth={depth + 1}
+                            inspectedEntity={inspectedEntity}
+                            selectedIds={selectedIds}
+                            setInspectedEntity={setInspectedEntity}
+                            toggleSelect={toggleSelect}
+                            getMentions={getMentions}
+                            firstAppearanceMap={firstAppearanceMap}
+                            onNavigate={onNavigate}
+                            onDropNode={onDropNode}
+                        />
+                    ))}
+                </div>
+            )}
+        </div>
+    )
+}
+
+function LocationTreeView({ entities, inspectedEntity, selectedIds, setInspectedEntity, toggleSelect, getMentions, firstAppearanceMap, onNavigate, onDropNode }) {
+    const rootNodes = []
+    const map = new Map()
+    entities.forEach(e => { map.set(String(e.id), { entity: e, children: [] }) })
+    
+    entities.forEach(e => {
+        const node = map.get(String(e.id))
+        if (e.parent_location_id && map.has(String(e.parent_location_id))) {
+            map.get(String(e.parent_location_id)).children.push(node)
+        } else {
+            rootNodes.push(node)
+        }
+    })
+    
+    return (
+        <div style={{ paddingBottom: 20 }}>
+            {rootNodes.map(root => (
+                <LocationTreeNode
+                    key={root.entity.id}
+                    entity={root.entity}
+                    childrenNodes={root.children}
+                    inspectedEntity={inspectedEntity}
+                    selectedIds={selectedIds}
+                    setInspectedEntity={setInspectedEntity}
+                    toggleSelect={toggleSelect}
+                    getMentions={getMentions}
+                    firstAppearanceMap={firstAppearanceMap}
+                    onNavigate={onNavigate}
+                    onDropNode={onDropNode}
+                />
+            ))}
+        </div>
+    )
+}
+
 // ─── MAIN COMPONENT ──────────────────────────────────────────────────────────
 export default function EntityManager({ entities, characters, chapters, projectPath, projectConfig, onEntityUpdated, onConfigUpdate, onNavigate }) {
     const { t } = useTranslation();
@@ -327,6 +480,7 @@ export default function EntityManager({ entities, characters, chapters, projectP
     const [sortBy, setSortBy] = useState('name-asc');
     const [activeFilters, setActiveFilters] = useState(new Set());
     const [bulkStatus, setBulkStatus] = useState('');
+    const [locationViewMode, setLocationViewMode] = useState('tree');
 
     const loadExtraData = useCallback(async () => {
         if (!projectPath) return;
@@ -526,6 +680,34 @@ export default function EntityManager({ entities, characters, chapters, projectP
             console.error('Failed to create entity:', e);
         }
     }, [activeTab, projectPath, handleInspectorUpdated]);
+    const handleReparentLocation = async (draggedLocationId, targetParentId) => {
+        // Prevent cyclic dependencies
+        const isDescendant = (childId, possibleParentId) => {
+            let current = entities.find(e => e.type === 'location' && String(e.id) === String(childId))
+            while (current) {
+                if (String(current.parent_location_id) === String(possibleParentId)) return true
+                current = entities.find(e => e.type === 'location' && String(e.id) === String(current.parent_location_id))
+            }
+            return false
+        }
+        
+        if (isDescendant(targetParentId, draggedLocationId)) {
+            // Trying to drop a parent into its own child
+            console.warn('Cannot reparent a location to its own descendant.')
+            return
+        }
+
+        try {
+            await window.api.updateLocation({
+                project_path: projectPath,
+                location_id: draggedLocationId,
+                parent_location_id: targetParentId
+            })
+            onEntityUpdated?.()
+        } catch (err) {
+            console.error('Failed to reparent location', err)
+        }
+    }
 
     const handleBulkDelete = useCallback(async () => {
         const toDeleteEntities = [];
@@ -844,6 +1026,11 @@ export default function EntityManager({ entities, characters, chapters, projectP
                                 {isGridTab && <option value="mentions-desc">{t('stats.emSortMentions', 'Most Mentioned')}</option>}
                                 {(activeTab === 'characters' || activeTab === 'twists') && <option value="status">{t('stats.emSortByStatus', 'By Status')}</option>}
                             </select>
+                            {activeTab === 'locations' && (
+                                <button onClick={() => setLocationViewMode(v => v === 'grid' ? 'tree' : 'grid')} style={{ background: "none", border: "none", color: T.textDim, fontFamily: T.mono, fontSize: 10, cursor: "pointer", textDecoration: "underline" }}>
+                                    {locationViewMode === 'grid' ? t('stats.viewTree', 'Tree View') : t('stats.viewGrid', 'Grid View')}
+                                </button>
+                            )}
                             {activeTab !== 'todos' && (
                                 <button onClick={selectAllFiltered} style={{ background: "none", border: "none", color: T.textDim, fontFamily: T.mono, fontSize: 10, cursor: "pointer", textDecoration: "underline" }}>
                                     {t('stats.selectAll', 'Select All')}
@@ -871,9 +1058,22 @@ export default function EntityManager({ entities, characters, chapters, projectP
                         </div>
 
                     ) : isGridTab ? (
-                        <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fill, minmax(160px, 1fr))", gap: 1, padding: 1, background: T.bg3 }}>
-                            {tabEntities.map(ent => {
-                                const key = makeKey(ent);
+                        activeTab === 'locations' && locationViewMode === 'tree' ? (
+                            <LocationTreeView
+                                entities={tabEntities}
+                                inspectedEntity={inspectedEntity}
+                                selectedIds={selectedIds}
+                                setInspectedEntity={setInspectedEntity}
+                                toggleSelect={toggleSelect}
+                                getMentions={getMentions}
+                                firstAppearanceMap={firstAppearanceMap}
+                                onNavigate={onNavigate}
+                                onDropNode={handleReparentLocation}
+                            />
+                        ) : (
+                            <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fill, minmax(160px, 1fr))", gap: 1, padding: 1, background: T.bg3 }}>
+                                {tabEntities.map(ent => {
+                                    const key = makeKey(ent);
                                 const inspecting = inspectedEntity && inspectedEntity.type === ent.type && String(inspectedEntity.id) === String(ent.id);
                                 return (
                                     <EntityCard
@@ -893,6 +1093,7 @@ export default function EntityManager({ entities, characters, chapters, projectP
                                 );
                             })}
                         </div>
+                        )
 
                     ) : activeTab === "twists" ? (
                         <div>

@@ -536,6 +536,104 @@ Create a single location.
 
 ---
 
+### `POST /api/project/location/weather`
+
+List all weather states for a specific location.
+
+**Request:**
+
+```json
+{ "project_path": "C:/.../My Novel", "location_id": 1 }
+```
+
+**Response:**
+
+```json
+{
+  "weather_states": [
+    {
+      "id": 1,
+      "location_id": 1,
+      "world_time": "4E-314, Day 17",
+      "weather": "Sunny",
+      "temperature": "24°C",
+      "moisture": "Dry"
+    }
+  ]
+}
+```
+
+---
+
+### `POST /api/project/location/weather/create`
+
+Create a new weather state entry.
+
+**Request:**
+
+```json
+{
+  "project_path": "C:/.../My Novel",
+  "location_id": 1,
+  "world_time": "4E-314, Day 18",
+  "weather": "Rainy",
+  "temperature": "18°C",
+  "moisture": "Humid"
+}
+```
+
+**Response:**
+
+```json
+{
+  "weather_state": { "id": 2, "location_id": 1, "world_time": "4E-314, Day 18" }
+}
+```
+
+---
+
+### `POST /api/project/location/weather/update`
+
+Update an existing weather state.
+
+**Request:**
+
+```json
+{
+  "project_path": "C:/.../My Novel",
+  "weather_state_id": 2,
+  "weather": "Thunderstorm"
+}
+```
+
+**Response:**
+
+```json
+{
+  "weather_state": { "id": 2, "weather": "Thunderstorm", ... }
+}
+```
+
+---
+
+### `POST /api/project/location/weather/delete`
+
+Delete a weather state.
+
+**Request:**
+
+```json
+{ "project_path": "C:/.../My Novel", "weather_state_id": 2 }
+```
+
+**Response:**
+
+```json
+{ "status": "ok" }
+```
+
+---
+
 ## Entities
 
 Defined in `backend/routes/entities.py`.

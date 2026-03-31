@@ -9,7 +9,7 @@ The **Project Manager** (internally represented as the consolidated Entity Manag
 The Entity Manager handles distinct "Domains" of the database in isolated table views:
 - **Characters**
 - **Groups / Factions**
-- **Locations**
+- **Locations**: Features both a **Tree View** (hierarchical parent-child organization) and a **Grid View**.
 - **Lore Entities**
 - **Twists**
 - **QuickNotes & TODOs**
@@ -53,3 +53,19 @@ The "Notes" tab consolidates all floating project-level sticky notes and TODOs.
 - This allows writers to track tasks globally across the manuscript without cluttering the chapter texts.
 - Uses the `quick_notes` table to persist small task strings.
 - Distinct from Chapter Notes, these Quick Notes serve as high-level narrative reminders or structural to-dos.
+- Items can be quickly filtered by type (e.g., showing only generic Notes vs. inline Annotations).
+
+---
+
+## 4. Specialized Inspector Panels
+
+As of `v1.0.3`, the monolithic `EntityInspectorPanel.jsx` (which previously handled all types except Twists) has been decomposed into specialized components (Refactored in `v1.0.2`).
+
+| Panel | Target Entity Type | Key Features |
+| :--- | :--- | :--- |
+| **Character Inspector** | `character` | Role/Status tracking, Agendas, Knowledge State filtering. |
+| **Location Inspector** | `location` | **Weather & Environment** system (time-linked states with hierarchical inheritance). |
+| **Twist Inspector** | `twist` | Plot reveal status and foreshadowing health analytics. |
+| **Lore Inspector** | `lore` | Generic fallback for items, artifacts, and systems. |
+| **Note/Annotation Inspector** | `quicknote` / `annotation` | Metadata for floating notes and inline chapter annotations. |
++For more details on the hierarchical location system, see [LOCATIONS.md](./LOCATIONS.md).

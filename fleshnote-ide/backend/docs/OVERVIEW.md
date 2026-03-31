@@ -25,6 +25,7 @@ Depending on what you need to work on, refer to these specific documentation fil
 *   **`PLANNER.md`**: Details the Plot Planner's infinite zoomable timeline, blocks, arcs, and layering systems.
 *   **`TWISTS.md`**: Details the Twist system, foreshadowing markers, heuristic warnings, and plot payoff tracking.
 *   **`API_ENDPOINTS.md`**: Details the FastAPI backend endpoints, request payloads and API structures.
+*   **`LOCATIONS.md`**: Detailed guide on the hierarchical location system, tree structure, drag-and-drop, and weather inheritance model.
 *   **`ENTITY_LINKING.md` / `SPRINT_MODES.md` / `EXPORT_GUIDELINES.md`**: Specifics on these individual systems.
 
 ## Currently Implemented Systems

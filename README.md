@@ -1,4 +1,4 @@
-# FleshNote IDE (v1.0.1 Beta)
+# FleshNote IDE (v1.0.3 Beta)
 
 An advanced, no-bullshit writing tool for novelists and world builders who actually want to finish their draft this century. Built with Electron, React, TypeScript, and FastAPI.
 
@@ -51,6 +51,16 @@ Dumping lore into your project is easy. Managing it is easier. The codebase feat
 Export straight to industry-standard formatting. Generates print-ready PDFs, standard DOCX files, and EPUBs with a WYSIWYG  live preview.
 
 ![File Export](assets/file_export.png)
+
+### 🚀 Other Features
+
+- **Chapter Time Overrides**: Track flashbacks and timeskips at the paragraph level so your entities and relationship dynamics remain chronologically accurate.
+- **Environment & Weather System**: Define weather states per location with **Hierarchical Inheritance** (sub-locations automatically pull weather from parents).
+- **7 Total Sprint Modes**: Let it be Rewarding or Punishing, there is a mode for every writer.
+- **Daily Writing Encouragement**: Context-aware prompts and streak tracking when you open your project.
+- **Sketchboards & Mind-Mapping**: Visual node-graph canvas for mapping out magic systems, technology trees, and character webs.
+- **Smart Entity Renaming Wizard**: Safely rename characters or locations across your entire manuscript with automated text-link rewriting.
+- **Custom World Calendars**: Build your own calendar systems with custom months, seasons, and years for precise age and history tracking.
 
 ---
 
