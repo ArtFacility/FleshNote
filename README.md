@@ -6,7 +6,7 @@ An advanced, no-bullshit writing tool for novelists and world builders who actua
 
 ![FleshNote IDE](assets/full_ide.png)
 
-## 🌟 Why FleshNote?
+## Why FleshNote?
 
 FleshNote was built by writers, for writers. I created this app mainly for myself to help me write my novel, but I decided to make it open source so that other writers can benefit from it as well.
 
@@ -52,7 +52,7 @@ Export straight to industry-standard formatting. Generates print-ready PDFs, sta
 
 ![File Export](assets/file_export.png)
 
-### 🚀 Other Features
+### Other Features
 
 - **Chapter Time Overrides**: Track flashbacks and timeskips at the paragraph level so your entities and relationship dynamics remain chronologically accurate.
 - **Environment & Weather System**: Define weather states per location with **Hierarchical Inheritance** (sub-locations automatically pull weather from parents).
@@ -64,7 +64,7 @@ Export straight to industry-standard formatting. Generates print-ready PDFs, sta
 
 ---
 
-## 🚀 Getting Started
+# Getting Started
 
 > ⚠️ **Windows Users:** I'm a solo indie dev and I don't plan on buying an expensive Windows Code Signing Certificate. When installing the app, Windows SmartScreen will show a scary blue pop-up warning you about an "unrecognized app". Simply click **More info** -> **Run anyway** to proceed with the installation!
 
