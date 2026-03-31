@@ -2,11 +2,16 @@ import { useState, useCallback, useEffect, useRef } from 'react'
 import { useTranslation } from 'react-i18next'
 import { matchesHotkey } from '../utils/hotkeyMatcher'
 import Editor from './Editor'
-import EntityInspectorPanel from './EntityInspectorPanel'
-import TwistInspectorPanel from './TwistInspectorPanel'
+import EntityInspectorPanel from './ide-panels/EntityInspectorPanel'
+import TwistInspectorPanel from './ide-panels/TwistInspectorPanel'
+import CharacterInspectorPanel from './ide-panels/CharacterInspectorPanel'
+import LocationInspectorPanel from './ide-panels/LocationInspectorPanel'
+import QuickNoteInspectorPanel from './ide-panels/QuickNoteInspectorPanel'
+import AnnotationInspectorPanel from './ide-panels/AnnotationInspectorPanel'
 import FleshNotePlannerDesktop from './FleshNotePlannerDesktop'
 import ProjectSettingsModal from './ProjectSettingsModal'
 import ExportModal from './ExportModal'
+import ImportModal from './ImportModal'
 import StatsDashboard from './StatsDashboard'
 import EntityManager from './EntityManager'
 import WorldbuildAndHistory from './WorldbuildAndHistory'
@@ -127,6 +132,22 @@ const Icons = {
       <line x1="12" y1="15" x2="12" y2="3" />
     </svg>
   ),
+  Upload: () => (
+    <svg
+      width="14"
+      height="14"
+      viewBox="0 0 24 24"
+      fill="none"
+      stroke="currentColor"
+      strokeWidth="2"
+      strokeLinecap="round"
+      strokeLinejoin="round"
+    >
+      <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4" />
+      <polyline points="17 8 12 3 7 8" />
+      <line x1="12" y1="3" x2="12" y2="15" />
+    </svg>
+  ),
   FileText: () => (
     <svg
       width="14"
@@ -227,6 +248,7 @@ export default function FleshNoteIDE({ projectConfig, projectPath, onCloseProjec
   // Settings modal state
   const [showSettings, setShowSettings] = useState(false)
   const [showExportModal, setShowExportModal] = useState(false)
+  const [showImportModal, setShowImportModal] = useState(false)
   const [isSaving, setIsSaving] = useState(false)
 
   // UI Toggles & Header Menu
@@ -580,6 +602,10 @@ export default function FleshNoteIDE({ projectConfig, projectPath, onCloseProjec
     }
   }, [projectPath])
 
+  const handleImportDataChanged = useCallback(async () => {
+    await Promise.all([reloadChaptersList(), handleEntitiesChanged()])
+  }, [handleEntitiesChanged])
+
   // ── Janitor Analysis ──────────────────────────────
   const triggerJanitorAnalysis = useCallback(async () => {
     if (focusMode) return
@@ -874,6 +900,14 @@ export default function FleshNoteIDE({ projectConfig, projectPath, onCloseProjec
                   onMouseLeave={e => e.currentTarget.style.background = 'transparent'}
                 >
                   <Icons.Download /> {t('ide.export', 'Export Project...')}
+                </button>
+                <button
+                  onClick={() => { setShowHeaderMenu(false); setShowImportModal(true); }}
+                  style={{ display: 'flex', alignItems: 'center', gap: 12, padding: '8px 16px', background: 'transparent', border: 'none', color: 'var(--text-primary)', fontFamily: 'var(--font-mono)', fontSize: 12, cursor: 'pointer', textAlign: 'left', width: '100%' }}
+                  onMouseEnter={e => e.currentTarget.style.background = 'var(--bg-surface)'}
+                  onMouseLeave={e => e.currentTarget.style.background = 'transparent'}
+                >
+                  <Icons.Upload /> {t('ide.import', 'Import...')}
                 </button>
                 <button
                   onClick={() => { setShowHeaderMenu(false); setShowSettings(true); }}
@@ -1256,22 +1290,66 @@ export default function FleshNoteIDE({ projectConfig, projectPath, onCloseProjec
                   </>
                 )}
                 {leftPanelMode === 'entity' && inspectedEntity && (
-                  <EntityInspectorPanel
-                    entity={inspectedEntity}
-                    characters={characters}
-                    entities={entities}
-                    activeChapter={activeChapter}
-                    projectPath={projectPath}
-                    projectConfig={projectConfig}
-                    calConfig={calConfig}
-                    chapters={chapters}
-                    onEntityUpdated={handleEntitiesChanged}
-                    onReloadCurrentChapter={() => { if (activeChapter) loadChapter(activeChapter) }}
-                    onFlushEditorSave={async () => { await janitorActionsRef.current?.flushSave?.() }}
-                    onConfigUpdate={onConfigUpdate}
-                    initialTab={inspectorInitialTab}
-                    onNavigateToMark={handleNavigateToMark}
-                  />
+                  inspectedEntity.type === 'character' ? (
+                    <CharacterInspectorPanel
+                      entity={inspectedEntity}
+                      characters={characters}
+                      activeChapter={activeChapter}
+                      projectPath={projectPath}
+                      projectConfig={projectConfig}
+                      calConfig={calConfig}
+                      chapters={chapters}
+                      onEntityUpdated={handleEntitiesChanged}
+                      onReloadCurrentChapter={() => { if (activeChapter) loadChapter(activeChapter) }}
+                      onFlushEditorSave={async () => { await janitorActionsRef.current?.flushSave?.() }}
+                      initialTab={inspectorInitialTab}
+                      onNavigateToMark={handleNavigateToMark}
+                    />
+                  ) : inspectedEntity.type === 'location' ? (
+                    <LocationInspectorPanel
+                      entity={inspectedEntity}
+                      entities={entities}
+                      characters={characters}
+                      activeChapter={activeChapter}
+                      projectPath={projectPath}
+                      projectConfig={projectConfig}
+                      chapters={chapters}
+                      onEntityUpdated={handleEntitiesChanged}
+                      onReloadCurrentChapter={() => { if (activeChapter) loadChapter(activeChapter) }}
+                      onFlushEditorSave={async () => { await janitorActionsRef.current?.flushSave?.() }}
+                      initialTab={inspectorInitialTab}
+                      onNavigateToMark={handleNavigateToMark}
+                    />
+                  ) : inspectedEntity.type === 'quicknote' || inspectedEntity.type === 'quick_note' ? (
+                    <QuickNoteInspectorPanel
+                      entity={inspectedEntity}
+                      projectPath={projectPath}
+                      onEntityUpdated={handleEntitiesChanged}
+                    />
+                  ) : inspectedEntity.type === 'annotation' ? (
+                    <AnnotationInspectorPanel
+                      entity={inspectedEntity}
+                      projectPath={projectPath}
+                      onEntityUpdated={handleEntitiesChanged}
+                    />
+                  ) : (
+                    <EntityInspectorPanel
+                      entity={inspectedEntity}
+                      characters={characters}
+                      entities={entities}
+                      activeChapter={activeChapter}
+                      projectPath={projectPath}
+                      projectConfig={projectConfig}
+                      calConfig={calConfig}
+                      chapters={chapters}
+                      onEntityUpdated={handleEntitiesChanged}
+                      onReloadCurrentChapter={() => { if (activeChapter) loadChapter(activeChapter) }}
+                      onFlushEditorSave={async () => { await janitorActionsRef.current?.flushSave?.() }}
+                      onConfigUpdate={onConfigUpdate}
+                      initialTab={inspectorInitialTab}
+                      onNavigateToMark={handleNavigateToMark}
+                    />
+                  )
                 )}
                 {leftPanelMode === 'twist' && inspectedTwistId && (
                   <TwistInspectorPanel
@@ -1506,6 +1584,16 @@ export default function FleshNoteIDE({ projectConfig, projectPath, onCloseProjec
         projectConfig={projectConfig}
         chapters={chapters}
         entities={entities}
+      />
+
+      <ImportModal
+        isOpen={showImportModal}
+        onClose={() => setShowImportModal(false)}
+        projectPath={projectPath}
+        projectConfig={projectConfig}
+        chapters={chapters}
+        entities={entities}
+        onDataChanged={handleImportDataChanged}
       />
     </>
   )

@@ -78,9 +78,10 @@ Export straight to industry-standard formatting. Generates print-ready PDFs, sta
    cd backend
    python3 -m venv .venv
    source .venv/bin/activate  # On Windows: .venv\Scripts\activate
-   pip install -r requirements_build.txt
+   pip install -r requirements.txt
    cd ..
    ```
+   > **Note:** `requirements.txt` contains only runtime dependencies. If you plan to **build/package** the app with PyInstaller, use `requirements_build.txt` instead.
 
 ### Development
 Run the application in development mode:

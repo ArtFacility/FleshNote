@@ -1,7 +1,7 @@
 import { useState, useMemo, useEffect, useCallback, useRef } from "react";
 import { useTranslation } from "react-i18next";
 import { BarChart, Bar, LineChart, Line, PieChart, Pie, RadarChart, Radar, PolarGrid, PolarAngleAxis, XAxis, YAxis, Tooltip as RechartsTooltip, ResponsiveContainer, Cell } from "recharts";
-import EntityInspectorPanel from "./EntityInspectorPanel";
+import EntityInspectorPanel from "./ide-panels/EntityInspectorPanel";
 
 // ══════════════════════════════════════════════════════════════
 // THEME & CONSTANTS (Adhering to DESIGN_GUIDELINES.md)

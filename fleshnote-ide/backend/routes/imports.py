@@ -58,6 +58,41 @@ class NlpLoadRequest(BaseModel):
     language: str
 
 
+class ExternalEntitiesRequest(BaseModel):
+    source_project_path: str
+    target_project_path: str
+
+
+class ExternalEntityDef(BaseModel):
+    name: str
+    type: str  # "character", "location", "lore", "group"
+    aliases: list[str] = []
+    # Character fields
+    role: str | None = None
+    species: str | None = None
+    surface_goal: str | None = None
+    true_goal: str | None = None
+    bio: str | None = None
+    # Location fields
+    region: str | None = None
+    description: str | None = None
+    # Lore fields
+    lore_category: str | None = None
+    classification: str | None = None
+    origin: str | None = None
+    # Group fields
+    group_type: str | None = None
+    surface_agenda: str | None = None
+    true_agenda: str | None = None
+    # Shared
+    notes: str | None = None
+
+
+class ExternalEntitiesConfirmRequest(BaseModel):
+    target_project_path: str
+    entities: list[ExternalEntityDef]
+
+
 def _get_db(project_path: str):
     db_path = os.path.join(project_path, "fleshnote.db")
     if not os.path.exists(db_path):
@@ -787,3 +822,134 @@ def nlp_load(req: NlpLoadRequest):
         return {"status": "ready"}
     except Exception as e:
         raise HTTPException(status_code=500, detail=str(e))
+
+
+# ── External Project Entity Import ──────────────────────────────────
+
+@router.post("/api/project/import/external-entities")
+def get_external_entities(req: ExternalEntitiesRequest):
+    """Read all entities from another FleshNote project for import."""
+    import json
+
+    source_db = os.path.join(req.source_project_path, "fleshnote.db")
+    if not os.path.exists(source_db):
+        raise HTTPException(status_code=404, detail="No fleshnote.db found in selected folder")
+
+    # Read source entities
+    src = sqlite3.connect(source_db)
+    src.row_factory = sqlite3.Row
+    sc = src.cursor()
+
+    source_entities = []
+
+    sc.execute("SELECT * FROM characters ORDER BY id ASC")
+    for row in sc.fetchall():
+        source_entities.append({
+            "type": "character", "name": row["name"],
+            "aliases": json.loads(row["aliases"]) if row["aliases"] else [],
+            "role": row["role"], "species": row["species"],
+            "surface_goal": row["surface_goal"], "true_goal": row["true_goal"],
+            "bio": row["bio"], "notes": row["notes"],
+        })
+
+    sc.execute("SELECT * FROM locations ORDER BY id ASC")
+    for row in sc.fetchall():
+        source_entities.append({
+            "type": "location", "name": row["name"],
+            "aliases": json.loads(row["aliases"]) if row["aliases"] else [],
+            "region": row["region"], "description": row["description"],
+            "notes": row["notes"],
+        })
+
+    sc.execute("SELECT * FROM lore_entities ORDER BY id ASC")
+    for row in sc.fetchall():
+        source_entities.append({
+            "type": "lore", "name": row["name"],
+            "aliases": json.loads(row["aliases"]) if row["aliases"] else [],
+            "lore_category": row["category"], "classification": row["classification"],
+            "description": row["description"], "origin": row["origin"],
+            "notes": row["notes"],
+        })
+
+    sc.execute("SELECT * FROM groups ORDER BY id ASC")
+    for row in sc.fetchall():
+        source_entities.append({
+            "type": "group", "name": row["name"],
+            "aliases": json.loads(row["aliases"]) if row["aliases"] else [],
+            "group_type": row["group_type"], "description": row["description"],
+            "surface_agenda": row["surface_agenda"], "true_agenda": row["true_agenda"],
+            "notes": row["notes"],
+        })
+
+    src.close()
+
+    # Collect existing names in target project for dedup hints
+    tgt = _get_db(req.target_project_path)
+    tc = tgt.cursor()
+    existing_names = set()
+    for table in ("characters", "locations", "lore_entities", "groups"):
+        tc.execute(f"SELECT name FROM {table}")
+        for row in tc.fetchall():
+            existing_names.add(row["name"].lower())
+    tgt.close()
+
+    return {
+        "source_entities": source_entities,
+        "existing_names": list(existing_names),
+    }
+
+
+@router.post("/api/project/import/external-entities-confirm")
+def confirm_external_entities(req: ExternalEntitiesConfirmRequest):
+    """Bulk-create entities imported from an external project."""
+    import json
+
+    conn = _get_db(req.target_project_path)
+    cursor = conn.cursor()
+    created = []
+
+    for entity in req.entities:
+        aliases_json = json.dumps(entity.aliases) if entity.aliases else "[]"
+
+        if entity.type == "character":
+            cursor.execute("""
+                INSERT INTO characters (name, aliases, role, species,
+                                        surface_goal, true_goal, bio, notes)
+                VALUES (?, ?, ?, ?, ?, ?, ?, ?)
+            """, (entity.name, aliases_json, entity.role or "",
+                  entity.species or "", entity.surface_goal or "",
+                  entity.true_goal or "", entity.bio or "", entity.notes or ""))
+            created.append({"id": cursor.lastrowid, "type": "character", "name": entity.name})
+
+        elif entity.type == "location":
+            cursor.execute("""
+                INSERT INTO locations (name, aliases, region, description, notes)
+                VALUES (?, ?, ?, ?, ?)
+            """, (entity.name, aliases_json, entity.region or "",
+                  entity.description or "", entity.notes or ""))
+            created.append({"id": cursor.lastrowid, "type": "location", "name": entity.name})
+
+        elif entity.type == "lore":
+            category = entity.lore_category or "item"
+            cursor.execute("""
+                INSERT INTO lore_entities (name, aliases, category, classification,
+                                           description, origin, notes)
+                VALUES (?, ?, ?, ?, ?, ?, ?)
+            """, (entity.name, aliases_json, category,
+                  entity.classification or "", entity.description or "",
+                  entity.origin or "", entity.notes or ""))
+            created.append({"id": cursor.lastrowid, "type": "lore", "name": entity.name, "category": category})
+
+        elif entity.type == "group":
+            cursor.execute("""
+                INSERT INTO groups (name, aliases, group_type, description,
+                                    surface_agenda, true_agenda, notes)
+                VALUES (?, ?, ?, ?, ?, ?, ?)
+            """, (entity.name, aliases_json, entity.group_type or "",
+                  entity.description or "", entity.surface_agenda or "",
+                  entity.true_agenda or "", entity.notes or ""))
+            created.append({"id": cursor.lastrowid, "type": "group", "name": entity.name})
+
+    conn.commit()
+    conn.close()
+    return {"created": created}

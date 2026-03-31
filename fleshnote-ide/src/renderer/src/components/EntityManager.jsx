@@ -1,7 +1,11 @@
 import { useState, useMemo, useEffect, useCallback, useRef } from "react";
 import { useTranslation } from "react-i18next";
-import EntityInspectorPanel from "./EntityInspectorPanel";
-import TwistInspectorPanel from "./TwistInspectorPanel";
+import EntityInspectorPanel from "./ide-panels/EntityInspectorPanel";
+import TwistInspectorPanel from "./ide-panels/TwistInspectorPanel";
+import CharacterInspectorPanel from "./ide-panels/CharacterInspectorPanel";
+import LocationInspectorPanel from "./ide-panels/LocationInspectorPanel";
+import QuickNoteInspectorPanel from "./ide-panels/QuickNoteInspectorPanel";
+import AnnotationInspectorPanel from "./ide-panels/AnnotationInspectorPanel";
 
 // ─── THEME CONSTANTS ────────────────────────────────────────────────────────
 const T = {
@@ -651,7 +655,38 @@ export default function EntityManager({ entities, characters, chapters, projectP
                                 </button>
                             </div>
                             <div style={{ flex: 1, overflowY: "auto", padding: 16 }}>
-                                {activeTab === "twists" ? (
+                                {inspectedEntity.type === 'character' ? (
+                                    <CharacterInspectorPanel
+                                        entity={inspectedEntity}
+                                        characters={characters}
+                                        projectPath={projectPath}
+                                        projectConfig={projectConfig}
+                                        chapters={chapters}
+                                        onEntityUpdated={handleInspectorUpdated}
+                                    />
+                                ) : inspectedEntity.type === 'location' ? (
+                                    <LocationInspectorPanel
+                                        entity={inspectedEntity}
+                                        entities={entities}
+                                        characters={characters}
+                                        projectPath={projectPath}
+                                        projectConfig={projectConfig}
+                                        chapters={chapters}
+                                        onEntityUpdated={handleInspectorUpdated}
+                                    />
+                                ) : inspectedEntity.type === 'quicknote' || inspectedEntity.type === 'quick_note' ? (
+                                    <QuickNoteInspectorPanel
+                                        entity={inspectedEntity}
+                                        projectPath={projectPath}
+                                        onEntityUpdated={handleInspectorUpdated}
+                                    />
+                                ) : inspectedEntity.type === 'annotation' ? (
+                                    <AnnotationInspectorPanel
+                                        entity={inspectedEntity}
+                                        projectPath={projectPath}
+                                        onEntityUpdated={handleInspectorUpdated}
+                                    />
+                                ) : inspectedEntity.type === 'twist' ? (
                                     <TwistInspectorPanel
                                         twistId={inspectedEntity.id}
                                         projectPath={projectPath}

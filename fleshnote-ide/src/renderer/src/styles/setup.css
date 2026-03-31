@@ -220,3 +220,166 @@
 .mb-4 {
     margin-bottom: 16px;
 }
+
+
+/* ── IMPORT MODAL ────────────────────────────────── */
+
+.import-landing-cards {
+    display: flex;
+    gap: 16px;
+    margin-top: 8px;
+}
+
+.import-landing-card {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 10px;
+    padding: 24px 16px;
+    background: var(--bg-surface);
+    border: 1px solid var(--border-subtle);
+    color: var(--text-primary);
+    cursor: pointer;
+    transition: all 0.15s;
+    text-align: center;
+}
+
+.import-landing-card:hover {
+    border-color: var(--accent-amber);
+    background: var(--bg-elevated);
+}
+
+.import-card-label {
+    font-family: var(--font-mono);
+    font-size: 13px;
+    font-weight: 500;
+    color: var(--text-primary);
+}
+
+.import-card-desc {
+    font-size: 11px;
+    color: var(--text-tertiary);
+    line-height: 1.5;
+}
+
+.import-back-btn {
+    background: transparent;
+    border: 1px solid var(--border-subtle);
+    color: var(--text-secondary);
+    cursor: pointer;
+    padding: 4px 8px;
+    display: flex;
+    align-items: center;
+    transition: all 0.15s;
+}
+
+.import-back-btn:hover {
+    border-color: var(--accent-amber);
+    color: var(--text-primary);
+}
+
+.import-btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    padding: 8px 16px;
+    font-family: var(--font-mono);
+    font-size: 12px;
+    border: none;
+    cursor: pointer;
+    transition: all 0.15s;
+}
+
+.import-btn.primary {
+    background: var(--accent-amber);
+    color: var(--bg-primary);
+    font-weight: 600;
+}
+
+.import-btn.primary:hover {
+    filter: brightness(1.1);
+}
+
+.import-btn.primary:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+}
+
+.import-btn.secondary {
+    background: var(--bg-surface);
+    color: var(--text-primary);
+    border: 1px solid var(--border-subtle);
+}
+
+.import-btn.secondary:hover {
+    border-color: var(--accent-amber);
+}
+
+.import-btn.secondary:disabled {
+    opacity: 0.4;
+    cursor: not-allowed;
+}
+
+.import-entity-checklist {
+    flex: 1;
+    overflow-y: auto;
+    border: 1px solid var(--border-subtle);
+    background: var(--bg-surface);
+}
+
+.import-entity-row {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 8px 12px;
+    cursor: pointer;
+    transition: background 0.1s;
+    border-bottom: 1px solid var(--border-subtle);
+}
+
+.import-entity-row:last-child {
+    border-bottom: none;
+}
+
+.import-entity-row:hover {
+    background: var(--bg-elevated);
+}
+
+.import-entity-row.selected {
+    background: rgba(212, 168, 71, 0.05);
+}
+
+.import-checkbox {
+    width: 16px;
+    height: 16px;
+    border: 1px solid var(--border-subtle);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.15s;
+}
+
+.import-checkbox.checked {
+    background: var(--accent-amber);
+    border-color: var(--accent-amber);
+    color: var(--bg-primary);
+}
+
+.import-entity-type-badge {
+    font-family: var(--font-mono);
+    font-size: 10px;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    min-width: 70px;
+}
+
+.import-duplicate-badge {
+    font-family: var(--font-mono);
+    font-size: 10px;
+    color: var(--accent-amber);
+    padding: 2px 6px;
+    border: 1px solid var(--accent-amber);
+    opacity: 0.7;
+    flex-shrink: 0;
+}

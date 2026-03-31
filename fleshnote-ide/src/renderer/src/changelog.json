@@ -1,6 +1,14 @@
 {
-    "currentVersion": "1.0.1",
+    "currentVersion": "1.0.2",
     "history": [
+        {
+            "version": "1.0.2",
+            "date": "2026-03-31",
+            "changes": [
+                "NEW: Import new entities from inside the project!",
+                "New: Import entities from other fleshnote project folders"
+            ]
+        },
         {
             "version": "1.0.1",
             "date": "2026-03-29",
@@ -127,83 +135,6 @@
             "changes": [
                 "NEW: Stats Dashboard! Deep analytics for your project including Story Health diagnostics, writing habits, and Entity Appearance Auditor.",
                 "Visualized word count velocity and time auditing across chapters."
-            ]
-        },
-        {
-            "version": "0.6.6",
-            "date": "2026-03-07",
-            "changes": [
-                "NEW: Entity Deletion! You can now permanently delete Characters, Locations, Groups, and Lore from the Entity Inspector.",
-                "NEW: Duplicate Entity Prevention! The Editor will now intercept duplicate character/location/item creations, showing warnings for Exact Matches.",
-                "NEW: Alias Suggestions! If you create a highly similar named entity, the Editor will suggest adding it as an alias to existing ones instead.",
-                "NEW: Entity Link Visibility Toggle! You can now easily hide specific entity links (like Characters or Locations) using the Eye icon in the editor toolbar.",
-                "NEW: Dynamic Category Dropdowns! The Lore Inspector and Custom Lore popup now extract live categories from your database instead of using hardcoded lists.",
-                "Revamped Project Setup! 'Extra Lore Categories' now uses a visual chip list and includes smart 1-click genre suggestions.",
-                "Fixed glitchy animations when Editor popups appear.",
-                "Fixed Twist Inspector's save button getting pushed off-screen by long twist titles.",
-                "Cleaned up redundant 'Lore Categories' field from Project Settings window."
-            ]
-        },
-        {
-            "version": "0.6.5",
-            "date": "2026-03-05",
-            "changes": [
-                "NEW: Twist & Foreshadow system reworked! Tag text as twist reveals or foreshadowing markers and link them to named twists.",
-                "NEW: Twist Inspector panel — view twist status, foreshadow count, distance to reveal, characters who know, and navigate to foreshadow markers.",
-                "Renamed 'Foreshadow' context menu button to 'Twist' with sub-options for Twist Reveal and Foreshadowing.",
-                "Clicking any twist or foreshadow marker in the editor now opens the Twist Inspector.",
-                "In the planner, twists are displayed as little markers on the timeline."
-            ]
-        },
-        {
-            "version": "0.6.1",
-            "date": "2026-03-04",
-            "changes": [
-                "Fixed a bug where entering and exiting the planner would overwrite the story with an old version.",
-                "Added saving indicator in the corner for peace of mind.",
-                "Kamikaze mode's timer adjusted.",
-                "Fixed Momentum mode crashing the app.",
-                "Fixed app text fields becoming uneditable if you attempt to create a project with an existing project name.",
-                "Localized strings for the planner.",
-                "Removed dummy fields from project setup like age.",
-                "Fixed bug where a chapter tagged as 'final' wouldn't show the bar on the timeline as filled up green."
-            ]
-        },
-        {
-            "version": "0.6.0",
-            "date": "2026-03-01",
-            "changes": [
-                "NEW: plot planner! Prepare your story arcs and beats.",
-                "NEW: focus sprint modes! Kamikaze, Fog, Hemingway, Combo, Zen",
-                "You can now link to existing entries via @name syntax",
-                "Search functionality (CTRL+F)",
-                "TODO (alt+t) inline addition",
-                "Dyslexia friendly mode added into accessibility settings",
-                "Knowledge state reworked, now it works globally chapter level instead of requiring a POV character.",
-                "Fixed Item entities not being colored in the editor.",
-                "Fixed not being able to escape entity links via pressing space/enter",
-                "Code cleanup.",
-                "Optimized the entity extractor.",
-                "Cool loading screen while the entity extractor does it's thing"
-            ]
-        },
-        {
-            "version": "0.5.1",
-            "date": "2026-02-28",
-            "changes": [
-                "Finalized the icon of the app.",
-                "Added fancy home screen text.",
-                "Reworked the import module for entities."
-            ]
-        },
-        {
-            "version": "0.5.0",
-            "date": "2026-02-26",
-            "changes": [
-                "Implemented Professional Export Module with support for PDF, DOCX, and EPUB.",
-                "Added 'Book-Ready' formatting logic for industry-standard print exports.",
-                "Added Live Export Preview with real-time formatting visualization.",
-                "Enhanced PDF export stability and CSS variable resolution."
             ]
         }
     ]

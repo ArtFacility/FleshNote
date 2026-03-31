@@ -414,7 +414,8 @@
     "optionsMenu": "Options",
     "toggleProgressBar": "Show Progress Bar",
     "toggleStatusBar": "Show Status Bar",
-    "statusBarFormat": "Markdown \u00b7 UTF-8"
+    "statusBarFormat": "Markdown \u00b7 UTF-8",
+    "import": "Import..."
   },
   "picker": {
     "title": "FleshNote Projects",
@@ -1363,5 +1364,34 @@
     "createAs": "Create",
     "asNew": "selection",
     "asType": "as"
+  },
+  "importModal": {
+    "title": "Import",
+    "landingDesc": "Add content to your project from external sources.",
+    "importChapters": "Import Chapters",
+    "importChaptersDesc": "Add chapters from a manuscript file (.txt, .md, .docx)",
+    "extractEntities": "Extract Entities",
+    "extractEntitiesDesc": "Detect characters and locations using NLP analysis",
+    "fromExistingChapters": "From Existing Chapters",
+    "fromPastedText": "From Pasted Text",
+    "importFromProject": "Import from Project",
+    "importFromProjectDesc": "Import entities from another FleshNote project",
+    "back": "Back",
+    "externalDesc": "Select another FleshNote project folder to import characters, locations, lore, and groups from.",
+    "selectProject": "Select Project Folder...",
+    "loadingEntities": "Reading entities from project...",
+    "loadingChapterContent": "Loading chapter content for analysis...",
+    "foundEntities": "{{count}} entities found · {{selected}} selected",
+    "selectAll": "Select All",
+    "deselectAll": "Deselect All",
+    "alreadyExists": "Already exists",
+    "importSelected": "Import {{count}} Selected",
+    "importing": "Importing...",
+    "importSuccess": "Successfully imported {{count}} entities",
+    "done": "Done",
+    "typeCharacter": "Character",
+    "typeLocation": "Location",
+    "typeLore": "Lore",
+    "typeGroup": "Group"
   }
 }

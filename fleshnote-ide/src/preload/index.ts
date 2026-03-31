@@ -156,6 +156,8 @@ const api = {
   importNerExtract: (payload) => ipcRenderer.invoke('api:importNerExtract', payload),
   importNerAnalyze: (payload) => ipcRenderer.invoke('api:importNerAnalyze', payload),
   importBulkCreateEntities: (payload) => ipcRenderer.invoke('api:importBulkCreateEntities', payload),
+  importExternalEntities: (payload) => ipcRenderer.invoke('api:importExternalEntities', payload),
+  importExternalEntitiesConfirm: (payload) => ipcRenderer.invoke('api:importExternalEntitiesConfirm', payload),
 
   // ── NLP Configuration ──────────────────────────────
   checkNlpModel: (langCode) => ipcRenderer.invoke('api:checkNlpModel', langCode),

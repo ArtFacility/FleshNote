@@ -698,6 +698,14 @@ app.whenReady().then(async () => {
     return await backendPost('/api/project/import/bulk-create-entities', payload)
   })
 
+  ipcMain.handle('api:importExternalEntities', async (_event, payload) => {
+    return await backendPost('/api/project/import/external-entities', payload)
+  })
+
+  ipcMain.handle('api:importExternalEntitiesConfirm', async (_event, payload) => {
+    return await backendPost('/api/project/import/external-entities-confirm', payload)
+  })
+
   // ── NLP Configuration ──────────────────────────────
   ipcMain.handle('api:checkNlpModel', async (_event, langCode) => {
     return await backendPost('/api/settings/check-model', { lang_code: langCode })
