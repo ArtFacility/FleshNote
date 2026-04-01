@@ -1,5 +1,6 @@
-import { app, shell, BrowserWindow, ipcMain, dialog } from 'electron'
+import { app, shell, BrowserWindow, ipcMain, dialog, protocol, net } from 'electron'
 import { join } from 'path'
+import { pathToFileURL } from 'url'
 import fs from 'fs'
 import { electronApp, optimizer, is } from '@electron-toolkit/utils'
 import icon from '../../resources/icon.png?asset'
@@ -202,9 +203,27 @@ function updateGlobalConfig(newConfig) {
   return updated
 }
 
+// ── Custom Protocol for Asset Images ────────────────────────────────────────
+// Registers fleshnote-asset:// so the renderer can load images from project dirs.
+// Usage: fleshnote-asset://load/C:/stories/myproject/assets/img_abc123.png
+// We use "load" as a dummy host so Windows drive letters (C:) don't get
+// mangled by Chromium's URL parser (it eats the colon thinking it's host:port).
+protocol.registerSchemesAsPrivileged([
+  { scheme: 'fleshnote-asset', privileges: { standard: true, secure: true, supportFetchAPI: true, stream: true } }
+])
+
 // ── App Ready ────────────────────────────────────────────────────────────────
 
 app.whenReady().then(async () => {
+  // Handle fleshnote-asset://load/C:/path/to/file.png requests
+  protocol.handle('fleshnote-asset', (request) => {
+    const url = new URL(request.url)
+    // pathname is /C:/stories/8768/assets/img.png — strip the leading /
+    let filePath = decodeURIComponent(url.pathname)
+    if (filePath.startsWith('/')) filePath = filePath.substring(1)
+    return net.fetch(pathToFileURL(filePath).toString())
+  })
+
   startPythonBackend()
   try {
     await waitForBackend()
@@ -666,6 +685,44 @@ app.whenReady().then(async () => {
   ipcMain.handle('api:createBoardConnection', async (_e, p) => backendPost('/api/project/boards/connections/create', p))
   ipcMain.handle('api:updateBoardConnection', async (_e, p) => backendPost('/api/project/boards/connections/update', p))
   ipcMain.handle('api:deleteBoardConnection', async (_e, p) => backendPost('/api/project/boards/connections/delete', p))
+
+  // ── Image References ──────────────────────────────
+  ipcMain.handle('dialog:openImage', async () => {
+    const { canceled, filePaths } = await dialog.showOpenDialog({
+      properties: ['openFile'],
+      title: 'Select Image',
+      filters: [
+        { name: 'Images', extensions: ['png', 'jpg', 'jpeg', 'gif', 'webp', 'svg', 'bmp'] },
+        { name: 'All Files', extensions: ['*'] }
+      ]
+    })
+    if (canceled) return null
+    return filePaths[0]
+  })
+  ipcMain.handle('api:uploadImageRef', async (_e, p) => backendPost('/api/project/image-ref/upload', p))
+  ipcMain.handle('api:createImageRef', async (_e, p) => backendPost('/api/project/image-ref/create', p))
+  ipcMain.handle('api:saveIconCrop', async (_e, p) => backendPost('/api/project/image-ref/save-icon', p))
+  ipcMain.handle('api:updateImageRef', async (_e, p) => backendPost('/api/project/image-ref/update', p))
+  ipcMain.handle('api:deleteImageRef', async (_e, p) => backendPost('/api/project/image-ref/delete', p))
+  ipcMain.handle('api:getImageRefsForEntity', async (_e, p) => backendPost('/api/project/image-refs/for-entity', p))
+  ipcMain.handle('api:getBulkEntityIcons', async (_e, p) => backendPost('/api/project/image-refs/bulk-icons', p))
+  ipcMain.handle('api:deleteAssetFile', async (_event, { project_path, image_path }) => {
+    try {
+      const fullPath = join(project_path, image_path)
+      // Safety: Ensure we're within the assets directory to prevent arbitrary file deletion
+      if (!fullPath.replace(/\\/g, '/').includes('/assets/')) {
+        return { status: 'error', msg: 'Invalid path' }
+      }
+      if (fs.existsSync(fullPath)) {
+        fs.unlinkSync(fullPath)
+        return { status: 'ok' }
+      }
+      return { status: 'error', msg: 'File not found' }
+    } catch (err: any) {
+      console.error('Failed to delete asset file:', err)
+      return { status: 'error', msg: err.message }
+    }
+  })
 
   // ── Planner ────────────────────────────────────────
   ipcMain.handle('api:loadPlanner', async (_event, projectPath) => {

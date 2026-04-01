@@ -434,7 +434,7 @@
     "optionsMenu": "Options",
     "toggleProgressBar": "Show Progress Bar",
     "toggleStatusBar": "Show Status Bar",
-    "statusBarFormat": "Markdown \u00b7 UTF-8",
+    "statusBarFormat": "Markdown · UTF-8",
     "import": "Import..."
   },
   "picker": {
@@ -1178,7 +1178,7 @@
   },
   "calendar": {
     "title": "World Calendar",
-    "subtitle": "Define your world's time system \u2014 months, weeks, seasons, and epochs.",
+    "subtitle": "Define your world's time system — months, weeks, seasons, and epochs.",
     "saving": "Saving...",
     "saved": "Saved",
     "resetEarth": "Earth Defaults",
@@ -1261,7 +1261,7 @@
     "editPlaceholder": "e.g. Flashback, Memory",
     "cancel": "Cancel",
     "markSelection": "Mark Selection",
-    "saving": "Saving\u2026",
+    "saving": "Saving…",
     "delete": "Delete",
     "save": "Save",
     "clickToEdit": "click to edit",
@@ -1415,5 +1415,23 @@
     "typeLocation": "Location",
     "typeLore": "Lore",
     "typeGroup": "Group"
+  },
+  "gallery": {
+    "setIcon": "Set Icon",
+    "addReference": "Add Reference",
+    "noImages": "No reference images yet",
+    "description": "Description",
+    "descriptionPlaceholder": "Description...",
+    "save": "Save",
+    "cancel": "Cancel",
+    "clickToAddDescription": "Click to add description...",
+    "setTime": "Set Time",
+    "makeIcon": "Make Icon",
+    "delete": "Delete",
+    "cropAsIcon": "Crop as icon",
+    "iconBtn": "Icon",
+    "cropIconTitle": "Crop Icon",
+    "cropHint": "Drag to move • Scroll to resize",
+    "saveIcon": "Save Icon"
   }
 }

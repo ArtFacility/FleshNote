@@ -175,6 +175,7 @@ def delete_lore_entity(req: LoreEntityDelete):
     conn = _get_db(req.project_path)
     cursor = conn.cursor()
     cursor.execute("DELETE FROM lore_entities WHERE id = ?", (req.entity_id,))
+    cursor.execute("DELETE FROM image_references WHERE entity_type = 'item' AND entity_id = ?", (req.entity_id,))
     conn.commit()
     conn.close()
     return {"status": "ok"}

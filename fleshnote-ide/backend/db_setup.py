@@ -236,6 +236,7 @@ def generate_project_db(project_path: str, answers: dict) -> str:
         raise ValueError("No onboarding answers provided.")
 
     os.makedirs(project_path, exist_ok=True)
+    os.makedirs(os.path.join(project_path, "assets"), exist_ok=True)
     db_path = os.path.join(project_path, "fleshnote.db")
     conn = sqlite3.connect(db_path)
     conn.execute("PRAGMA journal_mode=WAL;")  # Better concurrent read performance
@@ -384,6 +385,24 @@ def generate_project_db(project_path: str, answers: dict) -> str:
             updated_at      TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
             FOREIGN KEY (parent_location_id) REFERENCES locations(id)
                 ON DELETE SET NULL
+        )
+    """)
+
+    # ══════════════════════════════════════════════════════════
+    # TABLE 6.5: LOCATION WEATHER STATES
+    # ══════════════════════════════════════════════════════════
+
+    cursor.execute("""
+        CREATE TABLE IF NOT EXISTS location_weather_states (
+            id            INTEGER PRIMARY KEY AUTOINCREMENT,
+            location_id   INTEGER NOT NULL,
+            world_time    TEXT NOT NULL,
+            weather       TEXT,
+            temperature   TEXT,
+            moisture      TEXT,
+            created_at    TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+            updated_at    TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+            FOREIGN KEY (location_id) REFERENCES locations(id) ON DELETE CASCADE
         )
     """)
 
@@ -810,6 +829,26 @@ def generate_project_db(project_path: str, answers: dict) -> str:
     """)
 
     # ══════════════════════════════════════════════════════════
+    # IMAGE REFERENCES
+    # Reference images and icons for entities (characters,
+    # locations, lore entities). Stored in {project}/assets/.
+    # ══════════════════════════════════════════════════════════
+
+    cursor.execute("""
+        CREATE TABLE IF NOT EXISTS image_references (
+            id            INTEGER PRIMARY KEY AUTOINCREMENT,
+            entity_id     INTEGER NOT NULL,
+            entity_type   TEXT NOT NULL,
+            image_path    TEXT NOT NULL,
+            is_icon       INTEGER DEFAULT 0,
+            world_time    TEXT,
+            caption       TEXT,
+            sort_order    INTEGER DEFAULT 0,
+            created_at    TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+        )
+    """)
+
+    # ══════════════════════════════════════════════════════════
     # INDEXES
     # Targeted indexes for the queries the frontend runs most:
     # - Entity linkification (name lookups across all tables)
@@ -834,6 +873,8 @@ def generate_project_db(project_path: str, answers: dict) -> str:
         # Location lookups
         "CREATE INDEX IF NOT EXISTS idx_location_name ON locations(name);",
         "CREATE INDEX IF NOT EXISTS idx_location_parent ON locations(parent_location_id);",
+        "CREATE INDEX IF NOT EXISTS idx_weather_location ON location_weather_states(location_id);",
+        "CREATE INDEX IF NOT EXISTS idx_weather_world_time ON location_weather_states(world_time);",
 
         # Group lookups
         "CREATE INDEX IF NOT EXISTS idx_group_name ON groups(name);",
@@ -867,6 +908,10 @@ def generate_project_db(project_path: str, answers: dict) -> str:
         "CREATE INDEX IF NOT EXISTS idx_history_entity ON history_entries(entity_type, entity_id);",
         "CREATE INDEX IF NOT EXISTS idx_history_event_type ON history_entries(event_type);",
         "CREATE INDEX IF NOT EXISTS idx_history_date ON history_entries(date_year);",
+
+        # Image references indexes
+        "CREATE INDEX IF NOT EXISTS idx_imgref_entity ON image_references(entity_type, entity_id);",
+        "CREATE INDEX IF NOT EXISTS idx_imgref_icon ON image_references(entity_type, entity_id, is_icon);",
     ]
 
     for idx in indexes:
@@ -994,6 +1039,22 @@ def apply_migrations(db_path: str):
         cursor.execute("CREATE INDEX IF NOT EXISTS idx_stat_logs_timestamp ON stat_logs(timestamp);")
         cursor.execute("CREATE INDEX IF NOT EXISTS idx_entity_mentions_chapter ON entity_mentions(chapter_id);")
         cursor.execute("CREATE INDEX IF NOT EXISTS idx_entity_mentions_entity ON entity_mentions(entity_type, entity_id);")
+
+        cursor.execute("""
+            CREATE TABLE IF NOT EXISTS location_weather_states (
+                id            INTEGER PRIMARY KEY AUTOINCREMENT,
+                location_id   INTEGER NOT NULL,
+                world_time    TEXT NOT NULL,
+                weather       TEXT,
+                temperature   TEXT,
+                moisture      TEXT,
+                created_at    TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+                updated_at    TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+                FOREIGN KEY (location_id) REFERENCES locations(id) ON DELETE CASCADE
+            )
+        """)
+        cursor.execute("CREATE INDEX IF NOT EXISTS idx_weather_location ON location_weather_states(location_id);")
+        cursor.execute("CREATE INDEX IF NOT EXISTS idx_weather_world_time ON location_weather_states(world_time);")
 
         # Planner Migrations (Add safely into existing DBs)
         cursor.execute("""
@@ -1206,6 +1267,27 @@ def apply_migrations(db_path: str):
 
         cursor.execute("CREATE INDEX IF NOT EXISTS idx_board_items_board ON board_items(board_id);")
         cursor.execute("CREATE INDEX IF NOT EXISTS idx_connections_board ON item_connections(board_id);")
+
+        # Image references table
+        cursor.execute("""
+            CREATE TABLE IF NOT EXISTS image_references (
+                id            INTEGER PRIMARY KEY AUTOINCREMENT,
+                entity_id     INTEGER NOT NULL,
+                entity_type   TEXT NOT NULL,
+                image_path    TEXT NOT NULL,
+                is_icon       INTEGER DEFAULT 0,
+                world_time    TEXT,
+                caption       TEXT,
+                sort_order    INTEGER DEFAULT 0,
+                created_at    TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+            )
+        """)
+        cursor.execute("CREATE INDEX IF NOT EXISTS idx_imgref_entity ON image_references(entity_type, entity_id);")
+        cursor.execute("CREATE INDEX IF NOT EXISTS idx_imgref_icon ON image_references(entity_type, entity_id, is_icon);")
+
+        # Ensure assets directory exists for existing projects
+        project_dir = os.path.dirname(db_path)
+        os.makedirs(os.path.join(project_dir, "assets"), exist_ok=True)
 
         conn.commit()
     except Exception as e:

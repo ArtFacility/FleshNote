@@ -2,6 +2,7 @@ import { useState, useEffect, useCallback } from 'react'
 import { useTranslation } from 'react-i18next'
 import CalendarDatePicker from '../CalendarDatePicker'
 import EntityRenamePopup from '../EntityRenamePopup'
+import ImageGallery from './ImageGallery'
 
 const Icons = {
   Users: () => <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2" /><circle cx="9" cy="7" r="4" /><path d="M23 21v-2a4 4 0 0 0-3-3.87" /><path d="M16 3.13a4 4 0 0 1 0 7.75" /></svg>,
@@ -19,7 +20,8 @@ const Icons = {
   Plus: () => <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><line x1="12" y1="5" x2="12" y2="19" /><line x1="5" y1="12" x2="19" y2="12" /></svg>,
   Trash: () => <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><polyline points="3 6 5 6 21 6" /><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2" /></svg>,
   Brain: () => <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M12 2a7 7 0 0 0-7 7c0 2.38 1.19 4.47 3 5.74V17a2 2 0 0 0 2 2h4a2 2 0 0 0 2-2v-2.26c1.81-1.27 3-3.36 3-5.74a7 7 0 0 0-7-7z" /><line x1="9" y1="21" x2="15" y2="21" /></svg>,
-  Clock: () => <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><circle cx="12" cy="12" r="10" /><polyline points="12 6 12 12 16 14" /></svg>
+  Clock: () => <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><circle cx="12" cy="12" r="10" /><polyline points="12 6 12 12 16 14" /></svg>,
+  Image: () => <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><rect x="3" y="3" width="18" height="18" rx="2" ry="2" /><circle cx="8.5" cy="8.5" r="1.5" /><polyline points="21 15 16 10 5 21" /></svg>
 }
 
 function TypeIcon() {
@@ -43,10 +45,23 @@ export default function EntityInspectorPanel({
   const [editingFactId, setEditingFactId] = useState(null)
   const [editFactData, setEditFactData] = useState({ fact: '', is_secret: 0 })
   const [renameData, setRenameData] = useState(null)
+  const [iconPath, setIconPath] = useState(null)
 
   useEffect(() => {
     if (initialTab) setActiveTab(initialTab)
   }, [initialTab])
+
+  const imgEntityType = entity?.type === 'group' ? 'group' : 'item'
+
+  const loadIcon = useCallback(async () => {
+    if (!projectPath || !entity?.id) return
+    try {
+      const res = await window.api.getBulkEntityIcons({ project_path: projectPath })
+      setIconPath(res?.icons?.[`${imgEntityType}:${entity.id}`] || null)
+    } catch { setIconPath(null) }
+  }, [projectPath, entity?.id, imgEntityType])
+
+  useEffect(() => { loadIcon() }, [loadIcon])
 
   const currEntity = entities.find(e => String(e.id) === String(entity.id) && e.type === entity.type) || entity
   const groupData = entity?.type === 'group' ? currEntity : null
@@ -273,7 +288,12 @@ export default function EntityInspectorPanel({
           )}
         </div>
 
-        {editMode ? renderEditField(t('inspector.nameLabel', 'Name'), 'name') : <div className="entity-name">{currEntity.name}</div>}
+        {editMode ? renderEditField(t('inspector.nameLabel', 'Name'), 'name') : (
+          <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
+            {iconPath && <img src={`fleshnote-asset://load/${projectPath.replace(/\\/g, '/')}/${iconPath}`} alt="" style={{ width: 64, height: 64, borderRadius: 6, objectFit: 'cover', border: '1px solid var(--border-subtle)' }} />}
+            <div className="entity-name">{currEntity.name}</div>
+          </div>
+        )}
 
         {!editMode && groupData && groupData.group_type && <div className="entity-subtitle">{groupData.group_type}</div>}
         {!editMode && loreData && (loreData.category || loreData.classification) && <div className="entity-subtitle">{[loreData.category, loreData.classification].filter(Boolean).join(' \u2022 ')}</div>}
@@ -285,6 +305,9 @@ export default function EntityInspectorPanel({
         </button>
         <button onClick={() => setActiveTab('knowledge')} style={{ background: 'transparent', border: 'none', padding: '8px 0', cursor: 'pointer', color: activeTab === 'knowledge' ? 'var(--accent-amber)' : 'var(--text-secondary)', borderBottom: activeTab === 'knowledge' ? '2px solid var(--accent-amber)' : '2px solid transparent', fontFamily: 'var(--font-mono)', fontSize: '11px', textTransform: 'uppercase', letterSpacing: '1px', display: 'flex', alignItems: 'center' }}>
           <Icons.Brain style={{ width: 14, height: 14, marginRight: activeTab === 'knowledge' ? 4 : 0 }} /> {activeTab === 'knowledge' && t('inspector.tabKnowledge', 'Knowledge Database')}
+        </button>
+        <button onClick={() => setActiveTab('references')} style={{ background: 'transparent', border: 'none', padding: '8px 0', cursor: 'pointer', color: activeTab === 'references' ? 'var(--accent-amber)' : 'var(--text-secondary)', borderBottom: activeTab === 'references' ? '2px solid var(--accent-amber)' : '2px solid transparent', fontFamily: 'var(--font-mono)', fontSize: '11px', textTransform: 'uppercase', letterSpacing: '1px', display: 'flex', alignItems: 'center' }}>
+          <Icons.Image style={{ width: 14, height: 14, marginRight: activeTab === 'references' ? 4 : 0 }} /> {activeTab === 'references' && 'References'}
         </button>
       </div>
 
@@ -428,6 +451,18 @@ export default function EntityInspectorPanel({
             )
           })}
         </div>
+      )}
+
+      {activeTab === 'references' && (
+        <ImageGallery
+          projectPath={projectPath}
+          entityId={entity.id}
+          entityType={imgEntityType}
+          viewMode={viewMode}
+          currentWorldTime={activeChapter?.world_time}
+          onIconChanged={loadIcon}
+          calConfig={calConfig}
+        />
       )}
 
       {viewMode === 'author' && (

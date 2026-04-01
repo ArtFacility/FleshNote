@@ -514,7 +514,8 @@
     background: var(--bg-elevated);
     border: 1px solid var(--border-default);
     padding: 12px 14px;
-    max-width: 280px;
+    min-width: 200px;
+    max-width: 300px;
     pointer-events: none;
     animation: hover-card-in 0.12s ease;
     box-shadow: 0 8px 32px rgba(0, 0, 0, 0.5);
@@ -551,6 +552,14 @@
 
 .hover-card-type.location {
     color: var(--entity-location);
+}
+
+.hover-card-type.twist {
+    color: var(--accent-red);
+}
+
+.hover-card-type.foreshadow {
+    color: var(--accent-purple);
 }
 
 .hover-card-name {

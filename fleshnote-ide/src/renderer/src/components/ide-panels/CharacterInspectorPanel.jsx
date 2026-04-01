@@ -3,6 +3,7 @@ import { useTranslation } from 'react-i18next'
 import RelationshipTurningPointPopup from '../RelationshipTurningPointPopup'
 import CalendarDatePicker from '../CalendarDatePicker'
 import EntityRenamePopup from '../EntityRenamePopup'
+import ImageGallery from './ImageGallery'
 
 const Icons = {
   Users: () => (
@@ -74,6 +75,11 @@ const Icons = {
     <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
       <circle cx="12" cy="12" r="10" /><polyline points="12 6 12 12 16 14" />
     </svg>
+  ),
+  Image: () => (
+    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+      <rect x="3" y="3" width="18" height="18" rx="2" ry="2" /><circle cx="8.5" cy="8.5" r="1.5" /><polyline points="21 15 16 10 5 21" />
+    </svg>
   )
 }
 
@@ -82,7 +88,7 @@ function TypeIcon() {
 }
 
 export default function CharacterInspectorPanel({
-  entity, characters, activeChapter, projectPath, projectConfig, calConfig, chapters, onEntityUpdated, initialTab, onNavigateToMark, onReloadCurrentChapter, onFlushEditorSave
+  entity, characters, activeChapter, projectPath, projectConfig, calConfig, chapters, onEntityUpdated, initialTab, onNavigateToMark, onReloadCurrentChapter, onFlushEditorSave, onIconChanged
 }) {
   const { t } = useTranslation()
   const [viewMode, setViewMode] = useState('author')
@@ -100,10 +106,21 @@ export default function CharacterInspectorPanel({
   const [editingFactId, setEditingFactId] = useState(null)
   const [editFactData, setEditFactData] = useState({ fact: '', is_secret: 0 })
   const [renameData, setRenameData] = useState(null)
+  const [iconPath, setIconPath] = useState(null)
 
   useEffect(() => {
     if (initialTab) setActiveTab(initialTab)
   }, [initialTab])
+
+  const loadIcon = useCallback(async () => {
+    if (!projectPath || !entity?.id) return
+    try {
+      const res = await window.api.getBulkEntityIcons({ project_path: projectPath })
+      setIconPath(res?.icons?.[`char:${entity.id}`] || null)
+    } catch { setIconPath(null) }
+  }, [projectPath, entity?.id])
+
+  useEffect(() => { loadIcon() }, [loadIcon])
 
   const currEntity = characters.find(c => String(c.id) === String(entity.id)) || entity
   const charData = currEntity
@@ -269,7 +286,12 @@ export default function CharacterInspectorPanel({
             </div>
           )}
         </div>
-        {editMode ? renderEditField(t('inspector.nameLabel', 'Name'), 'name') : <div className="entity-name">{charData.name}</div>}
+        {editMode ? renderEditField(t('inspector.nameLabel', 'Name'), 'name') : (
+          <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
+            {iconPath && <img src={`fleshnote-asset://load/${projectPath.replace(/\\/g, '/')}/${iconPath}`} alt="" style={{ width: 64, height: 64, borderRadius: 6, objectFit: 'cover', border: '1px solid var(--border-subtle)' }} />}
+            <div className="entity-name">{charData.name}</div>
+          </div>
+        )}
         {!editMode && charData.role && <div className="entity-subtitle">{charData.role}</div>}
       </div>
 
@@ -277,6 +299,7 @@ export default function CharacterInspectorPanel({
         <button onClick={() => setActiveTab('overview')} style={{ background: 'transparent', border: 'none', padding: '8px 0', cursor: 'pointer', color: activeTab === 'overview' ? 'var(--accent-amber)' : 'var(--text-secondary)', borderBottom: activeTab === 'overview' ? '2px solid var(--accent-amber)' : '2px solid transparent', fontFamily: 'var(--font-mono)', fontSize: '11px', textTransform: 'uppercase', letterSpacing: '1px', display: 'flex', alignItems: 'center' }} title={t('inspector.tabOverview', 'Overview')}><Icons.BookOpen style={{ width: 14, height: 14, marginRight: 4 }} /> {activeTab === 'overview' && t('inspector.tabOverview', 'Overview')}</button>
         <button onClick={() => setActiveTab('knowledge')} style={{ background: 'transparent', border: 'none', padding: '8px 0', cursor: 'pointer', color: activeTab === 'knowledge' ? 'var(--accent-amber)' : 'var(--text-secondary)', borderBottom: activeTab === 'knowledge' ? '2px solid var(--accent-amber)' : '2px solid transparent', fontFamily: 'var(--font-mono)', fontSize: '11px', textTransform: 'uppercase', letterSpacing: '1px', display: 'flex', alignItems: 'center' }} title={t('inspector.tabKnowledge', 'Knowledge Database')}><Icons.Brain style={{ width: 14, height: 14, marginRight: 4 }} /> {activeTab === 'knowledge' && t('inspector.tabKnowledge', 'Knowledge Database')}</button>
         <button onClick={() => setActiveTab('relationships')} style={{ background: 'transparent', border: 'none', padding: '8px 0', cursor: 'pointer', color: activeTab === 'relationships' ? 'var(--accent-amber)' : 'var(--text-secondary)', borderBottom: activeTab === 'relationships' ? '2px solid var(--accent-amber)' : '2px solid transparent', fontFamily: 'var(--font-mono)', fontSize: '11px', textTransform: 'uppercase', letterSpacing: '1px', display: 'flex', alignItems: 'center' }} title={t('inspector.tabRelationships', 'Relationships')}><Icons.Users style={{ width: 14, height: 14, marginRight: 4 }} /> {activeTab === 'relationships' && t('inspector.tabRelationships', 'Relationships')}</button>
+        <button onClick={() => setActiveTab('references')} style={{ background: 'transparent', border: 'none', padding: '8px 0', cursor: 'pointer', color: activeTab === 'references' ? 'var(--accent-amber)' : 'var(--text-secondary)', borderBottom: activeTab === 'references' ? '2px solid var(--accent-amber)' : '2px solid transparent', fontFamily: 'var(--font-mono)', fontSize: '11px', textTransform: 'uppercase', letterSpacing: '1px', display: 'flex', alignItems: 'center' }} title="Reference Images"><Icons.Image style={{ width: 14, height: 14, marginRight: 4 }} /> {activeTab === 'references' && 'References'}</button>
       </div>
 
       {activeTab === 'overview' && (
@@ -442,6 +465,18 @@ export default function CharacterInspectorPanel({
             )
           })}
         </div>
+      )}
+
+      {activeTab === 'references' && (
+        <ImageGallery
+          projectPath={projectPath}
+          entityId={entity.id}
+          entityType="char"
+          viewMode={viewMode}
+          currentWorldTime={activeChapter?.world_time}
+          onIconChanged={() => { loadIcon(); onIconChanged?.() }}
+          calConfig={calConfig}
+        />
       )}
 
       {viewMode === 'author' && (

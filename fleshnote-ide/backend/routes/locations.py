@@ -185,6 +185,7 @@ def delete_location(req: LocationDelete):
     conn = _get_db(req.project_path)
     cursor = conn.cursor()
     cursor.execute("DELETE FROM locations WHERE id = ?", (req.location_id,))
+    cursor.execute("DELETE FROM image_references WHERE entity_type = 'loc' AND entity_id = ?", (req.location_id,))
     conn.commit()
     conn.close()
     return {"status": "ok"}

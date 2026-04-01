@@ -435,7 +435,8 @@
     "optionsMenu": "خيارات",
     "toggleProgressBar": "إظهار شريط التقدم",
     "toggleStatusBar": "إظهار شريط الحالة",
-    "statusBarFormat": "ماركداون \u00b7 UTF-8"
+    "statusBarFormat": "ماركداون · UTF-8",
+    "import": "استيراد..."
   },
   "picker": {
     "title": "مشاريع FleshNote",
@@ -1261,7 +1262,7 @@
     "editPlaceholder": "مثال: استرجاع، ذكرى",
     "cancel": "إلغاء",
     "markSelection": "وضع علامة على التحديد",
-    "saving": "جاري الحفظ\u2026",
+    "saving": "جاري الحفظ…",
     "delete": "حذف",
     "save": "حفظ",
     "clickToEdit": "انقر للتعديل",
@@ -1415,5 +1416,23 @@
     "typeLocation": "موقع",
     "typeLore": "تقاليد",
     "typeGroup": "مجموعة"
+  },
+  "gallery": {
+    "setIcon": "تعيين أيقونة",
+    "addReference": "إضافة صورة مرجعية",
+    "noImages": "لا توجد صور مرجعية بعد",
+    "description": "وصف",
+    "descriptionPlaceholder": "وصف...",
+    "save": "حفظ",
+    "cancel": "إلغاء",
+    "clickToAddDescription": "انقر لإضافة وصف...",
+    "setTime": "تحديد الوقت",
+    "makeIcon": "إنشاء أيقونة",
+    "delete": "حذف",
+    "cropAsIcon": "اقتصاص كأيقونة",
+    "iconBtn": "أيقونة",
+    "cropIconTitle": "اقتصاص الأيقونة",
+    "cropHint": "اسحب للتحريك • مرر للتغيير الحجم",
+    "saveIcon": "حفظ الأيقونة"
   }
 }

@@ -74,6 +74,14 @@ async def bulk_delete_entities(req: BulkDeleteRequest):
                 (ent_type, ent_id)
             )
 
+            # Clean up image references
+            short_type = _ENTITY_TYPE_TO_SHORT.get(ent_type)
+            if short_type:
+                cursor.execute(
+                    "DELETE FROM image_references WHERE entity_type = ? AND entity_id = ?",
+                    (short_type, ent_id)
+                )
+
             # Clean up knowledge_states
             if ent_type == "character":
                 cursor.execute(
@@ -363,7 +371,14 @@ async def merge_entities(req: MergeRequest):
                 [req.keep_id] + req.merge_ids
             )
 
-        # 7. Delete merged entities
+        # 7. Transfer image references from merged entities to kept entity
+        for mid in req.merge_ids:
+            cursor.execute(
+                "UPDATE image_references SET entity_id = ?, is_icon = 0 WHERE entity_type = ? AND entity_id = ?",
+                (req.keep_id, short_type, mid)
+            )
+
+        # 8. Delete merged entities
         cursor.execute(f"DELETE FROM {table} WHERE id IN ({placeholders})", req.merge_ids)
 
         conn.commit()

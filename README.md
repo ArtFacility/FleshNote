@@ -1,4 +1,4 @@
-# FleshNote IDE (v1.0.3 Beta)
+# FleshNote IDE (v1.1.0 Beta)
 
 An advanced, no-bullshit writing tool for novelists and world builders who actually want to finish their draft this century. Built with Electron, React, TypeScript, and FastAPI.
 
@@ -61,6 +61,7 @@ Export straight to industry-standard formatting. Generates print-ready PDFs, sta
 - **Sketchboards & Mind-Mapping**: Visual node-graph canvas for mapping out magic systems, technology trees, and character webs.
 - **Smart Entity Renaming Wizard**: Safely rename characters or locations across your entire manuscript with automated text-link rewriting.
 - **Custom World Calendars**: Build your own calendar systems with custom months, seasons, and years for precise age and history tracking.
+- **Image Gallery**: Each entity type has its own gallery and Icon. Add description, time, and crop icons.
 
 ---
 

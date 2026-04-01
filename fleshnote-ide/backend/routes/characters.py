@@ -193,6 +193,7 @@ def delete_character(req: CharacterDelete):
     conn = _get_db(req.project_path)
     cursor = conn.cursor()
     cursor.execute("DELETE FROM characters WHERE id = ?", (req.character_id,))
+    cursor.execute("DELETE FROM image_references WHERE entity_type = 'char' AND entity_id = ?", (req.character_id,))
     conn.commit()
     conn.close()
     return {"status": "ok"}

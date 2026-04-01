@@ -40,6 +40,7 @@ import TimeGutter from './TimeGutter'
 import { matchesHotkey } from '../utils/hotkeyMatcher'
 import KarolyEasterEgg from './KarolyEasterEgg'
 import EntityCommandPalette from './EntityCommandPalette'
+import EntityHoverCard, { clearEntityHoverCaches } from './EntityHoverCard'
 
 
 // ── Inline SVG Icons ────────────────────────────────────────────────────────
@@ -134,53 +135,6 @@ function statusColor(status) {
       return 'var(--text-tertiary)'
   }
 }
-
-// ── Hover Card Sub-Component ────────────────────────────────────────────────
-
-function EntityHoverCard({ data, position, entities }) {
-  const { t } = useTranslation()
-  if (!data) return null
-  const entity = entities.find(
-    (e) => String(e.id) === String(data.entityId) && e.type === data.entityType
-  )
-  if (!entity) return null
-
-  return (
-    <div className="entity-hover-card" style={{ left: position.x, top: position.y }}>
-      <div className={`hover-card-type ${data.entityType}`}>{data.entityType}</div>
-      <div className="hover-card-name">{entity.name}</div>
-      {entity.category && <div className="hover-card-detail">{entity.category}</div>}
-      {
-        data.entityType === 'quicknote' && (() => {
-          const NOTE_TYPE_COLORS = { Note: 'var(--accent-amber)', Fix: 'var(--accent-red)', Suggestion: 'var(--accent-blue)', Idea: '#4ade80' }
-          const nt = entity.note_type || 'Note'
-          return (
-            <>
-              <span style={{ fontSize: 10, color: NOTE_TYPE_COLORS[nt] || 'var(--accent-amber)', fontFamily: 'var(--font-mono)', fontWeight: 600, letterSpacing: '0.05em' }}>{nt}</span>
-              <div className="hover-card-detail" style={{ whiteSpace: 'pre-wrap', fontStyle: 'italic', marginTop: '4px' }}>{entity.content}</div>
-            </>
-          )
-        })()
-      }
-      {
-        data.entityType === 'annotation' && (
-          <div
-            className="hover-card-detail"
-            style={{ whiteSpace: 'pre-wrap', fontStyle: 'italic', marginTop: '6px', color: 'var(--accent-annotation)' }}
-          >
-            {entity.content}
-          </div>
-        )
-      }
-      <div className="hover-card-hint">
-        {data.entityType === 'annotation'
-          ? t('editor.clickToViewAnnotation', 'Click to view/edit')
-          : t('editor.clickToInspect', 'Click to inspect')}
-      </div>
-    </div >
-  )
-}
-
 
 
 // ── Main Component ──────────────────────────────────────────────────────────
@@ -286,6 +240,8 @@ export default function Editor({
   const entitiesRef = useRef(entities)
   useEffect(() => {
     entitiesRef.current = entities
+    // Bust the hover-card icon/age cache so stale icons don't show after edits
+    clearEntityHoverCaches()
   }, [entities])
 
   // Context menu state
@@ -406,23 +362,35 @@ export default function Editor({
         dir: i18n.dir()
       },
       handleDOMEvents: {
-        // Hover card on entity links
+        // Hover card on entity links and twist links
         mouseover: (_view, event) => {
-          const target = event.target.closest('[data-entity-type]')
-          if (target) {
-            const entityType = target.getAttribute('data-entity-type')
-            const entityId = target.getAttribute('data-entity-id')
-            const rect = target.getBoundingClientRect()
+          // Entity links
+          const entityTarget = event.target.closest('[data-entity-type]')
+          if (entityTarget) {
+            const entityType = entityTarget.getAttribute('data-entity-type')
+            const entityId = entityTarget.getAttribute('data-entity-id')
+            const rect = entityTarget.getBoundingClientRect()
             setHoverCard({ entityType, entityId })
             setHoverPos({ x: rect.left, y: rect.bottom + 4 })
-          } else {
-            setHoverCard(null)
+            return false
           }
+          // Twist / foreshadow links
+          const twistTarget = event.target.closest('[data-twist-type]')
+          if (twistTarget) {
+            const twistType = twistTarget.getAttribute('data-twist-type')
+            const twistId = twistTarget.getAttribute('data-twist-id')
+            const rect = twistTarget.getBoundingClientRect()
+            setHoverCard({ twistType, twistId })
+            setHoverPos({ x: rect.left, y: rect.bottom + 4 })
+            return false
+          }
+          setHoverCard(null)
           return false
         },
         mouseout: (_view, event) => {
-          const target = event.target.closest('[data-entity-type]')
-          if (target) {
+          const entityTarget = event.target.closest('[data-entity-type]')
+          const twistTarget = event.target.closest('[data-twist-type]')
+          if (entityTarget || twistTarget) {
             setHoverCard(null)
           }
           return false
@@ -1851,7 +1819,13 @@ export default function Editor({
           closeContextMenu()
         }}
       />
-      <EntityHoverCard data={hoverCard} position={hoverPos} entities={entities} />
+      <EntityHoverCard
+        data={hoverCard}
+        position={hoverPos}
+        entities={entities}
+        projectPath={projectPath}
+        effectiveWorldTime={effectiveWorldTime}
+      />
 
       {/* ── Synonym Popup ──────────────────────────────────── */}
       {synonymState && (

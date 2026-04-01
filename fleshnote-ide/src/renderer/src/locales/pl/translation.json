@@ -435,7 +435,8 @@
     "optionsMenu": "Opcje",
     "toggleProgressBar": "Pokaż pasek postępu",
     "toggleStatusBar": "Pokaż pasek stanu",
-    "statusBarFormat": "Markdown \u00b7 UTF-8"
+    "statusBarFormat": "Markdown · UTF-8",
+    "import": "Importuj..."
   },
   "picker": {
     "title": "Projekty FleshNote",
@@ -1261,7 +1262,7 @@
     "editPlaceholder": "np. Retrospekcja, Wspomnienie",
     "cancel": "Anuluj",
     "markSelection": "Oznacz zaznaczenie",
-    "saving": "Zapisywanie\u2026",
+    "saving": "Zapisywanie…",
     "delete": "Usuń",
     "save": "Zapisz",
     "clickToEdit": "kliknij, aby edytować",
@@ -1415,5 +1416,23 @@
     "typeLocation": "Lokalizacja",
     "typeLore": "Lore",
     "typeGroup": "Grupa"
+  },
+  "gallery": {
+    "setIcon": "Ustaw ikonę",
+    "addReference": "Dodaj referencję",
+    "noImages": "Brak obrazów referencyjnych",
+    "description": "Opis",
+    "descriptionPlaceholder": "Opis...",
+    "save": "Zapisz",
+    "cancel": "Anuluj",
+    "clickToAddDescription": "Kliknij, aby dodać opis...",
+    "setTime": "Ustaw czas",
+    "makeIcon": "Utwórz ikonę",
+    "delete": "Usuń",
+    "cropAsIcon": "Przytnij jako ikonę",
+    "iconBtn": "Ikona",
+    "cropIconTitle": "Przytnij ikonę",
+    "cropHint": "Przeciągnij, aby przesunąć • Przewiń, aby zmienić rozmiar",
+    "saveIcon": "Zapisz ikonę"
   }
 }

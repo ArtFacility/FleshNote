@@ -1038,3 +1038,205 @@ Defined in `backend/routes/spellcheck.py` and `backend/routes/synonyms.py`.
 - `POST /api/synonyms/lookup`: Returns WordNet synsets (definitions and synonyms) for a selected word, falling back to English automatically if language-specific data yields nothing.
 - `POST /api/synonyms/check-data`: Checks if NLTK `omw-1.4` and extended data is downloaded.
 - `POST /api/synonyms/ensure-data`: Non-blocking endpoint to kick off NLTK corpus downloads into the user's `AppData`.
+
+---
+
+## Image References
+
+Defined in `backend/routes/image_references.py`. Manages per-entity reference images (concept art, mood boards) and portrait icons. All images are stored in the project's `assets/` directory. See `backend/docs/IMAGE_REFERENCES.md` for the full design document.
+
+### `POST /api/project/image-ref/upload`
+
+Copy an image file from the local filesystem into the project's `assets/` directory. Returns a relative path for use in subsequent DB operations. **Does not create a database record.**
+
+**Request:**
+
+```json
+{ "project_path": "C:/.../My Novel", "source_path": "C:/Users/name/Pictures/face.jpg" }
+```
+
+**Response:**
+
+```json
+{ "image_path": "assets/img_a2f3c91e8b1a.jpg" }
+```
+
+---
+
+### `POST /api/project/image-ref/save-icon`
+
+Save a cropped icon from base64 PNG data (produced by the frontend canvas cropper). Atomically deletes the previous icon file and DB row for the entity before creating the new one.
+
+**Request:**
+
+```json
+{
+  "project_path": "C:/.../My Novel",
+  "entity_id": 5,
+  "entity_type": "char",
+  "image_data": "data:image/png;base64,iVBORw0KGgo..."
+}
+```
+
+**Response:**
+
+```json
+{ "image_path": "assets/icon_char_5_3f9a2b1c.png" }
+```
+
+**Side effects:** Deletes the old icon file from disk, deletes its `image_references` row, writes a new `256×256 PNG` file, inserts a new row with `is_icon = 1`.
+
+---
+
+### `POST /api/project/image-ref/create`
+
+Add a gallery image reference for an entity. If this is the entity's first image, it is automatically promoted to icon (`is_icon = 1`) regardless of the provided value.
+
+**Request:**
+
+```json
+{
+  "project_path": "C:/.../My Novel",
+  "entity_id": 5,
+  "entity_type": "char",
+  "image_path": "assets/img_a2f3c91e8b1a.jpg",
+  "is_icon": 0,
+  "world_time": "4E-314, Day 17",
+  "caption": "Concept art from prologue"
+}
+```
+
+**Response:**
+
+```json
+{ "image_ref": { "id": 3, "entity_id": 5, "entity_type": "char", "image_path": "assets/...", ... } }
+```
+
+---
+
+### `POST /api/project/image-ref/update`
+
+Update any combination of `caption`, `world_time`, `is_icon`, or `sort_order`. Only non-null fields are written. If `is_icon` is set to `1`, all other icons for the entity are first cleared.
+
+**Request:**
+
+```json
+{
+  "project_path": "C:/.../My Novel",
+  "image_ref_id": 3,
+  "caption": "Night market scene",
+  "world_time": "4E-315, Day 3"
+}
+```
+
+**Response:**
+
+```json
+{ "image_ref": { "id": 3, "caption": "Night market scene", ... } }
+```
+
+---
+
+### `POST /api/project/image-ref/delete`
+
+Delete an image reference. When `delete_file: true`, also removes the physical file from `assets/`. If the deleted image was an icon, the next available image is automatically promoted.
+
+**Request:**
+
+```json
+{ "project_path": "C:/.../My Novel", "image_ref_id": 3, "delete_file": true }
+```
+
+**Response:**
+
+```json
+{ "ok": true }
+```
+
+---
+
+### `POST /api/project/image-refs/for-entity`
+
+Get all images for a specific entity, ordered by `sort_order, id`. Supports `"author"` mode (all images) or `"world_time"` mode (images filtered by in-universe year).
+
+**Request:**
+
+```json
+{
+  "project_path": "C:/.../My Novel",
+  "entity_type": "char",
+  "entity_id": 5,
+  "filter_mode": "world_time",
+  "current_world_time": "4E-315, Day 10"
+}
+```
+
+**Response:**
+
+```json
+{
+  "image_refs": [
+    {
+      "id": 2,
+      "entity_id": 5,
+      "entity_type": "char",
+      "image_path": "assets/img_a2f3c91e8b1a.jpg",
+      "is_icon": 0,
+      "world_time": "4E-314, Day 12",
+      "caption": "Pre-war portrait",
+      "sort_order": 0
+    }
+  ]
+}
+```
+
+---
+
+### `POST /api/project/image-refs/bulk-icons`
+
+Return a flat dictionary of all current entity icons across the project in a single query. Used by inspector panels to efficiently load portraits on startup.
+
+**Request:**
+
+```json
+{ "project_path": "C:/.../My Novel" }
+```
+
+**Response:**
+
+```json
+{
+  "icons": {
+    "char:5":  "assets/icon_char_5_3f9a2b1c.png",
+    "loc:12":  "assets/icon_loc_12_91aef230.png",
+    "item:3":  "assets/icon_item_3_aa20bc11.png"
+  }
+}
+```
+
+Icon keys follow the format `"{entity_type}:{entity_id}"`.
+
+---
+
+## Electron-Only: Asset File Deletion
+
+**IPC channel: `api:deleteAssetFile`**
+
+Defined in `src/main/index.ts` (not a Python backend route). Directly deletes a file from the project's `assets/` directory using `fs.unlinkSync`. Includes a safety check that rejects paths that do not contain `/assets/`.
+
+Used by `ImageGallery.jsx` to clean up the temporary full-resolution upload after a successful icon crop or a cancelled crop.
+
+**Payload:**
+
+```json
+{ "project_path": "C:/.../My Novel", "image_path": "assets/img_a2f3c91e8b1a.jpg" }
+```
+
+**Response:**
+
+```json
+{ "status": "ok" }
+// or
+{ "status": "error", "msg": "File not found" }
+```
+

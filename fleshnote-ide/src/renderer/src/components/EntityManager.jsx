@@ -130,8 +130,17 @@ function Checkbox({ checked, onToggle }) {
     );
 }
 
+function entityTypeToDbCode(type) {
+    switch (type) {
+        case 'character': return 'char';
+        case 'location': return 'loc';
+        case 'group': return 'group';
+        default: return 'item';
+    }
+}
+
 // ─── ENTITY CARD (grid view) ─────────────────────────────────────────────────
-function EntityCard({ entity, color, selected, inspecting, onClick, onCheckbox, mentionCount, onMentionClick }) {
+function EntityCard({ entity, color, selected, inspecting, onClick, onCheckbox, mentionCount, onMentionClick, iconSrc }) {
     const { t } = useTranslation();
     return (
         <div
@@ -151,7 +160,11 @@ function EntityCard({ entity, color, selected, inspecting, onClick, onCheckbox, 
             onMouseLeave={e => { if (!selected && !inspecting) e.currentTarget.style.background = T.bg1; }}
         >
             <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', marginBottom: 4 }}>
-                <span style={{ color, opacity: 0.85 }}><EntityTypeIcon type={entity.type} /></span>
+                {iconSrc ? (
+                    <img src={iconSrc} alt="" style={{ width: 44, height: 44, borderRadius: 4, objectFit: 'cover' }} />
+                ) : (
+                    <span style={{ color, opacity: 0.85 }}><EntityTypeIcon type={entity.type} /></span>
+                )}
                 <Checkbox checked={selected} onToggle={onCheckbox} />
             </div>
             <div style={{ fontFamily: T.sans, fontSize: 13, fontWeight: 600, color: T.text, wordBreak: 'break-word', lineHeight: 1.3 }}>
@@ -481,6 +494,17 @@ export default function EntityManager({ entities, characters, chapters, projectP
     const [activeFilters, setActiveFilters] = useState(new Set());
     const [bulkStatus, setBulkStatus] = useState('');
     const [locationViewMode, setLocationViewMode] = useState('tree');
+    const [entityIcons, setEntityIcons] = useState({});
+
+    const loadEntityIcons = useCallback(async () => {
+        if (!projectPath) return;
+        try {
+            const res = await window.api.getBulkEntityIcons({ project_path: projectPath });
+            setEntityIcons(res?.icons || {});
+        } catch { setEntityIcons({}); }
+    }, [projectPath]);
+
+    useEffect(() => { loadEntityIcons(); }, [loadEntityIcons]);
 
     const loadExtraData = useCallback(async () => {
         if (!projectPath) return;
@@ -649,7 +673,8 @@ export default function EntityManager({ entities, characters, chapters, projectP
     const handleInspectorUpdated = useCallback(() => {
         onEntityUpdated?.();
         loadExtraData();
-    }, [onEntityUpdated, loadExtraData]);
+        loadEntityIcons();
+    }, [onEntityUpdated, loadExtraData, loadEntityIcons]);
 
     const handleCreate = useCallback(async (name, category) => {
         if (!name.trim()) return;
@@ -845,6 +870,7 @@ export default function EntityManager({ entities, characters, chapters, projectP
                                         projectConfig={projectConfig}
                                         chapters={chapters}
                                         onEntityUpdated={handleInspectorUpdated}
+                                        onIconChanged={loadEntityIcons}
                                     />
                                 ) : inspectedEntity.type === 'location' ? (
                                     <LocationInspectorPanel
@@ -855,6 +881,7 @@ export default function EntityManager({ entities, characters, chapters, projectP
                                         projectConfig={projectConfig}
                                         chapters={chapters}
                                         onEntityUpdated={handleInspectorUpdated}
+                                        onIconChanged={loadEntityIcons}
                                     />
                                 ) : inspectedEntity.type === 'quicknote' || inspectedEntity.type === 'quick_note' ? (
                                     <QuickNoteInspectorPanel
@@ -1089,6 +1116,7 @@ export default function EntityManager({ entities, characters, chapters, projectP
                                             const fa = firstAppearanceMap[`${ent.type}-${ent.id}`];
                                             if (fa) onNavigate?.(fa.chapter_id, fa.word_offset);
                                         }}
+                                        iconSrc={entityIcons[`${entityTypeToDbCode(ent.type)}:${ent.id}`] ? `fleshnote-asset://load/${projectPath.replace(/\\/g, '/')}/${entityIcons[`${entityTypeToDbCode(ent.type)}:${ent.id}`]}` : null}
                                     />
                                 );
                             })}

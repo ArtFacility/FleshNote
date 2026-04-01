@@ -145,6 +145,17 @@ const api = {
   updateBoardConnection: (p) => ipcRenderer.invoke('api:updateBoardConnection', p),
   deleteBoardConnection: (p) => ipcRenderer.invoke('api:deleteBoardConnection', p),
 
+  // ── Image References ────────────────────────────────
+  openImage: () => ipcRenderer.invoke('dialog:openImage'),
+  uploadImageRef: (payload) => ipcRenderer.invoke('api:uploadImageRef', payload),
+  createImageRef: (payload) => ipcRenderer.invoke('api:createImageRef', payload),
+  saveIconCrop: (payload) => ipcRenderer.invoke('api:saveIconCrop', payload),
+  updateImageRef: (payload) => ipcRenderer.invoke('api:updateImageRef', payload),
+  deleteImageRef: (payload) => ipcRenderer.invoke('api:deleteImageRef', payload),
+  getImageRefsForEntity: (payload) => ipcRenderer.invoke('api:getImageRefsForEntity', payload),
+  getBulkEntityIcons: (payload) => ipcRenderer.invoke('api:getBulkEntityIcons', payload),
+  deleteAssetFile: (payload) => ipcRenderer.invoke('api:deleteAssetFile', payload),
+
   // ── Planner ──────────────────────────────────────────
   loadPlanner: (projectPath) => ipcRenderer.invoke('api:loadPlanner', projectPath),
   updatePlannerSettings: (payload) => ipcRenderer.invoke('api:updatePlannerSettings', payload),

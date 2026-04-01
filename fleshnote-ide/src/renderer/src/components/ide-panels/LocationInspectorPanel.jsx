@@ -2,6 +2,7 @@ import { useState, useEffect, useCallback, useMemo } from 'react'
 import { useTranslation } from 'react-i18next'
 import EntityRenamePopup from '../EntityRenamePopup'
 import CalendarDatePicker from '../CalendarDatePicker'
+import ImageGallery from './ImageGallery'
 import { parseWorldDate, dateToLinear } from '../../utils/calendarUtils'
 
 const Icons = {
@@ -93,6 +94,11 @@ const Icons = {
       <line x1="9" y1="21" x2="15" y2="21" />
     </svg>
   ),
+  Image: () => (
+    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+      <rect x="3" y="3" width="18" height="18" rx="2" ry="2" /><circle cx="8.5" cy="8.5" r="1.5" /><polyline points="21 15 16 10 5 21" />
+    </svg>
+  ),
   Clock: () => (
     <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
       <circle cx="12" cy="12" r="10" />
@@ -106,7 +112,7 @@ function TypeIcon() {
 }
 
 export default function LocationInspectorPanel({
-  entity, entities, characters, activeChapter, projectPath, projectConfig, calConfig, chapters, onEntityUpdated, initialTab, onNavigateToMark, onReloadCurrentChapter, onFlushEditorSave, onNavigateToEntity
+  entity, entities, characters, activeChapter, projectPath, projectConfig, calConfig, chapters, onEntityUpdated, initialTab, onNavigateToMark, onReloadCurrentChapter, onFlushEditorSave, onNavigateToEntity, onIconChanged
 }) {
   const { t } = useTranslation()
   const [viewMode, setViewMode] = useState('author')
@@ -122,6 +128,8 @@ export default function LocationInspectorPanel({
   const [editingFactId, setEditingFactId] = useState(null)
   const [editFactData, setEditFactData] = useState({ fact: '', is_secret: 0 })
   const [renameData, setRenameData] = useState(null)
+  const [activeTab, setActiveTab] = useState('overview')
+  const [iconPath, setIconPath] = useState(null)
 
   const [weatherStates, setWeatherStates] = useState([])
   const [addingWeather, setAddingWeather] = useState(false)
@@ -134,6 +142,16 @@ export default function LocationInspectorPanel({
   useEffect(() => {
     if (initialTab === 'knowledge') setKnowledgeCollapsed(false)
   }, [initialTab])
+
+  const loadIcon = useCallback(async () => {
+    if (!projectPath || !entity?.id) return
+    try {
+      const res = await window.api.getBulkEntityIcons({ project_path: projectPath })
+      setIconPath(res?.icons?.[`loc:${entity.id}`] || null)
+    } catch { setIconPath(null) }
+  }, [projectPath, entity?.id])
+
+  useEffect(() => { loadIcon() }, [loadIcon])
 
   const currEntity = entities.find(e => String(e.id) === String(entity.id) && e.type === 'location') || entity
   const locationData = currEntity
@@ -455,10 +473,21 @@ export default function LocationInspectorPanel({
           )}
         </div>
 
-        {editMode ? renderEditField(t('inspector.nameLabel', 'Name'), 'name') : <div className="entity-name">{locationData.name}</div>}
+        {editMode ? renderEditField(t('inspector.nameLabel', 'Name'), 'name') : (
+          <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
+            {iconPath && <img src={`fleshnote-asset://load/${projectPath.replace(/\\/g, '/')}/${iconPath}`} alt="" style={{ width: 64, height: 64, borderRadius: 6, objectFit: 'cover', border: '1px solid var(--border-subtle)' }} />}
+            <div className="entity-name">{locationData.name}</div>
+          </div>
+        )}
         {!editMode && locationData.region && <div className="entity-subtitle">{locationData.region}</div>}
       </div>
 
+      <div className="inspector-tabs" style={{ display: 'flex', borderBottom: '1px solid var(--border-subtle)', margin: '16px -16px 16px', padding: '0 16px', gap: '16px' }}>
+        <button onClick={() => setActiveTab('overview')} style={{ background: 'transparent', border: 'none', padding: '8px 0', cursor: 'pointer', color: activeTab === 'overview' ? 'var(--accent-amber)' : 'var(--text-secondary)', borderBottom: activeTab === 'overview' ? '2px solid var(--accent-amber)' : '2px solid transparent', fontFamily: 'var(--font-mono)', fontSize: '11px', textTransform: 'uppercase', letterSpacing: '1px', display: 'flex', alignItems: 'center' }}><Icons.BookOpen style={{ width: 14, height: 14, marginRight: activeTab === 'overview' ? 4 : 0 }} /> {activeTab === 'overview' && t('inspector.tabOverview', 'Overview')}</button>
+        <button onClick={() => setActiveTab('references')} style={{ background: 'transparent', border: 'none', padding: '8px 0', cursor: 'pointer', color: activeTab === 'references' ? 'var(--accent-amber)' : 'var(--text-secondary)', borderBottom: activeTab === 'references' ? '2px solid var(--accent-amber)' : '2px solid transparent', fontFamily: 'var(--font-mono)', fontSize: '11px', textTransform: 'uppercase', letterSpacing: '1px', display: 'flex', alignItems: 'center' }}><Icons.Image style={{ width: 14, height: 14, marginRight: activeTab === 'references' ? 4 : 0 }} /> {activeTab === 'references' && 'References'}</button>
+      </div>
+
+      {activeTab === 'overview' && <>
       <div style={{ padding: '0 12px 12px' }}>
         <div style={{ 
           fontFamily: 'var(--font-mono)', 
@@ -764,6 +793,20 @@ export default function LocationInspectorPanel({
             )}
           </div>
       </div>
+
+      </>}
+
+      {activeTab === 'references' && (
+        <ImageGallery
+          projectPath={projectPath}
+          entityId={entity.id}
+          entityType="loc"
+          viewMode={viewMode}
+          currentWorldTime={activeChapter?.world_time}
+          onIconChanged={() => { loadIcon(); onIconChanged?.() }}
+          calConfig={calConfig}
+        />
+      )}
 
       {viewMode === 'author' && (
         <div style={{ marginTop: '24px', display: 'flex', justifyContent: 'center' }}>

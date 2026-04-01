@@ -435,7 +435,8 @@
     "optionsMenu": "Beállítások",
     "toggleProgressBar": "Progress bar megjelenítése",
     "toggleStatusBar": "Status bar megjelenítése",
-    "statusBarFormat": "Markdown · UTF-8"
+    "statusBarFormat": "Markdown · UTF-8",
+    "import": "Importálás..."
   },
   "picker": {
     "title": "FleshNote Projektek",
@@ -1261,7 +1262,7 @@
     "editPlaceholder": "pl. Visszaemlékezés, Emlék",
     "cancel": "Mégse",
     "markSelection": "Kijelölés megjelölése",
-    "saving": "Mentés\u2026",
+    "saving": "Mentés…",
     "delete": "Törlés",
     "save": "Mentés",
     "clickToEdit": "kattints a szerkesztéshez",
@@ -1415,5 +1416,23 @@
     "typeLocation": "Helyszín",
     "typeLore": "Lore",
     "typeGroup": "Csoport"
+  },
+  "gallery": {
+    "setIcon": "Ikon beállítása",
+    "addReference": "Kép hozzáadása",
+    "noImages": "Még nincsenek referenciák",
+    "description": "Leírás",
+    "descriptionPlaceholder": "Leírás...",
+    "save": "Mentés",
+    "cancel": "Mégsem",
+    "clickToAddDescription": "Kattints a leírás megadásához...",
+    "setTime": "Idő beállítása",
+    "makeIcon": "Ikon készítése",
+    "delete": "Törlés",
+    "cropAsIcon": "Kivágás ikonként",
+    "iconBtn": "Ikon",
+    "cropIconTitle": "Ikon kivágása",
+    "cropHint": "Húzd a mozgatáshoz • Görgess az átméretezéshez",
+    "saveIcon": "Ikon mentése"
   }
 }
