@@ -785,6 +785,29 @@
       "voiceConsist": "Karakterhang konzisztencia"
     }
   },
+  "hover": {
+    "foreshadowHint": "◈ Előreutalás ehhez:",
+    "twist": "◆ Fordulat",
+    "foreshadowCount": "előreutalás",
+    "foreshadowPlanted": "elhelyezve",
+    "clickInspect": "Kattints a megtekintéshez",
+    "entityNotFound": "Entitás nem található",
+    "quickNote": "Gyorsjegyzet",
+    "noteType": {
+      "character": "Karakter",
+      "location": "Helyszín",
+      "lore": "Lore",
+      "event": "Esemény",
+      "meta": "Meta"
+    },
+    "clickEdit": "Kattints a szerkesztéshez",
+    "annotation": "Lábjegyzet",
+    "character": "Karakter",
+    "age": "Kor",
+    "location": "Helyszín",
+    "item": "Tárgy",
+    "lore": "Lore"
+  },
   "twist": {
     "loading": "Fordulat betöltése...",
     "notFound": "Fordulat nem található.",

@@ -798,6 +798,29 @@
       "voiceConsist": "Character voice consistency"
     }
   },
+  "hover": {
+    "foreshadowHint": "◈ Foreshadow hint for:",
+    "twist": "◆ Twist",
+    "foreshadowCount": "foreshadow(s)",
+    "foreshadowPlanted": "planted",
+    "clickInspect": "Click to inspect",
+    "entityNotFound": "Entity not found",
+    "quickNote": "Quick Note",
+    "noteType": {
+      "character": "Character",
+      "location": "Location",
+      "lore": "Lore",
+      "event": "Event",
+      "meta": "Meta"
+    },
+    "clickEdit": "Click to view/edit",
+    "annotation": "Annotation",
+    "character": "Character",
+    "age": "Age",
+    "location": "Location",
+    "item": "Item",
+    "lore": "Lore"
+  },
   "twist": {
     "loading": "Loading twist...",
     "notFound": "Twist not found.",

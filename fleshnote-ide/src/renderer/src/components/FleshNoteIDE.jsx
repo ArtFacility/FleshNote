@@ -10,8 +10,9 @@ import QuickNoteInspectorPanel from './ide-panels/QuickNoteInspectorPanel'
 import AnnotationInspectorPanel from './ide-panels/AnnotationInspectorPanel'
 import FleshNotePlannerDesktop from './FleshNotePlannerDesktop'
 import ProjectSettingsModal from './ProjectSettingsModal'
-import ExportModal from './ExportModal'
+import { clearEntityHoverCaches } from '../utils/hoverCache'
 import ImportModal from './ImportModal'
+import ExportModal from './ExportModal'
 import StatsDashboard from './StatsDashboard'
 import EntityManager from './EntityManager'
 import WorldbuildAndHistory from './WorldbuildAndHistory'
@@ -1294,7 +1295,7 @@ export default function FleshNoteIDE({ projectConfig, projectPath, onCloseProjec
                     <CharacterInspectorPanel
                       entity={inspectedEntity}
                       characters={characters}
-                      activeChapter={{...activeChapter, world_time: cursorWorldTime || activeChapter?.world_time}}
+                      activeChapter={{ ...activeChapter, world_time: cursorWorldTime || activeChapter?.world_time }}
                       projectPath={projectPath}
                       projectConfig={projectConfig}
                       calConfig={calConfig}
@@ -1304,13 +1305,14 @@ export default function FleshNoteIDE({ projectConfig, projectPath, onCloseProjec
                       onFlushEditorSave={async () => { await janitorActionsRef.current?.flushSave?.() }}
                       initialTab={inspectorInitialTab}
                       onNavigateToMark={handleNavigateToMark}
+                      onIconChanged={clearEntityHoverCaches}
                     />
                   ) : inspectedEntity.type === 'location' ? (
                     <LocationInspectorPanel
                       entity={inspectedEntity}
                       entities={entities}
                       characters={characters}
-                      activeChapter={{...activeChapter, world_time: cursorWorldTime || activeChapter?.world_time}}
+                      activeChapter={{ ...activeChapter, world_time: cursorWorldTime || activeChapter?.world_time }}
                       projectPath={projectPath}
                       projectConfig={projectConfig}
                       calConfig={calConfig}
@@ -1321,6 +1323,7 @@ export default function FleshNoteIDE({ projectConfig, projectPath, onCloseProjec
                       initialTab={inspectorInitialTab}
                       onNavigateToMark={handleNavigateToMark}
                       onNavigateToEntity={handleEntityClick}
+                      onIconChanged={clearEntityHoverCaches}
                     />
                   ) : inspectedEntity.type === 'quicknote' || inspectedEntity.type === 'quick_note' ? (
                     <QuickNoteInspectorPanel
@@ -1339,7 +1342,7 @@ export default function FleshNoteIDE({ projectConfig, projectPath, onCloseProjec
                       entity={inspectedEntity}
                       characters={characters}
                       entities={entities}
-                      activeChapter={{...activeChapter, world_time: cursorWorldTime || activeChapter?.world_time}}
+                      activeChapter={{ ...activeChapter, world_time: cursorWorldTime || activeChapter?.world_time }}
                       projectPath={projectPath}
                       projectConfig={projectConfig}
                       calConfig={calConfig}
@@ -1350,6 +1353,7 @@ export default function FleshNoteIDE({ projectConfig, projectPath, onCloseProjec
                       onConfigUpdate={onConfigUpdate}
                       initialTab={inspectorInitialTab}
                       onNavigateToMark={handleNavigateToMark}
+                      onIconChanged={clearEntityHoverCaches}
                     />
                   )
                 )}

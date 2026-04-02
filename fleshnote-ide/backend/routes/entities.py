@@ -357,12 +357,14 @@ def get_all_entities(req: ProjectPath):
     entities = []
 
     # Characters
-    cursor.execute("SELECT id, name, aliases FROM characters")
+    cursor.execute("SELECT id, name, aliases, role, status, birth_date FROM characters")
     for row in cursor.fetchall():
         aliases = json.loads(row["aliases"]) if row["aliases"] else []
         entities.append({
             "id": row["id"], "type": "character",
             "name": row["name"], "aliases": aliases,
+            "role": row["role"], "status": row["status"],
+            "birth_date": row["birth_date"],
         })
 
     # Lore entities

@@ -40,7 +40,8 @@ import TimeGutter from './TimeGutter'
 import { matchesHotkey } from '../utils/hotkeyMatcher'
 import KarolyEasterEgg from './KarolyEasterEgg'
 import EntityCommandPalette from './EntityCommandPalette'
-import EntityHoverCard, { clearEntityHoverCaches } from './EntityHoverCard'
+import EntityHoverCard from './EntityHoverCard'
+import { clearEntityHoverCaches } from '../utils/hoverCache'
 
 
 // ── Inline SVG Icons ────────────────────────────────────────────────────────
@@ -362,39 +363,43 @@ export default function Editor({
         dir: i18n.dir()
       },
       handleDOMEvents: {
-        // Hover card on entity links and twist links
-        mouseover: (_view, event) => {
-          // Entity links
-          const entityTarget = event.target.closest('[data-entity-type]')
-          if (entityTarget) {
-            const entityType = entityTarget.getAttribute('data-entity-type')
-            const entityId = entityTarget.getAttribute('data-entity-id')
-            const rect = entityTarget.getBoundingClientRect()
-            setHoverCard({ entityType, entityId })
-            setHoverPos({ x: rect.left, y: rect.bottom + 4 })
+          mouseover: (view, event) => {
+            const entityTarget = event.target.closest('[data-entity-type]')
+            const twistTarget = event.target.closest('[data-twist-id]')
+
+            if (entityTarget) {
+              const rect = entityTarget.getBoundingClientRect()
+              const pos = view.posAtDOM(entityTarget, 0)
+              const resolvedPos = view.state.doc.resolve(pos)
+              const timeMark = resolvedPos.marks().find(m => m.type.name === 'timeLink')
+              const timeId = timeMark?.attrs.timeId
+              
+              let hoverTime = chapter?.world_time || ''
+              if (timeId) {
+                const marker = timeMarkers.find(m => String(m.id) === String(timeId))
+                if (marker) hoverTime = marker.world_date
+              }
+
+              setHoverPos({ x: rect.left, y: rect.bottom + 8 })
+              setHoverCard({
+                entityType: entityTarget.getAttribute('data-entity-type'),
+                entityId: entityTarget.getAttribute('data-entity-id'),
+                effectiveWorldTime: hoverTime
+              })
+            } else if (twistTarget) {
+              const rect = twistTarget.getBoundingClientRect()
+              setHoverPos({ x: rect.left, y: rect.bottom + 8 })
+              setHoverCard({
+                entityType: 'twist',
+                twistId: twistTarget.getAttribute('data-twist-id'),
+                twistType: twistTarget.getAttribute('data-twist-type'),
+                isForeshadow: twistTarget.hasAttribute('data-foreshadow')
+              })
+            } else {
+              setHoverCard(null)
+            }
             return false
-          }
-          // Twist / foreshadow links
-          const twistTarget = event.target.closest('[data-twist-type]')
-          if (twistTarget) {
-            const twistType = twistTarget.getAttribute('data-twist-type')
-            const twistId = twistTarget.getAttribute('data-twist-id')
-            const rect = twistTarget.getBoundingClientRect()
-            setHoverCard({ twistType, twistId })
-            setHoverPos({ x: rect.left, y: rect.bottom + 4 })
-            return false
-          }
-          setHoverCard(null)
-          return false
-        },
-        mouseout: (_view, event) => {
-          const entityTarget = event.target.closest('[data-entity-type]')
-          const twistTarget = event.target.closest('[data-twist-type]')
-          if (entityTarget || twistTarget) {
-            setHoverCard(null)
-          }
-          return false
-        },
+          },
         // Click on entity links or twist links opens inspector
         click: (_view, event) => {
           // Check knowledge links first
@@ -1824,7 +1829,8 @@ export default function Editor({
         position={hoverPos}
         entities={entities}
         projectPath={projectPath}
-        effectiveWorldTime={effectiveWorldTime}
+        effectiveWorldTime={hoverCard?.effectiveWorldTime || effectiveWorldTime}
+        calConfig={calConfig}
       />
 
       {/* ── Synonym Popup ──────────────────────────────────── */}

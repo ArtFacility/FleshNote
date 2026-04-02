@@ -785,6 +785,29 @@
       "voiceConsist": "Spójność głosu postaci"
     }
   },
+  "hover": {
+    "foreshadowHint": "◈ Zapowiedź dla:",
+    "twist": "◆ Zwrot akcji",
+    "foreshadowCount": "zapowiedzi",
+    "foreshadowPlanted": "posadzonych",
+    "clickInspect": "Kliknij, aby obejrzeć",
+    "entityNotFound": "Nie znaleziono encji",
+    "quickNote": "Szybka notatka",
+    "noteType": {
+      "character": "Postać",
+      "location": "Lokalizacja",
+      "lore": "Wiedza",
+      "event": "Wydarzenie",
+      "meta": "Meta"
+    },
+    "clickEdit": "Kliknij, aby wyświetlić/edytować",
+    "annotation": "Adnotacja",
+    "character": "Postać",
+    "age": "Wiek",
+    "location": "Lokalizacja",
+    "item": "Przedmiot",
+    "lore": "Wiedza"
+  },
   "twist": {
     "loading": "Ładowanie zwrotu...",
     "notFound": "Nie znaleziono zwrotu.",

@@ -785,6 +785,29 @@
       "voiceConsist": "اتساق صوت الشخصية"
     }
   },
+  "hover": {
+    "foreshadowHint": "◈ تلميح لـ:",
+    "twist": "◆ حبكة",
+    "foreshadowCount": "تلميحات",
+    "foreshadowPlanted": "موجودة",
+    "clickInspect": "انقر للفحص",
+    "entityNotFound": "الكيان غير موجود",
+    "quickNote": "ملاحظة سريعة",
+    "noteType": {
+      "character": "شخصية",
+      "location": "موقع",
+      "lore": "تراث",
+      "event": "حدث",
+      "meta": "ميتا"
+    },
+    "clickEdit": "انقر للعرض/التعديل",
+    "annotation": "تعليق توضيحي",
+    "character": "شخصية",
+    "age": "العمر",
+    "location": "موقع",
+    "item": "عنصر",
+    "lore": "تراث"
+  },
   "twist": {
     "loading": "جاري تحميل التحول...",
     "notFound": "لم يُعثر على التحول.",
