@@ -11,6 +11,14 @@ const SHAPE_TYPES = {
   standalone:  { label: 'Standalone',  shape: 'rect',    defaultColor: '#6b7280' },
 }
 
+// Maps board entity_type → bulk-icons key prefix (matches image_references.entity_type in DB)
+const ENTITY_ICON_PREFIX = {
+  character: 'char',
+  location: 'loc',
+  lore_entity: 'item',
+  group: 'group',
+}
+
 const DASH_STYLES = {
   solid:    { label: 'Solid',     dash: 'none' },
   dashed:   { label: 'Dashed',    dash: '8 4' },
@@ -192,7 +200,7 @@ function ConnEndDots({ conn, nodes, allConns, onEndDragStart }) {
   )
 }
 
-function NodeShape({ node, selected, onMouseDown, onHandleMouseDown, onContextMenu, onDoubleClick }) {
+function NodeShape({ node, selected, onMouseDown, onHandleMouseDown, onContextMenu, onDoubleClick, iconUrl, showIcon }) {
   const [hoverHandle, setHoverHandle] = useState(null)
   const w = node.size_x || 120
   const h = node.size_y || 60
@@ -208,24 +216,54 @@ function NodeShape({ node, selected, onMouseDown, onHandleMouseDown, onContextMe
   const stroke = selected ? '#fff' : col
   const strokeW = selected ? 2 : 1.2
   const fill = col + '18'
-  let shapeEl
+  const hasIcon = showIcon && !!iconUrl
+  const clipId = `node-clip-${node.id}`
+
+  let shapeEl, clipEl
   if (st.shape === 'circle') {
     shapeEl = <ellipse cx={w / 2} cy={h / 2} rx={w / 2} ry={h / 2} fill={fill} stroke={stroke} strokeWidth={strokeW} />
+    clipEl = <ellipse cx={w / 2} cy={h / 2} rx={w / 2 - 1} ry={h / 2 - 1} />
   } else if (st.shape === 'hexagon') {
     const pts = `${w * 0.25},0 ${w * 0.75},0 ${w},${h / 2} ${w * 0.75},${h} ${w * 0.25},${h} 0,${h / 2}`
     shapeEl = <polygon points={pts} fill={fill} stroke={stroke} strokeWidth={strokeW} />
+    clipEl = <polygon points={pts} />
   } else if (st.shape === 'square') {
     shapeEl = <rect x={1} y={1} width={w - 2} height={h - 2} rx={2} fill={fill} stroke={stroke} strokeWidth={strokeW} />
+    clipEl = <rect x={2} y={2} width={w - 4} height={h - 4} rx={2} />
   } else {
     shapeEl = <rect x={1} y={1} width={w - 2} height={h - 2} rx={8} fill={fill} stroke={stroke} strokeWidth={strokeW} />
+    clipEl = <rect x={2} y={2} width={w - 4} height={h - 4} rx={7} />
   }
+
   return (
     <g transform={`translate(${node.pos_x}, ${node.pos_y})`} style={{ filter: glow, cursor: 'grab' }} onMouseDown={onMouseDown} onContextMenu={onContextMenu} onDoubleClick={onDoubleClick}>
+      {hasIcon && <defs><clipPath id={clipId}>{clipEl}</clipPath></defs>}
       {shapeEl}
-      <text x={w / 2} y={h / 2 - 2} textAnchor="middle" dominantBaseline="central" fill="#eee" fontSize={12} fontWeight={600} fontFamily="'JetBrains Mono', monospace" style={{ pointerEvents: 'none', userSelect: 'none' }}>
+      {hasIcon && (
+        <image
+          href={iconUrl}
+          x={0} y={0} width={w} height={h}
+          preserveAspectRatio="xMidYMid slice"
+          clipPath={`url(#${clipId})`}
+          style={{ pointerEvents: 'none', opacity: 0.85 }}
+        />
+      )}
+      {hasIcon && (
+        <rect
+          x={st.shape === 'circle' ? w * 0.1 : 2}
+          y={h * 0.58}
+          width={st.shape === 'circle' ? w * 0.8 : w - 4}
+          height={h * 0.4}
+          rx={4}
+          fill="rgba(13, 13, 26, 0.78)"
+          clipPath={`url(#${clipId})`}
+          style={{ pointerEvents: 'none' }}
+        />
+      )}
+      <text x={w / 2} y={hasIcon ? h * 0.78 : h / 2 - 2} textAnchor="middle" dominantBaseline="central" fill="#eee" fontSize={12} fontWeight={600} fontFamily="'JetBrains Mono', monospace" style={{ pointerEvents: 'none', userSelect: 'none' }}>
         {node.name.length > 16 ? node.name.slice(0, 14) + '…' : node.name}
       </text>
-      {node.description && <text x={w / 2} y={h / 2 + 14} textAnchor="middle" dominantBaseline="central" fill="#888" fontSize={9} fontFamily="'JetBrains Mono', monospace" style={{ pointerEvents: 'none', userSelect: 'none' }}>{node.description.length > 20 ? node.description.slice(0, 18) + '…' : node.description}</text>}
+      {node.description && !hasIcon && <text x={w / 2} y={h / 2 + 14} textAnchor="middle" dominantBaseline="central" fill="#888" fontSize={9} fontFamily="'JetBrains Mono', monospace" style={{ pointerEvents: 'none', userSelect: 'none' }}>{node.description.length > 20 ? node.description.slice(0, 18) + '…' : node.description}</text>}
       {handles.map(hdl => (
         <g key={hdl.pos}>
           <circle cx={hdl.cx} cy={hdl.cy} r={14} fill="transparent" style={{ cursor: 'crosshair' }} onMouseEnter={() => setHoverHandle(hdl.pos)} onMouseLeave={() => setHoverHandle(null)} onMouseDown={e => { e.stopPropagation(); onHandleMouseDown(e, node, hdl) }} />
@@ -467,8 +505,21 @@ function BoardCanvas({ board, projectPath, entities }) {
   const [editConnModal, setEditConnModal] = useState(null)
   const [entityPickerPos, setEntityPickerPos] = useState(null)
   const [loading, setLoading] = useState(true)
+  const [entityIcons, setEntityIcons] = useState({})
+  const [showIcons, setShowIcons] = useState(() => {
+    try { return JSON.parse(localStorage.getItem('sk-show-icons') ?? 'true') } catch { return true }
+  })
   const svgRef = useRef(null)
   const viewportSaveTimer = useRef(null)
+
+  useEffect(() => { localStorage.setItem('sk-show-icons', JSON.stringify(showIcons)) }, [showIcons])
+
+  useEffect(() => {
+    if (!projectPath) return
+    window.api.getBulkEntityIcons({ project_path: projectPath })
+      .then(res => setEntityIcons(res?.icons || {}))
+      .catch(() => setEntityIcons({}))
+  }, [projectPath])
 
   useEffect(() => {
     if (!board?.id || !projectPath) return
@@ -720,13 +771,20 @@ function BoardCanvas({ board, projectPath, entities }) {
           {connectingLine}
           {reconnectLine}
           {/* Layer 2: nodes */}
-          {nodes.map(n => (
-            <NodeShape key={n.id} node={n} selected={selectedNode === n.id}
-              onMouseDown={e => handleNodeMouseDown(e, n)}
-              onHandleMouseDown={handleHandleMouseDown}
-              onContextMenu={e => handleNodeContextMenu(e, n)}
-              onDoubleClick={e => { e.stopPropagation(); setEditModal(n) }} />
-          ))}
+          {nodes.map(n => {
+            const prefix = ENTITY_ICON_PREFIX[n.entity_type]
+            const iconKey = prefix && n.entity_id ? `${prefix}:${n.entity_id}` : null
+            const iconPath = iconKey ? entityIcons[iconKey] : null
+            const iconUrl = iconPath ? `fleshnote-asset://load/${projectPath.replace(/\\/g, '/')}/${iconPath}` : null
+            return (
+              <NodeShape key={n.id} node={n} selected={selectedNode === n.id}
+                iconUrl={iconUrl} showIcon={showIcons}
+                onMouseDown={e => handleNodeMouseDown(e, n)}
+                onHandleMouseDown={handleHandleMouseDown}
+                onContextMenu={e => handleNodeContextMenu(e, n)}
+                onDoubleClick={e => { e.stopPropagation(); setEditModal(n) }} />
+            )
+          })}
           {/* Layer 3: selected connection end blobs — rendered ABOVE nodes */}
           {selectedConnData && (
             <ConnEndDots conn={selectedConnData} nodes={nodes} allConns={connections}
@@ -741,6 +799,28 @@ function BoardCanvas({ board, projectPath, entities }) {
         Scroll: zoom · Alt+drag: pan · Del: delete selected line
       </div>
       <div style={{ position: 'absolute', top: 10, right: 12, color: '#333', fontSize: 9, fontFamily: "'JetBrains Mono', monospace" }}>{Math.round(zoom * 100)}%</div>
+
+      {/* Icon visibility toggle */}
+      <button
+        onClick={() => setShowIcons(prev => !prev)}
+        title={showIcons ? 'Hide entity icons' : 'Show entity icons'}
+        style={{
+          position: 'absolute', bottom: 10, left: 12,
+          background: showIcons ? '#4a9eff18' : 'transparent',
+          border: `1px solid ${showIcons ? '#4a9eff' : '#333'}`,
+          color: showIcons ? '#4a9eff' : '#555',
+          padding: '4px 8px', fontSize: 10, cursor: 'pointer',
+          fontFamily: "'JetBrains Mono', monospace",
+          display: 'flex', alignItems: 'center', gap: 4,
+        }}
+      >
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+          <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z" />
+          <circle cx="12" cy="12" r="3" />
+          {!showIcons && <line x1="2" y1="2" x2="22" y2="22" />}
+        </svg>
+        <span style={{ fontSize: 9 }}>Icons</span>
+      </button>
 
       {entityPickerPos && <EntityPickerModal entities={entities} onClose={() => setEntityPickerPos(null)} onConfirm={handleEntityPickerConfirm} />}
 
