@@ -1,6 +1,9 @@
 #!/usr/bin/env bash
 set -euo pipefail
 
+# Use disk-based temporary directory to avoid ENOSPC on systems with small RAM-based /tmp (tmpfs)
+export TMPDIR=/var/tmp
+
 echo ""
 echo "============================================"
 echo "  FleshNote IDE — Full Build"
