@@ -13,4 +13,5 @@ blis==1.0.1
 numpy<2.0.0
 nltk==3.9.1
 phunspell==0.1.6
+pyyaml==6.0.2
 pyinstaller==6.12.0

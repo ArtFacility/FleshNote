@@ -6,6 +6,8 @@ import CharacterInspectorPanel from "./ide-panels/CharacterInspectorPanel";
 import LocationInspectorPanel from "./ide-panels/LocationInspectorPanel";
 import QuickNoteInspectorPanel from "./ide-panels/QuickNoteInspectorPanel";
 import AnnotationInspectorPanel from "./ide-panels/AnnotationInspectorPanel";
+import NameGeneratorModal from "./NameGeneratorModal";
+import LocationNameGeneratorModal from "./LocationNameGeneratorModal";
 
 // ─── THEME CONSTANTS ────────────────────────────────────────────────────────
 const T = {
@@ -38,6 +40,7 @@ const Icons = {
     // Annotation: footnote document with shortened lines
     Annotation: () => <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="8" y1="13" x2="16" y2="13"/><line x1="8" y1="17" x2="11" y2="17"/></svg>,
     Plus: () => <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><line x1="12" y1="5" x2="12" y2="19" /><line x1="5" y1="12" x2="19" y2="12" /></svg>,
+    Wand: () => <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M15 4V2"></path><path d="M15 16v-2"></path><path d="M8 9h2"></path><path d="M20 9h2"></path><path d="M17.8 11.8L19 13"></path><path d="M15 9h.01"></path><path d="M17.8 6.2L19 5"></path><path d="m3 21 9-9"></path><path d="M12.2 6.2 11 5"></path></svg>,
 };
 
 function EntityTypeIcon({ type }) {
@@ -235,10 +238,11 @@ function ListRow({ entity, color, selected, inspecting, onClick, onCheckbox, chi
 }
 
 // ─── CREATION CARD ──────────────────────────────────────────────────────────
-function CreationCard({ tabType, loreCategories, onConfirm, onCancel }) {
+function CreationCard({ tabType, loreCategories, onConfirm, onCancel, projectPath, projectConfig }) {
     const { t } = useTranslation();
     const [name, setName] = useState('');
     const [category, setCategory] = useState(loreCategories?.[0] || 'item');
+    const [showNameGen, setShowNameGen] = useState(false);
     const inputRef = useRef(null);
 
     useEffect(() => { inputRef.current?.focus(); }, []);
@@ -314,7 +318,58 @@ function CreationCard({ tabType, loreCategories, onConfirm, onCancel }) {
                 >
                     {t('stats.cancel', 'Cancel')}
                 </button>
+                {tabType === 'characters' && (
+                    <button
+                        onClick={() => setShowNameGen(true)}
+                        style={{
+                            background: 'none', border: `1px solid ${T.amber}`, color: T.amber,
+                            padding: '6px 10px', fontFamily: T.mono, fontSize: 11, cursor: 'pointer',
+                            display: 'flex', alignItems: 'center', gap: '4px'
+                        }}
+                        title={t('namegen.generate_tooltip', 'Generate Name')}
+                    >
+                        <Icons.Wand />
+                    </button>
+                )}
+                {tabType === 'locations' && (
+                    <button
+                        onClick={() => setShowNameGen(true)}
+                        style={{
+                            background: 'none', border: `1px solid ${T.amber}`, color: T.amber,
+                            padding: '6px 10px', fontFamily: T.mono, fontSize: 11, cursor: 'pointer',
+                            display: 'flex', alignItems: 'center', gap: '4px'
+                        }}
+                        title={t('namegen.generate_tooltip', 'Generate Location Name')}
+                    >
+                        <Icons.Wand />
+                    </button>
+                )}
             </div>
+            {showNameGen && tabType === 'characters' && (
+                <NameGeneratorModal
+                    projectPath={projectPath}
+                    projectConfig={projectConfig}
+                    onClose={() => setShowNameGen(false)}
+                    onConfirm={(generatedName) => {
+                        setName(generatedName)
+                        setShowNameGen(false)
+                        // Auto focus back
+                        setTimeout(() => inputRef.current?.focus(), 100)
+                    }}
+                />
+            )}
+            {showNameGen && tabType === 'locations' && (
+                <LocationNameGeneratorModal
+                    projectPath={projectPath}
+                    projectConfig={projectConfig}
+                    onClose={() => setShowNameGen(false)}
+                    onConfirm={({name: generatedName, description}) => {
+                        // Directly trigger creation with the description
+                        onConfirm(generatedName, category, description)
+                        setShowNameGen(false)
+                    }}
+                />
+            )}
         </div>
     );
 }
@@ -676,7 +731,7 @@ export default function EntityManager({ entities, characters, chapters, projectP
         loadEntityIcons();
     }, [onEntityUpdated, loadExtraData, loadEntityIcons]);
 
-    const handleCreate = useCallback(async (name, category) => {
+    const handleCreate = useCallback(async (name, category, description = "") => {
         if (!name.trim()) return;
         try {
             let created = null;
@@ -684,7 +739,11 @@ export default function EntityManager({ entities, characters, chapters, projectP
                 const res = await window.api.createCharacter({ project_path: projectPath, name: name.trim() });
                 created = { ...res.character, type: 'character', richChar: res.character };
             } else if (activeTab === 'locations') {
-                const res = await window.api.createLocation({ project_path: projectPath, name: name.trim() });
+                const res = await window.api.createLocation({ 
+                    project_path: projectPath, 
+                    name: name.trim(),
+                    description: description
+                });
                 created = { ...res.location, type: 'location' };
             } else if (activeTab === 'groups') {
                 const res = await window.api.createGroup({ project_path: projectPath, name: name.trim() });
@@ -1076,6 +1135,8 @@ export default function EntityManager({ entities, characters, chapters, projectP
                             loreCategories={loreCats}
                             onConfirm={handleCreate}
                             onCancel={() => setCreatingInTab(null)}
+                            projectPath={projectPath}
+                            projectConfig={projectConfig}
                         />
                     )}
 

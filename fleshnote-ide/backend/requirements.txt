@@ -11,3 +11,4 @@ xhtml2pdf==0.2.16
 ebooklib==0.18
 nltk==3.9.1
 phunspell==0.1.6
+pyyaml==6.0.2

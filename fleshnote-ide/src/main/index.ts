@@ -517,6 +517,23 @@ app.whenReady().then(async () => {
     return await backendPost('/api/project/entity/replace-references', payload)
   })
 
+  // ── Name Generator ─────────────────────────────────
+  ipcMain.handle('api:generateName', async (_event, payload) => {
+    return await backendPost('/api/name-gen/generate', payload)
+  })
+
+  ipcMain.handle('api:generateLocationName', async (_event, payload) => {
+    return await backendPost('/api/name-gen/generate-location', payload)
+  })
+
+  ipcMain.handle('api:getNameGenPresets', async (_event, payload) => {
+    return await backendPost('/api/name-gen/presets', payload)
+  })
+  
+  ipcMain.handle('api:getNameGenOrigins', async (_event, payload) => {
+    return await backendPost('/api/name-gen/origins', payload)
+  })
+
 
   // ── Entity Manager ────────────────────────────────────
   ipcMain.handle('api:bulkDeleteEntities', async (_event, payload) => {

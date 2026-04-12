@@ -1,0 +1,78 @@
+name: "Sci-Fi"
+description: >
+  Futuristic, alien-sounding names with crisp technical syllables, optional
+  hyphens, and an electronic/synthetic feel. Works for human colony names,
+  alien species, androids, and corporate megacorp personnel.
+
+prefixes:
+  - "Ax"
+  - "Kyr"
+  - "Zel"
+  - "Vex"
+  - "Nyx"
+  - "Dax"
+  - "Zyn"
+  - "Qar"
+  - "Xan"
+  - "Jex"
+  - "Ryx"
+  - "Syx"
+  - "Tyx"
+  - "Vyq"
+  - "Wyx"
+  - "Zyx"
+  - "Alx"
+  - "Byx"
+  - "Cyx"
+  - "Fyx"
+  - "Iox"
+  - "Kex"
+  - "Lyx"
+  - "Myx"
+
+middles:
+  - "-"
+  - "ar"
+  - "ix"
+  - "ex"
+  - "or"
+  - "ur"
+  - "on"
+  - "an"
+  - "yn"
+  - "ax"
+  - "al"
+  - "el"
+  - "ul"
+  - "in"
+
+suffixes:
+  - "ix"
+  - "ex"
+  - "ax"
+  - "ox"
+  - "ux"
+  - "on"
+  - "yn"
+  - "ar"
+  - "or"
+  - "ur"
+  - "el"
+  - "al"
+  - "ul"
+  - "7"
+  - "9"
+  - "prime"
+  - "zero"
+  - "null"
+  - "one"
+
+rules:
+  no_hard_consonants: false
+  max_consecutive_consonants: 2
+  vowel_harmony: "none"
+  allow_hyphen_separator: true
+  compound_probability: 0.25
+  short_probability: 0.20
+  max_length: 10
+  min_length: 3

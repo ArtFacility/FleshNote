@@ -3,6 +3,7 @@ import { useTranslation } from 'react-i18next'
 import EntityRenamePopup from '../EntityRenamePopup'
 import CalendarDatePicker from '../CalendarDatePicker'
 import ImageGallery from './ImageGallery'
+import LocationNameGeneratorModal from '../LocationNameGeneratorModal'
 import { parseWorldDate, dateToLinear } from '../../utils/calendarUtils'
 
 const Icons = {
@@ -104,6 +105,19 @@ const Icons = {
       <circle cx="12" cy="12" r="10" />
       <polyline points="12 6 12 12 16 14" />
     </svg>
+  ),
+  Wand: () => (
+    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+      <path d="M15 4V2"></path>
+      <path d="M15 16v-2"></path>
+      <path d="M8 9h2"></path>
+      <path d="M20 9h2"></path>
+      <path d="M17.8 11.8L19 13"></path>
+      <path d="M15 9h.01"></path>
+      <path d="M17.8 6.2L19 5"></path>
+      <path d="m3 21 9-9"></path>
+      <path d="M12.2 6.2 11 5"></path>
+    </svg>
   )
 }
 
@@ -130,6 +144,7 @@ export default function LocationInspectorPanel({
   const [renameData, setRenameData] = useState(null)
   const [activeTab, setActiveTab] = useState('overview')
   const [iconPath, setIconPath] = useState(null)
+  const [showLocGen, setShowLocGen] = useState(false)
 
   const [weatherStates, setWeatherStates] = useState([])
   const [addingWeather, setAddingWeather] = useState(false)
@@ -336,6 +351,15 @@ export default function LocationInspectorPanel({
     setEditData((prev) => ({ ...prev, [field]: value }))
   }
 
+  const handleLocGenConfirm = ({ name, description }) => {
+    setEditData(prev => ({
+      ...prev,
+      name: name,
+      description: description ? (prev.description ? prev.description + "\n\n" + description : description) : prev.description
+    }))
+    setShowLocGen(false)
+  }
+
   const handleAddFact = async () => {
     if (!newFact.fact.trim() || !newFact.character_id) return
     try {
@@ -405,7 +429,18 @@ export default function LocationInspectorPanel({
     const Component = multiline ? 'textarea' : 'input'
     return (
       <div className="entity-edit-field">
-        <label className="entity-edit-label">{label}</label>
+        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '6px' }}>
+          <label className="entity-edit-label" style={{ marginBottom: 0 }}>{label}</label>
+          {field === 'name' && (
+            <button 
+               onClick={() => setShowLocGen(true)} 
+               style={{ background: 'none', border: 'none', color: 'var(--accent-amber)', cursor: 'pointer', padding: 0, display: 'flex', alignItems: 'center', gap: '4px', fontSize: '10px', textTransform: 'uppercase', fontFamily: 'var(--font-mono)' }} 
+               title={t('namegen.generate_tooltip', 'Generate Name')}
+            >
+              <Icons.Wand /> {t('namegen.generate_btn', 'Generate')}
+            </button>
+          )}
+        </div>
         <Component
           className={multiline ? 'entity-edit-textarea' : 'entity-edit-input'}
           value={editData[field] || ''}
@@ -831,6 +866,15 @@ export default function LocationInspectorPanel({
 
       {renameData && (
         <EntityRenamePopup projectPath={projectPath} entity={renameData.entity} oldName={renameData.oldName} newName={renameData.newName} onClose={() => { setRenameData(null); setEditMode(false) }} onSuccess={(didReplace) => { setRenameData(null); setEditMode(false); if (didReplace) onReloadCurrentChapter?.() }} />
+      )}
+
+      {showLocGen && (
+        <LocationNameGeneratorModal
+          projectPath={projectPath}
+          projectConfig={projectConfig}
+          onClose={() => setShowLocGen(false)}
+          onConfirm={handleLocGenConfirm}
+        />
       )}
     </div>
   )

@@ -4,6 +4,7 @@ import RelationshipTurningPointPopup from '../RelationshipTurningPointPopup'
 import CalendarDatePicker from '../CalendarDatePicker'
 import EntityRenamePopup from '../EntityRenamePopup'
 import ImageGallery from './ImageGallery'
+import NameGeneratorModal from '../NameGeneratorModal'
 
 const Icons = {
   Users: () => (
@@ -80,6 +81,19 @@ const Icons = {
     <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
       <rect x="3" y="3" width="18" height="18" rx="2" ry="2" /><circle cx="8.5" cy="8.5" r="1.5" /><polyline points="21 15 16 10 5 21" />
     </svg>
+  ),
+  Wand: () => (
+    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+      <path d="M15 4V2"></path>
+      <path d="M15 16v-2"></path>
+      <path d="M8 9h2"></path>
+      <path d="M20 9h2"></path>
+      <path d="M17.8 11.8L19 13"></path>
+      <path d="M15 9h.01"></path>
+      <path d="M17.8 6.2L19 5"></path>
+      <path d="m3 21 9-9"></path>
+      <path d="M12.2 6.2 11 5"></path>
+    </svg>
   )
 }
 
@@ -107,6 +121,7 @@ export default function CharacterInspectorPanel({
   const [editFactData, setEditFactData] = useState({ fact: '', is_secret: 0 })
   const [renameData, setRenameData] = useState(null)
   const [iconPath, setIconPath] = useState(null)
+  const [showNameGen, setShowNameGen] = useState(false)
 
   useEffect(() => {
     if (initialTab) setActiveTab(initialTab)
@@ -253,7 +268,18 @@ export default function CharacterInspectorPanel({
     const Component = multiline ? 'textarea' : 'input'
     return (
       <div className="entity-edit-field">
-        <label className="entity-edit-label">{label}</label>
+        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '6px' }}>
+          <label className="entity-edit-label" style={{ marginBottom: 0 }}>{label}</label>
+          {field === 'name' && (
+            <button 
+               onClick={() => setShowNameGen(true)} 
+               style={{ background: 'none', border: 'none', color: 'var(--accent-amber)', cursor: 'pointer', padding: 0, display: 'flex', alignItems: 'center', gap: '4px', fontSize: '10px', textTransform: 'uppercase', fontFamily: 'var(--font-mono)' }} 
+               title={t('namegen.generate_tooltip', 'Generate Name')}
+            >
+              <Icons.Wand /> {t('namegen.generate_btn', 'Generate')}
+            </button>
+          )}
+        </div>
         <Component className={multiline ? 'entity-edit-textarea' : 'entity-edit-input'} value={editData[field] || ''} onChange={(e) => handleEditField(field, e.target.value)} rows={multiline ? 3 : undefined} />
       </div>
     )
@@ -504,6 +530,18 @@ export default function CharacterInspectorPanel({
 
       {renameData && (
         <EntityRenamePopup projectPath={projectPath} entity={renameData.entity} oldName={renameData.oldName} newName={renameData.newName} onClose={() => { setRenameData(null); setEditMode(false) }} onSuccess={(didReplace) => { setRenameData(null); setEditMode(false); if (didReplace) onReloadCurrentChapter?.() }} />
+      )}
+
+      {showNameGen && (
+        <NameGeneratorModal
+          projectPath={projectPath}
+          projectConfig={projectConfig}
+          onClose={() => setShowNameGen(false)}
+          onConfirm={(generatedName) => {
+            handleEditField('name', generatedName)
+            setShowNameGen(false)
+          }}
+        />
       )}
     </div>
   )

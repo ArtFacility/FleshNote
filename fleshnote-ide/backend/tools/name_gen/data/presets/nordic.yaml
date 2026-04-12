@@ -1,0 +1,75 @@
+name: "Nordic"
+description: >
+  Scandinavian/Norse inspired names with strong consonants, short vowels,
+  and occasional compound-style structures. Think Viking sagas: Bjorn, Ragnar,
+  Gunhild style constructions.
+
+prefixes:
+  - "Bjor"
+  - "Rag"
+  - "Gun"
+  - "Sig"
+  - "Ulf"
+  - "Hel"
+  - "Thor"
+  - "Frey"
+  - "Ing"
+  - "Ber"
+  - "Arn"
+  - "Hár"
+  - "Lif"
+  - "Rún"
+  - "Skál"
+  - "Sven"
+  - "Tor"
+  - "Vig"
+  - "Wulf"
+  - "Yrsa"
+  - "Ásl"
+  - "Ótt"
+  - "Únor"
+
+middles:
+  - "ar"
+  - "or"
+  - "al"
+  - "un"
+  - "en"
+  - "in"
+  - "an"
+  - "ir"
+  - "ul"
+  - "el"
+  - "ot"
+  - "at"
+
+suffixes:
+  - "nar"
+  - "gar"
+  - "mar"
+  - "var"
+  - "jar"
+  - "dar"
+  - "mund"
+  - "vard"
+  - "gard"
+  - "hild"
+  - "dis"
+  - "vor"
+  - "njord"
+  - "ulfr"
+  - "bjorn"
+  - "frid"
+  - "sten"
+  - "helm"
+  - "brand"
+
+rules:
+  no_hard_consonants: false
+  max_consecutive_consonants: 2
+  vowel_harmony: "none"
+  allow_hyphen_separator: false
+  compound_probability: 0.10
+  short_probability: 0.30
+  max_length: 11
+  min_length: 4

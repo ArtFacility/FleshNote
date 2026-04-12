@@ -138,6 +138,40 @@ def ensure_wordnet_available() -> bool:
         return False
 
 
+def _cmudict_data_present(data_dir: str) -> bool:
+    """Check if cmudict is present on disk."""
+    corpora = os.path.join(data_dir, "corpora")
+    return (
+        os.path.exists(os.path.join(corpora, "cmudict.zip"))
+        or os.path.isdir(os.path.join(corpora, "cmudict"))
+    )
+
+def ensure_cmudict_available() -> bool:
+    """Download cmudict for phonetic processing if not present."""
+    data_dir = _ensure_nltk_path()
+    
+    # Check bundled
+    bundled = _get_bundled_nltk_path()
+    if bundled and _cmudict_data_present(bundled):
+        return True
+        
+    # Check user data
+    if _cmudict_data_present(data_dir):
+        return True
+        
+    print("DOWNLOAD_START: cmudict", flush=True)
+    print("DOWNLOAD_PROGRESS: 10", flush=True)
+    
+    try:
+        nltk.download("cmudict", download_dir=data_dir, quiet=True)
+        print("DOWNLOAD_PROGRESS: 100", flush=True)
+        print("DOWNLOAD_COMPLETE", flush=True)
+        return True
+    except Exception as e:
+        print(f"DOWNLOAD_LOG: Failed to setup cmudict: {e}", flush=True)
+        return False
+
+
 def get_synonyms(word: str, lang: str = "eng") -> list:
     """
     Get synonyms grouped by synset meaning from WordNet.

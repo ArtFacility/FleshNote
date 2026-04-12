@@ -2,6 +2,7 @@ import { useState, useCallback } from 'react'
 import { useTranslation } from 'react-i18next'
 import EntityExtractor from './EntityExtractor'
 import ImportManuscript from './ImportManuscript'
+import NameGeneratorModal from './NameGeneratorModal'
 
 // ─── ICONS ──────────────────────────────────────────────────────────────────
 
@@ -112,6 +113,19 @@ const Icons = {
       <line x1="12" y1="5" x2="12" y2="19" />
       <line x1="5" y1="12" x2="19" y2="12" />
     </svg>
+  ),
+  Wand: () => (
+    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+      <path d="M15 4V2"></path>
+      <path d="M15 16v-2"></path>
+      <path d="M8 9h2"></path>
+      <path d="M20 9h2"></path>
+      <path d="M17.8 11.8L19 13"></path>
+      <path d="M15 9h.01"></path>
+      <path d="M17.8 6.2L19 5"></path>
+      <path d="m3 21 9-9"></path>
+      <path d="M12.2 6.2 11 5"></path>
+    </svg>
   )
 }
 
@@ -163,6 +177,7 @@ export default function ProjectSetup({ projectPath, projectConfig, onComplete, o
   ])
   const [storyScope, setStoryScope] = useState('novel')
   const [customChapterCount, setCustomChapterCount] = useState(25)
+  const [showNameGenForIndex, setShowNameGenForIndex] = useState(null)
 
   // ── Import Path State ───────────────────────────────
   const [splits, setSplits] = useState([])
@@ -428,7 +443,10 @@ export default function ProjectSetup({ projectPath, projectConfig, onComplete, o
 
                   <div style={{ display: 'flex', gap: 12 }}>
                     <div style={{ flex: 2 }}>
-                      <label style={labelStyle}>{t('setup.nameLabel', 'NAME *')}</label>
+                      <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '6px' }}>
+                        <label style={{ ...labelStyle, marginBottom: 0 }}>{t('setup.nameLabel', 'NAME *')}</label>
+                        <button onClick={() => setShowNameGenForIndex(i)} style={{ background: 'none', border: 'none', color: 'var(--accent-amber)', cursor: 'pointer', padding: 0, display: 'flex', alignItems: 'center', gap: '4px', fontSize: '10px', textTransform: 'uppercase', fontFamily: 'var(--font-mono)' }} title={t('namegen.generate_tooltip', 'Generate Name')}><Icons.Wand /> {t('namegen.generate_btn', 'Generate')}</button>
+                      </div>
                       <input
                         style={inputStyle}
                         value={char.name}
@@ -562,6 +580,17 @@ export default function ProjectSetup({ projectPath, projectConfig, onComplete, o
             )}
           </div>
         </div>
+        {showNameGenForIndex !== null && (
+          <NameGeneratorModal
+            projectPath={projectPath}
+            projectConfig={projectConfig}
+            onClose={() => setShowNameGenForIndex(null)}
+            onConfirm={(name) => {
+              updateCharacter(showNameGenForIndex, 'name', name)
+              setShowNameGenForIndex(null)
+            }}
+          />
+        )}
       </div>
     )
   }
@@ -692,6 +721,17 @@ export default function ProjectSetup({ projectPath, projectConfig, onComplete, o
             </div>
           )}
         </div>
+        {showNameGenForIndex !== null && (
+          <NameGeneratorModal
+            projectPath={projectPath}
+            projectConfig={projectConfig}
+            onClose={() => setShowNameGenForIndex(null)}
+            onConfirm={(name) => {
+              updateCharacter(showNameGenForIndex, 'name', name)
+              setShowNameGenForIndex(null)
+            }}
+          />
+        )}
       </div>
     )
   }

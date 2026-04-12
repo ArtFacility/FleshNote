@@ -1,0 +1,72 @@
+name: "Orcish"
+description: >
+  Harsh, guttural orc names with heavy consonant clusters, hard stops,
+  and aggressive short vowels. Think Warcraft / Tolkien-orc style.
+
+prefixes:
+  - "Grak"
+  - "Throk"
+  - "Brul"
+  - "Krux"
+  - "Grul"
+  - "Drak"
+  - "Morg"
+  - "Vrak"
+  - "Urg"
+  - "Gorg"
+  - "Brog"
+  - "Zog"
+  - "Grim"
+  - "Drox"
+  - "Groth"
+  - "Khur"
+  - "Skrag"
+  - "Thug"
+  - "Vorg"
+  - "Wrog"
+  - "Xorg"
+  - "Yorg"
+  - "Zorg"
+
+middles:
+  - "ur"
+  - "ak"
+  - "og"
+  - "ug"
+  - "or"
+  - "ar"
+  - "ok"
+  - "uk"
+  - "gr"
+  - "kr"
+  - "rg"
+  - "gk"
+
+suffixes:
+  - "ak"
+  - "ug"
+  - "og"
+  - "rok"
+  - "dak"
+  - "mok"
+  - "kur"
+  - "gur"
+  - "dur"
+  - "bak"
+  - "rak"
+  - "zak"
+  - "grak"
+  - "gruul"
+  - "khaz"
+  - "thrax"
+  - "vrak"
+
+rules:
+  no_hard_consonants: false
+  max_consecutive_consonants: 3
+  vowel_harmony: "back"
+  allow_hyphen_separator: false
+  compound_probability: 0.05
+  short_probability: 0.45
+  max_length: 10
+  min_length: 3

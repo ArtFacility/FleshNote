@@ -1,0 +1,96 @@
+name: "Elvish"
+description: >
+  Flowing, vowel-heavy elven names with soft consonants and melodic diphthongs.
+  Inspired by Tolkienesque and general high-fantasy elvish naming conventions.
+
+prefixes:
+  - "Aer"
+  - "Ael"
+  - "Fae"
+  - "Gal"
+  - "Syl"
+  - "Thal"
+  - "Cel"
+  - "Ely"
+  - "Mir"
+  - "Lor"
+  - "Cal"
+  - "Ari"
+  - "Ela"
+  - "Ilo"
+  - "Ame"
+  - "Ere"
+  - "Ith"
+  - "Lúm"
+  - "Nae"
+  - "Ola"
+  - "Sae"
+  - "Tae"
+  - "Vae"
+  - "Wyn"
+  - "Yre"
+  - "Zae"
+
+middles:
+  - "ia"
+  - "io"
+  - "ae"
+  - "ei"
+  - "a"
+  - "e"
+  - "i"
+  - "oa"
+  - "li"
+  - "la"
+  - "le"
+  - "lo"
+  - "ni"
+  - "na"
+  - "ri"
+  - "ra"
+  - "si"
+  - "sa"
+  - "ti"
+  - "ta"
+  - "va"
+  - "vi"
+
+suffixes:
+  - "iel"
+  - "wen"
+  - "ril"
+  - "fin"
+  - "las"
+  - "mir"
+  - "dor"
+  - "nor"
+  - "eth"
+  - "iel"
+  - "ara"
+  - "iel"
+  - "iel"
+  - "ion"
+  - "iel"
+  - "ari"
+  - "ala"
+  - "ela"
+  - "ile"
+  - "ine"
+  - "ira"
+  - "iri"
+  - "ola"
+  - "ore"
+  - "ori"
+  - "ula"
+  - "uri"
+  - "wen"
+
+rules:
+  no_hard_consonants: true
+  max_consecutive_consonants: 1
+  vowel_harmony: "none"
+  allow_hyphen_separator: false
+  compound_probability: 0.20
+  short_probability: 0.10
+  max_length: 11
+  min_length: 4

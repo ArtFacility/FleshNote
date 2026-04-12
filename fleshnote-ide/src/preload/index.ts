@@ -72,6 +72,12 @@ const api = {
   scanEntityReferences: (payload) => ipcRenderer.invoke('api:scanEntityReferences', payload),
   replaceEntityReferences: (payload) => ipcRenderer.invoke('api:replaceEntityReferences', payload),
 
+  // ── Name Generator ────────────────────────────────
+  generateName: (payload) => ipcRenderer.invoke('api:generateName', payload),
+  generateLocationName: (payload) => ipcRenderer.invoke('api:generateLocationName', payload),
+  getNameGenPresets: (payload) => ipcRenderer.invoke('api:getNameGenPresets', payload),
+  getNameGenOrigins: (payload) => ipcRenderer.invoke('api:getNameGenOrigins', payload),
+
   // ── Entity Manager ────────────────────────────────
   bulkDeleteEntities: (payload) => ipcRenderer.invoke('api:bulkDeleteEntities', payload),
   mergeEntities: (payload) => ipcRenderer.invoke('api:mergeEntities', payload),
