@@ -8,6 +8,10 @@ import os
 import sys
 import nltk
 
+# Global cache flags for data availability
+_wordnet_ready = False
+_cmudict_ready = False
+
 
 def _get_bundled_nltk_path() -> str | None:
     """Return the bundled NLTK data path (PyInstaller frozen builds), or None."""
@@ -73,6 +77,10 @@ def _hun_data_present(data_dir: str) -> bool:
 
 def ensure_wordnet_available() -> bool:
     """Download WordNet + OMW + Extended OMW (for Hungarian) if not present."""
+    global _wordnet_ready
+    if _wordnet_ready:
+        return True
+
     data_dir = _ensure_nltk_path()
     corpora_dir = os.path.join(data_dir, "corpora")
 
@@ -86,6 +94,7 @@ def ensure_wordnet_available() -> bool:
         wordnet_ready = True
 
     if wordnet_ready and _hun_data_present(data_dir):
+        _wordnet_ready = True
         return True
 
     print("DOWNLOAD_START: wordnet", flush=True)
@@ -148,6 +157,10 @@ def _cmudict_data_present(data_dir: str) -> bool:
 
 def ensure_cmudict_available() -> bool:
     """Download cmudict for phonetic processing if not present."""
+    global _cmudict_ready
+    if _cmudict_ready:
+        return True
+
     data_dir = _ensure_nltk_path()
     
     # Check bundled
@@ -157,6 +170,7 @@ def ensure_cmudict_available() -> bool:
         
     # Check user data
     if _cmudict_data_present(data_dir):
+        _cmudict_ready = True
         return True
         
     print("DOWNLOAD_START: cmudict", flush=True)
@@ -166,6 +180,7 @@ def ensure_cmudict_available() -> bool:
         nltk.download("cmudict", download_dir=data_dir, quiet=True)
         print("DOWNLOAD_PROGRESS: 100", flush=True)
         print("DOWNLOAD_COMPLETE", flush=True)
+        _cmudict_ready = True
         return True
     except Exception as e:
         print(f"DOWNLOAD_LOG: Failed to setup cmudict: {e}", flush=True)

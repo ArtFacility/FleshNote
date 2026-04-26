@@ -795,6 +795,7 @@
       "flesch": "Flesch-Kincaid readability",
       "passive": "Janitor: Passive voice check",
       "showDontTell": "Janitor: Show don't tell check",
+      "locgen": "Location name generation",
       "voiceConsist": "Character voice consistency"
     }
   },
@@ -1472,6 +1473,7 @@
     "flip_surname": "Flip surname to be first (e.g. for Japanese/Hungarian)",
     "preset": "Preset Archetype",
     "vowel_harmony": "Vowel Harmony",
+    "vowel_harmony_hint": "Enforces Hungarian-style vowel matching (e.g., matching front/back vowels) for more authentic-sounding names.",
     "harmony_none": "None",
     "harmony_front": "Front (e, i, ö, ü)",
     "harmony_back": "Back (a, o, u)",

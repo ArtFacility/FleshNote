@@ -24,10 +24,24 @@ def generate_names(request: NameGenRequest):
     try:
         cfg = NameGenConfig.from_dict(request.config)
         names = []
-        # Generate requested number of names in a loop
-        for _ in range(max(1, min(request.count, 20))):
+        count = max(1, min(request.count, 20))
+        
+        # Always generate 2 names without special characters at the end (if generating enough)
+        simple_count = 2 if count >= 3 else 0
+        normal_count = count - simple_count
+
+        for _ in range(normal_count):
             name = generate_name(cfg)
             names.append(name)
+            
+        if simple_count > 0:
+            import dataclasses
+            simple_cfg = NameGenConfig.from_dict(dataclasses.asdict(cfg))
+            simple_cfg.disable_specials = True
+            simple_cfg.allow_special_vowels = False
+            simple_cfg.allow_special_consonants = False
+            for _ in range(simple_count):
+                names.append(generate_name(simple_cfg))
             
         return {"status": "success", "names": names}
     except Exception as e:

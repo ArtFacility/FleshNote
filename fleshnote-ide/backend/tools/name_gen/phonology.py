@@ -88,6 +88,40 @@ def smooth_consonant_clusters(text: str, max_cc: int = 2) -> str:
 
 
 # ---------------------------------------------------------------------------
+# Vowel cluster smoothing
+# ---------------------------------------------------------------------------
+
+def smooth_vowel_clusters(text: str) -> str:
+    """
+    Randomly insert a consonant between consecutive vowels, 
+    with increasing probability for longer vowel chains.
+    """
+    filler_consonants = ["r", "l", "m", "n", "s", "t", "v", "z", "k", "th"]
+    smoothed: list[str] = []
+    consecutive = 0
+
+    for ch in text:
+        if is_vowel(ch):
+            consecutive += 1
+            prob = 0.0
+            if consecutive == 2:
+                prob = 0.20
+            elif consecutive == 3:
+                prob = 0.70
+            elif consecutive >= 4:
+                prob = 1.0
+                
+            if random.random() < prob:
+                smoothed.append(random.choice(filler_consonants))
+                consecutive = 1
+        else:
+            consecutive = 0
+
+        smoothed.append(ch)
+
+    return "".join(smoothed)
+
+# ---------------------------------------------------------------------------
 # Double-vowel cleanup
 # ---------------------------------------------------------------------------
 

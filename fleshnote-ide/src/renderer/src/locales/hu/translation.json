@@ -782,6 +782,7 @@
       "flesch": "Flesch-Kincaid olvashatóság",
       "passive": "Janitor: Szenvedő szerkezet",
       "showDontTell": "Janitor: 'Mutasd, ne mondd' ellenőrzés",
+      "locgen": "Helyszínnév generálás",
       "voiceConsist": "Karakterhang konzisztencia"
     }
   },
@@ -1473,6 +1474,7 @@
     "flip_surname": "Vezetéknév elöl (mint a magyar vagy japán nevekben)",
     "preset": "Sablon Archetipus",
     "vowel_harmony": "Magánhangzó-harmónia",
+    "vowel_harmony_hint": "Magyaros magánhangzó illeszkedés kikényszerítése (magas/mély hangrend) az autentikusabb hangzás érdekében.",
     "harmony_none": "Nincs",
     "harmony_front": "Magas (e, i, ö, ü)",
     "harmony_back": "Mély (a, o, u)",
@@ -1513,7 +1515,7 @@
     "drift_corrupted": "Torzult (100)",
     "drift_hint": "Növelje az évszázados nyelvi torzulások szimulálásához (pl. Copperford -> Copford -> Cobford)",
     "generated_names": "Generált nevek",
-    "rolling": "Gurítás...",
+    "rolling": "Generálás...",
     "generate": "Generálás",
     "save_as_description": "Válaszok automatikus mentése a helyszín leírásába",
     "click_generate_hint": "Kattintson a generálásra a lehetőségek megtekintéséhez...",

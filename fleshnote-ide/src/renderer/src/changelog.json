@@ -1,11 +1,13 @@
 {
-    "currentVersion": "1.1.1",
+    "currentVersion": "1.2.0",
     "history": [
         {
-            "version": "1.1.1",
-            "date": "2026-04-02",
+            "version": "1.2.0",
+            "date": "2026-04-26",
             "changes": [
-                "New: Sketchboards now use entity icons when available"
+                "NEW: Name Generator — create names from real-life lists, presets (orc, wizard, sci-fi), or procedural generation",
+                "NEW: Location Name Generator — Answer questions about the location, and the app will suggest names based on the answers!",
+                "Addition: Sketchboards now display entity icons when available"
             ]
         },
         {

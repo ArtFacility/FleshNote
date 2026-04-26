@@ -158,6 +158,12 @@ class NameGenConfig:
     Future: allow Cyrillic, Greek, Arabic, etc. characters in generated names.
     """
 
+    disable_specials: bool = False
+    """
+    If True, forcibly disables allow_special_vowels and allow_special_consonants,
+    even if the preset tries to turn them on.
+    """
+
     # -----------------------------------------------------------------------
     # Phonology – forced sounds
     # -----------------------------------------------------------------------

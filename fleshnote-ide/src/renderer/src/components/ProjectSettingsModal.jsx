@@ -2,23 +2,24 @@ import { useState, useEffect } from 'react'
 import { useTranslation } from 'react-i18next'
 
 const SupportBadge = ({ level }) => {
-    if (level === 'full')    return <span title="Full support"    style={{ color: '#4ade80', fontSize: 14 }}>●</span>;
+    if (level === 'full') return <span title="Full support" style={{ color: '#4ade80', fontSize: 14 }}>●</span>;
     if (level === 'partial') return <span title="Partial support" style={{ color: '#fbbf24', fontSize: 14 }}>◐</span>;
-    if (level === 'none')    return <span title="Not supported"   style={{ color: '#6b7280', fontSize: 14 }}>○</span>;
-    if (level === 'soon')    return <span title="Coming soon"     style={{ color: '#60a5fa', fontSize: 14 }}>◌</span>;
+    if (level === 'none') return <span title="Not supported" style={{ color: '#6b7280', fontSize: 14 }}>○</span>;
+    if (level === 'soon') return <span title="Coming soon" style={{ color: '#60a5fa', fontSize: 14 }}>◌</span>;
     return null;
 };
 
 const NLP_FEATURE_MATRIX = [
-    { key: 'humanUi',      label: 'Human-translated UI',          en: 'full',    hu: 'full',    pl: 'partial', ar: 'none'    },
-    { key: 'ner',          label: 'Entity name recognition (NER)',  en: 'full',    hu: 'full',    pl: 'partial', ar: 'partial' },
-    { key: 'sensory',      label: 'Sensory check',                  en: 'full',    hu: 'full',    pl: 'none',    ar: 'none'    },
-    { key: 'typo',         label: 'Typo check',                     en: 'full',    hu: 'full',    pl: 'full',    ar: 'full'    },
-    { key: 'synonym',      label: 'Synonym suggestion',             en: 'full',    hu: 'full',    pl: 'full',    ar: 'partial' },
-    { key: 'flesch',       label: 'Flesch-Kincaid readability',     en: 'full',    hu: 'partial', pl: 'partial', ar: 'partial' },
-    { key: 'passive',      label: 'Janitor: Passive voice check',   en: 'full',    hu: 'full',    pl: 'none',    ar: 'none'    },
-    { key: 'showDontTell', label: "Janitor: Show don't tell check", en: 'full',    hu: 'full',    pl: 'none',    ar: 'none'    },
-    { key: 'voiceConsist', label: 'Character voice consistency',   en: 'soon',    hu: 'soon',    pl: 'soon',    ar: 'soon'    },
+    { key: 'humanUi', label: 'Human-translated UI', en: 'full', hu: 'full', pl: 'partial', ar: 'none' },
+    { key: 'ner', label: 'Entity name recognition (NER)', en: 'full', hu: 'full', pl: 'partial', ar: 'partial' },
+    { key: 'sensory', label: 'Sensory check', en: 'full', hu: 'full', pl: 'none', ar: 'none' },
+    { key: 'typo', label: 'Typo check', en: 'full', hu: 'full', pl: 'full', ar: 'full' },
+    { key: 'synonym', label: 'Synonym suggestion', en: 'full', hu: 'full', pl: 'full', ar: 'partial' },
+    { key: 'flesch', label: 'Flesch-Kincaid readability', en: 'full', hu: 'partial', pl: 'partial', ar: 'partial' },
+    { key: 'passive', label: 'Janitor: Passive voice check', en: 'full', hu: 'full', pl: 'none', ar: 'none' },
+    { key: 'showDontTell', label: "Janitor: Show don't tell check", en: 'full', hu: 'full', pl: 'none', ar: 'none' },
+    { key: 'locgen', label: 'Location name generation', en: 'full', hu: 'full', pl: 'full', ar: 'none' },
+    { key: 'voiceConsist', label: 'Character voice consistency', en: 'soon', hu: 'soon', pl: 'soon', ar: 'soon' },
 ];
 
 const EditableHotkeyRow = ({ hotkeyKey, action, hotkeys, editingHotkey, pendingKey, setEditingHotkey, setPendingKey, onSave }) => (
@@ -45,7 +46,7 @@ const EditableHotkeyRow = ({ hotkeyKey, action, hotkeys, editingHotkey, pendingK
                         setEditingHotkey(null)
                         setPendingKey('')
                     }}
-                    onChange={() => {}}
+                    onChange={() => { }}
                 />
             ) : (
                 <span
@@ -142,7 +143,7 @@ export default function ProjectSettingsModal({ isOpen, onClose, projectPath, onC
                         ...cfg.hotkeys
                     })
                 })
-                .catch(() => {})
+                .catch(() => { })
         }
     }, [activeTab, isOpen])
 
@@ -601,47 +602,47 @@ export default function ProjectSettingsModal({ isOpen, onClose, projectPath, onC
                             }
                             const rowProps = { hotkeys, editingHotkey, pendingKey, setEditingHotkey, setPendingKey, onSave: saveHotkey }
                             return (
-                            <div>
-                                <div style={{ fontSize: 15, fontWeight: 600, color: 'var(--text-primary)', marginBottom: 4 }}>
-                                    {t('settings.hotkeysTitle', 'Keyboard Shortcuts')}
-                                </div>
-                                <div style={{ fontSize: 12, color: 'var(--text-secondary)', marginBottom: 20 }}>
-                                    {t('settings.hotkeysDesc', 'The two highlighted shortcuts can be customised — click a key combo to change it.')}
-                                </div>
+                                <div>
+                                    <div style={{ fontSize: 15, fontWeight: 600, color: 'var(--text-primary)', marginBottom: 4 }}>
+                                        {t('settings.hotkeysTitle', 'Keyboard Shortcuts')}
+                                    </div>
+                                    <div style={{ fontSize: 12, color: 'var(--text-secondary)', marginBottom: 20 }}>
+                                        {t('settings.hotkeysDesc', 'The two highlighted shortcuts can be customised — click a key combo to change it.')}
+                                    </div>
 
-                                <div style={{ fontSize: 13, fontWeight: 600, color: 'var(--text-primary)', marginBottom: 10 }}>
-                                    {t('settings.hotkeysGroupEditor', 'Writing & Editor')}
-                                </div>
-                                <table className="hotkeys-table" style={{ marginBottom: 24 }}>
-                                    <tbody>
-                                        <EditableHotkeyRow hotkeyKey="todo_marker" action={t('settings.hotkeyTodo', 'Insert #TODO marker')} {...rowProps} />
-                                        <EditableHotkeyRow hotkeyKey="synonym_lookup" action={t('settings.hotkeySynonym', 'Open synonym lookup')} {...rowProps} />
-                                        <EditableHotkeyRow hotkeyKey="search" action={t('settings.hotkeySearch', 'Find & replace')} {...rowProps} />
-                                        <EditableHotkeyRow hotkeyKey="entity_palette" action={t('settings.hotkeyEntityPalette', 'Open entity command palette')} {...rowProps} />
-                                        <EditableHotkeyRow hotkeyKey="quick_note_popup" action={t('settings.hotkeyQuickNotePopup', 'Quick note on selection')} {...rowProps} />
-                                        <EditableHotkeyRow hotkeyKey="focus_normal" action={t('settings.hotkeyFocusNormal', 'Toggle focus (normal) mode')} {...rowProps} />
-                                        <HotkeyRow keys={['Ctrl', 'B']} action={t('settings.hotkeyBold', 'Bold')} />
-                                        <HotkeyRow keys={['Ctrl', 'I']} action={t('settings.hotkeyItalic', 'Italic')} />
-                                        <HotkeyRow keys={['Ctrl', 'U']} action={t('settings.hotkeyUnderline', 'Underline')} />
-                                    </tbody>
-                                </table>
+                                    <div style={{ fontSize: 13, fontWeight: 600, color: 'var(--text-primary)', marginBottom: 10 }}>
+                                        {t('settings.hotkeysGroupEditor', 'Writing & Editor')}
+                                    </div>
+                                    <table className="hotkeys-table" style={{ marginBottom: 24 }}>
+                                        <tbody>
+                                            <EditableHotkeyRow hotkeyKey="todo_marker" action={t('settings.hotkeyTodo', 'Insert #TODO marker')} {...rowProps} />
+                                            <EditableHotkeyRow hotkeyKey="synonym_lookup" action={t('settings.hotkeySynonym', 'Open synonym lookup')} {...rowProps} />
+                                            <EditableHotkeyRow hotkeyKey="search" action={t('settings.hotkeySearch', 'Find & replace')} {...rowProps} />
+                                            <EditableHotkeyRow hotkeyKey="entity_palette" action={t('settings.hotkeyEntityPalette', 'Open entity command palette')} {...rowProps} />
+                                            <EditableHotkeyRow hotkeyKey="quick_note_popup" action={t('settings.hotkeyQuickNotePopup', 'Quick note on selection')} {...rowProps} />
+                                            <EditableHotkeyRow hotkeyKey="focus_normal" action={t('settings.hotkeyFocusNormal', 'Toggle focus (normal) mode')} {...rowProps} />
+                                            <HotkeyRow keys={['Ctrl', 'B']} action={t('settings.hotkeyBold', 'Bold')} />
+                                            <HotkeyRow keys={['Ctrl', 'I']} action={t('settings.hotkeyItalic', 'Italic')} />
+                                            <HotkeyRow keys={['Ctrl', 'U']} action={t('settings.hotkeyUnderline', 'Underline')} />
+                                        </tbody>
+                                    </table>
 
-                                <div style={{ fontSize: 13, fontWeight: 600, color: 'var(--text-primary)', marginBottom: 10 }}>
-                                    {t('settings.hotkeysGroupJanitor', 'Janitor Panel (when focused)')}
+                                    <div style={{ fontSize: 13, fontWeight: 600, color: 'var(--text-primary)', marginBottom: 10 }}>
+                                        {t('settings.hotkeysGroupJanitor', 'Janitor Panel (when focused)')}
+                                    </div>
+                                    <div style={{ fontSize: 11, color: 'var(--text-secondary)', marginBottom: 8 }}>
+                                        {t('settings.hotkeysJanitorNote', 'These shortcuts are active while the Janitor sidebar is open and focused.')}
+                                    </div>
+                                    <table className="hotkeys-table">
+                                        <tbody>
+                                            <EditableHotkeyRow hotkeyKey="janitor_open" action={t('settings.hotkeyOpenJanitorEditable', 'Open Janitor & focus it')} {...rowProps} />
+                                            <EditableHotkeyRow hotkeyKey="janitor_accept" action={t('settings.hotkeyAccept', 'Accept selected suggestion')} {...rowProps} />
+                                            <EditableHotkeyRow hotkeyKey="janitor_dismiss" action={t('settings.hotkeyDismiss', 'Dismiss selected suggestion')} {...rowProps} />
+                                            <HotkeyRow keys={['↑ / ↓']} action={t('settings.hotkeyNavigate', 'Navigate suggestions')} />
+                                            <HotkeyRow keys={['Esc']} action={t('settings.hotkeyReturn', 'Return focus to editor')} />
+                                        </tbody>
+                                    </table>
                                 </div>
-                                <div style={{ fontSize: 11, color: 'var(--text-secondary)', marginBottom: 8 }}>
-                                    {t('settings.hotkeysJanitorNote', 'These shortcuts are active while the Janitor sidebar is open and focused.')}
-                                </div>
-                                <table className="hotkeys-table">
-                                    <tbody>
-                                        <EditableHotkeyRow hotkeyKey="janitor_open" action={t('settings.hotkeyOpenJanitorEditable', 'Open Janitor & focus it')} {...rowProps} />
-                                        <EditableHotkeyRow hotkeyKey="janitor_accept" action={t('settings.hotkeyAccept', 'Accept selected suggestion')} {...rowProps} />
-                                        <EditableHotkeyRow hotkeyKey="janitor_dismiss" action={t('settings.hotkeyDismiss', 'Dismiss selected suggestion')} {...rowProps} />
-                                        <HotkeyRow keys={['↑ / ↓']} action={t('settings.hotkeyNavigate', 'Navigate suggestions')} />
-                                        <HotkeyRow keys={['Esc']} action={t('settings.hotkeyReturn', 'Return focus to editor')} />
-                                    </tbody>
-                                </table>
-                            </div>
                             )
                         })()}
                     </div>

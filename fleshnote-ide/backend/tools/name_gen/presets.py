@@ -114,14 +114,25 @@ def _merge_preset_into_config(preset_data: dict, config: NameGenConfig) -> NameG
         defaults = dataclasses.asdict(NameGenConfig())
         for yaml_key, cfg_key in rule_map.items():
             if yaml_key in rules:
+                # Add slight random fuzz to shape probabilities for more unique variations
+                val = rules[yaml_key]
+                if yaml_key in ("compound_probability", "short_probability"):
+                    fuzz = random.uniform(-0.1, 0.1)
+                    val = max(0.0, min(1.0, float(val) + fuzz))
+
                 # Only apply if the caller left the field at its default value
                 if cfg_dict.get(cfg_key) == defaults.get(cfg_key):
-                    cfg_dict[cfg_key] = rules[yaml_key]
+                    cfg_dict[cfg_key] = val
 
     # Force mode back to procedural so generate_procedural_name is used
     cfg_dict["mode"] = "procedural"
 
-    return NameGenConfig.from_dict(cfg_dict)
+    merged = NameGenConfig.from_dict(cfg_dict)
+    if merged.disable_specials:
+        merged.allow_special_vowels = False
+        merged.allow_special_consonants = False
+        
+    return merged
 
 
 # ---------------------------------------------------------------------------

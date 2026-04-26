@@ -1,34 +1,50 @@
 name: "Sci-Fi"
 description: >
-  Futuristic, alien-sounding names with crisp technical syllables, optional
-  hyphens, and an electronic/synthetic feel. Works for human colony names,
-  alien species, androids, and corporate megacorp personnel.
+  Futuristic names with varied consonant-vowel structures, optional hyphens,
+  and scientific/technical suffixes. Works for alien species, human colony
+  designations, androids, and megacorp personnel. Avoids the samey X/Y-heavy
+  clusters of the original by mixing short punchy prefixes with longer
+  multi-syllable options.
 
 prefixes:
+  # Short / punchy
   - "Ax"
   - "Kyr"
   - "Zel"
   - "Vex"
   - "Nyx"
   - "Dax"
-  - "Zyn"
-  - "Qar"
-  - "Xan"
-  - "Jex"
-  - "Ryx"
-  - "Syx"
-  - "Tyx"
-  - "Vyq"
-  - "Wyx"
-  - "Zyx"
-  - "Alx"
-  - "Byx"
-  - "Cyx"
-  - "Fyx"
-  - "Iox"
-  - "Kex"
-  - "Lyx"
-  - "Myx"
+  - "Vel"
+  - "Cen"
+  - "Sol"
+  - "Hex"
+  - "Ran"
+  - "Ora"
+  - "Lyr"
+  - "Mira"
+  - "Thar"
+  - "Rael"
+  - "Synn"
+  - "Kael"
+  - "Vorn"
+  - "Zeph"
+  - "Drey"
+  - "Fen"
+  - "Kor"
+  - "Hale"
+  # Multi-syllable
+  - "Auro"
+  - "Nexo"
+  - "Telos"
+  - "Sigma"
+  - "Arcen"
+  - "Kelion"
+  - "Procyon"
+  - "Helia"
+  - "Selene"
+  - "Caspian"
+  - "Erion"
+  - "Voltan"
 
 middles:
   - "-"
@@ -45,8 +61,22 @@ middles:
   - "el"
   - "ul"
   - "in"
+  - "eon"
+  - "ion"
+  - "ara"
+  - "ova"
 
 suffixes:
+  # Technical / lab
+  - "ite"
+  - "eon"
+  - "ius"
+  - "ara"
+  - "ova"
+  - "yne"
+  - "oid"
+  - "arc"
+  - "ance"
   - "ix"
   - "ex"
   - "ax"
@@ -60,12 +90,12 @@ suffixes:
   - "el"
   - "al"
   - "ul"
-  - "7"
-  - "9"
-  - "prime"
-  - "zero"
-  - "null"
-  - "one"
+  # Greek-letter style
+  - "alpha"
+  - "delta"
+  - "sigma"
+  - "vega"
+  - "lyra"
 
 rules:
   no_hard_consonants: false
@@ -74,5 +104,5 @@ rules:
   allow_hyphen_separator: true
   compound_probability: 0.25
   short_probability: 0.20
-  max_length: 10
+  max_length: 12
   min_length: 3

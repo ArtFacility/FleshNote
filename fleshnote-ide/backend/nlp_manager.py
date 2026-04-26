@@ -10,6 +10,8 @@ from urllib.error import URLError
 import spacy
 from spacy_config import SPACY_MODELS
 
+# Global cache for loaded NLP models
+_model_cache = {}
 
 def is_frozen() -> bool:
     """Returns True if running inside a PyInstaller bundle."""
@@ -214,8 +216,13 @@ def get_nlp(lang_code: str):
         else:
             return spacy.load(model_name)
 
+    # Check cache first
+    if lang_code in _model_cache:
+        return _model_cache[lang_code]
+
     if check_model_exists(lang_code):
-        return load_model()
+        _model_cache[lang_code] = load_model()
+        return _model_cache[lang_code]
     else:
         # Model not found, trigger download
         print(f"DOWNLOAD_START: {model_name}", flush=True)

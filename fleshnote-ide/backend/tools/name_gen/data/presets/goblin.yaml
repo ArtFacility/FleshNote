@@ -1,0 +1,66 @@
+name: "Goblin"
+description: >
+  Short, punchy, and often unpleasant sounding. Lots of G, K, B, P, S, Z and
+  glottal stops.
+prefixes:
+  - "Grib"
+  - "Snik"
+  - "Pok"
+  - "Zog"
+  - "Blig"
+  - "Krik"
+  - "Skap"
+  - "Grot"
+  - "Zik"
+  - "Gob"
+  - "Nob"
+  - "Bog"
+  - "Lug"
+  - "Mug"
+  - "Trug"
+  - "Brak"
+  - "Grak"
+  - "Krak"
+  - "Snig"
+  - "Snor"
+middles:
+  - "el"
+  - "il"
+  - "ol"
+  - "ul"
+  - "it"
+  - "ot"
+  - "ut"
+  - "ip"
+  - "op"
+  - "up"
+  - "ik"
+  - "ok"
+  - "uk"
+  - "ib"
+  - "ob"
+  - "ub"
+suffixes:
+  - "git"
+  - "zot"
+  - "nub"
+  - "gub"
+  - "rip"
+  - "snip"
+  - "rot"
+  - "bog"
+  - "dog"
+  - "log"
+  - "mog"
+  - "nog"
+  - "rog"
+  - "tog"
+rules:
+  no_hard_consonants: false
+  max_consecutive_consonants: 2
+  vowel_harmony: "none"
+  allow_special_consonants: false
+  compound_probability: 0.05
+  short_probability: 0.60
+  max_length: 7
+  min_length: 3

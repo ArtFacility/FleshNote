@@ -1,0 +1,75 @@
+name: "Demon"
+description: >
+  Harsh, guttural, and jagged. High use of sharp consonants like X, Z, K, V, and R.
+  Names sound dangerous and chaotic.
+prefixes:
+  - "Aza"
+  - "Bal"
+  - "Gor"
+  - "Kru"
+  - "Xil"
+  - "Zor"
+  - "Vex"
+  - "Tha"
+  - "Ozo"
+  - "Urz"
+  - "Mav"
+  - "Vok"
+  - "Dra"
+  - "Kur"
+  - "Mal"
+  - "Bel"
+  - "Mor"
+  - "Rak"
+  - "Raz"
+  - "Gha"
+  - "Nox"
+  - "Xar"
+  - "Zeph"
+  - "Zuk"
+middles:
+  - "za"
+  - "xo"
+  - "ku"
+  - "vi"
+  - "ru"
+  - "ra"
+  - "gro"
+  - "gth"
+  - "kth"
+  - "vro"
+  - "vri"
+  - "gno"
+  - "gol"
+  - "zur"
+  - "xur"
+  - "az"
+  - "oz"
+  - "uz"
+suffixes:
+  - "zel"
+  - "zor"
+  - "goth"
+  - "xus"
+  - "vax"
+  - "kax"
+  - "thul"
+  - "zul"
+  - "ron"
+  - "gor"
+  - "moth"
+  - "ial"
+  - "el"
+  - "ath"
+  - "ith"
+  - "ar"
+  - "ur"
+rules:
+  no_hard_consonants: false
+  max_consecutive_consonants: 3
+  vowel_harmony: "back"
+  allow_special_consonants: true
+  compound_probability: 0.30
+  short_probability: 0.10
+  max_length: 12
+  min_length: 5

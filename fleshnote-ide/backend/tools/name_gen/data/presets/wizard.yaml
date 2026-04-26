@@ -1,0 +1,75 @@
+name: "Wizard"
+description: >
+  Mystical, slightly eccentric, and archaic. Often featuring Z, X, Ph, Th, and long vowel sounds.
+prefixes:
+  - "Zal"
+  - "Xyl"
+  - "Mer"
+  - "Gan"
+  - "Elm"
+  - "Rhoz"
+  - "Sar"
+  - "Pros"
+  - "Albus"
+  - "Fiz"
+  - "Ozw"
+  - "Mor"
+  - "Balt"
+  - "Vaz"
+  - "Kel"
+  - "Azu"
+  - "Ica"
+  - "Urz"
+  - "Garg"
+  - "Nez"
+middles:
+  - "in"
+  - "an"
+  - "on"
+  - "en"
+  - "al"
+  - "el"
+  - "il"
+  - "ol"
+  - "ar"
+  - "er"
+  - "ir"
+  - "or"
+  - "ur"
+  - "am"
+  - "im"
+  - "om"
+  - "um"
+  - "az"
+  - "ez"
+  - "iz"
+  - "oz"
+  - "uz"
+suffixes:
+  - "dor"
+  - "lin"
+  - "ster"
+  - "zar"
+  - "ban"
+  - "thus"
+  - "phus"
+  - "mon"
+  - "ron"
+  - "dalf"
+  - "goth"
+  - "math"
+  - "vash"
+  - "zash"
+  - "xash"
+  - "trix"
+  - "fex"
+rules:
+  no_hard_consonants: false
+  max_consecutive_consonants: 2
+  vowel_harmony: "none"
+  allow_special_vowels: true
+  allow_special_consonants: true
+  compound_probability: 0.25
+  short_probability: 0.15
+  max_length: 10
+  min_length: 5

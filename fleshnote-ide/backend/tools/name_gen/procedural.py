@@ -10,6 +10,7 @@ import random
 from .config import NameGenConfig
 from .phonology import (
     smooth_consonant_clusters,
+    smooth_vowel_clusters,
     apply_double_vowel_rules,
     apply_vowel_harmony,
     apply_forced_sounds,
@@ -166,6 +167,9 @@ def generate_procedural_name(config: NameGenConfig) -> str:
 
         # 2. Consonant cluster smoothing
         raw = smooth_consonant_clusters(raw, config.max_consecutive_consonants)
+
+        # 2b. Vowel cluster smoothing (chance-based prevention of vowel walls)
+        raw = smooth_vowel_clusters(raw)
 
         # 3. Separator cleanup (belt-and-suspenders for any separators in suffixes/prefixes)
         raw = strip_separators(raw, config.allow_hyphen_separator, config.allow_apostrophe_separator)

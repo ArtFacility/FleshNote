@@ -1,0 +1,76 @@
+name: "Gods"
+description: >
+  Majestic, resonant, and awe-inspiring. Uses powerful sounds and open vowels
+  to create names fitting for deities.
+prefixes:
+  - "Ao"
+  - "Olu"
+  - "Ama"
+  - "Ilu"
+  - "Oro"
+  - "Iva"
+  - "Omni"
+  - "Aet"
+  - "Heli"
+  - "Ze"
+  - "Apo"
+  - "Arte"
+  - "Odi"
+  - "Tho"
+  - "Fre"
+  - "Ra"
+  - "Anu"
+  - "Enki"
+  - "Pta"
+  - "Osir"
+  - "Isi"
+  - "Ba"
+  - "El"
+  - "Ya"
+middles:
+  - "ma"
+  - "nu"
+  - "ro"
+  - "va"
+  - "la"
+  - "ra"
+  - "na"
+  - "mi"
+  - "ni"
+  - "li"
+  - "di"
+  - "ti"
+  - "si"
+  - "za"
+  - "zo"
+  - "zi"
+  - "pha"
+  - "phe"
+  - "pho"
+suffixes:
+  - "ron"
+  - "rus"
+  - "th"
+  - "tis"
+  - "nus"
+  - "mus"
+  - "lus"
+  - "na"
+  - "ra"
+  - "ia"
+  - "io"
+  - "on"
+  - "um"
+  - "us"
+  - "os"
+  - "is"
+  - "as"
+rules:
+  no_hard_consonants: false
+  max_consecutive_consonants: 2
+  vowel_harmony: "none"
+  allow_special_vowels: true
+  compound_probability: 0.15
+  short_probability: 0.20
+  max_length: 10
+  min_length: 3

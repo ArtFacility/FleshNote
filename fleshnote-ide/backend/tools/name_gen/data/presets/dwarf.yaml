@@ -1,0 +1,65 @@
+name: "Dwarf"
+description: >
+  Sturdy, solid, and deep. Heavy use of B, D, G, K, R, Th.
+prefixes:
+  - "Thor"
+  - "Gim"
+  - "Bal"
+  - "Dur"
+  - "Kar"
+  - "Thr"
+  - "Gor"
+  - "Bof"
+  - "Bomb"
+  - "Dwal"
+  - "Fil"
+  - "Kil"
+  - "Oin"
+  - "Gloin"
+  - "Nor"
+  - "Bor"
+  - "Bram"
+  - "Grom"
+  - "Thar"
+  - "Orik"
+middles:
+  - "in"
+  - "on"
+  - "un"
+  - "al"
+  - "il"
+  - "ol"
+  - "ul"
+  - "ar"
+  - "ir"
+  - "or"
+  - "ur"
+  - "am"
+  - "im"
+  - "om"
+  - "um"
+suffixes:
+  - "din"
+  - "li"
+  - "rin"
+  - "mir"
+  - "dar"
+  - "gar"
+  - "var"
+  - "grim"
+  - "krim"
+  - "bor"
+  - "dor"
+  - "gor"
+  - "tor"
+  - "vur"
+  - "zur"
+rules:
+  no_hard_consonants: false
+  max_consecutive_consonants: 2
+  vowel_harmony: "none"
+  allow_special_consonants: false
+  compound_probability: 0.10
+  short_probability: 0.20
+  max_length: 9
+  min_length: 4

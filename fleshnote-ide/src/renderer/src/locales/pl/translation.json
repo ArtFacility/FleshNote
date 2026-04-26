@@ -782,6 +782,7 @@
       "flesch": "Czytelność Flesch-Kincaid",
       "passive": "Woźny: Strona bierna",
       "showDontTell": "Woźny: 'Pokaż, nie mów'",
+      "locgen": "Generowanie nazw lokalizacji",
       "voiceConsist": "Spójność głosu postaci"
     }
   },
@@ -1473,6 +1474,7 @@
     "flip_surname": "Nazwisko jako pierwsze (np. po japońsku/węgiersku)",
     "preset": "Typ Archetypu",
     "vowel_harmony": "Harmonia Samogłosek",
+    "vowel_harmony_hint": "Wymusza dopasowanie samogłosek w stylu węgierskim (np. dopasowywanie samogłosek przednich/tylnych) dla bardziej autentycznie brzmiących nazw.",
     "harmony_none": "Brak",
     "harmony_front": "Przednia (e, i, ö, ü)",
     "harmony_back": "Tylna (a, o, u)",

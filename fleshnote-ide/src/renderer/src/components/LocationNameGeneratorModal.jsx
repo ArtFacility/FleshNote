@@ -41,6 +41,7 @@ export default function LocationNameGeneratorModal({
     drift: 30,
     site_type: 'planet',
     importance: 'medium',
+    vowel_harmony: false,
     saveAsDescription: true
   }
 
@@ -61,9 +62,10 @@ export default function LocationNameGeneratorModal({
         drift: parseInt(settings.drift, 10) || 0,
         site_type: settings.site_type,
         importance: settings.importance,
-        language: projectConfig?.language || 'en'
+        vowel_harmony: settings.vowel_harmony,
+        language: projectConfig?.story_language || 'en'
       }
-      
+
       const res = await window.api.generateLocationName({
         project_path: projectPath,
         config: configPayload,
@@ -86,11 +88,11 @@ export default function LocationNameGeneratorModal({
       if (settings.founder) parts.push(t('locgen.desc.founder', { val: settings.founder.trim() }))
       if (settings.genre === 'fantasy' && settings.native_tongue) parts.push(t('locgen.desc.native', { val: settings.native_tongue.trim() }))
       if (settings.genre === 'scifi' && settings.mythos) parts.push(t('locgen.desc.mythos', { val: settings.mythos.trim() }))
-      
+
       autoDesc = parts.join(". ")
       if (autoDesc) autoDesc += "."
     }
-    
+
     // Pass back both name and the compiled description
     onConfirm({ name, description: autoDesc })
   }
@@ -101,8 +103,8 @@ export default function LocationNameGeneratorModal({
 
   return (
     <div className="popup-overlay" onClick={onClose} style={{ zIndex: 9999 }}>
-      <div 
-        className="popup-panel" 
+      <div
+        className="popup-panel"
         style={{ width: '520px', maxHeight: '85vh', display: 'flex', flexDirection: 'column', backgroundColor: 'var(--bg-surface)' }}
         onClick={e => e.stopPropagation()}
       >
@@ -114,24 +116,24 @@ export default function LocationNameGeneratorModal({
         </div>
 
         <div className="inspector-tabs" style={{ display: 'flex', borderBottom: '1px solid var(--border-subtle)', margin: '16px 20px 0', gap: '16px' }}>
-          <button 
-            onClick={() => updateSetting('genre', 'fantasy')} 
-            style={{ 
-              background: 'transparent', border: 'none', padding: '8px 0', cursor: 'pointer', 
-              color: settings.genre === 'fantasy' ? 'var(--accent-amber)' : 'var(--text-secondary)', 
-              borderBottom: settings.genre === 'fantasy' ? '2px solid var(--accent-amber)' : '2px solid transparent', 
-              fontFamily: 'var(--font-mono)', fontSize: '11px', textTransform: 'uppercase', letterSpacing: '1px' 
+          <button
+            onClick={() => updateSetting('genre', 'fantasy')}
+            style={{
+              background: 'transparent', border: 'none', padding: '8px 0', cursor: 'pointer',
+              color: settings.genre === 'fantasy' ? 'var(--accent-amber)' : 'var(--text-secondary)',
+              borderBottom: settings.genre === 'fantasy' ? '2px solid var(--accent-amber)' : '2px solid transparent',
+              fontFamily: 'var(--font-mono)', fontSize: '11px', textTransform: 'uppercase', letterSpacing: '1px'
             }}
           >
             {t('locgen.fantasy')}
           </button>
-          <button 
-            onClick={() => updateSetting('genre', 'scifi')} 
-            style={{ 
-              background: 'transparent', border: 'none', padding: '8px 0', cursor: 'pointer', 
-              color: settings.genre === 'scifi' ? 'var(--accent-amber)' : 'var(--text-secondary)', 
-              borderBottom: settings.genre === 'scifi' ? '2px solid var(--accent-amber)' : '2px solid transparent', 
-              fontFamily: 'var(--font-mono)', fontSize: '11px', textTransform: 'uppercase', letterSpacing: '1px' 
+          <button
+            onClick={() => updateSetting('genre', 'scifi')}
+            style={{
+              background: 'transparent', border: 'none', padding: '8px 0', cursor: 'pointer',
+              color: settings.genre === 'scifi' ? 'var(--accent-amber)' : 'var(--text-secondary)',
+              borderBottom: settings.genre === 'scifi' ? '2px solid var(--accent-amber)' : '2px solid transparent',
+              fontFamily: 'var(--font-mono)', fontSize: '11px', textTransform: 'uppercase', letterSpacing: '1px'
             }}
           >
             {t('locgen.scifi')}
@@ -157,7 +159,7 @@ export default function LocationNameGeneratorModal({
             <label className="entity-edit-label">{t('locgen.founder_label')}</label>
             <input type="text" className="entity-edit-input" value={settings.founder} onChange={e => updateSetting('founder', e.target.value)} />
           </div>
-          
+
           {settings.genre === 'fantasy' && (
             <div className="entity-edit-field">
               <label className="entity-edit-label">{t('locgen.native_label')}</label>
@@ -170,9 +172,9 @@ export default function LocationNameGeneratorModal({
               <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '12px' }}>
                 <div className="entity-edit-field">
                   <label className="entity-edit-label">{t('locgen.site_type')}</label>
-                  <select 
-                    className="entity-edit-input" 
-                    value={settings.site_type} 
+                  <select
+                    className="entity-edit-input"
+                    value={settings.site_type}
                     onChange={e => updateSetting('site_type', e.target.value)}
                     style={{ backgroundColor: 'var(--bg-elevated)', cursor: 'pointer' }}
                   >
@@ -184,9 +186,9 @@ export default function LocationNameGeneratorModal({
                 </div>
                 <div className="entity-edit-field">
                   <label className="entity-edit-label">{t('locgen.importance')}</label>
-                  <select 
-                    className="entity-edit-input" 
-                    value={settings.importance} 
+                  <select
+                    className="entity-edit-input"
+                    value={settings.importance}
                     onChange={e => updateSetting('importance', e.target.value)}
                     style={{ backgroundColor: 'var(--bg-elevated)', cursor: 'pointer' }}
                   >
@@ -196,7 +198,7 @@ export default function LocationNameGeneratorModal({
                   </select>
                 </div>
               </div>
-              
+
               <div className="entity-edit-field">
                 <label className="entity-edit-label">{t('locgen.mythos_label')}</label>
                 <input type="text" className="entity-edit-input" value={settings.mythos} onChange={e => updateSetting('mythos', e.target.value)} />
@@ -210,15 +212,25 @@ export default function LocationNameGeneratorModal({
               <span>{t('locgen.drift_label', { drift: settings.drift })}</span>
               <span>{t('locgen.drift_corrupted')}</span>
             </div>
-            <input 
-              type="range" 
-              min="0" max="100" 
-              value={settings.drift} 
-              onChange={e => updateSetting('drift', e.target.value)} 
+            <input
+              type="range"
+              min="0" max="100"
+              value={settings.drift}
+              onChange={e => updateSetting('drift', e.target.value)}
               style={{ width: '100%', margin: '8px 0', accentColor: 'var(--accent-amber)' }}
             />
             <div style={{ fontSize: '11px', color: 'var(--text-secondary)' }}>
               {t('locgen.drift_hint')}
+            </div>
+          </div>
+
+          <div className="entity-edit-field" style={{ marginTop: '0px' }}>
+            <label className="checkbox-label" style={{ display: 'flex', alignItems: 'center', gap: '8px', cursor: 'pointer' }}>
+              <input type="checkbox" checked={settings.vowel_harmony} onChange={(e) => updateSetting('vowel_harmony', e.target.checked)} />
+              <span style={{ fontSize: '13px', color: 'var(--text-secondary)' }}>{t('namegen.vowel_harmony')}</span>
+            </label>
+            <div style={{ fontSize: '11px', color: 'var(--text-tertiary)', marginLeft: '24px' }}>
+              {t('namegen.vowel_harmony_hint')}
             </div>
           </div>
 
@@ -229,7 +241,7 @@ export default function LocationNameGeneratorModal({
                 <Icons.Refresh /> {generating ? t('locgen.rolling') : t('locgen.generate')}
               </button>
             </div>
-            
+
             <label className="checkbox-label" style={{ margin: '0 0 12px 0', display: 'flex', alignItems: 'center', gap: '8px', cursor: 'pointer' }}>
               <input type="checkbox" checked={settings.saveAsDescription} onChange={(e) => updateSetting('saveAsDescription', e.target.checked)} />
               <span style={{ fontSize: '12px', color: 'var(--text-secondary)' }}>{t('locgen.save_as_description')}</span>
