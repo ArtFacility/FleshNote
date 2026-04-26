@@ -70,6 +70,9 @@ datas = [
     ('export/templates/manuscript.css', 'export/templates'),
     # Bundled NLTK WordNet data — English synonyms available offline
     ('nltk_data', 'nltk_data'),
+    # Name generator datasets (presets and real name lists)
+    ('tools/name_gen/data', 'tools/name_gen/data'),
+    ('stopwords.json', '.'),
 ]
 
 from PyInstaller.utils.hooks import collect_submodules, collect_data_files
