@@ -29,7 +29,7 @@ class GroupCreate(BaseModel):
 
 class GroupUpdate(BaseModel):
     project_path: str
-    group_id: int
+    group_id: str | int
     name: str | None = None
     aliases: list[str] | None = None
     group_type: str | None = None
@@ -40,7 +40,7 @@ class GroupUpdate(BaseModel):
 
 class GroupDelete(BaseModel):
     project_path: str
-    group_id: int
+    group_id: str | int
 
 
 def _get_db(project_path: str):
@@ -80,11 +80,14 @@ def create_group(req: GroupCreate):
     conn = _get_db(req.project_path)
     cursor = conn.cursor()
 
+    import uuid
+    group_id = str(uuid.uuid4())
     cursor.execute("""
-        INSERT INTO groups (name, aliases, group_type, description,
+        INSERT INTO groups (id, name, aliases, group_type, description,
                             surface_agenda, true_agenda, notes)
-        VALUES (?, ?, ?, ?, ?, ?, ?)
+        VALUES (?, ?, ?, ?, ?, ?, ?, ?)
     """, (
+        group_id,
         req.name,
         json.dumps(req.aliases) if req.aliases else None,
         req.group_type,
@@ -94,7 +97,6 @@ def create_group(req: GroupCreate):
         req.notes,
     ))
 
-    group_id = cursor.lastrowid
     conn.commit()
     conn.close()
 

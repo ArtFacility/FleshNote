@@ -126,7 +126,7 @@ EN_SENSES = {
 
 class JanitorRequest(BaseModel):
     project_path: str
-    chapter_id: int
+    chapter_id: str | int
     html: str
     language: str = "en"
     confidence_threshold: float = 0.5
@@ -136,7 +136,7 @@ class JanitorSuggestion(BaseModel):
     id: str
     type: str
     entity_type: str | None = None
-    entity_id: int | None = None
+    entity_id: str | int | None = None
     entity_name: str | None = None
     matched_text: str
     context: str

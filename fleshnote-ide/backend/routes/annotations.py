@@ -22,13 +22,13 @@ class AnnotationCreate(BaseModel):
 
 class AnnotationUpdate(BaseModel):
     project_path: str
-    annotation_id: int
+    annotation_id: str | int
     content: str
 
 
 class AnnotationDelete(BaseModel):
     project_path: str
-    annotation_id: int
+    annotation_id: str | int
 
 
 def _get_db(project_path: str):
@@ -41,7 +41,14 @@ def _get_db(project_path: str):
     cursor = conn.cursor()
     cursor.execute("""
         CREATE TABLE IF NOT EXISTS annotations (
-            id              INTEGER PRIMARY KEY AUTOINCREMENT,
+            id              TEXT PRIMARY KEY DEFAULT (
+                                lower(hex(randomblob(4))) || '-' || 
+                                lower(hex(randomblob(2))) || '-4' || 
+                                substr(lower(hex(randomblob(2))), 2) || '-' || 
+                                substr('89ab', abs(random()) % 4 + 1, 1) || 
+                                substr(lower(hex(randomblob(2))), 2) || '-' || 
+                                lower(hex(randomblob(6)))
+                            ),
             content         TEXT NOT NULL,
             created_at      TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
             updated_at      TIMESTAMP DEFAULT CURRENT_TIMESTAMP
@@ -78,8 +85,9 @@ def create_annotation(req: AnnotationCreate):
     conn = _get_db(req.project_path)
     cursor = conn.cursor()
 
-    cursor.execute("INSERT INTO annotations (content) VALUES (?)", (req.content,))
-    annotation_id = cursor.lastrowid
+    import uuid
+    annotation_id = str(uuid.uuid4())
+    cursor.execute("INSERT INTO annotations (id, content) VALUES (?, ?)", (annotation_id, req.content))
     conn.commit()
 
     cursor.execute("SELECT id, content FROM annotations WHERE id = ?", (annotation_id,))

@@ -27,14 +27,14 @@ class ImageUploadRequest(BaseModel):
 
 class IconCropSaveRequest(BaseModel):
     project_path: str
-    entity_id: int
+    entity_id: str | int
     entity_type: str
     image_data: str           # base64-encoded PNG from canvas crop
 
 
 class ImageRefCreate(BaseModel):
     project_path: str
-    entity_id: int
+    entity_id: str | int
     entity_type: str              # 'char', 'loc', 'item'
     image_path: str               # relative path inside project (e.g. 'assets/img_xxx.png')
     is_icon: int = 0
@@ -44,7 +44,7 @@ class ImageRefCreate(BaseModel):
 
 class ImageRefUpdate(BaseModel):
     project_path: str
-    image_ref_id: int
+    image_ref_id: str | int
     is_icon: int | None = None
     world_time: str | None = None
     caption: str | None = None
@@ -53,14 +53,14 @@ class ImageRefUpdate(BaseModel):
 
 class ImageRefDelete(BaseModel):
     project_path: str
-    image_ref_id: int
+    image_ref_id: str | int
     delete_file: bool = False
 
 
 class ImageRefsForEntity(BaseModel):
     project_path: str
     entity_type: str
-    entity_id: int
+    entity_id: str | int
     filter_mode: str = "author"         # 'author' or 'world_time'
     current_world_time: str | None = None
 
@@ -203,12 +203,12 @@ def create_image_ref(req: ImageRefCreate):
     count = cursor.fetchone()[0]
     is_icon = req.is_icon if count > 0 else 1
 
+    ref_id = str(uuid.uuid4())
     cursor.execute(
-        """INSERT INTO image_references (entity_id, entity_type, image_path, is_icon, world_time, caption)
-           VALUES (?, ?, ?, ?, ?, ?)""",
-        (req.entity_id, req.entity_type, req.image_path, is_icon, req.world_time, req.caption)
+        """INSERT INTO image_references (id, entity_id, entity_type, image_path, is_icon, world_time, caption)
+           VALUES (?, ?, ?, ?, ?, ?, ?)""",
+        (ref_id, req.entity_id, req.entity_type, req.image_path, is_icon, req.world_time, req.caption)
     )
-    ref_id = cursor.lastrowid
     conn.commit()
 
     cursor.execute("SELECT * FROM image_references WHERE id = ?", (ref_id,))

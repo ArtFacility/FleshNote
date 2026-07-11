@@ -31,12 +31,12 @@ class CharacterCreate(BaseModel):
 
 class CharacterUpdate(BaseModel):
     project_path: str
-    character_id: int
+    character_id: str | int
     name: str | None = None
     role: str | None = None
     status: str | None = None
     species: str | None = None
-    group_id: int | None = None
+    group_id: str | int | None = None
     surface_goal: str | None = None
     true_goal: str | None = None
     bio: str | None = None
@@ -46,7 +46,7 @@ class CharacterUpdate(BaseModel):
 
 class CharacterDelete(BaseModel):
     project_path: str
-    character_id: int
+    character_id: str | int
 
 
 class BulkCharacterCreate(BaseModel):
@@ -97,11 +97,14 @@ def create_character(req: CharacterCreate):
     conn = _get_db(req.project_path)
     cursor = conn.cursor()
 
+    import uuid
+    char_id = str(uuid.uuid4())
     cursor.execute("""
-        INSERT INTO characters (name, aliases, role, status, species,
+        INSERT INTO characters (id, name, aliases, role, status, species,
                                 surface_goal, true_goal, bio, notes)
-        VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)
+        VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
     """, (
+        char_id,
         req.name,
         json.dumps(req.aliases) if req.aliases else None,
         req.role,
@@ -113,7 +116,6 @@ def create_character(req: CharacterCreate):
         req.notes,
     ))
 
-    char_id = cursor.lastrowid
     conn.commit()
     conn.close()
 
@@ -205,12 +207,15 @@ def bulk_create_characters(req: BulkCharacterCreate):
     conn = _get_db(req.project_path)
     cursor = conn.cursor()
 
+    import uuid
     created = []
     for char in req.characters:
+        char_id = str(uuid.uuid4())
         cursor.execute("""
-            INSERT INTO characters (name, aliases, role, status, species, bio, notes)
-            VALUES (?, ?, ?, ?, ?, ?, ?)
+            INSERT INTO characters (id, name, aliases, role, status, species, bio, notes)
+            VALUES (?, ?, ?, ?, ?, ?, ?, ?)
         """, (
+            char_id,
             char.get("name", "Unnamed"),
             json.dumps(char.get("aliases", [])) if char.get("aliases") else None,
             char.get("role", ""),
@@ -220,7 +225,7 @@ def bulk_create_characters(req: BulkCharacterCreate):
             char.get("notes", ""),
         ))
         created.append({
-            "id": cursor.lastrowid,
+            "id": char_id,
             "name": char.get("name"),
             "role": char.get("role", ""),
         })

@@ -36,7 +36,7 @@ class LoreEntityCreate(BaseModel):
 
 class LoreEntityUpdate(BaseModel):
     project_path: str
-    entity_id: int
+    entity_id: str | int
     name: str | None = None
     category: str | None = None
     classification: str | None = None
@@ -49,21 +49,21 @@ class LoreEntityUpdate(BaseModel):
 
 class LoreEntityDelete(BaseModel):
     project_path: str
-    entity_id: int
+    entity_id: str | int
 
 
 class AppendDescriptionRequest(BaseModel):
     project_path: str
     entity_type: str          # 'character', 'lore', 'location', 'group'
-    entity_id: int
+    entity_id: str | int
     text: str                 # The selected text to append
     target_field: str = "description"  # 'description' or 'notes'
-    source_chapter_id: int | None = None
+    source_chapter_id: str | int | None = None
 
 class AddAliasRequest(BaseModel):
     project_path: str
     entity_type: str
-    entity_id: int
+    entity_id: str | int
     alias: str
 
 class EntitySearchRequest(BaseModel):
@@ -75,14 +75,14 @@ class EntitySearchRequest(BaseModel):
 class ScanReferencesRequest(BaseModel):
     project_path: str
     entity_type: str
-    entity_id: int
+    entity_id: str | int
     old_name: str
     new_name: str
 
 class ReplaceReferencesRequest(BaseModel):
     project_path: str
     entity_type: str
-    entity_id: int
+    entity_id: str | int
     replacements: dict[str, dict] # maps linked_text to {"new_text": ..., "add_alias": bool}
 
 _ENTITY_TYPE_TO_SHORT = {
@@ -100,11 +100,13 @@ def create_lore_entity(req: LoreEntityCreate):
     """Create a lore entity (item, magic system, artifact, etc.)."""
     conn = _get_db(req.project_path)
     cursor = conn.cursor()
+    
+    import uuid
+    entity_id = str(uuid.uuid4())
     cursor.execute("""
-        INSERT INTO lore_entities (name, category, aliases, description)
-        VALUES (?, ?, ?, ?)
-    """, (req.name, req.category, json.dumps(req.aliases), req.description))
-    entity_id = cursor.lastrowid
+        INSERT INTO lore_entities (id, name, category, aliases, description)
+        VALUES (?, ?, ?, ?, ?)
+    """, (entity_id, req.name, req.category, json.dumps(req.aliases), req.description))
     conn.commit()
     conn.close()
     return {

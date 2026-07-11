@@ -23,6 +23,12 @@ import ForeshadowingPopup from './ForeshadowingPopup'
 import QuickNotePopup from './QuickNotePopup'
 import AnnotationPopup from './AnnotationPopup'
 import RelationshipTurningPointPopup from './RelationshipTurningPointPopup'
+
+const parseId = (val) => {
+  if (val === null || val === undefined || val === "") return null;
+  const num = Number(val);
+  return isNaN(num) ? String(val) : num;
+};
 import TimeOverridePopup from './TimeOverridePopup'
 import CalendarDatePicker from './CalendarDatePicker'
 import AddAliasPopup from './AddAliasPopup'
@@ -407,7 +413,7 @@ export default function Editor({
           if (knowledgeTarget) {
             const characterId = knowledgeTarget.getAttribute('data-character-id')
             if (characterId) {
-              onEntityClick?.({ type: 'character', id: parseInt(characterId), tab: 'knowledge' })
+              onEntityClick?.({ type: 'character', id: parseId(characterId), tab: 'knowledge' })
             }
             return true
           }
@@ -416,7 +422,7 @@ export default function Editor({
           if (relTarget) {
             const characterId = relTarget.getAttribute('data-character-id')
             if (characterId) {
-              onEntityClick?.({ type: 'character', id: parseInt(characterId), tab: 'relationships' })
+              onEntityClick?.({ type: 'character', id: parseId(characterId), tab: 'relationships' })
             }
             return true
           }
@@ -425,7 +431,7 @@ export default function Editor({
           if (twistTarget) {
             const twistType = twistTarget.getAttribute('data-twist-type')
             const twistId = twistTarget.getAttribute('data-twist-id')
-            onTwistClick?.({ twistType, twistId: parseInt(twistId) })
+            onTwistClick?.({ twistType, twistId: parseId(twistId) })
             return true
           }
           // Then entity links
@@ -444,7 +450,7 @@ export default function Editor({
               return true
             }
 
-            onEntityClick?.({ type: entityType, id: parseInt(entityId) })
+            onEntityClick?.({ type: entityType, id: parseId(entityId) })
             return true
           }
           return false
@@ -477,7 +483,7 @@ export default function Editor({
             if (target) {
               setEntityAtCursor({
                 type: target.getAttribute('data-entity-type'),
-                id: parseInt(target.getAttribute('data-entity-id'))
+                id: parseId(target.getAttribute('data-entity-id'))
               })
             } else {
               setEntityAtCursor(null)
@@ -488,7 +494,7 @@ export default function Editor({
             if (twistTarget) {
               setTwistAtCursor({
                 twistType: twistTarget.getAttribute('data-twist-type'),
-                twistId: parseInt(twistTarget.getAttribute('data-twist-id'))
+                twistId: parseId(twistTarget.getAttribute('data-twist-id'))
               })
             } else {
               setTwistAtCursor(null)
@@ -498,7 +504,7 @@ export default function Editor({
             const knowledgeTarget = event.target.closest('[data-knowledge-id]')
             if (knowledgeTarget) {
               setKnowledgeAtCursor({
-                knowledgeId: parseInt(knowledgeTarget.getAttribute('data-knowledge-id'))
+                knowledgeId: parseId(knowledgeTarget.getAttribute('data-knowledge-id'))
               })
             } else {
               setKnowledgeAtCursor(null)
@@ -508,7 +514,7 @@ export default function Editor({
             const relTarget = event.target.closest('[data-relationship-id]')
             if (relTarget) {
               setRelationshipAtCursor({
-                relationshipId: parseInt(relTarget.getAttribute('data-relationship-id'))
+                relationshipId: parseId(relTarget.getAttribute('data-relationship-id'))
               })
             } else {
               setRelationshipAtCursor(null)
@@ -1440,7 +1446,7 @@ export default function Editor({
             onChange={(e) => {
               const val = e.target.value
               onChapterMetaUpdate?.({
-                pov_character_id: val ? parseInt(val) : 0
+                pov_character_id: val ? parseId(val) : null
               })
             }}
           >

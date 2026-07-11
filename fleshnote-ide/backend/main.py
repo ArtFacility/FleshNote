@@ -136,10 +136,24 @@ def scan_workspace(request: WorkspaceRequest):
       last_opened = _get_project_last_opened(item_path)
       if last_opened is None:
         continue  # Skip non-FleshNote directories
+      
+      # Determine if project needs migration (Schema Version 2)
+      json_path = os.path.join(item_path, "fleshnote_project.json")
+      needs_migration = True
+      if os.path.exists(json_path):
+        try:
+          with open(json_path, "r", encoding="utf-8") as f:
+            metadata = json.load(f)
+            if metadata.get("schema_version", 1) >= 2:
+              needs_migration = False
+        except Exception:
+          pass
+      
       projects.append({
         "name": item,
         "path": item_path,
-        "lastOpened": last_opened  # Unix ms timestamp — formatted by frontend
+        "lastOpened": last_opened,  # Unix ms timestamp — formatted by frontend
+        "needs_migration": needs_migration
       })
     # Sort most-recently-opened first
     projects.sort(key=lambda p: p["lastOpened"], reverse=True)
@@ -164,6 +178,16 @@ def initialize_project(request: ProjectCreateRequest):
     # 2. Generate the SQLite DB using the questionnaire payload
     db_path = generate_project_db(project_dir, request.questionnaire)
 
+    # 3. Create fleshnote_project.json descriptor
+    project_json_path = os.path.join(project_dir, "fleshnote_project.json")
+    with open(project_json_path, "w", encoding="utf-8") as f:
+      json.dump({
+        "project_name": request.project_name,
+        "schema_version": 2,
+        "created_version": "1.3.0",
+        "last_opened_version": "1.3.0"
+      }, f, indent=2)
+
     return {
       "status": "success",
       "project_path": project_dir,
@@ -173,6 +197,18 @@ def initialize_project(request: ProjectCreateRequest):
     raise HTTPException(status_code=500, detail=str(e))
 
 
+class ProjectMigrateRequest(BaseModel):
+  project_path: str
+
+@app.post("/api/project/migrate")
+def migrate_project_endpoint(request: ProjectMigrateRequest):
+  from migration_engine import migrate_project
+  res = migrate_project(request.project_path)
+  if res.get("status") == "error":
+    raise HTTPException(status_code=500, detail=res.get("message"))
+  return res
+
+
 @app.post("/api/project/load")
 def load_project(request: ProjectLoadRequest):
   """Loads an existing project's configuration."""
@@ -180,6 +216,24 @@ def load_project(request: ProjectLoadRequest):
 
   if not os.path.exists(db_path):
     raise HTTPException(status_code=404, detail="Database not found in project folder")
+
+  # Block load if it needs migration
+  json_path = os.path.join(request.project_path, "fleshnote_project.json")
+  needs_migration = True
+  if os.path.exists(json_path):
+    try:
+      with open(json_path, "r", encoding="utf-8") as f:
+        metadata = json.load(f)
+        if metadata.get("schema_version", 1) >= 2:
+          needs_migration = False
+    except Exception:
+      pass
+  
+  if needs_migration:
+    raise HTTPException(
+      status_code=400,
+      detail="Project requires migration to schema version 2 before loading."
+    )
 
   try:
     conn = sqlite3.connect(db_path)
@@ -201,7 +255,7 @@ def load_project(request: ProjectLoadRequest):
       else:
         config[key] = value
 
-    # Apply any pending migrations to the schema
+    # Apply any pending migrations to the schema (v2 schema onwards)
     try:
       apply_migrations(db_path)
     except Exception as e:

@@ -22,19 +22,19 @@ class TwistCreate(BaseModel):
     title: str
     description: str = ""
     twist_type: str = ""            # 'identity', 'motive', 'event', 'ability', 'relationship'
-    reveal_chapter_id: int | None = None
-    characters_who_know: list[int] = []
+    reveal_chapter_id: str | int | None = None
+    characters_who_know: list[str | int] = []
     notes: str = ""
 
 
 class TwistUpdate(BaseModel):
     project_path: str
-    twist_id: int
+    twist_id: str | int
     title: str | None = None
     description: str | None = None
     twist_type: str | None = None
-    reveal_chapter_id: int | None = None
-    characters_who_know: list[int] | None = None
+    reveal_chapter_id: str | int | None = None
+    characters_who_know: list[str | int] | None = None
     status: str | None = None        # 'planned', 'hinted', 'revealed'
     notes: str | None = None
 
@@ -136,18 +136,19 @@ def create_twist(req: TwistCreate):
     conn = _get_db(req.project_path)
     cursor = conn.cursor()
 
+    import uuid
+    twist_id = str(uuid.uuid4())
     cursor.execute("""
-        INSERT INTO twists (title, description, twist_type, reveal_chapter_id,
+        INSERT INTO twists (id, title, description, twist_type, reveal_chapter_id,
                              characters_who_know, notes)
-        VALUES (?, ?, ?, ?, ?, ?)
+        VALUES (?, ?, ?, ?, ?, ?, ?)
     """, (
-        req.title, req.description, req.twist_type,
+        twist_id, req.title, req.description, req.twist_type,
         req.reveal_chapter_id,
         json.dumps(req.characters_who_know) if req.characters_who_know else None,
         req.notes,
     ))
 
-    twist_id = cursor.lastrowid
     conn.commit()
 
     cursor.execute("SELECT * FROM twists WHERE id = ?", (twist_id,))
@@ -201,7 +202,7 @@ def update_twist(req: TwistUpdate):
 
 class TwistDetail(BaseModel):
     project_path: str
-    twist_id: int
+    twist_id: str | int
 
 
 @router.post("/api/project/twist/detail")
@@ -321,7 +322,7 @@ def get_twist_detail(req: TwistDetail):
 
 class TwistDelete(BaseModel):
     project_path: str
-    twist_id: int
+    twist_id: str | int
 
 
 @router.post("/api/project/twist/delete")
@@ -333,7 +334,7 @@ def delete_twist(req: TwistDelete):
     cursor.execute("SELECT id, md_filename FROM chapters")
     chapters = cursor.fetchall()
     tid = str(req.twist_id)
-    pattern = re.compile(r'\{\{(?:twist|foreshadow):' + tid + r'\|([^}]+)\}\}')
+    pattern = re.compile(r'\{\{(?:twist|foreshadow):' + re.escape(tid) + r'\|([^}]+)\}\}')
     for ch in chapters:
         md_path = os.path.join(req.project_path, "md", ch["md_filename"])
         if not os.path.exists(md_path):

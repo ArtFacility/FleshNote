@@ -63,7 +63,7 @@ export default function ForeshadowingPopup({
       let twistId = null
 
       if (mode === 'existing' && selectedTwistId) {
-        twistId = parseInt(selectedTwistId)
+        twistId = isNaN(selectedTwistId) ? selectedTwistId : parseInt(selectedTwistId)
       } else if (mode === 'new' && newTitle.trim()) {
         // Create new twist
         const result = await window.api.createTwist({

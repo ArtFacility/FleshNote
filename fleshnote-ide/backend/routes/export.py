@@ -15,7 +15,7 @@ class ExportRequest(BaseModel):
     font_size: float | None = None
     gutter: float | None = None
     outer: float | None = None
-    chapter_ids: list[int] | None = None  # None = export all chapters
+    chapter_ids: list[str | int] | None = None  # None = export all chapters
 
 @router.post("/api/project/export")
 def export_project(request: ExportRequest):

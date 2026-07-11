@@ -74,13 +74,13 @@ async function waitForBackend(timeoutMs = 30000) {
   const deadline = Date.now() + timeoutMs
   while (Date.now() < deadline) {
     try {
-      const response = await fetch(`${BACKEND_URL}/`)
+      const response = await net.fetch(`${BACKEND_URL}/`)
       if (response.ok) {
         console.log('Backend is online.')
         return
       }
-    } catch {
-      // ECONNREFUSED — not ready yet.
+    } catch (e: any) {
+      console.log('Backend connection attempt failed:', e.message || e)
     }
     await new Promise((resolve) => setTimeout(resolve, 200))
   }
@@ -130,7 +130,7 @@ function showBackendErrorWindow(details: string) {
 // ── Helper: POST to backend ──────────────────────────────────────────────────
 
 async function backendPost(path: string, body: object) {
-  const response = await fetch(`${BACKEND_URL}${path}`, {
+  const response = await net.fetch(`${BACKEND_URL}${path}`, {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
     body: JSON.stringify(body)
@@ -325,6 +325,10 @@ app.whenReady().then(async () => {
 
   ipcMain.handle('api:loadProject', async (_event, projectPath) => {
     return await backendPost('/api/project/load', { project_path: projectPath })
+  })
+
+  ipcMain.handle('api:migrateProject', async (_event, projectPath) => {
+    return await backendPost('/api/project/migrate', { project_path: projectPath })
   })
 
   ipcMain.handle('api:getStats', async (_event, projectPath) => {

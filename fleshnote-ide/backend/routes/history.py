@@ -20,7 +20,7 @@ class ProjectPath(BaseModel):
 class HistoryEntryList(BaseModel):
     project_path: str
     entity_type: Optional[str] = None
-    entity_id: Optional[int] = None
+    entity_id: Optional[str | int] = None
     event_type: Optional[str] = None
     date_year_min: Optional[int] = None
     date_year_max: Optional[int] = None
@@ -29,7 +29,7 @@ class HistoryEntryList(BaseModel):
 class HistoryEntryCreate(BaseModel):
     project_path: str
     entity_type: str
-    entity_id: int
+    entity_id: str | int
     title: str
     description: str = ""
     event_type: str
@@ -38,12 +38,12 @@ class HistoryEntryCreate(BaseModel):
     date_day: Optional[int] = None
     date_precise: int = 0
     related_entity_type: Optional[str] = None
-    related_entity_id: Optional[int] = None
+    related_entity_id: Optional[str | int] = None
 
 
 class HistoryEntryUpdate(BaseModel):
     project_path: str
-    entry_id: int
+    entry_id: str | int
     title: Optional[str] = None
     description: Optional[str] = None
     event_type: Optional[str] = None
@@ -52,12 +52,12 @@ class HistoryEntryUpdate(BaseModel):
     date_day: Optional[int] = None
     date_precise: Optional[int] = None
     related_entity_type: Optional[str] = None
-    related_entity_id: Optional[int] = None
+    related_entity_id: Optional[str | int] = None
 
 
 class HistoryEntryDelete(BaseModel):
     project_path: str
-    entry_id: int
+    entry_id: str | int
 
 
 def _get_db(project_path: str):
@@ -107,20 +107,21 @@ async def create_history_entry(req: HistoryEntryCreate):
     conn = _get_db(req.project_path)
     cursor = conn.cursor()
 
+    import uuid
+    entry_id = str(uuid.uuid4())
     cursor.execute("""
         INSERT INTO history_entries
-            (entity_type, entity_id, title, description, event_type,
+            (id, entity_type, entity_id, title, description, event_type,
              date_year, date_month, date_day, date_precise,
              related_entity_type, related_entity_id)
-        VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+        VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
     """, (
-        req.entity_type, req.entity_id, req.title, req.description, req.event_type,
+        entry_id, req.entity_type, req.entity_id, req.title, req.description, req.event_type,
         req.date_year, req.date_month, req.date_day, req.date_precise,
         req.related_entity_type, req.related_entity_id,
     ))
     conn.commit()
 
-    entry_id = cursor.lastrowid
     cursor.execute("SELECT * FROM history_entries WHERE id = ?", (entry_id,))
     entry = dict(cursor.fetchone())
     conn.close()

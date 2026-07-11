@@ -22,27 +22,27 @@ class ChapterCreate(BaseModel):
     project_path: str
     title: str = ""
     chapter_number: int | None = None
-    pov_character_id: int | None = None
+    pov_character_id: str | int | None = None
     target_word_count: int = 4000
     status: str = "planned"
 
 
 class ChapterLoad(BaseModel):
     project_path: str
-    chapter_id: int
+    chapter_id: str | int
 
 
 class ChapterSave(BaseModel):
     project_path: str
-    chapter_id: int
+    chapter_id: str | int
     content: str
     word_count: int = 0
 
 
 class ChapterUpdate(BaseModel):
     project_path: str
-    chapter_id: int
-    pov_character_id: int | None = None
+    chapter_id: str | int
+    pov_character_id: str | int | None = None
     status: str | None = None
     title: str | None = None
     world_time: str | None = None
@@ -52,7 +52,7 @@ class ChapterUpdate(BaseModel):
 class BulkChapterCreate(BaseModel):
     project_path: str
     count: int
-    pov_character_id: int | None = None
+    pov_character_id: str | int | None = None
     target_word_count: int = 4000
 
 
@@ -83,7 +83,7 @@ _SHORT_TO_ENTITY_TYPE = {v: k for k, v in _ENTITY_TYPE_TO_SHORT.items()}
 
 def _entity_md_to_html(content: str, quicknote_types: dict = None) -> str:
     """Convert {{type:id|text}} markers to TipTap entity-link spans during chapter load."""
-    pattern = r'\{\{(char|loc|item|lore|group|quicknote|annotation):(\d+)\|([^}]+)\}\}'
+    pattern = r'\{\{(char|loc|item|lore|group|quicknote|annotation):([^|]+)\|([^}]+)\}\}'
     note_types = quicknote_types or {}
 
     def replacer(match):
@@ -108,7 +108,7 @@ def _entity_md_to_html(content: str, quicknote_types: dict = None) -> str:
 
 def _entity_html_to_md(content: str) -> str:
     """Convert TipTap entity-link spans to {{type:id|text}} markers during chapter save."""
-    pattern = r'<span[^>]*?data-entity-type="([^"]+)"[^>]*?data-entity-id="(\d+)"[^>]*?>([^<]+)</span>'
+    pattern = r'<span[^>]*?data-entity-type="([^"]+)"[^>]*?data-entity-id="([^"]+)"[^>]*?>([^<]+)</span>'
 
     def replacer(match):
         full_type = match.group(1)
@@ -168,7 +168,7 @@ _SHORT_TO_TWIST_TYPE = {v: k for k, v in _TWIST_TYPE_TO_SHORT.items()}
 
 def _twist_md_to_html(content: str) -> str:
     """Convert {{twist:id|text}} / {{foreshadow:id|text}} markers to TipTap spans on load."""
-    pattern = r'\{\{(twist|foreshadow):(\d+)\|([^}]+)\}\}'
+    pattern = r'\{\{(twist|foreshadow):([^|]+)\|([^}]+)\}\}'
 
     def replacer(match):
         short_type = match.group(1)
@@ -184,7 +184,7 @@ def _twist_md_to_html(content: str) -> str:
 
 def _twist_html_to_md(content: str) -> str:
     """Convert TipTap twist/foreshadow spans to {{type:id|text}} markers on save."""
-    pattern = r'<span[^>]*?data-twist-type="([^"]+)"[^>]*?data-twist-id="(\d+)"[^>]*?>([^<]+)</span>'
+    pattern = r'<span[^>]*?data-twist-type="([^"]+)"[^>]*?data-twist-id="([^"]+)"[^>]*?>([^<]+)</span>'
 
     def replacer(match):
         twist_type = match.group(1)
@@ -195,7 +195,7 @@ def _twist_html_to_md(content: str) -> str:
     return re.sub(pattern, replacer, content)
 
 
-def _update_foreshadowings(cursor, chapter_id: int, md_content: str):
+def _update_foreshadowings(cursor, chapter_id: str | int, md_content: str):
     """Scan markdown for {{foreshadow:id|text}} and {{twist:id|text}} markers,
     calculate word offsets, and sync the foreshadowings table."""
     cursor.execute("DELETE FROM foreshadowings WHERE chapter_id = ?", (chapter_id,))
@@ -204,10 +204,10 @@ def _update_foreshadowings(cursor, chapter_id: int, md_content: str):
     plain = re.sub(r'<[^>]+>', ' ', md_content)
 
     # Find all twist/foreshadow markers
-    pattern = r'\{\{(twist|foreshadow):(\d+)\|([^}]+)\}\}'
+    pattern = r'\{\{(twist|foreshadow):([^|]+)\|([^}]+)\}\}'
     for match in re.finditer(pattern, md_content):
         marker_type = match.group(1)
-        twist_id = int(match.group(2))
+        twist_id = match.group(2)
         selected_text = match.group(3)
 
         # Calculate word offset: count words in plain text before the marker position
@@ -241,7 +241,7 @@ def _update_foreshadowings(cursor, chapter_id: int, md_content: str):
                             with open(old_md_path, "r", encoding="utf-8") as f:
                                 old_content = f.read()
                             old_content = re.sub(
-                                r'\{\{twist:' + str(twist_id) + r'\|([^}]+)\}\}',
+                                r'\{\{twist:' + re.escape(str(twist_id)) + r'\|([^}]+)\}\}',
                                 r'\1', old_content
                             )
                             with open(old_md_path, "w", encoding="utf-8") as f:
@@ -262,7 +262,7 @@ def _update_foreshadowings(cursor, chapter_id: int, md_content: str):
 
 def _knowledge_md_to_html(content: str) -> str:
     """Convert {{knowledge:id:charId|text}} markers to TipTap spans on load."""
-    pattern = r'\{\{knowledge:(\d+):(\d+)\|([^}]+)\}\}'
+    pattern = r'\{\{knowledge:([^:]+):([^|]+)\|([^}]+)\}\}'
 
     def replacer(match):
         knowledge_id = match.group(1)
@@ -278,7 +278,7 @@ def _knowledge_md_to_html(content: str) -> str:
 
 def _knowledge_html_to_md(content: str) -> str:
     """Convert TipTap knowledge-link spans to {{knowledge:id:charId|text}} markers on save."""
-    pattern = r'<span[^>]*?data-knowledge-id="(\d+)"[^>]*?data-character-id="(\d+)"[^>]*?>([^<]+)</span>'
+    pattern = r'<span[^>]*?data-knowledge-id="([^"]+)"[^>]*?data-character-id="([^"]+)"[^>]*?>([^<]+)</span>'
 
     def replacer(match):
         knowledge_id = match.group(1)
@@ -291,7 +291,7 @@ def _knowledge_html_to_md(content: str) -> str:
 
 def _relationship_md_to_html(content: str) -> str:
     """Convert {{relationship:id:charId|text}} markers to TipTap spans on load."""
-    pattern = r'\{\{relationship:(\d+):(\d+)\|([^}]+)\}\}'
+    pattern = r'\{\{relationship:([^:]+):([^|]+)\|([^}]+)\}\}'
 
     def replacer(match):
         rel_id = match.group(1)
@@ -307,7 +307,7 @@ def _relationship_md_to_html(content: str) -> str:
 
 def _relationship_html_to_md(content: str) -> str:
     """Convert TipTap relationship-link spans to {{relationship:id:charId|text}} markers on save."""
-    pattern = r'<span[^>]*?data-relationship-id="(\d+)"[^>]*?data-character-id="(\d+)"[^>]*?>([^<]+)</span>'
+    pattern = r'<span[^>]*?data-relationship-id="([^"]+)"[^>]*?data-character-id="([^"]+)"[^>]*?>([^<]+)</span>'
 
     def replacer(match):
         rel_id = match.group(1)
@@ -320,7 +320,7 @@ def _relationship_html_to_md(content: str) -> str:
 
 def _time_md_to_html(content: str) -> str:
     """Convert {{time:ID:colorIndex|text}} markers to TipTap time-link spans on load."""
-    pattern = r'\{\{time:(\d+):(\d+)\|([^}]*)\}\}'
+    pattern = r'\{\{time:([^:]+):([^|]+)\|([^}]*)\}\}'
     def replace(m):
         time_id = m.group(1)
         color_index = m.group(2)
@@ -331,7 +331,7 @@ def _time_md_to_html(content: str) -> str:
 
 def _time_html_to_md(content: str) -> str:
     """Convert TipTap time-link spans to {{time:ID:colorIndex|text}} markers on save."""
-    pattern = r'<span[^>]*?data-time-id="(\d+)"[^>]*?data-color-index="(\d+)"[^>]*?>([^<]*)</span>'
+    pattern = r'<span[^>]*?data-time-id="([^"]+)"[^>]*?data-color-index="([^"]+)"[^>]*?>([^<]*)</span>'
     def replace(m):
         time_id = m.group(1)
         color_index = m.group(2)
@@ -340,11 +340,11 @@ def _time_html_to_md(content: str) -> str:
     return re.sub(pattern, replace, content)
 
 
-def _update_knowledge_offsets(cursor, chapter_id: int, md_content: str):
+def _update_knowledge_offsets(cursor, chapter_id: str | int, md_content: str):
     """Scan markdown for {{knowledge:id:charId|text}} markers and update word offsets."""
-    pattern = r'\{\{knowledge:(\d+):(\d+)\|([^}]+)\}\}'
+    pattern = r'\{\{knowledge:([^:]+):([^|]+)\|([^}]+)\}\}'
     for match in re.finditer(pattern, md_content):
-        knowledge_id = int(match.group(1))
+        knowledge_id = match.group(1)
 
         # Calculate word offset
         char_pos = match.start()
@@ -360,11 +360,11 @@ def _update_knowledge_offsets(cursor, chapter_id: int, md_content: str):
         """, (word_offset, chapter_id, knowledge_id))
 
 
-def _update_relationship_offsets(cursor, chapter_id: int, md_content: str):
+def _update_relationship_offsets(cursor, chapter_id: str | int, md_content: str):
     """Scan markdown for {{relationship:id:charId|text}} markers and update word offsets."""
-    pattern = r'\{\{relationship:(\d+):(\d+)\|([^}]+)\}\}'
+    pattern = r'\{\{relationship:([^:]+):([^|]+)\|([^}]+)\}\}'
     for match in re.finditer(pattern, md_content):
-        rel_id = int(match.group(1))
+        rel_id = match.group(1)
 
         # Calculate word offset
         char_pos = match.start()
@@ -438,14 +438,14 @@ def create_chapter(req: ChapterCreate):
     title_slug = _slugify(req.title) if req.title else "untitled"
     md_filename = f"ch_{req.chapter_number:03d}_{title_slug}_{uuid.uuid4().hex[:8]}.md"
 
+    chapter_id = str(uuid.uuid4())
     cursor.execute("""
-        INSERT INTO chapters (chapter_number, title, status, pov_character_id,
+        INSERT INTO chapters (id, chapter_number, title, status, pov_character_id,
                               target_word_count, md_filename, word_count)
-        VALUES (?, ?, ?, ?, ?, ?, 0)
-    """, (req.chapter_number, req.title or f"Chapter {req.chapter_number}",
+        VALUES (?, ?, ?, ?, ?, ?, ?, 0)
+    """, (chapter_id, req.chapter_number, req.title or f"Chapter {req.chapter_number}",
           req.status, req.pov_character_id, req.target_word_count, md_filename))
 
-    chapter_id = cursor.lastrowid
     conn.commit()
 
     # Create the empty md file
@@ -569,11 +569,12 @@ def bulk_create_chapters(req: BulkChapterCreate):
         status = "writing" if i == 0 else "planned"
         pov_id = req.pov_character_id if i == 0 else None
 
+        chap_id = str(uuid.uuid4())
         cursor.execute("""
-            INSERT INTO chapters (chapter_number, title, status, pov_character_id,
+            INSERT INTO chapters (id, chapter_number, title, status, pov_character_id,
                                   target_word_count, md_filename, word_count)
-            VALUES (?, ?, ?, ?, ?, ?, 0)
-        """, (num, title, status, pov_id, req.target_word_count, md_filename))
+            VALUES (?, ?, ?, ?, ?, ?, ?, 0)
+        """, (chap_id, num, title, status, pov_id, req.target_word_count, md_filename))
 
         # Create empty md file
         md_path = os.path.join(md_dir, md_filename)
@@ -581,7 +582,7 @@ def bulk_create_chapters(req: BulkChapterCreate):
             f.write("")
 
         created.append({
-            "id": cursor.lastrowid,
+            "id": chap_id,
             "chapter_number": num,
             "title": title,
             "status": status,
@@ -755,7 +756,7 @@ def save_chapter_content(req: ChapterSave, background_tasks: BackgroundTasks):
 
 class ChapterDelete(BaseModel):
     project_path: str
-    chapter_id: int
+    chapter_id: str | int
 
 @router.post("/api/project/chapter/delete")
 def delete_chapter(req: ChapterDelete):
@@ -801,7 +802,7 @@ def delete_chapter(req: ChapterDelete):
 
 class ChapterInsert(BaseModel):
     project_path: str
-    anchor_chapter_id: int
+    anchor_chapter_id: str | int
     direction: str  # "above" or "below"
 
 @router.post("/api/project/chapter/insert")
@@ -830,12 +831,12 @@ def insert_chapter(req: ChapterInsert):
         md_filename = f"ch_{new_num:03d}_untitled_{uuid.uuid4().hex[:8]}.md"
         
         # Insert new
+        new_id = str(uuid.uuid4())
         cursor.execute("""
-            INSERT INTO chapters (chapter_number, title, status, target_word_count, md_filename, word_count)
-            VALUES (?, ?, ?, ?, ?, 0)
-        """, (new_num, title, "planned", 4000, md_filename))
+            INSERT INTO chapters (id, chapter_number, title, status, target_word_count, md_filename, word_count)
+            VALUES (?, ?, ?, ?, ?, ?, 0)
+        """, (new_id, new_num, title, "planned", 4000, md_filename))
         
-        new_id = cursor.lastrowid
         conn.commit()
         
         # Create empty md file

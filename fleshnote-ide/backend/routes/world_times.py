@@ -14,12 +14,12 @@ router = APIRouter()
 
 class WorldTimeList(BaseModel):
     project_path: str
-    chapter_id: int
+    chapter_id: str | int
 
 
 class WorldTimeCreate(BaseModel):
     project_path: str
-    chapter_id: int
+    chapter_id: str | int
     world_date: str
     label: Optional[str] = None
     color_index: Optional[int] = None
@@ -27,7 +27,7 @@ class WorldTimeCreate(BaseModel):
 
 class WorldTimeUpdate(BaseModel):
     project_path: str
-    marker_id: int
+    marker_id: str | int
     world_date: Optional[str] = None
     label: Optional[str] = None
     color_index: Optional[int] = None
@@ -35,7 +35,7 @@ class WorldTimeUpdate(BaseModel):
 
 class WorldTimeDelete(BaseModel):
     project_path: str
-    marker_id: int
+    marker_id: str | int
 
 
 def _get_db(project_path: str):
@@ -73,15 +73,16 @@ async def create_world_time(req: WorldTimeCreate):
     else:
         color_index = req.color_index
 
+    import uuid
+    marker_id = str(uuid.uuid4())
     cursor.execute("""
-        INSERT INTO world_times (chapter_id, world_date, label, color_index)
-        VALUES (?, ?, ?, ?)
+        INSERT INTO world_times (id, chapter_id, world_date, label, color_index)
+        VALUES (?, ?, ?, ?, ?)
     """, (
-        req.chapter_id, req.world_date, req.label, color_index,
+        marker_id, req.chapter_id, req.world_date, req.label, color_index,
     ))
     conn.commit()
 
-    marker_id = cursor.lastrowid
     cursor.execute("SELECT * FROM world_times WHERE id = ?", (marker_id,))
     marker = dict(cursor.fetchone())
     conn.close()

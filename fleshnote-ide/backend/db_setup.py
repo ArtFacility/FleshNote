@@ -268,12 +268,19 @@ def generate_project_db(project_path: str, answers: dict) -> str:
 
     cursor.execute("""
         CREATE TABLE IF NOT EXISTS chapters (
-            id                  INTEGER PRIMARY KEY AUTOINCREMENT,
+            id                  TEXT PRIMARY KEY DEFAULT (
+                                    lower(hex(randomblob(4))) || '-' || 
+                                    lower(hex(randomblob(2))) || '-4' || 
+                                    substr(lower(hex(randomblob(2))), 2) || '-' || 
+                                    substr('89ab', abs(random()) % 4 + 1, 1) || 
+                                    substr(lower(hex(randomblob(2))), 2) || '-' || 
+                                    lower(hex(randomblob(6)))
+                                ),
             chapter_number      INTEGER NOT NULL UNIQUE,
             title               TEXT,
             status              TEXT    DEFAULT 'planned',
                                         -- planned | writing | draft | revised | final
-            pov_character_id    INTEGER,
+            pov_character_id    TEXT,
             world_time          TEXT,    -- in-universe date, e.g. '4E-314, 3rd Moon, Day 17'
             narrative_time      INTEGER, -- ordinal: reading order position
             word_count          INTEGER DEFAULT 0,
@@ -281,6 +288,8 @@ def generate_project_db(project_path: str, answers: dict) -> str:
             md_filename         TEXT,    -- e.g. 'ch_004_second_violation.md'
             synopsis            TEXT,    -- brief chapter summary for the author
             notes               TEXT,    -- freeform author notes
+            deleted             INTEGER DEFAULT 0,
+            deleted_at          TEXT,
             created_at          TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
             updated_at          TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
             FOREIGN KEY (pov_character_id) REFERENCES characters(id)
@@ -298,19 +307,28 @@ def generate_project_db(project_path: str, answers: dict) -> str:
 
     cursor.execute("""
         CREATE TABLE IF NOT EXISTS characters (
-            id              INTEGER PRIMARY KEY AUTOINCREMENT,
+            id              TEXT PRIMARY KEY DEFAULT (
+                                lower(hex(randomblob(4))) || '-' || 
+                                lower(hex(randomblob(2))) || '-4' || 
+                                substr(lower(hex(randomblob(2))), 2) || '-' || 
+                                substr('89ab', abs(random()) % 4 + 1, 1) || 
+                                substr(lower(hex(randomblob(2))), 2) || '-' || 
+                                lower(hex(randomblob(6)))
+                            ),
             name            TEXT NOT NULL,
             aliases         TEXT,    -- JSON array: ["the Magistra", "Vael", "First Circle"]
                                      -- Used by linkification engine to match all references
             role            TEXT,    -- e.g. 'Protagonist', 'Antagonist', 'Supporting'
             status          TEXT,    -- e.g. 'Alive', 'Dead', 'Unknown'
             species         TEXT,    -- Toggled via config: track_species
-            group_id        INTEGER, -- FK to groups table, toggled via config: track_groups
+            group_id        TEXT,    -- FK to groups table, toggled via config: track_groups
             surface_goal    TEXT,    -- What they say they want
             true_goal       TEXT,    -- What they actually want (author-only)
             bio             TEXT,
             notes           TEXT,    -- Freeform author notes
             birth_date      TEXT,    -- In-universe birth date (custom calendar string)
+            deleted         INTEGER DEFAULT 0,
+            deleted_at      TEXT,
             created_at      TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
             updated_at      TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
             FOREIGN KEY (group_id) REFERENCES groups(id)
@@ -327,7 +345,14 @@ def generate_project_db(project_path: str, answers: dict) -> str:
 
     cursor.execute("""
         CREATE TABLE IF NOT EXISTS groups (
-            id              INTEGER PRIMARY KEY AUTOINCREMENT,
+            id              TEXT PRIMARY KEY DEFAULT (
+                                lower(hex(randomblob(4))) || '-' || 
+                                lower(hex(randomblob(2))) || '-4' || 
+                                substr(lower(hex(randomblob(2))), 2) || '-' || 
+                                substr('89ab', abs(random()) % 4 + 1, 1) || 
+                                substr(lower(hex(randomblob(2))), 2) || '-' || 
+                                lower(hex(randomblob(6)))
+                            ),
             name            TEXT NOT NULL,
             aliases         TEXT,    -- JSON array for linkification
             group_type      TEXT,    -- sub-category if needed (e.g. 'military', 'religious')
@@ -335,6 +360,8 @@ def generate_project_db(project_path: str, answers: dict) -> str:
             surface_agenda  TEXT,    -- Public-facing goal
             true_agenda     TEXT,    -- Hidden goal (author-only)
             notes           TEXT,
+            deleted         INTEGER DEFAULT 0,
+            deleted_at      TEXT,
             created_at      TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
             updated_at      TIMESTAMP DEFAULT CURRENT_TIMESTAMP
         )
@@ -351,7 +378,14 @@ def generate_project_db(project_path: str, answers: dict) -> str:
 
     cursor.execute("""
         CREATE TABLE IF NOT EXISTS lore_entities (
-            id              INTEGER PRIMARY KEY AUTOINCREMENT,
+            id              TEXT PRIMARY KEY DEFAULT (
+                                lower(hex(randomblob(4))) || '-' || 
+                                lower(hex(randomblob(2))) || '-4' || 
+                                substr(lower(hex(randomblob(2))), 2) || '-' || 
+                                substr('89ab', abs(random()) % 4 + 1, 1) || 
+                                substr(lower(hex(randomblob(2))), 2) || '-' || 
+                                lower(hex(randomblob(6)))
+                            ),
             name            TEXT NOT NULL,
             aliases         TEXT,    -- JSON array for linkification
             category        TEXT NOT NULL,
@@ -362,6 +396,8 @@ def generate_project_db(project_path: str, answers: dict) -> str:
             limitations     TEXT,    -- What it CAN'T do (just as important)
             origin          TEXT,    -- Where it comes from
             notes           TEXT,    -- Freeform author notes
+            deleted         INTEGER DEFAULT 0,
+            deleted_at      TEXT,
             created_at      TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
             updated_at      TIMESTAMP DEFAULT CURRENT_TIMESTAMP
         )
@@ -373,14 +409,23 @@ def generate_project_db(project_path: str, answers: dict) -> str:
 
     cursor.execute("""
         CREATE TABLE IF NOT EXISTS locations (
-            id              INTEGER PRIMARY KEY AUTOINCREMENT,
+            id              TEXT PRIMARY KEY DEFAULT (
+                                lower(hex(randomblob(4))) || '-' || 
+                                lower(hex(randomblob(2))) || '-4' || 
+                                substr(lower(hex(randomblob(2))), 2) || '-' || 
+                                substr('89ab', abs(random()) % 4 + 1, 1) || 
+                                substr(lower(hex(randomblob(2))), 2) || '-' || 
+                                lower(hex(randomblob(6)))
+                            ),
             name            TEXT NOT NULL,
             aliases         TEXT,    -- JSON array for linkification
             region          TEXT,
-            parent_location_id INTEGER, -- For hierarchical locations
-                                        -- (room -> building -> city -> region)
+            parent_location_id TEXT, -- For hierarchical locations
+                                     -- (room -> building -> city -> region)
             description     TEXT,
             notes           TEXT,
+            deleted         INTEGER DEFAULT 0,
+            deleted_at      TEXT,
             created_at      TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
             updated_at      TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
             FOREIGN KEY (parent_location_id) REFERENCES locations(id)
@@ -394,12 +439,21 @@ def generate_project_db(project_path: str, answers: dict) -> str:
 
     cursor.execute("""
         CREATE TABLE IF NOT EXISTS location_weather_states (
-            id            INTEGER PRIMARY KEY AUTOINCREMENT,
-            location_id   INTEGER NOT NULL,
+            id            TEXT PRIMARY KEY DEFAULT (
+                              lower(hex(randomblob(4))) || '-' || 
+                              lower(hex(randomblob(2))) || '-4' || 
+                              substr(lower(hex(randomblob(2))), 2) || '-' || 
+                              substr('89ab', abs(random()) % 4 + 1, 1) || 
+                              substr(lower(hex(randomblob(2))), 2) || '-' || 
+                              lower(hex(randomblob(6)))
+                          ),
+            location_id   TEXT NOT NULL,
             world_time    TEXT NOT NULL,
             weather       TEXT,
             temperature   TEXT,
             moisture      TEXT,
+            deleted       INTEGER DEFAULT 0,
+            deleted_at    TEXT,
             created_at    TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
             updated_at    TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
             FOREIGN KEY (location_id) REFERENCES locations(id) ON DELETE CASCADE
@@ -407,62 +461,57 @@ def generate_project_db(project_path: str, answers: dict) -> str:
     """)
 
     # ══════════════════════════════════════════════════════════
-    # TABLE 7: ENTITY APPEARANCES (Junction Table)
-    # Many-to-many: tracks which entities appear in which
-    # chapters. Powers the "Ch.1, Ch.3, Ch.5" tags in the
-    # entity inspector and the cross-chapter search system.
+    # TABLE 7: ENTITY APPEARANCES (Junction Table - Derived)
     # ══════════════════════════════════════════════════════════
 
     cursor.execute("""
         CREATE TABLE IF NOT EXISTS entity_appearances (
-            id              INTEGER PRIMARY KEY AUTOINCREMENT,
+            id              TEXT PRIMARY KEY DEFAULT (
+                                lower(hex(randomblob(4))) || '-' || 
+                                lower(hex(randomblob(2))) || '-4' || 
+                                substr(lower(hex(randomblob(2))), 2) || '-' || 
+                                substr('89ab', abs(random()) % 4 + 1, 1) || 
+                                substr(lower(hex(randomblob(2))), 2) || '-' || 
+                                lower(hex(randomblob(6)))
+                            ),
             entity_type     TEXT NOT NULL,
                              -- 'character', 'lore', 'location', 'group'
-            entity_id       INTEGER NOT NULL,
-            chapter_id      INTEGER NOT NULL,
+            entity_id       TEXT NOT NULL,
+            chapter_id      TEXT NOT NULL,
             first_mention_offset INTEGER, -- Character position in the md file.
-                                          -- Powers "jump to first mention" in search.
             FOREIGN KEY (chapter_id) REFERENCES chapters(id)
                 ON DELETE CASCADE,
             UNIQUE(entity_type, entity_id, chapter_id)
-                -- Prevent duplicate entries for same entity in same chapter
         )
     """)
 
     # ══════════════════════════════════════════════════════════
     # TABLE 8: KNOWLEDGE STATES (Epistemic Filtering)
-    # The killer feature. Tracks what each character knows and
-    # when they learned it. The frontend queries this to filter
-    # entity detail panels by the current POV character's
-    # knowledge state.
-    #
-    # Query pattern for POV filtering:
-    #   SELECT fact FROM knowledge_states
-    #   WHERE character_id = :pov_id
-    #     AND (learned_in_chapter <= :current_chapter
-    #          OR learned_in_chapter IS NULL)
-    #     AND is_secret = 0
-    #
-    # Toggled via config: track_knowledge
     # ══════════════════════════════════════════════════════════
 
     cursor.execute("""
         CREATE TABLE IF NOT EXISTS knowledge_states (
-            id                  INTEGER PRIMARY KEY AUTOINCREMENT,
-            character_id        INTEGER NOT NULL,
+            id                  TEXT PRIMARY KEY DEFAULT (
+                                    lower(hex(randomblob(4))) || '-' || 
+                                    lower(hex(randomblob(2))) || '-4' || 
+                                    substr(lower(hex(randomblob(2))), 2) || '-' || 
+                                    substr('89ab', abs(random()) % 4 + 1, 1) || 
+                                    substr(lower(hex(randomblob(2))), 2) || '-' || 
+                                    lower(hex(randomblob(6)))
+                                ),
+            character_id        TEXT NOT NULL,
             fact                TEXT NOT NULL,
             source_entity_type  TEXT,    -- What entity this fact is about
-                                         -- ('character', 'lore', 'location', 'group')
-            source_entity_id    INTEGER, -- FK to the relevant entity
-            learned_in_chapter  INTEGER, -- NULL = character knows from the start
-            world_time          TEXT,    -- In-universe time when character learned this
-                                         -- Used for world-time filtering in non-linear stories
+            source_entity_id    TEXT,    -- FK to the relevant entity
+            learned_in_chapter  TEXT,    -- NULL = character knows from the start
+            world_time          TEXT,
             is_secret           INTEGER DEFAULT 0,
-                                         -- 1 = author-only info the character CAN'T know
-            reveal_in_chapter   INTEGER, -- Planned chapter for the reveal (author planning)
+            reveal_in_chapter   TEXT,    -- Planned chapter for the reveal (author planning)
             notes               TEXT,
+            word_offset         INTEGER, -- Links fact to a textual position
+            deleted             INTEGER DEFAULT 0,
+            deleted_at          TEXT,
             created_at          TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-            word_offset         INTEGER, -- Optional, links fact to a textual position
             FOREIGN KEY (character_id) REFERENCES characters(id)
                 ON DELETE CASCADE,
             FOREIGN KEY (learned_in_chapter) REFERENCES chapters(id)
@@ -474,21 +523,28 @@ def generate_project_db(project_path: str, answers: dict) -> str:
 
     # ══════════════════════════════════════════════════════════
     # TABLE 10: TWISTS
-    # Major plot reveals or secrets. Used in conjunction with
-    # foreshadowings to track narrative payoff on the timeline.
     # ══════════════════════════════════════════════════════════
 
     cursor.execute("""
         CREATE TABLE IF NOT EXISTS twists (
-            id                  INTEGER PRIMARY KEY AUTOINCREMENT,
+            id                  TEXT PRIMARY KEY DEFAULT (
+                                    lower(hex(randomblob(4))) || '-' || 
+                                    lower(hex(randomblob(2))) || '-4' || 
+                                    substr(lower(hex(randomblob(2))), 2) || '-' || 
+                                    substr('89ab', abs(random()) % 4 + 1, 1) || 
+                                    substr(lower(hex(randomblob(2))), 2) || '-' || 
+                                    lower(hex(randomblob(6)))
+                                ),
             title               TEXT NOT NULL,
             description         TEXT,
             twist_type          TEXT,
-            reveal_chapter_id   INTEGER,
+            reveal_chapter_id   TEXT,
             reveal_word_offset  INTEGER,
             characters_who_know TEXT,
             status              TEXT DEFAULT 'planned',
             notes               TEXT,
+            deleted             INTEGER DEFAULT 0,
+            deleted_at          TEXT,
             created_at          TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
             FOREIGN KEY (reveal_chapter_id) REFERENCES chapters(id)
                 ON DELETE SET NULL
@@ -497,17 +553,24 @@ def generate_project_db(project_path: str, answers: dict) -> str:
 
     # ══════════════════════════════════════════════════════════
     # TABLE 10.5: FORESHADOWINGS
-    # Precise markers linking a specific word offset in a chapter
-    # to a Twist. This powers the visual lines on the planner.
     # ══════════════════════════════════════════════════════════
 
     cursor.execute("""
         CREATE TABLE IF NOT EXISTS foreshadowings (
-            id                  INTEGER PRIMARY KEY AUTOINCREMENT,
-            twist_id            INTEGER NOT NULL,
-            chapter_id          INTEGER NOT NULL,
+            id                  TEXT PRIMARY KEY DEFAULT (
+                                    lower(hex(randomblob(4))) || '-' || 
+                                    lower(hex(randomblob(2))) || '-4' || 
+                                    substr(lower(hex(randomblob(2))), 2) || '-' || 
+                                    substr('89ab', abs(random()) % 4 + 1, 1) || 
+                                    substr(lower(hex(randomblob(2))), 2) || '-' || 
+                                    lower(hex(randomblob(6)))
+                                ),
+            twist_id            TEXT NOT NULL,
+            chapter_id          TEXT NOT NULL,
             word_offset         INTEGER NOT NULL,
             selected_text       TEXT,
+            deleted             INTEGER DEFAULT 0,
+            deleted_at          TEXT,
             created_at          TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
             FOREIGN KEY (twist_id) REFERENCES twists(id)
                 ON DELETE CASCADE,
@@ -518,8 +581,6 @@ def generate_project_db(project_path: str, answers: dict) -> str:
 
     # ══════════════════════════════════════════════════════════
     # TABLE 11: PLANNER SETTINGS (Singleton)
-    # Global planner states: cursor progress, visibility, and 
-    # theme description.
     # ══════════════════════════════════════════════════════════
 
     cursor.execute("""
@@ -532,12 +593,10 @@ def generate_project_db(project_path: str, answers: dict) -> str:
             updated_at      TEXT DEFAULT (datetime('now'))
         )
     """)
-    # Seed the singleton on DB creation
     cursor.execute("INSERT OR IGNORE INTO planner_settings (id) VALUES (1)")
 
     # ══════════════════════════════════════════════════════════
     # TABLE 12: PLANNER BLOCKS
-    # Plot milestones and story beats in the planner.
     # ══════════════════════════════════════════════════════════
 
     cursor.execute("""
@@ -549,11 +608,13 @@ def generate_project_db(project_path: str, answers: dict) -> str:
             label                TEXT DEFAULT '' CHECK(length(label) <= 50),
             pct                  REAL NOT NULL CHECK(pct >= 0 AND pct <= 100),
             lane                 INTEGER DEFAULT 0 CHECK(lane IN (0, 1, 2)),
-            chapter_id           INTEGER REFERENCES chapters(id) ON DELETE SET NULL,
+            chapter_id           TEXT REFERENCES chapters(id) ON DELETE SET NULL,
             chapter_status       TEXT CHECK(chapter_status IN
                                      (NULL, 'planned', 'writing', 'draft', 'revised', 'final')),
             added_during_writing INTEGER DEFAULT 0,
             sort_order           INTEGER DEFAULT 0,
+            deleted              INTEGER DEFAULT 0,
+            deleted_at           TEXT,
             created_at           TEXT DEFAULT (datetime('now')),
             updated_at           TEXT DEFAULT (datetime('now'))
         )
@@ -561,7 +622,6 @@ def generate_project_db(project_path: str, answers: dict) -> str:
 
     # ══════════════════════════════════════════════════════════
     # TABLE 13: PLANNER ARCS
-    # Character arcs (surface) or hidden forces (shadow).
     # ══════════════════════════════════════════════════════════
 
     cursor.execute("""
@@ -577,6 +637,8 @@ def generate_project_db(project_path: str, answers: dict) -> str:
             end_pct     REAL NOT NULL DEFAULT 100
                             CHECK(end_pct >= 0 AND end_pct <= 100),
             sort_order  INTEGER DEFAULT 0,
+            deleted     INTEGER DEFAULT 0,
+            deleted_at  TEXT,
             created_at  TEXT DEFAULT (datetime('now')),
             updated_at  TEXT DEFAULT (datetime('now')),
             CHECK(start_pct < end_pct)
@@ -585,20 +647,28 @@ def generate_project_db(project_path: str, answers: dict) -> str:
 
     # ══════════════════════════════════════════════════════════
     # TABLE 13.5: CHARACTER RELATIONSHIPS
-    # Tracks dynamic relationships between characters over time.
     # ══════════════════════════════════════════════════════════
 
     cursor.execute("""
         CREATE TABLE IF NOT EXISTS character_relationships (
-            id                  INTEGER PRIMARY KEY AUTOINCREMENT,
-            character_id        INTEGER NOT NULL,
-            target_character_id INTEGER NOT NULL,
+            id                  TEXT PRIMARY KEY DEFAULT (
+                                    lower(hex(randomblob(4))) || '-' || 
+                                    lower(hex(randomblob(2))) || '-4' || 
+                                    substr(lower(hex(randomblob(2))), 2) || '-' || 
+                                    substr('89ab', abs(random()) % 4 + 1, 1) || 
+                                    substr(lower(hex(randomblob(2))), 2) || '-' || 
+                                    lower(hex(randomblob(6)))
+                                ),
+            character_id        TEXT NOT NULL,
+            target_character_id TEXT NOT NULL,
             rel_type            TEXT NOT NULL,
             notes               TEXT,
-            chapter_id          INTEGER,
+            chapter_id          TEXT,
             word_offset         INTEGER,
             world_time          TEXT,
             is_one_sided        INTEGER DEFAULT 1,
+            deleted             INTEGER DEFAULT 0,
+            deleted_at          TEXT,
             created_at          TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
             FOREIGN KEY (character_id) REFERENCES characters(id) ON DELETE CASCADE,
             FOREIGN KEY (target_character_id) REFERENCES characters(id) ON DELETE CASCADE,
@@ -608,35 +678,50 @@ def generate_project_db(project_path: str, answers: dict) -> str:
 
     # ══════════════════════════════════════════════════════════
     # TABLE: WORLD_TIMES (Paragraph-level time overrides)
-    # Lets writers mark paragraph ranges as flashbacks, timeskips,
-    # or memories with a different in-universe date.
     # ══════════════════════════════════════════════════════════
 
     cursor.execute("""
         CREATE TABLE IF NOT EXISTS world_times (
-            id          INTEGER PRIMARY KEY AUTOINCREMENT,
-            chapter_id  INTEGER NOT NULL REFERENCES chapters(id) ON DELETE CASCADE,
+            id          TEXT PRIMARY KEY DEFAULT (
+                            lower(hex(randomblob(4))) || '-' || 
+                            lower(hex(randomblob(2))) || '-4' || 
+                            substr(lower(hex(randomblob(2))), 2) || '-' || 
+                            substr('89ab', abs(random()) % 4 + 1, 1) || 
+                            substr(lower(hex(randomblob(2))), 2) || '-' || 
+                            lower(hex(randomblob(6)))
+                        ),
+            chapter_id  TEXT NOT NULL REFERENCES chapters(id) ON DELETE CASCADE,
             world_date  TEXT NOT NULL,
             label       TEXT,
             color_index INTEGER NOT NULL DEFAULT 0,
+            deleted     INTEGER DEFAULT 0,
+            deleted_at  TEXT,
             created_at  TEXT DEFAULT (datetime('now'))
         )
     """)
 
     # ══════════════════════════════════════════════════════════
     # SKETCHBOARDS: boards, board_items, item_connections
-    # Visual node-graph boards for mapping systems and relationships.
     # ══════════════════════════════════════════════════════════
 
     cursor.execute("""
         CREATE TABLE IF NOT EXISTS boards (
-            id         INTEGER PRIMARY KEY AUTOINCREMENT,
+            id         TEXT PRIMARY KEY DEFAULT (
+                            lower(hex(randomblob(4))) || '-' || 
+                            lower(hex(randomblob(2))) || '-4' || 
+                            substr(lower(hex(randomblob(2))), 2) || '-' || 
+                            substr('89ab', abs(random()) % 4 + 1, 1) || 
+                            substr(lower(hex(randomblob(2))), 2) || '-' || 
+                            lower(hex(randomblob(6)))
+                        ),
             name       TEXT NOT NULL DEFAULT 'New Board',
             board_type TEXT NOT NULL DEFAULT 'custom',
             icon       TEXT DEFAULT '✦',
             zoom       REAL DEFAULT 1.0,
             pan_x      REAL DEFAULT 0.0,
             pan_y      REAL DEFAULT 0.0,
+            deleted    INTEGER DEFAULT 0,
+            deleted_at TEXT,
             created_at TEXT DEFAULT (datetime('now')),
             updated_at TEXT DEFAULT (datetime('now'))
         )
@@ -644,11 +729,18 @@ def generate_project_db(project_path: str, answers: dict) -> str:
 
     cursor.execute("""
         CREATE TABLE IF NOT EXISTS board_items (
-            id          INTEGER PRIMARY KEY AUTOINCREMENT,
-            board_id    INTEGER NOT NULL REFERENCES boards(id) ON DELETE CASCADE,
+            id          TEXT PRIMARY KEY DEFAULT (
+                            lower(hex(randomblob(4))) || '-' || 
+                            lower(hex(randomblob(2))) || '-4' || 
+                            substr(lower(hex(randomblob(2))), 2) || '-' || 
+                            substr('89ab', abs(random()) % 4 + 1, 1) || 
+                            substr(lower(hex(randomblob(2))), 2) || '-' || 
+                            lower(hex(randomblob(6)))
+                        ),
+            board_id    TEXT NOT NULL REFERENCES boards(id) ON DELETE CASCADE,
             name        TEXT NOT NULL,
             item_type   TEXT NOT NULL DEFAULT 'concept',
-            entity_id   INTEGER DEFAULT NULL,
+            entity_id   TEXT DEFAULT NULL,
             entity_type TEXT DEFAULT NULL,
             description TEXT DEFAULT '',
             pos_x       REAL NOT NULL DEFAULT 0,
@@ -656,21 +748,32 @@ def generate_project_db(project_path: str, answers: dict) -> str:
             size_x      REAL NOT NULL DEFAULT 140,
             size_y      REAL NOT NULL DEFAULT 60,
             color       TEXT NOT NULL DEFAULT '#888888',
-            z_index     INTEGER NOT NULL DEFAULT 0
+            z_index     INTEGER NOT NULL DEFAULT 0,
+            deleted     INTEGER DEFAULT 0,
+            deleted_at  TEXT
         )
     """)
 
     cursor.execute("""
         CREATE TABLE IF NOT EXISTS item_connections (
-            id            INTEGER PRIMARY KEY AUTOINCREMENT,
-            board_id      INTEGER NOT NULL REFERENCES boards(id) ON DELETE CASCADE,
-            item_start_id INTEGER NOT NULL REFERENCES board_items(id) ON DELETE CASCADE,
-            item_end_id   INTEGER NOT NULL REFERENCES board_items(id) ON DELETE CASCADE,
+            id            TEXT PRIMARY KEY DEFAULT (
+                              lower(hex(randomblob(4))) || '-' || 
+                              lower(hex(randomblob(2))) || '-4' || 
+                              substr(lower(hex(randomblob(2))), 2) || '-' || 
+                              substr('89ab', abs(random()) % 4 + 1, 1) || 
+                              substr(lower(hex(randomblob(2))), 2) || '-' || 
+                              lower(hex(randomblob(6)))
+                          ),
+            board_id      TEXT NOT NULL REFERENCES boards(id) ON DELETE CASCADE,
+            item_start_id TEXT NOT NULL REFERENCES board_items(id) ON DELETE CASCADE,
+            item_end_id   TEXT NOT NULL REFERENCES board_items(id) ON DELETE CASCADE,
             conn_type     TEXT NOT NULL DEFAULT 'solid',
             conn_color    TEXT NOT NULL DEFAULT '#888888',
             title         TEXT DEFAULT '',
             directed      INTEGER NOT NULL DEFAULT 1,
-            curve_offset  REAL NOT NULL DEFAULT 0.0
+            curve_offset  REAL NOT NULL DEFAULT 0.0,
+            deleted       INTEGER DEFAULT 0,
+            deleted_at    TEXT
         )
     """)
 
@@ -678,9 +781,7 @@ def generate_project_db(project_path: str, answers: dict) -> str:
     cursor.execute("CREATE INDEX IF NOT EXISTS idx_connections_board ON item_connections(board_id);")
 
     # ══════════════════════════════════════════════════════════
-    # TABLE 15: STATS (Aggregated Statistics)
-    # Simple key/value store for global project stats (e.g. days
-    # writing, total focus time, etc.)
+    # TABLE 15: STATS (Aggregated Statistics - Counter)
     # ══════════════════════════════════════════════════════════
 
     cursor.execute("""
@@ -691,40 +792,49 @@ def generate_project_db(project_path: str, answers: dict) -> str:
     """)
 
     # ══════════════════════════════════════════════════════════
-    # TABLE 16: STAT_LOGS (Daily / Session Activity)
-    # Tracks writing habits over time for the GitHub-style heatmap.
-    # We store new_words and deleted_words separately at user request.
+    # TABLE 16: STAT_LOGS (Daily / Session Activity - Log)
     # ══════════════════════════════════════════════════════════
 
     cursor.execute("""
         CREATE TABLE IF NOT EXISTS stat_logs (
-            id                INTEGER PRIMARY KEY AUTOINCREMENT,
+            id                TEXT PRIMARY KEY DEFAULT (
+                                  lower(hex(randomblob(4))) || '-' || 
+                                  lower(hex(randomblob(2))) || '-4' || 
+                                  substr(lower(hex(randomblob(2))), 2) || '-' || 
+                                  substr('89ab', abs(random()) % 4 + 1, 1) || 
+                                  substr(lower(hex(randomblob(2))), 2) || '-' || 
+                                  lower(hex(randomblob(6)))
+                              ),
             timestamp         TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
             new_words         INTEGER DEFAULT 0,
             deleted_words     INTEGER DEFAULT 0,
             new_entities      INTEGER DEFAULT 0,
             deleted_entities  INTEGER DEFAULT 0,
             new_twists        INTEGER DEFAULT 0,
-            event_context     TEXT -- e.g. "chapter_save", "focus_kamikaze", "project_init"
+            event_context     TEXT
         )
     """)
 
     # ══════════════════════════════════════════════════════════
-    # TABLE 17: ENTITY_MENTIONS (Precise Offset Tracking)
-    # Logs exact word_offset for entity mentions in chapters
-    # populated via TipTap frontend during autosaves.
+    # TABLE 17: ENTITY_MENTIONS (Precise Offset Tracking - Derived)
     # ══════════════════════════════════════════════════════════
 
     cursor.execute("""
         CREATE TABLE IF NOT EXISTS entity_mentions (
-            id            INTEGER PRIMARY KEY AUTOINCREMENT,
+            id            TEXT PRIMARY KEY DEFAULT (
+                              lower(hex(randomblob(4))) || '-' || 
+                              lower(hex(randomblob(2))) || '-4' || 
+                              substr(lower(hex(randomblob(2))), 2) || '-' || 
+                              substr('89ab', abs(random()) % 4 + 1, 1) || 
+                              substr(lower(hex(randomblob(2))), 2) || '-' || 
+                              lower(hex(randomblob(6)))
+                          ),
             entity_type   TEXT NOT NULL,
-            entity_id     INTEGER NOT NULL,
-            chapter_id    INTEGER NOT NULL,
+            entity_id     TEXT NOT NULL,
+            chapter_id    TEXT NOT NULL,
             word_offset   INTEGER NOT NULL,
             created_at    TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
             FOREIGN KEY (chapter_id) REFERENCES chapters(id) ON DELETE CASCADE
-            -- Does not enforce UNIQUE on chapter_id because entities can appear multiple times
         );
     """)
 
@@ -735,9 +845,41 @@ def generate_project_db(project_path: str, answers: dict) -> str:
         );
     """)
 
+    cursor.execute("""
+        CREATE TABLE IF NOT EXISTS quick_notes (
+            id              TEXT PRIMARY KEY DEFAULT (
+                                lower(hex(randomblob(4))) || '-' || 
+                                lower(hex(randomblob(2))) || '-4' || 
+                                substr(lower(hex(randomblob(2))), 2) || '-' || 
+                                substr('89ab', abs(random()) % 4 + 1, 1) || 
+                                substr(lower(hex(randomblob(2))), 2) || '-' || 
+                                lower(hex(randomblob(6)))
+                            ),
+            content         TEXT NOT NULL,
+            note_type       TEXT NOT NULL DEFAULT 'Note',
+            created_at      TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+            updated_at      TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+        )
+    """)
+
+    cursor.execute("""
+        CREATE TABLE IF NOT EXISTS annotations (
+            id              TEXT PRIMARY KEY DEFAULT (
+                                lower(hex(randomblob(4))) || '-' || 
+                                lower(hex(randomblob(2))) || '-4' || 
+                                substr(lower(hex(randomblob(2))), 2) || '-' || 
+                                substr('89ab', abs(random()) % 4 + 1, 1) || 
+                                substr(lower(hex(randomblob(2))), 2) || '-' || 
+                                lower(hex(randomblob(6)))
+                            ),
+            content         TEXT NOT NULL,
+            created_at      TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+            updated_at      TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+        )
+    """)
+
     # ══════════════════════════════════════════════════════════
     # TRIGGER: UPDATE_BLOCK_CHAPTER_STATUS
-    # Sync planner blocks when chapter status changes natively
     # ══════════════════════════════════════════════════════════
     
     cursor.execute("""
@@ -753,11 +895,6 @@ def generate_project_db(project_path: str, answers: dict) -> str:
 
     # ══════════════════════════════════════════════════════════
     # TABLE 14: CALENDAR CONFIG
-    # Custom calendar system for worldbuilding. Stores the
-    # full calendar definition as key/value pairs (same pattern
-    # as project_config). Writers can define custom months,
-    # week days, seasons, and epoch labels for their world.
-    # Toggled via project_config: track_custom_calendar
     # ══════════════════════════════════════════════════════════
 
     cursor.execute("""
@@ -804,16 +941,20 @@ def generate_project_db(project_path: str, answers: dict) -> str:
 
     # ══════════════════════════════════════════════════════════
     # HISTORY ENTRIES
-    # Timeline events for entities (characters, locations, lore).
-    # Tracks births, deaths, events, actions, and interactions
-    # across the in-universe calendar for the history timeline.
     # ══════════════════════════════════════════════════════════
 
     cursor.execute("""
         CREATE TABLE IF NOT EXISTS history_entries (
-            id                   INTEGER PRIMARY KEY AUTOINCREMENT,
+            id                   TEXT PRIMARY KEY DEFAULT (
+                                     lower(hex(randomblob(4))) || '-' || 
+                                     lower(hex(randomblob(2))) || '-4' || 
+                                     substr(lower(hex(randomblob(2))), 2) || '-' || 
+                                     substr('89ab', abs(random()) % 4 + 1, 1) || 
+                                     substr(lower(hex(randomblob(2))), 2) || '-' || 
+                                     lower(hex(randomblob(6)))
+                                 ),
             entity_type          TEXT NOT NULL,
-            entity_id            INTEGER NOT NULL,
+            entity_id            TEXT NOT NULL,
             title                TEXT NOT NULL,
             description          TEXT,
             event_type           TEXT NOT NULL,
@@ -822,7 +963,9 @@ def generate_project_db(project_path: str, answers: dict) -> str:
             date_day             INTEGER,
             date_precise         INTEGER DEFAULT 0,
             related_entity_type  TEXT,
-            related_entity_id    INTEGER,
+            related_entity_id    TEXT,
+            deleted              INTEGER DEFAULT 0,
+            deleted_at           TEXT,
             created_at           TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
             updated_at           TIMESTAMP DEFAULT CURRENT_TIMESTAMP
         )
@@ -830,21 +973,103 @@ def generate_project_db(project_path: str, answers: dict) -> str:
 
     # ══════════════════════════════════════════════════════════
     # IMAGE REFERENCES
-    # Reference images and icons for entities (characters,
-    # locations, lore entities). Stored in {project}/assets/.
     # ══════════════════════════════════════════════════════════
 
     cursor.execute("""
         CREATE TABLE IF NOT EXISTS image_references (
-            id            INTEGER PRIMARY KEY AUTOINCREMENT,
-            entity_id     INTEGER NOT NULL,
+            id            TEXT PRIMARY KEY DEFAULT (
+                              lower(hex(randomblob(4))) || '-' || 
+                              lower(hex(randomblob(2))) || '-4' || 
+                              substr(lower(hex(randomblob(2))), 2) || '-' || 
+                              substr('89ab', abs(random()) % 4 + 1, 1) || 
+                              substr(lower(hex(randomblob(2))), 2) || '-' || 
+                              lower(hex(randomblob(6)))
+                          ),
+            entity_id     TEXT NOT NULL,
             entity_type   TEXT NOT NULL,
             image_path    TEXT NOT NULL,
             is_icon       INTEGER DEFAULT 0,
             world_time    TEXT,
             caption       TEXT,
             sort_order    INTEGER DEFAULT 0,
+            deleted       INTEGER DEFAULT 0,
+            deleted_at    TEXT,
             created_at    TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+        )
+    """)
+
+    # ══════════════════════════════════════════════════════════
+    # TABLE 18: OFFLINE SYNC CHANGE LOG (Auth Sync)
+    # ══════════════════════════════════════════════════════════
+
+    cursor.execute("""
+        CREATE TABLE IF NOT EXISTS change_log (
+            id TEXT PRIMARY KEY DEFAULT (
+                lower(hex(randomblob(4))) || '-' || 
+                lower(hex(randomblob(2))) || '-4' || 
+                substr(lower(hex(randomblob(2))), 2) || '-' || 
+                substr('89ab', abs(random()) % 4 + 1, 1) || 
+                substr(lower(hex(randomblob(2))), 2) || '-' || 
+                lower(hex(randomblob(6)))
+            ),
+            table_name TEXT NOT NULL,
+            row_id TEXT NOT NULL,
+            column_name TEXT NOT NULL,
+            value TEXT,
+            hlc TEXT NOT NULL,
+            device_id TEXT NOT NULL,
+            origin TEXT NOT NULL
+        )
+    """)
+
+    # ══════════════════════════════════════════════════════════
+    # PENTIMENTO TELEMETRY: Sessions & Ops
+    # ══════════════════════════════════════════════════════════
+
+    cursor.execute("""
+        CREATE TABLE IF NOT EXISTS pentimento_sessions (
+            id TEXT PRIMARY KEY DEFAULT (
+                lower(hex(randomblob(4))) || '-' || 
+                lower(hex(randomblob(2))) || '-4' || 
+                substr(lower(hex(randomblob(2))), 2) || '-' || 
+                substr('89ab', abs(random()) % 4 + 1, 1) || 
+                substr(lower(hex(randomblob(2))), 2) || '-' || 
+                lower(hex(randomblob(6)))
+            ),
+            chapter_id TEXT NOT NULL,
+            device_id TEXT NOT NULL,
+            session_num INTEGER NOT NULL,
+            start_time TEXT NOT NULL,
+            end_time TEXT,
+            previous_session_hash TEXT,
+            session_hash TEXT,
+            created_at TEXT DEFAULT (datetime('now')),
+            FOREIGN KEY (chapter_id) REFERENCES chapters(id) ON DELETE CASCADE
+        )
+    """)
+
+    cursor.execute("""
+        CREATE TABLE IF NOT EXISTS pentimento_ops (
+            id TEXT PRIMARY KEY DEFAULT (
+                lower(hex(randomblob(4))) || '-' || 
+                lower(hex(randomblob(2))) || '-4' || 
+                substr(lower(hex(randomblob(2))), 2) || '-' || 
+                substr('89ab', abs(random()) % 4 + 1, 1) || 
+                substr(lower(hex(randomblob(2))), 2) || '-' || 
+                lower(hex(randomblob(6)))
+            ),
+            session_id TEXT NOT NULL,
+            chapter_id TEXT NOT NULL,
+            timestamp TEXT NOT NULL,
+            op_type TEXT NOT NULL,
+            para_index INTEGER NOT NULL,
+            char_offset INTEGER NOT NULL,
+            length INTEGER DEFAULT 0,
+            text_content TEXT,
+            duration_ms INTEGER DEFAULT 0,
+            origin TEXT NOT NULL,
+            FOREIGN KEY (session_id) REFERENCES pentimento_sessions(id) ON DELETE CASCADE,
+            FOREIGN KEY (chapter_id) REFERENCES chapters(id) ON DELETE CASCADE
         )
     """)
 

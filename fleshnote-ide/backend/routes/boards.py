@@ -34,7 +34,7 @@ class BoardCreate(BaseModel):
 
 class BoardUpdate(BaseModel):
     project_path: str
-    board_id: int
+    board_id: str | int
     name: Optional[str] = None
     board_type: Optional[str] = None
     icon: Optional[str] = None
@@ -44,11 +44,11 @@ class BoardUpdate(BaseModel):
 
 class BoardDelete(BaseModel):
     project_path: str
-    board_id: int
+    board_id: str | int
 
 class BoardLoad(BaseModel):
     project_path: str
-    board_id: int
+    board_id: str | int
 
 
 @router.post("/api/project/boards/list")
@@ -65,12 +65,13 @@ async def list_boards(req: BoardList):
 async def create_board(req: BoardCreate):
     conn = _get_db(req.project_path)
     cursor = conn.cursor()
+    import uuid
+    board_id = str(uuid.uuid4())
     cursor.execute(
-        "INSERT INTO boards (name, board_type, icon) VALUES (?, ?, ?)",
-        (req.name, req.board_type, req.icon)
+        "INSERT INTO boards (id, name, board_type, icon) VALUES (?, ?, ?, ?)",
+        (board_id, req.name, req.board_type, req.icon)
     )
     conn.commit()
-    board_id = cursor.lastrowid
     cursor.execute("SELECT * FROM boards WHERE id = ?", (board_id,))
     board = dict(cursor.fetchone())
     conn.close()
@@ -133,10 +134,10 @@ async def load_board(req: BoardLoad):
 
 class ItemCreate(BaseModel):
     project_path: str
-    board_id: int
+    board_id: str | int
     name: str
     item_type: str = "concept"
-    entity_id: Optional[int] = None
+    entity_id: Optional[str | int] = None
     entity_type: Optional[str] = None
     description: str = ""
     pos_x: float = 0
@@ -147,7 +148,7 @@ class ItemCreate(BaseModel):
 
 class ItemUpdate(BaseModel):
     project_path: str
-    item_id: int
+    item_id: str | int
     name: Optional[str] = None
     description: Optional[str] = None
     pos_x: Optional[float] = None
@@ -158,21 +159,22 @@ class ItemUpdate(BaseModel):
 
 class ItemDelete(BaseModel):
     project_path: str
-    item_id: int
+    item_id: str | int
 
 
 @router.post("/api/project/boards/items/create")
 async def create_item(req: ItemCreate):
     conn = _get_db(req.project_path)
     cursor = conn.cursor()
+    import uuid
+    item_id = str(uuid.uuid4())
     cursor.execute("""
         INSERT INTO board_items
-            (board_id, name, item_type, entity_id, entity_type, description, pos_x, pos_y, size_x, size_y, color)
-        VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
-    """, (req.board_id, req.name, req.item_type, req.entity_id, req.entity_type,
+            (id, board_id, name, item_type, entity_id, entity_type, description, pos_x, pos_y, size_x, size_y, color)
+        VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+    """, (item_id, req.board_id, req.name, req.item_type, req.entity_id, req.entity_type,
           req.description, req.pos_x, req.pos_y, req.size_x, req.size_y, req.color))
     conn.commit()
-    item_id = cursor.lastrowid
     cursor.execute("SELECT * FROM board_items WHERE id = ?", (item_id,))
     item = dict(cursor.fetchone())
     conn.close()
@@ -215,9 +217,9 @@ async def delete_item(req: ItemDelete):
 
 class ConnectionCreate(BaseModel):
     project_path: str
-    board_id: int
-    item_start_id: int
-    item_end_id: int
+    board_id: str | int
+    item_start_id: str | int
+    item_end_id: str | int
     conn_type: str = "solid"
     conn_color: str = "#888888"
     title: str = ""
@@ -226,9 +228,9 @@ class ConnectionCreate(BaseModel):
 
 class ConnectionUpdate(BaseModel):
     project_path: str
-    connection_id: int
-    item_start_id: Optional[int] = None
-    item_end_id: Optional[int] = None
+    connection_id: str | int
+    item_start_id: Optional[str | int] = None
+    item_end_id: Optional[str | int] = None
     conn_type: Optional[str] = None
     conn_color: Optional[str] = None
     title: Optional[str] = None
@@ -237,21 +239,22 @@ class ConnectionUpdate(BaseModel):
 
 class ConnectionDelete(BaseModel):
     project_path: str
-    connection_id: int
+    connection_id: str | int
 
 
 @router.post("/api/project/boards/connections/create")
 async def create_connection(req: ConnectionCreate):
     conn = _get_db(req.project_path)
     cursor = conn.cursor()
+    import uuid
+    conn_id = str(uuid.uuid4())
     cursor.execute("""
         INSERT INTO item_connections
-            (board_id, item_start_id, item_end_id, conn_type, conn_color, title, directed, curve_offset)
-        VALUES (?, ?, ?, ?, ?, ?, ?, ?)
-    """, (req.board_id, req.item_start_id, req.item_end_id,
+            (id, board_id, item_start_id, item_end_id, conn_type, conn_color, title, directed, curve_offset)
+        VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)
+    """, (conn_id, req.board_id, req.item_start_id, req.item_end_id,
           req.conn_type, req.conn_color, req.title, 1 if req.directed else 0, req.curve_offset))
     conn.commit()
-    conn_id = cursor.lastrowid
     cursor.execute("SELECT * FROM item_connections WHERE id = ?", (conn_id,))
     row = dict(cursor.fetchone())
     conn.close()

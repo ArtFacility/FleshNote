@@ -160,6 +160,7 @@ export default function ProjectPicker({
   const [loading, setLoading] = useState(false)
   const [downloadProgress, setDownloadProgress] = useState(null)
   const [deletingProject, setDeletingProject] = useState(null)
+  const [migratingPath, setMigratingPath] = useState(null)
   const [showChangelog, setShowChangelog] = useState(false)
   const [showAbout, setShowAbout] = useState(false)
   const [showCredits, setShowCredits] = useState(false)
@@ -210,6 +211,23 @@ export default function ProjectPicker({
   const handleSelectWorkspace = async () => {
     const newPath = await window.api.selectFolder()
     if (newPath) setWorkspacePath(newPath)
+  }
+
+  const handleMigrate = async (proj) => {
+    setMigratingPath(proj.path)
+    try {
+      const res = await window.api.migrateProject(proj.path)
+      if (res && res.status === 'ok') {
+        alert(t('picker.migrationSuccess', 'Project migrated successfully to Schema v2!'))
+        fetchProjects(workspacePath)
+      } else {
+        alert(t('picker.migrationError', 'Migration failed: ') + (res?.message || 'Unknown error'))
+      }
+    } catch (err) {
+      alert(t('picker.migrationError', 'Migration failed: ') + (err.message || err))
+    } finally {
+      setMigratingPath(null)
+    }
   }
 
   return (
@@ -400,12 +418,52 @@ export default function ProjectPicker({
                 onMouseEnter={(e) => (e.currentTarget.style.borderColor = 'var(--accent-amber)')}
                 onMouseLeave={(e) => (e.currentTarget.style.borderColor = 'var(--border-subtle)')}
               >
-                <div style={{ flex: 1, cursor: 'pointer' }} onClick={() => onSelectProject(proj.path)}>
-                  <div style={{ color: 'var(--text-primary)', fontWeight: 500 }}>{proj.name}</div>
+                <div
+                  style={{ flex: 1, cursor: 'pointer' }}
+                  onClick={() => {
+                    if (proj.needs_migration) {
+                      alert(t('picker.migrationRequired', 'This project must be migrated before loading. Please click the Migrate button.'))
+                      return
+                    }
+                    onSelectProject(proj.path)
+                  }}
+                >
+                  <div style={{ color: 'var(--text-primary)', fontWeight: 500 }}>
+                    {proj.name}
+                    {proj.needs_migration && (
+                      <span style={{ color: 'var(--accent-amber)', fontSize: '12px', fontWeight: 600, marginStart: '8px' }}>
+                        ({t('picker.needsMigrationLabel', 'Needs Migration')})
+                      </span>
+                    )}
+                  </div>
                   <div style={{ color: 'var(--text-tertiary)', fontSize: '12px', fontFamily: 'var(--font-mono)', marginTop: 4 }}>
                     {t('picker.lastOpened', 'Last opened:')} {formatRelativeTime(proj.lastOpened, t)}
                   </div>
                 </div>
+
+                {proj.needs_migration && (
+                  <button
+                    disabled={migratingPath === proj.path}
+                    onClick={(e) => { e.stopPropagation(); handleMigrate(proj) }}
+                    style={{
+                      backgroundColor: 'var(--accent-amber)',
+                      color: 'var(--bg-deep)',
+                      border: 'none',
+                      cursor: 'pointer',
+                      padding: '8px 16px',
+                      borderRadius: '4px',
+                      fontSize: '12px',
+                      fontWeight: 600,
+                      marginInlineEnd: '12px',
+                      transition: 'opacity 0.15s',
+                      opacity: migratingPath === proj.path ? 0.6 : 1,
+                    }}
+                    onMouseEnter={(e) => { if (migratingPath !== proj.path) e.currentTarget.style.opacity = '0.85' }}
+                    onMouseLeave={(e) => { if (migratingPath !== proj.path) e.currentTarget.style.opacity = '1' }}
+                  >
+                    {migratingPath === proj.path ? t('picker.migrating', 'Migrating...') : t('picker.migrate', 'Migrate')}
+                  </button>
+                )}
 
                 <button
                   onClick={(e) => { e.stopPropagation(); setDeletingProject(proj) }}

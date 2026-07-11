@@ -24,7 +24,7 @@ export default function MakeConnectionPopup({
   const [entitySearch, setEntitySearch] = useState('')
   const [entityResults, setEntityResults] = useState([])
   const [selectedEntity, setSelectedEntity] = useState(null)
-  const [learnedInChapter, setLearnedInChapter] = useState(activeChapter?.chapter_number || '')
+  const [learnedInChapter, setLearnedInChapter] = useState(activeChapter?.id || '')
   const [isSecret, setIsSecret] = useState(false)
   const [revealChapter, setRevealChapter] = useState('')
   const [worldTime, setWorldTime] = useState('')
@@ -40,7 +40,7 @@ export default function MakeConnectionPopup({
   // Auto-populate world_time from selected chapter
   useEffect(() => {
     if (learnedInChapter) {
-      const ch = chapters.find(c => c.chapter_number === parseInt(learnedInChapter))
+      const ch = chapters.find(c => c.id === learnedInChapter)
       setWorldTime(ch?.world_time || '')
     } else {
       setWorldTime('')
@@ -80,20 +80,26 @@ export default function MakeConnectionPopup({
 
     setSaving(true)
     try {
+      const parseId = (val) => {
+        if (val === null || val === undefined || val === "") return null;
+        const num = Number(val);
+        return isNaN(num) ? String(val) : num;
+      };
+
       const result = await window.api.createKnowledge({
         project_path: projectPath,
-        character_id: parseInt(characterId),
+        character_id: parseId(characterId),
         fact: fact.trim(),
         source_entity_type: selectedEntity?.type || null,
         source_entity_id: selectedEntity?.id || null,
-        learned_in_chapter: learnedInChapter ? parseInt(learnedInChapter) : null,
+        learned_in_chapter: learnedInChapter ? parseId(learnedInChapter) : null,
         world_time: worldTime || null,
         is_secret: isSecret ? 1 : 0,
-        reveal_in_chapter: revealChapter ? parseInt(revealChapter) : null
+        reveal_in_chapter: revealChapter ? parseId(revealChapter) : null
       })
       onClose({
         knowledgeId: result?.knowledge_state?.id,
-        characterId: parseInt(characterId)
+        characterId: parseId(characterId)
       })
     } catch (err) {
       console.error('Failed to create knowledge:', err)
@@ -231,7 +237,7 @@ export default function MakeConnectionPopup({
             >
               <option value="">{t('popup.fromStart', 'From the start')}</option>
               {chapters.map((ch) => (
-                <option key={ch.id} value={ch.chapter_number}>
+                <option key={ch.id} value={ch.id}>
                   {t('popup.chapterPrefixShort', 'Ch.')}{ch.chapter_number}: {ch.title}
                 </option>
               ))}
@@ -277,7 +283,7 @@ export default function MakeConnectionPopup({
             >
               <option value="">{t('popup.notDecided', 'Not decided')}</option>
               {chapters.map((ch) => (
-                <option key={ch.id} value={ch.chapter_number}>
+                <option key={ch.id} value={ch.id}>
                   {t('popup.chapterPrefixShort', 'Ch.')}{ch.chapter_number}: {ch.title}
                 </option>
               ))}

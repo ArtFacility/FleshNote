@@ -22,30 +22,30 @@ Entity links exist in two formats, converted at the load/save boundary in the Py
 
 | Type Shortcut | Full Type | Example                    |
 | ------------- | --------- | -------------------------- |
-| `char`        | character | `{{char:5\|Sophia}}`       |
-| `loc`         | location  | `{{loc:2\|the Academy}}`   |
-| `item`        | lore      | `{{item:3\|the Compass}}`  |
-| `lore`        | lore      | `{{lore:3\|the Compass}}`  |
-| `group`       | group     | `{{group:1\|House Varen}}` |
+| `char`        | character | `{{char:e4854f21-22d4-4393-8b67-a6ce251f38d3\|Sophia}}`       |
+| `loc`         | location  | `{{loc:9b1deb4d-3b7d-4bad-9bdd-2b0d7b3dcb6d\|the Academy}}`   |
+| `item`        | lore      | `{{item:7b1de57f-a911-4171-b757-c8f3088f56e1\|the Compass}}`  |
+| `lore`        | lore      | `{{lore:7b1de57f-a911-4171-b757-c8f3088f56e1\|the Compass}}`  |
+| `group`       | group     | `{{group:2a3eef9a-4c27-4b71-88bc-39d2cfbb3232\|House Varen}}` |
 
 **Example markdown file:**
 
 ```
-{{char:1|Ren}} walked through the gates of {{loc:2|the Academy}},
-clutching {{item:3|the Etheric Compass}} close to her chest.
-She knew {{char:5|Sophia}} would be waiting inside.
+{{char:e4854f21-22d4-4393-8b67-a6ce251f38d3|Ren}} walked through the gates of {{loc:9b1deb4d-3b7d-4bad-9bdd-2b0d7b3dcb6d|the Academy}},
+clutching {{item:7b1de57f-a911-4171-b757-c8f3088f56e1|the Etheric Compass}} close to her chest.
+She knew {{char:d8f76632-1a2b-3c4d-5e6f-7a8b9c0d1e2f|Sophia}} would be waiting inside.
 ```
 
 ### TipTap HTML Format (in editor memory)
 
 ```html
-<span data-entity-type="character" data-entity-id="5" class="entity-link character">Sophia</span>
+<span data-entity-type="character" data-entity-id="e4854f21-22d4-4393-8b67-a6ce251f38d3" class="entity-link character">Sophia</span>
 ```
 
 **Attributes:**
 
 - `data-entity-type`: Full type name (`character`, `location`, `lore`, `group`)
-- `data-entity-id`: Database ID of the entity
+- `data-entity-id`: Database ID of the entity (UUID string or integer for legacy compatibility)
 - `class`: `entity-link {type}` for CSS styling
 
 ---
@@ -59,22 +59,22 @@ Located in `backend/routes/chapters.py`.
 Called during **chapter load**. Converts markdown markers to TipTap spans.
 
 ```python
-# Input:  "{{char:5|Sophia}} arrived at {{loc:2|the Academy}}."
-# Output: '<span data-entity-type="character" data-entity-id="5" class="entity-link character">Sophia</span> arrived at <span data-entity-type="location" data-entity-id="2" class="entity-link location">the Academy</span>.'
+# Input:  "{{char:uuid-string|Sophia}} arrived at {{loc:uuid-string|the Academy}}."
+# Output: '<span data-entity-type="character" data-entity-id="uuid-string" class="entity-link character">Sophia</span> arrived at <span data-entity-type="location" data-entity-id="uuid-string" class="entity-link location">the Academy</span>.'
 ```
 
-**Regex pattern:** `\{\{(char|loc|item|lore|group):(\d+)\|([^}]+)\}\}`
+**Regex pattern:** `\{\{(char|loc|item|lore|group|quicknote|annotation):([^|]+)\|([^}]+)\}\}`
 
 ### `_entity_html_to_md(content: str) -> str`
 
 Called during **chapter save**. Converts TipTap spans back to markdown markers.
 
 ```python
-# Input:  '<span data-entity-type="character" data-entity-id="5" class="entity-link character">Sophia</span>'
-# Output: '{{char:5|Sophia}}'
+# Input:  '<span data-entity-type="character" data-entity-id="uuid-string" class="entity-link character">Sophia</span>'
+# Output: '{{char:uuid-string|Sophia}}'
 ```
 
-**Regex pattern:** `<span[^>]*?data-entity-type="([^"]+)"[^>]*?data-entity-id="(\d+)"[^>]*?>([^<]+)</span>`
+**Regex pattern:** `<span[^>]*?data-entity-type="([^"]+)"[^>]*?data-entity-id="([^"]+)"[^>]*?>([^<]+)</span>`
 
 ### Type Mapping
 

@@ -10,34 +10,34 @@ router = APIRouter()
 
 class RelationshipCreate(BaseModel):
     project_path: str
-    character_id: int
-    target_character_id: int
+    character_id: str | int
+    target_character_id: str | int
     rel_type: str
     notes: str = ""
-    chapter_id: int | None = None
+    chapter_id: str | int | None = None
     word_offset: int | None = None
     world_time: str | None = None
     is_one_sided: int = 1
 
 class RelationshipUpdate(BaseModel):
     project_path: str
-    relationship_id: int
+    relationship_id: str | int
     rel_type: str | None = None
     notes: str | None = None
-    chapter_id: int | None = None
+    chapter_id: str | int | None = None
     word_offset: int | None = None
     world_time: str | None = None
     is_one_sided: int | None = None
 
 class RelationshipDelete(BaseModel):
     project_path: str
-    relationship_id: int
+    relationship_id: str | int
 
 class RelationshipsForCharacter(BaseModel):
     project_path: str
-    character_id: int
+    character_id: str | int
     filter_mode: str = "author"              # 'author', 'narrative', 'world_time'
-    current_chapter: int | None = None       # chapter_number
+    current_chapter: str | int | None = None       # chapter_number
     current_world_time: str | None = None    # world_time string
 
 # ── Helpers ───────────────────────────────────────────────────────────────────
@@ -61,12 +61,19 @@ def _get_db_rel(project_path: str):
     cursor = conn.cursor()
     cursor.execute("""
         CREATE TABLE IF NOT EXISTS character_relationships (
-            id                  INTEGER PRIMARY KEY AUTOINCREMENT,
-            character_id        INTEGER NOT NULL,
-            target_character_id INTEGER NOT NULL,
+            id                  TEXT PRIMARY KEY DEFAULT (
+                                    lower(hex(randomblob(4))) || '-' || 
+                                    lower(hex(randomblob(2))) || '-4' || 
+                                    substr(lower(hex(randomblob(2))), 2) || '-' || 
+                                    substr('89ab', abs(random()) % 4 + 1, 1) || 
+                                    substr(lower(hex(randomblob(2))), 2) || '-' || 
+                                    lower(hex(randomblob(6)))
+                                ),
+            character_id        TEXT NOT NULL,
+            target_character_id TEXT NOT NULL,
             rel_type            TEXT NOT NULL,
             notes               TEXT,
-            chapter_id          INTEGER,
+            chapter_id          TEXT,
             word_offset         INTEGER,
             world_time          TEXT,
             is_one_sided        INTEGER DEFAULT 1,
@@ -86,17 +93,18 @@ def create_relationship(req: RelationshipCreate):
     conn = _get_db_rel(req.project_path)
     cursor = conn.cursor()
 
+    import uuid
+    rel_id = str(uuid.uuid4())
     cursor.execute("""
         INSERT INTO character_relationships
-            (character_id, target_character_id, rel_type, notes, 
+            (id, character_id, target_character_id, rel_type, notes, 
              chapter_id, word_offset, world_time, is_one_sided)
-        VALUES (?, ?, ?, ?, ?, ?, ?, ?)
+        VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)
     """, (
-        req.character_id, req.target_character_id, req.rel_type, req.notes,
+        rel_id, req.character_id, req.target_character_id, req.rel_type, req.notes,
         req.chapter_id, req.word_offset, req.world_time, req.is_one_sided
     ))
 
-    rel_id = cursor.lastrowid
     conn.commit()
 
     cursor.execute("SELECT * FROM character_relationships WHERE id = ?", (rel_id,))

@@ -14,6 +14,7 @@ const api = {
   updateProjectConfig: (projectPath, key, value, type) =>
     ipcRenderer.invoke('api:updateProjectConfig', { project_path: projectPath, config_key: key, config_value: value, config_type: type }),
   loadProject: (projectPath) => ipcRenderer.invoke('api:loadProject', projectPath),
+  migrateProject: (projectPath) => ipcRenderer.invoke('api:migrateProject', projectPath),
   getStats: (projectPath) => ipcRenderer.invoke('api:getStats', projectPath),
   getAchievements: (projectPath) => ipcRenderer.invoke('api:getAchievements', projectPath),
   updateStat: (payload) => ipcRenderer.invoke('api:updateStat', payload),

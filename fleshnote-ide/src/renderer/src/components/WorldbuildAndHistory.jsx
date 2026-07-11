@@ -23,6 +23,12 @@ const T = {
     serif: "var(--font-serif)",
 };
 
+const parseId = (val) => {
+    if (val === null || val === undefined || val === "") return null;
+    const num = Number(val);
+    return isNaN(num) ? String(val) : num;
+};
+
 const Icons = {
     Trash: () => <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><polyline points="3 6 5 6 21 6"></polyline><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path></svg>,
 };
@@ -87,7 +93,7 @@ function HistoryEntryPopup({ entry, entities, calConfig, projectPath, onSaved, o
             const payload = {
                 project_path: projectPath,
                 entity_type: form.entity_type,
-                entity_id: parseInt(form.entity_id),
+                entity_id: parseId(form.entity_id),
                 title: form.title,
                 description: form.description,
                 event_type: form.event_type,
@@ -96,7 +102,7 @@ function HistoryEntryPopup({ entry, entities, calConfig, projectPath, onSaved, o
                 date_day: form.date_day ? parseInt(form.date_day) : null,
                 date_precise: form.date_precise,
                 related_entity_type: form.event_type === "interaction" && form.related_entity_type ? form.related_entity_type : null,
-                related_entity_id: form.event_type === "interaction" && form.related_entity_id ? parseInt(form.related_entity_id) : null,
+                related_entity_id: form.event_type === "interaction" && form.related_entity_id ? parseId(form.related_entity_id) : null,
             };
             if (isEdit) {
                 payload.entry_id = entry.id;
@@ -300,11 +306,11 @@ function CharacterTimelineTab({ projectPath, chapters, entities, characters, pro
     const saveTimerRef = useRef(null);
 
     // Helper to create entity key
-    const makeKey = (type, id) => `${type}-${id}`;
+    const makeKey = (type, id) => `${type}:${id}`;
     const parseKey = (key) => {
         if (!key) return null;
-        const idx = key.lastIndexOf('-');
-        return { type: key.slice(0, idx), id: parseInt(key.slice(idx + 1)) };
+        const idx = key.indexOf(':');
+        return { type: key.slice(0, idx), id: parseId(key.slice(idx + 1)) };
     };
 
     // Fetch data
@@ -399,10 +405,10 @@ function CharacterTimelineTab({ projectPath, chapters, entities, characters, pro
 
     // The entities actually shown on the timeline
     const displayEntities = useMemo(() => {
-        const uniqueKeys = [...new Set(visibleIds.map(v => `${v.type}-${v.id}`))];
+        const uniqueKeys = [...new Set(visibleIds.map(v => `${v.type}:${v.id}`))];
         return uniqueKeys.map(key => {
-            const [type, idStr] = key.split('-');
-            return filteredEntities.find(e => e.type === type && e.id === parseInt(idStr));
+            const [type, idStr] = key.split(':');
+            return filteredEntities.find(e => e.type === type && String(e.id) === String(idStr));
         }).filter(Boolean);
     }, [filteredEntities, visibleIds]);
 

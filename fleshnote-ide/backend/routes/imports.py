@@ -325,11 +325,12 @@ def confirm_splits(req: ConfirmSplitsRequest):
         word_count = len(content.split()) if content else 0
         pov_id = req.pov_character_id if i == 0 else None
 
+        chap_id = str(uuid.uuid4())
         cursor.execute("""
-            INSERT INTO chapters (chapter_number, title, status, pov_character_id,
+            INSERT INTO chapters (id, chapter_number, title, status, pov_character_id,
                                   target_word_count, md_filename, word_count)
-            VALUES (?, ?, ?, ?, ?, ?, ?)
-        """, (num, title, status, pov_id, req.target_word_count, md_filename, word_count))
+            VALUES (?, ?, ?, ?, ?, ?, ?, ?)
+        """, (chap_id, num, title, status, pov_id, req.target_word_count, md_filename, word_count))
 
         # Convert plain text to HTML paragraphs for TipTap, then write the md file
         html_content = _plain_text_to_html(content)
@@ -338,7 +339,7 @@ def confirm_splits(req: ConfirmSplitsRequest):
             f.write(html_content)
 
         created.append({
-            "id": cursor.lastrowid,
+            "id": chap_id,
             "chapter_number": num,
             "title": title,
             "status": status,
@@ -772,24 +773,26 @@ def bulk_create_entities(req: BulkCreateEntitiesRequest):
     for entity in req.entities:
         aliases_json = json.dumps(entity.aliases) if entity.aliases else "[]"
 
+        import uuid
+        ent_id = str(uuid.uuid4())
         if entity.type == "character":
             cursor.execute(
-                "INSERT INTO characters (name, aliases) VALUES (?, ?)",
-                (entity.name, aliases_json),
+                "INSERT INTO characters (id, name, aliases) VALUES (?, ?, ?)",
+                (ent_id, entity.name, aliases_json),
             )
             created.append({
-                "id": cursor.lastrowid,
+                "id": ent_id,
                 "type": "character",
                 "name": entity.name,
             })
 
         elif entity.type == "location":
             cursor.execute(
-                "INSERT INTO locations (name, aliases) VALUES (?, ?)",
-                (entity.name, aliases_json),
+                "INSERT INTO locations (id, name, aliases) VALUES (?, ?, ?)",
+                (ent_id, entity.name, aliases_json),
             )
             created.append({
-                "id": cursor.lastrowid,
+                "id": ent_id,
                 "type": "location",
                 "name": entity.name,
             })
@@ -797,11 +800,11 @@ def bulk_create_entities(req: BulkCreateEntitiesRequest):
         elif entity.type == "lore":
             category = entity.lore_category or "item"
             cursor.execute(
-                "INSERT INTO lore_entities (name, category, aliases) VALUES (?, ?, ?)",
-                (entity.name, category, aliases_json),
+                "INSERT INTO lore_entities (id, name, category, aliases) VALUES (?, ?, ?, ?)",
+                (ent_id, entity.name, category, aliases_json),
             )
             created.append({
-                "id": cursor.lastrowid,
+                "id": ent_id,
                 "type": "lore",
                 "name": entity.name,
                 "category": category,
@@ -911,44 +914,46 @@ def confirm_external_entities(req: ExternalEntitiesConfirmRequest):
     for entity in req.entities:
         aliases_json = json.dumps(entity.aliases) if entity.aliases else "[]"
 
+        import uuid
+        ent_id = str(uuid.uuid4())
         if entity.type == "character":
             cursor.execute("""
-                INSERT INTO characters (name, aliases, role, species,
+                INSERT INTO characters (id, name, aliases, role, species,
                                         surface_goal, true_goal, bio, notes)
-                VALUES (?, ?, ?, ?, ?, ?, ?, ?)
-            """, (entity.name, aliases_json, entity.role or "",
+                VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)
+            """, (ent_id, entity.name, aliases_json, entity.role or "",
                   entity.species or "", entity.surface_goal or "",
                   entity.true_goal or "", entity.bio or "", entity.notes or ""))
-            created.append({"id": cursor.lastrowid, "type": "character", "name": entity.name})
+            created.append({"id": ent_id, "type": "character", "name": entity.name})
 
         elif entity.type == "location":
             cursor.execute("""
-                INSERT INTO locations (name, aliases, region, description, notes)
-                VALUES (?, ?, ?, ?, ?)
-            """, (entity.name, aliases_json, entity.region or "",
+                INSERT INTO locations (id, name, aliases, region, description, notes)
+                VALUES (?, ?, ?, ?, ?, ?)
+            """, (ent_id, entity.name, aliases_json, entity.region or "",
                   entity.description or "", entity.notes or ""))
-            created.append({"id": cursor.lastrowid, "type": "location", "name": entity.name})
+            created.append({"id": ent_id, "type": "location", "name": entity.name})
 
         elif entity.type == "lore":
             category = entity.lore_category or "item"
             cursor.execute("""
-                INSERT INTO lore_entities (name, aliases, category, classification,
+                INSERT INTO lore_entities (id, name, aliases, category, classification,
                                            description, origin, notes)
-                VALUES (?, ?, ?, ?, ?, ?, ?)
-            """, (entity.name, aliases_json, category,
+                VALUES (?, ?, ?, ?, ?, ?, ?, ?)
+            """, (ent_id, entity.name, aliases_json, category,
                   entity.classification or "", entity.description or "",
                   entity.origin or "", entity.notes or ""))
-            created.append({"id": cursor.lastrowid, "type": "lore", "name": entity.name, "category": category})
+            created.append({"id": ent_id, "type": "lore", "name": entity.name, "category": category})
 
         elif entity.type == "group":
             cursor.execute("""
-                INSERT INTO groups (name, aliases, group_type, description,
+                INSERT INTO groups (id, name, aliases, group_type, description,
                                     surface_agenda, true_agenda, notes)
-                VALUES (?, ?, ?, ?, ?, ?, ?)
-            """, (entity.name, aliases_json, entity.group_type or "",
+                VALUES (?, ?, ?, ?, ?, ?, ?, ?)
+            """, (ent_id, entity.name, aliases_json, entity.group_type or "",
                   entity.description or "", entity.surface_agenda or "",
                   entity.true_agenda or "", entity.notes or ""))
-            created.append({"id": cursor.lastrowid, "type": "group", "name": entity.name})
+            created.append({"id": ent_id, "type": "group", "name": entity.name})
 
     conn.commit()
     conn.close()

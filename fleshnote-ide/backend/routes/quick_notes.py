@@ -20,12 +20,12 @@ class QuickNoteCreate(BaseModel):
 
 class QuickNoteUpdate(BaseModel):
     project_path: str
-    note_id: int
+    note_id: str | int
     note_type: str
 
 class QuickNoteDelete(BaseModel):
     project_path: str
-    note_id: int
+    note_id: str | int
 
 def _get_db(project_path: str):
     db_path = os.path.join(project_path, "fleshnote.db")
@@ -38,7 +38,14 @@ def _get_db(project_path: str):
     cursor = conn.cursor()
     cursor.execute("""
         CREATE TABLE IF NOT EXISTS quick_notes (
-            id              INTEGER PRIMARY KEY AUTOINCREMENT,
+            id              TEXT PRIMARY KEY DEFAULT (
+                                lower(hex(randomblob(4))) || '-' || 
+                                lower(hex(randomblob(2))) || '-4' || 
+                                substr(lower(hex(randomblob(2))), 2) || '-' || 
+                                substr('89ab', abs(random()) % 4 + 1, 1) || 
+                                substr(lower(hex(randomblob(2))), 2) || '-' || 
+                                lower(hex(randomblob(6)))
+                            ),
             content         TEXT NOT NULL,
             note_type       TEXT NOT NULL DEFAULT 'Note',
             created_at      TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
@@ -81,11 +88,12 @@ def create_quick_note(req: QuickNoteCreate):
     conn = _get_db(req.project_path)
     cursor = conn.cursor()
     
+    import uuid
+    note_id = str(uuid.uuid4())
     cursor.execute("""
-        INSERT INTO quick_notes (content, note_type)
-        VALUES (?, ?)
-    """, (req.content, req.note_type))
-    note_id = cursor.lastrowid
+        INSERT INTO quick_notes (id, content, note_type)
+        VALUES (?, ?, ?)
+    """, (note_id, req.content, req.note_type))
     conn.commit()
 
     cursor.execute("SELECT id, content, note_type FROM quick_notes WHERE id = ?", (note_id,))

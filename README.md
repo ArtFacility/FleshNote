@@ -1,6 +1,21 @@
-# FleshNote IDE (v1.2.0 Beta)
+# FleshNote IDE (v1.3.0 Beta)
+
+> [!WARNING]
+> **Warning: You are currently on the `experimental` branch.**
+> This branch introduces version 2 of the database schema (moving all entity, note, and time IDs to UUIDs). If you have existing projects, make sure to back up your project directories before opening them. The IDE provides an automated "Migrate to new version" button to convert legacy databases.
 
 An advanced, no-bullshit writing tool for novelists and world builders who actually want to finish their draft this century. Built with Electron, React, TypeScript, and FastAPI.
+
+### What's New in v1.3.0
+
+This release lays the groundwork for multi-device sync and companion apps while improving timeline precision:
+
+* **Database Modernisation**: Migration of all primary and foreign keys from sequential integers to UUID strings, preventing collision during future multi-device merges.
+* **Improved Analytics Engine**: Refactored linguistic parsers and background scanner logic to work flawlessly with UUID patterns.
+* **History Rewind Prep**: Upgraded timeline data schemas and coordinate systems to support future history-rewind features without ID collisions.
+* **Data Sync & Offline Prep**: Added local sync change logging, operational telemetry capture, and soft-delete tracking fields across all authoring databases.
+
+---
 
 [![License: MPL 2.0](https://img.shields.io/badge/License-MPL_2.0-brightgreen.svg)](https://opensource.org/licenses/MPL-2.0)
 

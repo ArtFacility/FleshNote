@@ -21,28 +21,28 @@ class LocationCreate(BaseModel):
     name: str
     region: str = ""
     description: str = ""
-    parent_location_id: int | None = None
+    parent_location_id: str | int | None = None
     aliases: list[str] = []
     notes: str = ""
 
 
 class LocationUpdate(BaseModel):
     project_path: str
-    location_id: int
+    location_id: str | int
     name: str | None = None
     region: str | None = None
     description: str | None = None
-    parent_location_id: int | None = None
+    parent_location_id: str | int | None = None
     aliases: list[str] | None = None
     notes: str | None = None
 
 class LocationDelete(BaseModel):
     project_path: str
-    location_id: int
+    location_id: str | int
 
 class WeatherStateCreate(BaseModel):
     project_path: str
-    location_id: int
+    location_id: str | int
     world_time: str
     weather: str = ""
     temperature: str = ""
@@ -50,7 +50,7 @@ class WeatherStateCreate(BaseModel):
 
 class WeatherStateUpdate(BaseModel):
     project_path: str
-    weather_state_id: int
+    weather_state_id: str | int
     world_time: str | None = None
     weather: str | None = None
     temperature: str | None = None
@@ -58,11 +58,11 @@ class WeatherStateUpdate(BaseModel):
 
 class WeatherStateDelete(BaseModel):
     project_path: str
-    weather_state_id: int
+    weather_state_id: str | int
 
 class WeatherStateListQuery(BaseModel):
     project_path: str
-    location_id: int
+    location_id: str | int
 
 def _get_db(project_path: str):
     db_path = os.path.join(project_path, "fleshnote.db")
@@ -101,10 +101,13 @@ def create_location(req: LocationCreate):
     conn = _get_db(req.project_path)
     cursor = conn.cursor()
 
+    import uuid
+    loc_id = str(uuid.uuid4())
     cursor.execute("""
-        INSERT INTO locations (name, aliases, region, parent_location_id, description, notes)
-        VALUES (?, ?, ?, ?, ?, ?)
+        INSERT INTO locations (id, name, aliases, region, parent_location_id, description, notes)
+        VALUES (?, ?, ?, ?, ?, ?, ?)
     """, (
+        loc_id,
         req.name,
         json.dumps(req.aliases) if req.aliases else None,
         req.region,
@@ -113,7 +116,6 @@ def create_location(req: LocationCreate):
         req.notes,
     ))
 
-    loc_id = cursor.lastrowid
     conn.commit()
     conn.close()
 
@@ -220,12 +222,13 @@ def create_weather_state(req: WeatherStateCreate):
     conn = _get_db(req.project_path)
     cursor = conn.cursor()
 
+    import uuid
+    state_id = str(uuid.uuid4())
     cursor.execute("""
-        INSERT INTO location_weather_states (location_id, world_time, weather, temperature, moisture)
-        VALUES (?, ?, ?, ?, ?)
-    """, (req.location_id, req.world_time, req.weather, req.temperature, req.moisture))
+        INSERT INTO location_weather_states (id, location_id, world_time, weather, temperature, moisture)
+        VALUES (?, ?, ?, ?, ?, ?)
+    """, (state_id, req.location_id, req.world_time, req.weather, req.temperature, req.moisture))
     
-    state_id = cursor.lastrowid
     conn.commit()
     conn.close()
 

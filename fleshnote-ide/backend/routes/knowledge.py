@@ -26,52 +26,52 @@ class ProjectPath(BaseModel):
 
 class KnowledgeStateCreate(BaseModel):
     project_path: str
-    character_id: int
+    character_id: str | int
     fact: str
     source_entity_type: str | None = None   # 'character', 'lore', 'location', 'group'
-    source_entity_id: int | None = None
-    learned_in_chapter: int | None = None    # NULL = knows from the start
+    source_entity_id: str | int | None = None
+    learned_in_chapter: str | int | None = None    # NULL = knows from the start
     world_time: str | None = None            # In-universe time when learned
     is_secret: int = 0
-    reveal_in_chapter: int | None = None
+    reveal_in_chapter: str | int | None = None
     notes: str = ""
 
 
 class KnowledgeStateUpdate(BaseModel):
     project_path: str
-    knowledge_state_id: int
+    knowledge_state_id: str | int
     fact: str | None = None
     source_entity_type: str | None = None
-    source_entity_id: int | None = None
-    learned_in_chapter: int | None = None
+    source_entity_id: str | int | None = None
+    learned_in_chapter: str | int | None = None
     world_time: str | None = None
     is_secret: int | None = None
-    reveal_in_chapter: int | None = None
+    reveal_in_chapter: str | int | None = None
     notes: str | None = None
 
 
 class KnowledgeStateDelete(BaseModel):
     project_path: str
-    knowledge_state_id: int
+    knowledge_state_id: str | int
 
 
 class KnowledgeForEntity(BaseModel):
     project_path: str
     source_entity_type: str
-    source_entity_id: int
+    source_entity_id: str | int
     filter_mode: str = "author"              # 'author', 'narrative', 'world_time'
-    filter_character_id: int | None = None   # Character whose knowledge to show
-    current_chapter: int | None = None       # chapter_number for narrative filtering
+    filter_character_id: str | int | None = None   # Character whose knowledge to show
+    current_chapter: str | int | None = None       # chapter_number for narrative filtering
     current_world_time: str | None = None    # world_time string for world_time filtering
     # Legacy compat
-    pov_character_id: int | None = None
+    pov_character_id: str | int | None = None
 
 
 class KnowledgeForCharacter(BaseModel):
     project_path: str
-    character_id: int
+    character_id: str | int
     filter_mode: str = "author"              # 'author', 'narrative', 'world_time'
-    current_chapter: int | None = None       # chapter_number for narrative filtering
+    current_chapter: str | int | None = None       # chapter_number for narrative filtering
     current_world_time: str | None = None    # world_time string for world_time filtering
 
 
@@ -163,19 +163,20 @@ def create_knowledge_state(req: KnowledgeStateCreate):
     conn = _get_db(req.project_path)
     cursor = conn.cursor()
 
+    import uuid
+    ks_id = str(uuid.uuid4())
     cursor.execute("""
         INSERT INTO knowledge_states
-            (character_id, fact, source_entity_type, source_entity_id,
+            (id, character_id, fact, source_entity_type, source_entity_id,
              learned_in_chapter, world_time, is_secret, reveal_in_chapter, notes)
-        VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)
+        VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
     """, (
-        req.character_id, req.fact,
+        ks_id, req.character_id, req.fact,
         req.source_entity_type, req.source_entity_id,
         req.learned_in_chapter, req.world_time, req.is_secret,
         req.reveal_in_chapter, req.notes,
     ))
 
-    ks_id = cursor.lastrowid
     conn.commit()
 
     # Return created row
@@ -260,18 +261,18 @@ def get_knowledge_for_entity(req: KnowledgeForEntity):
     # Resolve character ID (support legacy pov_character_id field)
     char_id = req.filter_character_id or req.pov_character_id
 
-    if req.filter_mode == "narrative" and char_id is not None and req.current_chapter is not None:
-        # Narrative filter: facts this character knows up to this chapter in reading order
+    if req.filter_mode == "narrative" and char_id is not None:
         cursor.execute("""
             SELECT ks.*, c.name as character_name
             FROM knowledge_states ks
             JOIN characters c ON ks.character_id = c.id
+            LEFT JOIN chapters ch ON ks.learned_in_chapter = ch.id
             WHERE ks.source_entity_type = ?
               AND ks.source_entity_id = ?
               AND ks.character_id = ?
               AND ks.is_secret = 0
-              AND (ks.learned_in_chapter <= ? OR ks.learned_in_chapter IS NULL)
-            ORDER BY ks.learned_in_chapter ASC
+              AND (ch.chapter_number <= ? OR ks.learned_in_chapter IS NULL)
+            ORDER BY COALESCE(ch.chapter_number, 0) ASC
         """, (req.source_entity_type, req.source_entity_id,
               char_id, req.current_chapter))
 
@@ -282,11 +283,12 @@ def get_knowledge_for_entity(req: KnowledgeForEntity):
             SELECT ks.*, c.name as character_name
             FROM knowledge_states ks
             JOIN characters c ON ks.character_id = c.id
+            LEFT JOIN chapters ch ON ks.learned_in_chapter = ch.id
             WHERE ks.source_entity_type = ?
               AND ks.source_entity_id = ?
               AND ks.character_id = ?
               AND ks.is_secret = 0
-            ORDER BY ks.learned_in_chapter ASC
+            ORDER BY COALESCE(ch.chapter_number, 0) ASC
         """, (req.source_entity_type, req.source_entity_id, char_id))
 
     elif req.filter_mode in ("narrative", "world_time") and char_id is None:
@@ -295,10 +297,11 @@ def get_knowledge_for_entity(req: KnowledgeForEntity):
             SELECT ks.*, c.name as character_name
             FROM knowledge_states ks
             JOIN characters c ON ks.character_id = c.id
+            LEFT JOIN chapters ch ON ks.learned_in_chapter = ch.id
             WHERE ks.source_entity_type = ?
               AND ks.source_entity_id = ?
               AND ks.is_secret = 0
-            ORDER BY c.name ASC, ks.learned_in_chapter ASC
+            ORDER BY COALESCE(ch.chapter_number, 0) ASC
         """, (req.source_entity_type, req.source_entity_id))
 
     else:
@@ -358,10 +361,11 @@ def get_knowledge_for_character(req: KnowledgeForCharacter):
             LEFT JOIN lore_entities le ON ks.source_entity_type = 'lore' AND ks.source_entity_id = le.id
             LEFT JOIN locations loc ON ks.source_entity_type = 'location' AND ks.source_entity_id = loc.id
             LEFT JOIN groups g ON ks.source_entity_type = 'group' AND ks.source_entity_id = g.id
+            LEFT JOIN chapters ch ON ks.learned_in_chapter = ch.id
             WHERE ks.character_id = ?
               AND ks.is_secret = 0
-              AND (ks.learned_in_chapter <= ? OR ks.learned_in_chapter IS NULL)
-            ORDER BY ks.learned_in_chapter ASC
+              AND (ch.chapter_number <= ? OR ks.learned_in_chapter IS NULL)
+            ORDER BY COALESCE(ch.chapter_number, 0) ASC
         """, (req.character_id, req.current_chapter))
 
     elif req.filter_mode == "world_time":
@@ -381,9 +385,10 @@ def get_knowledge_for_character(req: KnowledgeForCharacter):
             LEFT JOIN lore_entities le ON ks.source_entity_type = 'lore' AND ks.source_entity_id = le.id
             LEFT JOIN locations loc ON ks.source_entity_type = 'location' AND ks.source_entity_id = loc.id
             LEFT JOIN groups g ON ks.source_entity_type = 'group' AND ks.source_entity_id = g.id
+            LEFT JOIN chapters ch ON ks.learned_in_chapter = ch.id
             WHERE ks.character_id = ?
               AND ks.is_secret = 0
-            ORDER BY ks.learned_in_chapter ASC
+            ORDER BY COALESCE(ch.chapter_number, 0) ASC
         """, (req.character_id,))
 
     else:
@@ -403,8 +408,9 @@ def get_knowledge_for_character(req: KnowledgeForCharacter):
             LEFT JOIN lore_entities le ON ks.source_entity_type = 'lore' AND ks.source_entity_id = le.id
             LEFT JOIN locations loc ON ks.source_entity_type = 'location' AND ks.source_entity_id = loc.id
             LEFT JOIN groups g ON ks.source_entity_type = 'group' AND ks.source_entity_id = g.id
+            LEFT JOIN chapters ch ON ks.learned_in_chapter = ch.id
             WHERE ks.character_id = ?
-            ORDER BY ks.learned_in_chapter ASC
+            ORDER BY COALESCE(ch.chapter_number, 0) ASC
         """, (req.character_id,))
 
     rows = cursor.fetchall()
