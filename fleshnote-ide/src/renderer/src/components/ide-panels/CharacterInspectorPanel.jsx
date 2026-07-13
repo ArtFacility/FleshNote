@@ -356,7 +356,7 @@ export default function CharacterInspectorPanel({
                 {renderEditField(t('inspector.statusLabel', 'Status'), 'status')}
                 {projectConfig?.track_species && renderEditField(projectConfig?.species_label || t('inspector.speciesLabel', 'Species'), 'species')}
                 <div className="entity-edit-field">
-                  <label className="entity-edit-label">{t('inspector.birthDateLabel', 'Birth Date (in-world)')}</label>
+                  <label className="entity-edit-label">{t('inspector.birthDateLabel', 'Birth Date (in-world, YYYY/MM/DD)')}</label>
                   <CalendarDatePicker value={editData.birth_date || ''} onChange={(v) => handleEditField('birth_date', v)} calConfig={calConfig} projectPath={projectPath} />
                 </div>
                 {renderEditField(t('inspector.aliasesLabel', 'Aliases (comma-separated)'), 'aliases')}

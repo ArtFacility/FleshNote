@@ -105,6 +105,18 @@ def create_relationship(req: RelationshipCreate):
         req.chapter_id, req.word_offset, req.world_time, req.is_one_sided
     ))
 
+    from sync_core import log_change
+    log_change(cursor, "character_relationships", rel_id, {
+        "character_id": req.character_id,
+        "target_character_id": req.target_character_id,
+        "rel_type": req.rel_type,
+        "notes": req.notes,
+        "chapter_id": req.chapter_id,
+        "word_offset": req.word_offset,
+        "world_time": req.world_time,
+        "is_one_sided": req.is_one_sided
+    })
+
     conn.commit()
 
     cursor.execute("SELECT * FROM character_relationships WHERE id = ?", (rel_id,))
@@ -120,12 +132,14 @@ def update_relationship(req: RelationshipUpdate):
 
     fields = []
     values = []
+    changes = {}
 
     for field_name in ["rel_type", "notes", "chapter_id", "word_offset", "world_time", "is_one_sided"]:
         val = getattr(req, field_name)
         if val is not None:
             fields.append(f"{field_name} = ?")
             values.append(val)
+            changes[field_name] = val
 
     if not fields:
         conn.close()
@@ -137,6 +151,10 @@ def update_relationship(req: RelationshipUpdate):
         f"UPDATE character_relationships SET {', '.join(fields)} WHERE id = ?",
         values
     )
+
+    from sync_core import log_change
+    log_change(cursor, "character_relationships", req.relationship_id, changes)
+
     conn.commit()
 
     cursor.execute("SELECT * FROM character_relationships WHERE id = ?", (req.relationship_id,))
@@ -153,8 +171,15 @@ def delete_relationship(req: RelationshipDelete):
     conn = _get_db_rel(req.project_path)
     cursor = conn.cursor()
 
-    cursor.execute("DELETE FROM character_relationships WHERE id = ?", (req.relationship_id,))
+    import datetime
+    from sync_core import log_soft_delete
+    now = datetime.datetime.utcnow().isoformat() + "Z"
+
+    cursor.execute("UPDATE character_relationships SET deleted = 1, deleted_at = ? WHERE id = ?", (now, req.relationship_id))
     deleted = cursor.rowcount
+    if deleted > 0:
+        log_soft_delete(cursor, "character_relationships", req.relationship_id)
+
     conn.commit()
     conn.close()
 
@@ -179,7 +204,11 @@ def get_relationships_for_character(req: RelationshipsForCharacter):
         JOIN characters c1 ON r.character_id = c1.id
         JOIN characters c2 ON r.target_character_id = c2.id
         LEFT JOIN chapters ch ON r.chapter_id = ch.id
-        WHERE r.character_id = ? OR (r.target_character_id = ? AND r.is_one_sided = 0)
+        WHERE (r.character_id = ? OR (r.target_character_id = ? AND r.is_one_sided = 0))
+          AND r.deleted = 0
+          AND c1.deleted = 0
+          AND c2.deleted = 0
+          AND (ch.deleted = 0 OR ch.deleted IS NULL)
         ORDER BY ch.chapter_number ASC, r.word_offset ASC, r.id ASC
     """
     
@@ -197,6 +226,10 @@ def get_relationships_for_character(req: RelationshipsForCharacter):
         JOIN characters c2 ON r.target_character_id = c2.id
         LEFT JOIN chapters ch ON r.chapter_id = ch.id
         WHERE r.target_character_id = ? AND r.is_one_sided = 1 AND r.character_id != ?
+          AND r.deleted = 0
+          AND c1.deleted = 0
+          AND c2.deleted = 0
+          AND (ch.deleted = 0 OR ch.deleted IS NULL)
         ORDER BY ch.chapter_number ASC, r.word_offset ASC, r.id ASC
     """
     cursor.execute(reverse_query, (req.character_id, req.character_id))

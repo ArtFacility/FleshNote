@@ -7,6 +7,60 @@ import re
 from datetime import datetime
 from db_setup import generate_project_db
 
+# Reference columns copy_table() remaps and that fall back to the old id on a miss.
+# Covers polymorphic entity_id columns AND direct FKs whose target can go missing
+# (e.g. foreshadowings.twist_id → a deleted/never-migrated twist). The sweep asserts
+# none of these still hold an old integer id after migration.
+REMAPPED_REF_COLUMNS = [
+    ("image_references", "entity_id"),
+    ("board_items", "entity_id"),
+    ("knowledge_states", "source_entity_id"),
+    ("history_entries", "entity_id"),
+    ("history_entries", "related_entity_id"),
+    ("entity_appearances", "entity_id"),
+    ("entity_mentions", "entity_id"),
+    ("foreshadowings", "twist_id"),
+]
+
+
+def _verify_polymorphic_integrity(cursor) -> list[dict]:
+    """
+    Scan every remapped reference column in the migrated (v2) DB for values that still
+    look like old integer PKs (i.e. never got remapped to a UUID). Returns a list of
+    orphan reports; an empty list means the migration remapped everything cleanly.
+    Post-migration UUIDs contain hyphens; old int ids are pure digits — a pure-digit
+    (or otherwise hyphen-less) non-null value is an orphaned reference.
+    """
+    orphans = []
+    for table, column in REMAPPED_REF_COLUMNS:
+        cursor.execute("SELECT name FROM sqlite_master WHERE type='table' AND name=?", (table,))
+        if not cursor.fetchone():
+            continue
+        # Non-null values with no hyphen are not UUIDs → un-remapped old ids.
+        cursor.execute(
+            f"SELECT COUNT(*) FROM {table} "
+            f"WHERE {column} IS NOT NULL AND CAST({column} AS TEXT) NOT LIKE '%-%'"
+        )
+        count = cursor.fetchone()[0]
+        if count:
+            # Grab a few sample entity_type values to make drift diagnosable.
+            type_col = "source_entity_type" if column == "source_entity_id" else \
+                       ("related_entity_type" if column == "related_entity_id" else "entity_type")
+            try:
+                cursor.execute(
+                    f"SELECT DISTINCT {type_col} FROM {table} "
+                    f"WHERE {column} IS NOT NULL AND CAST({column} AS TEXT) NOT LIKE '%-%' LIMIT 5"
+                )
+                sample_types = [r[0] for r in cursor.fetchall()]
+            except Exception:
+                sample_types = []
+            report = {"table": table, "column": column, "count": count, "entity_types": sample_types}
+            orphans.append(report)
+            print(f"Warning: integrity sweep found {count} un-remapped {table}.{column} "
+                  f"reference(s); entity_type sample: {sample_types}")
+    return orphans
+
+
 def migrate_project(project_path: str) -> dict:
     """
     Migrates a FleshNote project from Schema v1 (integer IDs) to Schema v2 (UUIDs, soft deletes).
@@ -162,17 +216,28 @@ def migrate_project(project_path: str) -> dict:
                             if ref_table == "polymorphic":
                                 type_field = "source_entity_type" if field == "source_entity_id" else "entity_type"
                                 entity_type = row_dict.get(type_field)
-                                # Map standard entity types to table names
+                                # Map entity types to table names. Covers BOTH the long
+                                # names used by most polymorphic tables (board_items,
+                                # knowledge_states, history_entries, entity_appearances,
+                                # entity_mentions) AND the short DB codes stored by
+                                # image_references (entityTypeToDbCode: char/loc/item/group).
+                                # Missing char/loc here previously orphaned all character
+                                # and location image references on migration.
                                 table_map = {
-                                    "character": "characters",
-                                    "location": "locations",
-                                    "lore": "lore_entities",
-                                    "item": "lore_entities",
+                                    "character": "characters", "char": "characters",
+                                    "location": "locations", "loc": "locations",
+                                    "lore": "lore_entities", "item": "lore_entities",
                                     "group": "groups"
                                 }
                                 ref_table_mapped = table_map.get(entity_type)
                                 if ref_table_mapped and ref_table_mapped in mappings:
                                     row_dict[field] = mappings[ref_table_mapped].get(old_ref, old_ref)
+                                else:
+                                    # Unknown/unmapped entity_type — leave value as-is but
+                                    # flag it, so vocabulary drift never orphans rows silently.
+                                    print(f"Warning: {table_name}.{field} has unmapped "
+                                          f"{type_field}={entity_type!r} (value {old_ref!r}); "
+                                          f"reference left un-remapped.")
                             # Handle board item endpoints
                             elif ref_table == "board_item_ends":
                                 row_dict[field] = mappings["board_items"].get(old_ref, old_ref)
@@ -251,6 +316,10 @@ def migrate_project(project_path: str) -> dict:
             for r in stats_rows:
                 new_cursor.execute("INSERT OR REPLACE INTO stats (stat_key, stat_value) VALUES (?, ?)", (r["stat_key"], r["stat_value"]))
 
+        # 5b. Integrity sweep: assert no polymorphic entity_id kept an old integer id.
+        # Warn + report (does not abort) so one stray row never blocks a good migration.
+        integrity_orphans = _verify_polymorphic_integrity(new_cursor)
+
         new_conn.commit()
         new_conn.close()
         old_conn.close()
@@ -275,14 +344,19 @@ def migrate_project(project_path: str) -> dict:
                         old_id_str = match.group(2)
                         text = match.group(3)
 
-                        # Match standard entity types to table mappings
+                        # Match tag types to the table whose id the tag actually carries.
+                        # NOTE: a {{foreshadow:N}} tag's N is the TWIST id it foreshadows
+                        # (see chapters.py _update_foreshadowings, which inserts it as
+                        # foreshadowings.twist_id) — NOT a foreshadowings row id. So it must
+                        # remap against 'twists', same as {{twist:N}}. Mapping it to
+                        # 'foreshadowings' silently mis-converted foreshadow markers.
                         table_map = {
                             "char": "characters",
                             "loc": "locations",
                             "item": "lore_entities",
                             "lore": "lore_entities",
                             "group": "groups",
-                            "foreshadow": "foreshadowings",
+                            "foreshadow": "twists",
                             "twist": "twists"
                         }
                         
@@ -315,10 +389,18 @@ def migrate_project(project_path: str) -> dict:
                 "project_name": os.path.basename(project_path),
                 "schema_version": 2,
                 "created_version": "1.2.0",
-                "last_opened_version": "1.3.0"
+                "last_opened_version": "1.3.0",
+                "project_id": str(uuid.uuid4())
             }, f, indent=2)
 
-        return {"status": "ok", "message": "Project database and markdown files migrated successfully to Schema version 2."}
+        result = {"status": "ok", "message": "Project database and markdown files migrated successfully to Schema version 2."}
+        if integrity_orphans:
+            total = sum(o["count"] for o in integrity_orphans)
+            result["warnings"] = integrity_orphans
+            result["message"] += (f" Note: {total} reference(s) across "
+                                  f"{len(integrity_orphans)} table(s) could not be remapped "
+                                  f"and may be orphaned.")
+        return result
 
     except Exception as e:
         # Close database connections if they are still open to release file locks on Windows

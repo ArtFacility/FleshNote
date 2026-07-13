@@ -156,14 +156,19 @@ def save_cropped_icon(req: IconCropSaveRequest):
     conn = _get_db(req.project_path)
     cursor = conn.cursor()
 
-    # Delete previous icon image reference and file for this entity
+    import datetime
+    from sync_core import log_soft_delete, log_change
+    now = datetime.datetime.utcnow().isoformat() + "Z"
+
+    # Soft delete previous icon image reference for this entity
     cursor.execute(
-        "SELECT id, image_path FROM image_references WHERE entity_type = ? AND entity_id = ? AND is_icon = 1",
+        "SELECT id, image_path FROM image_references WHERE entity_type = ? AND entity_id = ? AND is_icon = 1 AND deleted = 0",
         (req.entity_type, req.entity_id)
     )
     old_icon = cursor.fetchone()
     if old_icon:
-        cursor.execute("DELETE FROM image_references WHERE id = ?", (old_icon["id"],))
+        cursor.execute("UPDATE image_references SET deleted = 1, deleted_at = ? WHERE id = ?", (now, old_icon["id"]))
+        log_soft_delete(cursor, "image_references", old_icon["id"])
         old_file = os.path.join(req.project_path, old_icon["image_path"])
         try:
             os.remove(old_file)
@@ -171,11 +176,21 @@ def save_cropped_icon(req: IconCropSaveRequest):
             pass
 
     # Create new icon reference
+    ref_id = str(uuid.uuid4())
     cursor.execute(
-        """INSERT INTO image_references (entity_id, entity_type, image_path, is_icon, world_time, caption)
-           VALUES (?, ?, ?, 1, NULL, 'Icon')""",
-        (req.entity_id, req.entity_type, relative_path)
+        """INSERT INTO image_references (id, entity_id, entity_type, image_path, is_icon, world_time, caption)
+           VALUES (?, ?, ?, ?, 1, NULL, 'Icon')""",
+        (ref_id, req.entity_id, req.entity_type, relative_path)
     )
+
+    log_change(cursor, "image_references", ref_id, {
+        "entity_id": req.entity_id,
+        "entity_type": req.entity_type,
+        "image_path": relative_path,
+        "is_icon": 1,
+        "caption": "Icon"
+    })
+
     conn.commit()
     conn.close()
 
@@ -191,13 +206,13 @@ def create_image_ref(req: ImageRefCreate):
     # If setting as icon, clear any existing icon for this entity
     if req.is_icon:
         cursor.execute(
-            "UPDATE image_references SET is_icon = 0 WHERE entity_type = ? AND entity_id = ? AND is_icon = 1",
+            "UPDATE image_references SET is_icon = 0 WHERE entity_type = ? AND entity_id = ? AND is_icon = 1 AND deleted = 0",
             (req.entity_type, req.entity_id)
         )
 
     # Auto-icon: if this is the first image for the entity, make it the icon
     cursor.execute(
-        "SELECT COUNT(*) FROM image_references WHERE entity_type = ? AND entity_id = ?",
+        "SELECT COUNT(*) FROM image_references WHERE entity_type = ? AND entity_id = ? AND deleted = 0",
         (req.entity_type, req.entity_id)
     )
     count = cursor.fetchone()[0]
@@ -209,6 +224,17 @@ def create_image_ref(req: ImageRefCreate):
            VALUES (?, ?, ?, ?, ?, ?, ?)""",
         (ref_id, req.entity_id, req.entity_type, req.image_path, is_icon, req.world_time, req.caption)
     )
+
+    from sync_core import log_change
+    log_change(cursor, "image_references", ref_id, {
+        "entity_id": req.entity_id,
+        "entity_type": req.entity_type,
+        "image_path": req.image_path,
+        "is_icon": is_icon,
+        "world_time": req.world_time,
+        "caption": req.caption
+    })
+
     conn.commit()
 
     cursor.execute("SELECT * FROM image_references WHERE id = ?", (ref_id,))
@@ -226,21 +252,23 @@ def update_image_ref(req: ImageRefUpdate):
 
     # If setting as icon, first clear other icons for the same entity
     if req.is_icon == 1:
-        cursor.execute("SELECT entity_type, entity_id FROM image_references WHERE id = ?", (req.image_ref_id,))
+        cursor.execute("SELECT entity_type, entity_id FROM image_references WHERE id = ? AND deleted = 0", (req.image_ref_id,))
         row = cursor.fetchone()
         if row:
             cursor.execute(
-                "UPDATE image_references SET is_icon = 0 WHERE entity_type = ? AND entity_id = ? AND is_icon = 1",
+                "UPDATE image_references SET is_icon = 0 WHERE entity_type = ? AND entity_id = ? AND is_icon = 1 AND deleted = 0",
                 (row["entity_type"], row["entity_id"])
             )
 
     fields = []
     values = []
+    changes = {}
     for field_name in ["is_icon", "world_time", "caption", "sort_order"]:
         val = getattr(req, field_name)
         if val is not None:
             fields.append(f"{field_name} = ?")
             values.append(val)
+            changes[field_name] = val
 
     if not fields:
         conn.close()
@@ -248,6 +276,10 @@ def update_image_ref(req: ImageRefUpdate):
 
     values.append(req.image_ref_id)
     cursor.execute(f"UPDATE image_references SET {', '.join(fields)} WHERE id = ?", values)
+
+    from sync_core import log_change
+    log_change(cursor, "image_references", req.image_ref_id, changes)
+
     conn.commit()
 
     cursor.execute("SELECT * FROM image_references WHERE id = ?", (req.image_ref_id,))
@@ -263,7 +295,7 @@ def delete_image_ref(req: ImageRefDelete):
     conn = _get_db(req.project_path)
     cursor = conn.cursor()
 
-    cursor.execute("SELECT * FROM image_references WHERE id = ?", (req.image_ref_id,))
+    cursor.execute("SELECT * FROM image_references WHERE id = ? AND deleted = 0", (req.image_ref_id,))
     row = cursor.fetchone()
     if not row:
         conn.close()
@@ -274,17 +306,24 @@ def delete_image_ref(req: ImageRefDelete):
     entity_type = row["entity_type"]
     entity_id = row["entity_id"]
 
-    cursor.execute("DELETE FROM image_references WHERE id = ?", (req.image_ref_id,))
+    import datetime
+    from sync_core import log_soft_delete
+    now = datetime.datetime.utcnow().isoformat() + "Z"
+
+    cursor.execute("UPDATE image_references SET deleted = 1, deleted_at = ? WHERE id = ?", (now, req.image_ref_id))
+    log_soft_delete(cursor, "image_references", req.image_ref_id)
 
     # If we deleted the icon, promote the next image as icon
     if was_icon:
         cursor.execute(
-            "SELECT id FROM image_references WHERE entity_type = ? AND entity_id = ? ORDER BY sort_order, id LIMIT 1",
+            "SELECT id FROM image_references WHERE entity_type = ? AND entity_id = ? AND deleted = 0 ORDER BY sort_order, id LIMIT 1",
             (entity_type, entity_id)
         )
         next_row = cursor.fetchone()
         if next_row:
             cursor.execute("UPDATE image_references SET is_icon = 1 WHERE id = ?", (next_row["id"],))
+            from sync_core import log_change
+            log_change(cursor, "image_references", next_row["id"], {"is_icon": 1})
 
     conn.commit()
     conn.close()
@@ -306,7 +345,7 @@ def get_image_refs_for_entity(req: ImageRefsForEntity):
     cursor = conn.cursor()
 
     cursor.execute(
-        "SELECT * FROM image_references WHERE entity_type = ? AND entity_id = ? ORDER BY sort_order, id",
+        "SELECT * FROM image_references WHERE entity_type = ? AND entity_id = ? AND deleted = 0 ORDER BY sort_order, id",
         (req.entity_type, req.entity_id)
     )
     rows = cursor.fetchall()
@@ -326,7 +365,7 @@ def get_bulk_icons(req: BulkIconsRequest):
     conn = _get_db(req.project_path)
     cursor = conn.cursor()
 
-    cursor.execute("SELECT entity_type, entity_id, image_path FROM image_references WHERE is_icon = 1")
+    cursor.execute("SELECT entity_type, entity_id, image_path FROM image_references WHERE is_icon = 1 AND deleted = 0")
     rows = cursor.fetchall()
     conn.close()
 

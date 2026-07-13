@@ -74,7 +74,7 @@ async def list_history_entries(req: HistoryEntryList):
     conn = _get_db(req.project_path)
     cursor = conn.cursor()
 
-    query = "SELECT * FROM history_entries WHERE 1=1"
+    query = "SELECT * FROM history_entries WHERE deleted = 0"
     params = []
 
     if req.entity_type is not None:
@@ -120,6 +120,22 @@ async def create_history_entry(req: HistoryEntryCreate):
         req.date_year, req.date_month, req.date_day, req.date_precise,
         req.related_entity_type, req.related_entity_id,
     ))
+
+    from sync_core import log_change
+    log_change(cursor, "history_entries", entry_id, {
+        "entity_type": req.entity_type,
+        "entity_id": req.entity_id,
+        "title": req.title,
+        "description": req.description,
+        "event_type": req.event_type,
+        "date_year": req.date_year,
+        "date_month": req.date_month,
+        "date_day": req.date_day,
+        "date_precise": req.date_precise,
+        "related_entity_type": req.related_entity_type,
+        "related_entity_id": req.related_entity_id,
+    })
+
     conn.commit()
 
     cursor.execute("SELECT * FROM history_entries WHERE id = ?", (entry_id,))
@@ -136,6 +152,7 @@ async def update_history_entry(req: HistoryEntryUpdate):
 
     fields = []
     params = []
+    changes = {}
     for field_name in [
         "title", "description", "event_type",
         "date_year", "date_month", "date_day", "date_precise",
@@ -145,6 +162,7 @@ async def update_history_entry(req: HistoryEntryUpdate):
         if value is not None:
             fields.append(f"{field_name} = ?")
             params.append(value)
+            changes[field_name] = value
 
     if not fields:
         conn.close()
@@ -158,6 +176,10 @@ async def update_history_entry(req: HistoryEntryUpdate):
         f"UPDATE history_entries SET {', '.join(fields)} WHERE id = ?",
         params,
     )
+
+    from sync_core import log_change
+    log_change(cursor, "history_entries", req.entry_id, changes)
+
     conn.commit()
 
     cursor.execute("SELECT * FROM history_entries WHERE id = ?", (req.entry_id,))
@@ -175,7 +197,13 @@ async def delete_history_entry(req: HistoryEntryDelete):
     conn = _get_db(req.project_path)
     cursor = conn.cursor()
 
-    cursor.execute("DELETE FROM history_entries WHERE id = ?", (req.entry_id,))
+    import datetime as dt
+    from sync_core import log_soft_delete
+    now = dt.datetime.utcnow().isoformat() + "Z"
+
+    cursor.execute("UPDATE history_entries SET deleted = 1, deleted_at = ? WHERE id = ?", (now, req.entry_id))
+    log_soft_delete(cursor, "history_entries", req.entry_id)
+
     conn.commit()
     conn.close()
 

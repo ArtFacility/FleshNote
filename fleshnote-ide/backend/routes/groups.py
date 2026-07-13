@@ -69,7 +69,7 @@ def _row_to_dict(row):
 def get_groups(req: ProjectPath):
     conn = _get_db(req.project_path)
     cursor = conn.cursor()
-    cursor.execute("SELECT * FROM groups ORDER BY id ASC")
+    cursor.execute("SELECT * FROM groups WHERE deleted = 0 ORDER BY id ASC")
     rows = cursor.fetchall()
     conn.close()
     return {"groups": [_row_to_dict(row) for row in rows]}
@@ -97,6 +97,17 @@ def create_group(req: GroupCreate):
         req.notes,
     ))
 
+    from sync_core import log_change
+    log_change(cursor, "groups", group_id, {
+        "name": req.name,
+        "aliases": req.aliases,
+        "group_type": req.group_type,
+        "description": req.description,
+        "surface_agenda": req.surface_agenda,
+        "true_agenda": req.true_agenda,
+        "notes": req.notes,
+    })
+
     conn.commit()
     conn.close()
 
@@ -117,6 +128,7 @@ def update_group(req: GroupUpdate):
 
     fields = []
     values = []
+    changes = {}
 
     for field_name in ["name", "group_type", "description",
                        "surface_agenda", "true_agenda", "notes"]:
@@ -124,10 +136,12 @@ def update_group(req: GroupUpdate):
         if val is not None:
             fields.append(f"{field_name} = ?")
             values.append(val)
+            changes[field_name] = val
 
     if req.aliases is not None:
         fields.append("aliases = ?")
         values.append(json.dumps(req.aliases))
+        changes["aliases"] = req.aliases
 
     fields.append("updated_at = CURRENT_TIMESTAMP")
 
@@ -141,6 +155,10 @@ def update_group(req: GroupUpdate):
         f"UPDATE groups SET {', '.join(fields)} WHERE id = ?",
         values
     )
+
+    from sync_core import log_change
+    log_change(cursor, "groups", req.group_id, changes)
+
     conn.commit()
 
     cursor.execute("SELECT * FROM groups WHERE id = ?", (req.group_id,))
@@ -157,7 +175,22 @@ def update_group(req: GroupUpdate):
 def delete_group(req: GroupDelete):
     conn = _get_db(req.project_path)
     cursor = conn.cursor()
-    cursor.execute("DELETE FROM groups WHERE id = ?", (req.group_id,))
+
+    import datetime
+    from sync_core import log_soft_delete, log_change
+    now = datetime.datetime.utcnow().isoformat() + "Z"
+
+    # Soft delete group
+    cursor.execute("UPDATE groups SET deleted = 1, deleted_at = ? WHERE id = ?", (now, req.group_id))
+    log_soft_delete(cursor, "groups", req.group_id)
+
+    # Cascade group removal to characters belonging to this group
+    cursor.execute("SELECT id FROM characters WHERE group_id = ? AND deleted = 0", (req.group_id,))
+    char_rows = cursor.fetchall()
+    for r in char_rows:
+        cursor.execute("UPDATE characters SET group_id = NULL WHERE id = ?", (r["id"],))
+        log_change(cursor, "characters", r["id"], {"group_id": None})
+
     conn.commit()
     conn.close()
     return {"status": "ok"}

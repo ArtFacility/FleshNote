@@ -52,7 +52,7 @@ async def list_world_times(req: WorldTimeList):
     conn = _get_db(req.project_path)
     cursor = conn.cursor()
     cursor.execute(
-        "SELECT * FROM world_times WHERE chapter_id = ? ORDER BY id",
+        "SELECT * FROM world_times WHERE chapter_id = ? AND deleted = 0 ORDER BY id",
         (req.chapter_id,),
     )
     rows = cursor.fetchall()
@@ -67,7 +67,7 @@ async def create_world_time(req: WorldTimeCreate):
 
     # Auto-assign color_index if not provided
     if req.color_index is None:
-        cursor.execute("SELECT COUNT(*) FROM world_times WHERE chapter_id = ?", (req.chapter_id,))
+        cursor.execute("SELECT COUNT(*) FROM world_times WHERE chapter_id = ? AND deleted = 0", (req.chapter_id,))
         count = cursor.fetchone()[0]
         color_index = count % 8
     else:
@@ -81,6 +81,15 @@ async def create_world_time(req: WorldTimeCreate):
     """, (
         marker_id, req.chapter_id, req.world_date, req.label, color_index,
     ))
+
+    from sync_core import log_change
+    log_change(cursor, "world_times", marker_id, {
+        "chapter_id": req.chapter_id,
+        "world_date": req.world_date,
+        "label": req.label,
+        "color_index": color_index
+    })
+
     conn.commit()
 
     cursor.execute("SELECT * FROM world_times WHERE id = ?", (marker_id,))
@@ -97,11 +106,13 @@ async def update_world_time(req: WorldTimeUpdate):
 
     fields = []
     params = []
+    changes = {}
     for field_name in ["world_date", "label", "color_index"]:
         value = getattr(req, field_name)
         if value is not None:
             fields.append(f"{field_name} = ?")
             params.append(value)
+            changes[field_name] = value
 
     if not fields:
         conn.close()
@@ -112,6 +123,10 @@ async def update_world_time(req: WorldTimeUpdate):
         f"UPDATE world_times SET {', '.join(fields)} WHERE id = ?",
         params,
     )
+
+    from sync_core import log_change
+    log_change(cursor, "world_times", req.marker_id, changes)
+
     conn.commit()
 
     cursor.execute("SELECT * FROM world_times WHERE id = ?", (req.marker_id,))
@@ -128,7 +143,14 @@ async def update_world_time(req: WorldTimeUpdate):
 async def delete_world_time(req: WorldTimeDelete):
     conn = _get_db(req.project_path)
     cursor = conn.cursor()
-    cursor.execute("DELETE FROM world_times WHERE id = ?", (req.marker_id,))
+
+    import datetime
+    from sync_core import log_soft_delete
+    now = datetime.datetime.utcnow().isoformat() + "Z"
+
+    cursor.execute("UPDATE world_times SET deleted = 1, deleted_at = ? WHERE id = ?", (now, req.marker_id))
+    log_soft_delete(cursor, "world_times", req.marker_id)
+
     conn.commit()
     conn.close()
     return {"status": "ok"}

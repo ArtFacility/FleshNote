@@ -3,13 +3,12 @@
     "history": [
         {
             "version": "1.3.0",
-            "date": "2026-07-11",
+            "date": "2026-07-15",
             "changes": [
-                "NEW: Database Migration Engine — Automatically upgrade legacy V1 databases to V2 UUID structures",
-                "NEW: Prepared database and sync tracking for future companion app compatibility",
-                "Addition: Improved analytics engine and prepared coordinate keys for future history rewind features",
-                "Addition: Switched all internal IDs to UUIDs for stable synchronization",
-                "Addition: Soft-delete tracking added to database entities"
+                "NEW: Database refactored to support syncing feature",
+                "NEW: Syncing feature - Edit the same project on different devices, then sync the changes into one project",
+                "NEW: Edit history - view the changes made to a project, and revert to a previous version if needed",
+                "NEW: Pentimento - See how your manuscript changed over time, simulate and replay your writing process"
             ]
         },
         {

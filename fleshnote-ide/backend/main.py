@@ -1,6 +1,7 @@
 import os
 import json
 import sqlite3
+import uuid
 
 from fastapi import FastAPI, HTTPException
 from pydantic import BaseModel
@@ -33,6 +34,9 @@ from routes.boards import router as boards_router
 from routes.janitor import router as janitor_router
 from routes.image_references import router as image_references_router
 from routes.name_gen import router as name_gen_router
+from routes.sync import router as sync_router
+from routes.pentimento import router as pentimento_router
+from routes.chapter_history import router as chapter_history_router
 
 app = FastAPI(title="FleshNote API")
 
@@ -64,6 +68,9 @@ app.include_router(boards_router)
 app.include_router(janitor_router)
 app.include_router(image_references_router)
 app.include_router(name_gen_router)
+app.include_router(sync_router)
+app.include_router(pentimento_router)
+app.include_router(chapter_history_router)
 
 # Define our data models so FastAPI knows what to expect
 class WorkspaceRequest(BaseModel):
@@ -185,7 +192,8 @@ def initialize_project(request: ProjectCreateRequest):
         "project_name": request.project_name,
         "schema_version": 2,
         "created_version": "1.3.0",
-        "last_opened_version": "1.3.0"
+        "last_opened_version": "1.3.0",
+        "project_id": str(uuid.uuid4())
       }, f, indent=2)
 
     return {
@@ -209,6 +217,20 @@ def migrate_project_endpoint(request: ProjectMigrateRequest):
   return res
 
 
+def ensure_project_id(project_path: str):
+  json_path = os.path.join(project_path, "fleshnote_project.json")
+  if os.path.exists(json_path):
+    try:
+      with open(json_path, "r", encoding="utf-8") as f:
+        data = json.load(f)
+      if "project_id" not in data:
+        data["project_id"] = str(uuid.uuid4())
+        with open(json_path, "w", encoding="utf-8") as f:
+          json.dump(data, f, indent=2)
+    except Exception as e:
+      print(f"Warning: Failed to backfill project_id: {e}")
+
+
 @app.post("/api/project/load")
 def load_project(request: ProjectLoadRequest):
   """Loads an existing project's configuration."""
@@ -216,6 +238,9 @@ def load_project(request: ProjectLoadRequest):
 
   if not os.path.exists(db_path):
     raise HTTPException(status_code=404, detail="Database not found in project folder")
+
+  # Backfill project_id if it's missing from fleshnote_project.json
+  ensure_project_id(request.project_path)
 
   # Block load if it needs migration
   json_path = os.path.join(request.project_path, "fleshnote_project.json")
@@ -352,6 +377,17 @@ def update_project_config(request: ProjectConfigUpdateRequest):
         config_value = excluded.config_value,
         config_type = excluded.config_type
     """, (request.config_key, val_str, request.config_type))
+
+    # Log changes for authoritative (AUTH) keys only
+    LOCAL_CONFIG_KEYS = {"active_sprint", "last_opened_at", "name_gen_settings"}
+    if request.config_key not in LOCAL_CONFIG_KEYS:
+      from sync_core import log_change
+      # Note: config_type is part of the schema and synced as well
+      log_change(cursor, "project_config", request.config_key, {
+        "config_value": val_str,
+        "config_type": request.config_type
+      })
+
     conn.commit()
     conn.close()
     return {"status": "success"}

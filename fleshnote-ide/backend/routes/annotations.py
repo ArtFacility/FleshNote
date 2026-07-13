@@ -50,10 +50,21 @@ def _get_db(project_path: str):
                                 lower(hex(randomblob(6)))
                             ),
             content         TEXT NOT NULL,
+            deleted         INTEGER DEFAULT 0,
+            deleted_at      TEXT,
             created_at      TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
             updated_at      TIMESTAMP DEFAULT CURRENT_TIMESTAMP
         )
     """)
+    # Migration: add columns if they don't exist yet
+    try:
+        cursor.execute("ALTER TABLE annotations ADD COLUMN deleted INTEGER DEFAULT 0")
+    except Exception:
+        pass
+    try:
+        cursor.execute("ALTER TABLE annotations ADD COLUMN deleted_at TEXT")
+    except Exception:
+        pass
     conn.commit()
     return conn
 
@@ -62,7 +73,7 @@ def _get_db(project_path: str):
 def get_annotations(req: ProjectPath):
     conn = _get_db(req.project_path)
     cursor = conn.cursor()
-    cursor.execute("SELECT id, content, created_at, updated_at FROM annotations ORDER BY id ASC")
+    cursor.execute("SELECT id, content, created_at, updated_at FROM annotations WHERE deleted = 0 ORDER BY id ASC")
     rows = cursor.fetchall()
     conn.close()
 
@@ -88,6 +99,12 @@ def create_annotation(req: AnnotationCreate):
     import uuid
     annotation_id = str(uuid.uuid4())
     cursor.execute("INSERT INTO annotations (id, content) VALUES (?, ?)", (annotation_id, req.content))
+
+    from sync_core import log_change
+    log_change(cursor, "annotations", annotation_id, {
+        "content": req.content
+    })
+
     conn.commit()
 
     cursor.execute("SELECT id, content FROM annotations WHERE id = ?", (annotation_id,))
@@ -112,6 +129,12 @@ def update_annotation(req: AnnotationUpdate):
         "UPDATE annotations SET content = ?, updated_at = CURRENT_TIMESTAMP WHERE id = ?",
         (req.content, req.annotation_id)
     )
+
+    from sync_core import log_change
+    log_change(cursor, "annotations", req.annotation_id, {
+        "content": req.content
+    })
+
     conn.commit()
 
     cursor.execute("SELECT id, content FROM annotations WHERE id = ?", (req.annotation_id,))
@@ -135,7 +158,14 @@ def update_annotation(req: AnnotationUpdate):
 def delete_annotation(req: AnnotationDelete):
     conn = _get_db(req.project_path)
     cursor = conn.cursor()
-    cursor.execute("DELETE FROM annotations WHERE id = ?", (req.annotation_id,))
+
+    import datetime
+    from sync_core import log_soft_delete
+    now = datetime.datetime.utcnow().isoformat() + "Z"
+
+    cursor.execute("UPDATE annotations SET deleted = 1, deleted_at = ? WHERE id = ?", (now, req.annotation_id))
+    log_soft_delete(cursor, "annotations", req.annotation_id)
+
     conn.commit()
     conn.close()
     return {"status": "deleted"}

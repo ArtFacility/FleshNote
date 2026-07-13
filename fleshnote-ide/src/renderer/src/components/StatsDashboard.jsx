@@ -2,6 +2,7 @@ import { useState, useMemo, useEffect, useCallback, useRef } from "react";
 import { useTranslation } from "react-i18next";
 import { BarChart, Bar, LineChart, Line, PieChart, Pie, RadarChart, Radar, PolarGrid, PolarAngleAxis, XAxis, YAxis, Tooltip as RechartsTooltip, ResponsiveContainer, Cell } from "recharts";
 import EntityInspectorPanel from "./ide-panels/EntityInspectorPanel";
+import PentimentoTab from "./PentimentoTab";
 
 // ══════════════════════════════════════════════════════════════
 // THEME & CONSTANTS (Adhering to DESIGN_GUIDELINES.md)
@@ -58,6 +59,13 @@ const Icons = {
             <rect x="14" y="3" width="7" height="7"></rect>
             <rect x="3" y="14" width="7" height="7"></rect>
             <rect x="14" y="14" width="7" height="7"></rect>
+        </svg>
+    ),
+    Layers: () => (
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+            <polygon points="12 2 2 7 12 12 22 7 12 2"></polygon>
+            <polyline points="2 17 12 22 22 17"></polyline>
+            <polyline points="2 12 12 17 22 12"></polyline>
         </svg>
     ),
     User: () => (
@@ -1016,7 +1024,7 @@ function SensesTab({ projectPath, projectConfig }) {
 // MAIN COMPONENT
 // ══════════════════════════════════════════════════════════════
 
-export default function StatsDashboard({ projectPath, chapters, entities, characters, projectConfig, onEntityUpdated, onConfigUpdate }) {
+export default function StatsDashboard({ projectPath, chapters, entities, characters, projectConfig, activeChapter, onEntityUpdated, onConfigUpdate }) {
     const { t } = useTranslation();
     const [activeTab, setActiveTab] = useState("habits");
     const [loading, setLoading] = useState(true);
@@ -1039,6 +1047,7 @@ export default function StatsDashboard({ projectPath, chapters, entities, charac
 
     const tabs = [
         { id: "habits", label: t('stats.analyticsHabits', 'Analytics & Habits'), icon: <Icons.Activity /> },
+        { id: "process", label: t('stats.process', 'Process'), icon: <Icons.Layers /> },
         { id: "entities", label: t('stats.entityAuditor', 'Entity Auditor'), icon: <Icons.Users /> },
         { id: "health", label: t('stats.storyHealth', 'Story Health'), icon: <Icons.HeartPulse /> },
         { id: "senses", label: t('stats.sensoryAnalysis', 'Sensory Analysis'), icon: <span style={{ fontFamily: "var(--font-runes)", fontSize: 14 }}>ᛉ</span> },
@@ -1054,6 +1063,7 @@ export default function StatsDashboard({ projectPath, chapters, entities, charac
             <TabBar tabs={tabs} active={activeTab} onSelect={setActiveTab} />
             <div style={{ flex: 1, overflowY: "auto", overflowX: "hidden" }}>
                 {activeTab === "habits" && <HabitsTab statLogs={statsData.stat_logs} globalStats={statsData.global_stats} chapters={chapters} />}
+                {activeTab === "process" && <PentimentoTab projectPath={projectPath} chapters={chapters} projectConfig={projectConfig} activeChapter={activeChapter} />}
                 {activeTab === "entities" && <EntityAuditorTab entities={entities} mentions={statsData.entity_mentions} chapters={chapters} projectConfig={projectConfig} />}
                 {activeTab === "health" && <StoryHealthTab entities={entities} chapters={chapters} mentions={statsData.entity_mentions || []} projectPath={projectPath} projectConfig={projectConfig} />}
                 {activeTab === "senses" && <SensesTab projectPath={projectPath} projectConfig={projectConfig} />}

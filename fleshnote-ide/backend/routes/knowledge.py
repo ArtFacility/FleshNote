@@ -177,6 +177,19 @@ def create_knowledge_state(req: KnowledgeStateCreate):
         req.reveal_in_chapter, req.notes,
     ))
 
+    from sync_core import log_change
+    log_change(cursor, "knowledge_states", ks_id, {
+        "character_id": req.character_id,
+        "fact": req.fact,
+        "source_entity_type": req.source_entity_type,
+        "source_entity_id": req.source_entity_id,
+        "learned_in_chapter": req.learned_in_chapter,
+        "world_time": req.world_time,
+        "is_secret": req.is_secret,
+        "reveal_in_chapter": req.reveal_in_chapter,
+        "notes": req.notes,
+    })
+
     conn.commit()
 
     # Return created row
@@ -195,6 +208,7 @@ def update_knowledge_state(req: KnowledgeStateUpdate):
 
     fields = []
     values = []
+    changes = {}
 
     for field_name in ["fact", "source_entity_type", "source_entity_id",
                        "learned_in_chapter", "world_time", "is_secret",
@@ -203,6 +217,7 @@ def update_knowledge_state(req: KnowledgeStateUpdate):
         if val is not None:
             fields.append(f"{field_name} = ?")
             values.append(val)
+            changes[field_name] = val
 
     if not fields:
         conn.close()
@@ -214,6 +229,10 @@ def update_knowledge_state(req: KnowledgeStateUpdate):
         f"UPDATE knowledge_states SET {', '.join(fields)} WHERE id = ?",
         values
     )
+
+    from sync_core import log_change
+    log_change(cursor, "knowledge_states", req.knowledge_state_id, changes)
+
     conn.commit()
 
     cursor.execute("SELECT * FROM knowledge_states WHERE id = ?", (req.knowledge_state_id,))
@@ -232,8 +251,15 @@ def delete_knowledge_state(req: KnowledgeStateDelete):
     conn = _get_db(req.project_path)
     cursor = conn.cursor()
 
-    cursor.execute("DELETE FROM knowledge_states WHERE id = ?", (req.knowledge_state_id,))
+    import datetime
+    from sync_core import log_soft_delete
+    now = datetime.datetime.utcnow().isoformat() + "Z"
+
+    cursor.execute("UPDATE knowledge_states SET deleted = 1, deleted_at = ? WHERE id = ?", (now, req.knowledge_state_id))
     deleted = cursor.rowcount
+    if deleted > 0:
+        log_soft_delete(cursor, "knowledge_states", req.knowledge_state_id)
+
     conn.commit()
     conn.close()
 
@@ -271,6 +297,7 @@ def get_knowledge_for_entity(req: KnowledgeForEntity):
               AND ks.source_entity_id = ?
               AND ks.character_id = ?
               AND ks.is_secret = 0
+              AND ks.deleted = 0
               AND (ch.chapter_number <= ? OR ks.learned_in_chapter IS NULL)
             ORDER BY COALESCE(ch.chapter_number, 0) ASC
         """, (req.source_entity_type, req.source_entity_id,
@@ -288,6 +315,7 @@ def get_knowledge_for_entity(req: KnowledgeForEntity):
               AND ks.source_entity_id = ?
               AND ks.character_id = ?
               AND ks.is_secret = 0
+              AND ks.deleted = 0
             ORDER BY COALESCE(ch.chapter_number, 0) ASC
         """, (req.source_entity_type, req.source_entity_id, char_id))
 
@@ -301,6 +329,7 @@ def get_knowledge_for_entity(req: KnowledgeForEntity):
             WHERE ks.source_entity_type = ?
               AND ks.source_entity_id = ?
               AND ks.is_secret = 0
+              AND ks.deleted = 0
             ORDER BY COALESCE(ch.chapter_number, 0) ASC
         """, (req.source_entity_type, req.source_entity_id))
 
@@ -312,6 +341,7 @@ def get_knowledge_for_entity(req: KnowledgeForEntity):
             JOIN characters c ON ks.character_id = c.id
             WHERE ks.source_entity_type = ?
               AND ks.source_entity_id = ?
+              AND ks.deleted = 0
             ORDER BY c.name ASC, ks.learned_in_chapter ASC
         """, (req.source_entity_type, req.source_entity_id))
 
@@ -364,6 +394,7 @@ def get_knowledge_for_character(req: KnowledgeForCharacter):
             LEFT JOIN chapters ch ON ks.learned_in_chapter = ch.id
             WHERE ks.character_id = ?
               AND ks.is_secret = 0
+              AND ks.deleted = 0
               AND (ch.chapter_number <= ? OR ks.learned_in_chapter IS NULL)
             ORDER BY COALESCE(ch.chapter_number, 0) ASC
         """, (req.character_id, req.current_chapter))
@@ -388,6 +419,7 @@ def get_knowledge_for_character(req: KnowledgeForCharacter):
             LEFT JOIN chapters ch ON ks.learned_in_chapter = ch.id
             WHERE ks.character_id = ?
               AND ks.is_secret = 0
+              AND ks.deleted = 0
             ORDER BY COALESCE(ch.chapter_number, 0) ASC
         """, (req.character_id,))
 
@@ -410,6 +442,7 @@ def get_knowledge_for_character(req: KnowledgeForCharacter):
             LEFT JOIN groups g ON ks.source_entity_type = 'group' AND ks.source_entity_id = g.id
             LEFT JOIN chapters ch ON ks.learned_in_chapter = ch.id
             WHERE ks.character_id = ?
+              AND ks.deleted = 0
             ORDER BY COALESCE(ch.chapter_number, 0) ASC
         """, (req.character_id,))
 

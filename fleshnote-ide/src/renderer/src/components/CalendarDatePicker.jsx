@@ -255,6 +255,7 @@ export default function CalendarDatePicker({
                 onBlur={handleYearBlur}
                 onKeyDown={handleKeyDown}
                 title={t('calendar.year', 'Year')}
+                placeholder="YYYY"
                 style={{ ...inputStyle, width: compact ? 56 : 70 }}
             />
 
@@ -291,16 +292,9 @@ export default function CalendarDatePicker({
                 onBlur={handleDayBlur}
                 onKeyDown={handleKeyDown}
                 title={t('calendar.day', 'Day')}
+                placeholder="DD"
                 style={{ ...inputStyle, width: compact ? 40 : 54 }}
             />
-
-            {/* Epoch label hint */}
-            {epochLabel && !compact && (
-                <span style={{ fontFamily: "var(--font-mono)", fontSize: 10, color: "var(--text-tertiary)" }}>
-                    {epochLabel}
-                </span>
-            )}
-
         </div>
     );
 }

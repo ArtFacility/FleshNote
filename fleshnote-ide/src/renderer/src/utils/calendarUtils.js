@@ -87,7 +87,14 @@ export function entryToLinear(entry, calConfig) {
 
 export function parseBirthYear(birthDateStr) {
     if (!birthDateStr) return null;
-    const m = birthDateStr.match(/(\d+)/);
+    // Canonical format: "DD MonthName, YYYY [epoch]" — year is after the comma
+    const commaMatch = birthDateStr.match(/,\s*(-?\d+)/);
+    if (commaMatch) return parseInt(commaMatch[1], 10);
+    // Fallback: first 3+ digit number (likely a year, not a day)
+    const longNum = birthDateStr.match(/\b(\d{3,})\b/);
+    if (longNum) return parseInt(longNum[1], 10);
+    // Final fallback: first number
+    const m = birthDateStr.match(/(-?\d+)/);
     return m ? parseInt(m[1], 10) : null;
 }
 

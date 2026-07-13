@@ -65,7 +65,7 @@ def _row_to_dict(row):
 def get_twists(req: ProjectPath):
     conn = _get_db(req.project_path)
     cursor = conn.cursor()
-    cursor.execute("SELECT * FROM twists ORDER BY id ASC")
+    cursor.execute("SELECT * FROM twists WHERE deleted = 0 ORDER BY id ASC")
     rows = cursor.fetchall()
     conn.close()
     return {"twists": [_row_to_dict(row) for row in rows]}
@@ -78,7 +78,7 @@ def get_twists_for_planner(req: ProjectPath):
     cursor = conn.cursor()
 
     # All twists
-    cursor.execute("SELECT * FROM twists ORDER BY id ASC")
+    cursor.execute("SELECT * FROM twists WHERE deleted = 0 ORDER BY id ASC")
     twist_rows = cursor.fetchall()
 
     # All foreshadowings
@@ -87,12 +87,13 @@ def get_twists_for_planner(req: ProjectPath):
                c.chapter_number, c.word_count
         FROM foreshadowings f
         LEFT JOIN chapters c ON c.id = f.chapter_id
+        WHERE f.deleted = 0 AND (c.deleted = 0 OR c.deleted IS NULL)
         ORDER BY f.twist_id ASC, c.chapter_number ASC
     """)
     fs_rows = cursor.fetchall()
 
     # Chapter word counts for position calculation
-    cursor.execute("SELECT id, chapter_number, word_count, target_word_count FROM chapters ORDER BY chapter_number ASC")
+    cursor.execute("SELECT id, chapter_number, word_count, target_word_count FROM chapters WHERE deleted = 0 ORDER BY chapter_number ASC")
     ch_rows = cursor.fetchall()
     conn.close()
 
@@ -149,6 +150,16 @@ def create_twist(req: TwistCreate):
         req.notes,
     ))
 
+    from sync_core import log_change
+    log_change(cursor, "twists", twist_id, {
+        "title": req.title,
+        "description": req.description,
+        "twist_type": req.twist_type,
+        "reveal_chapter_id": req.reveal_chapter_id,
+        "characters_who_know": req.characters_who_know,
+        "notes": req.notes,
+    })
+
     conn.commit()
 
     cursor.execute("SELECT * FROM twists WHERE id = ?", (twist_id,))
@@ -166,6 +177,7 @@ def update_twist(req: TwistUpdate):
 
     fields = []
     values = []
+    changes = {}
 
     for field_name in ["title", "description", "twist_type",
                        "reveal_chapter_id", "status", "notes"]:
@@ -173,10 +185,12 @@ def update_twist(req: TwistUpdate):
         if val is not None:
             fields.append(f"{field_name} = ?")
             values.append(val)
+            changes[field_name] = val
 
     if req.characters_who_know is not None:
         fields.append("characters_who_know = ?")
         values.append(json.dumps(req.characters_who_know))
+        changes["characters_who_know"] = req.characters_who_know
 
     if not fields:
         conn.close()
@@ -188,6 +202,10 @@ def update_twist(req: TwistUpdate):
         f"UPDATE twists SET {', '.join(fields)} WHERE id = ?",
         values
     )
+
+    from sync_core import log_change
+    log_change(cursor, "twists", req.twist_id, changes)
+
     conn.commit()
 
     cursor.execute("SELECT * FROM twists WHERE id = ?", (req.twist_id,))
@@ -336,7 +354,10 @@ def delete_twist(req: TwistDelete):
     tid = str(req.twist_id)
     pattern = re.compile(r'\{\{(?:twist|foreshadow):' + re.escape(tid) + r'\|([^}]+)\}\}')
     for ch in chapters:
-        md_path = os.path.join(req.project_path, "md", ch["md_filename"])
+        md_filename = ch["md_filename"]
+        if not md_filename:
+            continue
+        md_path = os.path.join(req.project_path, "md", md_filename)
         if not os.path.exists(md_path):
             continue
         with open(md_path, "r", encoding="utf-8") as f:
@@ -346,8 +367,12 @@ def delete_twist(req: TwistDelete):
             with open(md_path, "w", encoding="utf-8") as f:
                 f.write(new_content)
 
+    import datetime
+    from sync_core import log_soft_delete
+    now = datetime.datetime.utcnow().isoformat() + "Z"
+
     # Check if there are foreshadowings to trigger "retcon_achieved"
-    cursor.execute("SELECT COUNT(*) as f_count FROM foreshadowings WHERE twist_id = ?", (req.twist_id,))
+    cursor.execute("SELECT COUNT(*) as f_count FROM foreshadowings WHERE twist_id = ? AND deleted = 0", (req.twist_id,))
     f_count = cursor.fetchone()["f_count"]
     if f_count > 0:
         cursor.execute("SELECT stat_value FROM stats WHERE stat_key = 'retcon_achieved'")
@@ -356,8 +381,17 @@ def delete_twist(req: TwistDelete):
         else:
             cursor.execute("INSERT INTO stats (stat_key, stat_value) VALUES ('retcon_achieved', '1')")
 
-    cursor.execute("DELETE FROM foreshadowings WHERE twist_id = ?", (req.twist_id,))
-    cursor.execute("DELETE FROM twists WHERE id = ?", (req.twist_id,))
+    # Soft delete foreshadowings
+    cursor.execute("SELECT id FROM foreshadowings WHERE twist_id = ? AND deleted = 0", (req.twist_id,))
+    fs_rows = cursor.fetchall()
+    for r in fs_rows:
+        cursor.execute("UPDATE foreshadowings SET deleted = 1, deleted_at = ? WHERE id = ?", (now, r["id"]))
+        log_soft_delete(cursor, "foreshadowings", r["id"])
+
+    # Soft delete the twist
+    cursor.execute("UPDATE twists SET deleted = 1, deleted_at = ? WHERE id = ?", (now, req.twist_id))
+    log_soft_delete(cursor, "twists", req.twist_id)
+
     conn.commit()
     conn.close()
     return {"status": "ok"}

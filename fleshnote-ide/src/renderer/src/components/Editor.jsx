@@ -1,4 +1,5 @@
 import { useEditor, EditorContent } from '@tiptap/react'
+import PentimentoRecorder from '../utils/pentimentoRecorder'
 import StarterKit from '@tiptap/starter-kit'
 import Placeholder from '@tiptap/extension-placeholder'
 import CharacterCount from '@tiptap/extension-character-count'
@@ -173,6 +174,27 @@ export default function Editor({
 
   const latestContentRef = useRef({ html: '', words: 0, isDirty: false })
   const onUpdateRef = useRef(onUpdate)
+
+  // ── Pentimento telemetry (writing-process capture) ──────────────────────
+  const pentimentoRef = useRef(null)
+  const pentiLoadingRef = useRef(false) // true while content is being loaded programmatically
+  if (!pentimentoRef.current) pentimentoRef.current = new PentimentoRecorder(window.api)
+  const pentiEnabled = projectConfig?.pentimento_capture !== false // default on
+
+  // Open/seal a chained session as the chapter (or capture toggle) changes.
+  useEffect(() => {
+    const rec = pentimentoRef.current
+    if (chapter?.id && projectPath && pentiEnabled) {
+      rec.start(projectPath, chapter.id, true)
+    } else {
+      rec.stop()
+    }
+  }, [chapter?.id, projectPath, pentiEnabled])
+
+  // Seal the session on unmount.
+  useEffect(() => {
+    return () => { pentimentoRef.current?.stop() }
+  }, [])
   const lastJanitorWordCountRef = useRef(0)
   const janitorInactivityTimerRef = useRef(null)
 
@@ -547,7 +569,11 @@ export default function Editor({
         }
       }
     },
-    onUpdate: ({ editor }) => {
+    onUpdate: ({ editor, transaction }) => {
+      // Capture the writing process — but never the programmatic content-load.
+      if (!pentiLoadingRef.current) {
+        try { pentimentoRef.current?.onTransaction(transaction) } catch { /* telemetry must never break editing */ }
+      }
       if (onUpdate) {
         if (saveTimeoutRef.current) clearTimeout(saveTimeoutRef.current)
 
@@ -727,7 +753,10 @@ export default function Editor({
   // When chapter changes (or is reloaded from disk), load new content
   useEffect(() => {
     if (editor && chapter?.content !== undefined) {
+      // Suppress pentimento capture for this programmatic replacement.
+      pentiLoadingRef.current = true
       editor.commands.setContent(chapter.content || '')
+      setTimeout(() => { pentiLoadingRef.current = false }, 0)
     }
   }, [editor, chapter?.id, chapter?._rev])
 

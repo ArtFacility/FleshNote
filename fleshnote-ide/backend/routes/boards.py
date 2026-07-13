@@ -55,7 +55,7 @@ class BoardLoad(BaseModel):
 async def list_boards(req: BoardList):
     conn = _get_db(req.project_path)
     cursor = conn.cursor()
-    cursor.execute("SELECT * FROM boards ORDER BY created_at")
+    cursor.execute("SELECT * FROM boards WHERE deleted = 0 ORDER BY created_at")
     rows = cursor.fetchall()
     conn.close()
     return {"boards": [dict(r) for r in rows]}
@@ -71,6 +71,14 @@ async def create_board(req: BoardCreate):
         "INSERT INTO boards (id, name, board_type, icon) VALUES (?, ?, ?, ?)",
         (board_id, req.name, req.board_type, req.icon)
     )
+
+    from sync_core import log_change
+    log_change(cursor, "boards", board_id, {
+        "name": req.name,
+        "board_type": req.board_type,
+        "icon": req.icon
+    })
+
     conn.commit()
     cursor.execute("SELECT * FROM boards WHERE id = ?", (board_id,))
     board = dict(cursor.fetchone())
@@ -83,17 +91,25 @@ async def update_board(req: BoardUpdate):
     conn = _get_db(req.project_path)
     cursor = conn.cursor()
     fields, params = [], []
+    changes = {}
     for f in ["name", "board_type", "icon", "zoom", "pan_x", "pan_y"]:
         v = getattr(req, f)
         if v is not None:
             fields.append(f"{f} = ?")
             params.append(v)
+            if f in ["name", "board_type", "icon"]:
+                changes[f] = v
     if not fields:
         conn.close()
         raise HTTPException(status_code=400, detail="No fields to update")
     fields.append("updated_at = datetime('now')")
     params.append(req.board_id)
     cursor.execute(f"UPDATE boards SET {', '.join(fields)} WHERE id = ?", params)
+
+    from sync_core import log_change
+    if changes:
+        log_change(cursor, "boards", req.board_id, changes)
+
     conn.commit()
     cursor.execute("SELECT * FROM boards WHERE id = ?", (req.board_id,))
     row = cursor.fetchone()
@@ -107,7 +123,29 @@ async def update_board(req: BoardUpdate):
 async def delete_board(req: BoardDelete):
     conn = _get_db(req.project_path)
     cursor = conn.cursor()
-    cursor.execute("DELETE FROM boards WHERE id = ?", (req.board_id,))
+
+    import datetime
+    from sync_core import log_soft_delete
+    now = datetime.datetime.utcnow().isoformat() + "Z"
+
+    # Soft delete board
+    cursor.execute("UPDATE boards SET deleted = 1, deleted_at = ? WHERE id = ?", (now, req.board_id))
+    log_soft_delete(cursor, "boards", req.board_id)
+
+    # Cascade soft deletes: board items
+    cursor.execute("SELECT id FROM board_items WHERE board_id = ? AND deleted = 0", (req.board_id,))
+    item_rows = cursor.fetchall()
+    for r in item_rows:
+        cursor.execute("UPDATE board_items SET deleted = 1, deleted_at = ? WHERE id = ?", (now, r["id"]))
+        log_soft_delete(cursor, "board_items", r["id"])
+
+    # Cascade soft deletes: connections
+    cursor.execute("SELECT id FROM item_connections WHERE board_id = ? AND deleted = 0", (req.board_id,))
+    conn_rows = cursor.fetchall()
+    for r in conn_rows:
+        cursor.execute("UPDATE item_connections SET deleted = 1, deleted_at = ? WHERE id = ?", (now, r["id"]))
+        log_soft_delete(cursor, "item_connections", r["id"])
+
     conn.commit()
     conn.close()
     return {"status": "ok"}
@@ -117,14 +155,14 @@ async def delete_board(req: BoardDelete):
 async def load_board(req: BoardLoad):
     conn = _get_db(req.project_path)
     cursor = conn.cursor()
-    cursor.execute("SELECT * FROM boards WHERE id = ?", (req.board_id,))
+    cursor.execute("SELECT * FROM boards WHERE id = ? AND deleted = 0", (req.board_id,))
     board_row = cursor.fetchone()
     if not board_row:
         conn.close()
         raise HTTPException(status_code=404, detail="Board not found")
-    cursor.execute("SELECT * FROM board_items WHERE board_id = ?", (req.board_id,))
+    cursor.execute("SELECT * FROM board_items WHERE board_id = ? AND deleted = 0", (req.board_id,))
     items = [dict(r) for r in cursor.fetchall()]
-    cursor.execute("SELECT * FROM item_connections WHERE board_id = ?", (req.board_id,))
+    cursor.execute("SELECT * FROM item_connections WHERE board_id = ? AND deleted = 0", (req.board_id,))
     connections = [dict(r) for r in cursor.fetchall()]
     conn.close()
     return {"board": dict(board_row), "items": items, "connections": connections}
@@ -174,6 +212,22 @@ async def create_item(req: ItemCreate):
         VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
     """, (item_id, req.board_id, req.name, req.item_type, req.entity_id, req.entity_type,
           req.description, req.pos_x, req.pos_y, req.size_x, req.size_y, req.color))
+
+    from sync_core import log_change
+    log_change(cursor, "board_items", item_id, {
+        "board_id": req.board_id,
+        "name": req.name,
+        "item_type": req.item_type,
+        "entity_id": req.entity_id,
+        "entity_type": req.entity_type,
+        "description": req.description,
+        "pos_x": req.pos_x,
+        "pos_y": req.pos_y,
+        "size_x": req.size_x,
+        "size_y": req.size_y,
+        "color": req.color
+    })
+
     conn.commit()
     cursor.execute("SELECT * FROM board_items WHERE id = ?", (item_id,))
     item = dict(cursor.fetchone())
@@ -186,16 +240,22 @@ async def update_item(req: ItemUpdate):
     conn = _get_db(req.project_path)
     cursor = conn.cursor()
     fields, params = [], []
+    changes = {}
     for f in ["name", "description", "pos_x", "pos_y", "size_x", "size_y", "color"]:
         v = getattr(req, f)
         if v is not None:
             fields.append(f"{f} = ?")
             params.append(v)
+            changes[f] = v
     if not fields:
         conn.close()
         raise HTTPException(status_code=400, detail="No fields to update")
     params.append(req.item_id)
     cursor.execute(f"UPDATE board_items SET {', '.join(fields)} WHERE id = ?", params)
+
+    from sync_core import log_change
+    log_change(cursor, "board_items", req.item_id, changes)
+
     conn.commit()
     cursor.execute("SELECT * FROM board_items WHERE id = ?", (req.item_id,))
     row = cursor.fetchone()
@@ -207,7 +267,22 @@ async def update_item(req: ItemUpdate):
 async def delete_item(req: ItemDelete):
     conn = _get_db(req.project_path)
     cursor = conn.cursor()
-    cursor.execute("DELETE FROM board_items WHERE id = ?", (req.item_id,))
+
+    import datetime
+    from sync_core import log_soft_delete
+    now = datetime.datetime.utcnow().isoformat() + "Z"
+
+    # Soft delete item
+    cursor.execute("UPDATE board_items SET deleted = 1, deleted_at = ? WHERE id = ?", (now, req.item_id))
+    log_soft_delete(cursor, "board_items", req.item_id)
+
+    # Cascade soft deletes: connections touching this item
+    cursor.execute("SELECT id FROM item_connections WHERE (item_start_id = ? OR item_end_id = ?) AND deleted = 0", (req.item_id, req.item_id))
+    conn_rows = cursor.fetchall()
+    for r in conn_rows:
+        cursor.execute("UPDATE item_connections SET deleted = 1, deleted_at = ? WHERE id = ?", (now, r["id"]))
+        log_soft_delete(cursor, "item_connections", r["id"])
+
     conn.commit()
     conn.close()
     return {"status": "ok"}
@@ -254,6 +329,19 @@ async def create_connection(req: ConnectionCreate):
         VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)
     """, (conn_id, req.board_id, req.item_start_id, req.item_end_id,
           req.conn_type, req.conn_color, req.title, 1 if req.directed else 0, req.curve_offset))
+
+    from sync_core import log_change
+    log_change(cursor, "item_connections", conn_id, {
+        "board_id": req.board_id,
+        "item_start_id": req.item_start_id,
+        "item_end_id": req.item_end_id,
+        "conn_type": req.conn_type,
+        "conn_color": req.conn_color,
+        "title": req.title,
+        "directed": 1 if req.directed else 0,
+        "curve_offset": req.curve_offset
+    })
+
     conn.commit()
     cursor.execute("SELECT * FROM item_connections WHERE id = ?", (conn_id,))
     row = dict(cursor.fetchone())
@@ -266,19 +354,26 @@ async def update_connection(req: ConnectionUpdate):
     conn = _get_db(req.project_path)
     cursor = conn.cursor()
     fields, params = [], []
+    changes = {}
     for f in ["item_start_id", "item_end_id", "conn_type", "conn_color", "title", "curve_offset"]:
         v = getattr(req, f)
         if v is not None:
             fields.append(f"{f} = ?")
             params.append(v)
+            changes[f] = v
     if req.directed is not None:
         fields.append("directed = ?")
         params.append(1 if req.directed else 0)
+        changes["directed"] = 1 if req.directed else 0
     if not fields:
         conn.close()
         raise HTTPException(status_code=400, detail="No fields to update")
     params.append(req.connection_id)
     cursor.execute(f"UPDATE item_connections SET {', '.join(fields)} WHERE id = ?", params)
+
+    from sync_core import log_change
+    log_change(cursor, "item_connections", req.connection_id, changes)
+
     conn.commit()
     cursor.execute("SELECT * FROM item_connections WHERE id = ?", (req.connection_id,))
     row = cursor.fetchone()
@@ -290,7 +385,14 @@ async def update_connection(req: ConnectionUpdate):
 async def delete_connection(req: ConnectionDelete):
     conn = _get_db(req.project_path)
     cursor = conn.cursor()
-    cursor.execute("DELETE FROM item_connections WHERE id = ?", (req.connection_id,))
+
+    import datetime
+    from sync_core import log_soft_delete
+    now = datetime.datetime.utcnow().isoformat() + "Z"
+
+    cursor.execute("UPDATE item_connections SET deleted = 1, deleted_at = ? WHERE id = ?", (now, req.connection_id))
+    log_soft_delete(cursor, "item_connections", req.connection_id)
+
     conn.commit()
     conn.close()
     return {"status": "ok"}

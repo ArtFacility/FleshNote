@@ -396,6 +396,7 @@ def get_chapters(req: ProjectPath):
         SELECT c.*, ch.name as pov_name
         FROM chapters c
         LEFT JOIN characters ch ON c.pov_character_id = ch.id
+        WHERE c.deleted = 0
         ORDER BY c.chapter_number ASC
     """)
     rows = cursor.fetchall()
@@ -431,7 +432,7 @@ def create_chapter(req: ChapterCreate):
 
     # Auto-determine chapter number if not provided
     if req.chapter_number is None:
-        cursor.execute("SELECT COALESCE(MAX(chapter_number), 0) + 1 FROM chapters")
+        cursor.execute("SELECT COALESCE(MAX(chapter_number), 0) + 1 FROM chapters WHERE deleted = 0")
         req.chapter_number = cursor.fetchone()[0]
 
     # Generate md filename
@@ -445,6 +446,17 @@ def create_chapter(req: ChapterCreate):
         VALUES (?, ?, ?, ?, ?, ?, ?, 0)
     """, (chapter_id, req.chapter_number, req.title or f"Chapter {req.chapter_number}",
           req.status, req.pov_character_id, req.target_word_count, md_filename))
+
+    from sync_core import log_change
+    log_change(cursor, "chapters", chapter_id, {
+        "chapter_number": req.chapter_number,
+        "title": req.title or f"Chapter {req.chapter_number}",
+        "status": req.status,
+        "pov_character_id": req.pov_character_id,
+        "target_word_count": req.target_word_count,
+        "md_filename": md_filename,
+        "word_count": 0
+    })
 
     conn.commit()
 
@@ -489,24 +501,31 @@ def update_chapter(req: ChapterUpdate):
 
     updates = []
     params = []
+    changes = {}
 
     # Only include fields that were explicitly sent
     if req.pov_character_id is not None:
         # Allow unsetting POV with 0
         updates.append("pov_character_id = ?")
-        params.append(req.pov_character_id if req.pov_character_id != 0 else None)
+        val = req.pov_character_id if req.pov_character_id != 0 else None
+        params.append(val)
+        changes["pov_character_id"] = val
     if req.status is not None:
         updates.append("status = ?")
         params.append(req.status)
+        changes["status"] = req.status
     if req.title is not None:
         updates.append("title = ?")
         params.append(req.title)
+        changes["title"] = req.title
     if req.world_time is not None:
         updates.append("world_time = ?")
         params.append(req.world_time)
+        changes["world_time"] = req.world_time
     if req.target_word_count is not None:
         updates.append("target_word_count = ?")
         params.append(req.target_word_count)
+        changes["target_word_count"] = req.target_word_count
 
     if not updates:
         conn.close()
@@ -518,6 +537,10 @@ def update_chapter(req: ChapterUpdate):
     cursor.execute(
         f"UPDATE chapters SET {', '.join(updates)} WHERE id = ?", params
     )
+
+    from sync_core import log_change
+    log_change(cursor, "chapters", req.chapter_id, changes)
+
     conn.commit()
 
     # Re-fetch with POV name
@@ -555,12 +578,13 @@ def bulk_create_chapters(req: BulkChapterCreate):
     conn = _get_db(req.project_path)
     cursor = conn.cursor()
 
-    cursor.execute("SELECT COALESCE(MAX(chapter_number), 0) FROM chapters")
+    cursor.execute("SELECT COALESCE(MAX(chapter_number), 0) FROM chapters WHERE deleted = 0")
     start_num = cursor.fetchone()[0] + 1
 
     md_dir = os.path.join(req.project_path, "md")
     os.makedirs(md_dir, exist_ok=True)
 
+    from sync_core import log_change
     created = []
     for i in range(req.count):
         num = start_num + i
@@ -575,6 +599,16 @@ def bulk_create_chapters(req: BulkChapterCreate):
                                   target_word_count, md_filename, word_count)
             VALUES (?, ?, ?, ?, ?, ?, ?, 0)
         """, (chap_id, num, title, status, pov_id, req.target_word_count, md_filename))
+
+        log_change(cursor, "chapters", chap_id, {
+            "chapter_number": num,
+            "title": title,
+            "status": status,
+            "pov_character_id": pov_id,
+            "target_word_count": req.target_word_count,
+            "md_filename": md_filename,
+            "word_count": 0
+        })
 
         # Create empty md file
         md_path = os.path.join(md_dir, md_filename)
@@ -598,12 +632,12 @@ def bulk_create_chapters(req: BulkChapterCreate):
 def load_chapter_content(req: ChapterLoad):
     conn = _get_db(req.project_path)
     cursor = conn.cursor()
-    cursor.execute("SELECT md_filename FROM chapters WHERE id = ?", (req.chapter_id,))
+    cursor.execute("SELECT md_filename FROM chapters WHERE id = ? AND deleted = 0", (req.chapter_id,))
     row = cursor.fetchone()
     # Fetch quicknote types for note-type coloring
     quicknote_types = {}
     try:
-        cursor.execute("SELECT id, note_type FROM quick_notes")
+        cursor.execute("SELECT id, note_type FROM quick_notes WHERE deleted = 0")
         for qn in cursor.fetchall():
             quicknote_types[str(qn["id"])] = qn["note_type"] or "Note"
     except Exception:
@@ -641,7 +675,7 @@ def load_chapter_content(req: ChapterLoad):
 def save_chapter_content(req: ChapterSave, background_tasks: BackgroundTasks):
     conn = _get_db(req.project_path)
     cursor = conn.cursor()
-    cursor.execute("SELECT md_filename, word_count FROM chapters WHERE id = ?", (req.chapter_id,))
+    cursor.execute("SELECT md_filename, word_count FROM chapters WHERE id = ? AND deleted = 0", (req.chapter_id,))
     row = cursor.fetchone()
 
     if not row:
@@ -687,6 +721,16 @@ def save_chapter_content(req: ChapterSave, background_tasks: BackgroundTasks):
     # Log difference in words
     word_diff = req.word_count - old_word_count
     
+    # Calculate SHA256 of the markdown content for synchronization tracking
+    import hashlib
+    prose_hash = hashlib.sha256(md_content.encode("utf-8")).hexdigest()
+
+    from sync_core import log_change
+    log_change(cursor, "chapters", req.chapter_id, {
+        "word_count": req.word_count,
+        "prose_hash": prose_hash
+    })
+
     if word_diff > 0:
         cursor.execute("SELECT stat_value FROM stats WHERE stat_key = 'words_since_last_top_words_update'")
         stat_row = cursor.fetchone()
@@ -764,32 +808,28 @@ def delete_chapter(req: ChapterDelete):
     try:
         cursor = conn.cursor()
         
-        # 1. Look up the chapter to get its number and filename
-        cursor.execute("SELECT chapter_number, md_filename FROM chapters WHERE id = ?", (req.chapter_id,))
+        # 1. Look up the chapter to get its number
+        cursor.execute("SELECT chapter_number FROM chapters WHERE id = ? AND deleted = 0", (req.chapter_id,))
         row = cursor.fetchone()
         if not row:
             raise HTTPException(status_code=404, detail="Chapter not found")
             
         chap_num = row["chapter_number"]
-        md_filename = row["md_filename"]
         
-        # 2. Delete the file from disk if it exists
-        if md_filename:
-            md_path = os.path.join(req.project_path, "md", md_filename)
-            if os.path.exists(md_path):
-                try:
-                    os.remove(md_path)
-                except Exception as e:
-                    print(f"Warning: could not delete md file {md_path}: {e}")
+        # 2. Soft delete chapter (do NOT delete file from disk so we can restore/sync it!)
+        import datetime
+        from sync_core import log_soft_delete, log_change
+        now = datetime.datetime.utcnow().isoformat() + "Z"
 
-        # 3. Delete from DB
-        cursor.execute("DELETE FROM entity_appearances WHERE chapter_id = ?", (req.chapter_id,))
-        cursor.execute("DELETE FROM chapters WHERE id = ?", (req.chapter_id,))
+        cursor.execute("UPDATE chapters SET deleted = 1, deleted_at = ? WHERE id = ?", (now, req.chapter_id))
+        log_soft_delete(cursor, "chapters", req.chapter_id)
         
-        # 4. Shift all subsequent chapters' numbering down by 1 in sequential order
-        cursor.execute("SELECT id, chapter_number FROM chapters WHERE chapter_number > ? ORDER BY chapter_number ASC", (chap_num,))
+        # 3. Shift all subsequent chapters' numbering down by 1 in sequential order
+        cursor.execute("SELECT id, chapter_number FROM chapters WHERE chapter_number > ? AND deleted = 0 ORDER BY chapter_number ASC", (chap_num,))
         for r in cursor.fetchall():
-            cursor.execute("UPDATE chapters SET chapter_number = ? WHERE id = ?", (r["chapter_number"] - 1, r["id"]))
+            new_num = r["chapter_number"] - 1
+            cursor.execute("UPDATE chapters SET chapter_number = ? WHERE id = ?", (new_num, r["id"]))
+            log_change(cursor, "chapters", r["id"], {"chapter_number": new_num})
         
         conn.commit()
         return {"status": "ok", "deleted_number": chap_num}
@@ -811,7 +851,7 @@ def insert_chapter(req: ChapterInsert):
     try:
         cursor = conn.cursor()
         
-        cursor.execute("SELECT chapter_number FROM chapters WHERE id = ?", (req.anchor_chapter_id,))
+        cursor.execute("SELECT chapter_number FROM chapters WHERE id = ? AND deleted = 0", (req.anchor_chapter_id,))
         row = cursor.fetchone()
         if not row:
             raise HTTPException(status_code=404, detail="Anchor chapter not found")
@@ -821,11 +861,14 @@ def insert_chapter(req: ChapterInsert):
         # Calculate new chapter number based on direction
         new_num = anchor_num if req.direction == "above" else anchor_num + 1
         
+        from sync_core import log_change
         # Shift existing chapters up to make room, looping from highest to lowest 
         # so SQLite unique constraint check doesn't trip on overlapping numbers
-        cursor.execute("SELECT id, chapter_number FROM chapters WHERE chapter_number >= ? ORDER BY chapter_number DESC", (new_num,))
+        cursor.execute("SELECT id, chapter_number FROM chapters WHERE chapter_number >= ? AND deleted = 0 ORDER BY chapter_number DESC", (new_num,))
         for r in cursor.fetchall():
-            cursor.execute("UPDATE chapters SET chapter_number = ? WHERE id = ?", (r["chapter_number"] + 1, r["id"]))
+            newer_num = r["chapter_number"] + 1
+            cursor.execute("UPDATE chapters SET chapter_number = ? WHERE id = ?", (newer_num, r["id"]))
+            log_change(cursor, "chapters", r["id"], {"chapter_number": newer_num})
         
         title = f"Chapter {new_num}"
         md_filename = f"ch_{new_num:03d}_untitled_{uuid.uuid4().hex[:8]}.md"
@@ -837,6 +880,15 @@ def insert_chapter(req: ChapterInsert):
             VALUES (?, ?, ?, ?, ?, ?, 0)
         """, (new_id, new_num, title, "planned", 4000, md_filename))
         
+        log_change(cursor, "chapters", new_id, {
+            "chapter_number": new_num,
+            "title": title,
+            "status": "planned",
+            "target_word_count": 4000,
+            "md_filename": md_filename,
+            "word_count": 0
+        })
+
         conn.commit()
         
         # Create empty md file
@@ -881,7 +933,7 @@ def get_todos(req: ProjectPath):
     """Scan all chapter markdown files for TODO markers."""
     conn = _get_db(req.project_path)
     cursor = conn.cursor()
-    cursor.execute("SELECT id, chapter_number, title, md_filename FROM chapters ORDER BY chapter_number ASC")
+    cursor.execute("SELECT id, chapter_number, title, md_filename FROM chapters WHERE deleted = 0 ORDER BY chapter_number ASC")
     db_chapters = cursor.fetchall()
     conn.close()
 

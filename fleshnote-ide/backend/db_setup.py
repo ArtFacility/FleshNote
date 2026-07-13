@@ -857,6 +857,8 @@ def generate_project_db(project_path: str, answers: dict) -> str:
                             ),
             content         TEXT NOT NULL,
             note_type       TEXT NOT NULL DEFAULT 'Note',
+            deleted         INTEGER DEFAULT 0,
+            deleted_at      TEXT,
             created_at      TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
             updated_at      TIMESTAMP DEFAULT CURRENT_TIMESTAMP
         )
@@ -873,6 +875,8 @@ def generate_project_db(project_path: str, answers: dict) -> str:
                                 lower(hex(randomblob(6)))
                             ),
             content         TEXT NOT NULL,
+            deleted         INTEGER DEFAULT 0,
+            deleted_at      TEXT,
             created_at      TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
             updated_at      TIMESTAMP DEFAULT CURRENT_TIMESTAMP
         )
@@ -1023,6 +1027,22 @@ def generate_project_db(project_path: str, answers: dict) -> str:
     """)
 
     # ══════════════════════════════════════════════════════════
+    # TABLE 18.5: LOCAL SYNC METADATA
+    # ══════════════════════════════════════════════════════════
+
+    cursor.execute("""
+        CREATE TABLE IF NOT EXISTS sync_meta (
+            id INTEGER PRIMARY KEY CHECK (id = 1),
+            last_hlc TEXT,
+            version_vector TEXT DEFAULT '{}'
+        )
+    """)
+    cursor.execute("""
+        INSERT OR IGNORE INTO sync_meta (id, last_hlc, version_vector)
+        VALUES (1, NULL, '{}')
+    """)
+
+    # ══════════════════════════════════════════════════════════
     # PENTIMENTO TELEMETRY: Sessions & Ops
     # ══════════════════════════════════════════════════════════
 
@@ -1043,6 +1063,7 @@ def generate_project_db(project_path: str, answers: dict) -> str:
             end_time TEXT,
             previous_session_hash TEXT,
             session_hash TEXT,
+            summary_json TEXT,
             created_at TEXT DEFAULT (datetime('now')),
             FOREIGN KEY (chapter_id) REFERENCES chapters(id) ON DELETE CASCADE
         )
@@ -1069,6 +1090,38 @@ def generate_project_db(project_path: str, answers: dict) -> str:
             duration_ms INTEGER DEFAULT 0,
             origin TEXT NOT NULL,
             FOREIGN KEY (session_id) REFERENCES pentimento_sessions(id) ON DELETE CASCADE,
+            FOREIGN KEY (chapter_id) REFERENCES chapters(id) ON DELETE CASCADE
+        )
+    """)
+
+    # ══════════════════════════════════════════════════════════
+    # CHAPTER SNAPSHOTS: prose rollback ("Edit History")
+    # Full zlib-compressed markdown of a chapter at a checkpoint. Pentimento ops are
+    # deltas with no anchor and can't reconstruct past prose, so rollback needs real
+    # snapshots. Auto-taken at session end; also manual pins and pre-restore safety copies.
+    # ══════════════════════════════════════════════════════════
+
+    cursor.execute("""
+        CREATE TABLE IF NOT EXISTS chapter_snapshots (
+            id TEXT PRIMARY KEY DEFAULT (
+                lower(hex(randomblob(4))) || '-' ||
+                lower(hex(randomblob(2))) || '-4' ||
+                substr(lower(hex(randomblob(2))), 2) || '-' ||
+                substr('89ab', abs(random()) % 4 + 1, 1) ||
+                substr(lower(hex(randomblob(2))), 2) || '-' ||
+                lower(hex(randomblob(6)))
+            ),
+            chapter_id TEXT NOT NULL,
+            created_at TEXT NOT NULL,
+            kind TEXT NOT NULL,              -- 'session' | 'manual' | 'pre_restore'
+            label TEXT,
+            word_count INTEGER DEFAULT 0,
+            prose_hash TEXT NOT NULL,        -- sha256 of the md content (dedup + ancestry)
+            content_gz BLOB NOT NULL,        -- zlib-compressed markdown (canonical on-disk form)
+            byte_size INTEGER DEFAULT 0,
+            session_id TEXT,
+            session_hash TEXT,
+            device_id TEXT NOT NULL,
             FOREIGN KEY (chapter_id) REFERENCES chapters(id) ON DELETE CASCADE
         )
     """)
@@ -1137,6 +1190,14 @@ def generate_project_db(project_path: str, answers: dict) -> str:
         # Image references indexes
         "CREATE INDEX IF NOT EXISTS idx_imgref_entity ON image_references(entity_type, entity_id);",
         "CREATE INDEX IF NOT EXISTS idx_imgref_icon ON image_references(entity_type, entity_id, is_icon);",
+
+        # Pentimento telemetry indexes
+        "CREATE INDEX IF NOT EXISTS idx_pent_ops_chapter ON pentimento_ops(chapter_id);",
+        "CREATE INDEX IF NOT EXISTS idx_pent_ops_session ON pentimento_ops(session_id);",
+        "CREATE INDEX IF NOT EXISTS idx_pent_sessions_chapter ON pentimento_sessions(chapter_id);",
+
+        # Chapter snapshot (rollback) index
+        "CREATE INDEX IF NOT EXISTS idx_chapter_snapshots_chapter ON chapter_snapshots(chapter_id, created_at);",
     ]
 
     for idx in indexes:
@@ -1154,6 +1215,8 @@ def generate_project_db(project_path: str, answers: dict) -> str:
         ("created_at", datetime.utcnow().isoformat(), "meta"),
 
         # ── Feature Toggles ───────────────────────────────────
+        ("pentimento_capture", str(answers.get("pentimento_capture", True)).lower(), "toggle"),
+        ("prose_history", str(answers.get("prose_history", True)).lower(), "toggle"),
         ("track_species", str(answers.get("track_species", False)).lower(), "toggle"),
         ("track_groups", str(answers.get("track_groups", False)).lower(), "toggle"),
         ("track_knowledge", str(answers.get("track_knowledge", True)).lower(), "toggle"),

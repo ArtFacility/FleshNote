@@ -13,6 +13,8 @@ let backendStderr = ''
 const globalConfigPath = join(app.getPath('userData'), 'fleshnote_config.json')
 const BACKEND_URL = 'http://127.0.0.1:8000'
 
+import crypto from 'crypto'
+
 async function startPythonBackend() {
   try {
     // Attempt to kill any dangling process on port 8000 before starting
@@ -22,12 +24,35 @@ async function startPythonBackend() {
     // kill-port throws an error if no process is running, which is fine
   }
 
+  // Load or generate device ID
+  const deviceJsonPath = join(app.getPath('userData'), 'device.json')
+  let deviceId = ''
+  try {
+    if (fs.existsSync(deviceJsonPath)) {
+      const data = JSON.parse(fs.readFileSync(deviceJsonPath, 'utf8'))
+      deviceId = data.device_id
+    }
+  } catch (err) {
+    console.error('Failed to read device.json:', err)
+  }
+
+  if (!deviceId) {
+    deviceId = crypto.randomUUID()
+    try {
+      fs.writeFileSync(deviceJsonPath, JSON.stringify({ device_id: deviceId }, null, 2), 'utf8')
+    } catch (err) {
+      console.error('Failed to write device.json:', err)
+    }
+  }
+
+  const env = { ...process.env, FLESHNOTE_DEVICE_ID: deviceId }
+
   if (app.isPackaged) {
     // In production, the backend binary is placed inside resources/backend-dist
     const isWin = process.platform === 'win32'
     const backendExeName = isWin ? 'backend.exe' : 'backend'
     const backendExe = join(process.resourcesPath, 'backend-dist', backendExeName)
-    pythonProcess = spawn(backendExe, { windowsHide: true })
+    pythonProcess = spawn(backendExe, { env, windowsHide: true })
   } else {
     // In development, run the python script from the virtual environment
     const isWinDev = process.platform === 'win32'
@@ -35,7 +60,7 @@ async function startPythonBackend() {
       ? join(__dirname, '../../backend/.venv/Scripts/python.exe')
       : join(__dirname, '../../backend/.venv/bin/python')
     const scriptPath = join(__dirname, '../../backend/main.py')
-    pythonProcess = spawn(pythonExe, [scriptPath], { windowsHide: true })
+    pythonProcess = spawn(pythonExe, [scriptPath], { env, windowsHide: true })
   }
 
   pythonProcess.stdout.on('data', (data) => {
@@ -140,6 +165,108 @@ async function backendPost(path: string, body: object) {
   return data
 }
 
+// ── Splash ─────────────────────────────────────────────────────────────────
+// The main window isn't created until the Python backend answers (can be 5–10s),
+// so without this the app is a black void on launch. This frameless card pops up
+// instantly at app-ready and is destroyed the moment the real window can show.
+
+let splashWindow: BrowserWindow | null = null
+
+function createSplashWindow(): void {
+  splashWindow = new BrowserWindow({
+    width: 480,
+    height: 340,
+    frame: false,
+    transparent: true,
+    resizable: false,
+    movable: false,
+    center: true,
+    skipTaskbar: true,
+    alwaysOnTop: true,
+    show: false,
+    webPreferences: { sandbox: false }
+  })
+
+  const version = app.getVersion()
+  const html = `<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<style>
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  html, body { width: 100%; height: 100%; background: transparent; overflow: hidden; }
+  body { display: flex; align-items: center; justify-content: center; -webkit-user-select: none; user-select: none; }
+  .card {
+    width: 400px; padding: 30px 34px 26px;
+    background: #1a1c22; border: 1px solid #2a2d37; border-radius: 16px;
+    box-shadow: 0 20px 60px rgba(0,0,0,0.55);
+    display: flex; flex-direction: column; align-items: center;
+    animation: rise .35s ease both;
+  }
+  @keyframes rise { from { opacity: 0; transform: translateY(8px); } to { opacity: 1; transform: none; } }
+  .logo { height: 60px; margin-bottom: 16px; filter: drop-shadow(0 3px 10px rgba(212,168,71,0.25)); }
+  .name { font-family: Georgia, 'Times New Roman', serif; font-size: 27px; letter-spacing: .5px; color: #e8e6e1; }
+  .name b { color: #d4a052; font-weight: 600; }
+  .ver { margin-top: 6px; font-family: Consolas, monospace; font-size: 11px; letter-spacing: .08em; color: #6b6860; }
+  .slogan { margin-top: 14px; font-family: Georgia, serif; font-style: italic; font-size: 13.5px; color: #9b978f; }
+  .track { margin-top: 26px; width: 100%; height: 4px; background: #23262f; border-radius: 4px; overflow: hidden; }
+  .fill { height: 100%; width: 42%; border-radius: 4px;
+    background: linear-gradient(90deg, rgba(212,160,82,0) 0%, #d4a052 50%, rgba(212,160,82,0) 100%);
+    animation: sweep 1.3s ease-in-out infinite; }
+  @keyframes sweep { 0% { transform: translateX(-110%); } 100% { transform: translateX(250%); } }
+  .status { margin-top: 14px; height: 14px; font-family: Consolas, monospace; font-size: 11px; letter-spacing: .04em; color: #d4a052; }
+  .hint { margin-top: 5px; height: 12px; font-family: Consolas, monospace; font-size: 10px; letter-spacing: .04em; color: #55524b; }
+</style>
+</head>
+<body>
+  <div class="card">
+    <svg class="logo" viewBox="0 0 357 411" fill="none" xmlns="http://www.w3.org/2000/svg">
+      <path d="M141.5 10C145.021 10 189.687 30.6595 226 74.6045V348.703C199.086 380.786 165.921 396 141.5 396C93 396 10 336 10 203C10 69.5 135.5 9.99995 141.5 10Z" stroke="#D4A847" stroke-width="20" stroke-linejoin="round"/>
+      <line x1="31.9289" y1="311.929" x2="222.929" y2="120.929" stroke="#D4A847" stroke-width="20"/>
+      <path d="M225.929 303L36 113.071" stroke="#D4A847" stroke-width="20"/>
+      <line x1="162.536" y1="188.464" x2="223.536" y2="249.464" stroke="#D4A847" stroke-width="10"/>
+      <line x1="190.536" y1="162.464" x2="223.536" y2="195.464" stroke="#D4A847" stroke-width="10"/>
+      <line x1="112.071" y1="337.071" x2="46.0711" y2="403.071" stroke="#D4A847" stroke-width="20"/>
+      <line x1="110.999" y1="87.1413" x2="46.9289" y2="23.0711" stroke="#D4A847" stroke-width="20"/>
+      <path d="M226 9.92188C226.73 10.2521 227.594 10.6614 228.587 11.1592C232.245 12.993 237.331 15.8369 243.365 19.7324C255.437 27.525 271.055 39.361 286.484 55.4111C317.326 87.4942 347 135.926 347 202.554C347 338.414 267.632 395.467 226 395.922V9.92188Z" stroke="#D4A847" stroke-width="20" stroke-linejoin="bevel"/>
+      <line x1="210.071" y1="280.929" x2="293.071" y2="363.929" stroke="#D4A847" stroke-width="20"/>
+    </svg>
+    <div class="name">Flesh<b>Note</b></div>
+    <div class="ver">v${version}</div>
+    <div class="slogan">Write first. Note second.</div>
+    <div class="track"><div class="fill"></div></div>
+    <div class="status" id="flavor">Starting up…</div>
+    <div class="hint" id="hint">Sharpening the quills…</div>
+  </div>
+  <script>
+    var hints = ["Stretching fingers...","Warming the keyboard...","Worlding the builders...","Shelving the ideas...","Connecting twists","Outlining side characters...","Plotting betrayal","Comparing power levels","Daydreaming about that one cool scene...","Refining dialouge...","Ignoring plotholes...","Rewriting the rewrite...","Counting the words...","Checking for typos...","Drinking energy drink...","Looking for the perfect background song...","Waiting for inspiration...","Debugging the plot holes...","Forgetting eye colors...","Contemplating pacing..."];
+    var i = 0; var el = document.getElementById('hint');
+    setInterval(function () { i = (i + 1) % hints.length; if (el) el.textContent = hints[i]; }, 2200);
+  </script>
+</body>
+</html>`
+
+  splashWindow.loadURL(`data:text/html;charset=utf-8,${encodeURIComponent(html)}`)
+  splashWindow.once('ready-to-show', () => splashWindow?.show())
+
+  // Safety net: never let the splash outlive startup, even if something stalls.
+  setTimeout(destroySplash, 40000)
+}
+
+function setSplashPhase(text: string): void {
+  if (!splashWindow || splashWindow.isDestroyed()) return
+  splashWindow.webContents
+    .executeJavaScript(`(() => { const el = document.getElementById('flavor'); if (el) el.textContent = ${JSON.stringify(text)}; })()`)
+    .catch(() => {})
+}
+
+function destroySplash(): void {
+  if (splashWindow) {
+    try { splashWindow.destroy() } catch { /* already gone */ }
+    splashWindow = null
+  }
+}
+
 // ── Window ───────────────────────────────────────────────────────────────────
 
 function createWindow(): void {
@@ -158,6 +285,7 @@ function createWindow(): void {
 
   mainWindow.on('ready-to-show', () => {
     mainWindow.show()
+    destroySplash()
   })
 
   mainWindow.webContents.setWindowOpenHandler((details) => {
@@ -215,6 +343,9 @@ protocol.registerSchemesAsPrivileged([
 // ── App Ready ────────────────────────────────────────────────────────────────
 
 app.whenReady().then(async () => {
+  // Instant visual feedback while the backend boots (createWindow waits on it below).
+  createSplashWindow()
+
   // Handle fleshnote-asset://load/C:/path/to/file.png requests
   protocol.handle('fleshnote-asset', (request) => {
     const url = new URL(request.url)
@@ -224,13 +355,16 @@ app.whenReady().then(async () => {
     return net.fetch(pathToFileURL(filePath).toString())
   })
 
+  setSplashPhase('Waking the backend…')
   startPythonBackend()
   try {
     await waitForBackend()
   } catch (err: any) {
+    destroySplash()
     showBackendErrorWindow(err.message)
     return
   }
+  setSplashPhase('Loading your workspace…')
   electronApp.setAppUserModelId('com.artfacility.fleshnote')
 
   // ── Global Config ──────────────────────────────────
@@ -263,6 +397,27 @@ app.whenReady().then(async () => {
     })
     if (canceled) return null
     return filePaths[0]
+  })
+
+  // Capture a rectangle of the live page (a rendered showcase card) to a PNG file.
+  ipcMain.handle('pentimento:captureShowcase', async (event, payload) => {
+    const win = BrowserWindow.fromWebContents(event.sender)
+    if (!win) return { saved: false }
+    const r = payload?.rect || {}
+    const rect = {
+      x: Math.round(r.x || 0), y: Math.round(r.y || 0),
+      width: Math.round(r.width || 0), height: Math.round(r.height || 0)
+    }
+    if (rect.width <= 0 || rect.height <= 0) return { saved: false }
+    const image = await win.webContents.capturePage(rect)
+    const { canceled, filePath } = await dialog.showSaveDialog(win, {
+      title: 'Save Showcase',
+      defaultPath: payload?.defaultName || 'fleshnote-showcase.png',
+      filters: [{ name: 'PNG Image', extensions: ['png'] }]
+    })
+    if (canceled || !filePath) return { saved: false }
+    fs.writeFileSync(filePath, image.toPNG())
+    return { saved: true, path: filePath }
   })
 
   ipcMain.handle('dialog:openFile', async (_event, filters) => {
@@ -330,6 +485,33 @@ app.whenReady().then(async () => {
   ipcMain.handle('api:migrateProject', async (_event, projectPath) => {
     return await backendPost('/api/project/migrate', { project_path: projectPath })
   })
+
+  ipcMain.handle('api:syncPreview', async (_event, payload) => {
+    return await backendPost('/api/project/sync/preview', payload)
+  })
+
+  ipcMain.handle('api:syncApply', async (_event, payload) => {
+    return await backendPost('/api/project/sync/apply', payload)
+  })
+
+  // ── Pentimento telemetry ─────────────────────────────────────────────────
+  ipcMain.handle('api:pentimentoSessionStart', async (_e, p) => backendPost('/api/project/pentimento/session/start', p))
+  ipcMain.handle('api:pentimentoFlush', async (_e, p) => backendPost('/api/project/pentimento/flush', p))
+  ipcMain.handle('api:pentimentoSessionEnd', async (_e, p) => backendPost('/api/project/pentimento/session/end', p))
+  ipcMain.handle('api:pentimentoHeatmap', async (_e, p) => backendPost('/api/project/pentimento/heatmap', p))
+  ipcMain.handle('api:pentimentoSummary', async (_e, p) => backendPost('/api/project/pentimento/summary', p))
+  ipcMain.handle('api:pentimentoCompact', async (_e, p) => backendPost('/api/project/pentimento/compact', p))
+  ipcMain.handle('api:pentimentoClear', async (_e, p) => backendPost('/api/project/pentimento/clear', p))
+  ipcMain.handle('api:pentimentoStorage', async (_e, p) => backendPost('/api/project/pentimento/storage', p))
+
+  // Chapter history (prose rollback / Edit History)
+  ipcMain.handle('api:chapterHistoryList', async (_e, p) => backendPost('/api/project/chapter/history/list', p))
+  ipcMain.handle('api:chapterHistoryPreview', async (_e, p) => backendPost('/api/project/chapter/history/preview', p))
+  ipcMain.handle('api:chapterHistoryPin', async (_e, p) => backendPost('/api/project/chapter/history/pin', p))
+  ipcMain.handle('api:chapterHistoryRestore', async (_e, p) => backendPost('/api/project/chapter/history/restore', p))
+  ipcMain.handle('api:chapterHistoryStorage', async (_e, p) => backendPost('/api/project/chapter/history/storage', p))
+  ipcMain.handle('api:chapterHistoryPrune', async (_e, p) => backendPost('/api/project/chapter/history/prune', p))
+  ipcMain.handle('api:chapterHistoryClear', async (_e, p) => backendPost('/api/project/chapter/history/clear', p))
 
   ipcMain.handle('api:getStats', async (_event, projectPath) => {
     return await backendPost('/api/project/stats', { project_path: projectPath })

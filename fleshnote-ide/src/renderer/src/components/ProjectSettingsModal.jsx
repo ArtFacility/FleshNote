@@ -1,5 +1,6 @@
 import { useState, useEffect } from 'react'
 import { useTranslation } from 'react-i18next'
+import PentimentoSettings from './PentimentoSettings'
 
 const SupportBadge = ({ level }) => {
     if (level === 'full') return <span title="Full support" style={{ color: '#4ade80', fontSize: 14 }}>●</span>;
@@ -425,6 +426,14 @@ export default function ProjectSettingsModal({ isOpen, onClose, projectPath, onC
                                         </div>
                                     </label>
                                 </div>
+
+                                <PentimentoSettings
+                                    projectPath={projectPath}
+                                    captureOn={config.pentimento_capture !== false}
+                                    onToggleCapture={() => handleUpdate('pentimento_capture', config.pentimento_capture === false, 'toggle')}
+                                    historyOn={config.prose_history !== false}
+                                    onToggleHistory={() => handleUpdate('prose_history', config.prose_history === false, 'toggle')}
+                                />
                             </div>
                         )}
 

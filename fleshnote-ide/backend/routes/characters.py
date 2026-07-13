@@ -67,7 +67,7 @@ def _get_db(project_path: str):
 def get_characters(req: ProjectPath):
     conn = _get_db(req.project_path)
     cursor = conn.cursor()
-    cursor.execute("SELECT * FROM characters ORDER BY id ASC")
+    cursor.execute("SELECT * FROM characters WHERE deleted = 0 ORDER BY id ASC")
     rows = cursor.fetchall()
     conn.close()
 
@@ -116,6 +116,19 @@ def create_character(req: CharacterCreate):
         req.notes,
     ))
 
+    from sync_core import log_change
+    log_change(cursor, "characters", char_id, {
+        "name": req.name,
+        "aliases": req.aliases,
+        "role": req.role,
+        "status": req.status,
+        "species": req.species,
+        "surface_goal": req.surface_goal,
+        "true_goal": req.true_goal,
+        "bio": req.bio,
+        "notes": req.notes,
+    })
+
     conn.commit()
     conn.close()
 
@@ -139,6 +152,7 @@ def update_character(req: CharacterUpdate):
 
     fields = []
     values = []
+    changes = {}
 
     for field_name in ["name", "role", "status", "species", "group_id",
                        "surface_goal", "true_goal", "bio", "notes", "birth_date"]:
@@ -146,10 +160,12 @@ def update_character(req: CharacterUpdate):
         if val is not None:
             fields.append(f"{field_name} = ?")
             values.append(val)
+            changes[field_name] = val
 
     if req.aliases is not None:
         fields.append("aliases = ?")
         values.append(json.dumps(req.aliases))
+        changes["aliases"] = req.aliases
 
     if not fields:
         conn.close()
@@ -162,6 +178,10 @@ def update_character(req: CharacterUpdate):
         f"UPDATE characters SET {', '.join(fields)} WHERE id = ?",
         values
     )
+
+    from sync_core import log_change
+    log_change(cursor, "characters", req.character_id, changes)
+
     conn.commit()
 
     # Return updated character
@@ -194,8 +214,35 @@ def update_character(req: CharacterUpdate):
 def delete_character(req: CharacterDelete):
     conn = _get_db(req.project_path)
     cursor = conn.cursor()
-    cursor.execute("DELETE FROM characters WHERE id = ?", (req.character_id,))
-    cursor.execute("DELETE FROM image_references WHERE entity_type = 'char' AND entity_id = ?", (req.character_id,))
+
+    import datetime
+    from sync_core import log_soft_delete
+    now = datetime.datetime.utcnow().isoformat() + "Z"
+
+    # Soft delete character
+    cursor.execute("UPDATE characters SET deleted = 1, deleted_at = ? WHERE id = ?", (now, req.character_id))
+    log_soft_delete(cursor, "characters", req.character_id)
+
+    # Cascade soft deletes: character relationships where character is source or target
+    cursor.execute("""
+        SELECT id FROM character_relationships 
+        WHERE (character_id = ? OR target_character_id = ?) AND deleted = 0
+    """, (req.character_id, req.character_id))
+    rel_rows = cursor.fetchall()
+    for r in rel_rows:
+        cursor.execute("UPDATE character_relationships SET deleted = 1, deleted_at = ? WHERE id = ?", (now, r["id"]))
+        log_soft_delete(cursor, "character_relationships", r["id"])
+
+    # Cascade soft deletes: image references
+    cursor.execute("""
+        SELECT id FROM image_references 
+        WHERE entity_type = 'char' AND entity_id = ? AND deleted = 0
+    """, (req.character_id,))
+    img_rows = cursor.fetchall()
+    for r in img_rows:
+        cursor.execute("UPDATE image_references SET deleted = 1, deleted_at = ? WHERE id = ?", (now, r["id"]))
+        log_soft_delete(cursor, "image_references", r["id"])
+
     conn.commit()
     conn.close()
     return {"status": "ok"}
@@ -208,6 +255,7 @@ def bulk_create_characters(req: BulkCharacterCreate):
     cursor = conn.cursor()
 
     import uuid
+    from sync_core import log_change
     created = []
     for char in req.characters:
         char_id = str(uuid.uuid4())
@@ -224,6 +272,17 @@ def bulk_create_characters(req: BulkCharacterCreate):
             char.get("bio", ""),
             char.get("notes", ""),
         ))
+        
+        log_change(cursor, "characters", char_id, {
+            "name": char.get("name", "Unnamed"),
+            "aliases": char.get("aliases", []),
+            "role": char.get("role", ""),
+            "status": char.get("status", "Alive"),
+            "species": char.get("species", ""),
+            "bio": char.get("bio", ""),
+            "notes": char.get("notes", ""),
+        })
+
         created.append({
             "id": char_id,
             "name": char.get("name"),

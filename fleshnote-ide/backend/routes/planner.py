@@ -32,7 +32,7 @@ class PlannerBlockRequest(BaseModel):
     label: Optional[str] = ""
     pct: float
     lane: int
-    chapter_id: Optional[int] = None
+    chapter_id: Optional[str] = None
     chapter_status: Optional[str] = None
     added_during_writing: int = 0
     sort_order: int = 0
@@ -61,10 +61,10 @@ def load_planner(request: ProjectRequest):
     settings_row = cursor.fetchone()
     settings = dict(settings_row) if settings_row else {}
 
-    cursor.execute("SELECT * FROM planner_blocks")
+    cursor.execute("SELECT * FROM planner_blocks WHERE deleted = 0")
     blocks = [dict(r) for r in cursor.fetchall()]
 
-    cursor.execute("SELECT * FROM planner_arcs")
+    cursor.execute("SELECT * FROM planner_arcs WHERE deleted = 0")
     arcs = [dict(r) for r in cursor.fetchall()]
     
     conn.close()
@@ -81,6 +81,8 @@ def update_settings(request: PlannerSettingsRequest):
     if request.theme is not None:
         fields.append("theme = ?")
         params.append(request.theme)
+        from sync_core import log_change
+        log_change(cursor, "planner_settings", "1", {"theme": request.theme})
     if request.cursor_pct is not None:
         fields.append("cursor_pct = ?")
         params.append(request.cursor_pct)
@@ -116,12 +118,29 @@ def save_block(request: PlannerBlockRequest):
             chapter_status = excluded.chapter_status,
             added_during_writing = excluded.added_during_writing,
             sort_order = excluded.sort_order,
+            deleted = 0,
+            deleted_at = NULL,
             updated_at = datetime('now')
     """, (
         request.id, request.layer, request.block_type, request.label,
         request.pct, request.lane, request.chapter_id, request.chapter_status,
         request.added_during_writing, request.sort_order
     ))
+
+    from sync_core import log_change
+    log_change(cursor, "planner_blocks", request.id, {
+        "layer": request.layer,
+        "block_type": request.block_type,
+        "label": request.label,
+        "pct": request.pct,
+        "lane": request.lane,
+        "chapter_id": request.chapter_id,
+        "chapter_status": request.chapter_status,
+        "added_during_writing": request.added_during_writing,
+        "sort_order": request.sort_order,
+        "deleted": 0
+    })
+
     conn.commit()
     conn.close()
     return {"status": "ok"}
@@ -141,11 +160,26 @@ def save_arc(request: PlannerArcRequest):
             start_pct = excluded.start_pct,
             end_pct = excluded.end_pct,
             sort_order = excluded.sort_order,
+            deleted = 0,
+            deleted_at = NULL,
             updated_at = datetime('now')
     """, (
         request.id, request.layer, request.name, request.description,
         request.color, request.start_pct, request.end_pct, request.sort_order
     ))
+
+    from sync_core import log_change
+    log_change(cursor, "planner_arcs", request.id, {
+        "layer": request.layer,
+        "name": request.name,
+        "description": request.description,
+        "color": request.color,
+        "start_pct": request.start_pct,
+        "end_pct": request.end_pct,
+        "sort_order": request.sort_order,
+        "deleted": 0
+    })
+
     conn.commit()
     conn.close()
     return {"status": "ok"}
@@ -154,7 +188,14 @@ def save_arc(request: PlannerArcRequest):
 def delete_block(request: PlannerDeleteRequest):
     conn = _get_db(request.project_path)
     cursor = conn.cursor()
-    cursor.execute("DELETE FROM planner_blocks WHERE id = ?", (request.id,))
+
+    import datetime
+    from sync_core import log_soft_delete
+    now = datetime.datetime.utcnow().isoformat() + "Z"
+
+    cursor.execute("UPDATE planner_blocks SET deleted = 1, deleted_at = ? WHERE id = ?", (now, request.id))
+    log_soft_delete(cursor, "planner_blocks", request.id)
+
     conn.commit()
     conn.close()
     return {"status": "ok"}
@@ -163,7 +204,14 @@ def delete_block(request: PlannerDeleteRequest):
 def delete_arc(request: PlannerDeleteRequest):
     conn = _get_db(request.project_path)
     cursor = conn.cursor()
-    cursor.execute("DELETE FROM planner_arcs WHERE id = ?", (request.id,))
+
+    import datetime
+    from sync_core import log_soft_delete
+    now = datetime.datetime.utcnow().isoformat() + "Z"
+
+    cursor.execute("UPDATE planner_arcs SET deleted = 1, deleted_at = ? WHERE id = ?", (now, request.id))
+    log_soft_delete(cursor, "planner_arcs", request.id)
+
     conn.commit()
     conn.close()
     return {"status": "ok"}

@@ -13,10 +13,12 @@ import ProjectSettingsModal from './ProjectSettingsModal'
 import { clearEntityHoverCaches } from '../utils/hoverCache'
 import ImportModal from './ImportModal'
 import ExportModal from './ExportModal'
+import SyncModal from './SyncModal'
 import StatsDashboard from './StatsDashboard'
 import EntityManager from './EntityManager'
 import WorldbuildAndHistory from './WorldbuildAndHistory'
 import JanitorPanel from './JanitorPanel'
+import HistoryPanel from './HistoryPanel'
 import changelogData from '../changelog.json'
 import WelcomeBackPrompt from './WelcomeBackPrompt'
 
@@ -115,6 +117,20 @@ const Icons = {
     >
       <circle cx="12" cy="12" r="3" />
       <path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z" />
+    </svg>
+  ),
+  Sync: () => (
+    <svg
+      width="14"
+      height="14"
+      viewBox="0 0 24 24"
+      fill="none"
+      stroke="currentColor"
+      strokeWidth="2"
+      strokeLinecap="round"
+      strokeLinejoin="round"
+    >
+      <path d="M21.5 2v6h-6M21.34 15.57a10 10 0 1 1-.57-8.38l5.67-5.67" />
     </svg>
   ),
   Download: () => (
@@ -250,6 +266,7 @@ export default function FleshNoteIDE({ projectConfig, projectPath, onCloseProjec
   const [showSettings, setShowSettings] = useState(false)
   const [showExportModal, setShowExportModal] = useState(false)
   const [showImportModal, setShowImportModal] = useState(false)
+  const [showSyncModal, setShowSyncModal] = useState(false)
   const [isSaving, setIsSaving] = useState(false)
 
   // UI Toggles & Header Menu
@@ -276,6 +293,37 @@ export default function FleshNoteIDE({ projectConfig, projectPath, onCloseProjec
   const [janitorFocusSignal, setJanitorFocusSignal] = useState(0)
   const janitorActionsRef = useRef(null)
   const lastAnalyzedHtmlRef = useRef('')
+
+  // ── History (rollback) Panel State ──────────────────
+  // Shares the right rail with the Janitor: opening one collapses the other.
+  const [historyCollapsed, setHistoryCollapsed] = useState(
+    () => localStorage.getItem('fn_historyCollapsed') !== 'false' // default closed
+  )
+  const toggleJanitorPanel = useCallback(() => {
+    setJanitorCollapsed(prev => {
+      const next = !prev
+      localStorage.setItem('fn_janitorCollapsed', next)
+      if (!next) { setHistoryCollapsed(true); localStorage.setItem('fn_historyCollapsed', 'true') }
+      return next
+    })
+  }, [])
+  const toggleHistoryPanel = useCallback(() => {
+    setHistoryCollapsed(prev => {
+      const next = !prev
+      localStorage.setItem('fn_historyCollapsed', next)
+      if (!next) { setJanitorCollapsed(true); localStorage.setItem('fn_janitorCollapsed', 'true') }
+      return next
+    })
+  }, [])
+  const handleHistoryRestored = useCallback((contentHtml, wordCount, chapId) => {
+    const cid = chapId || activeChapter?.id
+    if (!cid) return
+    // Bump _rev so Editor's setContent effect reloads the restored prose.
+    setChapterContent(prev => (prev && prev.id === cid)
+      ? { ...prev, content: contentHtml, word_count: wordCount, _rev: Date.now() }
+      : prev)
+    setChapters(prev => prev.map(ch => (ch.id === cid ? { ...ch, word_count: wordCount } : ch)))
+  }, [activeChapter])
 
   // ── IDE-level configurable hotkeys ────────────────
   const [ideHotkeys, setIdeHotkeys] = useState({ janitor_open: 'Alt+j', focus_normal: 'Alt+f' })
@@ -743,6 +791,8 @@ export default function FleshNoteIDE({ projectConfig, projectPath, onCloseProjec
         if (janitorCollapsed) {
           setJanitorCollapsed(false)
           localStorage.setItem('fn_janitorCollapsed', 'false')
+          setHistoryCollapsed(true)
+          localStorage.setItem('fn_historyCollapsed', 'true')
           setJanitorFocusSignal(s => s + 1)
         } else {
           setJanitorCollapsed(true)
@@ -833,11 +883,7 @@ export default function FleshNoteIDE({ projectConfig, projectPath, onCloseProjec
             <button
               className="ide-header-btn"
               title={t('janitor.toggleTitle', 'Toggle Janitor Panel')}
-              onClick={() => {
-                const next = !janitorCollapsed
-                setJanitorCollapsed(next)
-                localStorage.setItem('fn_janitorCollapsed', next)
-              }}
+              onClick={toggleJanitorPanel}
               style={{
                 display: 'flex',
                 alignItems: 'center',
@@ -853,6 +899,25 @@ export default function FleshNoteIDE({ projectConfig, projectPath, onCloseProjec
               {janitorSuggestions.length > 0 && (
                 <span className="janitor-badge">{janitorSuggestions.length}</span>
               )}
+            </button>
+          )}
+          {!focusMode && mainView === 'editor' && (
+            <button
+              className="ide-header-btn"
+              title={t('history.toggleTitle', 'Toggle History Panel')}
+              onClick={toggleHistoryPanel}
+              style={{
+                display: 'flex',
+                alignItems: 'center',
+                gap: 6,
+                padding: '0 12px',
+                color: !historyCollapsed ? 'var(--accent-amber)' : 'inherit'
+              }}
+            >
+              <span style={{ fontFamily: 'var(--font-mono)', fontSize: 14 }}>◷</span>
+              <span style={{ fontSize: 11, fontFamily: 'var(--font-mono)', textTransform: 'uppercase', letterSpacing: '0.1em' }}>
+                {t('history.title', 'History')}
+              </span>
             </button>
           )}
 
@@ -909,6 +974,14 @@ export default function FleshNoteIDE({ projectConfig, projectPath, onCloseProjec
                   onMouseLeave={e => e.currentTarget.style.background = 'transparent'}
                 >
                   <Icons.Upload /> {t('ide.import', 'Import...')}
+                </button>
+                <button
+                  onClick={() => { setShowHeaderMenu(false); setShowSyncModal(true); }}
+                  style={{ display: 'flex', alignItems: 'center', gap: 12, padding: '8px 16px', background: 'transparent', border: 'none', color: 'var(--text-primary)', fontFamily: 'var(--font-mono)', fontSize: 12, cursor: 'pointer', textAlign: 'left', width: '100%' }}
+                  onMouseEnter={e => e.currentTarget.style.background = 'var(--bg-surface)'}
+                  onMouseLeave={e => e.currentTarget.style.background = 'transparent'}
+                >
+                  <Icons.Sync /> {t('ide.sync', 'Sync Project...')}
                 </button>
                 <button
                   onClick={() => { setShowHeaderMenu(false); setShowSettings(true); }}
@@ -1057,6 +1130,7 @@ export default function FleshNoteIDE({ projectConfig, projectPath, onCloseProjec
             entities={entities}
             characters={characters}
             projectConfig={projectConfig}
+            activeChapter={activeChapter}
             onEntityUpdated={handleEntitiesChanged}
             onConfigUpdate={onConfigUpdate}
           />
@@ -1451,15 +1525,12 @@ export default function FleshNoteIDE({ projectConfig, projectPath, onCloseProjec
                   onEffectiveTimeChange={setCursorWorldTime}
                 />
                 {!focusMode && (
+                  <>
                   <JanitorPanel
                     suggestions={janitorSuggestions}
                     isLoading={janitorLoading}
                     isCollapsed={janitorCollapsed}
-                    onToggle={() => {
-                      const next = !janitorCollapsed
-                      setJanitorCollapsed(next)
-                      localStorage.setItem('fn_janitorCollapsed', next)
-                    }}
+                    onToggle={toggleJanitorPanel}
                     onDismiss={handleJanitorDismiss}
                     onAccept={handleJanitorAccept}
                     onNavigate={(suggestion) => {
@@ -1473,6 +1544,15 @@ export default function FleshNoteIDE({ projectConfig, projectPath, onCloseProjec
                     onActivity={() => { janitorPanelActivityRef.current = Date.now() }}
                     hotkeys={ideHotkeys}
                   />
+                  <HistoryPanel
+                    projectPath={projectPath}
+                    activeChapter={activeChapter}
+                    isCollapsed={historyCollapsed}
+                    onToggle={toggleHistoryPanel}
+                    onRestored={handleHistoryRestored}
+                    onBeforeSnapshot={async () => { try { await janitorActionsRef.current?.flushSave?.() } catch { /* noop */ } }}
+                  />
+                  </>
                 )}
               </>
             )}
@@ -1601,6 +1681,13 @@ export default function FleshNoteIDE({ projectConfig, projectPath, onCloseProjec
         chapters={chapters}
         entities={entities}
         onDataChanged={handleImportDataChanged}
+      />
+
+      <SyncModal
+        isOpen={showSyncModal}
+        onClose={() => setShowSyncModal(false)}
+        projectPath={projectPath}
+        onSyncComplete={handleImportDataChanged}
       />
     </>
   )
