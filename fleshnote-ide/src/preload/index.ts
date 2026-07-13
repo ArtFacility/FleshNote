@@ -21,6 +21,7 @@ const api = {
   pentimentoFlush: (payload) => ipcRenderer.invoke('api:pentimentoFlush', payload),
   pentimentoSessionEnd: (payload) => ipcRenderer.invoke('api:pentimentoSessionEnd', payload),
   pentimentoHeatmap: (payload) => ipcRenderer.invoke('api:pentimentoHeatmap', payload),
+  pentimentoOps: (payload) => ipcRenderer.invoke('api:pentimentoOps', payload),
   pentimentoSummary: (payload) => ipcRenderer.invoke('api:pentimentoSummary', payload),
   pentimentoCompact: (payload) => ipcRenderer.invoke('api:pentimentoCompact', payload),
   pentimentoClear: (payload) => ipcRenderer.invoke('api:pentimentoClear', payload),

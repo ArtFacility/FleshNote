@@ -291,6 +291,27 @@ def heatmap(req: ChapterScoped):
     return {"paragraphs": result, "session_count": len(session_ids)}
 
 
+@router.post("/api/project/pentimento/ops")
+def get_ops(req: ChapterScoped):
+    conn = _get_db(req.project_path)
+    cur = conn.cursor()
+    cur.execute(
+        "SELECT session_id, op_type, para_index, char_offset, length, text_content, duration_ms, timestamp "
+        "FROM pentimento_ops WHERE chapter_id=? ORDER BY timestamp, rowid", (req.chapter_id,))
+    ops = [{
+        "session_id": r["session_id"],
+        "op_type": r["op_type"],
+        "para_index": r["para_index"],
+        "char_offset": r["char_offset"],
+        "length": r["length"],
+        "text_content": r["text_content"],
+        "duration_ms": r["duration_ms"] or 0,
+        "timestamp": r["timestamp"]
+    } for r in cur.fetchall()]
+    conn.close()
+    return {"ops": ops}
+
+
 @router.post("/api/project/pentimento/summary")
 def summary(req: ProjectScoped):
     conn = _get_db(req.project_path)

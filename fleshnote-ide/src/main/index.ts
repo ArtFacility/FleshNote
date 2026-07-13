@@ -507,6 +507,7 @@ app.whenReady().then(async () => {
   ipcMain.handle('api:pentimentoFlush', async (_e, p) => backendPost('/api/project/pentimento/flush', p))
   ipcMain.handle('api:pentimentoSessionEnd', async (_e, p) => backendPost('/api/project/pentimento/session/end', p))
   ipcMain.handle('api:pentimentoHeatmap', async (_e, p) => backendPost('/api/project/pentimento/heatmap', p))
+  ipcMain.handle('api:pentimentoOps', async (_e, p) => backendPost('/api/project/pentimento/ops', p))
   ipcMain.handle('api:pentimentoSummary', async (_e, p) => backendPost('/api/project/pentimento/summary', p))
   ipcMain.handle('api:pentimentoCompact', async (_e, p) => backendPost('/api/project/pentimento/compact', p))
   ipcMain.handle('api:pentimentoClear', async (_e, p) => backendPost('/api/project/pentimento/clear', p))
