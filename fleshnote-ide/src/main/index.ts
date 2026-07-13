@@ -205,8 +205,16 @@ function createSplashWindow(): void {
   }
   @keyframes rise { from { opacity: 0; transform: translateY(8px); } to { opacity: 1; transform: none; } }
   .logo { height: 60px; margin-bottom: 16px; filter: drop-shadow(0 3px 10px rgba(212,168,71,0.25)); }
-  .name { font-family: Georgia, 'Times New Roman', serif; font-size: 27px; letter-spacing: .5px; color: #e8e6e1; }
-  .name b { color: #d4a052; font-weight: 600; }
+  .name {
+    font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+    font-size: 28px;
+    font-weight: 700;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: #e8e6e1;
+    display: flex;
+    gap: 0.28em;
+  }
   .ver { margin-top: 6px; font-family: Consolas, monospace; font-size: 11px; letter-spacing: .08em; color: #6b6860; }
   .slogan { margin-top: 14px; font-family: Georgia, serif; font-style: italic; font-size: 13.5px; color: #9b978f; }
   .track { margin-top: 26px; width: 100%; height: 4px; background: #23262f; border-radius: 4px; overflow: hidden; }
@@ -231,7 +239,7 @@ function createSplashWindow(): void {
       <path d="M226 9.92188C226.73 10.2521 227.594 10.6614 228.587 11.1592C232.245 12.993 237.331 15.8369 243.365 19.7324C255.437 27.525 271.055 39.361 286.484 55.4111C317.326 87.4942 347 135.926 347 202.554C347 338.414 267.632 395.467 226 395.922V9.92188Z" stroke="#D4A847" stroke-width="20" stroke-linejoin="bevel"/>
       <line x1="210.071" y1="280.929" x2="293.071" y2="363.929" stroke="#D4A847" stroke-width="20"/>
     </svg>
-    <div class="name">Flesh<b>Note</b></div>
+    <div class="name"><span>FLESH</span><span>NOTE</span></div>
     <div class="ver">v${version}</div>
     <div class="slogan">Write first. Note second.</div>
     <div class="track"><div class="fill"></div></div>

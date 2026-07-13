@@ -1,4 +1,4 @@
-import { useState, useEffect, useCallback, useMemo } from 'react'
+import { useState, useEffect, useCallback, useMemo, useRef } from 'react'
 import { useTranslation } from 'react-i18next'
 import { diffLines } from '../utils/proseDiff'
 
@@ -24,7 +24,7 @@ const KIND_ACCENT = { session: '#3fa093', manual: 'var(--accent-amber)', pre_res
 export default function HistoryPanel({
   projectPath, activeChapter, isCollapsed, onToggle, onRestored, onBeforeSnapshot,
 }) {
-  const { t } = useTranslation()
+  const { t, i18n } = useTranslation()
   const chapterId = activeChapter?.id || null
 
   const [snapshots, setSnapshots] = useState([])
@@ -36,6 +36,44 @@ export default function HistoryPanel({
   const [pinLabel, setPinLabel] = useState('')
   const [busy, setBusy] = useState(false)
   const [msg, setMsg] = useState(null)
+
+  const [hoveredDiff, setHoveredDiff] = useState(null)
+  const hoverTimeoutRef = useRef(null)
+  const closeTimeoutRef = useRef(null)
+
+  useEffect(() => {
+    return () => {
+      if (hoverTimeoutRef.current) clearTimeout(hoverTimeoutRef.current)
+      if (closeTimeoutRef.current) clearTimeout(closeTimeoutRef.current)
+    }
+  }, [])
+
+  const handleDiffMouseEnter = useCallback((e, cur, prev, label) => {
+    if (closeTimeoutRef.current) clearTimeout(closeTimeoutRef.current)
+    if (hoverTimeoutRef.current) clearTimeout(hoverTimeoutRef.current)
+
+    const rect = e.currentTarget.getBoundingClientRect()
+    setHoveredDiff(prevHover => {
+      if (prevHover) {
+        return { rect, currentHtml: cur, snapshotHtml: prev, label }
+      }
+      
+      hoverTimeoutRef.current = setTimeout(() => {
+        setHoveredDiff({ rect, currentHtml: cur, snapshotHtml: prev, label })
+      }, 500)
+      
+      return null
+    })
+  }, [])
+
+  const handleDiffMouseLeave = useCallback(() => {
+    if (hoverTimeoutRef.current) clearTimeout(hoverTimeoutRef.current)
+    if (closeTimeoutRef.current) clearTimeout(closeTimeoutRef.current)
+    
+    closeTimeoutRef.current = setTimeout(() => {
+      setHoveredDiff(null)
+    }, 200)
+  }, [])
 
   const refresh = useCallback(async () => {
     if (!projectPath || !chapterId) { setSnapshots([]); return }
@@ -176,7 +214,11 @@ export default function HistoryPanel({
 
                     {isOpen && (
                       <div style={{ borderTop: '1px solid var(--border-subtle)' }}>
-                        <div style={{ padding: '6px 11px', maxHeight: 220, overflowY: 'auto' }}>
+                        <div
+                          style={{ padding: '6px 11px', maxHeight: 220, overflowY: 'auto', cursor: 'help' }}
+                          onMouseEnter={(e) => handleDiffMouseEnter(e, currentHtml, previewHtml, kindLabel(s))}
+                          onMouseLeave={handleDiffMouseLeave}
+                        >
                           {previewHtml == null ? (
                             <div style={{ fontSize: 11, color: 'var(--text-tertiary)' }}>{t('history.loadingPreview', 'Loading…')}</div>
                           ) : (
@@ -207,6 +249,51 @@ export default function HistoryPanel({
               })}
             </>
           )}
+        </div>
+      )}
+      {hoveredDiff && (
+        <div
+          style={{
+            position: 'fixed',
+            top: Math.max(20, Math.min(hoveredDiff.rect.top, window.innerHeight - 470)),
+            left: Math.max(
+              10,
+              Math.min(
+                window.innerWidth - 510 - 10,
+                i18n?.dir() === 'rtl'
+                  ? hoveredDiff.rect.right + 12
+                  : hoveredDiff.rect.left - 500 - 12
+              )
+            ),
+            width: 500,
+            maxHeight: 450,
+            background: 'var(--bg-surface, #1e222d)',
+            border: '1px solid var(--border-subtle, #323846)',
+            boxShadow: '0 12px 36px rgba(0, 0, 0, 0.5)',
+            borderRadius: 6,
+            padding: 16,
+            zIndex: 10000,
+            display: 'flex',
+            flexDirection: 'column',
+            gap: 12,
+          }}
+          onMouseEnter={() => {
+            if (closeTimeoutRef.current) clearTimeout(closeTimeoutRef.current)
+            if (hoverTimeoutRef.current) clearTimeout(hoverTimeoutRef.current)
+          }}
+          onMouseLeave={handleDiffMouseLeave}
+        >
+          <div style={{ display: 'flex', justifyContent: 'space-between', borderBottom: '1px solid var(--border-subtle, #323846)', paddingBottom: 8 }}>
+            <span style={{ fontSize: 11, fontFamily: 'var(--font-mono)', textTransform: 'uppercase', letterSpacing: '0.06em', color: 'var(--accent-amber)', fontWeight: 600 }}>
+              {t('history.diffPreview', 'Full Diff Preview')}
+            </span>
+            <span style={{ fontSize: 11, fontFamily: 'var(--font-mono)', color: 'var(--text-secondary)' }}>
+              {hoveredDiff.label}
+            </span>
+          </div>
+          <div style={{ overflowY: 'auto', flex: 1, paddingRight: 4 }}>
+            <DiffView currentHtml={hoveredDiff.currentHtml} snapshotHtml={hoveredDiff.snapshotHtml} t={t} />
+          </div>
         </div>
       )}
     </div>

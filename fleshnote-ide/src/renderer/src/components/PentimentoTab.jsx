@@ -19,7 +19,7 @@ function heatColor(p) {
 function htmlToParagraphs(html) {
   try {
     const doc = new DOMParser().parseFromString(html || '', 'text/html')
-    return Array.from(doc.body.querySelectorAll('p, h1, h2, h3, h4, blockquote, li, pre')).map(b => b.textContent || '')
+    return Array.from(doc.body.querySelectorAll('p, h1, h2, h3, h4, blockquote, pre')).map(b => b.textContent || '')
   } catch { return [] }
 }
 
@@ -109,10 +109,9 @@ export default function PentimentoTab({ projectPath, chapters, projectConfig, ac
               <div key={i} onMouseEnter={() => setHover(i)}
                 style={{
                   position: 'relative', background: `rgba(${rgb},${active ? Math.min(0.62, alpha + 0.12) : alpha})`,
-                  borderRadius: 4, padding: '8px 12px 8px 16px', marginBottom: 6,
+                  padding: '8px 12px', marginBottom: 6,
                   transition: 'background .14s ease, transform .14s ease', transform: active ? 'translateX(2px)' : 'none',
                 }}>
-                {p && <span style={{ position: 'absolute', left: 0, top: 5, bottom: 5, width: 3, borderRadius: 2, background: `rgba(${rgb},${Math.min(0.95, 0.4 + alpha)})` }} />}
                 <p style={{ margin: 0, fontFamily: 'var(--font-serif)', fontSize: 15, lineHeight: 1.7, color: 'var(--text-primary)' }}>
                   {text.trim() || <span style={{ opacity: 0.3 }}>·</span>}
                 </p>

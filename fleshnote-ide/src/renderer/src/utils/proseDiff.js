@@ -4,10 +4,18 @@
 // writer actually sees in the editor — no ids, no raw markup.
 export function cleanProse(md) {
   if (!md) return ''
-  return md
+  let text = md
+  if (/<p>|<div|<li|<h[1-6]|<blockquote/i.test(text)) {
+    text = text
+      .replace(/<\/p>|<\/div>|<\/li>|<\/h[1-6]>|<\/blockquote>/gi, '\n')
+      .replace(/<br\s*\/?>/gi, '\n')
+  }
+  return text
     .replace(/\{\{[a-z_]+:[^|}]+\|([^}]*)\}\}/gi, '$1') // entity/twist/note markers → their text
     .replace(/<[^>]+>/g, '')                            // stray html
+    .replace(/\r\n/g, '\n')
     .replace(/[ \t]+\n/g, '\n')
+    .trim()
 }
 
 // Minimal LCS line diff → [{ type: 'same'|'add'|'del', text }].
