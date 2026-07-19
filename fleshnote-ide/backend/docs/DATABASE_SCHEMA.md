@@ -484,43 +484,104 @@ Short inline review comments / notes.
 
 ## 27. `change_log`
 
-Offline sync audit log tracking changes locally.
+Offline-sync audit log for the planned companion app. Column-level Last-Writer-Wins: one
+row per changed column, storing the **new value** stamped with a Hybrid Logical Clock.
 
 | Column | Type | Constraints | Description |
 | :--- | :--- | :--- | :--- |
 | `id` | TEXT | PRIMARY KEY (UUID v4) | |
 | `table_name` | TEXT | NOT NULL | Target table name |
-| `record_id` | TEXT | NOT NULL | ID of modified row |
-| `action` | TEXT | NOT NULL | `INSERT`, `UPDATE`, `DELETE` |
-| `timestamp` | TIMESTAMP | DEFAULT CURRENT_TIMESTAMP | |
+| `row_id` | TEXT | NOT NULL | ID of the modified row |
+| `column_name` | TEXT | NOT NULL | Which column changed |
+| `value` | TEXT | | New value (stringified; `NULL` for tombstoned/cleared) |
+| `hlc` | TEXT | NOT NULL | Hybrid Logical Clock stamp — LWW ordering key |
+| `device_id` | TEXT | NOT NULL | Origin device that made the change |
+| `origin` | TEXT | NOT NULL | Change source (e.g. `desktop`) |
 
 ---
 
 ## 28. `pentimento_sessions`
 
-Pentimento telemetry process tracking.
+One row per writing session for a chapter (the "Process" tab telemetry). Sessions are
+sealed with a SHA-256 chain hash (`previous_session_hash` -> `session_hash`) for a
+tamper-evident receipt, and their ops may later be compacted into `summary_json`.
 
 | Column | Type | Constraints | Description |
 | :--- | :--- | :--- | :--- |
 | `id` | TEXT | PRIMARY KEY (UUID v4) | Session ID |
-| `started_at` | TIMESTAMP | DEFAULT CURRENT_TIMESTAMP | |
-| `ended_at` | TIMESTAMP | | |
+| `chapter_id` | TEXT | NOT NULL, FK -> chapters(id) ON DELETE CASCADE | |
+| `device_id` | TEXT | NOT NULL | Device the session was written on |
+| `session_num` | INTEGER | NOT NULL | Per-chapter ordinal (1, 2, 3, …) |
+| `start_time` | TEXT | NOT NULL | ISO timestamp when the session opened |
+| `end_time` | TEXT | | ISO timestamp when the session was sealed |
+| `previous_session_hash` | TEXT | | Prior session's `session_hash` (chain link) |
+| `session_hash` | TEXT | | SHA-256 sealing this session's ops |
+| `summary_json` | TEXT | | Compacted aggregate totals once raw ops are pruned |
+| `created_at` | TEXT | DEFAULT `datetime('now')` | |
 
 ---
 
 ## 29. `pentimento_ops`
 
-Fine-grained telemetry keystroke/operation events.
+Coalesced writing operations — **runs**, not raw keystrokes (consecutive typing in one
+paragraph is merged into a single op with a `duration_ms`). Drives the per-paragraph
+heatmap and the replay pacing overlay. Deleted for compacted sessions (see `summary_json`).
+
+> Note: ops are deltas only, with no baseline text, so past prose is **not** reconstructable
+> from this table — the replay reconstructs content from `chapter_snapshots` and uses ops
+> purely for typing rhythm. See `docs/PENTIMENTO.md`.
 
 | Column | Type | Constraints | Description |
 | :--- | :--- | :--- | :--- |
 | `id` | TEXT | PRIMARY KEY (UUID v4) | Op ID |
-| `session_id` | TEXT | NOT NULL, FK -> pentimento_sessions(id) | |
-| `chapter_id` | TEXT | NOT NULL, FK -> chapters(id) | |
-| `op_type` | TEXT | NOT NULL | e.g., `insert`, `delete` |
-| `offset` | INTEGER | NOT NULL | Word / character offset |
-| `length` | INTEGER | NOT NULL | Length of modification |
-| `timestamp` | TIMESTAMP | DEFAULT CURRENT_TIMESTAMP | |
+| `session_id` | TEXT | NOT NULL, FK -> pentimento_sessions(id) ON DELETE CASCADE | |
+| `chapter_id` | TEXT | NOT NULL, FK -> chapters(id) ON DELETE CASCADE | |
+| `timestamp` | TEXT | NOT NULL | ISO timestamp of the run |
+| `op_type` | TEXT | NOT NULL | `insert`, `delete`, `paste`, `pause` |
+| `para_index` | INTEGER | NOT NULL | Paragraph index within the chapter |
+| `char_offset` | INTEGER | NOT NULL | Character offset within that paragraph |
+| `length` | INTEGER | DEFAULT 0 | Characters affected |
+| `text_content` | TEXT | | Text inserted/deleted (deletes may be stored reversed) |
+| `duration_ms` | INTEGER | DEFAULT 0 | Time spent on this coalesced run |
+| `origin` | TEXT | NOT NULL | Capture source (e.g. `desktop`) |
+
+---
+
+## 30. `chapter_snapshots`
+
+Full-text prose snapshots — the ground truth for history rollback and replay. Stores the
+chapter's markdown (zlib-compressed) at each session boundary, plus manual pins and
+pre-restore safety copies. Session snapshots dedup on `prose_hash`; manual/pre-restore
+snapshots are always kept.
+
+| Column | Type | Constraints | Description |
+| :--- | :--- | :--- | :--- |
+| `id` | TEXT | PRIMARY KEY (UUID v4) | Snapshot ID |
+| `chapter_id` | TEXT | NOT NULL, FK -> chapters(id) ON DELETE CASCADE | |
+| `created_at` | TEXT | NOT NULL | ISO timestamp |
+| `kind` | TEXT | NOT NULL | `session` (auto), `manual` (pinned), `pre_restore` (undo safety) |
+| `label` | TEXT | | Optional user label for a manual pin |
+| `word_count` | INTEGER | DEFAULT 0 | Word count at snapshot time |
+| `prose_hash` | TEXT | NOT NULL | SHA-256 of the markdown (dedup + ancestry) |
+| `content_gz` | BLOB | NOT NULL | zlib-compressed markdown (canonical on-disk form) |
+| `byte_size` | INTEGER | DEFAULT 0 | `len(content_gz)`, for storage accounting |
+| `session_id` | TEXT | | Linked sealed session (session snapshots only; nullable) |
+| `session_hash` | TEXT | | Receipt linkage (nullable) |
+| `device_id` | TEXT | NOT NULL | Device that created the snapshot |
+
+Indexed by `idx_chapter_snapshots_chapter` on `(chapter_id, created_at)`.
+
+---
+
+## 31. `sync_meta`
+
+Single-row (`id = 1`) local sync state for the planned companion app.
+
+| Column | Type | Constraints | Description |
+| :--- | :--- | :--- | :--- |
+| `id` | INTEGER | PRIMARY KEY, CHECK (`id = 1`) | Enforces a single row |
+| `last_hlc` | TEXT | | Highest Hybrid Logical Clock stamp seen locally |
+| `version_vector` | TEXT | DEFAULT `'{}'` | Per-device version vector (JSON) |
 
 ---
 

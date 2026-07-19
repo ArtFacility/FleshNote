@@ -26,6 +26,8 @@ Depending on what you need to work on, refer to these specific documentation fil
 *   **`TWISTS.md`**: Details the Twist system, foreshadowing markers, heuristic warnings, and plot payoff tracking.
 *   **`API_ENDPOINTS.md`**: Details the FastAPI backend endpoints, request payloads and API structures.
 *   **`LOCATIONS.md`**: Detailed guide on the hierarchical location system, tree structure, drag-and-drop, and weather inheritance model.
+*   **`PENTIMENTO.md`**: The "Process" writing-telemetry system — coalesced ops, sealed sessions, the per-paragraph heatmap, prose snapshots, the History rollback panel, and the snapshot-anchored replay simulation.
+*   **`SYNC.md`**: The local cross-device sync engine — the Hybrid Logical Clock, `change_log`, version vectors, entity field-level LWW, prose hash-ancestry merge, and the preview/apply flow with database backup and rollback.
 *   **`ENTITY_LINKING.md` / `SPRINT_MODES.md` / `EXPORT_GUIDELINES.md`**: Specifics on these individual systems.
 
 ## Currently Implemented Systems
@@ -37,6 +39,8 @@ Depending on what you need to work on, refer to these specific documentation fil
 *   **Plot Planner & Focus Modes**: Visualizing "Foreshadowing" links, blocks, and arcs on a timeline graph to audit narrative pacing, while Focus sprint modes (Kamikaze, Fog, Zen) gamify the writing experience workflow.
 *   **Localization & RTL Support**: An actively maintained i18next translation framework natively spanning English, Hungarian, Polish, and Arabic, automatically flipping layout constraints natively utilizing pure logical CSS properties (`inset-inline`, `margin-block`).
 *   **Statistics & Custom Analytics**: A comprehensive dashboard tracing writing telemetry, Entity Presence Matrix, Readability scores, and "5 Senses" sensory vocabulary tracking across the manuscript.
+*   **Pentimento "Process" & History Rollback**: A writing-telemetry system that coalesces edits into runs, seals each writing session with a chain hash, and paints a per-paragraph effort heatmap. Full-text prose snapshots taken at session boundaries power a right-side History panel (preview, pin, restore with undo) and a replay simulation that reconstructs a chapter's growth from snapshots while pacing the typing from the captured ops.
+*   **Local Cross-Device Sync**: A serverless, user-driven merge between two copies of a project. A Hybrid Logical Clock and column-level `change_log` drive field-level Last-Writer-Wins for entities and prose-hash ancestry resolution for chapters, with a preview step, per-chapter conflict resolution, and a database backup/rollback guard on apply.
 *   **Custom Calendar Maker**: Tools for the author to build and specify custom in-universe calendar systems for tracking time, calculating ages, and charting the World History timeline.
 *   **Unified Entity Manager & Renaming Workflow**: A tabbed Project Manager and Entity Inspector allowing bulk database operations (merging characters, intelligent global entity renaming, deleting nodes) seamlessly integrated into the React frontend.
 

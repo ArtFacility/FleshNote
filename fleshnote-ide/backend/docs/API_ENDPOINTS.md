@@ -1240,3 +1240,94 @@ Used by `ImageGallery.jsx` to clean up the temporary full-resolution upload afte
 { "status": "error", "msg": "File not found" }
 ```
 
+---
+
+## Pentimento (Writing Process Telemetry)
+
+Defined in `backend/routes/pentimento.py`. Records coalesced writing ops into sealed,
+hash-chained sessions and aggregates them. See `backend/docs/PENTIMENTO.md`.
+
+- `POST /api/project/pentimento/session/start`: Opens a writing session for a chapter (returns `session_id`, `session_num`).
+- `POST /api/project/pentimento/flush`: Ingests a batch of coalesced ops (runs, not keystrokes).
+- `POST /api/project/pentimento/session/end`: Seals the session with a SHA-256 chain hash; auto-creates a `session` prose snapshot when `prose_history` is on.
+- `POST /api/project/pentimento/heatmap`: Returns per-paragraph effort metrics (time, inserted/deleted, churn, night ratio, normalized `heat`) + `session_count`.
+- `POST /api/project/pentimento/ops`: Returns raw ops for a chapter grouped by `session_id` — used to pace the replay simulation.
+- `POST /api/project/pentimento/summary`: Whole-project totals (typed/deleted/kept words, time, day/night split, chain head hash).
+- `POST /api/project/pentimento/compact`: Prunes old raw ops into per-session `summary_json` aggregates.
+- `POST /api/project/pentimento/clear`: Deletes all telemetry (sessions + ops).
+- `POST /api/project/pentimento/storage`: Telemetry storage accounting.
+
+---
+
+## Chapter History (Prose Snapshots & Rollback)
+
+Defined in `backend/routes/chapter_history.py`. Full-text prose snapshots powering the
+History panel and the replay base. See `backend/docs/PENTIMENTO.md`.
+
+- `POST /api/project/chapter/history/list`: Snapshots for a chapter (metadata only, newest first) — `id`, `created_at`, `kind` (`session`/`manual`/`pre_restore`), `label`, `word_count`, `byte_size`, `prose_hash`, `session_num`, `session_id`.
+- `POST /api/project/chapter/history/preview`: Decompresses one snapshot `{ snapshot_id }` → `{ content_html, word_count }`.
+- `POST /api/project/chapter/history/pin`: Creates a `manual` snapshot of the current prose (optional `label`).
+- `POST /api/project/chapter/history/restore`: Restores a snapshot — takes a `pre_restore` safety copy, rewrites the `md/` file, re-runs entity/foreshadow/knowledge trackers, logs `prose_hash` to `change_log`, returns `{ content_html }`.
+- `POST /api/project/chapter/history/storage`: Snapshot count + total bytes for the settings UI.
+- `POST /api/project/chapter/history/prune`: Keeps the last N `session` snapshots per chapter; never prunes `manual` pins.
+- `POST /api/project/chapter/history/clear`: Deletes a chapter's snapshots.
+
+---
+
+## Sync Engine (Local Cross-Device Merge)
+
+Defined in `backend/routes/sync.py` (with primitives in `backend/sync_core.py`). Serverless,
+user-initiated merge between two copies of the same project. See `backend/docs/SYNC.md`.
+
+### `POST /api/project/sync/preview`
+
+Read-only. Compares a local and a remote copy and reports what a sync would change. Guards
+that both folders share the same `project_id` (from `fleshnote_project.json`).
+
+**Request:** `{ "local_path": "...", "remote_path": "..." }`
+
+**Response:**
+
+```json
+{
+  "status": "ok",
+  "project_id": "...",
+  "project_name": "My Novel",
+  "entity_changes": [
+    { "table": "characters", "row_id": "...", "column": "bio",
+      "display_name": "Sophia", "action": "update", "value": "..." }
+  ],
+  "prose_takes": [
+    { "chapter_id": "...", "title": "Chapter 5", "direction": "remote_to_local", "md_filename": "ch_005_....md" }
+  ],
+  "prose_conflicts": [
+    { "chapter_id": "...", "title": "...", "md_filename": "...", "local_text": "...", "remote_text": "..." }
+  ],
+  "summary": {
+    "entity_creates": 0, "entity_updates": 3, "entity_deletes": 1,
+    "prose_takes_remote": 2, "prose_takes_local": 0, "prose_conflicts": 1
+  }
+}
+```
+
+Returns `{ "status": "error", "message": "..." }` if the two folders are different projects.
+
+### `POST /api/project/sync/apply`
+
+Pulls the remote changes into the local project. Backs up `fleshnote.db` → `.bak` first,
+applies entity field changes + prose takes + conflict resolutions in one transaction,
+recomputes derived data for touched chapters, advances the version vector, and **restores the
+backup on any error**.
+
+**Request:**
+
+```json
+{
+  "local_path": "...",
+  "remote_path": "...",
+  "resolutions": { "<chapter_id>": "local | remote | <merged text>" }
+}
+```
+
+**Response:** `{ "status": "ok" }` (or HTTP 400/500 on a rejected/failed sync — local DB is rolled back and restored).
+
