@@ -2,7 +2,8 @@ import os
 import sqlite3
 from fastapi import APIRouter, HTTPException
 from pydantic import BaseModel
-from .knowledge import _extract_year, _get_db
+from .knowledge import _get_db, _chapter_md_content
+from world_calendar import load_calendar_config, world_time_to_linear_day, effective_world_time
 
 router = APIRouter()
 
@@ -199,7 +200,8 @@ def get_relationships_for_character(req: RelationshipsForCharacter):
         SELECT r.*,
                c1.name as character_name,
                c2.name as target_character_name,
-               ch.chapter_number
+               ch.chapter_number,
+               ch.world_time as chapter_world_time, ch.md_filename as chapter_md_filename
         FROM character_relationships r
         JOIN characters c1 ON r.character_id = c1.id
         JOIN characters c2 ON r.target_character_id = c2.id
@@ -220,7 +222,8 @@ def get_relationships_for_character(req: RelationshipsForCharacter):
         SELECT r.*,
                c1.name as character_name,
                c2.name as target_character_name,
-               ch.chapter_number
+               ch.chapter_number,
+               ch.world_time as chapter_world_time, ch.md_filename as chapter_md_filename
         FROM character_relationships r
         JOIN characters c1 ON r.character_id = c1.id
         JOIN characters c2 ON r.target_character_id = c2.id
@@ -234,18 +237,52 @@ def get_relationships_for_character(req: RelationshipsForCharacter):
     """
     cursor.execute(reverse_query, (req.character_id, req.character_id))
     reverse_rows = cursor.fetchall()
-    conn.close()
-    
+
     # helper to format a row
     def format_row(row):
         d = _row_to_dict(row)
         d["character_name"] = row["character_name"]
         d["target_character_name"] = row["target_character_name"]
         d["chapter_number"] = row["chapter_number"]
+        d["_chapter_world_time"] = row["chapter_world_time"]
+        d["_chapter_md_filename"] = row["chapter_md_filename"]
         return d
 
     all_rels = [format_row(r) for r in rows]
     all_reverse_rels = [format_row(r) for r in reverse_rows]
+
+    # Calendar-aware, day-level effective-time resolution (own world_time ->
+    # the time-override active at word_offset -> the chapter's blanket
+    # world_time), memoized per relationship row since _sort_key and the
+    # world_time filter both need it.
+    cal = load_calendar_config(cursor)
+    md_cache: dict = {}
+    world_times_cache: dict = {}
+    linear_cache: dict = {}
+
+    def _get_md(md_filename):
+        if md_filename not in md_cache:
+            md_cache[md_filename] = _chapter_md_content(req.project_path, md_filename)
+        return md_cache[md_filename]
+
+    def _get_world_times(chapter_id):
+        if chapter_id not in world_times_cache:
+            cursor.execute(
+                "SELECT id, world_date FROM world_times WHERE chapter_id = ? AND deleted = 0",
+                (chapter_id,),
+            )
+            world_times_cache[chapter_id] = {row[0]: row[1] for row in cursor.fetchall()}
+        return world_times_cache[chapter_id]
+
+    def _effective_linear(r):
+        if r["id"] not in linear_cache:
+            eff_time = effective_world_time(
+                r.get("world_time"), r.get("word_offset"),
+                _get_md(r.get("_chapter_md_filename")), r.get("_chapter_world_time"),
+                _get_world_times(r.get("chapter_id")),
+            )
+            linear_cache[r["id"]] = world_time_to_linear_day(eff_time, cal)
+        return linear_cache[r["id"]]
 
     # Organize relationships by the other character involved
     # For a given target, we want to trace the history and find the "latest state" and "ghost state"
@@ -280,7 +317,7 @@ def get_relationships_for_character(req: RelationshipsForCharacter):
 
     # Process each target to find latest states
     # Note: world time parsing logic
-    current_year = _extract_year(req.current_world_time) if req.current_world_time else None
+    current_linear = world_time_to_linear_day(req.current_world_time, cal) if req.current_world_time else None
     current_chapter = req.current_chapter
     
     results = []
@@ -297,7 +334,7 @@ def get_relationships_for_character(req: RelationshipsForCharacter):
         
         # User requested Author view to follow world time logic for consistency if time is available
         effective_filter_mode = req.filter_mode
-        if effective_filter_mode == 'author' and current_year is not None:
+        if effective_filter_mode == 'author' and current_linear is not None:
              effective_filter_mode = 'world_time'
 
         if effective_filter_mode == 'narrative' and current_chapter is not None:
@@ -305,27 +342,28 @@ def get_relationships_for_character(req: RelationshipsForCharacter):
             valid_rev_history = [r for r in rev_history if r["chapter_number"] is None or r["chapter_number"] <= current_chapter]
             narrative_history = valid_history
             narrative_rev_history = valid_rev_history
-        elif effective_filter_mode == 'world_time' and current_year is not None:
-            # For world time filtering, we filter by year, but we still compute narrative_history to show the ghost state
+        elif effective_filter_mode == 'world_time' and current_linear is not None:
+            # For world time filtering, we filter to the day (not just the year), but
+            # we still compute narrative_history to show the ghost state
             valid_history = []
             for r in history:
-                r_year = _extract_year(r.get("world_time"))
-                if r_year is None or r_year <= current_year:
+                r_linear = _effective_linear(r)
+                if r_linear is None or r_linear <= current_linear:
                     valid_history.append(r)
             valid_rev_history = []
             for r in rev_history:
-                r_year = _extract_year(r.get("world_time"))
-                if r_year is None or r_year <= current_year:
+                r_linear = _effective_linear(r)
+                if r_linear is None or r_linear <= current_linear:
                     valid_rev_history.append(r)
-                    
+
             if current_chapter is not None:
                 narrative_history = [r for r in history if r["chapter_number"] is None or r["chapter_number"] <= current_chapter]
                 narrative_rev_history = [r for r in rev_history if r["chapter_number"] is None or r["chapter_number"] <= current_chapter]
-            
+
         def _sort_key(r):
-            # Sort by world time year first if available, then chapter/offset
-            y = _extract_year(r.get("world_time"))
-            y = y if y is not None else -999999 # Initial state
+            # Sort by effective world time (to the day) first if available, then chapter/offset
+            y = _effective_linear(r)
+            y = y if y is not None else -999999999999999 # Initial state
             ch = r.get("chapter_number")
             ch = ch if ch is not None else 999999
             wo = r.get("word_offset")
@@ -378,5 +416,14 @@ def get_relationships_for_character(req: RelationshipsForCharacter):
             res["reverse_ghost_state"] = latest_narrative_reverse
             
         results.append(res)
-        
+
+    conn.close()
+
+    for rel in all_rels:
+        rel.pop("_chapter_world_time", None)
+        rel.pop("_chapter_md_filename", None)
+    for rel in all_reverse_rels:
+        rel.pop("_chapter_world_time", None)
+        rel.pop("_chapter_md_filename", None)
+
     return {"relationships": results}

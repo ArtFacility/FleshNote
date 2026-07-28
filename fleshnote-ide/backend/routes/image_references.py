@@ -7,13 +7,14 @@ filters by in-universe chronological time — same as knowledge states).
 """
 
 import os
-import re
 import uuid
 import base64
 import shutil
 import sqlite3
 from fastapi import APIRouter, HTTPException
 from pydantic import BaseModel
+
+from world_calendar import load_calendar_config, world_time_to_linear_day
 
 router = APIRouter()
 
@@ -82,34 +83,21 @@ def _row_to_dict(row) -> dict:
     return dict(row)
 
 
-def _extract_year(text: str | None) -> int | None:
-    if not text:
-        return None
-    patterns = [
-        r'[Yy]ear\s+(\d+)',
-        r'(\d+)\s*[Ee]',
-        r'[Ee]\s*-?\s*(\d+)',
-        r'\b(\d{2,})\b',
-    ]
-    for pattern in patterns:
-        match = re.search(pattern, text)
-        if match:
-            return int(match.group(1))
-    return None
-
-
-def _filter_by_world_time(refs: list[dict], current_world_time: str | None) -> list[dict]:
+def _filter_by_world_time(cursor, refs: list[dict], current_world_time: str | None) -> list[dict]:
+    """Filter image references by world_time, compared to the day (not just the
+    year) via the project's custom calendar. Image references aren't tied to a
+    chapter/word_offset, so there's no override-span fallback — just the
+    reference's own world_time, with the usual fail-open on unparseable dates."""
     if not current_world_time:
         return refs
-    current_year = _extract_year(current_world_time)
-    if current_year is None:
+    cal = load_calendar_config(cursor)
+    current_linear = world_time_to_linear_day(current_world_time, cal)
+    if current_linear is None:
         return refs
     filtered = []
     for ref in refs:
-        ref_year = _extract_year(ref.get("world_time"))
-        if ref_year is None:
-            filtered.append(ref)
-        elif ref_year <= current_year:
+        ref_linear = world_time_to_linear_day(ref.get("world_time"), cal)
+        if ref_linear is None or ref_linear <= current_linear:
             filtered.append(ref)
     return filtered
 
@@ -349,12 +337,12 @@ def get_image_refs_for_entity(req: ImageRefsForEntity):
         (req.entity_type, req.entity_id)
     )
     rows = cursor.fetchall()
-    conn.close()
 
     refs = [_row_to_dict(r) for r in rows]
 
     if req.filter_mode == "world_time":
-        refs = _filter_by_world_time(refs, req.current_world_time)
+        refs = _filter_by_world_time(cursor, refs, req.current_world_time)
+    conn.close()
 
     return {"image_refs": refs}
 

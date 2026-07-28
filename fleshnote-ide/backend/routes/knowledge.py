@@ -9,11 +9,12 @@ Supports 3 view modes:
 """
 
 import os
-import re
 import json
 import sqlite3
 from fastapi import APIRouter, HTTPException
 from pydantic import BaseModel
+
+from world_calendar import load_calendar_config, world_time_to_linear_day, effective_world_time
 
 router = APIRouter()
 
@@ -86,6 +87,16 @@ def _get_db(project_path: str):
     return conn
 
 
+def _safe_col(row, key):
+    """sqlite3.Row raises IndexError for a column that wasn't in the SELECT —
+    used for the extra chapter_world_time/chapter_md_filename columns that
+    only some of this file's queries join in."""
+    try:
+        return row[key]
+    except (IndexError, KeyError):
+        return None
+
+
 def _row_to_dict(row):
     d = {
         "id": row["id"],
@@ -110,47 +121,69 @@ def _row_to_dict(row):
     return d
 
 
-def _extract_year(text: str | None) -> int | None:
-    """
-    Extract the most likely year number from a world_time string.
-    Mirrors the logic in calendar.py for consistency.
-    Returns None if no year can be parsed.
-    """
-    if not text:
-        return None
-    patterns = [
-        r'[Yy]ear\s+(\d+)',           # "Year 314"
-        r'(\d+)\s*[Ee]',              # "4E" (epoch number)
-        r'[Ee]\s*-?\s*(\d+)',         # "E-314"
-        r'\b(\d{2,})\b',             # Any 2+ digit number (last resort)
-    ]
-    for pattern in patterns:
-        match = re.search(pattern, text)
-        if match:
-            return int(match.group(1))
-    return None
+def _chapter_md_content(project_path: str, md_filename: str | None) -> str:
+    if not md_filename:
+        return ""
+    path = os.path.join(project_path, "md", md_filename)
+    try:
+        with open(path, "r", encoding="utf-8") as f:
+            return f.read()
+    except OSError:
+        return ""
 
 
-def _filter_by_world_time(facts: list[dict], current_world_time: str | None) -> list[dict]:
+def _filter_by_world_time(cursor, project_path: str, facts: list[dict],
+                           current_world_time: str | None) -> list[dict]:
     """
-    Filter knowledge facts by world_time comparison.
-    Uses year extraction for comparison. Facts with unparseable
-    or NULL world_time are included (fail-open).
+    Filter knowledge facts by world_time, compared to the day (not just the
+    year) via the project's custom calendar. A fact's effective time is
+    resolved 3-tier: its own world_time, else the time-override span active
+    at its word_offset in the chapter it was learned in, else the chapter's
+    own blanket world_time. Facts with no resolvable time, or when the
+    reference time can't be parsed, fail open (are shown) — and facts learned
+    "from the start" (no learned_in_chapter) are always shown regardless.
     """
     if not current_world_time:
         return facts  # No reference time — show all
 
-    current_year = _extract_year(current_world_time)
-    if current_year is None:
+    cal = load_calendar_config(cursor)
+    current_linear = world_time_to_linear_day(current_world_time, cal)
+    if current_linear is None:
         return facts  # Can't parse reference time — show all
+
+    md_cache: dict[str, str] = {}
+    world_times_cache: dict = {}
+
+    def get_md(md_filename):
+        if md_filename not in md_cache:
+            md_cache[md_filename] = _chapter_md_content(project_path, md_filename)
+        return md_cache[md_filename]
+
+    def get_world_times(chapter_id):
+        if chapter_id not in world_times_cache:
+            cursor.execute(
+                "SELECT id, world_date FROM world_times WHERE chapter_id = ? AND deleted = 0",
+                (chapter_id,),
+            )
+            world_times_cache[chapter_id] = {r[0]: r[1] for r in cursor.fetchall()}
+        return world_times_cache[chapter_id]
 
     filtered = []
     for fact in facts:
-        fact_year = _extract_year(fact.get("world_time"))
-        if fact_year is None:
-            # Can't parse or no world_time — include (fail-open)
-            filtered.append(fact)
-        elif fact_year <= current_year:
+        chapter_id = fact.get("learned_in_chapter")
+        if chapter_id is None:
+            filtered.append(fact)  # known from the start — always shown
+            continue
+
+        eff_time = effective_world_time(
+            fact.get("world_time"),
+            fact.get("word_offset"),
+            get_md(fact.get("_chapter_md_filename")),
+            fact.get("_chapter_world_time"),
+            get_world_times(chapter_id),
+        )
+        eff_linear = world_time_to_linear_day(eff_time, cal)
+        if eff_linear is None or eff_linear <= current_linear:
             filtered.append(fact)
     return filtered
 
@@ -305,9 +338,10 @@ def get_knowledge_for_entity(req: KnowledgeForEntity):
 
     elif req.filter_mode == "world_time" and char_id is not None:
         # World time filter: fetch all non-secret facts for this character,
-        # then filter in Python using year extraction
+        # then filter in Python (calendar-aware, day-level comparison)
         cursor.execute("""
-            SELECT ks.*, c.name as character_name
+            SELECT ks.*, c.name as character_name,
+                   ch.world_time as chapter_world_time, ch.md_filename as chapter_md_filename
             FROM knowledge_states ks
             JOIN characters c ON ks.character_id = c.id
             LEFT JOIN chapters ch ON ks.learned_in_chapter = ch.id
@@ -322,7 +356,8 @@ def get_knowledge_for_entity(req: KnowledgeForEntity):
     elif req.filter_mode in ("narrative", "world_time") and char_id is None:
         # Filtered mode but no character selected — show all non-secret facts
         cursor.execute("""
-            SELECT ks.*, c.name as character_name
+            SELECT ks.*, c.name as character_name,
+                   ch.world_time as chapter_world_time, ch.md_filename as chapter_md_filename
             FROM knowledge_states ks
             JOIN characters c ON ks.character_id = c.id
             LEFT JOIN chapters ch ON ks.learned_in_chapter = ch.id
@@ -346,17 +381,23 @@ def get_knowledge_for_entity(req: KnowledgeForEntity):
         """, (req.source_entity_type, req.source_entity_id))
 
     rows = cursor.fetchall()
-    conn.close()
 
     facts = []
     for row in rows:
         entry = _row_to_dict(row)
         entry["character_name"] = row["character_name"]
+        entry["_chapter_world_time"] = _safe_col(row, "chapter_world_time")
+        entry["_chapter_md_filename"] = _safe_col(row, "chapter_md_filename")
         facts.append(entry)
 
-    # Apply world_time filtering in Python (year extraction comparison)
+    # Apply world_time filtering in Python (calendar-aware, day-level comparison)
     if req.filter_mode == "world_time":
-        facts = _filter_by_world_time(facts, req.current_world_time)
+        facts = _filter_by_world_time(cursor, req.project_path, facts, req.current_world_time)
+    conn.close()
+
+    for fact in facts:
+        fact.pop("_chapter_world_time", None)
+        fact.pop("_chapter_md_filename", None)
 
     return {"facts": facts}
 
@@ -400,16 +441,17 @@ def get_knowledge_for_character(req: KnowledgeForCharacter):
         """, (req.character_id, req.current_chapter))
 
     elif req.filter_mode == "world_time":
-        # World time: fetch all non-secret, filter in Python
+        # World time: fetch all non-secret, filter in Python (calendar-aware)
         cursor.execute("""
-            SELECT ks.*, 
+            SELECT ks.*,
                    c.name as character_name,
                    CASE ks.source_entity_type
                      WHEN 'character' THEN c_src.name
                      WHEN 'lore' THEN le.name
                      WHEN 'location' THEN loc.name
                      WHEN 'group' THEN g.name
-                   END as source_entity_name
+                   END as source_entity_name,
+                   ch.world_time as chapter_world_time, ch.md_filename as chapter_md_filename
             FROM knowledge_states ks
             JOIN characters c ON ks.character_id = c.id
             LEFT JOIN characters c_src ON ks.source_entity_type = 'character' AND ks.source_entity_id = c_src.id
@@ -447,17 +489,23 @@ def get_knowledge_for_character(req: KnowledgeForCharacter):
         """, (req.character_id,))
 
     rows = cursor.fetchall()
-    conn.close()
 
     facts = []
     for row in rows:
         entry = _row_to_dict(row)
         entry["character_name"] = row["character_name"]
         entry["source_entity_name"] = row["source_entity_name"]
+        entry["_chapter_world_time"] = _safe_col(row, "chapter_world_time")
+        entry["_chapter_md_filename"] = _safe_col(row, "chapter_md_filename")
         facts.append(entry)
 
-    # Apply world_time filtering in Python
+    # Apply world_time filtering in Python (calendar-aware, day-level comparison)
     if req.filter_mode == "world_time":
-        facts = _filter_by_world_time(facts, req.current_world_time)
+        facts = _filter_by_world_time(cursor, req.project_path, facts, req.current_world_time)
+    conn.close()
+
+    for fact in facts:
+        fact.pop("_chapter_world_time", None)
+        fact.pop("_chapter_md_filename", None)
 
     return {"facts": facts}

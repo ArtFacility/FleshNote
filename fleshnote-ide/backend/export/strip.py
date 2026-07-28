@@ -2,13 +2,59 @@ import re
 import sqlite3
 
 # Patterns matching chapters.py markers: {{char:2|Sophia}}
-_FLESHNOTE_MARKER_PATTERN = re.compile(r'\{\{(char|loc|item|lore|group|quicknote|secret|annotation):(\d+)\|([^}]+)\}\}')
-_TWIST_MARKER_PATTERN = re.compile(r'\{\{(twist|foreshadow):(\d+)\|([^}]+)\}\}')
-_KNOWLEDGE_REL_PATTERN = re.compile(r'\{\{(knowledge|relationship):(\d+):(\d+)\|([^}]+)\}\}')
-_TIME_MARKER_PATTERN = re.compile(r'\{\{time:\d+:\d+\|([^}]*)\}\}')
+# IDs are UUIDs since the UUID migration (legacy numeric IDs still match).
+_FLESHNOTE_MARKER_PATTERN = re.compile(r'\{\{(char|loc|item|lore|group|quicknote|secret|annotation):([^:|}]+)\|([^}]+)\}\}')
+_TWIST_MARKER_PATTERN = re.compile(r'\{\{(twist|foreshadow):([^:|}]+)\|([^}]+)\}\}')
+_KNOWLEDGE_REL_PATTERN = re.compile(r'\{\{(knowledge|relationship):([^:|}]+):([^:|}]+)\|([^}]+)\}\}')
+_TIME_MARKER_PATTERN = re.compile(r'\{\{time:[^:|}]+:[^:|}]+\|([^}]*)\}\}')
 _EPISTEMIC_PATTERN = re.compile(r'\{(secret|knows|believes):([^}]+)\}')
 _HTML_TAG_PATTERN = re.compile(r'<[^>]+>')
 _TODO_PATTERN = re.compile(r'#TODO.*?(?=\u200B|</p>|<br>|<br/>|\n|$)', re.IGNORECASE)
+
+# \u2500\u2500 Raw-span normalization \u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500
+# The chapter save pipeline (chapters.py) deliberately leaves a mark span as
+# raw HTML whenever its inner content contains tags (e.g. a time span holding a
+# <br>, or an entity span wrapping a nested time marker). Those raw spans
+# round-trip fine in the editor but would slip past the marker patterns above,
+# so exports first fold them back into marker form, innermost-first.
+
+_ENTITY_TYPE_TO_SHORT = {
+    "character": "char",
+    "location": "loc",
+    "lore": "item",
+}
+
+# Inner capture allows anything except a nested span, so replacement can run
+# innermost-first and iterate outward.
+_INNER = r'((?:(?!</?span).)*?)'
+_RAW_TIME_SPAN = re.compile(
+    r'<span[^>]*?data-time-id="([^"]+)"[^>]*?data-color-index="([^"]+)"[^>]*?>' + _INNER + r'</span>', re.DOTALL)
+_RAW_ENTITY_SPAN = re.compile(
+    r'<span[^>]*?data-entity-type="([^"]+)"[^>]*?data-entity-id="([^"]+)"[^>]*?>' + _INNER + r'</span>', re.DOTALL)
+_RAW_KNOWLEDGE_SPAN = re.compile(
+    r'<span[^>]*?data-knowledge-id="([^"]+)"[^>]*?data-character-id="([^"]+)"[^>]*?>' + _INNER + r'</span>', re.DOTALL)
+_RAW_RELATIONSHIP_SPAN = re.compile(
+    r'<span[^>]*?data-relationship-id="([^"]+)"[^>]*?data-character-id="([^"]+)"[^>]*?>' + _INNER + r'</span>', re.DOTALL)
+_RAW_TWIST_SPAN = re.compile(
+    r'<span[^>]*?data-twist-type="([^"]+)"[^>]*?data-twist-id="([^"]+)"[^>]*?>' + _INNER + r'</span>', re.DOTALL)
+
+
+def _normalize_raw_spans(text: str) -> str:
+    """Fold the save pipeline's raw-span fallback forms back into {{marker}} form."""
+    def entity_repl(m):
+        short = _ENTITY_TYPE_TO_SHORT.get(m.group(1), m.group(1))
+        return '{{%s:%s|%s}}' % (short, m.group(2), m.group(3))
+
+    for _ in range(5):  # bounded by realistic span nesting depth
+        new = _RAW_TIME_SPAN.sub(lambda m: '{{time:%s:%s|%s}}' % (m.group(1), m.group(2), m.group(3)), text)
+        new = _RAW_ENTITY_SPAN.sub(entity_repl, new)
+        new = _RAW_KNOWLEDGE_SPAN.sub(lambda m: '{{knowledge:%s:%s|%s}}' % (m.group(1), m.group(2), m.group(3)), new)
+        new = _RAW_RELATIONSHIP_SPAN.sub(lambda m: '{{relationship:%s:%s|%s}}' % (m.group(1), m.group(2), m.group(3)), new)
+        new = _RAW_TWIST_SPAN.sub(lambda m: '{{%s:%s|%s}}' % (m.group(1), m.group(2), m.group(3)), new)
+        if new == text:
+            return new
+        text = new
+    return text
 
 def _resolve_entity_name(db_conn, entity_id: str, short_type: str) -> str:
     cursor = db_conn.cursor()
@@ -76,6 +122,7 @@ def _strip_knowledge_rel_markers(text: str) -> str:
 
 def strip_prose(text: str, db_conn, remove_html: bool = True) -> str:
     """Prose Only mode: removing all markers, converting links to plain text."""
+    text = _normalize_raw_spans(text)
     text = _TIME_MARKER_PATTERN.sub(r'\1', text)
     text = _strip_knowledge_rel_markers(text)
     text = _EPISTEMIC_PATTERN.sub('', text)
@@ -94,6 +141,7 @@ def strip_prose(text: str, db_conn, remove_html: bool = True) -> str:
 
 def strip_notes(text: str, db_conn, remove_html: bool = True) -> tuple[str, list[str]]:
     """With Annotations mode: export annotations -> footnotes. Quick notes removed."""
+    text = _normalize_raw_spans(text)
     text = _TIME_MARKER_PATTERN.sub(r'\1', text)
     text = _strip_knowledge_rel_markers(text)
     text = _EPISTEMIC_PATTERN.sub('', text)
@@ -127,6 +175,7 @@ def strip_notes(text: str, db_conn, remove_html: bool = True) -> tuple[str, list
 
 def strip_full(text: str, db_conn, remove_html: bool = False) -> tuple[str, list[str]]:
     """Full Annotated mode: annotations become footnotes, entity/twist links preserved."""
+    text = _normalize_raw_spans(text)
     text = _TIME_MARKER_PATTERN.sub(r'\1', text)
     text = _strip_knowledge_rel_markers(text)
 

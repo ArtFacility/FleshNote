@@ -14,6 +14,9 @@ import { clearEntityHoverCaches } from '../utils/hoverCache'
 import ImportModal from './ImportModal'
 import ExportModal from './ExportModal'
 import SyncModal from './SyncModal'
+import RemoteSyncModal from './RemoteSyncModal'
+import SyncChooserModal from './SyncChooserModal'
+import CloneModal from './CloneModal'
 import StatsDashboard from './StatsDashboard'
 import EntityManager from './EntityManager'
 import WorldbuildAndHistory from './WorldbuildAndHistory'
@@ -131,6 +134,63 @@ const Icons = {
       strokeLinejoin="round"
     >
       <path d="M21.5 2v6h-6M21.34 15.57a10 10 0 1 1-.57-8.38l5.67-5.67" />
+    </svg>
+  ),
+  FolderOpen: () => (
+    <svg
+      width="14"
+      height="14"
+      viewBox="0 0 24 24"
+      fill="none"
+      stroke="currentColor"
+      strokeWidth="2"
+      strokeLinecap="round"
+      strokeLinejoin="round"
+    >
+      <path d="M22 19a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h5l2 3h9a2 2 0 0 1 2 2z" />
+    </svg>
+  ),
+  ChevronDown: () => (
+    <svg
+      width="12"
+      height="12"
+      viewBox="0 0 24 24"
+      fill="none"
+      stroke="currentColor"
+      strokeWidth="2"
+      strokeLinecap="round"
+      strokeLinejoin="round"
+    >
+      <polyline points="6 9 12 15 18 9" />
+    </svg>
+  ),
+  ChevronRight: () => (
+    <svg
+      width="12"
+      height="12"
+      viewBox="0 0 24 24"
+      fill="none"
+      stroke="currentColor"
+      strokeWidth="2"
+      strokeLinecap="round"
+      strokeLinejoin="round"
+    >
+      <polyline points="9 18 15 12 9 6" />
+    </svg>
+  ),
+  Smartphone: () => (
+    <svg
+      width="14"
+      height="14"
+      viewBox="0 0 24 24"
+      fill="none"
+      stroke="currentColor"
+      strokeWidth="2"
+      strokeLinecap="round"
+      strokeLinejoin="round"
+    >
+      <rect x="5" y="2" width="14" height="20" rx="2" ry="2" />
+      <line x1="12" y1="18" x2="12.01" y2="18" />
     </svg>
   ),
   Download: () => (
@@ -267,6 +327,9 @@ export default function FleshNoteIDE({ projectConfig, projectPath, onCloseProjec
   const [showExportModal, setShowExportModal] = useState(false)
   const [showImportModal, setShowImportModal] = useState(false)
   const [showSyncModal, setShowSyncModal] = useState(false)
+  const [showRemoteSyncModal, setShowRemoteSyncModal] = useState(false)
+  const [showSyncChooser, setShowSyncChooser] = useState(false)
+  const [cloneMode, setCloneMode] = useState(null) // 'send' | 'receive' | null
   const [isSaving, setIsSaving] = useState(false)
 
   // UI Toggles & Header Menu
@@ -976,12 +1039,12 @@ export default function FleshNoteIDE({ projectConfig, projectPath, onCloseProjec
                   <Icons.Upload /> {t('ide.import', 'Import...')}
                 </button>
                 <button
-                  onClick={() => { setShowHeaderMenu(false); setShowSyncModal(true); }}
+                  onClick={() => { setShowHeaderMenu(false); setShowSyncChooser(true); }}
                   style={{ display: 'flex', alignItems: 'center', gap: 12, padding: '8px 16px', background: 'transparent', border: 'none', color: 'var(--text-primary)', fontFamily: 'var(--font-mono)', fontSize: 12, cursor: 'pointer', textAlign: 'left', width: '100%' }}
                   onMouseEnter={e => e.currentTarget.style.background = 'var(--bg-surface)'}
                   onMouseLeave={e => e.currentTarget.style.background = 'transparent'}
                 >
-                  <Icons.Sync /> {t('ide.sync', 'Sync Project...')}
+                  <Icons.Sync /> {t('ide.sync', 'Sync...')}
                 </button>
                 <button
                   onClick={() => { setShowHeaderMenu(false); setShowSettings(true); }}
@@ -1688,6 +1751,30 @@ export default function FleshNoteIDE({ projectConfig, projectPath, onCloseProjec
         onClose={() => setShowSyncModal(false)}
         projectPath={projectPath}
         onSyncComplete={handleImportDataChanged}
+      />
+
+      <RemoteSyncModal
+        isOpen={showRemoteSyncModal}
+        onClose={() => setShowRemoteSyncModal(false)}
+        projectPath={projectPath}
+        onSyncComplete={handleImportDataChanged}
+      />
+
+      <SyncChooserModal
+        isOpen={showSyncChooser}
+        onClose={() => setShowSyncChooser(false)}
+        onPickLocal={() => { setShowSyncChooser(false); setShowSyncModal(true); }}
+        onPickMobile={() => { setShowSyncChooser(false); setShowRemoteSyncModal(true); }}
+        onPickCloneSend={() => { setShowSyncChooser(false); setCloneMode('send'); }}
+        onPickCloneReceive={() => { setShowSyncChooser(false); setCloneMode('receive'); }}
+      />
+
+      <CloneModal
+        isOpen={cloneMode !== null}
+        mode={cloneMode || 'send'}
+        onClose={() => setCloneMode(null)}
+        projectPath={projectPath}
+        workspacePath={projectPath ? projectPath.replace(/[\\/][^\\/]+[\\/]?$/, '') : ''}
       />
     </>
   )

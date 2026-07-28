@@ -19,6 +19,13 @@ hidden_imports = [
     'routes.annotations',
     'routes.settings',
     'routes.export',
+    'routes.sync',
+    'routes.remote_sync',
+    'remote_sync_session',
+    # multipart form parsing — needed for remote-sync file uploads, imported lazily by starlette
+    'multipart',
+    'multipart.multipart',
+    'python_multipart',
     'export.render_txt',
     'export.render_md',
     'export.render_html',

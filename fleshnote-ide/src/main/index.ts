@@ -502,6 +502,34 @@ app.whenReady().then(async () => {
     return await backendPost('/api/project/sync/apply', payload)
   })
 
+  ipcMain.handle('api:remoteSyncStart', async (_event, payload) => {
+    return await backendPost('/api/project/remote-sync/start', payload)
+  })
+
+  ipcMain.handle('api:cloneSendStart', async (_event, payload) => {
+    return await backendPost('/api/project/remote-sync/clone-send/start', payload)
+  })
+
+  ipcMain.handle('api:cloneReceiveStart', async (_event, payload) => {
+    return await backendPost('/api/project/remote-sync/clone-receive/start', payload)
+  })
+
+  ipcMain.handle('api:remoteSyncStatus', async (_event, payload) => {
+    return await backendPost('/api/project/remote-sync/status', payload)
+  })
+
+  ipcMain.handle('api:remoteSyncPreview', async (_event, payload) => {
+    return await backendPost('/api/project/remote-sync/preview', payload)
+  })
+
+  ipcMain.handle('api:remoteSyncApply', async (_event, payload) => {
+    return await backendPost('/api/project/remote-sync/apply', payload)
+  })
+
+  ipcMain.handle('api:remoteSyncCancel', async (_event, payload) => {
+    return await backendPost('/api/project/remote-sync/cancel', payload)
+  })
+
   // ── Pentimento telemetry ─────────────────────────────────────────────────
   ipcMain.handle('api:pentimentoSessionStart', async (_e, p) => backendPost('/api/project/pentimento/session/start', p))
   ipcMain.handle('api:pentimentoFlush', async (_e, p) => backendPost('/api/project/pentimento/flush', p))

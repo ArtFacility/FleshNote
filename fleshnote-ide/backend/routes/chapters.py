@@ -128,11 +128,13 @@ def _update_entity_appearances(cursor, chapter_id: int, md_content: str):
     # Strip HTML for proper word counting
     plain = re.sub(r'<[^>]+>', ' ', md_content)
 
-    pattern = r'\{\{(char|loc|item|lore|group|quicknote|annotation):(\d+)\|[^}]+\}\}'
+    # IDs are UUIDs since the UUID migration; capture up to the pipe (no int
+    # cast) exactly like _update_foreshadowings / _update_knowledge_offsets.
+    pattern = r'\{\{(char|loc|item|lore|group|quicknote|annotation):([^|]+)\|[^}]+\}\}'
     seen = set()
     for match in re.finditer(pattern, md_content):
         short_type = match.group(1)
-        entity_id = int(match.group(2))
+        entity_id = match.group(2)
         entity_type = _SHORT_TO_ENTITY_TYPE.get(short_type, short_type)
 
         # Calculate word offset like we do for foreshadowing

@@ -2,6 +2,7 @@ import { useState, useEffect } from 'react'
 import { useTranslation } from 'react-i18next'
 import changelogData from '../changelog.json'
 import ideIcon from '../assets/ide_icon.svg'
+import CloneModal from './CloneModal'
 
 // ─── Rovásírás → Latin title animation ───────────────────────────────────────
 // Old Hungarian Unicode block (U+10C80–U+10CFF)
@@ -164,6 +165,7 @@ export default function ProjectPicker({
   const [showChangelog, setShowChangelog] = useState(false)
   const [showAbout, setShowAbout] = useState(false)
   const [showCredits, setShowCredits] = useState(false)
+  const [showMobileImport, setShowMobileImport] = useState(false)
   const [updateState, setUpdateState] = useState({ status: 'idle' })
 
   const fetchProjects = async (path) => {
@@ -546,6 +548,30 @@ export default function ProjectPicker({
           >
             {t('picker.loadTutorial', 'Load Tutorial')}
           </button>
+
+          <button
+            onClick={() => setShowMobileImport(true)}
+            disabled={!workspacePath}
+            title={t('picker.importFromMobileHint', 'Receive a project from the companion app over Wi-Fi')}
+            style={{
+              padding: '14px 20px',
+              backgroundColor: 'transparent',
+              color: workspacePath ? 'var(--text-secondary)' : 'var(--text-tertiary)',
+              border: '1px solid var(--border-subtle)',
+              cursor: workspacePath ? 'pointer' : 'not-allowed',
+              fontFamily: 'var(--font-mono)',
+              fontSize: '13px',
+              fontWeight: 'bold',
+              textTransform: 'uppercase',
+              letterSpacing: '1px',
+              transition: 'all 0.2s',
+              whiteSpace: 'nowrap',
+            }}
+            onMouseEnter={(e) => { if (workspacePath) { e.currentTarget.style.color = 'var(--text-primary)'; e.currentTarget.style.borderColor = 'var(--text-primary)' } }}
+            onMouseLeave={(e) => { e.currentTarget.style.color = workspacePath ? 'var(--text-secondary)' : 'var(--text-tertiary)'; e.currentTarget.style.borderColor = 'var(--border-subtle)' }}
+          >
+            {t('picker.importFromMobile', 'Import from Phone')}
+          </button>
         </div>
       </div>
 
@@ -814,6 +840,14 @@ All trademarks and copyrights belong to their respective owners. Support open so
           <option value="ar">العربية (AR)</option>
         </select>
       </div>
+
+      <CloneModal
+        isOpen={showMobileImport}
+        mode="receive"
+        onClose={() => setShowMobileImport(false)}
+        workspacePath={workspacePath}
+        onCloneReceived={(path) => { setShowMobileImport(false); onSelectProject(path); }}
+      />
 
     </div>
   )

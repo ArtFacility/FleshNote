@@ -27,7 +27,7 @@ Depending on what you need to work on, refer to these specific documentation fil
 *   **`API_ENDPOINTS.md`**: Details the FastAPI backend endpoints, request payloads and API structures.
 *   **`LOCATIONS.md`**: Detailed guide on the hierarchical location system, tree structure, drag-and-drop, and weather inheritance model.
 *   **`PENTIMENTO.md`**: The "Process" writing-telemetry system — coalesced ops, sealed sessions, the per-paragraph heatmap, prose snapshots, the History rollback panel, and the snapshot-anchored replay simulation.
-*   **`SYNC.md`**: The local cross-device sync engine — the Hybrid Logical Clock, `change_log`, version vectors, entity field-level LWW, prose hash-ancestry merge, and the preview/apply flow with database backup and rollback.
+*   **`SYNC.md`**: The local cross-device sync engine — the Hybrid Logical Clock, `change_log`, version vectors, entity field-level LWW, prose hash-ancestry merge, and the preview/apply flow with database backup and rollback. Also covers the QR/LAN transport scaffolding for the companion app (desktop stays the merge authority either way).
 *   **`ENTITY_LINKING.md` / `SPRINT_MODES.md` / `EXPORT_GUIDELINES.md`**: Specifics on these individual systems.
 
 ## Currently Implemented Systems

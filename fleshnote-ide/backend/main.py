@@ -35,6 +35,7 @@ from routes.janitor import router as janitor_router
 from routes.image_references import router as image_references_router
 from routes.name_gen import router as name_gen_router
 from routes.sync import router as sync_router
+from routes.remote_sync import router as remote_sync_router
 from routes.pentimento import router as pentimento_router
 from routes.chapter_history import router as chapter_history_router
 
@@ -69,6 +70,7 @@ app.include_router(janitor_router)
 app.include_router(image_references_router)
 app.include_router(name_gen_router)
 app.include_router(sync_router)
+app.include_router(remote_sync_router)
 app.include_router(pentimento_router)
 app.include_router(chapter_history_router)
 
