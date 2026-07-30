@@ -413,6 +413,21 @@ def sync_apply(req: SyncApplyRequest):
                 _copy_remote_prose_log(take["chapter_id"])
                 touched.add(take["chapter_id"])
 
+        # Reference-image assets. image_references rows merge through the
+        # change_log above, but the files live in assets/. Copy any remote asset
+        # we don't already have — filenames are UUID-unique, so copy-if-absent
+        # can't clobber a different image. Inside the backup/rollback envelope.
+        remote_assets = os.path.join(req.remote_path, "assets")
+        if os.path.isdir(remote_assets):
+            for root, _dirs, files in os.walk(remote_assets):
+                for fname in files:
+                    src = os.path.join(root, fname)
+                    rel = os.path.relpath(src, remote_assets)
+                    dst = os.path.join(req.local_path, "assets", rel)
+                    if not os.path.exists(dst):
+                        os.makedirs(os.path.dirname(dst), exist_ok=True)
+                        shutil.copy2(src, dst)
+
         # conflict resolutions — always end with a FRESH prose_hash so it converges
         for conflict in conflicts:
             chap_id, fname = conflict["chapter_id"], conflict["md_filename"]

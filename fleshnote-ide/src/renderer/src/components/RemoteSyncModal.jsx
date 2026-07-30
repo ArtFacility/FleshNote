@@ -254,7 +254,7 @@ export default function RemoteSyncModal({ isOpen, onClose, projectPath, onSyncCo
               <Icons.Check />
               <div style={{ fontSize: 16, color: 'var(--text-primary)' }}>{t('remoteSyncModal.done', 'Sync complete')}</div>
               {nothingToDo
-                ? <div style={{ fontSize: 13, color: 'var(--text-secondary)' }}>{t('syncModal.upToDateDesc', 'These two copies match — there’s nothing to merge.')}</div>
+                ? <div style={{ fontSize: 13, color: 'var(--text-secondary)' }}>{t('remoteSyncModal.sentDesc', 'This copy’s latest was sent to the phone.')}</div>
                 : <div style={{ fontSize: 13, color: 'var(--text-secondary)' }}>{t('remoteSyncModal.doneDesc', 'Both copies are now in sync.')}</div>}
             </div>
           )}
@@ -281,12 +281,19 @@ export default function RemoteSyncModal({ isOpen, onClose, projectPath, onSyncCo
               {t('syncModal.defaultHint', 'Unreviewed conflicts keep this copy’s version.')}
             </span>
           )}
+          {phase === 'ready' && nothingToDo && (
+            <span style={{ fontSize: 12, color: 'var(--text-tertiary)', marginRight: 'auto' }}>
+              {t('remoteSyncModal.sendHint', 'Nothing to merge in — send this copy’s latest to the phone.')}
+            </span>
+          )}
           <button className="import-btn secondary" onClick={() => handleClose(phase === 'done')}>
             {phase === 'done' ? t('syncModal.done', 'Done') : t('syncModal.cancel', 'Cancel')}
           </button>
           {phase === 'ready' && (
-            <button className="import-btn" onClick={handleApply} disabled={nothingToDo}>
-              {t('syncModal.apply', 'Merge into this copy')}
+            <button className="import-btn" onClick={handleApply}>
+              {nothingToDo
+                ? t('remoteSyncModal.sendToPhone', 'Send to phone')
+                : t('syncModal.apply', 'Merge into this copy')}
             </button>
           )}
           {phase === 'applying' && (

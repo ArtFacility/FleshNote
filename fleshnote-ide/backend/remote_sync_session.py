@@ -171,7 +171,7 @@ def _safe_extract_zip(zip_path: str, dest_dir: str):
 
 
 def _zip_project(project_path: str) -> str:
-    """Zip fleshnote.db + md/ + fleshnote_project.json for the phone to download."""
+    """Zip fleshnote.db + md/ + assets/ + fleshnote_project.json for download."""
     fd, zip_path = tempfile.mkstemp(prefix="fleshnote_merged_", suffix=".zip")
     os.close(fd)
     with zipfile.ZipFile(zip_path, "w", zipfile.ZIP_DEFLATED) as zf:
@@ -181,13 +181,16 @@ def _zip_project(project_path: str) -> str:
         json_path = os.path.join(project_path, "fleshnote_project.json")
         if os.path.exists(json_path):
             zf.write(json_path, "fleshnote_project.json")
-        md_dir = os.path.join(project_path, "md")
-        if os.path.isdir(md_dir):
-            for root, _dirs, files in os.walk(md_dir):
-                for fname in files:
-                    full = os.path.join(root, fname)
-                    rel = os.path.relpath(full, project_path)
-                    zf.write(full, rel)
+        # md/ (prose) and assets/ (entity reference images + icons) both travel
+        # so the phone gets the desktop's latest files, not just DB rows.
+        for sub in ("md", "assets"):
+            sub_dir = os.path.join(project_path, sub)
+            if os.path.isdir(sub_dir):
+                for root, _dirs, files in os.walk(sub_dir):
+                    for fname in files:
+                        full = os.path.join(root, fname)
+                        rel = os.path.relpath(full, project_path)
+                        zf.write(full, rel)
     return zip_path
 
 
