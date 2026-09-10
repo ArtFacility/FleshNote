@@ -39,6 +39,8 @@ class HistoryEntryCreate(BaseModel):
     date_precise: int = 0
     related_entity_type: Optional[str] = None
     related_entity_id: Optional[str | int] = None
+    chapter_id: Optional[str] = None
+    word_offset: Optional[int] = None
 
 
 class HistoryEntryUpdate(BaseModel):
@@ -53,6 +55,8 @@ class HistoryEntryUpdate(BaseModel):
     date_precise: Optional[int] = None
     related_entity_type: Optional[str] = None
     related_entity_id: Optional[str | int] = None
+    chapter_id: Optional[str] = None
+    word_offset: Optional[int] = None
 
 
 class HistoryEntryDelete(BaseModel):
@@ -113,12 +117,14 @@ async def create_history_entry(req: HistoryEntryCreate):
         INSERT INTO history_entries
             (id, entity_type, entity_id, title, description, event_type,
              date_year, date_month, date_day, date_precise,
-             related_entity_type, related_entity_id)
-        VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+             related_entity_type, related_entity_id,
+             chapter_id, word_offset)
+        VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
     """, (
         entry_id, req.entity_type, req.entity_id, req.title, req.description, req.event_type,
         req.date_year, req.date_month, req.date_day, req.date_precise,
         req.related_entity_type, req.related_entity_id,
+        req.chapter_id, req.word_offset,
     ))
 
     from sync_core import log_change
@@ -134,6 +140,8 @@ async def create_history_entry(req: HistoryEntryCreate):
         "date_precise": req.date_precise,
         "related_entity_type": req.related_entity_type,
         "related_entity_id": req.related_entity_id,
+        "chapter_id": req.chapter_id,
+        "word_offset": req.word_offset,
     })
 
     conn.commit()
@@ -157,6 +165,7 @@ async def update_history_entry(req: HistoryEntryUpdate):
         "title", "description", "event_type",
         "date_year", "date_month", "date_day", "date_precise",
         "related_entity_type", "related_entity_id",
+        "chapter_id", "word_offset",
     ]:
         value = getattr(req, field_name)
         if value is not None:

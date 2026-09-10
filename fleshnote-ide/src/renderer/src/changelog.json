@@ -1,6 +1,21 @@
 {
-    "currentVersion": "1.3.0",
+    "currentVersion": "2.0",
     "history": [
+        {
+            "version": "2.0",
+            "date": "2026-09-10",
+            "changes": [
+                "NEW: Factions & Groups — organize characters into factions, alliances, and guilds with temporal membership tracking and milestone history",
+                "NEW: Manuscript Faction Integration — create, link, and add members or milestones directly from selected text in the manuscript",
+                "NEW: World History Faction Integration — visualize faction milestones and lifespans directly on the world timeline",
+                "NEW: Cross-device syncing with mobile companion app",
+                "NEW: Database refactored to UUIDs & tombstones for multi-device sync and complete edit history",
+                "NEW: Pentimento writing process simulation, timeline capture, and replay",
+                "NEW: History rewind and chapter version rollback system",
+                "NEW: Calendar system with precise day/month/year tracking in inspectors and manuscript marks",
+                "NEW: App startup loader and legacy project migration"
+            ]
+        },
         {
             "version": "1.3.0",
             "date": "2026-07-15",

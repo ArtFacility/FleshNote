@@ -87,6 +87,11 @@ const api = {
   createGroup: (payload) => ipcRenderer.invoke('api:createGroup', payload),
   updateGroup: (payload) => ipcRenderer.invoke('api:updateGroup', payload),
   deleteGroup: (payload) => ipcRenderer.invoke('api:deleteGroup', payload),
+  getGroupMembers: (payload) => ipcRenderer.invoke('api:getGroupMembers', payload),
+  addGroupMember: (payload) => ipcRenderer.invoke('api:addGroupMember', payload),
+  updateGroupMember: (payload) => ipcRenderer.invoke('api:updateGroupMember', payload),
+  removeGroupMember: (payload) => ipcRenderer.invoke('api:removeGroupMember', payload),
+  getCharacterMemberships: (payload) => ipcRenderer.invoke('api:getCharacterMemberships', payload),
 
   // ── Entities (for linkification) ───────────────────
   getEntities: (projectPath) => ipcRenderer.invoke('api:getEntities', projectPath),
@@ -155,6 +160,7 @@ const api = {
 
   // ── History Timeline ────────────────────────────────
   getHistoryEntries: (payload) => ipcRenderer.invoke('api:getHistoryEntries', payload),
+  listHistoryEntries: (payload) => ipcRenderer.invoke('api:getHistoryEntries', payload),
   createHistoryEntry: (payload) => ipcRenderer.invoke('api:createHistoryEntry', payload),
   updateHistoryEntry: (payload) => ipcRenderer.invoke('api:updateHistoryEntry', payload),
   deleteHistoryEntry: (payload) => ipcRenderer.invoke('api:deleteHistoryEntry', payload),

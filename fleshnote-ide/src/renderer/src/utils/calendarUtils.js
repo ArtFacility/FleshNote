@@ -50,8 +50,12 @@ export function dateToLinear(year, month, day, calConfig) {
     const months = calConfig?.months || [];
     const dpy = calDaysPerYear(calConfig);
     let monthDays = 0;
-    for (let i = 0; i < (month - 1) && i < months.length; i++) {
-        monthDays += months[i].days || 30;
+    if (months.length > 0) {
+        for (let i = 0; i < (month - 1) && i < months.length; i++) {
+            monthDays += months[i].days || 30;
+        }
+    } else {
+        monthDays = Math.max(0, (month - 1)) * 30;
     }
     return (year * dpy) + monthDays + ((day || 1) - 1);
 }
@@ -139,9 +143,30 @@ export function formatWorldDate({ year, month, day }, calConfig) {
  * @returns {{ year: number, month: number, day: number } | null}
  */
 export function parseWorldDate(text, calConfig) {
-    if (!text || !calConfig) return null;
+    if (!text) return null;
     const months = calConfig?.months || [];
     const trimmed = text.trim();
+    if (!trimmed) return null;
+
+    // Pattern 0: ISO / numeric date "YYYY-MM-DD" or "YYYY/MM/DD"
+    const isoMatch = trimmed.match(/^(-?\d+)[-/](\d{1,2})[-/](\d{1,2})$/);
+    if (isoMatch) {
+        return {
+            year: parseInt(isoMatch[1], 10),
+            month: parseInt(isoMatch[2], 10),
+            day: parseInt(isoMatch[3], 10)
+        };
+    }
+
+    // Pattern 0.5: ISO / numeric month "YYYY-MM" or "YYYY/MM"
+    const isoMonthMatch = trimmed.match(/^(-?\d+)[-/](\d{1,2})$/);
+    if (isoMonthMatch) {
+        return {
+            year: parseInt(isoMonthMatch[1], 10),
+            month: parseInt(isoMonthMatch[2], 10),
+            day: 1
+        };
+    }
 
     // Build a month-name lookup (case-insensitive)
     const monthLookup = {};
@@ -149,14 +174,24 @@ export function parseWorldDate(text, calConfig) {
         monthLookup[m.name.toLowerCase()] = i + 1;
     });
 
+    const earthMonths = [
+        "january", "february", "march", "april", "may", "june",
+        "july", "august", "september", "october", "november", "december"
+    ];
+    const getMonthNum = (name) => {
+        const lower = name.toLowerCase();
+        if (monthLookup[lower]) return monthLookup[lower];
+        const idx = earthMonths.indexOf(lower);
+        return idx !== -1 ? idx + 1 : null;
+    };
+
     // Pattern 1: "<day> <monthName>, <year> [epoch]"
-    // Use a more liberal match for month names (anything not a digit or comma)
     const fullMatch = trimmed.match(/^(\d+)\s+([^,]+?),\s*(-?\d+)/);
     if (fullMatch) {
         const day = parseInt(fullMatch[1], 10);
         const monthName = fullMatch[2].trim();
         const year = parseInt(fullMatch[3], 10);
-        const monthNum = monthLookup[monthName.toLowerCase()];
+        const monthNum = getMonthNum(monthName);
         if (monthNum) {
             return { year, month: monthNum, day };
         }
@@ -167,7 +202,7 @@ export function parseWorldDate(text, calConfig) {
     if (monthYearMatch) {
         const monthName = monthYearMatch[1].trim();
         const year = parseInt(monthYearMatch[2], 10);
-        const monthNum = monthLookup[monthName.toLowerCase()];
+        const monthNum = getMonthNum(monthName);
         if (monthNum) {
             return { year, month: monthNum, day: 1 };
         }

@@ -432,18 +432,35 @@ def get_all_entities(req: ProjectPath):
         })
 
     # Groups
-    cursor.execute("SELECT * FROM groups WHERE deleted = 0")
+    has_gm = cursor.execute("SELECT name FROM sqlite_master WHERE type='table' AND name='group_memberships'").fetchone()
+    if has_gm:
+        cursor.execute("""
+            SELECT g.*, 
+                   (SELECT COUNT(*) FROM group_memberships gm 
+                    WHERE gm.group_id = g.id AND gm.deleted = 0 AND gm.left_date IS NULL) AS active_members_count
+            FROM groups g 
+            WHERE g.deleted = 0
+        """)
+    else:
+        cursor.execute("SELECT * FROM groups WHERE deleted = 0")
     for row in cursor.fetchall():
         aliases = json.loads(row["aliases"]) if row["aliases"] else []
+        keys = row.keys()
         entities.append({
             "id": row["id"], "type": "group",
             "name": row["name"], "aliases": aliases,
-            "group_type": row["group_type"],
-            "description": row["description"],
-            "surface_agenda": row["surface_agenda"],
-            "true_agenda": row["true_agenda"],
-            "notes": row["notes"],
-            "updated_at": row["updated_at"],
+            "group_type": row["group_type"] if "group_type" in keys else "",
+            "description": row["description"] if "description" in keys else "",
+            "surface_agenda": row["surface_agenda"] if "surface_agenda" in keys else "",
+            "true_agenda": row["true_agenda"] if "true_agenda" in keys else "",
+            "notes": row["notes"] if "notes" in keys else "",
+            "parent_group_id": row["parent_group_id"] if "parent_group_id" in keys else None,
+            "philosophy": row["philosophy"] if "philosophy" in keys else "",
+            "internal_rules": row["internal_rules"] if "internal_rules" in keys else "",
+            "headquarters_location_id": row["headquarters_location_id"] if "headquarters_location_id" in keys else None,
+            "faction_color": row["faction_color"] if "faction_color" in keys else "",
+            "member_count": row["active_members_count"] if "active_members_count" in keys else 0,
+            "updated_at": row["updated_at"] if "updated_at" in keys else None,
         })
 
     conn.close()

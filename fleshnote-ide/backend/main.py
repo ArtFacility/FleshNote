@@ -193,8 +193,8 @@ def initialize_project(request: ProjectCreateRequest):
       json.dump({
         "project_name": request.project_name,
         "schema_version": 2,
-        "created_version": "1.3.0",
-        "last_opened_version": "1.3.0",
+        "created_version": "2.0.0",
+        "last_opened_version": "2.0.0",
         "project_id": str(uuid.uuid4())
       }, f, indent=2)
 

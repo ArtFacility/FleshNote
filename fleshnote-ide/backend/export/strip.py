@@ -5,13 +5,13 @@ import sqlite3
 # IDs are UUIDs since the UUID migration (legacy numeric IDs still match).
 _FLESHNOTE_MARKER_PATTERN = re.compile(r'\{\{(char|loc|item|lore|group|quicknote|secret|annotation):([^:|}]+)\|([^}]+)\}\}')
 _TWIST_MARKER_PATTERN = re.compile(r'\{\{(twist|foreshadow):([^:|}]+)\|([^}]+)\}\}')
-_KNOWLEDGE_REL_PATTERN = re.compile(r'\{\{(knowledge|relationship):([^:|}]+):([^:|}]+)\|([^}]+)\}\}')
+_KNOWLEDGE_REL_PATTERN = re.compile(r'\{\{(knowledge|relationship|milestone):([^:|}]+):([^:|}]+)\|([^}]+)\}\}')
 _TIME_MARKER_PATTERN = re.compile(r'\{\{time:[^:|}]+:[^:|}]+\|([^}]*)\}\}')
 _EPISTEMIC_PATTERN = re.compile(r'\{(secret|knows|believes):([^}]+)\}')
 _HTML_TAG_PATTERN = re.compile(r'<[^>]+>')
 _TODO_PATTERN = re.compile(r'#TODO.*?(?=\u200B|</p>|<br>|<br/>|\n|$)', re.IGNORECASE)
 
-# \u2500\u2500 Raw-span normalization \u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500
+# ── Raw-span normalization ──────────────────────────────────────────────────
 # The chapter save pipeline (chapters.py) deliberately leaves a mark span as
 # raw HTML whenever its inner content contains tags (e.g. a time span holding a
 # <br>, or an entity span wrapping a nested time marker). Those raw spans
@@ -35,6 +35,8 @@ _RAW_KNOWLEDGE_SPAN = re.compile(
     r'<span[^>]*?data-knowledge-id="([^"]+)"[^>]*?data-character-id="([^"]+)"[^>]*?>' + _INNER + r'</span>', re.DOTALL)
 _RAW_RELATIONSHIP_SPAN = re.compile(
     r'<span[^>]*?data-relationship-id="([^"]+)"[^>]*?data-character-id="([^"]+)"[^>]*?>' + _INNER + r'</span>', re.DOTALL)
+_RAW_MILESTONE_SPAN = re.compile(
+    r'<span[^>]*?data-milestone-id="([^"]+)"[^>]*?data-group-id="([^"]+)"[^>]*?>' + _INNER + r'</span>', re.DOTALL)
 _RAW_TWIST_SPAN = re.compile(
     r'<span[^>]*?data-twist-type="([^"]+)"[^>]*?data-twist-id="([^"]+)"[^>]*?>' + _INNER + r'</span>', re.DOTALL)
 
@@ -50,6 +52,7 @@ def _normalize_raw_spans(text: str) -> str:
         new = _RAW_ENTITY_SPAN.sub(entity_repl, new)
         new = _RAW_KNOWLEDGE_SPAN.sub(lambda m: '{{knowledge:%s:%s|%s}}' % (m.group(1), m.group(2), m.group(3)), new)
         new = _RAW_RELATIONSHIP_SPAN.sub(lambda m: '{{relationship:%s:%s|%s}}' % (m.group(1), m.group(2), m.group(3)), new)
+        new = _RAW_MILESTONE_SPAN.sub(lambda m: '{{milestone:%s:%s|%s}}' % (m.group(1), m.group(2), m.group(3)), new)
         new = _RAW_TWIST_SPAN.sub(lambda m: '{{%s:%s|%s}}' % (m.group(1), m.group(2), m.group(3)), new)
         if new == text:
             return new

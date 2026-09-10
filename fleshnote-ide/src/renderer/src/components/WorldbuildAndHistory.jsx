@@ -43,6 +43,7 @@ const EVENT_COLORS = {
     event: "var(--accent-amber)",
     action: "var(--accent-blue)",
     interaction: "var(--accent-purple)",
+    milestone: "var(--accent-amber)",
 };
 
 const EVENT_ICONS = {
@@ -51,6 +52,7 @@ const EVENT_ICONS = {
     event: "\u25CF",
     action: "\u25C6",
     interaction: "\u27F7",
+    milestone: "\u2691",
 };
 
 const ROLE_PRIORITY = ["Protagonist", "Antagonist", "Supporting", "Minor", ""];
@@ -81,6 +83,7 @@ function HistoryEntryPopup({ entry, entities, calConfig, projectPath, onSaved, o
     const entitiesOfType = entities.filter(e =>
         (form.entity_type === "character" && e.type === "character") ||
         (form.entity_type === "location" && e.type === "location") ||
+        (form.entity_type === "group" && e.type === "group") ||
         (form.entity_type === "lore_entity" && e.type !== "character" && e.type !== "location" && e.type !== "group" && e.type !== "quicknote" && e.type !== "quick_note")
     );
 
@@ -148,7 +151,7 @@ function HistoryEntryPopup({ entry, entities, calConfig, projectPath, onSaved, o
                         <div>
                             <label style={lbl}>{t('stats.eventType', 'Event Type')}</label>
                             <select value={form.event_type} onChange={e => upd("event_type", e.target.value)} style={{ ...inp, cursor: "pointer" }}>
-                                {["birth", "death", "event", "action", "interaction"].map(et => (
+                                {["birth", "death", "event", "action", "interaction", "milestone"].map(et => (
                                     <option key={et} value={et}>{t(`stats.eventType${et.charAt(0).toUpperCase() + et.slice(1)}`, et)}</option>
                                 ))}
                             </select>
@@ -158,6 +161,7 @@ function HistoryEntryPopup({ entry, entities, calConfig, projectPath, onSaved, o
                             <select value={form.entity_type} onChange={e => { upd("entity_type", e.target.value); upd("entity_id", ""); }} style={{ ...inp, cursor: "pointer" }}>
                                 <option value="character">{t('stats.timelineCharacters', 'Characters')}</option>
                                 <option value="location">{t('stats.timelineLocations', 'Locations')}</option>
+                                <option value="group">{t('stats.timelineGroups', 'Groups / Factions')}</option>
                                 <option value="lore_entity">{t('stats.timelineLoreEntities', 'Lore Entities')}</option>
                             </select>
                         </div>
@@ -219,6 +223,7 @@ function HistoryEntryPopup({ entry, entities, calConfig, projectPath, onSaved, o
                                     <option value="">—</option>
                                     <option value="character">{t('stats.timelineCharacters', 'Characters')}</option>
                                     <option value="location">{t('stats.timelineLocations', 'Locations')}</option>
+                                    <option value="group">{t('stats.timelineGroups', 'Groups / Factions')}</option>
                                     <option value="lore_entity">{t('stats.timelineLoreEntities', 'Lore Entities')}</option>
                                 </select>
                             </div>
@@ -229,6 +234,7 @@ function HistoryEntryPopup({ entry, entities, calConfig, projectPath, onSaved, o
                                     {entities.filter(e => {
                                         if (form.related_entity_type === "character") return e.type === "character";
                                         if (form.related_entity_type === "location") return e.type === "location";
+                                        if (form.related_entity_type === "group") return e.type === "group";
                                         if (form.related_entity_type === "lore_entity") return e.type !== "character" && e.type !== "location" && e.type !== "group" && e.type !== "quicknote" && e.type !== "quick_note";
                                         return false;
                                     }).map(e => <option key={e.id} value={e.id}>{e.name}</option>)}
@@ -398,7 +404,7 @@ function CharacterTimelineTab({ projectPath, chapters, entities, characters, pro
     // Filtered entities for active type filters (multi-select)
     const filteredEntities = useMemo(() => {
         return entities.filter(e => {
-            if (e.type === "group" || e.type === "quicknote" || e.type === "quick_note") return false;
+            if (e.type === "quicknote" || e.type === "quick_note") return false;
             return true;
         });
     }, [entities]);
@@ -423,7 +429,7 @@ function CharacterTimelineTab({ projectPath, chapters, entities, characters, pro
 
         // Collect linear positions of ALL entries for displayed entities
         const displayEntityKeys = new Set(displayEntities.map(e => {
-            const etype = e.type === "character" ? "character" : e.type === "location" ? "location" : "lore_entity";
+            const etype = e.type === "character" ? "character" : e.type === "location" ? "location" : e.type === "group" ? "group" : "lore_entity";
             return `${etype}-${e.id}`;
         }));
         const relevantEntries = allEntries.filter(h => displayEntityKeys.has(`${h.entity_type}-${h.entity_id}`));
@@ -461,7 +467,7 @@ function CharacterTimelineTab({ projectPath, chapters, entities, characters, pro
     }, [tlWidth, range, minL]);
 
     const getEntriesForEntity = useCallback((entityType, entityId) => {
-        return allEntries.filter(h => h.entity_type === entityType && h.entity_id === entityId);
+        return allEntries.filter(h => h.entity_type === entityType && String(h.entity_id) === String(entityId));
     }, [allEntries]);
 
     const LANE_H = 72;
@@ -471,7 +477,7 @@ function CharacterTimelineTab({ projectPath, chapters, entities, characters, pro
         if (!parsedCal || displayEntities.length === 0) return [];
         const visibleEntityMap = {};
         displayEntities.forEach((ent, idx) => {
-            const entType = ent.type === "character" ? "character" : ent.type === "location" ? "location" : "lore_entity";
+            const entType = ent.type === "character" ? "character" : ent.type === "location" ? "location" : ent.type === "group" ? "group" : "lore_entity";
             visibleEntityMap[`${entType}-${ent.id}`] = idx;
         });
         const lines = [];
@@ -590,7 +596,7 @@ function CharacterTimelineTab({ projectPath, chapters, entities, characters, pro
     useEffect(() => {
         if (!initialized) return;
         const selected = displayEntities.map(e => ({
-            type: e.type === "character" ? "character" : e.type === "location" ? "location" : "lore_entity",
+            type: e.type === "character" ? "character" : e.type === "location" ? "location" : e.type === "group" ? "group" : "lore_entity",
             id: e.id,
         }));
         persistState('timeline_selected_entities', JSON.stringify(selected), 'json');
@@ -775,6 +781,8 @@ function CharacterTimelineTab({ projectPath, chapters, entities, characters, pro
                                 <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path strokeLinecap="round" strokeLinejoin="round" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" /></svg>
                             ) : e.type === "location" ? (
                                 <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path strokeLinecap="round" strokeLinejoin="round" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z" /><path strokeLinecap="round" strokeLinejoin="round" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z" /></svg>
+                            ) : e.type === "group" ? (
+                                <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2" /><circle cx="9" cy="7" r="4" /><path d="M23 21v-2a4 4 0 0 0-3-3.87" /><path d="M16 3.13a4 4 0 0 1 0 7.75" /></svg>
                             ) : (
                                 <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path strokeLinecap="round" strokeLinejoin="round" d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253" /></svg>
                             )}
@@ -837,7 +845,7 @@ function CharacterTimelineTab({ projectPath, chapters, entities, characters, pro
                             borderRight: `1px solid ${T.bg3}`
                         }}>
                             {displayEntities.map(ent => {
-                                const entType = ent.type === "character" ? "character" : ent.type === "location" ? "location" : "lore_entity";
+                                const entType = ent.type === "character" ? "character" : ent.type === "location" ? "location" : ent.type === "group" ? "group" : "lore_entity";
                                 const entKey = makeKey(entType, ent.id);
                                 const isSelected = selectedKey === entKey;
                                 return (
@@ -847,6 +855,8 @@ function CharacterTimelineTab({ projectPath, chapters, entities, characters, pro
                                                 <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeOpacity={0.6}><path strokeLinecap="round" strokeLinejoin="round" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" /></svg>
                                             ) : ent.type === "location" ? (
                                                 <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeOpacity={0.6}><path strokeLinecap="round" strokeLinejoin="round" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z" /><path strokeLinecap="round" strokeLinejoin="round" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z" /></svg>
+                                            ) : ent.type === "group" ? (
+                                                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeOpacity={0.6}><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2" /><circle cx="9" cy="7" r="4" /><path d="M23 21v-2a4 4 0 0 0-3-3.87" /><path d="M16 3.13a4 4 0 0 1 0 7.75" /></svg>
                                             ) : (
                                                 <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeOpacity={0.6}><path strokeLinecap="round" strokeLinejoin="round" d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253" /></svg>
                                             )}
@@ -894,7 +904,7 @@ function CharacterTimelineTab({ projectPath, chapters, entities, characters, pro
 
                             {/* Swimlanes */}
                             {displayEntities.map((ent, idx) => {
-                                const entType = ent.type === "character" ? "character" : ent.type === "location" ? "location" : "lore_entity";
+                                const entType = ent.type === "character" ? "character" : ent.type === "location" ? "location" : ent.type === "group" ? "group" : "lore_entity";
                                 const entKey = makeKey(entType, ent.id);
                                 const isSelected = selectedKey === entKey;
                                 const entries = getEntriesForEntity(entType, ent.id);
@@ -1069,8 +1079,8 @@ function CharacterTimelineTab({ projectPath, chapters, entities, characters, pro
                 const sel = parseKey(selectedKey);
                 if (!sel) return null;
                 const selectedEnt = entities.find(e => {
-                    const eType = e.type === "character" ? "character" : e.type === "location" ? "location" : "lore_entity";
-                    return eType === sel.type && e.id === sel.id;
+                    const eType = e.type === "character" ? "character" : e.type === "location" ? "location" : e.type === "group" ? "group" : "lore_entity";
+                    return eType === sel.type && String(e.id) === String(sel.id);
                 });
                 return (
                     <div ref={inspectorRef} style={{ background: T.bg2, border: `1px solid ${T.bg3}`, padding: 16, marginTop: 14 }}>

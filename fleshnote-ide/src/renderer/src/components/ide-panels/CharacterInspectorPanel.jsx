@@ -102,7 +102,7 @@ function TypeIcon() {
 }
 
 export default function CharacterInspectorPanel({
-  entity, characters, activeChapter, projectPath, projectConfig, calConfig, chapters, onEntityUpdated, initialTab, onNavigateToMark, onReloadCurrentChapter, onFlushEditorSave, onIconChanged
+  entity, characters, activeChapter, projectPath, projectConfig, calConfig, chapters, onEntityUpdated, initialTab, onNavigateToMark, onReloadCurrentChapter, onFlushEditorSave, onIconChanged, onNavigateToEntity
 }) {
   const { t } = useTranslation()
   const [viewMode, setViewMode] = useState('author')
@@ -122,6 +122,7 @@ export default function CharacterInspectorPanel({
   const [renameData, setRenameData] = useState(null)
   const [iconPath, setIconPath] = useState(null)
   const [showNameGen, setShowNameGen] = useState(false)
+  const [memberships, setMemberships] = useState([])
 
   useEffect(() => {
     if (initialTab) setActiveTab(initialTab)
@@ -169,6 +170,22 @@ export default function CharacterInspectorPanel({
   }, [entity?.id, projectPath, viewMode, activeChapter?.chapter_number, activeChapter?.world_time])
 
   useEffect(() => { loadRelationships() }, [loadRelationships, currEntity?.updated_at])
+
+  const loadMemberships = useCallback(async () => {
+    if (!entity?.id || !projectPath) return
+    try {
+      const res = await window.api.getCharacterMemberships({
+        project_path: projectPath,
+        character_id: entity.id,
+        current_world_time: viewMode === 'world_time' ? activeChapter?.world_time : null
+      })
+      setMemberships(res?.memberships || [])
+    } catch {
+      setMemberships([])
+    }
+  }, [entity?.id, projectPath, viewMode, activeChapter?.world_time])
+
+  useEffect(() => { loadMemberships() }, [loadMemberships, currEntity?.updated_at])
 
   useEffect(() => {
     const calcAge = async () => {
@@ -373,6 +390,88 @@ export default function CharacterInspectorPanel({
                 )}
                 {charData.aliases && charData.aliases.length > 0 && <div className="entity-detail-row"><div className="entity-detail-label">{t('inspector.aliases', 'Aliases')}</div><div className="entity-detail-value">{charData.aliases.join(', ')}</div></div>}
               </>
+            )}
+          </div>
+          <div className="entity-section">
+            <div className="entity-section-title" style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+              <span><Icons.Users /> {t('inspector.affiliationsSection', 'Affiliations & Factions')}</span>
+              {memberships.length > 0 && (
+                <span style={{ fontFamily: 'var(--font-mono)', fontSize: '10px', color: 'var(--text-tertiary)' }}>
+                  {memberships.length}
+                </span>
+              )}
+            </div>
+            {memberships.length === 0 ? (
+              <div className="entity-detail-value" style={{ opacity: 0.5, fontSize: '11px' }}>
+                {t('inspector.noMemberships', 'No group affiliations recorded.')}
+              </div>
+            ) : (
+              <div style={{ display: 'flex', flexDirection: 'column', gap: '6px' }}>
+                {memberships.map((m) => {
+                  const isActive = m.temporal_status === 'active' || (m.is_active && m.temporal_status !== 'former')
+                  const badgeCol = m.faction_color || (isActive ? 'var(--accent-amber)' : 'var(--text-tertiary)')
+                  return (
+                    <div
+                      key={m.id}
+                      onClick={() => onNavigateToEntity?.({ type: 'group', id: m.group_id })}
+                      style={{
+                        padding: '8px 10px',
+                        backgroundColor: 'var(--bg-surface)',
+                        border: '1px solid var(--border-subtle)',
+                        borderLeft: `3px solid ${badgeCol}`,
+                        display: 'flex',
+                        flexDirection: 'column',
+                        gap: '4px',
+                        cursor: onNavigateToEntity ? 'pointer' : 'default',
+                        transition: 'background-color 0.15s'
+                      }}
+                      onMouseEnter={(e) => { if (onNavigateToEntity) e.currentTarget.style.backgroundColor = 'var(--bg-elevated)' }}
+                      onMouseLeave={(e) => { if (onNavigateToEntity) e.currentTarget.style.backgroundColor = 'var(--bg-surface)' }}
+                    >
+                      <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
+                        <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+                          <span style={{ fontFamily: 'var(--font-sans)', fontSize: '13px', fontWeight: 600, color: 'var(--text-primary)' }}>
+                            {m.group_name}
+                          </span>
+                          {m.group_type && (
+                            <span style={{
+                              fontFamily: 'var(--font-mono)', fontSize: '9px', textTransform: 'uppercase',
+                              padding: '1px 5px', backgroundColor: 'var(--bg-elevated)',
+                              border: `1px solid ${badgeCol}40`, color: badgeCol
+                            }}>
+                              {m.group_type}
+                            </span>
+                          )}
+                        </div>
+                        <span style={{
+                          fontFamily: 'var(--font-mono)', fontSize: '9px', textTransform: 'uppercase',
+                          letterSpacing: '0.05em', padding: '1px 6px',
+                          backgroundColor: isActive ? 'var(--accent-amber-dim)' : 'var(--bg-elevated)',
+                          color: isActive ? 'var(--accent-amber)' : 'var(--text-tertiary)',
+                          border: `1px solid ${isActive ? 'var(--accent-amber)' : 'var(--border-subtle)'}`
+                        }}>
+                          {m.temporal_status || (isActive ? 'active' : 'former')}
+                        </span>
+                      </div>
+                      <div style={{ display: 'flex', alignItems: 'center', gap: '12px', fontSize: '11px', color: 'var(--text-secondary)', fontFamily: 'var(--font-mono)' }}>
+                        <span><strong style={{ color: 'var(--text-primary)' }}>{m.role_title}</strong> (Rank {m.rank_order})</span>
+                        {m.standing && <span>• {m.standing}</span>}
+                      </div>
+                      {(m.joined_date || m.left_date) && (
+                        <div style={{ fontSize: '10px', color: 'var(--text-tertiary)', fontFamily: 'var(--font-mono)' }}>
+                          {m.joined_date && `Joined: ${m.joined_date}`}
+                          {m.left_date && ` • Left: ${m.left_date} (${m.departure_reason || 'Departed'})`}
+                        </div>
+                      )}
+                      {m.notes && (
+                        <div style={{ fontSize: '11px', color: 'var(--text-secondary)', fontStyle: 'italic', marginTop: '2px' }}>
+                          {m.notes}
+                        </div>
+                      )}
+                    </div>
+                  )
+                })}
+              </div>
             )}
           </div>
           <div className="entity-section">

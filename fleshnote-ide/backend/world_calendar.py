@@ -39,6 +39,12 @@ class CalendarConfig:
         for i, (mname, _) in enumerate(self.months):
             if mname.strip().lower() == target:
                 return i + 1
+        earth_months = [
+            "january", "february", "march", "april", "may", "june",
+            "july", "august", "september", "october", "november", "december"
+        ]
+        if target in earth_months:
+            return earth_months.index(target) + 1
         return None
 
     @classmethod
@@ -90,14 +96,19 @@ def date_to_linear(year: int, month: int, day: int, cal: CalendarConfig) -> int:
     """Absolute day index. Mirrors calendarUtils.js dateToLinear."""
     dpy = cal.days_per_year
     month_days = 0
-    for i in range(min(month - 1, len(cal.months))):
-        d = cal.months[i][1]
-        month_days += d if d and d > 0 else 30
+    if cal.months:
+        for i in range(min(month - 1, len(cal.months))):
+            d = cal.months[i][1]
+            month_days += d if d and d > 0 else 30
+    else:
+        month_days = max(0, (month - 1)) * 30
     return (year * dpy) + month_days + ((day if day and day > 0 else 1) - 1)
 
 
 _FULL_DATE = re.compile(r'^(\d+)\s+([^,]+?),\s*(-?\d+)')
 _MONTH_YEAR = re.compile(r'^([^,]+?),\s*(-?\d+)')
+_ISO_DATE = re.compile(r'^(-?\d+)[-/](\d{1,2})[-/](\d{1,2})$')
+_ISO_MONTH = re.compile(r'^(-?\d+)[-/](\d{1,2})$')
 _YEAR_ONLY = re.compile(r'^(-?\d+)(?:\s+.+)?$')
 
 
@@ -109,6 +120,16 @@ def parse_world_date(text, cal: CalendarConfig):
     trimmed = text.strip()
     if not trimmed:
         return None
+
+    # Pattern: ISO date YYYY-MM-DD
+    m_iso = _ISO_DATE.match(trimmed)
+    if m_iso:
+        return (int(m_iso.group(1)), int(m_iso.group(2)), int(m_iso.group(3)))
+
+    # Pattern: ISO month YYYY-MM
+    m_isom = _ISO_MONTH.match(trimmed)
+    if m_isom:
+        return (int(m_isom.group(1)), int(m_isom.group(2)), 1)
 
     m = _FULL_DATE.match(trimmed)
     if m:

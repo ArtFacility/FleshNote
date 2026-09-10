@@ -158,7 +158,7 @@ def migrate_project(project_path: str) -> dict:
         # Mapping has structure: table_name -> { old_integer_id: new_uuid_str }
         mappings = {}
         tables_to_map = [
-            "chapters", "characters", "groups", "lore_entities", "locations",
+            "chapters", "characters", "groups", "group_memberships", "lore_entities", "locations",
             "location_weather_states", "knowledge_states", "twists",
             "foreshadowings", "character_relationships", "world_times",
             "boards", "board_items", "item_connections", "history_entries",
@@ -268,7 +268,27 @@ def migrate_project(project_path: str) -> dict:
         # Copy tables with foreign key relationships
         copy_table("chapters", {"pov_character_id": "characters"})
         copy_table("characters", {"group_id": "groups"})
-        copy_table("groups")
+        copy_table("groups", {"parent_group_id": "groups", "headquarters_location_id": "locations"})
+        copy_table("group_memberships", {"group_id": "groups", "character_id": "characters"})
+
+        # Convert any legacy characters.group_id associations into group_memberships rows
+        try:
+            new_cursor.execute("SELECT id, group_id FROM characters WHERE group_id IS NOT NULL AND deleted = 0")
+            for char_row in new_cursor.fetchall():
+                c_id = char_row[0]
+                g_id = char_row[1]
+                if g_id:
+                    new_cursor.execute(
+                        "SELECT id FROM group_memberships WHERE group_id = ? AND character_id = ? AND deleted = 0",
+                        (g_id, c_id)
+                    )
+                    if not new_cursor.fetchone():
+                        new_cursor.execute("""
+                            INSERT INTO group_memberships (id, group_id, character_id, role_title, rank_order, standing)
+                            VALUES (?, ?, ?, 'Member', 0, 'loyal')
+                        """, (str(uuid.uuid4()), g_id, c_id))
+        except Exception as e:
+            print(f"Warning migrating character groups to memberships: {e}")
         copy_table("lore_entities")
         copy_table("locations", {"parent_location_id": "locations"})
         copy_table("location_weather_states", {"location_id": "locations"})
@@ -389,7 +409,7 @@ def migrate_project(project_path: str) -> dict:
                 "project_name": os.path.basename(project_path),
                 "schema_version": 2,
                 "created_version": "1.2.0",
-                "last_opened_version": "1.3.0",
+                "last_opened_version": "2.0.0",
                 "project_id": str(uuid.uuid4())
             }, f, indent=2)
 

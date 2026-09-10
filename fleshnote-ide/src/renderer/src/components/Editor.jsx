@@ -9,6 +9,7 @@ import { EntityLinkMark } from '../extensions/EntityLinkMark'
 import { TwistLinkMark } from '../extensions/TwistLinkMark'
 import { KnowledgeLinkMark } from '../extensions/KnowledgeLinkMark'
 import { RelationshipLinkMark } from '../extensions/RelationshipLinkMark'
+import { MilestoneLinkMark } from '../extensions/MilestoneLinkMark'
 import { TimeLinkMark } from '../extensions/TimeLinkMark'
 import { TodoHighlighter } from '../extensions/TodoHighlighter'
 import { SearchAndReplace } from '../extensions/SearchAndReplace'
@@ -24,6 +25,7 @@ import ForeshadowingPopup from './ForeshadowingPopup'
 import QuickNotePopup from './QuickNotePopup'
 import AnnotationPopup from './AnnotationPopup'
 import RelationshipTurningPointPopup from './RelationshipTurningPointPopup'
+import GroupActionPopup from './GroupActionPopup'
 
 const parseId = (val) => {
   if (val === null || val === undefined || val === "") return null;
@@ -144,6 +146,19 @@ function statusColor(status) {
   }
 }
 
+const DEFAULT_LINK_VISIBILITY = {
+  character: true,
+  location: true,
+  lore: true,
+  group: true,
+  twist: true,
+  quicknote: true,
+  annotation: true,
+  knowledge: true,
+  relationship: true,
+  milestone: true,
+  spellcheck: true
+}
 
 // ── Main Component ──────────────────────────────────────────────────────────
 
@@ -241,29 +256,45 @@ export default function Editor({
   // Link visibility state
   const [showEyeDropdown, setShowEyeDropdown] = useState(false)
   const [linkVisibility, setLinkVisibility] = useState(() => {
-    return projectConfig?.link_visibility || {
-      character: true,
-      location: true,
-      lore: true,
-      twist: true,
-      quicknote: true,
-      annotation: true,
-      knowledge: true,
-      relationship: true,
-      spellcheck: true
+    let saved = null
+    try {
+      const local = localStorage.getItem(`fleshnote_link_visibility_${projectPath}`)
+      if (local) saved = JSON.parse(local)
+    } catch {}
+    if (!saved && projectConfig?.link_visibility) {
+      saved = projectConfig.link_visibility
     }
+    return { ...DEFAULT_LINK_VISIBILITY, ...(saved || {}) }
   })
 
+  const handleToggleLinkVisibility = useCallback((key, checked) => {
+    setLinkVisibility(prev => {
+      const next = { ...prev, [key]: checked }
+      try {
+        localStorage.setItem(`fleshnote_link_visibility_${projectPath}`, JSON.stringify(next))
+      } catch {}
+      onConfigUpdate?.(p => ({ ...p, link_visibility: next }))
+      if (projectPath) {
+        window.api.updateProjectConfig(projectPath, 'link_visibility', next, 'json')
+          .catch(err => console.error("Failed saving link visibility", err))
+      }
+      return next
+    })
+  }, [projectPath, onConfigUpdate])
+
   useEffect(() => {
-    if (projectPath && linkVisibility) {
-      window.api.updateProjectConfig(
-        projectPath,
-        'link_visibility',
-        linkVisibility,
-        'json'
-      ).catch(err => console.error("Failed saving link visibility", err))
+    let saved = null
+    try {
+      const local = localStorage.getItem(`fleshnote_link_visibility_${projectPath}`)
+      if (local) saved = JSON.parse(local)
+    } catch {}
+    if (!saved && projectConfig?.link_visibility) {
+      saved = projectConfig.link_visibility
     }
-  }, [linkVisibility, projectPath])
+    if (saved) {
+      setLinkVisibility(prev => ({ ...DEFAULT_LINK_VISIBILITY, ...prev, ...saved }))
+    }
+  }, [projectPath, projectConfig?.link_visibility])
 
   // Track latest entities for Mention suggestion
   const entitiesRef = useRef(entities)
@@ -280,6 +311,7 @@ export default function Editor({
   const [twistAtCursor, setTwistAtCursor] = useState(null)
   const [knowledgeAtCursor, setKnowledgeAtCursor] = useState(null)
   const [relationshipAtCursor, setRelationshipAtCursor] = useState(null)
+  const [milestoneAtCursor, setMilestoneAtCursor] = useState(null)
 
   // Popup state — only one popup active at a time
   const [activePopup, setActivePopup] = useState(null)
@@ -374,6 +406,7 @@ export default function Editor({
     TwistLinkMark,
     KnowledgeLinkMark,
     RelationshipLinkMark,
+    MilestoneLinkMark,
     TimeLinkMark,
     TodoHighlighter,
     SearchAndReplace,
@@ -445,6 +478,16 @@ export default function Editor({
             const characterId = relTarget.getAttribute('data-character-id')
             if (characterId) {
               onEntityClick?.({ type: 'character', id: parseId(characterId), tab: 'relationships' })
+            }
+            return true
+          }
+          // Check milestone links
+          const milestoneTarget = event.target.closest('[data-milestone-id]')
+          if (milestoneTarget) {
+            const groupId = milestoneTarget.getAttribute('data-group-id')
+            const milestoneId = milestoneTarget.getAttribute('data-milestone-id')
+            if (groupId) {
+              onEntityClick?.({ type: 'group', id: parseId(groupId), tab: 'history', highlightMilestoneId: milestoneId })
             }
             return true
           }
@@ -540,6 +583,17 @@ export default function Editor({
               })
             } else {
               setRelationshipAtCursor(null)
+            }
+
+            // Detect if right-click was on a milestone link
+            const milestoneTarget = event.target.closest('[data-milestone-id]')
+            if (milestoneTarget) {
+              setMilestoneAtCursor({
+                milestoneId: milestoneTarget.getAttribute('data-milestone-id'),
+                groupId: parseId(milestoneTarget.getAttribute('data-group-id'))
+              })
+            } else {
+              setMilestoneAtCursor(null)
             }
 
             // Fetch typo suggestions for the right-clicked word (single word only)
@@ -1183,6 +1237,17 @@ export default function Editor({
           break
         }
 
+        case 'groupAction': {
+          let wordOffset = 0
+          if (editor) {
+            const selectionFrom = editor.state.selection.from
+            const textBefore = editor.state.doc.textBetween(0, selectionFrom, ' ')
+            wordOffset = textBefore.trim().split(/\s+/).filter(w => w.length > 0).length
+          }
+          setActivePopup({ type: 'groupAction', position: pos, data: { ...data, wordOffset } })
+          break
+        }
+
         case 'customLore':
           setActivePopup({ type: 'customLore', position: pos, data })
           break
@@ -1254,6 +1319,32 @@ export default function Editor({
         case 'removeRelationshipLink':
           if (editor) {
             editor.chain().focus().unsetRelationshipLink().run()
+          }
+          break
+
+        case 'removeMilestoneLink':
+          if (editor) {
+            editor.chain().focus().unsetMilestoneLink().run()
+          }
+          break
+
+        case 'inspectMilestone':
+          if (data?.groupId) {
+            onEntityClick?.({
+              type: 'group',
+              id: parseId(data.groupId),
+              tab: 'history',
+              highlightMilestoneId: data.milestoneId
+            })
+          }
+          break
+
+        case 'inspectEntity':
+          if (data?.entityType && data?.entityId) {
+            onEntityClick?.({
+              type: data.entityType,
+              id: parseId(data.entityId)
+            })
           }
           break
 
@@ -1662,18 +1753,20 @@ export default function Editor({
                 { key: 'character', label: t('editor.visCharacter', 'Characters') },
                 { key: 'location', label: t('editor.visLocation', 'Locations') },
                 { key: 'lore', label: t('editor.visLore', 'Items & Lore') },
+                { key: 'group', label: t('editor.visGroup', 'Factions & Groups') },
                 { key: 'twist', label: t('editor.visTwist', 'Twists & Foreshadows') },
                 { key: 'quicknote', label: t('editor.visQuicknote', 'Quick Notes') },
                 { key: 'annotation', label: t('editor.visAnnotation', 'Annotations') },
                 { key: 'knowledge', label: t('editor.visKnowledge', 'Knowledge Markers') },
                 { key: 'relationship', label: t('editor.visRelationship', 'Relationship Markers') },
+                { key: 'milestone', label: t('editor.visMilestone', 'Milestones') },
                 { key: 'spellcheck', label: t('editor.visSpellcheck', 'Spell Check Underlines') }
               ].map(item => (
                 <label key={item.key} style={{ display: 'flex', alignItems: 'center', gap: '8px', padding: '6px 4px', fontSize: '11px', fontFamily: 'var(--font-mono)', color: 'var(--text-secondary)', cursor: 'pointer' }}>
                   <input
                     type="checkbox"
-                    checked={linkVisibility[item.key]}
-                    onChange={(e) => setLinkVisibility(prev => ({ ...prev, [item.key]: e.target.checked }))}
+                    checked={linkVisibility[item.key] !== false}
+                    onChange={(e) => handleToggleLinkVisibility(item.key, e.target.checked)}
                     style={{ accentColor: 'var(--accent-amber)' }}
                   />
                   {item.label}
@@ -1726,7 +1819,7 @@ export default function Editor({
         )}
 
         <div
-          className={`editor-content-wrapper ${!linkVisibility.character ? 'hide-character-links' : ''} ${!linkVisibility.location ? 'hide-location-links' : ''} ${!linkVisibility.lore ? 'hide-lore-links' : ''} ${!linkVisibility.twist ? 'hide-twist-links' : ''} ${!linkVisibility.quicknote ? 'hide-quicknote-links' : ''} ${!linkVisibility.annotation ? 'hide-annotation-links' : ''} ${!linkVisibility.knowledge ? 'hide-knowledge-links' : ''} ${!linkVisibility.relationship ? 'hide-relationship-links' : ''}`}
+          className={`editor-content-wrapper ${linkVisibility.character === false ? 'hide-character-links' : ''} ${linkVisibility.location === false ? 'hide-location-links' : ''} ${linkVisibility.lore === false ? 'hide-lore-links' : ''} ${linkVisibility.group === false ? 'hide-group-links' : ''} ${linkVisibility.twist === false ? 'hide-twist-links' : ''} ${linkVisibility.quicknote === false ? 'hide-quicknote-links' : ''} ${linkVisibility.annotation === false ? 'hide-annotation-links' : ''} ${linkVisibility.knowledge === false ? 'hide-knowledge-links' : ''} ${linkVisibility.relationship === false ? 'hide-relationship-links' : ''} ${linkVisibility.milestone === false ? 'hide-milestone-links' : ''}`}
           style={{
             flex: 1,
             minWidth: 0,
@@ -1833,6 +1926,7 @@ export default function Editor({
         twistAtCursor={twistAtCursor}
         knowledgeAtCursor={knowledgeAtCursor}
         relationshipAtCursor={relationshipAtCursor}
+        milestoneAtCursor={milestoneAtCursor}
         typoSuggestions={typoSuggestions}
         onApplyTypoFix={(word, fix) => {
           if (!editor) return
@@ -1983,6 +2077,58 @@ export default function Editor({
                   characterId: String(result.characterId)
                 })
                 .run()
+            }
+            onEntitiesChanged?.()
+          }}
+        />
+      )}
+
+      {activePopup?.type === 'groupAction' && (
+        <GroupActionPopup
+          mode={activePopup.data?.mode || 'createGroup'}
+          selectedText={activePopup.data?.text || ctxText}
+          wordOffset={activePopup.data?.wordOffset || 0}
+          chapterId={chapter?.id}
+          worldTime={effectiveWorldTime}
+          position={activePopup.position}
+          projectPath={projectPath}
+          calConfig={calConfig}
+          characters={characters}
+          groups={entities?.filter(e => e.type === 'group')}
+          defaultGroupId={activePopup.data?.defaultGroupId}
+          onClose={closePopup}
+          onSuccess={(result) => {
+            if (result) {
+              if (result.action === 'createGroup' && result.group) {
+                if (ctxText && editor) {
+                  editor
+                    .chain()
+                    .focus()
+                    .setEntityLink({
+                      entityType: 'group',
+                      entityId: String(result.group.id)
+                    })
+                    .run()
+                }
+              } else if (result.action === 'linkGroup' && result.groupId && editor) {
+                editor
+                  .chain()
+                  .focus()
+                  .setEntityLink({
+                    entityType: 'group',
+                    entityId: String(result.groupId)
+                  })
+                  .run()
+              } else if (result.action === 'addMilestone' && result.milestoneId && result.groupId && editor) {
+                editor
+                  .chain()
+                  .focus()
+                  .setMilestoneLink({
+                    milestoneId: String(result.milestoneId),
+                    groupId: String(result.groupId)
+                  })
+                  .run()
+              }
             }
             onEntitiesChanged?.()
           }}

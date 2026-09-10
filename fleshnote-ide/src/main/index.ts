@@ -187,7 +187,7 @@ function createSplashWindow(): void {
     webPreferences: { sandbox: false }
   })
 
-  const version = app.getVersion()
+  const version = '2.0'
   const html = `<!DOCTYPE html>
 <html>
 <head>
@@ -701,6 +701,26 @@ app.whenReady().then(async () => {
 
   ipcMain.handle('api:deleteGroup', async (_event, payload) => {
     return await backendPost('/api/project/group/delete', payload)
+  })
+
+  ipcMain.handle('api:getGroupMembers', async (_event, payload) => {
+    return await backendPost('/api/project/group/members', payload)
+  })
+
+  ipcMain.handle('api:addGroupMember', async (_event, payload) => {
+    return await backendPost('/api/project/group/member/add', payload)
+  })
+
+  ipcMain.handle('api:updateGroupMember', async (_event, payload) => {
+    return await backendPost('/api/project/group/member/update', payload)
+  })
+
+  ipcMain.handle('api:removeGroupMember', async (_event, payload) => {
+    return await backendPost('/api/project/group/member/remove', payload)
+  })
+
+  ipcMain.handle('api:getCharacterMemberships', async (_event, payload) => {
+    return await backendPost('/api/project/character/memberships', payload)
   })
 
   // ── Entities ───────────────────────────────────────

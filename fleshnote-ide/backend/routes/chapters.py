@@ -382,6 +382,53 @@ def _update_relationship_offsets(cursor, chapter_id: str | int, md_content: str)
         """, (word_offset, chapter_id, rel_id))
 
 
+def _milestone_md_to_html(content: str) -> str:
+    """Convert {{milestone:id:groupId|text}} markers to TipTap spans on load."""
+    pattern = r'\{\{milestone:([^:]+):([^|]+)\|([^}]*)\}\}'
+    def replacer(match):
+        milestone_id = match.group(1)
+        group_id = match.group(2)
+        text = match.group(3)
+        return (
+            f'<span data-milestone-id="{milestone_id}" data-group-id="{group_id}" '
+            f'class="milestone-link">{text}</span>'
+        )
+    return re.sub(pattern, replacer, content)
+
+
+def _milestone_html_to_md(content: str) -> str:
+    """Convert TipTap milestone-link spans to {{milestone:id:groupId|text}} markers on save."""
+    pattern = r'<span[^>]*?(?:data-milestone-id="([^"]+)"[^>]*?data-group-id="([^"]+)"|data-group-id="([^"]+)"[^>]*?data-milestone-id="([^"]+)")(?:\s+[^>]*)?>([^<]*)</span>'
+    def replacer(match):
+        if match.group(1) is not None:
+            milestone_id = match.group(1)
+            group_id = match.group(2)
+        else:
+            milestone_id = match.group(4)
+            group_id = match.group(3)
+        text = match.group(5)
+        return f'{{{{milestone:{milestone_id}:{group_id}|{text}}}}}'
+    return re.sub(pattern, replacer, content)
+
+
+def _update_milestone_offsets(cursor, chapter_id: str | int, md_content: str):
+    """Scan markdown for {{milestone:id:groupId|text}} markers and update word offsets in history_entries."""
+    pattern = r'\{\{milestone:([^:]+):([^|]+)\|([^}]*)\}\}'
+    for match in re.finditer(pattern, md_content):
+        milestone_id = match.group(1)
+
+        char_pos = match.start()
+        text_before = re.sub(r'<[^>]+>', ' ', md_content[:char_pos])
+        text_before = re.sub(r'\{\{[^}]+\}\}', '', text_before)
+        word_offset = len(text_before.split())
+
+        cursor.execute("""
+            UPDATE history_entries
+            SET word_offset = ?, chapter_id = ?
+            WHERE id = ?
+        """, (word_offset, chapter_id, milestone_id))
+
+
 def _slugify(text: str) -> str:
     """Convert text to a filename-safe slug."""
     text = text.lower().strip()
@@ -668,6 +715,7 @@ def load_chapter_content(req: ChapterLoad):
     # Convert knowledge/relationship markers to TipTap spans
     content = _knowledge_md_to_html(content)
     content = _relationship_md_to_html(content)
+    content = _milestone_md_to_html(content)
     content = _time_md_to_html(content)
 
     return {"content": content, "md_filename": row["md_filename"]}
@@ -695,6 +743,7 @@ def save_chapter_content(req: ChapterSave, background_tasks: BackgroundTasks):
     # Convert knowledge/relationship HTML spans to markdown markers
     md_content = _knowledge_html_to_md(md_content)
     md_content = _relationship_html_to_md(md_content)
+    md_content = _milestone_html_to_md(md_content)
     md_content = _time_html_to_md(md_content)
 
     # Write the md file
@@ -712,6 +761,7 @@ def save_chapter_content(req: ChapterSave, background_tasks: BackgroundTasks):
     # Track knowledge/relationship markers and update word offsets
     _update_knowledge_offsets(cursor, req.chapter_id, md_content)
     _update_relationship_offsets(cursor, req.chapter_id, md_content)
+    _update_milestone_offsets(cursor, req.chapter_id, md_content)
 
     # Update word count and timestamp
     cursor.execute("""

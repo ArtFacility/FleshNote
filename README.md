@@ -1,4 +1,4 @@
-# FleshNote IDE (v1.3.0 Beta)
+# FleshNote IDE (v2.0 Beta)
 
 > [!WARNING]
 > **Warning: You are currently on the `experimental` branch.**
@@ -6,14 +6,16 @@
 
 An advanced, no-bullshit writing tool for novelists and world builders who actually want to finish their draft this century. Built with Electron, React, TypeScript, and FastAPI.
 
-### What's New in v1.3.0
+### What's New in v2.0
 
-This release lays the groundwork for multi-device sync and companion apps while improving timeline precision:
-
-* **Database Modernisation**: Migration of all primary and foreign keys from sequential integers to UUID strings, preventing collision during future multi-device merges.
-* **Improved Analytics Engine**: Refactored linguistic parsers and background scanner logic to work flawlessly with UUID patterns.
-* **History Rewind Prep**: Upgraded timeline data schemas and coordinate systems to support future history-rewind features without ID collisions.
-* **Data Sync & Offline Prep**: Added local sync change logging, operational telemetry capture, and soft-delete tracking fields across all authoring databases.
+* **Factions & Groups**: Organize characters into factions, alliances, and guilds with temporal membership tracking, role ordering, milestones, and World History integration.
+* **Manuscript Integration**: Create groups, link groups, add members, or record milestones directly from selected text in the editor.
+* **Cross-Device Syncing**: Sync your novel with the mobile companion app.
+* **Database Rework**: Complete UUID & tombstone architecture preserving full edit history without collision.
+* **Pentimento System**: Replay and simulate your writing process over time.
+* **History Rewind**: Revert chapters to previous states with visual diffing.
+* **Enhanced World Calendar**: Day-level precision across character inspectors, world times, and timeline marks.
+* **Startup Loader & Migrator**: Smooth startup splash screen and automatic legacy project migration.
 
 ---
 

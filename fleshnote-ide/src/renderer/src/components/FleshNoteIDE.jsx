@@ -6,6 +6,7 @@ import EntityInspectorPanel from './ide-panels/EntityInspectorPanel'
 import TwistInspectorPanel from './ide-panels/TwistInspectorPanel'
 import CharacterInspectorPanel from './ide-panels/CharacterInspectorPanel'
 import LocationInspectorPanel from './ide-panels/LocationInspectorPanel'
+import GroupInspectorPanel from './ide-panels/GroupInspectorPanel'
 import QuickNoteInspectorPanel from './ide-panels/QuickNoteInspectorPanel'
 import AnnotationInspectorPanel from './ide-panels/AnnotationInspectorPanel'
 import FleshNotePlannerDesktop from './FleshNotePlannerDesktop'
@@ -680,10 +681,10 @@ export default function FleshNoteIDE({ projectConfig, projectPath, onCloseProjec
   // ── Navigate to mark (from inspector click) ────────
   const handleNavigateToMark = useCallback(
     async ({ chapterId, wordOffset }) => {
-      const targetChapter = chapters.find(ch => ch.id === chapterId)
+      const targetChapter = chapters.find(ch => String(ch.id) === String(chapterId))
       if (!targetChapter) return
       // Load the chapter if it's not the current one
-      if (!activeChapter || activeChapter.id !== chapterId) {
+      if (!activeChapter || String(activeChapter.id) !== String(chapterId)) {
         await loadChapter(targetChapter)
       }
       // Signal editor to scroll to word offset
@@ -1179,6 +1180,7 @@ export default function FleshNoteIDE({ projectConfig, projectPath, onCloseProjec
             entities={entities}
             characters={characters}
             projectConfig={projectConfig}
+            calConfig={calConfig}
             onEntityUpdated={handleEntitiesChanged}
             onConfigUpdate={onConfigUpdate}
             onNavigate={(chapterId, wordOffset) => {
@@ -1442,6 +1444,7 @@ export default function FleshNoteIDE({ projectConfig, projectPath, onCloseProjec
                       onFlushEditorSave={async () => { await janitorActionsRef.current?.flushSave?.() }}
                       initialTab={inspectorInitialTab}
                       onNavigateToMark={handleNavigateToMark}
+                      onNavigateToEntity={handleEntityClick}
                       onIconChanged={clearEntityHoverCaches}
                     />
                   ) : inspectedEntity.type === 'location' ? (
@@ -1473,6 +1476,24 @@ export default function FleshNoteIDE({ projectConfig, projectPath, onCloseProjec
                       entity={inspectedEntity}
                       projectPath={projectPath}
                       onEntityUpdated={handleEntitiesChanged}
+                    />
+                  ) : inspectedEntity.type === 'group' ? (
+                    <GroupInspectorPanel
+                      group={inspectedEntity}
+                      characters={characters}
+                      entities={entities}
+                      activeChapter={{ ...activeChapter, world_time: cursorWorldTime || activeChapter?.world_time }}
+                      projectPath={projectPath}
+                      projectConfig={projectConfig}
+                      calConfig={calConfig}
+                      chapters={chapters}
+                      onEntityUpdated={handleEntitiesChanged}
+                      onReloadCurrentChapter={() => { if (activeChapter) loadChapter(activeChapter) }}
+                      onFlushEditorSave={async () => { await janitorActionsRef.current?.flushSave?.() }}
+                      initialTab={inspectorInitialTab}
+                      onNavigateToMark={handleNavigateToMark}
+                      onNavigateToEntity={handleEntityClick}
+                      onIconChanged={clearEntityHoverCaches}
                     />
                   ) : (
                     <EntityInspectorPanel

@@ -296,6 +296,12 @@
     font-weight: inherit;
 }
 
+.editor-content-wrapper.hide-group-links .entity-link.group {
+    color: inherit;
+    border-bottom: none;
+    font-weight: inherit;
+}
+
 /* ── QUICKNOTE TYPE COLORS ───────────────────────── */
 .entity-link.quicknote {
     border-bottom: 1.5px dashed var(--accent-amber);
@@ -375,6 +381,12 @@
     border-bottom-style: dotted;
 }
 
+.entity-link.group {
+    color: var(--entity-group, var(--accent-amber));
+    border-bottom-color: var(--entity-group, var(--accent-amber));
+    border-bottom-style: dotted;
+}
+
 .entity-link:hover {
     opacity: 0.8;
 }
@@ -389,6 +401,10 @@
 }
 
 .entity-link.location:hover {
+    border-bottom-style: solid;
+}
+
+.entity-link.group:hover {
     border-bottom-style: solid;
 }
 
@@ -504,6 +520,42 @@
 }
 .editor-area.focus-mode-active .relationship-link::before,
 .editor-content-wrapper.hide-relationship-links .relationship-link::before {
+    display: none;
+}
+
+/* ── FACTION MILESTONE MARKERS IN TEXT ─────────── */
+.milestone-link {
+    cursor: default;
+    position: relative;
+    border-bottom: 1px dotted var(--accent-amber);
+    transition: all 0.15s;
+}
+
+.milestone-link::before {
+    content: '𐲨';
+    position: absolute;
+    top: -8px;
+    inset-inline-start: 0;
+    font-size: 8px;
+    line-height: 1;
+    color: var(--accent-amber);
+    opacity: 0.65;
+    pointer-events: none;
+}
+
+.milestone-link:hover {
+    border-bottom-color: var(--accent-amber);
+    border-bottom-style: solid;
+}
+
+/* Hide milestone links when toggle is off or focus mode active */
+.editor-area.focus-mode-active .milestone-link,
+.editor-content-wrapper.hide-milestone-links .milestone-link {
+    color: inherit;
+    border-bottom: none;
+}
+.editor-area.focus-mode-active .milestone-link::before,
+.editor-content-wrapper.hide-milestone-links .milestone-link::before {
     display: none;
 }
 

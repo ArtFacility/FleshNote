@@ -15,6 +15,7 @@ Usage:
 import sqlite3
 import os
 import json
+import uuid
 from datetime import datetime
 
 
@@ -360,10 +361,50 @@ def generate_project_db(project_path: str, answers: dict) -> str:
             surface_agenda  TEXT,    -- Public-facing goal
             true_agenda     TEXT,    -- Hidden goal (author-only)
             notes           TEXT,
+            parent_group_id TEXT,    -- Sub-factions / orders / chapters
+            philosophy      TEXT,    -- Core doctrine, dogmas, mottos
+            internal_rules  TEXT,    -- Hierarchy laws, entry rites, code of conduct
+            headquarters_location_id TEXT, -- FK locations(id)
+            faction_color   TEXT,    -- Hex color token for badges
+            founded_date    TEXT,    -- Founding calendar date string
             deleted         INTEGER DEFAULT 0,
             deleted_at      TEXT,
             created_at      TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-            updated_at      TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+            updated_at      TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+            FOREIGN KEY (parent_group_id) REFERENCES groups(id) ON DELETE SET NULL,
+            FOREIGN KEY (headquarters_location_id) REFERENCES locations(id) ON DELETE SET NULL
+        )
+    """)
+
+    # ══════════════════════════════════════════════════════════
+    # TABLE 4.5: GROUP MEMBERSHIPS (Faction Roster & History)
+    # ══════════════════════════════════════════════════════════
+
+    cursor.execute("""
+        CREATE TABLE IF NOT EXISTS group_memberships (
+            id                  TEXT PRIMARY KEY DEFAULT (
+                                    lower(hex(randomblob(4))) || '-' || 
+                                    lower(hex(randomblob(2))) || '-4' || 
+                                    substr(lower(hex(randomblob(2))), 2) || '-' || 
+                                    substr('89ab', abs(random()) % 4 + 1, 1) || 
+                                    substr(lower(hex(randomblob(2))), 2) || '-' || 
+                                    lower(hex(randomblob(6)))
+                                ),
+            group_id            TEXT NOT NULL,
+            character_id        TEXT NOT NULL,
+            role_title          TEXT DEFAULT '',
+            rank_order          INTEGER DEFAULT 0,
+            joined_date         TEXT,
+            left_date           TEXT,
+            departure_reason    TEXT,
+            standing            TEXT DEFAULT 'loyal',
+            notes               TEXT DEFAULT '',
+            deleted             INTEGER DEFAULT 0,
+            deleted_at          TEXT,
+            created_at          TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+            updated_at          TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+            FOREIGN KEY (group_id) REFERENCES groups(id) ON DELETE CASCADE,
+            FOREIGN KEY (character_id) REFERENCES characters(id) ON DELETE CASCADE
         )
     """)
 
@@ -968,6 +1009,8 @@ def generate_project_db(project_path: str, answers: dict) -> str:
             date_precise         INTEGER DEFAULT 0,
             related_entity_type  TEXT,
             related_entity_id    TEXT,
+            chapter_id           TEXT,
+            word_offset          INTEGER,
             deleted              INTEGER DEFAULT 0,
             deleted_at           TEXT,
             created_at           TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
@@ -1182,6 +1225,10 @@ def generate_project_db(project_path: str, answers: dict) -> str:
         "CREATE INDEX IF NOT EXISTS idx_entity_mentions_chapter ON entity_mentions(chapter_id);",
         "CREATE INDEX IF NOT EXISTS idx_entity_mentions_entity ON entity_mentions(entity_type, entity_id);",
 
+        # Group memberships indexes
+        "CREATE INDEX IF NOT EXISTS idx_group_memberships_group ON group_memberships(group_id, deleted);",
+        "CREATE INDEX IF NOT EXISTS idx_group_memberships_char ON group_memberships(character_id, deleted);",
+
         # History timeline indexes
         "CREATE INDEX IF NOT EXISTS idx_history_entity ON history_entries(entity_type, entity_id);",
         "CREATE INDEX IF NOT EXISTS idx_history_event_type ON history_entries(event_type);",
@@ -1264,27 +1311,75 @@ def generate_project_db(project_path: str, answers: dict) -> str:
 def apply_migrations(db_path: str):
     """Applies any necessary schema updates to existing projects."""
     conn = sqlite3.connect(db_path)
-    cursor = conn.cursor()
-    
     try:
+        cursor = conn.cursor()
         # Check locations table for updated_at
         cursor.execute("PRAGMA table_info(locations)")
         columns = [col[1] for col in cursor.fetchall()]
-        if "updated_at" not in columns:
+        if columns and "updated_at" not in columns:
             cursor.execute("ALTER TABLE locations ADD COLUMN updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP")
             
-        # Check groups table for updated_at
+        # Check groups table for updated_at and v2 faction columns
         cursor.execute("PRAGMA table_info(groups)")
         columns = [col[1] for col in cursor.fetchall()]
-        if "updated_at" not in columns:
-            cursor.execute("ALTER TABLE groups ADD COLUMN updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP")
+        if columns:
+            if "updated_at" not in columns:
+                cursor.execute("ALTER TABLE groups ADD COLUMN updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP")
+            for col_name, col_type in [
+                ("parent_group_id", "TEXT"),
+                ("philosophy", "TEXT"),
+                ("internal_rules", "TEXT"),
+                ("headquarters_location_id", "TEXT"),
+                ("faction_color", "TEXT"),
+                ("founded_date", "TEXT"),
+            ]:
+                if col_name not in columns:
+                    cursor.execute(f"ALTER TABLE groups ADD COLUMN {col_name} {col_type}")
+
+        # Ensure group_memberships table exists
+        cursor.execute("""
+            CREATE TABLE IF NOT EXISTS group_memberships (
+                id                  TEXT PRIMARY KEY,
+                group_id            TEXT NOT NULL,
+                character_id        TEXT NOT NULL,
+                role_title          TEXT DEFAULT '',
+                rank_order          INTEGER DEFAULT 0,
+                joined_date         TEXT,
+                left_date           TEXT,
+                departure_reason    TEXT,
+                standing            TEXT DEFAULT 'loyal',
+                notes               TEXT DEFAULT '',
+                deleted             INTEGER DEFAULT 0,
+                deleted_at          TEXT,
+                created_at          TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+                updated_at          TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+            )
+        """)
+        cursor.execute("CREATE INDEX IF NOT EXISTS idx_group_memberships_group ON group_memberships(group_id, deleted);")
+        cursor.execute("CREATE INDEX IF NOT EXISTS idx_group_memberships_char ON group_memberships(character_id, deleted);")
+
+        # Convert any legacy characters.group_id associations into group_memberships rows
+        cursor.execute("SELECT name FROM sqlite_master WHERE type='table' AND name='characters'")
+        if cursor.fetchone():
+            cursor.execute("PRAGMA table_info(characters)")
+            char_cols = [col[1] for col in cursor.fetchall()]
+            if "group_id" in char_cols:
+                cursor.execute("SELECT id, group_id FROM characters WHERE group_id IS NOT NULL AND group_id != ''")
+                char_rows = cursor.fetchall()
+                for c_id, g_id in char_rows:
+                    cursor.execute("SELECT id FROM group_memberships WHERE group_id = ? AND character_id = ? AND deleted = 0", (str(g_id), str(c_id)))
+                    if not cursor.fetchone():
+                        cursor.execute("""
+                            INSERT INTO group_memberships (id, group_id, character_id, role_title, rank_order, standing)
+                            VALUES (?, ?, ?, 'Member', 0, 'loyal')
+                        """, (str(uuid.uuid4()), str(g_id), str(c_id)))
 
         # Check knowledge_states table for world_time and word_offset
         cursor.execute("PRAGMA table_info(knowledge_states)")
         columns = [col[1] for col in cursor.fetchall()]
-        if "world_time" not in columns:
+        if columns and "world_time" not in columns:
             cursor.execute("ALTER TABLE knowledge_states ADD COLUMN world_time TEXT")
-        if "word_offset" not in columns:
+        if columns and "word_offset" not in columns:
             cursor.execute("ALTER TABLE knowledge_states ADD COLUMN word_offset INTEGER")
 
         # Create new analytics tables if they don't exist
@@ -1478,6 +1573,14 @@ def apply_migrations(db_path: str):
         cursor.execute("CREATE INDEX IF NOT EXISTS idx_history_entity ON history_entries(entity_type, entity_id);")
         cursor.execute("CREATE INDEX IF NOT EXISTS idx_history_event_type ON history_entries(event_type);")
         cursor.execute("CREATE INDEX IF NOT EXISTS idx_history_date ON history_entries(date_year);")
+
+        cursor.execute("PRAGMA table_info(history_entries)")
+        h_cols = [c[1] for c in cursor.fetchall()]
+        if h_cols:
+            if "chapter_id" not in h_cols:
+                cursor.execute("ALTER TABLE history_entries ADD COLUMN chapter_id TEXT")
+            if "word_offset" not in h_cols:
+                cursor.execute("ALTER TABLE history_entries ADD COLUMN word_offset INTEGER")
 
         # Calendar defaults for story start (for existing projects)
         cursor.execute("""

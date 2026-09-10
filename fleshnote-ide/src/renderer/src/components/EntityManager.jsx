@@ -4,6 +4,7 @@ import EntityInspectorPanel from "./ide-panels/EntityInspectorPanel";
 import TwistInspectorPanel from "./ide-panels/TwistInspectorPanel";
 import CharacterInspectorPanel from "./ide-panels/CharacterInspectorPanel";
 import LocationInspectorPanel from "./ide-panels/LocationInspectorPanel";
+import GroupInspectorPanel from "./ide-panels/GroupInspectorPanel";
 import QuickNoteInspectorPanel from "./ide-panels/QuickNoteInspectorPanel";
 import AnnotationInspectorPanel from "./ide-panels/AnnotationInspectorPanel";
 import NameGeneratorModal from "./NameGeneratorModal";
@@ -61,7 +62,7 @@ function getEntityColor(type) {
     switch (type) {
         case "character": return "var(--entity-character)";
         case "location": return "var(--entity-location)";
-        case "group": return "var(--entity-item)";
+        case "group": return "var(--accent-amber)";
         case "twist": return "var(--accent-purple)";
         case "quicknote":
         case "quick_note": return "var(--entity-quicknote)";
@@ -143,16 +144,17 @@ function entityTypeToDbCode(type) {
 }
 
 // ─── ENTITY CARD (grid view) ─────────────────────────────────────────────────
-function EntityCard({ entity, color, selected, inspecting, onClick, onCheckbox, mentionCount, onMentionClick, iconSrc }) {
+function EntityCard({ entity, color, selected, inspecting, onClick, onCheckbox, mentionCount, onMentionClick, iconSrc, allEntities }) {
     const { t } = useTranslation();
+    const effectiveBorderColor = entity.faction_color || color;
     return (
         <div
             onClick={onClick}
             style={{
                 position: 'relative',
                 background: selected ? T.amberDim : (inspecting ? T.bg2 : T.bg1),
-                border: `1px solid ${inspecting ? T.amber : T.bg3}`,
-                borderTop: `2px solid ${color}`,
+                border: `1px solid ${inspecting ? (entity.faction_color || T.amber) : T.bg3}`,
+                borderTop: `2px solid ${effectiveBorderColor}`,
                 padding: '12px',
                 cursor: 'pointer',
                 transition: 'background 0.15s',
@@ -166,7 +168,7 @@ function EntityCard({ entity, color, selected, inspecting, onClick, onCheckbox, 
                 {iconSrc ? (
                     <img src={iconSrc} alt="" style={{ width: 44, height: 44, borderRadius: 4, objectFit: 'cover' }} />
                 ) : (
-                    <span style={{ color, opacity: 0.85 }}><EntityTypeIcon type={entity.type} /></span>
+                    <span style={{ color: effectiveBorderColor, opacity: 0.85 }}><EntityTypeIcon type={entity.type} /></span>
                 )}
                 <Checkbox checked={selected} onToggle={onCheckbox} />
             </div>
@@ -185,6 +187,35 @@ function EntityCard({ entity, color, selected, inspecting, onClick, onCheckbox, 
             {entity.richChar?.role && (
                 <div style={{ fontFamily: T.mono, fontSize: 10, color: T.textDim, textTransform: 'capitalize' }}>
                     {entity.richChar.role}
+                </div>
+            )}
+            {entity.type === 'group' && (
+                <div style={{ display: 'flex', flexDirection: 'column', gap: 3, marginTop: 2 }}>
+                    <div style={{ display: 'flex', alignItems: 'center', gap: 6, flexWrap: 'wrap' }}>
+                        {entity.group_type && (
+                            <span style={{
+                                fontFamily: T.mono, fontSize: 9, textTransform: 'uppercase',
+                                letterSpacing: '0.05em', padding: '1px 5px',
+                                background: T.bg0, border: `1px solid ${entity.faction_color || T.amber}40`,
+                                color: entity.faction_color || T.amber
+                            }}>
+                                {entity.group_type}
+                            </span>
+                        )}
+                        {entity.member_count !== undefined && (
+                            <span style={{ fontFamily: T.mono, fontSize: 10, color: T.textDim }}>
+                                {entity.member_count} {entity.member_count === 1 ? t('groups.member', 'member') : t('groups.members', 'members')}
+                            </span>
+                        )}
+                    </div>
+                    {entity.parent_group_id && (() => {
+                        const parent = (allEntities || []).find(e => String(e.id) === String(entity.parent_group_id));
+                        return parent ? (
+                            <div style={{ fontFamily: T.mono, fontSize: 10, color: T.textDim, display: 'flex', alignItems: 'center', gap: 3 }}>
+                                <span style={{ opacity: 0.6 }}>↳</span> {parent.name}
+                            </div>
+                        ) : null;
+                    })()}
                 </div>
             )}
             {entity.aliases?.length > 0 && (
@@ -528,7 +559,7 @@ function LocationTreeView({ entities, inspectedEntity, selectedIds, setInspected
 }
 
 // ─── MAIN COMPONENT ──────────────────────────────────────────────────────────
-export default function EntityManager({ entities, characters, chapters, projectPath, projectConfig, onEntityUpdated, onConfigUpdate, onNavigate }) {
+export default function EntityManager({ entities, characters, chapters, projectPath, projectConfig, calConfig, onEntityUpdated, onConfigUpdate, onNavigate }) {
     const { t } = useTranslation();
     const [activeTab, setActiveTab] = useState("characters");
     const [selectedIds, setSelectedIds] = useState(new Set());
@@ -930,6 +961,10 @@ export default function EntityManager({ entities, characters, chapters, projectP
                                         chapters={chapters}
                                         onEntityUpdated={handleInspectorUpdated}
                                         onIconChanged={loadEntityIcons}
+                                        onNavigateToEntity={(entRef) => {
+                                            const target = entities.find(e => String(e.id) === String(entRef.id) && e.type === entRef.type);
+                                            if (target) setInspectedEntity(target);
+                                        }}
                                     />
                                 ) : inspectedEntity.type === 'location' ? (
                                     <LocationInspectorPanel
@@ -962,6 +997,20 @@ export default function EntityManager({ entities, characters, chapters, projectP
                                         chapters={chapters}
                                         onNavigateChapter={(ch) => onNavigate?.(ch.id, 0)}
                                         onTwistDeleted={() => { setInspectedEntity(null); handleInspectorUpdated(); }}
+                                    />
+                                ) : inspectedEntity.type === 'group' ? (
+                                    <GroupInspectorPanel
+                                        group={inspectedEntity}
+                                        characters={characters}
+                                        entities={entities}
+                                        chapters={chapters}
+                                        projectPath={projectPath}
+                                        projectConfig={projectConfig}
+                                        calConfig={calConfig || projectConfig?.calendar_config}
+                                        onEntityUpdated={handleInspectorUpdated}
+                                        onConfigUpdate={onConfigUpdate}
+                                        onIconChanged={loadEntityIcons}
+                                        onNavigateToMark={({ chapterId, wordOffset }) => onNavigate?.(chapterId, wordOffset || 0)}
                                     />
                                 ) : (
                                     <EntityInspectorPanel
@@ -1178,6 +1227,7 @@ export default function EntityManager({ entities, characters, chapters, projectP
                                             if (fa) onNavigate?.(fa.chapter_id, fa.word_offset);
                                         }}
                                         iconSrc={entityIcons[`${entityTypeToDbCode(ent.type)}:${ent.id}`] ? `fleshnote-asset://load/${projectPath.replace(/\\/g, '/')}/${entityIcons[`${entityTypeToDbCode(ent.type)}:${ent.id}`]}` : null}
+                                        allEntities={entities}
                                     />
                                 );
                             })}
