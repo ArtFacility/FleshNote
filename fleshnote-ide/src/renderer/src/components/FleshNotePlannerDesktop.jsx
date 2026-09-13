@@ -1,5 +1,6 @@
 import React, { useState, useRef, useCallback, useEffect, useMemo } from "react";
 import { useTranslation } from "react-i18next";
+import FrameworkSwitcherModal from "./FrameworkSwitcherModal";
 
 /* ─── constants ─── */
 const RAIL_Y = 240; // Shifted down so the text input doesn't overlap the top lane
@@ -49,15 +50,24 @@ const Icons = {
     Save: () => <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M19 21H5a2 2 0 01-2-2V5a2 2 0 012-2h11l5 5v11a2 2 0 01-2 2z" /><polyline points="17 21 17 13 7 13 7 21" /><polyline points="7 3 7 8 15 8" /></svg>,
     ChevronUp: () => <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5"><polyline points="18 15 12 9 6 15" /></svg>,
     ChevronDown: () => <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5"><polyline points="6 9 12 15 18 9" /></svg>,
+    Compass: () => (
+        <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+            <circle cx="12" cy="12" r="10" />
+            <polygon points="16.24 7.76 14.12 14.12 7.76 16.24 9.88 9.88 16.24 7.76" fill="currentColor" fillOpacity="0.2" />
+        </svg>
+    ),
 };
 
-export default function FleshNotePlannerDesktop({ projectPath, chapters, activeChapter }) {
+export default function FleshNotePlannerDesktop({ projectPath, chapters, activeChapter, projectConfig }) {
     const { t } = useTranslation();
     // Data
     const [settings, setSettings] = useState({ theme: "", cursor_pct: 0, shadow_visible: 0 });
     const [blocks, setBlocks] = useState([]);
     const [arcs, setArcs] = useState([]);
     const [loading, setLoading] = useState(true);
+
+    // Framework Switcher
+    const [showFrameworkModal, setShowFrameworkModal] = useState(false);
 
     // Twist data for timeline
     const [twistData, setTwistData] = useState([]);
@@ -128,23 +138,26 @@ export default function FleshNotePlannerDesktop({ projectPath, chapters, activeC
     // Theme autosave
     const themeSaveTimeout = useRef(null);
 
+    // Fetch planner data
+    const fetchPlanner = useCallback(async () => {
+        if (!projectPath) return;
+        try {
+            const res = await window.api.loadPlanner(projectPath);
+            if (res.status === "ok") {
+                setSettings(res.settings || { theme: "", cursor_pct: 0, shadow_visible: 0 });
+                setBlocks(res.blocks || []);
+                setArcs(res.arcs || []);
+            }
+        } catch (err) {
+            console.error("Failed to load planner data:", err);
+        } finally {
+            setLoading(false);
+        }
+    }, [projectPath]);
+
     // Load from backend
     useEffect(() => {
         if (!projectPath) return;
-        const fetchPlanner = async () => {
-            try {
-                const res = await window.api.loadPlanner(projectPath);
-                if (res.status === "ok") {
-                    setSettings(res.settings || { theme: "", cursor_pct: 0, shadow_visible: 0 });
-                    setBlocks(res.blocks || []);
-                    setArcs(res.arcs || []);
-                }
-            } catch (err) {
-                console.error("Failed to load planner data:", err);
-            } finally {
-                setLoading(false);
-            }
-        };
         fetchPlanner();
 
         // Fetch twist data for timeline visualization
@@ -157,7 +170,16 @@ export default function FleshNotePlannerDesktop({ projectPath, chapters, activeC
             }
         };
         fetchTwists();
-    }, [projectPath]);
+    }, [projectPath, fetchPlanner]);
+
+    const handleFrameworkApplied = (res) => {
+        if (res && res.blocks) {
+            setBlocks(res.blocks);
+            setArcs(res.arcs || []);
+        } else {
+            fetchPlanner();
+        }
+    };
 
     // Persist modifications wrapper
     const apiSaveBlock = async (b) => {
@@ -531,6 +553,14 @@ export default function FleshNotePlannerDesktop({ projectPath, chapters, activeC
                 position: "relative",
             }}
         >
+            {/* STORY SUMMARY (from Brainstorm Sigil Hub) */}
+            {typeof projectConfig?.story_summary === 'string' && projectConfig.story_summary.trim() ? (
+                <div className="planner-story-summary">
+                    <span className="rune-inline">𐲐</span>
+                    <span className="planner-story-summary-text">{projectConfig.story_summary}</span>
+                </div>
+            ) : null}
+
             {/* HEADER SECTION */}
             <div
                 style={{
@@ -628,6 +658,28 @@ export default function FleshNotePlannerDesktop({ projectPath, chapters, activeC
                         }}
                     >
                         <Icons.Plus /> {t('ide.addArc', 'Add Arc')}
+                    </button>
+
+                    <button
+                        onClick={() => setShowFrameworkModal(true)}
+                        title={t('ide.frameworksTooltip', 'Switch narrative archetype or apply plot beat framework')}
+                        style={{
+                            display: "flex",
+                            alignItems: "center",
+                            gap: "6px",
+                            padding: "6px 14px",
+                            backgroundColor: "rgba(217, 119, 6, 0.12)",
+                            color: "var(--accent-amber)",
+                            border: "1px solid var(--accent-amber)",
+                            cursor: "pointer",
+                            fontFamily: "var(--font-mono)",
+                            fontSize: "11px",
+                            textTransform: "uppercase",
+                            letterSpacing: "0.5px",
+                            borderRadius: "2px"
+                        }}
+                    >
+                        <Icons.Compass /> {t('ide.frameworks', 'Frameworks')}
                     </button>
 
                     <div style={{
@@ -1379,6 +1431,17 @@ export default function FleshNotePlannerDesktop({ projectPath, chapters, activeC
                     })()}
                 </div>
             </div>
+
+            {showFrameworkModal && (
+                <FrameworkSwitcherModal
+                    projectPath={projectPath}
+                    projectConfig={projectConfig}
+                    currentFrameworkId={settings.narrative_framework || null}
+                    existingBlockCount={blocks.length}
+                    onClose={() => setShowFrameworkModal(false)}
+                    onApplied={handleFrameworkApplied}
+                />
+            )}
         </div>
     );
 }

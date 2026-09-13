@@ -857,6 +857,19 @@ def generate_project_db(project_path: str, answers: dict) -> str:
     """)
 
     # ══════════════════════════════════════════════════════════
+    # TABLE 16b: USAGE_DAILY (Time-spent per surface, per day)
+    # ══════════════════════════════════════════════════════════
+
+    cursor.execute("""
+        CREATE TABLE IF NOT EXISTS usage_daily (
+            date            TEXT NOT NULL,
+            surface         TEXT NOT NULL,
+            minutes         INTEGER NOT NULL DEFAULT 0,
+            PRIMARY KEY (date, surface)
+        )
+    """)
+
+    # ══════════════════════════════════════════════════════════
     # TABLE 17: ENTITY_MENTIONS (Precise Offset Tracking - Derived)
     # ══════════════════════════════════════════════════════════
 
@@ -1138,6 +1151,44 @@ def generate_project_db(project_path: str, answers: dict) -> str:
     """)
 
     # ══════════════════════════════════════════════════════════
+    # SEALED PENTIMENTO: server receipts (Proof-of-Process)
+    # Timestamping receipts from the Sealed Pentimento TSA (api.fleshnote.org) — and
+    # optionally an external RFC3161 TSA. The server only ever sees 64-char hashes,
+    # never prose. `kind`: 'seal' (session end hash) or 'head' (rolling mid-session
+    # head). status: 'pending' | 'anchored' | 'failed'.
+    # ══════════════════════════════════════════════════════════
+
+    cursor.execute("""
+        CREATE TABLE IF NOT EXISTS server_receipts (
+            id TEXT PRIMARY KEY DEFAULT (
+                lower(hex(randomblob(4))) || '-' ||
+                lower(hex(randomblob(2))) || '-4' ||
+                substr(lower(hex(randomblob(2))), 2) || '-' ||
+                substr('89ab', abs(random()) % 4 + 1, 1) ||
+                substr(lower(hex(randomblob(2))), 2) || '-' ||
+                lower(hex(randomblob(6)))
+            ),
+            session_id TEXT,
+            chapter_id TEXT,
+            kind TEXT NOT NULL DEFAULT 'seal',
+            anchored_hash TEXT NOT NULL,
+            previous_hash TEXT,
+            client_time TEXT NOT NULL,
+            server_time TEXT,
+            server_signature TEXT,
+            key_id TEXT,
+            tsa_token TEXT,
+            status TEXT NOT NULL DEFAULT 'pending',
+            failure_reason TEXT,
+            attempts INTEGER DEFAULT 0,
+            created_at TEXT DEFAULT (datetime('now')),
+            updated_at TEXT DEFAULT (datetime('now'))
+        )
+    """)
+    cursor.execute("CREATE INDEX IF NOT EXISTS idx_server_receipts_hash ON server_receipts(anchored_hash);")
+    cursor.execute("CREATE INDEX IF NOT EXISTS idx_server_receipts_session ON server_receipts(session_id);")
+
+    # ══════════════════════════════════════════════════════════
     # CHAPTER SNAPSHOTS: prose rollback ("Edit History")
     # Full zlib-compressed markdown of a chapter at a checkpoint. Pentimento ops are
     # deltas with no anchor and can't reconstruct past prose, so rollback needs real
@@ -1290,12 +1341,100 @@ def generate_project_db(project_path: str, answers: dict) -> str:
 
         # ── NLP ───────────────────────────────────────────────
         ("story_language", answers.get("story_language", "en"), "meta"),
+
+        # ── Narrative Framework ──────────────────────────────
+        ("narrative_framework", str(answers.get("narrative_framework", "custom")), "meta"),
+
+        # ── Architecture Stack (variant / engine / arc / protagonist) ──
+        ("framework_variant", answers.get("framework_variant", ""), "meta"),
+        ("dramatic_engine", answers.get("dramatic_engine", ""), "meta"),
+        ("emotional_arc", answers.get("emotional_arc", ""), "meta"),
+        ("framework_protagonist", answers.get("framework_protagonist", ""), "meta"),
+
+        # ── Story Summary (Brainstorm one-liner) ─────────────
+        ("story_summary", answers.get("story_summary", ""), "meta"),
     ]
 
     cursor.executemany(
         "INSERT OR REPLACE INTO project_config (config_key, config_value, config_type) VALUES (?, ?, ?)",
         configs,
     )
+
+    # ── Seed Narrative Framework (if specified) ───────────
+    framework_id = answers.get("narrative_framework")
+    if framework_id and framework_id != "custom":
+        from framework_presets import seed_framework_in_db, scaffold_chapters_for_framework, _create_single_default_chapter
+        seed_framework_in_db(
+            cursor,
+            framework_id,
+            clear_existing=True,
+            variant_id=answers.get("framework_variant"),
+        )
+        if answers.get("scaffold_chapters"):
+            total_words = int(answers.get("target_word_count") or 60000)
+            avg_words = int(answers.get("default_chapter_target") or 3500)
+            scaffold_chapters_for_framework(cursor, project_path, framework_id, total_words, avg_words)
+        else:
+            avg_words = int(answers.get("default_chapter_target") or 3500)
+            _create_single_default_chapter(cursor, project_path, avg_words)
+    else:
+        from framework_presets import _create_single_default_chapter
+        avg_words = int(answers.get("default_chapter_target") or 3500)
+        _create_single_default_chapter(cursor, project_path, avg_words)
+
+    # ── Seed Brainstormed Entities (Characters & Locations) ──
+    initial_characters = answers.get("initial_characters", [])
+    first_char_id = None
+    for char in initial_characters:
+        if not isinstance(char, dict):
+            continue
+        c_id = char.get("id") or str(uuid.uuid4())
+        if not first_char_id:
+            first_char_id = c_id
+        c_name = (char.get("name") or "").strip() or "Unnamed Character"
+        c_role = char.get("role") or "Protagonist"
+        c_bio = char.get("description") or ""
+        c_notes = char.get("notes") or ""
+        cursor.execute(
+            """INSERT OR REPLACE INTO characters (id, name, role, status, bio, notes, aliases)
+               VALUES (?, ?, ?, 'Alive', ?, ?, '[]')""",
+            (c_id, c_name, c_role, c_bio, c_notes),
+        )
+
+    initial_locations = answers.get("initial_locations", [])
+    for loc in initial_locations:
+        if not isinstance(loc, dict):
+            continue
+        l_id = loc.get("id") or str(uuid.uuid4())
+        l_name = (loc.get("name") or "").strip() or "Unnamed Site"
+        l_region = loc.get("siteType") or loc.get("climate") or "Unknown"
+        l_desc = loc.get("description") or ""
+        l_notes = loc.get("notes") or ""
+        cursor.execute(
+            """INSERT OR REPLACE INTO locations (id, name, region, description, notes, aliases)
+               VALUES (?, ?, ?, ?, ?, '[]')""",
+            (l_id, l_name, l_region, l_desc, l_notes),
+        )
+
+    if first_char_id:
+        cursor.execute(
+            "UPDATE chapters SET pov_character_id = ? WHERE chapter_number = 1",
+            (first_char_id,),
+        )
+
+    # ── Seed Brainstormed Quick Notes ─────────────────────
+    initial_notes = answers.get("initial_notes", [])
+    for note in initial_notes:
+        if not isinstance(note, dict):
+            continue
+        n_text = (note.get("text") or note.get("content") or "").strip()
+        if not n_text:
+            continue
+        n_id = note.get("id") or str(uuid.uuid4())
+        cursor.execute(
+            "INSERT OR REPLACE INTO quick_notes (id, content, note_type) VALUES (?, ?, 'Note')",
+            (n_id, n_text),
+        )
 
     conn.commit()
     conn.close()

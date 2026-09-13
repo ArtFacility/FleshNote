@@ -150,13 +150,70 @@ Restore/Storage/Prune/Clear`.
 
 ---
 
-## 7. Related tables
+## 7. Sealed Pentimento (Proof of Process)
+
+Verification makes the process log *proveable*: every sealed session hash is blind-
+timestamped by a timestamping authority (TSA), so a forger cannot fabricate or rewrite
+history without spending the same real-world time the manuscript took to write.
+
+**Privacy invariant:** only 64-character SHA-256 hashes ever leave the machine — never
+prose, entity data, or client timestamps beyond the receipt itself.
+
+### Flow
+
+1. **Opt-in** (default off). First app launch asks on the Project Picker
+   (`fn_pentimento_verification` in localStorage, mirrored to each project's
+   `project_config` as `pentimento_verification`). Also per-project in
+   Project Settings → Pentimento, plus a global Settings modal on the Picker
+   (which also hosts the future ArtFacility account section).
+2. **Rolling heads.** `pentimentoRecorder.js` maintains
+   `head = SHA256(prev chain state + flushed op fingerprints)` — the same
+   fingerprint format `session_end` seals with, advanced only after a confirmed
+   flush. Every **10 minutes of active typing** the head is anchored
+   (`POST /api/project/pentimento/anchor-head`).
+3. **Seal anchoring.** `session/end` inserts a `seal` receipt row and anchors it in a
+   background thread (a slow/unreachable TSA never stalls the editor).
+4. **Receipts.** `server_receipts` stores: kind (`seal`/`head`), the anchored hash +
+   previous hash, the TSA's `server_time`/`server_signature`/`key_id`, and optionally an
+   **external RFC 3161 cross-anchor token** (freetsa.org by default, opt-in via
+   `pentimento_external_tsa`) as an independent second opinion. Failures stay `pending`
+   and retry opportunistically (up to 20 per anchor round). Gaps are flagged by the
+   verifier, never fatal.
+5. **Verification.**
+   - **Web:** `fleshnote-site/verifier/` — fully client-side; the `.db` is parsed with
+     vendored sql.js and never uploaded.
+   - **CLI:** `tools/verify_pentimento.py` — same checks; `--keys-file` for a trustless
+     offline mode. Exit 0 = pass, 1 = verification failure (chain/tamper), 2 = soft notes.
+
+### What it proves (and what it doesn't)
+
+The system proves **temporal existence**: a chain hash containing your ops existed at a
+signed server time, and any later edit invalidates the anchored head. A forger must run
+their fake-writing bot in real time for the manuscript's actual duration. It does not
+cryptographically prove "human typing" — that's why the replay/heatmap visual evidence
+ships alongside it.
+
+### Components
+
+| Piece | Location |
+| ----- | -------- |
+| Rolling head + active-typing anchoring | `src/renderer/src/utils/pentimentoRecorder.js` |
+| TSA client (urllib, stdlib only; RFC 3161 encoder) | `backend/tsa_client.py` |
+| Receipt insert/anchor/retry/queue, head+seal endpoints | `backend/routes/pentimento.py` |
+| `server_receipts` table | `db_setup.py` (created on demand for legacy DBs) |
+| TSA service (closed source, Go + Postgres/SQLite) | `C:\Other Projects\fleshnote-backend` |
+| Web verifier | `C:\Other Projects\fleshnote-site\verifier\` |
+| CLI verifier | `tools/verify_pentimento.py` |
+
+---
+
+## 8. Related tables
 
 See `DATABASE_SCHEMA.md` §28 `pentimento_sessions`, §29 `pentimento_ops`,
 §30 `chapter_snapshots`, and §27 `change_log` / §31 `sync_meta` (the sync ancestry that
 restore writes into).
 
-## 8. Key files
+## 9. Key files
 
 | File | Role |
 | ---- | ---- |

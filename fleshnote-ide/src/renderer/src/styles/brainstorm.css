@@ -1,0 +1,1239 @@
+/* ── STORY ARCHITECT BRAINSTORM: SIGIL HUB & FORGES ────────────────────────── */
+
+.rune-inline {
+    font-family: var(--font-runes);
+    line-height: 1;
+}
+
+/* ── Hub: story idea bar & genre chips ── */
+.story-idea-bar {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    padding: 14px 18px;
+    background: var(--bg-surface);
+    border: 1px solid var(--border-subtle);
+    border-inline-start: 3px solid var(--accent-amber);
+}
+
+.story-idea-text {
+    flex: 1;
+    font-family: var(--font-serif);
+    font-style: italic;
+    font-size: 17px;
+    line-height: 1.5;
+    color: var(--text-primary);
+}
+
+.story-idea-reroll {
+    width: 34px;
+    height: 34px;
+    flex-shrink: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 16px;
+    color: var(--accent-amber);
+    background: transparent;
+    border: 1px solid var(--border-subtle);
+    cursor: pointer;
+    transition: border-color 0.2s ease, background 0.2s ease;
+}
+
+.story-idea-reroll:hover {
+    border-color: var(--accent-amber);
+    background: rgba(212, 160, 82, 0.08);
+}
+
+.story-idea-input {
+    flex: 1;
+    background: transparent;
+    border: none;
+    outline: none;
+    font-family: var(--font-serif);
+    font-style: italic;
+    font-size: 16px;
+    line-height: 1.5;
+    color: var(--text-primary);
+    min-width: 0;
+    resize: none;
+    overflow: hidden;
+    display: block;
+    align-self: center;
+    padding: 0;
+}
+
+.genre-chip-row {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+    margin-top: 12px;
+}
+
+.genre-chip {
+    font-family: var(--font-mono);
+    font-size: 11px;
+    padding: 5px 12px;
+    color: var(--text-tertiary);
+    background: transparent;
+    border: 1px solid var(--border-subtle);
+    cursor: pointer;
+    transition: all 0.15s ease;
+}
+
+.genre-chip:hover {
+    border-color: var(--accent-amber);
+    color: var(--accent-amber);
+}
+
+.genre-chip.active {
+    border-color: var(--accent-amber);
+    color: var(--accent-amber);
+    background: rgba(212, 160, 82, 0.1);
+}
+
+/* ── Hub: asymmetric single-screen layout ── */
+.hub-layout {
+    display: flex;
+    gap: 24px;
+    width: 100%;
+    max-width: 1040px;
+    height: 100%;
+    min-height: 0;
+    margin: 0 auto;
+}
+
+.hub-left {
+    width: 400px;
+    flex-shrink: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 18px;
+    min-height: 0;
+    overflow-y: auto;
+    padding-bottom: 4px;
+}
+
+.hub-stage-wrap {
+    flex: 1;
+    min-width: 0;
+    position: relative;
+}
+
+.hub-note-trigger {
+    align-self: center;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 10px 18px;
+    font-family: var(--font-mono);
+    font-size: 12px;
+    color: var(--text-secondary);
+    background: transparent;
+    border: 1px dashed var(--border-subtle);
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+
+.hub-note-trigger:hover {
+    border-color: var(--accent-purple);
+    color: var(--accent-purple);
+}
+
+.hub-note-trigger .rune-inline {
+    font-size: 16px;
+    color: var(--accent-purple);
+}
+
+.hub-note-editor {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+
+.hub-note-editor textarea {
+    width: 100%;
+    padding: 10px 12px;
+    background: var(--bg-elevated);
+    border: 1px solid var(--border-subtle);
+    color: var(--text-primary);
+    font-family: var(--font-sans);
+    font-size: 13px;
+    line-height: 1.5;
+    resize: none;
+    outline: none;
+    box-sizing: border-box;
+}
+
+.hub-note-editor textarea:focus {
+    border-color: var(--accent-purple);
+}
+
+.hub-note-actions {
+    display: flex;
+    align-items: center;
+    justify-content: flex-end;
+    gap: 8px;
+}
+
+.hub-note-cancel,
+.hub-note-delete,
+.hub-note-save {
+    font-family: var(--font-mono);
+    font-size: 11px;
+    padding: 7px 12px;
+    cursor: pointer;
+    transition: background 0.2s ease;
+}
+
+.hub-note-cancel {
+    background: transparent;
+    border: 1px solid var(--border-subtle);
+    color: var(--text-tertiary);
+}
+
+.hub-note-cancel:hover {
+    color: var(--text-primary);
+}
+
+.hub-note-delete {
+    background: transparent;
+    border: 1px solid rgba(196, 92, 92, 0.35);
+    color: var(--accent-red);
+}
+
+.hub-note-delete:hover {
+    background: rgba(196, 92, 92, 0.1);
+}
+
+.hub-note-save {
+    background: var(--accent-purple);
+    border: none;
+    color: #0c0c11;
+    font-weight: 700;
+}
+
+.hub-note-save:hover {
+    filter: brightness(1.15);
+}
+
+/* ── Hub: spark squares ── */
+.spark-square {
+    width: 150px;
+    height: 140px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+    background: var(--bg-surface);
+    border: 1px solid var(--border-subtle);
+    cursor: pointer;
+    transition: border-color 0.2s ease, background 0.2s ease, box-shadow 0.2s ease;
+}
+
+.spark-square-rune {
+    font-family: var(--font-runes);
+    font-size: 34px;
+    line-height: 1;
+}
+
+.spark-square-label {
+    font-family: var(--font-sans);
+    font-size: 12px;
+    font-weight: 600;
+    color: var(--text-primary);
+    letter-spacing: 0.3px;
+    padding: 0 10px;
+    text-align: center;
+}
+
+.spark-square.amber .spark-square-rune {
+    color: var(--accent-amber);
+}
+
+.spark-square.blue .spark-square-rune {
+    color: var(--accent-blue);
+}
+
+.spark-square.amber:hover {
+    border-color: var(--accent-amber);
+    background: rgba(212, 160, 82, 0.06);
+    box-shadow: 0 0 28px rgba(212, 160, 82, 0.15);
+}
+
+.spark-square.blue:hover {
+    border-color: var(--accent-blue);
+    background: rgba(92, 142, 196, 0.06);
+    box-shadow: 0 0 28px rgba(92, 142, 196, 0.15);
+}
+
+/* ── Hub: sigil stage & orbit ── */
+.sigil-stage {
+    position: absolute;
+    inset: 0;
+}
+
+.sigil-ring {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    border: 1px dashed rgba(255, 255, 255, 0.07);
+    border-radius: 50%;
+    pointer-events: none;
+}
+
+.sigil-center {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    font-family: var(--font-runes);
+    font-size: 40px;
+    letter-spacing: 6px;
+    color: var(--accent-amber);
+    white-space: nowrap;
+    animation: sigil-pulse 6s ease-in-out infinite;
+    pointer-events: none;
+}
+
+.sigil-orbiter {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    width: 0;
+    height: 0;
+    animation: sigil-orbit var(--orbit-t, 36s) linear infinite;
+}
+
+.sigil-counter {
+    width: 0;
+    height: 0;
+    animation: sigil-counter var(--orbit-t, 36s) linear infinite;
+}
+
+.sigil-rune {
+    position: absolute;
+    top: 0;
+    left: 0;
+    transform: translate(-50%, -50%);
+    width: 44px;
+    height: 44px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-family: var(--font-runes);
+    font-size: 26px;
+    background: var(--bg-surface);
+    border: 1px solid var(--border-subtle);
+    cursor: pointer;
+    transition: transform 0.2s ease, border-color 0.2s ease, box-shadow 0.2s ease;
+}
+
+.sigil-rune.amber {
+    color: var(--accent-amber);
+}
+
+.sigil-rune.blue {
+    color: var(--accent-blue);
+}
+
+.sigil-rune.purple {
+    color: var(--accent-purple);
+}
+
+.sigil-rune:hover {
+    transform: translate(-50%, -50%) scale(1.18);
+    z-index: 50;
+}
+
+.sigil-rune.amber:hover {
+    border-color: var(--accent-amber);
+    box-shadow: 0 0 20px rgba(212, 160, 82, 0.3);
+}
+
+.sigil-rune.blue:hover {
+    border-color: var(--accent-blue);
+    box-shadow: 0 0 20px rgba(92, 142, 196, 0.3);
+}
+
+.sigil-rune.purple:hover {
+    border-color: var(--accent-purple);
+    box-shadow: 0 0 20px rgba(139, 110, 196, 0.3);
+}
+
+.sigil-tooltip {
+    display: none;
+    position: absolute;
+    bottom: calc(100% + 12px);
+    left: 50%;
+    transform: translateX(-50%);
+    width: 250px;
+    padding: 12px 14px;
+    background: var(--bg-base);
+    border: 1px solid var(--border-subtle);
+    box-shadow: 0 12px 40px rgba(0, 0, 0, 0.7);
+    text-align: start;
+    z-index: 80;
+    pointer-events: none;
+}
+
+.sigil-rune:hover .sigil-tooltip {
+    display: block;
+}
+
+.sigil-tooltip-name {
+    font-family: var(--font-sans);
+    font-size: 14px;
+    font-weight: 600;
+    color: var(--text-primary);
+    margin-bottom: 4px;
+}
+
+.sigil-tooltip-meta {
+    font-family: var(--font-mono);
+    font-size: 10px;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    color: var(--accent-amber);
+    margin-bottom: 8px;
+}
+
+.sigil-rune.blue .sigil-tooltip-meta {
+    color: var(--accent-blue);
+}
+
+.sigil-tooltip-meta.purple {
+    color: var(--accent-purple);
+}
+
+.sigil-tooltip-desc {
+    font-family: var(--font-serif);
+    font-style: italic;
+    font-size: 13px;
+    line-height: 1.45;
+    color: var(--text-secondary);
+    margin-bottom: 8px;
+}
+
+.sigil-tooltip-hint {
+    font-family: var(--font-mono);
+    font-size: 10px;
+    color: var(--text-tertiary);
+}
+
+.sigil-empty-hint {
+    position: absolute;
+    bottom: 10px;
+    left: 0;
+    right: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+    font-family: var(--font-mono);
+    font-size: 12px;
+    color: var(--text-tertiary);
+    pointer-events: none;
+}
+
+.sigil-empty-hint .rune-inline {
+    font-size: 20px;
+    color: var(--accent-amber);
+    opacity: 0.6;
+}
+
+/* ── Shared CTA button ── */
+.forge-cta {
+    padding: 12px 28px;
+    font-family: var(--font-mono);
+    font-size: 13px;
+    font-weight: 600;
+    cursor: pointer;
+    border: none;
+    transition: background 0.2s ease, color 0.2s ease, border-color 0.2s ease;
+}
+
+.forge-cta.amber {
+    background: var(--accent-amber);
+    color: #0c0c11;
+}
+
+.forge-cta.amber:hover {
+    background: var(--accent-amber-hover);
+}
+
+.forge-cta.blue {
+    background: var(--accent-blue);
+    color: #0c0c11;
+}
+
+.forge-cta.blue:hover {
+    filter: brightness(1.12);
+}
+
+.forge-cta.ghost {
+    background: transparent;
+    border: 1px solid var(--border-subtle);
+    color: var(--text-secondary);
+}
+
+.forge-cta.ghost:hover {
+    background: rgba(255, 255, 255, 0.06);
+    color: var(--text-primary);
+}
+
+/* ── Plot Planner story summary banner ── */
+.planner-story-summary {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    margin: 20px 40px 0;
+    padding: 12px 16px;
+    background: var(--bg-base);
+    border: 1px solid var(--border-subtle);
+    border-inline-start: 3px solid var(--accent-amber);
+}
+
+.planner-story-summary .rune-inline {
+    color: var(--accent-amber);
+    font-size: 15px;
+    flex-shrink: 0;
+}
+
+.planner-story-summary-text {
+    font-family: var(--font-serif);
+    font-style: italic;
+    font-size: 15px;
+    line-height: 1.5;
+    color: var(--text-secondary);
+}
+
+/* ── Forge shell ── */
+.forge-overlay {
+    position: fixed;
+    inset: 0;
+    z-index: 10000;
+    display: flex;
+    flex-direction: column;
+    background: var(--bg-deep);
+}
+
+.forge-topbar {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 16px;
+    height: 64px;
+    padding: 0 20px;
+    background: var(--bg-base);
+    border-bottom: 1px solid var(--border-subtle);
+    flex-shrink: 0;
+}
+
+.forge-back {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-family: var(--font-mono);
+    font-size: 12px;
+    color: var(--text-secondary);
+    background: none;
+    border: none;
+    cursor: pointer;
+    flex-shrink: 0;
+    transition: color 0.2s ease;
+}
+
+.forge-back:hover {
+    color: var(--accent-amber);
+}
+
+.forge-back-arrow {
+    font-size: 15px;
+}
+
+.forge-name-cluster {
+    flex: 1;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+    max-width: 560px;
+    margin: 0 auto;
+}
+
+.forge-name-input {
+    width: 100%;
+    background: transparent;
+    border: none;
+    border-bottom: 2px solid var(--border-subtle);
+    font-family: var(--font-serif);
+    font-size: 26px;
+    color: var(--text-primary);
+    text-align: center;
+    padding: 4px 8px;
+    outline: none;
+    transition: border-color 0.2s ease;
+}
+
+.forge-name-input:focus {
+    border-bottom-color: var(--accent-amber);
+}
+
+.forge-name-input.blue:focus {
+    border-bottom-color: var(--accent-blue);
+}
+
+.forge-dice {
+    width: 36px;
+    height: 36px;
+    flex-shrink: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 17px;
+    color: var(--text-primary);
+    background: transparent;
+    border: 1px solid var(--border-subtle);
+    cursor: pointer;
+    transition: border-color 0.2s ease;
+}
+
+.forge-dice:hover {
+    border-color: var(--accent-amber);
+}
+
+.forge-dice:disabled {
+    opacity: 0.4;
+    cursor: not-allowed;
+}
+
+.forge-reimagine {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 10px 16px;
+    font-family: var(--font-mono);
+    font-size: 12px;
+    font-weight: 600;
+    color: var(--accent-amber);
+    background: rgba(212, 160, 82, 0.08);
+    border: 1px solid var(--accent-amber);
+    cursor: pointer;
+    flex-shrink: 0;
+    transition: background 0.2s ease;
+}
+
+.forge-reimagine:hover {
+    background: rgba(212, 160, 82, 0.18);
+}
+
+.forge-reimagine.blue {
+    color: var(--accent-blue);
+    background: rgba(92, 142, 196, 0.08);
+    border-color: var(--accent-blue);
+}
+
+.forge-reimagine.blue:hover {
+    background: rgba(92, 142, 196, 0.18);
+}
+
+/* ── Forge stage ── */
+.forge-stage {
+    flex: 1;
+    min-height: 0;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 30px;
+    padding: 24px;
+    position: relative;
+    overflow: hidden;
+}
+
+.forge-figure {
+    position: relative;
+    flex-shrink: 0;
+}
+
+.forge-figure-glow {
+    position: absolute;
+    inset: -70px;
+    background: radial-gradient(circle, rgba(212, 160, 82, 0.12) 0%, transparent 62%);
+    pointer-events: none;
+}
+
+.forge-figure-glow.blue {
+    background: radial-gradient(circle, rgba(92, 142, 196, 0.12) 0%, transparent 62%);
+}
+
+.forge-float-tag {
+    position: absolute;
+    padding: 6px 12px;
+    font-family: var(--font-sans);
+    font-size: 12.5px;
+    font-weight: 600;
+    white-space: nowrap;
+    background: var(--bg-base);
+    border: 1px solid;
+    cursor: pointer;
+    z-index: 5;
+    transform: translate(-50%, 0);
+    animation: tag-drift 5.5s ease-in-out infinite alternate;
+    transition: box-shadow 0.2s ease;
+}
+
+.forge-float-tag.pos {
+    color: #34d399;
+    border-color: rgba(52, 211, 153, 0.4);
+}
+
+.forge-float-tag.neg {
+    color: #fb7185;
+    border-color: rgba(251, 113, 133, 0.4);
+}
+
+.forge-float-tag:hover {
+    box-shadow: 0 0 16px rgba(0, 0, 0, 0.6);
+}
+
+.forge-desc {
+    position: relative;
+    max-width: 640px;
+    text-align: center;
+}
+
+.forge-desc p {
+    font-family: var(--font-serif);
+    font-style: italic;
+    font-size: 17px;
+    line-height: 1.6;
+    color: var(--text-secondary);
+}
+
+.forge-desc-input {
+    width: 100%;
+    background: transparent;
+    border: none;
+    outline: none;
+    font-family: var(--font-serif);
+    font-style: italic;
+    font-size: 17px;
+    line-height: 1.6;
+    color: var(--text-secondary);
+    text-align: center;
+    resize: none;
+    overflow: hidden;
+    display: block;
+    padding: 0;
+}
+
+.forge-desc-input:focus {
+    background: rgba(255, 255, 255, 0.03);
+}
+
+.forge-desc-reroll {
+    position: absolute;
+    top: -34px;
+    inset-inline-end: 0;
+    width: 30px;
+    height: 30px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 15px;
+    color: var(--accent-amber);
+    background: transparent;
+    border: 1px solid var(--border-subtle);
+    cursor: pointer;
+    transition: border-color 0.2s ease;
+}
+
+.forge-desc-reroll.blue {
+    color: var(--accent-blue);
+}
+
+.forge-desc-reroll:hover {
+    border-color: var(--accent-amber);
+}
+
+.forge-desc-reroll.blue:hover {
+    border-color: var(--accent-blue);
+}
+
+/* ── Forge notch panels ── */
+.forge-notch {
+    position: absolute;
+    top: 70px;
+    bottom: 70px;
+    z-index: 40;
+    display: flex;
+    align-items: center;
+    pointer-events: none;
+}
+
+.notch-left {
+    inset-inline-start: 0;
+}
+
+.notch-right {
+    inset-inline-end: 0;
+}
+
+.notch-handle {
+    writing-mode: vertical-rl;
+    font-family: var(--font-mono);
+    font-size: 11px;
+    font-weight: 600;
+    letter-spacing: 1.5px;
+    text-transform: uppercase;
+    padding: 16px 8px;
+    background: var(--bg-base);
+    border: 1px solid var(--border-subtle);
+    color: var(--text-tertiary);
+    cursor: pointer;
+    pointer-events: auto;
+    transition: color 0.2s ease, border-color 0.2s ease;
+    white-space: nowrap;
+}
+
+.notch-left .notch-handle {
+    transform: rotate(180deg);
+}
+
+.notch-handle:hover,
+.forge-notch.open .notch-handle {
+    color: var(--accent-amber);
+    border-color: var(--accent-amber);
+}
+
+.notch-right .notch-handle:hover,
+.notch-right.open .notch-handle {
+    color: var(--accent-blue);
+    border-color: var(--accent-blue);
+}
+
+.notch-panel {
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    width: 380px;
+    max-width: calc(100vw - 80px);
+    padding: 22px 24px;
+    background: var(--bg-surface);
+    border: 1px solid var(--border-subtle);
+    overflow-y: auto;
+    opacity: 0;
+    pointer-events: none;
+    transition: transform 0.25s ease, opacity 0.25s ease;
+}
+
+.notch-left .notch-panel {
+    inset-inline-start: 36px;
+    transform: translateX(calc(-100% - 36px));
+}
+
+.notch-right .notch-panel {
+    inset-inline-end: 36px;
+    transform: translateX(calc(100% + 36px));
+}
+
+.forge-notch.open .notch-panel {
+    opacity: 1;
+    pointer-events: auto;
+    transform: translateX(0);
+}
+
+.notch-tabs {
+    display: flex;
+    gap: 6px;
+    margin-bottom: 18px;
+    padding-bottom: 12px;
+    border-bottom: 1px solid var(--border-subtle);
+}
+
+.notch-tab {
+    font-family: var(--font-mono);
+    font-size: 11px;
+    padding: 6px 10px;
+    background: transparent;
+    border: 1px solid transparent;
+    color: var(--text-tertiary);
+    cursor: pointer;
+    transition: all 0.15s ease;
+}
+
+.notch-tab:hover {
+    color: var(--text-primary);
+}
+
+.notch-tab.active {
+    color: var(--accent-amber);
+    border-color: var(--accent-amber);
+    background: rgba(212, 160, 82, 0.1);
+}
+
+.notch-tab.small {
+    font-size: 10.5px;
+    padding: 4px 8px;
+    text-transform: capitalize;
+}
+
+.notch-subtabs {
+    display: flex;
+    gap: 6px;
+    margin-bottom: 14px;
+}
+
+.notch-panel-header {
+    margin-bottom: 16px;
+}
+
+.notch-panel-header h4 {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    font-family: var(--font-sans);
+    font-size: 15px;
+    color: var(--text-primary);
+    margin-bottom: 12px;
+}
+
+.notch-panel-header .forge-hint {
+    margin-top: 0;
+}
+
+/* ── Forge shared controls ── */
+.forge-label {
+    display: block;
+    font-family: var(--font-mono);
+    font-size: 10.5px;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    color: var(--text-tertiary);
+    margin-bottom: 6px;
+}
+
+.forge-input {
+    width: 100%;
+    padding: 9px 12px;
+    background: var(--bg-elevated);
+    border: 1px solid var(--border-subtle);
+    color: var(--text-primary);
+    font-family: var(--font-mono);
+    font-size: 12.5px;
+    outline: none;
+    transition: border-color 0.2s ease;
+}
+
+.forge-input:focus {
+    border-color: var(--accent-blue);
+}
+
+.forge-select {
+    width: 100%;
+    padding: 9px 12px;
+    background: var(--bg-elevated);
+    border: 1px solid var(--border-subtle);
+    color: var(--text-primary);
+    font-family: var(--font-mono);
+    font-size: 12.5px;
+    cursor: pointer;
+    outline: none;
+}
+
+.forge-hint {
+    font-family: var(--font-sans);
+    font-size: 12px;
+    line-height: 1.5;
+    color: var(--text-tertiary);
+    margin-top: 12px;
+}
+
+.forge-panel-action {
+    margin-top: 14px;
+    width: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 6px;
+    padding: 10px;
+    font-family: var(--font-mono);
+    font-size: 12px;
+    color: var(--text-primary);
+    background: transparent;
+    border: 1px solid var(--border-subtle);
+    cursor: pointer;
+    transition: border-color 0.2s ease;
+}
+
+.forge-panel-action:hover {
+    border-color: var(--accent-amber);
+}
+
+.forge-panel-action:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+}
+
+.age-bracket-badge {
+    font-family: var(--font-mono);
+    font-size: 10px;
+    font-weight: 700;
+    padding: 2px 6px;
+}
+
+.slider-badge {
+    font-family: var(--font-mono);
+    font-size: 11px;
+    font-weight: 700;
+    text-transform: capitalize;
+}
+
+.forge-checkbox-row {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    margin-top: 14px;
+    cursor: pointer;
+}
+
+.forge-checkbox-row span {
+    font-family: var(--font-sans);
+    font-size: 12px;
+    color: var(--text-secondary);
+}
+
+/* ── Vault sections (trait vault, sensory tags, candidates) ── */
+.vault-section {
+    margin-bottom: 22px;
+}
+
+.vault-section-title {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-family: var(--font-mono);
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: 1px;
+    margin-bottom: 10px;
+}
+
+.vault-section-title.green {
+    color: #34d399;
+}
+
+.vault-section-title.red {
+    color: #fb7185;
+}
+
+.vault-section-title.blue {
+    color: #60a5fa;
+}
+
+.vault-randomize {
+    margin-inline-start: auto;
+    display: flex;
+    align-items: center;
+    gap: 4px;
+    background: none;
+    border: none;
+    font-family: var(--font-mono);
+    font-size: 11px;
+    font-weight: 400;
+    letter-spacing: 0;
+    color: var(--accent-amber);
+    cursor: pointer;
+    text-transform: none;
+}
+
+.vault-tags {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 6px;
+}
+
+.vault-tag {
+    padding: 6px 10px;
+    font-family: var(--font-sans);
+    font-size: 12px;
+    background: transparent;
+    border: 1px solid;
+    cursor: pointer;
+    transition: background 0.15s ease, border-color 0.15s ease, color 0.15s ease;
+}
+
+.vault-tag.green {
+    color: #34d399;
+    border-color: rgba(52, 211, 153, 0.25);
+}
+
+.vault-tag.green:hover {
+    background: rgba(52, 211, 153, 0.08);
+}
+
+.vault-tag.red {
+    color: #fb7185;
+    border-color: rgba(251, 113, 133, 0.25);
+}
+
+.vault-tag.red:hover {
+    background: rgba(251, 113, 133, 0.08);
+}
+
+.vault-tag.blue {
+    color: #60a5fa;
+    border-color: rgba(96, 165, 250, 0.25);
+}
+
+.vault-tag.blue:hover {
+    background: rgba(96, 165, 250, 0.08);
+}
+
+.vault-tag.selected.green {
+    background: rgba(52, 211, 153, 0.18);
+    border-color: #34d399;
+    color: #fff;
+}
+
+.vault-tag.selected.red {
+    background: rgba(251, 113, 133, 0.18);
+    border-color: #fb7185;
+    color: #fff;
+}
+
+.vault-tag.selected.blue {
+    background: rgba(96, 165, 250, 0.18);
+    border-color: #60a5fa;
+    color: #fff;
+}
+
+.suggestion-row {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 4px;
+    margin-top: 6px;
+}
+
+.suggestion-chip {
+    font-family: var(--font-mono);
+    font-size: 10.5px;
+    padding: 3px 8px;
+    color: var(--text-secondary);
+    background: transparent;
+    border: 1px solid var(--border-subtle);
+    cursor: pointer;
+    transition: all 0.15s ease;
+}
+
+.suggestion-chip:hover {
+    border-color: var(--accent-amber);
+    color: var(--accent-amber);
+}
+
+/* ── Forge footer ── */
+.forge-footer {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 16px;
+    height: 64px;
+    padding: 0 20px;
+    background: var(--bg-base);
+    border-top: 1px solid var(--border-subtle);
+    flex-shrink: 0;
+}
+
+.forge-footer-hint {
+    font-family: var(--font-sans);
+    font-size: 12px;
+    color: var(--text-tertiary);
+}
+
+.forge-delete {
+    font-family: var(--font-mono);
+    font-size: 11px;
+    padding: 8px 14px;
+    color: var(--accent-red);
+    background: transparent;
+    border: 1px solid rgba(196, 92, 92, 0.35);
+    cursor: pointer;
+    transition: background 0.2s ease;
+}
+
+.forge-delete:hover {
+    background: rgba(196, 92, 92, 0.1);
+}
+
+.forge-delete.confirm {
+    background: rgba(196, 92, 92, 0.2);
+    color: #fff;
+    font-weight: 700;
+}
+
+/* ── Animations ── */
+@keyframes sigil-orbit {
+    from {
+        transform: rotate(var(--orbit-a)) translateX(var(--orbit-r));
+    }
+
+    to {
+        transform: rotate(calc(var(--orbit-a) + 360deg)) translateX(var(--orbit-r));
+    }
+}
+
+@keyframes sigil-counter {
+    from {
+        transform: rotate(calc(-1 * var(--orbit-a)));
+    }
+
+    to {
+        transform: rotate(calc(-360deg - var(--orbit-a)));
+    }
+}
+
+@keyframes tag-drift {
+    from {
+        transform: translate(-50%, -6px);
+    }
+
+    to {
+        transform: translate(-50%, 8px);
+    }
+}
+
+@keyframes sigil-pulse {
+
+    0%,
+    100% {
+        opacity: 0.85;
+        text-shadow: 0 0 22px rgba(212, 160, 82, 0.25);
+    }
+
+    50% {
+        opacity: 1;
+        text-shadow: 0 0 38px rgba(212, 160, 82, 0.5);
+    }
+}
+
+@media (prefers-reduced-motion: reduce) {
+
+    .sigil-orbiter,
+    .sigil-counter,
+    .forge-float-tag,
+    .sigil-center {
+        animation: none;
+    }
+
+    .sigil-orbiter {
+        transform: rotate(var(--orbit-a)) translateX(var(--orbit-r));
+    }
+
+    .sigil-counter {
+        transform: rotate(calc(-1 * var(--orbit-a)));
+    }
+}

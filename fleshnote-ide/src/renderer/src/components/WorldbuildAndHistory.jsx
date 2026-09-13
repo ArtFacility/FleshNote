@@ -1204,9 +1204,14 @@ function CharacterTimelineTab({ projectPath, chapters, entities, characters, pro
     );
 }
 
-export default function WorldbuildAndHistory({ projectPath, chapters, entities, characters, projectConfig, onConfigUpdate, calConfig, onCalendarChanged }) {
+export default function WorldbuildAndHistory({ projectPath, chapters, entities, characters, projectConfig, onConfigUpdate, calConfig, onCalendarChanged, onSurfaceChange }) {
     const { t } = useTranslation();
     const [activeTab, setActiveTab] = useState("timeline");
+
+    // Report the active sub-tab upward so time tracking can bucket it per surface
+    useEffect(() => {
+        onSurfaceChange?.(activeTab === "sketchboards" ? "sketchboards" : `worldinfo_${activeTab}`);
+    }, [activeTab, onSurfaceChange]);
 
     return (
         <div style={{ flex: 1, display: "flex", flexDirection: "column", height: "100%", width: "100%", overflow: "hidden" }}>

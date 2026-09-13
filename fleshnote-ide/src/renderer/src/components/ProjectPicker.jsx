@@ -3,6 +3,9 @@ import { useTranslation } from 'react-i18next'
 import changelogData from '../changelog.json'
 import ideIcon from '../assets/ide_icon.svg'
 import CloneModal from './CloneModal'
+import PentimentoFirstRunModal from './PentimentoFirstRunModal'
+import PickerSettingsModal from './PickerSettingsModal'
+import { getVerificationDefault } from '../utils/pentimentoVerification'
 
 // ─── Rovásírás → Latin title animation ───────────────────────────────────────
 // Old Hungarian Unicode block (U+10C80–U+10CFF)
@@ -166,7 +169,19 @@ export default function ProjectPicker({
   const [showAbout, setShowAbout] = useState(false)
   const [showCredits, setShowCredits] = useState(false)
   const [showMobileImport, setShowMobileImport] = useState(false)
+  const [showSettings, setShowSettings] = useState(false)
+  const [showFirstRun, setShowFirstRun] = useState(false)
   const [updateState, setUpdateState] = useState({ status: 'idle' })
+
+  // First launch of a fresh install: ask about Sealed Pentimento before any
+  // writing session exists, so fully-offline users never get interrupted later.
+  useEffect(() => {
+    let timer = null
+    if (getVerificationDefault() == null) {
+      timer = setTimeout(() => setShowFirstRun(true), 1200)
+    }
+    return () => { if (timer) clearTimeout(timer) }
+  }, [])
 
   const fetchProjects = async (path) => {
     setLoading(true)
@@ -575,6 +590,50 @@ export default function ProjectPicker({
         </div>
       </div>
 
+      {/* ── App-level Settings (top right corner, outside the card) ── */}
+      <button
+        onClick={() => setShowSettings(true)}
+        title={t('picker.settingsTitle', 'Settings')}
+        style={{
+          position: 'absolute',
+          top: '24px',
+          insetInlineEnd: '24px',
+          padding: '10px',
+          backgroundColor: 'var(--bg-elevated)',
+          color: 'var(--text-secondary)',
+          border: '1px solid var(--border-subtle)',
+          cursor: 'pointer',
+          display: 'flex',
+          alignItems: 'center',
+          justifyContent: 'center',
+          borderRadius: '4px',
+          transition: 'all 0.2s ease',
+        }}
+        onMouseEnter={(e) => { e.currentTarget.style.color = 'var(--accent-amber)'; e.currentTarget.style.borderColor = 'var(--accent-amber)' }}
+        onMouseLeave={(e) => { e.currentTarget.style.color = 'var(--text-secondary)'; e.currentTarget.style.borderColor = 'var(--border-subtle)' }}
+      >
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+          <circle cx="12" cy="12" r="3"></circle>
+          <path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"></path>
+        </svg>
+      </button>
+
+      {/* ── Sealed Pentimento first-run prompt ── */}
+      {showFirstRun && (
+        <PentimentoFirstRunModal
+          projects={projects}
+          onClose={() => setShowFirstRun(false)}
+        />
+      )}
+
+      {/* ── Picker Settings ── */}
+      {showSettings && (
+        <PickerSettingsModal
+          projects={projects}
+          onClose={() => setShowSettings(false)}
+        />
+      )}
+
       {/* ── Changelog Modal ── */}
       {showChangelog && (
         <div className="popup-overlay" onClick={() => setShowChangelog(false)} style={{ zIndex: 9999 }}>
@@ -591,7 +650,26 @@ export default function ProjectPicker({
                     <span style={{ color: 'var(--text-tertiary)', fontSize: '12px' }}>{log.date}</span>
                   </div>
                   <ul style={{ margin: 0, paddingInlineStart: '20px', color: 'var(--text-secondary)', fontSize: '13px', lineHeight: 1.6 }}>
-                    {log.changes.map((change, cIdx) => <li key={cIdx}>{change}</li>)}
+                    {log.changes.map((change, cIdx) => {
+                      if (change.includes('artfacility.xyz')) {
+                        const parts = change.split('artfacility.xyz')
+                        return (
+                          <li key={cIdx}>
+                            {parts[0]}
+                            <a
+                              href="https://artfacility.xyz"
+                              target="_blank"
+                              rel="noreferrer"
+                              style={{ color: 'var(--accent-amber)', textDecoration: 'underline' }}
+                            >
+                              artfacility.xyz
+                            </a>
+                            {parts[1]}
+                          </li>
+                        )
+                      }
+                      return <li key={cIdx}>{change}</li>
+                    })}
                   </ul>
                 </div>
               ))}

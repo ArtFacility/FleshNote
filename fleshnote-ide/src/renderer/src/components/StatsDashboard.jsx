@@ -1,6 +1,6 @@
 import { useState, useMemo, useEffect, useCallback, useRef } from "react";
 import { useTranslation } from "react-i18next";
-import { BarChart, Bar, LineChart, Line, PieChart, Pie, RadarChart, Radar, PolarGrid, PolarAngleAxis, XAxis, YAxis, Tooltip as RechartsTooltip, ResponsiveContainer, Cell } from "recharts";
+import { BarChart, Bar, LineChart, Line, PieChart, Pie, RadarChart, Radar, PolarGrid, PolarAngleAxis, XAxis, YAxis, Tooltip as RechartsTooltip, ResponsiveContainer, Cell, AreaChart, Area } from "recharts";
 import EntityInspectorPanel from "./ide-panels/EntityInspectorPanel";
 import PentimentoTab from "./PentimentoTab";
 
@@ -313,9 +313,20 @@ function WritingStreak({ dailyLogs }) {
 // TABS
 // ══════════════════════════════════════════════════════════════
 
-function HabitsTab({ statLogs, globalStats, chapters }) {
+function HabitsTab({ statLogs, globalStats, chapters, projectPath }) {
     const { t } = useTranslation();
     const [timeRange, setTimeRange] = useState("daily"); // hourly | daily | monthly
+    const [usageSpan, setUsageSpan] = useState(30);      // 7 | 30 | 0 (all-time)
+    const [usageReport, setUsageReport] = useState(null);
+
+    useEffect(() => {
+        if (!projectPath) return;
+        let cancelled = false;
+        window.api.usageReport({ project_path: projectPath, days: usageSpan })
+            .then(res => { if (!cancelled) setUsageReport(res || null); })
+            .catch(() => { if (!cancelled) setUsageReport(null); });
+        return () => { cancelled = true };
+    }, [projectPath, usageSpan]);
 
     // Aggregate words for calculations based on any of the arrays (sums are identical)
     const wordsGainedLine = useMemo(() => {
@@ -354,6 +365,38 @@ function HabitsTab({ statLogs, globalStats, chapters }) {
     }, [statLogs, timeRange]);
 
     const totalWords = useMemo(() => chapters.reduce((sum, ch) => sum + ch.word_count, 0), [chapters]);
+
+    // Manuscript growth: cumulative net words per day (daily logs → running sum)
+    const growthData = useMemo(() => {
+        const logs = statLogs?.daily || [];
+        let cumulative = 0;
+        return logs.map(log => {
+            cumulative += (log.new_words || 0) - (log.deleted_words || 0);
+            return {
+                date: log.log_date,
+                label: log.log_date?.split("-").slice(1).join("/"),
+                cumulative
+            };
+        });
+    }, [statLogs]);
+
+    // Time-per-surface breakdown from usage_daily
+    const SURFACES = [
+        { id: "editor", color: "var(--accent-amber)", labelKey: "stats.surfEditor" },
+        { id: "planner", color: "var(--entity-location)", labelKey: "stats.surfPlanner" },
+        { id: "worldinfo_timeline", color: "var(--entity-character)", labelKey: "stats.surfTimeline" },
+        { id: "worldinfo_calendar", color: "var(--entity-lore, #7ba05b)", labelKey: "stats.surfCalendar" },
+        { id: "sketchboards", color: "var(--accent-purple)", labelKey: "stats.surfSketchboards" },
+        { id: "entities", color: "var(--entity-location)", labelKey: "stats.surfEntities" },
+        { id: "stats", color: "var(--entity-item)", labelKey: "stats.surfStats" },
+        { id: "app", color: T.textDim, labelKey: "stats.surfOther" },
+    ];
+    const usageTotals = usageReport?.totals || {};
+    const usageChartData = useMemo(() => SURFACES.map(s => ({
+        surface: t(s.labelKey, s.id),
+        minutes: usageTotals[s.id] || 0,
+        color: s.color
+    })).filter(d => d.minutes > 0), [usageTotals, t]);
 
     // Time Tracking
     const formatTime = (minutesStr) => {
@@ -476,6 +519,48 @@ function HabitsTab({ statLogs, globalStats, chapters }) {
                 </div>
             </div>
 
+            {/* ── ROW 2.2: Manuscript Growth (cumulative) ─────────────── */}
+            <div style={{ background: T.bg1, border: `1px solid ${T.bg3}`, borderRadius: 0, display: "flex", flexDirection: "column" }}>
+                <div style={{ padding: "16px 24px", borderBottom: `1px solid ${T.bg3}` }}>
+                    <h3 style={{ fontFamily: T.serif, fontSize: 18, color: T.text, margin: 0, fontWeight: "normal" }}>{t('stats.manuscriptGrowth', 'Manuscript Growth')}</h3>
+                </div>
+                <div style={{ padding: 24 }}>
+                    {growthData.length < 2 ? (
+                        <div style={{ height: 150, display: "flex", alignItems: "center", justifyContent: "center", color: T.textDim, fontFamily: T.mono, fontSize: 12 }}>
+                            {t('stats.noStats', 'No stats recorded yet.')}
+                        </div>
+                    ) : (
+                        <div style={{ height: 200 }}>
+                            <ResponsiveContainer width="100%" height="100%" minWidth={1} minHeight={1}>
+                                <AreaChart data={growthData} margin={{ top: 10, right: 10, left: 10, bottom: 0 }}>
+                                    <defs>
+                                        <linearGradient id="growthFill" x1="0" y1="0" x2="0" y2="1">
+                                            <stop offset="0%" stopColor={T.amber} stopOpacity={0.35} />
+                                            <stop offset="100%" stopColor={T.amber} stopOpacity={0.02} />
+                                        </linearGradient>
+                                    </defs>
+                                    <XAxis dataKey="label" stroke={T.bg3} tick={{ fill: T.textDim, fontFamily: T.mono, fontSize: 10 }} tickMargin={10} axisLine={false} tickLine={false} minTickGap={40} />
+                                    <YAxis stroke={T.bg3} tick={{ fill: T.textDim, fontFamily: T.mono, fontSize: 10 }} axisLine={false} tickLine={false} width={60} tickFormatter={(v) => v.toLocaleString()} />
+                                    <RechartsTooltip
+                                        content={({ active, payload }) => {
+                                            if (!active || !payload?.length) return null;
+                                            const d = payload[0].payload;
+                                            return (
+                                                <div style={{ background: T.bg2, border: `1px solid ${T.amberDim}`, padding: "10px 12px", fontFamily: T.mono, fontSize: 12, borderRadius: 0 }}>
+                                                    <div style={{ color: T.text, marginBottom: 4 }}>{d.date}</div>
+                                                    <div style={{ color: T.amber, fontWeight: "bold" }}>{d.cumulative.toLocaleString()} {t('stats.wordsShort', 'w')}</div>
+                                                </div>
+                                            );
+                                        }}
+                                    />
+                                    <Area type="monotone" dataKey="cumulative" stroke={T.amber} strokeWidth={2} fill="url(#growthFill)" />
+                                </AreaChart>
+                            </ResponsiveContainer>
+                        </div>
+                    )}
+                </div>
+            </div>
+
             {/* ── ROW 2.5: Worldbuilding Chart ────────────────────────────── */}
             <div style={{ background: T.bg1, border: `1px solid ${T.bg3}`, borderRadius: 0, display: "flex", flexDirection: "column" }}>
                 <div style={{ padding: "16px 24px", borderBottom: `1px solid ${T.bg3}`, display: "flex", justifyContent: "space-between", alignItems: "center" }}>
@@ -517,8 +602,8 @@ function HabitsTab({ statLogs, globalStats, chapters }) {
             </div>
 
             {/* ── ROW 3: Extra Tracking ────────────────────────────── */}
-            <div style={{ display: "flex", gap: 20 }}>
-                <div style={{ flex: 1 }}>
+            <div style={{ display: "flex", gap: 20, flexWrap: "wrap" }}>
+                <div style={{ flex: 1, minWidth: 320 }}>
                     <h3 style={{ fontFamily: T.serif, fontSize: 18, color: T.text, marginTop: 0, marginBottom: 16, fontWeight: "normal" }}>{t('stats.timeAuditing', 'Time Auditing')}</h3>
                     <div style={{ display: "flex", gap: 16, flexWrap: "wrap", flexDirection: "column" }}>
                         <StatCard label={t('stats.totalTime', 'Total Time')} value={formatTime(timeTotal)} sub={t('stats.projectOpen', 'Project open')} />
@@ -526,6 +611,57 @@ function HabitsTab({ statLogs, globalStats, chapters }) {
                         <StatCard label={t('stats.plotting', 'Plotting')} value={formatTime(timePlanner)} color="var(--entity-location)" />
                         <StatCard label={t('stats.statsTime', 'Analytics')} value={formatTime(timeStats)} color="var(--entity-item)" />
                     </div>
+                </div>
+
+                <div style={{ flex: 1, minWidth: 380, background: T.bg1, border: `1px solid ${T.bg3}`, padding: "20px 24px" }}>
+                    <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 16 }}>
+                        <h3 style={{ fontFamily: T.serif, fontSize: 18, color: T.text, margin: 0, fontWeight: "normal" }}>{t('stats.timeBySurface', 'Time by Surface')}</h3>
+                        <div style={{ display: "flex", background: T.bg2, border: `1px solid ${T.bg3}` }}>
+                            {[
+                                { id: 7, label: "7d" },
+                                { id: 30, label: "30d" },
+                                { id: 0, label: t('stats.allTime', 'All') },
+                            ].map(s => (
+                                <button key={s.id} onClick={() => setUsageSpan(s.id)} style={{
+                                    padding: "4px 10px", background: usageSpan === s.id ? T.amber : "transparent",
+                                    color: usageSpan === s.id ? T.bg0 : T.textDim, border: "none", cursor: "pointer",
+                                    fontFamily: T.mono, fontSize: 11, textTransform: "uppercase"
+                                }}>
+                                    {s.label}
+                                </button>
+                            ))}
+                        </div>
+                    </div>
+                    {usageChartData.length === 0 ? (
+                        <div style={{ height: 120, display: "flex", alignItems: "center", color: T.textDim, fontFamily: T.mono, fontSize: 12 }}>
+                            {t('stats.noUsageYet', 'No surface time recorded yet — it accumulates while the app is open and focused.')}
+                        </div>
+                    ) : (
+                        <ResponsiveContainer width="100%" height={usageChartData.length * 34 + 30} minWidth={1}>
+                            <BarChart data={usageChartData} layout="vertical" margin={{ top: 0, right: 40, left: 90, bottom: 0 }}>
+                                <XAxis type="number" stroke={T.bg3} tick={{ fill: T.textDim, fontFamily: T.mono, fontSize: 10 }} axisLine={false} tickLine={false}
+                                    tickFormatter={(v) => formatTime(v)} />
+                                <YAxis type="category" dataKey="surface" stroke={T.bg3} tick={{ fill: T.textDim, fontFamily: T.mono, fontSize: 11 }}
+                                    axisLine={false} tickLine={false} width={90} />
+                                <RechartsTooltip
+                                    cursor={{ fill: T.bg2 }}
+                                    content={({ active, payload }) => {
+                                        if (!active || !payload?.length) return null;
+                                        const d = payload[0].payload;
+                                        return (
+                                            <div style={{ background: T.bg2, border: `1px solid ${T.amberDim}`, padding: "8px 12px", fontFamily: T.mono, fontSize: 12, borderRadius: 0 }}>
+                                                <span style={{ color: d.color, fontWeight: "bold" }}>{d.surface}</span>
+                                                <span style={{ color: T.textDim }}> — {formatTime(d.minutes)}</span>
+                                            </div>
+                                        );
+                                    }}
+                                />
+                                <Bar dataKey="minutes" radius={[0, 2, 2, 0]}>
+                                    {usageChartData.map((d, i) => <Cell key={i} fill={d.color} fillOpacity={0.75} />)}
+                                </Bar>
+                            </BarChart>
+                        </ResponsiveContainer>
+                    )}
                 </div>
 
                 <div style={{ flex: 1, background: T.bg2, border: `1px solid ${T.bg3}`, padding: "20px 24px" }}>
@@ -1062,7 +1198,7 @@ export default function StatsDashboard({ projectPath, chapters, entities, charac
         <div style={{ width: "100%", height: "100%", background: T.bg0, display: "flex", flexDirection: "column", overflow: "hidden" }}>
             <TabBar tabs={tabs} active={activeTab} onSelect={setActiveTab} />
             <div style={{ flex: 1, overflowY: "auto", overflowX: "hidden" }}>
-                {activeTab === "habits" && <HabitsTab statLogs={statsData.stat_logs} globalStats={statsData.global_stats} chapters={chapters} />}
+                {activeTab === "habits" && <HabitsTab statLogs={statsData.stat_logs} globalStats={statsData.global_stats} chapters={chapters} projectPath={projectPath} />}
                 {activeTab === "process" && <PentimentoTab projectPath={projectPath} chapters={chapters} projectConfig={projectConfig} activeChapter={activeChapter} />}
                 {activeTab === "entities" && <EntityAuditorTab entities={entities} mentions={statsData.entity_mentions} chapters={chapters} projectConfig={projectConfig} />}
                 {activeTab === "health" && <StoryHealthTab entities={entities} chapters={chapters} mentions={statsData.entity_mentions || []} projectPath={projectPath} projectConfig={projectConfig} />}
@@ -1737,7 +1873,15 @@ function AchievementsTab({ projectPath }) {
     const renderAchievementCard = (ach) => {
         const isUnlocked = ach.isUnlocked;
         const style = getTierStyle(ach.tier, isUnlocked);
-        const progressPct = Math.min(100, (ach.currentProgress / Math.max(1, ach.maxProgress)) * 100);
+        // Once unlocked, the badge can never visually regress: if the live metric
+        // dropped (e.g. chapters deleted), show the value at unlock time instead.
+        const displayProgress = isUnlocked
+            ? Math.max(ach.currentProgress || 0, ach.progressAtUnlock || ach.maxProgress)
+            : (ach.currentProgress || 0);
+        const progressPct = Math.min(100, (displayProgress / Math.max(1, ach.maxProgress)) * 100);
+        const unlockedDate = isUnlocked && ach.progressAtUnlock != null
+            ? (ach.unlockedAt ? String(ach.unlockedAt).slice(0, 10) : null)
+            : null;
 
         return (
             <div
@@ -1806,7 +1950,7 @@ function AchievementsTab({ projectPath }) {
 
                 <div style={{ marginTop: "auto", paddingTop: 12 }}>
                     <div style={{ display: "flex", justifyContent: "space-between", fontSize: 10, color: T.textDim, marginBottom: 4 }}>
-                        <span>{Math.floor(ach.currentProgress).toLocaleString()} / {ach.maxProgress.toLocaleString()}</span>
+                        <span>{Math.floor(displayProgress).toLocaleString()} / {ach.maxProgress.toLocaleString()}</span>
                         <span>{Math.floor(progressPct)}%</span>
                     </div>
                     <div style={{ width: "100%", height: 4, background: T.bg3, borderRadius: 2, overflow: "hidden" }}>
@@ -1817,6 +1961,11 @@ function AchievementsTab({ projectPath }) {
                             transition: "width 0.4s ease, background 0.4s ease"
                         }} />
                     </div>
+                    {unlockedDate && (
+                        <div style={{ marginTop: 6, fontSize: 9, color: style.colorSecondary, fontFamily: T.mono, letterSpacing: "0.08em", textTransform: "uppercase" }}>
+                            {t('stats.unlockedOn', 'Unlocked')} {unlockedDate}
+                        </div>
+                    )}
                 </div>
             </div>
         );

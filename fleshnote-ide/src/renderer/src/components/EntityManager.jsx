@@ -274,13 +274,27 @@ function CreationCard({ tabType, loreCategories, onConfirm, onCancel, projectPat
     const [name, setName] = useState('');
     const [category, setCategory] = useState(loreCategories?.[0] || 'item');
     const [showNameGen, setShowNameGen] = useState(false);
+    const [submitting, setSubmitting] = useState(false);
     const inputRef = useRef(null);
 
     useEffect(() => { inputRef.current?.focus(); }, []);
 
+    const handleSubmit = async () => {
+        if (!name.trim() || submitting) return;
+        setSubmitting(true);
+        try {
+            await onConfirm(name.trim(), category);
+        } finally {
+            setSubmitting(false);
+        }
+    };
+
     const handleKeyDown = (e) => {
-        if (e.key === 'Enter' && name.trim()) onConfirm(name.trim(), category);
-        if (e.key === 'Escape') onCancel();
+        if (e.key === 'Enter' && name.trim() && !submitting) {
+            e.preventDefault();
+            handleSubmit();
+        }
+        if (e.key === 'Escape' && !submitting) onCancel();
     };
 
     const isLore = tabType === 'lore';
@@ -306,21 +320,25 @@ function CreationCard({ tabType, loreCategories, onConfirm, onCancel, projectPat
                 <input
                     ref={inputRef}
                     value={name}
+                    disabled={submitting}
                     onChange={e => setName(e.target.value)}
                     onKeyDown={handleKeyDown}
                     placeholder={placeholder}
                     style={{
                         flex: 1, minWidth: 120, background: T.bg0, border: `1px solid ${T.bg3}`,
                         color: T.text, padding: '6px 10px', fontFamily: T.sans, fontSize: 13, outline: 'none',
+                        opacity: submitting ? 0.6 : 1,
                     }}
                 />
                 {isLore && (
                     <select
                         value={category}
+                        disabled={submitting}
                         onChange={e => setCategory(e.target.value)}
                         style={{
                             background: T.bg0, border: `1px solid ${T.bg3}`, color: T.text,
-                            padding: '6px 8px', fontFamily: T.mono, fontSize: 11, outline: 'none', cursor: 'pointer',
+                            padding: '6px 8px', fontFamily: T.mono, fontSize: 11, outline: 'none', cursor: submitting ? 'default' : 'pointer',
+                            opacity: submitting ? 0.6 : 1,
                         }}
                     >
                         {(loreCategories?.length ? loreCategories : ['item', 'concept', 'creature', 'artifact', 'magic system', 'organization', 'document', 'technology']).map(cat => (
@@ -329,22 +347,25 @@ function CreationCard({ tabType, loreCategories, onConfirm, onCancel, projectPat
                     </select>
                 )}
                 <button
-                    onClick={() => name.trim() && onConfirm(name.trim(), category)}
-                    disabled={!name.trim()}
+                    onClick={handleSubmit}
+                    disabled={!name.trim() || submitting}
                     style={{
-                        background: name.trim() ? T.amber : T.bg3, border: 'none',
-                        color: name.trim() ? T.bg0 : T.textDim,
+                        background: name.trim() && !submitting ? T.amber : T.bg3, border: 'none',
+                        color: name.trim() && !submitting ? T.bg0 : T.textDim,
                         padding: '6px 14px', fontFamily: T.mono, fontSize: 11, fontWeight: 600,
-                        cursor: name.trim() ? 'pointer' : 'default',
+                        cursor: name.trim() && !submitting ? 'pointer' : 'default',
+                        opacity: submitting ? 0.7 : 1,
                     }}
                 >
-                    {t('stats.emCreate', 'Create')}
+                    {submitting ? t('stats.emCreating', 'Creating...') : t('stats.emCreate', 'Create')}
                 </button>
                 <button
                     onClick={onCancel}
+                    disabled={submitting}
                     style={{
                         background: 'none', border: `1px solid ${T.bg3}`, color: T.textDim,
-                        padding: '6px 10px', fontFamily: T.mono, fontSize: 11, cursor: 'pointer',
+                        padding: '6px 10px', fontFamily: T.mono, fontSize: 11, cursor: submitting ? 'default' : 'pointer',
+                        opacity: submitting ? 0.5 : 1,
                     }}
                 >
                     {t('stats.cancel', 'Cancel')}
@@ -352,10 +373,12 @@ function CreationCard({ tabType, loreCategories, onConfirm, onCancel, projectPat
                 {tabType === 'characters' && (
                     <button
                         onClick={() => setShowNameGen(true)}
+                        disabled={submitting}
                         style={{
                             background: 'none', border: `1px solid ${T.amber}`, color: T.amber,
-                            padding: '6px 10px', fontFamily: T.mono, fontSize: 11, cursor: 'pointer',
-                            display: 'flex', alignItems: 'center', gap: '4px'
+                            padding: '6px 10px', fontFamily: T.mono, fontSize: 11, cursor: submitting ? 'default' : 'pointer',
+                            display: 'flex', alignItems: 'center', gap: '4px',
+                            opacity: submitting ? 0.5 : 1,
                         }}
                         title={t('namegen.generate_tooltip', 'Generate Name')}
                     >
@@ -365,10 +388,12 @@ function CreationCard({ tabType, loreCategories, onConfirm, onCancel, projectPat
                 {tabType === 'locations' && (
                     <button
                         onClick={() => setShowNameGen(true)}
+                        disabled={submitting}
                         style={{
                             background: 'none', border: `1px solid ${T.amber}`, color: T.amber,
-                            padding: '6px 10px', fontFamily: T.mono, fontSize: 11, cursor: 'pointer',
-                            display: 'flex', alignItems: 'center', gap: '4px'
+                            padding: '6px 10px', fontFamily: T.mono, fontSize: 11, cursor: submitting ? 'default' : 'pointer',
+                            display: 'flex', alignItems: 'center', gap: '4px',
+                            opacity: submitting ? 0.5 : 1,
                         }}
                         title={t('namegen.generate_tooltip', 'Generate Location Name')}
                     >
@@ -762,8 +787,11 @@ export default function EntityManager({ entities, characters, chapters, projectP
         loadEntityIcons();
     }, [onEntityUpdated, loadExtraData, loadEntityIcons]);
 
+    const isCreatingRef = useRef(false);
+
     const handleCreate = useCallback(async (name, category, description = "") => {
-        if (!name.trim()) return;
+        if (!name.trim() || isCreatingRef.current) return;
+        isCreatingRef.current = true;
         try {
             let created = null;
             if (activeTab === 'characters') {
@@ -793,6 +821,8 @@ export default function EntityManager({ entities, characters, chapters, projectP
             }
         } catch (e) {
             console.error('Failed to create entity:', e);
+        } finally {
+            isCreatingRef.current = false;
         }
     }, [activeTab, projectPath, handleInspectorUpdated]);
     const handleReparentLocation = async (draggedLocationId, targetParentId) => {

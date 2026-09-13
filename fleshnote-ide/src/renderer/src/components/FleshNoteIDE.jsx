@@ -311,6 +311,8 @@ export default function FleshNoteIDE({ projectConfig, projectPath, onCloseProjec
   const [calConfig, setCalConfig] = useState(null)
 
   const [leftPanelMode, setLeftPanelMode] = useState('chapters')
+  // Sub-surface reported by composite views (e.g. worldinfo tabs) for time tracking
+  const [worldinfoSurface, setWorldinfoSurface] = useState('worldinfo_timeline')
   const [inspectedEntity, setInspectedEntity] = useState(null)
   const [inspectedTwistId, setInspectedTwistId] = useState(null)
   const [inspectorInitialTab, setInspectorInitialTab] = useState(null)
@@ -426,7 +428,9 @@ export default function FleshNoteIDE({ projectConfig, projectPath, onCloseProjec
     }
   }, [loading, projectPath])
 
-  // 60-second time tracking tick
+  // 60-second time tracking tick — one row per day/surface in usage_daily, plus the
+  // legacy stats-table counters the dashboard already reads. Ticks only count while
+  // the window is focused, and >5 min gaps (system sleep) are skipped entirely.
   useEffect(() => {
     if (!projectPath) return
 
@@ -438,11 +442,20 @@ export default function FleshNoteIDE({ projectConfig, projectPath, onCloseProjec
       // If more than 5 minutes elapsed between ticks, the system probably slept.
       // Do not count that as active time.
       if (elapsedMs > 5 * 60 * 1000) return
+      // Unfocused window → not actively using the app
+      if (document.hasFocus && !document.hasFocus()) return
+
+      // Derived surface for usage_daily
+      const surface =
+        mainView === 'worldinfo' ? worldinfoSurface :
+        mainView === 'entities' ? 'entities' :
+        ['editor', 'planner', 'stats'].includes(mainView) ? mainView : 'app'
+      window.api.usageTick({ project_path: projectPath, surface, minutes: 1 }).catch(() => { })
 
       // Generic active time
       window.api.updateStat({ project_path: projectPath, stat_key: 'time_total_minutes', increment_by: 1 })
 
-      // Specific module time
+      // Specific module time (legacy keys, kept for dashboard compatibility)
       if (mainView === 'editor') {
         window.api.updateStat({ project_path: projectPath, stat_key: 'time_editor_minutes', increment_by: 1 })
       } else if (mainView === 'planner') {
@@ -455,7 +468,7 @@ export default function FleshNoteIDE({ projectConfig, projectPath, onCloseProjec
     }, 60000) // 1 minute
 
     return () => clearInterval(tickInterval)
-  }, [projectPath, mainView])
+  }, [projectPath, mainView, worldinfoSurface])
 
   const toggleFocus = useCallback((mode) => setFocusMode(mode), [])
 
@@ -1167,6 +1180,7 @@ export default function FleshNoteIDE({ projectConfig, projectPath, onCloseProjec
             projectConfig={projectConfig}
             onConfigUpdate={onConfigUpdate}
             calConfig={calConfig}
+            onSurfaceChange={setWorldinfoSurface}
             onCalendarChanged={() => {
               window.api.getCalendarConfig(projectPath)
                 .then(res => setCalConfig(res.config || {}))
@@ -1204,6 +1218,7 @@ export default function FleshNoteIDE({ projectConfig, projectPath, onCloseProjec
             projectPath={projectPath}
             chapters={chapters}
             activeChapter={activeChapter}
+            projectConfig={projectConfig}
           />
         ) : (
           <>

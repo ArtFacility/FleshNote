@@ -1,9 +1,12 @@
-import { useState, useEffect } from 'react'
+import { useState, useEffect, useCallback } from 'react'
 import ProjectPicker from './components/ProjectPicker'
 import ProjectQuestionnaire from './components/ProjectQuestionnaire'
 import ProjectSetup from './components/ProjectSetup'
+import StoryArchitectSuite from './components/StoryArchitectSuite'
+import NewProjectChoiceModal from './components/NewProjectChoiceModal'
 import FleshNoteIDE from './components/FleshNoteIDE'
 import TitleBar from './components/TitleBar'
+import { applyToProject } from './utils/pentimentoVerification'
 import { useTranslation } from 'react-i18next'
 
 import './index.css'
@@ -13,6 +16,7 @@ export default function App() {
   const [activeProject, setActiveProject] = useState(null)
   const [workspacePath, setWorkspacePath] = useState(null)
   const [projectConfig, setProjectConfig] = useState(null)
+  const [showChoiceModal, setShowChoiceModal] = useState(false)
   const { i18n } = useTranslation()
 
   useEffect(() => {
@@ -31,13 +35,31 @@ export default function App() {
     document.documentElement.lang = i18n.language
   }, [i18n.language])
 
-  useEffect(() => {
-    if (projectConfig?.dyslexia_mode) {
+  // App-level accessibility toggle (set from the Project Picker settings;
+  // falls back to the legacy per-project config when the app-level key is unset)
+  const applyDyslexiaMode = useCallback(() => {
+    let on = null
+    try {
+      const stored = localStorage.getItem('fn_dyslexia_mode')
+      if (stored !== null) on = stored === 'true'
+    } catch { /* noop */ }
+    if (on === null) on = !!projectConfig?.dyslexia_mode
+    if (on) {
       document.body.classList.add('dyslexia-mode')
     } else {
       document.body.classList.remove('dyslexia-mode')
     }
   }, [projectConfig?.dyslexia_mode])
+
+  useEffect(() => {
+    applyDyslexiaMode()
+  }, [applyDyslexiaMode])
+
+  useEffect(() => {
+    const handler = () => applyDyslexiaMode()
+    window.addEventListener('fn:appsettings-changed', handler)
+    return () => window.removeEventListener('fn:appsettings-changed', handler)
+  }, [applyDyslexiaMode])
 
   // ── Load an existing project ────────────────────────
   const handleSelectProject = async (projectPath) => {
@@ -65,16 +87,41 @@ export default function App() {
 
   const handleCreateNew = () => {
     setActiveProject(null)
-    setCurrentView('questionnaire')
+    setShowChoiceModal(true)
   }
 
-  // ── After questionnaire creates the DB ──────────────
+  const handleChoiceSelect = (choice) => {
+    setShowChoiceModal(false)
+    if (choice === 'quick') {
+      setCurrentView('questionnaire')
+    } else if (choice === 'architect') {
+      setCurrentView('architect')
+    }
+  }
+
+  // ── After questionnaire creates the DB (Fast-track flow) ──
   const handleCompleteQuestionnaire = async (projectPath) => {
     try {
       const data = await window.api.loadProject(projectPath)
       setProjectConfig(data.config)
       setActiveProject(projectPath)
-      setCurrentView('setup') // Go to project setup wizard, not directly to IDE
+      // carry the app-level Sealed Pentimento choice into the new project
+      applyToProject(projectPath).catch(() => { })
+      setCurrentView('setup') // Go to project setup wizard for existing manuscripts/imports
+    } catch (err) {
+      alert('Failed to load new project: ' + err.message)
+    }
+  }
+
+  // ── After Story Architect Suite creates the DB ──────
+  const handleCompleteArchitect = async (projectPath) => {
+    try {
+      const data = await window.api.loadProject(projectPath)
+      setProjectConfig(data.config)
+      setActiveProject(projectPath)
+      // carry the app-level Sealed Pentimento choice into the new project
+      applyToProject(projectPath).catch(() => { })
+      setCurrentView('ide') // Go directly to chapter editor, skipping setup/import wizard!
     } catch (err) {
       alert('Failed to load new project: ' + err.message)
     }
@@ -96,18 +143,34 @@ export default function App() {
     <div className="ide-root">
       <TitleBar projectName={projectConfig?.project_name} />
       {currentView === 'picker' && (
-        <ProjectPicker
-          workspacePath={workspacePath}
-          setWorkspacePath={handleWorkspaceChanged}
-          onSelectProject={handleSelectProject}
-          onCreateNew={handleCreateNew}
-        />
+        <>
+          <ProjectPicker
+            workspacePath={workspacePath}
+            setWorkspacePath={handleWorkspaceChanged}
+            onSelectProject={handleSelectProject}
+            onCreateNew={handleCreateNew}
+          />
+          {showChoiceModal && (
+            <NewProjectChoiceModal
+              onSelect={handleChoiceSelect}
+              onClose={() => setShowChoiceModal(false)}
+            />
+          )}
+        </>
       )}
 
       {currentView === 'questionnaire' && (
         <ProjectQuestionnaire
           workspacePath={workspacePath}
           onComplete={handleCompleteQuestionnaire}
+          onCancel={() => setCurrentView('picker')}
+        />
+      )}
+
+      {currentView === 'architect' && (
+        <StoryArchitectSuite
+          workspacePath={workspacePath}
+          onComplete={handleCompleteArchitect}
           onCancel={() => setCurrentView('picker')}
         />
       )}

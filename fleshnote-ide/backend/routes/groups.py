@@ -118,7 +118,8 @@ def _get_db(project_path: str):
     db_path = os.path.join(project_path, "fleshnote.db")
     if not os.path.exists(db_path):
         raise HTTPException(status_code=404, detail="Database not found")
-    conn = sqlite3.connect(db_path)
+    conn = sqlite3.connect(db_path, timeout=30.0)
+    conn.execute("PRAGMA busy_timeout = 30000;")
     conn.row_factory = sqlite3.Row
 
     # Self-healing / non-destructive schema migrations
@@ -235,6 +236,30 @@ def create_group(req: GroupCreate):
     """Create a new group/faction."""
     conn = _get_db(req.project_path)
     cursor = conn.cursor()
+
+    # Deduplication guard: if an active group with identical name was created in the last 5 seconds,
+    # return it to protect against rapid multi-click/duplicate submission spikes
+    cursor.execute("""
+        SELECT id, name, group_type, description, faction_color
+        FROM groups
+        WHERE LOWER(TRIM(name)) = LOWER(TRIM(?))
+          AND deleted = 0
+          AND datetime(created_at) >= datetime('now', '-5 seconds')
+        ORDER BY created_at DESC
+        LIMIT 1
+    """, (req.name,))
+    recent = cursor.fetchone()
+    if recent:
+        conn.close()
+        return {
+            "group": {
+                "id": recent["id"],
+                "name": recent["name"],
+                "group_type": recent["group_type"],
+                "description": recent["description"],
+                "faction_color": recent["faction_color"],
+            }
+        }
 
     group_id = str(uuid.uuid4())
     cursor.execute("""

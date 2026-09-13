@@ -33,7 +33,20 @@ function fmtDuration(ms) {
 }
 
 const countWords = (s) => { const t = (s || '').trim(); return t ? t.split(/\s+/).filter(Boolean).length : 0 }
-const NBSP = / /g
+const NBSP = / /g
+
+// Stable per-device accent color from the device id (multi-device process view).
+function deviceColor(id) {
+  let h = 0
+  for (let i = 0; i < (id || '').length; i++) h = (h * 31 + id.charCodeAt(i)) % 360
+  return `hsl(${h}, 55%, 62%)`
+}
+
+function deviceLabel(id, currentDevice, t) {
+  if (id === 'unknown') return t('pentimento.deviceUnknown', 'Unknown device')
+  if (id && id === currentDevice) return t('pentimento.thisDevice', 'This device')
+  return t('pentimento.deviceLabel', 'Device {{id}}', { id: (id || '').slice(0, 8) })
+}
 
 // Apply a full inlineChange edit list to a string (used for timeline scrubbing).
 function applyEdits(str, edits) {
@@ -75,6 +88,11 @@ export default function PentimentoTab({ projectPath, chapters, projectConfig, ac
   const [showcase, setShowcase] = useState(false)
   const chapterId = activeChapter?.id || null
 
+  // Multi-device: a project cloned to (or synced with) another machine carries that
+  // device's sessions too — filter the heatmap + replay by the recording device.
+  const [deviceFilter, setDeviceFilter] = useState('all')
+  const [hudDevice, setHudDevice] = useState(null)
+
   const [paras, setParas] = useState([])
   const [proseParas, setProseParas] = useState([])
   const [summary, setSummary] = useState(null)
@@ -103,11 +121,13 @@ export default function PentimentoTab({ projectPath, chapters, projectConfig, ac
     let nextParas = []
     let deletedWords = 0
     let lastSessionLabel = '1'
+    let lastSessionDevice = null
     
     for (let i = 0; i < targetIdx; i++) {
       const step = stepsList[i]
       if (step.type === 'session') {
         lastSessionLabel = step.label
+        lastSessionDevice = step.deviceId || null
       } else if (step.type === 'set') {
         nextParas = [...step.paras]
       } else if (step.type === 'edit') {
@@ -126,6 +146,7 @@ export default function PentimentoTab({ projectPath, chapters, projectConfig, ac
     setSimParas(nextParas)
     setSimDeleted(deletedWords)
     setHudSess(String(lastSessionLabel))
+    setHudDevice(lastSessionDevice)
     setCaretPara(null)
   }, [])
 
@@ -137,10 +158,18 @@ export default function PentimentoTab({ projectPath, chapters, projectConfig, ac
       const [list, content, opsRes] = await Promise.all([
         window.api.chapterHistoryList({ project_path: projectPath, chapter_id: chapterId }),
         window.api.loadChapterContent(projectPath, chapterId),
-        window.api.pentimentoOps({ project_path: projectPath, chapter_id: chapterId }).catch(() => ({ ops: [] })),
+        window.api.pentimentoOps({
+          project_path: projectPath, chapter_id: chapterId,
+          device_id: deviceFilter !== 'all' ? deviceFilter : undefined,
+        }).catch(() => ({ ops: [] })),
       ])
 
       const snaps = list?.snapshots || []
+      // Device filter: keep snapshots recorded by the chosen device (manual pins,
+      // which have no session, always stay visible — they belong to the author).
+      const visibleSnaps = deviceFilter === 'all'
+        ? snaps
+        : snaps.filter(s => !s.device_id || s.device_id === deviceFilter)
       // Group captured writing ops by their session for the pacing overlay.
       const opsBySession = new Map()
       for (const o of (opsRes?.ops || [])) {
@@ -149,7 +178,7 @@ export default function PentimentoTab({ projectPath, chapters, projectConfig, ac
       }
 
       // list is newest-first; replay oldest→newest, then the live chapter as the final frame.
-      const sortedSnaps = [...snaps].reverse()
+      const sortedSnaps = [...visibleSnaps].reverse()
       const states = []
       for (const s of sortedSnaps) {
         const res = await window.api.chapterHistoryPreview({ project_path: projectPath, snapshot_id: s.id })
@@ -164,13 +193,13 @@ export default function PentimentoTab({ projectPath, chapters, projectConfig, ac
       const steps = []
       if (states.length > 0) {
         const firstParas = cleanProse(states[0].html).split('\n')
-        steps.push({ type: 'session', label: labelFor(states[0], 1) })
+        steps.push({ type: 'session', label: labelFor(states[0], 1), deviceId: visibleSnaps[0]?.device_id || null })
         steps.push({ type: 'set', paras: firstParas })
         let currentParas = [...firstParas]
 
         for (let i = 1; i < states.length; i++) {
           const snap = states[i]
-          steps.push({ type: 'session', label: labelFor(snap, i + 1) })
+          steps.push({ type: 'session', label: labelFor(snap, i + 1), deviceId: snap.device_id || null })
 
           // Snapshot-anchored: diff full paragraph text, patch only what changed.
           const chunks = diffParagraphs(currentParas.join('\n'), cleanProse(snap.html))
@@ -231,6 +260,14 @@ export default function PentimentoTab({ projectPath, chapters, projectConfig, ac
     }
   }, [projectPath, chapterId, t])
 
+  const handleDeviceChange = useCallback((id) => {
+    setDeviceFilter(id)
+    // a filter change invalidates the running replay — exit to the heatmap view
+    setSimMode(false)
+    setSimSteps([])
+    setSimParas([])
+  }, [])
+
   const exitSimulation = useCallback(() => {
     setIsPlaying(false)
     setSimMode(false)
@@ -245,6 +282,7 @@ export default function PentimentoTab({ projectPath, chapters, projectConfig, ac
     setSimParas([])
     setSimDeleted(0)
     setHudSess('1')
+    setHudDevice(null)
     setEventText('')
     setCaretPara(null)
     setCaretOffset(0)
@@ -303,6 +341,7 @@ export default function PentimentoTab({ projectPath, chapters, projectConfig, ac
     if (step.type === 'session') {
       setEventText(step.label)
       setHudSess(step.label)
+      setHudDevice(step.deviceId || null)
       setCaretPara(null)
       simTimerRef.current = setTimeout(() => {
         setEventText('')
@@ -373,7 +412,10 @@ export default function PentimentoTab({ projectPath, chapters, projectConfig, ac
     let cancelled = false
     setLoading(true); setHover(null)
     Promise.all([
-      window.api.pentimentoHeatmap({ project_path: projectPath, chapter_id: chapterId }),
+      window.api.pentimentoHeatmap({
+        project_path: projectPath, chapter_id: chapterId,
+        device_id: deviceFilter !== 'all' ? deviceFilter : undefined,
+      }),
       window.api.loadChapterContent(projectPath, chapterId),
     ]).then(([hm, content]) => {
       if (cancelled) return
@@ -382,7 +424,7 @@ export default function PentimentoTab({ projectPath, chapters, projectConfig, ac
     }).catch(() => { if (!cancelled) { setParas([]); setProseParas([]) } })
       .finally(() => { if (!cancelled) setLoading(false) })
     return () => { cancelled = true }
-  }, [projectPath, chapterId])
+  }, [projectPath, chapterId, deviceFilter])
 
   const byIndex = useMemo(() => new Map(paras.map(p => [p.para_index, p])), [paras])
   const hasData = paras.some(p => p.time_ms > 0)
@@ -423,8 +465,10 @@ export default function PentimentoTab({ projectPath, chapters, projectConfig, ac
               <div style={{ fontFamily: 'var(--font-serif)', fontSize: 17, color: 'var(--text-primary)' }}>
                 {activeChapter ? activeChapter.title : ''} ({t('pentimento.replay', 'Replay')})
               </div>
+              <DeviceFilterChips summary={summary} deviceFilter={deviceFilter} onChange={handleDeviceChange} />
               <span style={{ flex: 1 }} />
-              <span style={{ fontSize: 11, fontFamily: 'var(--font-mono)', color: 'var(--text-secondary)', background: 'var(--bg-surface)', padding: '4px 8px', borderRadius: 4 }}>
+              <span style={{ fontSize: 11, fontFamily: 'var(--font-mono)', color: 'var(--text-secondary)', background: 'var(--bg-surface)', padding: '4px 8px', borderRadius: 4, display: 'inline-flex', alignItems: 'center', gap: 6 }}>
+                <DeviceDot deviceId={deviceFilter !== 'all' ? deviceFilter : hudDevice} />
                 {hudSess}
               </span>
             </div>
@@ -552,6 +596,7 @@ export default function PentimentoTab({ projectPath, chapters, projectConfig, ac
               <div style={{ fontFamily: 'var(--font-serif)', fontSize: 17, color: 'var(--text-primary)' }}>
                 {activeChapter ? (activeChapter.title || t('pentimento.untitled', 'Untitled')) : ''}
               </div>
+              <DeviceFilterChips summary={summary} deviceFilter={deviceFilter} onChange={handleDeviceChange} />
               <span style={{ flex: 1 }} />
               {/* continuous legend */}
               <div style={{ display: 'flex', alignItems: 'center', gap: 9, fontSize: 11, color: 'var(--text-tertiary)', fontFamily: 'var(--font-mono)' }}>
@@ -628,6 +673,20 @@ export default function PentimentoTab({ projectPath, chapters, projectConfig, ac
                   {t('pentimento.receipt', 'receipt')}: {S.chain_head_hash.slice(0, 12)}…
                 </div>
               )}
+              {Object.keys(S.devices || {}).length > 1 && (
+                <div style={{ marginTop: 12, display: 'flex', flexDirection: 'column', gap: 5 }}>
+                  <SectionLabel>{t('pentimento.byDevice', 'By device')}</SectionLabel>
+                  {Object.entries(S.devices).sort((a, b) => (b[1].time_ms || 0) - (a[1].time_ms || 0)).map(([id, d]) => (
+                    <div key={id} style={{ display: 'flex', alignItems: 'center', gap: 8, fontSize: 11, fontFamily: 'var(--font-mono)' }}>
+                      <span style={{ width: 8, height: 8, borderRadius: 2, background: deviceColor(id), flexShrink: 0 }} />
+                      <span style={{ color: 'var(--text-secondary)', flex: 1, overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>
+                        {deviceLabel(id, S.current_device, t)}
+                      </span>
+                      <span style={{ color: 'var(--text-tertiary)' }}>{d.sessions} · {fmtDuration(d.time_ms)}</span>
+                    </div>
+                  ))}
+                </div>
+              )}
               <button onClick={() => setShowcase(true)} disabled={!summary || !S.sessions}
                 style={{ marginTop: 14, width: '100%', padding: '9px 12px', background: 'var(--accent-amber)', color: '#1a1508', border: 'none', borderRadius: 4, fontFamily: 'var(--font-mono)', fontSize: 12, fontWeight: 600, letterSpacing: '.04em', cursor: (summary && S.sessions) ? 'pointer' : 'not-allowed', opacity: (summary && S.sessions) ? 1 : 0.5 }}>
                 {t('pentimento.saveShowcase', 'Save Showcase Image')}
@@ -656,6 +715,44 @@ export default function PentimentoTab({ projectPath, chapters, projectConfig, ac
 
 function SectionLabel({ children }) {
   return <div style={{ fontSize: 10, fontFamily: 'var(--font-mono)', letterSpacing: '.1em', textTransform: 'uppercase', color: 'var(--text-tertiary)', marginBottom: 12 }}>{children}</div>
+}
+
+function DeviceDot({ deviceId }) {
+  if (!deviceId) return null
+  return <span style={{ width: 8, height: 8, borderRadius: 2, background: deviceColor(deviceId), display: 'inline-block', flexShrink: 0 }} />
+}
+
+// Filter chips: All devices / This device / Device xxxx… (only when the project
+// actually contains writing from more than one device).
+function DeviceFilterChips({ summary, deviceFilter, onChange }) {
+  const { t } = useTranslation()
+  const devices = summary?.devices || {}
+  const ids = Object.keys(devices).sort((a, b) => (devices[b].time_ms || 0) - (devices[a].time_ms || 0))
+  if (ids.length < 2) return null
+  const chips = ['all', ...ids]
+  return (
+    <div style={{ display: 'flex', gap: 6, flexWrap: 'wrap', alignItems: 'center' }}>
+      {chips.map(id => {
+        const active = deviceFilter === id
+        const label = id === 'all'
+          ? t('pentimento.allDevices', 'All devices')
+          : deviceLabel(id, summary?.current_device, t)
+        return (
+          <button key={id} onClick={() => onChange(id)} title={id === 'all' ? null : id}
+            style={{
+              display: 'inline-flex', alignItems: 'center', gap: 6, padding: '4px 10px',
+              background: active ? 'var(--accent-amber)' : 'var(--bg-surface)',
+              border: `1px solid ${active ? 'var(--accent-amber)' : 'var(--border-subtle)'}`,
+              color: active ? '#1a1508' : 'var(--text-secondary)',
+              borderRadius: 3, fontFamily: 'var(--font-mono)', fontSize: 11, cursor: 'pointer',
+            }}>
+            {id !== 'all' && <span style={{ width: 8, height: 8, borderRadius: 2, background: deviceColor(id) }} />}
+            {label}
+          </button>
+        )
+      })}
+    </div>
+  )
 }
 function Stat({ label, value, big }) {
   return (

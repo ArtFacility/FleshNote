@@ -18,6 +18,18 @@ const RUN_MAX_MS = 20000     // or once it spans this long
 const PASTE_CHARS = 40       // single step inserting > this is treated as a paste
 const FLUSH_COUNT = 40       // flush the op buffer to disk every N ops
 const FLUSH_MS = 12000       // …or every N ms
+const ANCHOR_EVERY_MS = 10 * 60 * 1000 // Sealed Pentimento: anchor rolling head every 10 min of active typing
+
+// Same fingerprint format the backend seals with (pentimento.py session_end) so a
+// verifier can recompute every rolling head from the stored ops.
+function opFingerprint(op) {
+  return `${op.op_type}|${op.para_index}|${op.char_offset}|${op.length}|${op.text_content || ''}|${op.timestamp}`
+}
+
+async function sha256Hex(str) {
+  const buf = await crypto.subtle.digest('SHA-256', new TextEncoder().encode(str))
+  return Array.from(new Uint8Array(buf)).map(b => b.toString(16).padStart(2, '0')).join('')
+}
 
 function clamp(pos, size) { return Math.max(0, Math.min(pos, size)) }
 
@@ -43,6 +55,16 @@ export default class PentimentoRecorder {
     this.lastEventTime = 0
     this._flushTimer = null
     this._starting = null
+    // Sealed Pentimento state
+    this._seq = 0              // insertion order for deterministic op ordering
+    this._headChain = Promise.resolve('')  // rolling head, updated after each flush
+    this._lastAnchorTime = 0
+    this._lastAnchorHash = null
+    this._headDirty = false    // ops flushed since the last anchor
+  }
+
+  _verificationOn() {
+    try { return localStorage.getItem('fn_pentimento_verification') === 'true' } catch { return false }
   }
 
   async start(projectPath, chapterId, enabled) {
@@ -56,6 +78,11 @@ export default class PentimentoRecorder {
     this.pending = null
     this.buffer = []
     this.lastEventTime = 0
+    this._seq = 0
+    this._headChain = Promise.resolve('')
+    this._lastAnchorTime = Date.now()
+    this._lastAnchorHash = null
+    this._headDirty = false
     // NOTE: the backend session is created lazily on the first real op (see
     // _ensureSession), so merely opening a chapter never spawns an empty session.
     if (this.enabled) this._armFlush()
@@ -66,7 +93,11 @@ export default class PentimentoRecorder {
     if (this.sessionId || !this.enabled || this._starting || !this.chapterId) return
     const pp = this.projectPath, ch = this.chapterId
     this._starting = this.api.pentimentoSessionStart({ project_path: pp, chapter_id: ch })
-      .then(res => { this.sessionId = res?.session_id || null })
+      .then(res => {
+        this.sessionId = res?.session_id || null
+        // seed the rolling head with the previous session's chain hash
+        this._headChain = Promise.resolve(res?.previous_session_hash || '')
+      })
       .catch(() => { this.sessionId = null })
       .finally(() => { this._starting = null })
   }
@@ -85,6 +116,7 @@ export default class PentimentoRecorder {
         timestamp: new Date().toISOString(), op_type: 'pause',
         para_index: where, char_offset: 0, length: 0, text_content: null,
         duration_ms: Math.min(gap, PAUSE_CAP_MS),
+        seq: this._seq++,
       })
     }
     this.lastEventTime = now
@@ -160,28 +192,75 @@ export default class PentimentoRecorder {
       para_index: p.para, char_offset: Math.max(0, p.offset || 0),
       length, text_content: p.text || null,
       duration_ms: Math.max(0, p.tLast - p.tStart),
+      seq: this._seq++,
     })
   }
 
   _armFlush() {
     if (this._flushTimer) return
-    this._flushTimer = setInterval(() => this._flush(), FLUSH_MS)
+    this._flushTimer = setInterval(() => {
+      this._flush()
+      this._maybeAnchorHead()
+    }, FLUSH_MS)
   }
 
   async _flush() {
     this._flushPending()
     if (!this.sessionId || this.buffer.length === 0) return
-    const ops = this.buffer
+    // Same ordering the backend seals with (ORDER BY timestamp, rowid): rows are
+    // inserted in this sorted order, so rowid ties break identically.
+    const ops = this.buffer.slice().sort((a, b) =>
+      (a.timestamp < b.timestamp ? -1 : a.timestamp > b.timestamp ? 1 : a.seq - b.seq))
     this.buffer = []
     try {
       await this.api.pentimentoFlush({
         project_path: this.projectPath, session_id: this.sessionId,
         chapter_id: this.chapterId, ops,
       })
+      this._advanceHead(ops)
     } catch {
       // put them back so a transient failure doesn't lose the run
       this.buffer = ops.concat(this.buffer)
     }
+  }
+
+  // Rolling head = SHA256(prev chain state + flushed fingerprints). Advanced only
+  // after a confirmed flush so head hashes always correspond to persisted ops.
+  _advanceHead(ops) {
+    if (!this._verificationOn() || !ops.length) return
+    const fps = ops.map(opFingerprint).join('')
+    this._headChain = this._headChain
+      .then(prev => sha256Hex((prev || '') + fps))
+      .then(head => { this._headDirty = true; return head })
+      .catch(() => '')
+  }
+
+  // Called on the flush interval: every 10 min of active typing, anchor the
+  // current rolling head so fake sessions appended after an honest seal break.
+  async _maybeAnchorHead() {
+    if (!this._verificationOn() || !this.sessionId) return
+    const now = Date.now()
+    if (now - this._lastAnchorTime < ANCHOR_EVERY_MS) return
+    if (!this._headDirty) return
+    this._lastAnchorTime = now
+    this._headDirty = false
+    try {
+      const head = await this._headChain
+      if (!head || !this.sessionId) return
+      const res = await this.api.pentimentoAnchorHead({
+        project_path: this.projectPath, session_id: this.sessionId,
+        chapter_id: this.chapterId, rolling_head: head,
+        previous_hash: this._lastAnchorHash,
+      })
+      if (res?.status === 'ok') {
+        this._lastAnchorHash = head
+        this._lastAnchorTime = Date.now()
+      } else if (res?.status === 'disabled') {
+        // project opted out — stop asking until the next session
+        this._headDirty = false
+        this._lastAnchorTime = now + ANCHOR_EVERY_MS
+      }
+    } catch { /* TSA down → receipt simply isn't created this round */ }
   }
 
   async stop() {
@@ -192,6 +271,11 @@ export default class PentimentoRecorder {
     this.sessionId = null
     this.pending = null
     this.lastEventTime = 0
+    this._seq = 0
+    this._headChain = Promise.resolve('')
+    this._lastAnchorTime = 0
+    this._lastAnchorHash = null
+    this._headDirty = false
     if (sid) {
       try { await this.api.pentimentoSessionEnd({ project_path: this.projectPath, session_id: sid }) } catch { /* noop */ }
     }

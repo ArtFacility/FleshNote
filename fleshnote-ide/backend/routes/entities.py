@@ -21,7 +21,8 @@ def _get_db(project_path: str):
     db_path = os.path.join(project_path, "fleshnote.db")
     if not os.path.exists(db_path):
         raise HTTPException(status_code=404, detail="Database not found")
-    conn = sqlite3.connect(db_path)
+    conn = sqlite3.connect(db_path, timeout=30.0)
+    conn.execute("PRAGMA busy_timeout = 30000;")
     conn.row_factory = sqlite3.Row
     return conn
 
@@ -101,6 +102,28 @@ def create_lore_entity(req: LoreEntityCreate):
     conn = _get_db(req.project_path)
     cursor = conn.cursor()
     
+    # Deduplication guard: if an active lore entity with identical name was created in the last 5 seconds,
+    # return it to protect against rapid multi-click/duplicate submission spikes
+    cursor.execute("""
+        SELECT id, name, category, aliases
+        FROM lore_entities
+        WHERE LOWER(TRIM(name)) = LOWER(TRIM(?))
+          AND deleted = 0
+          AND datetime(created_at) >= datetime('now', '-5 seconds')
+        ORDER BY created_at DESC
+        LIMIT 1
+    """, (req.name,))
+    recent = cursor.fetchone()
+    if recent:
+        conn.close()
+        return {
+            "entity": {
+                "id": recent["id"], "type": "lore",
+                "name": recent["name"], "category": recent["category"],
+                "aliases": json.loads(recent["aliases"]) if recent["aliases"] else [],
+            }
+        }
+
     import uuid
     entity_id = str(uuid.uuid4())
     cursor.execute("""

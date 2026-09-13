@@ -858,18 +858,9 @@ export default function Sketchboards({ projectPath, entities = [] }) {
   const [iconPickerId, setIconPickerId] = useState(null)
   const [loading, setLoading] = useState(true)
 
-  // Track time spent in Sketchboards as planner time (same bucket as FleshNotePlannerDesktop)
-  useEffect(() => {
-    if (!projectPath) return
-    const lastTick = { t: Date.now() }
-    const interval = setInterval(() => {
-      const now = Date.now()
-      if (now - lastTick.t > 5 * 60 * 1000) { lastTick.t = now; return } // gap = system sleep, skip
-      lastTick.t = now
-      window.api.updateStat({ project_path: projectPath, stat_key: 'time_planner_minutes', increment_by: 1 }).catch(() => {})
-    }, 60000)
-    return () => clearInterval(interval)
-  }, [projectPath])
+  // NOTE: time spent here is tracked by FleshNoteIDE's usage tick (surface:
+  // 'sketchboards', reported via WorldbuildAndHistory's onSurfaceChange) — no
+  // separate timer, so nothing double-counts.
 
   useEffect(() => {
     if (!projectPath) return

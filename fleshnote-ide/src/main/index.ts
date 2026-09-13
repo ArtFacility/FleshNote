@@ -165,6 +165,16 @@ async function backendPost(path: string, body: object) {
   return data
 }
 
+async function backendGet(path: string) {
+  const response = await net.fetch(`${BACKEND_URL}${path}`, {
+    method: 'GET',
+    headers: { 'Content-Type': 'application/json' }
+  })
+  const data = await response.json()
+  if (!response.ok) throw new Error(data.detail || `Backend error: ${path}`)
+  return data
+}
+
 // ── Splash ─────────────────────────────────────────────────────────────────
 // The main window isn't created until the Python backend answers (can be 5–10s),
 // so without this the app is a black void on launch. This frameless card pops up
@@ -534,6 +544,8 @@ app.whenReady().then(async () => {
   ipcMain.handle('api:pentimentoSessionStart', async (_e, p) => backendPost('/api/project/pentimento/session/start', p))
   ipcMain.handle('api:pentimentoFlush', async (_e, p) => backendPost('/api/project/pentimento/flush', p))
   ipcMain.handle('api:pentimentoSessionEnd', async (_e, p) => backendPost('/api/project/pentimento/session/end', p))
+  ipcMain.handle('api:pentimentoAnchorHead', async (_e, p) => backendPost('/api/project/pentimento/anchor-head', p))
+  ipcMain.handle('api:pentimentoReceipts', async (_e, p) => backendPost('/api/project/pentimento/receipts', p))
   ipcMain.handle('api:pentimentoHeatmap', async (_e, p) => backendPost('/api/project/pentimento/heatmap', p))
   ipcMain.handle('api:pentimentoOps', async (_e, p) => backendPost('/api/project/pentimento/ops', p))
   ipcMain.handle('api:pentimentoSummary', async (_e, p) => backendPost('/api/project/pentimento/summary', p))
@@ -560,6 +572,14 @@ app.whenReady().then(async () => {
 
   ipcMain.handle('api:updateStat', async (_event, payload) => {
     return await backendPost('/api/project/stats/update', payload)
+  })
+
+  ipcMain.handle('api:usageTick', async (_event, payload) => {
+    return await backendPost('/api/project/usage/tick', payload)
+  })
+
+  ipcMain.handle('api:usageReport', async (_event, payload) => {
+    return await backendPost('/api/project/usage/report', payload)
   })
 
   ipcMain.handle('api:getProjectConfig', async (_event, projectPath) => {
@@ -1007,6 +1027,22 @@ app.whenReady().then(async () => {
 
   ipcMain.handle('api:deletePlannerArc', async (_event, payload) => {
     return await backendPost('/api/project/planner/delete-arc', payload)
+  })
+
+  ipcMain.handle('api:getPlannerFrameworks', async () => {
+    return await backendGet('/api/project/planner/frameworks')
+  })
+
+  ipcMain.handle('api:getFrameworkRecommendations', async (_event, payload) => {
+    return await backendPost('/api/project/planner/recommendations', payload)
+  })
+
+  ipcMain.handle('api:synthesizeArchitecture', async (_event, payload) => {
+    return await backendPost('/api/project/planner/synthesize', payload)
+  })
+
+  ipcMain.handle('api:applyPlannerFramework', async (_event, payload) => {
+    return await backendPost('/api/project/planner/apply-framework', payload)
   })
 
   // ── Import ─────────────────────────────────────────

@@ -5,6 +5,7 @@
 @import './styles/inspector.css';
 @import './styles/extractor.css';
 @import './styles/setup.css';
+@import './styles/brainstorm.css';
 
 @font-face {
   font-family: 'Crimson Pro';

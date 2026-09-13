@@ -215,3 +215,123 @@ def delete_arc(request: PlannerDeleteRequest):
     conn.commit()
     conn.close()
     return {"status": "ok"}
+
+
+class PlannerRecommendationRequest(BaseModel):
+    genre: str = "fantasy"
+    narrative_goal: str = "commercial_thrill"
+    plot_archetype: str = "quest"
+
+
+class PlannerApplyFrameworkRequest(BaseModel):
+    project_path: str
+    framework_id: str
+    wipe_existing: bool = True
+    variant_id: Optional[str] = None
+    engine_id: Optional[str] = None
+    arc_id: Optional[str] = None
+    protagonist_name: Optional[str] = None
+
+
+@router.api_route("/api/project/planner/frameworks", methods=["GET", "POST"])
+def get_frameworks_endpoint():
+    from framework_presets import get_all_frameworks, DRAMATIC_ENGINES, EMOTIONAL_ARCS
+    from architecture_engine import ENGINE_VISUALS, LENGTH_CONVENTIONS, GENRE_LENGTH_OFFSETS
+    return {
+        "status": "ok",
+        "frameworks": get_all_frameworks(),
+        "engines": DRAMATIC_ENGINES,
+        "arcs": EMOTIONAL_ARCS,
+        "engine_meta": ENGINE_VISUALS,
+        "length_conventions": LENGTH_CONVENTIONS,
+        "genre_length_offsets": GENRE_LENGTH_OFFSETS,
+    }
+
+
+class SynthesizeRequest(BaseModel):
+    genre: str = "fantasy"
+    plot_archetype: str = "quest"
+    intensity: float = 0.6
+    polarity: float = 0.2
+    pace: float = 0.5
+
+
+@router.post("/api/project/planner/synthesize")
+def synthesize_endpoint(request: SynthesizeRequest):
+    from architecture_engine import synthesize_stack
+    result = synthesize_stack(
+        request.genre,
+        request.plot_archetype,
+        request.intensity,
+        request.polarity,
+        request.pace,
+    )
+    return {"status": "ok", **result}
+
+
+@router.post("/api/project/planner/recommendations")
+def get_recommendations_endpoint(request: PlannerRecommendationRequest):
+    from framework_presets import calculate_recommendations
+    recs = calculate_recommendations(request.genre, request.narrative_goal, request.plot_archetype)
+    return {"status": "ok", "recommendations": recs}
+
+
+@router.post("/api/project/planner/apply-framework")
+def apply_framework_endpoint(request: PlannerApplyFrameworkRequest):
+    from framework_presets import FRAMEWORKS, seed_framework_in_db
+    if request.framework_id not in FRAMEWORKS:
+        raise HTTPException(status_code=400, detail="Unknown framework ID")
+
+    conn = _get_db(request.project_path)
+    cursor = conn.cursor()
+
+    try:
+        from sync_core import log_change, log_soft_delete
+        import datetime
+        now = datetime.datetime.utcnow().isoformat() + "Z"
+
+        if request.wipe_existing:
+            # Query existing blocks to log deletes
+            cursor.execute("SELECT id FROM planner_blocks WHERE deleted = 0")
+            for r in cursor.fetchall():
+                log_soft_delete(cursor, "planner_blocks", r["id"])
+            cursor.execute("UPDATE planner_blocks SET deleted = 1, deleted_at = ? WHERE deleted = 0", (now,))
+
+            cursor.execute("SELECT id FROM planner_arcs WHERE deleted = 0")
+            for r in cursor.fetchall():
+                log_soft_delete(cursor, "planner_arcs", r["id"])
+            cursor.execute("UPDATE planner_arcs SET deleted = 1, deleted_at = ? WHERE deleted = 0", (now,))
+
+        # Seed new framework (variant-adjusted labels/curves carry through)
+        seed_framework_in_db(cursor, request.framework_id, clear_existing=request.wipe_existing, variant_id=request.variant_id)
+
+        # Update project_config with the full architecture stack
+        config_rows = [
+            ("narrative_framework", request.framework_id),
+            ("framework_variant", request.variant_id),
+            ("dramatic_engine", request.engine_id),
+            ("emotional_arc", request.arc_id),
+            ("framework_protagonist", request.protagonist_name),
+        ]
+        for key, value in config_rows:
+            if value:
+                cursor.execute(
+                    "INSERT OR REPLACE INTO project_config (config_key, config_value, config_type) VALUES (?, ?, 'meta')",
+                    (key, str(value)),
+                )
+
+        conn.commit()
+
+        # Fetch updated blocks and arcs to return to frontend
+        cursor.execute("SELECT * FROM planner_blocks WHERE deleted = 0")
+        blocks = [dict(r) for r in cursor.fetchall()]
+        cursor.execute("SELECT * FROM planner_arcs WHERE deleted = 0")
+        arcs = [dict(r) for r in cursor.fetchall()]
+
+        conn.close()
+        return {"status": "ok", "blocks": blocks, "arcs": arcs}
+    except Exception as e:
+        conn.rollback()
+        conn.close()
+        raise HTTPException(status_code=500, detail=str(e))
+

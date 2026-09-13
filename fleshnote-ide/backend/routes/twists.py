@@ -43,7 +43,8 @@ def _get_db(project_path: str):
     db_path = os.path.join(project_path, "fleshnote.db")
     if not os.path.exists(db_path):
         raise HTTPException(status_code=404, detail="Database not found")
-    conn = sqlite3.connect(db_path)
+    conn = sqlite3.connect(db_path, timeout=30.0)
+    conn.execute("PRAGMA busy_timeout = 30000;")
     conn.row_factory = sqlite3.Row
     return conn
 
@@ -136,6 +137,31 @@ def get_twists_for_planner(req: ProjectPath):
 def create_twist(req: TwistCreate):
     conn = _get_db(req.project_path)
     cursor = conn.cursor()
+
+    # Deduplication guard: if an active twist with identical title was created in the last 5 seconds,
+    # return it to protect against rapid multi-click/duplicate submission spikes
+    cursor.execute("""
+        SELECT id, title, description, twist_type, reveal_chapter_id, notes
+        FROM twists
+        WHERE LOWER(TRIM(title)) = LOWER(TRIM(?))
+          AND deleted = 0
+          AND datetime(created_at) >= datetime('now', '-5 seconds')
+        ORDER BY created_at DESC
+        LIMIT 1
+    """, (req.title,))
+    recent = cursor.fetchone()
+    if recent:
+        conn.close()
+        return {
+            "twist": {
+                "id": recent["id"],
+                "title": recent["title"],
+                "description": recent["description"],
+                "twist_type": recent["twist_type"],
+                "reveal_chapter_id": recent["reveal_chapter_id"],
+                "notes": recent["notes"],
+            }
+        }
 
     import uuid
     twist_id = str(uuid.uuid4())

@@ -146,7 +146,7 @@ def history_list(req: ChapterScoped):
     cur = conn.cursor()
     cur.execute(
         "SELECT s.id, s.created_at, s.kind, s.label, s.word_count, s.byte_size, "
-        "       s.prose_hash, s.session_id, ps.session_num AS session_num "
+        "       s.prose_hash, s.session_id, ps.session_num AS session_num, ps.device_id AS device_id "
         "FROM chapter_snapshots s "
         "LEFT JOIN pentimento_sessions ps ON ps.id = s.session_id "
         "WHERE s.chapter_id=? ORDER BY s.created_at DESC, s.rowid DESC", (req.chapter_id,))
@@ -155,6 +155,7 @@ def history_list(req: ChapterScoped):
         "label": r["label"], "word_count": r["word_count"] or 0,
         "byte_size": r["byte_size"] or 0, "prose_hash": r["prose_hash"],
         "session_id": r["session_id"], "session_num": r["session_num"],
+        "device_id": r["device_id"],
     } for r in cur.fetchall()]
     conn.close()
     return {"snapshots": snaps}

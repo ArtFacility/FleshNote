@@ -23,11 +23,95 @@ class StatUpdateRequest(BaseModel):
     increment_by: int = 0
     set_value: str = ""
 
+
+class UsageTickRequest(BaseModel):
+    project_path: str
+    surface: str          # 'editor' | 'planner' | 'worldinfo_timeline' | 'worldinfo_calendar' | 'sketchboards' | 'entities' | 'stats' | 'app'
+    minutes: int = 1
+
+
+class UsageReportRequest(BaseModel):
+    project_path: str
+    days: int = 30        # 0 = all-time
+
+
+def _get_usage_db(project_path: str):
+    conn = _get_db(project_path)
+    cursor = conn.cursor()
+    # usage_daily may be missing on projects created before the table shipped —
+    # patch in place so the first tick never fails (same pattern as summary_json).
+    cursor.execute("""
+        CREATE TABLE IF NOT EXISTS usage_daily (
+            date            TEXT NOT NULL,
+            surface         TEXT NOT NULL,
+            minutes         INTEGER NOT NULL DEFAULT 0,
+            PRIMARY KEY (date, surface)
+        )
+    """)
+    conn.commit()
+    return conn, cursor
+
+
+@router.post("/api/project/usage/tick")
+def usage_tick(req: UsageTickRequest):
+    if req.minutes == 0:
+        return {"status": "ok"}
+    surface = (req.surface or "app").strip() or "app"
+    conn, cursor = _get_usage_db(req.project_path)
+    try:
+        cursor.execute("""
+            INSERT INTO usage_daily (date, surface, minutes)
+            VALUES (DATE('now', 'localtime'), ?, ?)
+            ON CONFLICT(date, surface)
+            DO UPDATE SET minutes = minutes + excluded.minutes
+        """, (surface, max(1, int(req.minutes))))
+        conn.commit()
+        return {"status": "ok"}
+    except Exception as e:
+        conn.rollback()
+        raise HTTPException(status_code=500, detail=str(e))
+    finally:
+        conn.close()
+
+
+@router.post("/api/project/usage/report")
+def usage_report(req: UsageReportRequest):
+    conn, cursor = _get_usage_db(req.project_path)
+    try:
+        if req.days and req.days > 0:
+            cursor.execute("""
+                SELECT date, surface, minutes FROM usage_daily
+                WHERE date >= DATE('now', 'localtime', ?)
+                ORDER BY date ASC
+            """, (f'-{int(req.days)} days',))
+            window_rows = [dict(r) for r in cursor.fetchall()]
+        else:
+            cursor.execute("SELECT date, surface, minutes FROM usage_daily ORDER BY date ASC")
+            window_rows = [dict(r) for r in cursor.fetchall()]
+
+        cursor.execute("SELECT surface, SUM(minutes) as minutes FROM usage_daily GROUP BY surface")
+        all_time = {r["surface"]: int(r["minutes"] or 0) for r in cursor.fetchall()}
+
+        per_day = {}
+        for r in window_rows:
+            d = per_day.setdefault(r["date"], {})
+            d[r["surface"]] = d.get(r["surface"], 0) + int(r["minutes"] or 0)
+
+        totals = {}
+        for r in window_rows:
+            totals[r["surface"]] = totals.get(r["surface"], 0) + int(r["minutes"] or 0)
+
+        return {"status": "ok", "rows": window_rows, "per_day": per_day,
+                "totals": totals, "all_time": all_time}
+    finally:
+        conn.close()
+
 def _get_db(project_path: str):
     db_path = os.path.join(project_path, "fleshnote.db")
     if not os.path.exists(db_path):
         raise HTTPException(status_code=404, detail="Database not found")
-    conn = sqlite3.connect(db_path)
+    conn = sqlite3.connect(db_path, timeout=30.0)
+    conn.execute("PRAGMA busy_timeout = 30000;")
     conn.row_factory = sqlite3.Row
     return conn
 

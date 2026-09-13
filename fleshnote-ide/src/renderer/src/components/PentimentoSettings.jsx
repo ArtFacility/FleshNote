@@ -2,14 +2,16 @@ import { useState, useEffect, useCallback } from 'react'
 import { useTranslation } from 'react-i18next'
 
 /**
- * Writing-process (Pentimento) settings — capture on/off, storage footprint, and the
- * compaction / clear controls. Self-contained: storage + compact + clear talk straight to
- * the backend; the capture flag is a project_config toggle owned by the parent modal.
+ * Writing-process (Pentimento) settings — capture on/off, Sealed Pentimento
+ * verification, storage footprint, and the compaction / clear controls. Self-contained:
+ * storage + compact + clear + receipts talk straight to the backend; the capture and
+ * verification flags are project_config toggles owned by the parent modal.
  */
-export default function PentimentoSettings({ projectPath, captureOn, onToggleCapture, historyOn, onToggleHistory }) {
+export default function PentimentoSettings({ projectPath, captureOn, onToggleCapture, historyOn, onToggleHistory, verificationOn, onToggleVerification, externalTsaOn, onToggleExternalTsa }) {
   const { t } = useTranslation()
   const [storage, setStorage] = useState(null)
   const [snapStorage, setSnapStorage] = useState(null)
+  const [receipts, setReceipts] = useState(null)
   const [months, setMonths] = useState(6)
   const [keepPer, setKeepPer] = useState(20)
   const [busy, setBusy] = useState(false)
@@ -20,6 +22,7 @@ export default function PentimentoSettings({ projectPath, captureOn, onToggleCap
     if (!projectPath) return
     window.api.pentimentoStorage({ project_path: projectPath }).then(setStorage).catch(() => setStorage(null))
     window.api.chapterHistoryStorage({ project_path: projectPath }).then(setSnapStorage).catch(() => setSnapStorage(null))
+    window.api.pentimentoReceipts({ project_path: projectPath }).then(setReceipts).catch(() => setReceipts(null))
   }, [projectPath])
 
   useEffect(() => { refresh() }, [refresh])
@@ -71,6 +74,38 @@ export default function PentimentoSettings({ projectPath, captureOn, onToggleCap
             </p>
           </div>
         </label>
+      </div>
+
+      <div className="settings-card">
+        <label className="checkbox-label">
+          <input type="checkbox" checked={verificationOn} onChange={onToggleVerification} />
+          <div>
+            <strong>{t('pentimentoSettings.verification', 'Sealed Pentimento (proof of process)')}</strong>
+            <p className="settings-desc">
+              {t('pentimentoSettings.verificationDesc', 'Timestamps your writing history so it can be independently verified as human-made. Only 64-character hashes of the history leave this machine — never your text. Works offline; receipts anchor once a connection returns.')}
+            </p>
+          </div>
+        </label>
+        {verificationOn && (
+          <>
+            <label className="checkbox-label" style={{ marginTop: 8 }}>
+              <input type="checkbox" checked={externalTsaOn} onChange={onToggleExternalTsa} />
+              <div>
+                <strong>{t('pentimentoSettings.externalTsa', 'Independent external timestamp')}</strong>
+                <p className="settings-desc">
+                  {t('pentimentoSettings.externalTsaDesc', 'Also cross-signs each sealed hash with a public RFC 3161 timestamp authority as a second opinion.')}
+                </p>
+              </div>
+            </label>
+            <p className="settings-desc" style={{ marginTop: 8 }}>
+              {t('pentimentoSettings.receiptStatus', 'Receipts: {{anchored}} anchored, {{pending}} pending, {{failed}} failed.', {
+                anchored: receipts?.by_status?.anchored ?? 0,
+                pending: receipts?.by_status?.pending ?? 0,
+                failed: receipts?.by_status?.failed ?? 0,
+              })}
+            </p>
+          </>
+        )}
       </div>
 
       <div className="settings-card">

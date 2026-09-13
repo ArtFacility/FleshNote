@@ -1,4 +1,5 @@
 import { useEditor, EditorContent } from '@tiptap/react'
+import { EditorState } from '@tiptap/pm/state'
 import PentimentoRecorder from '../utils/pentimentoRecorder'
 import StarterKit from '@tiptap/starter-kit'
 import Placeholder from '@tiptap/extension-placeholder'
@@ -394,7 +395,11 @@ export default function Editor({
   const extensions = useMemo(() => [
     StarterKit.configure({
       codeBlock: false,
-      blockquote: false
+      blockquote: false,
+      undoRedo: {
+        depth: 500,
+        newGroupDelay: 500
+      }
     }),
     Underline,
     Placeholder.configure({
@@ -806,11 +811,24 @@ export default function Editor({
 
   // When chapter changes (or is reloaded from disk), load new content
   useEffect(() => {
-    if (editor && chapter?.content !== undefined) {
+    if (editor && !editor.isDestroyed && chapter?.content !== undefined) {
       // Suppress pentimento capture for this programmatic replacement.
       pentiLoadingRef.current = true
-      editor.commands.setContent(chapter.content || '')
-      setTimeout(() => { pentiLoadingRef.current = false }, 0)
+      try {
+        editor.commands.setContent(chapter.content || '', false)
+        // Reset undo/redo history so loading content does not become an undo step that can wipe the chapter
+        const cleanState = EditorState.create({
+          schema: editor.state.schema,
+          doc: editor.state.doc,
+          selection: editor.state.selection,
+          plugins: editor.state.plugins
+        })
+        editor.view.updateState(cleanState)
+      } catch (err) {
+        console.error('Failed to reset editor state history:', err)
+      } finally {
+        setTimeout(() => { pentiLoadingRef.current = false }, 0)
+      }
     }
   }, [editor, chapter?.id, chapter?._rev])
 

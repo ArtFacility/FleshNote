@@ -262,12 +262,6 @@ export default function ProjectSettingsModal({ isOpen, onClose, projectPath, onC
                             {t('settings.tabNlp', 'NLP & Analysis')}
                         </button>
                         <button
-                            className={activeTab === 'accessibility' ? 'active' : ''}
-                            onClick={() => setActiveTab('accessibility')}
-                        >
-                            {t('settings.tabAccessibility', 'Accessibility')}
-                        </button>
-                        <button
                             className={activeTab === 'janitor' ? 'active' : ''}
                             onClick={() => setActiveTab('janitor')}
                         >
@@ -433,6 +427,10 @@ export default function ProjectSettingsModal({ isOpen, onClose, projectPath, onC
                                     onToggleCapture={() => handleUpdate('pentimento_capture', config.pentimento_capture === false, 'toggle')}
                                     historyOn={config.prose_history !== false}
                                     onToggleHistory={() => handleUpdate('prose_history', config.prose_history === false, 'toggle')}
+                                    verificationOn={config.pentimento_verification === 'true'}
+                                    onToggleVerification={() => handleUpdate('pentimento_verification', config.pentimento_verification !== 'true', 'toggle')}
+                                    externalTsaOn={config.pentimento_external_tsa === 'true'}
+                                    onToggleExternalTsa={() => handleUpdate('pentimento_external_tsa', config.pentimento_external_tsa !== 'true', 'toggle')}
                                 />
                             </div>
                         )}
@@ -577,28 +575,6 @@ export default function ProjectSettingsModal({ isOpen, onClose, projectPath, onC
                                         <p className="settings-desc">{t('settings.janitorSdtConfidenceDesc', 'Lower = more suggestions (may include false positives). Higher = only high-confidence tells.')}</p>
                                     </div>
                                 )}
-                            </div>
-                        )}
-
-                        {activeTab === 'accessibility' && (
-                            <div className="settings-section">
-                                <h3>{t('settings.accessibilityFeatures', 'Accessibility & Visuals')}</h3>
-
-                                <div className="settings-card">
-                                    <h4>{t('settings.uiVisuals', 'UI & Typography')}</h4>
-                                    <p className="settings-desc mb-4">{t('settings.dyslexiaModeDesc', 'Override all fonts with OpenDyslexic to improve readability for some users.')}</p>
-
-                                    <label className="checkbox-label">
-                                        <input
-                                            type="checkbox"
-                                            checked={config.dyslexia_mode || false}
-                                            onChange={() => handleToggle('dyslexia_mode')}
-                                        />
-                                        <div>
-                                            <strong>{t('settings.dyslexiaMode', 'OpenDyslexic Font Mode')}</strong>
-                                        </div>
-                                    </label>
-                                </div>
                             </div>
                         )}
 
