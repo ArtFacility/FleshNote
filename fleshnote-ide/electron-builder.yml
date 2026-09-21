@@ -8,6 +8,7 @@ publish:
 directories:
   buildResources: build
 files:
+  - '!backend/**'
   - '!**/.vscode/*'
   - '!src/*'
   - '!electron.vite.config.{js,ts,mjs,cjs}'

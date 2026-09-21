@@ -66,13 +66,26 @@ echo ""
 
 cd backend
 
+# FleshNote standardizes on backend/.venv. Clean up stale dot-less variants
+# (e.g. created by other tooling) so there is exactly one environment.
+if [ -d "venv" ]; then
+    echo "Removing stale backend/venv (FleshNote uses backend/.venv)"
+    rm -rf venv
+fi
+
 if [ ! -d ".venv" ]; then
-    echo "ERROR: Python venv not found at backend/.venv"
-    echo "Run: cd backend && python3 -m venv .venv && source .venv/bin/activate && pip install -r requirements_build.txt"
-    exit 1
+    echo "Python venv not found — creating backend/.venv ..."
+    python3 -m venv .venv
 fi
 
 source .venv/bin/activate
+
+# Sync the environment to the pinned versions on every build
+# (fast no-op when already satisfied; protects against silent drift).
+python -m pip install -r requirements_build.txt
+# huspacy's packaging<22 cap conflicts with pyinstaller>=6 — see requirements_build.txt
+python -m pip install --no-deps huspacy==0.12.1
+
 python build_backend.py
 
 cd ..

@@ -110,7 +110,7 @@ Export straight to industry-standard formatting. Generates print-ready PDFs, sta
    pip install -r requirements.txt
    cd ..
    ```
-   > **Note:** `requirements.txt` contains only runtime dependencies. If you plan to **build/package** the app with PyInstaller, use `requirements_build.txt` instead.
+   > **Note:** `requirements.txt` contains only runtime dependencies. If you plan to **build/package** the app with PyInstaller, use `requirements_build.txt` instead. That file deliberately omits `huspacy` — install it separately with `pip install --no-deps huspacy==0.12.1`, because its `packaging<22.0` requirement conflicts with PyInstaller ≥ 6 (the build scripts do this automatically).
 
 ### Development
 Run the application in development mode:

@@ -1,18 +1,27 @@
-# Production dependencies for FleshNote Backend
-fastapi==0.115.11
-uvicorn==0.34.0
-pydantic==2.10.6
-python-multipart==0.0.20
-spacy==3.8.4
-huspacy==0.8.0
-python-docx==1.1.2
-xhtml2pdf==0.2.16
-ebooklib==0.18
-lxml==5.3.1
-thinc==8.3.4
-blis==1.0.1
-numpy<2.0.0
+# Production dependencies for FleshNote Backend (Python 3.13, PyInstaller 6.x)
+#
+# IMPORTANT: huspacy is NOT listed here. huspacy 0.12.1 caps packaging<22.0,
+# which conflicts with pyinstaller>=6 (packaging>=22.0). It is installed
+# separately with --no-deps (its only affected dep; spacy comes from above):
+#
+#   pip install -r requirements_build.txt
+#   pip install --no-deps huspacy==0.12.1
+#
+# The build scripts (build.sh / build.bat) do this automatically.
+fastapi==0.129.0
+uvicorn==0.41.0
+pydantic==2.12.5
+python-multipart==0.0.32
+spacy==3.8.11
+python-docx==1.2.0
+xhtml2pdf==0.2.17
+ebooklib==0.20
+lxml==6.0.2
+thinc==8.3.10
+blis==1.3.3
+numpy>=2.0.0
 nltk==3.9.1
 phunspell==0.1.6
-pyyaml==6.0.2
-pyinstaller==6.12.0
+pyyaml==6.0.3
+cryptography>=42.0
+pyinstaller==6.19.0

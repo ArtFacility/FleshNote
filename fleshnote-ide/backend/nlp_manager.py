@@ -122,6 +122,17 @@ def _download_frozen(url: str, archive_type: str, models_dir: str):
             src = os.path.join(extract_dir, item)
             dst = os.path.join(models_dir, item)
 
+            if archive_type == "whl":
+                # A wheel's top level IS the package (e.g. hu_core_news_lg/ +
+                # its .dist-info). Copy as-is — the sdist-wrapper heuristic
+                # below would misfire (model packages contain meta.json and
+                # a nested versioned dir) and break the importable layout.
+                if os.path.isdir(src) or os.path.isfile(src):
+                    if os.path.exists(dst):
+                        shutil.rmtree(dst, ignore_errors=True) if os.path.isdir(dst) else os.remove(dst)
+                    shutil.copytree(src, dst) if os.path.isdir(src) else shutil.copy2(src, dst)
+                continue
+
             if os.path.isdir(src):
                 # For tar.gz spaCy models, the top-level dir is model-version
                 # which contains the actual package dir inside

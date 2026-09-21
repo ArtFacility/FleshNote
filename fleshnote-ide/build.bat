@@ -12,13 +12,38 @@ echo [1/3] Building Python backend...
 echo.
 
 pushd backend
+
+:: FleshNote standardizes on backend\.venv. Clean up stale dot-less variants
+:: (e.g. created by other tooling) so there is exactly one environment.
+if exist "venv" (
+    echo Removing stale backend\venv - FleshNote uses backend\.venv
+    rmdir /s /q venv
+)
+
 if not exist ".venv\Scripts\activate.bat" (
-    echo ERROR: Python venv not found at backend\.venv
-    echo Run: cd backend ^&^& python -m venv .venv ^&^& .venv\Scripts\activate ^&^& pip install -r requirements_build.txt
-    exit /b 1
+    echo Python venv not found - creating backend\.venv ...
+    python -m venv .venv
+    if !ERRORLEVEL! neq 0 (
+        echo ERROR: Failed to create venv. Is Python 3.13 on PATH?
+        popd
+        exit /b 1
+    )
 )
 
 call .venv\Scripts\activate.bat
+
+:: Sync the environment to the pinned versions on every build
+:: (fast no-op when already satisfied; protects against silent drift).
+python -m pip install -r requirements_build.txt
+if !ERRORLEVEL! neq 0 (
+    echo.
+    echo ERROR: pip install failed!
+    popd
+    exit /b 1
+)
+REM huspacy packaging cap conflicts with pyinstaller - see requirements_build.txt
+python -m pip install --no-deps huspacy==0.12.1
+
 python build_backend.py
 if !ERRORLEVEL! neq 0 (
     echo.
