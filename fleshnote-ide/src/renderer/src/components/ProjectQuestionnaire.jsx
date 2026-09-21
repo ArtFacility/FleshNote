@@ -1,5 +1,6 @@
 import { useState, useEffect } from 'react'
 import { useTranslation } from 'react-i18next'
+import { getPersonalDefaults } from '../utils/personalDefaults'
 
 const Icons = {
   X: () => (
@@ -115,6 +116,20 @@ export default function ProjectQuestionnaire({ workspacePath, onCancel, onComple
   })
 
   const [newCategoryInput, setNewCategoryInput] = useState('')
+
+  // Pre-fill author name + manuscript language from the user's personal defaults
+  useEffect(() => {
+    let cancelled = false
+    getPersonalDefaults().then((d) => {
+      if (cancelled) return
+      setFormData((prev) => ({
+        ...prev,
+        author_name: prev.author_name || d.author_name,
+        story_language: d.story_language || prev.story_language,
+      }))
+    }).catch(() => { })
+    return () => { cancelled = true }
+  }, [])
 
   // Auto-fill defaults when genre changes
   const handleGenreChange = (e) => {

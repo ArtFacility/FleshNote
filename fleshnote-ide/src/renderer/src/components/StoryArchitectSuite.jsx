@@ -4,6 +4,7 @@ import NarrativeCurveView from './NarrativeCurveView'
 import BrainstormStep from './BrainstormStep'
 import { STORY_GENRES } from '../utils/madlibs'
 import { applyFrameworkVariant, inferEngineForArchetype, ENGINE_AXIS_FALLBACKS, suggestWordCount } from '../utils/frameworkStack'
+import { getPersonalDefaults } from '../utils/personalDefaults'
 
 const NARRATIVE_GOALS = [
   { id: 'commercial_thrill', label: 'Commercial Thriller / High Velocity', desc: 'Fast-paced tension, clear turning points, escalating stakes' },
@@ -88,6 +89,20 @@ export default function StoryArchitectSuite({ workspacePath, onComplete, onCance
     default_chapter_target: 3500,
     scaffold_chapters: true
   })
+
+  // Pre-fill author name + manuscript language from the user's personal defaults
+  useEffect(() => {
+    let cancelled = false
+    getPersonalDefaults().then((d) => {
+      if (cancelled) return
+      setFormData((prev) => ({
+        ...prev,
+        author_name: prev.author_name || d.author_name,
+        story_language: d.story_language || prev.story_language,
+      }))
+    }).catch(() => { })
+    return () => { cancelled = true }
+  }, [])
 
   // Load existing project names to guard against duplicates
   useEffect(() => {

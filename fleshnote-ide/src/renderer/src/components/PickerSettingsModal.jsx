@@ -4,8 +4,16 @@ import {
   verificationOn, setVerificationDefault, externalTsaOn, setExternalTsa,
   getTsaUrl, setTsaUrl, applyToProject, DEFAULT_TSA_URL
 } from '../utils/pentimentoVerification'
+import { getPersonalDefaults, setPersonalDefaults } from '../utils/personalDefaults'
 
 const DYSLEXIA_KEY = 'fn_dyslexia_mode'
+
+const UI_LANGUAGES = [
+  { code: 'en', label: 'English' },
+  { code: 'hu', label: 'Magyar' },
+  { code: 'pl', label: 'Polski' },
+  { code: 'ar', label: 'العربية' },
+]
 
 function readDyslexia() {
   try { return localStorage.getItem(DYSLEXIA_KEY) === 'true' } catch { return false }
@@ -21,11 +29,22 @@ function writeDyslexia(on) {
 
 export default function PickerSettingsModal({ projects = [], onClose }) {
   const { t } = useTranslation()
+  const [tab, setTab] = useState('general')
   const [verified, setVerified] = useState(verificationOn())
   const [external, setExternal] = useState(externalTsaOn())
   const [tsaUrl, setTsaUrlState] = useState(getTsaUrl())
   const [dyslexia, setDyslexia] = useState(readDyslexia())
   const [saved, setSaved] = useState(false)
+  const [personal, setPersonal] = useState({ author_name: '', reviewer_name: '', story_language: '' })
+
+  useEffect(() => {
+    getPersonalDefaults().then(setPersonal).catch(() => { })
+  }, [])
+
+  const updatePersonal = (key, value) => {
+    setPersonal((prev) => ({ ...prev, [key]: value }))
+    setPersonalDefaults({ [key]: value })
+  }
 
   // Toggle applies immediately to every project found in the workspace
   useEffect(() => {
@@ -68,6 +87,67 @@ export default function PickerSettingsModal({ projects = [], onClose }) {
           <button className="popup-close" onClick={onClose}>&times;</button>
         </div>
 
+        <div style={{ display: 'flex', gap: 16, paddingInline: '20px', borderBottom: '1px solid var(--border-subtle)', marginBottom: 16 }}>
+          {['general', 'personal'].map((key) => (
+            <button
+              key={key}
+              type="button"
+              onClick={() => setTab(key)}
+              style={{
+                background: 'none', border: 'none', cursor: 'pointer', padding: '0 2px 8px',
+                fontFamily: 'var(--font-mono)', fontSize: '11px', textTransform: 'uppercase', letterSpacing: '1px',
+                color: tab === key ? 'var(--accent-amber)' : 'var(--text-tertiary)',
+                borderBottom: `2px solid ${tab === key ? 'var(--accent-amber)' : 'transparent'}`,
+              }}
+            >
+              {t(key === 'general' ? 'picker.generalTab' : 'picker.personalTab', key === 'general' ? 'General' : 'Personal details')}
+            </button>
+          ))}
+        </div>
+
+        {tab === 'personal' ? (
+          <div style={{ overflowY: 'auto', paddingInline: '20px', paddingBottom: '20px', display: 'flex', flexDirection: 'column', gap: 16 }}>
+            <p style={{ color: 'var(--text-tertiary)', fontSize: '12px', lineHeight: 1.6, margin: 0 }}>
+              {t('picker.personalDesc', 'Used to pre-fill new projects and review packages on this device.')}
+            </p>
+            <TextField
+              label={t('picker.personalAuthor', 'Default author name')}
+              desc={t('picker.personalAuthorDesc', 'Pre-filled in the author field when you create a project.')}
+              value={personal.author_name}
+              placeholder={t('q.authorPlaceholder', 'Anonymous')}
+              onChange={(v) => updatePersonal('author_name', v)}
+            />
+            <TextField
+              label={t('picker.personalReviewer', 'Default reviewer name')}
+              desc={t('picker.personalReviewerDesc', 'Pre-filled when you open a review package that has no name yet.')}
+              value={personal.reviewer_name}
+              placeholder={t('review.yourName', 'Your name')}
+              onChange={(v) => updatePersonal('reviewer_name', v)}
+            />
+            <div>
+              <label style={{ color: 'var(--text-tertiary)', fontSize: '11px', fontFamily: 'var(--font-mono)', textTransform: 'uppercase', letterSpacing: '0.08em', display: 'block', marginBottom: 6 }}>
+                {t('picker.personalLang', 'Default writing language')}
+              </label>
+              <select
+                value={personal.story_language}
+                onChange={(e) => updatePersonal('story_language', e.target.value)}
+                style={{
+                  width: '100%', padding: '8px 10px', backgroundColor: 'var(--bg-elevated)',
+                  border: '1px solid var(--border-subtle)', color: 'var(--text-primary)',
+                  fontFamily: 'var(--font-sans)', fontSize: '13px', boxSizing: 'border-box',
+                }}
+              >
+                <option value="">{t('picker.personalLangNone', 'No default')}</option>
+                {UI_LANGUAGES.map((l) => (
+                  <option key={l.code} value={l.code}>{l.label}</option>
+                ))}
+              </select>
+              <div style={{ color: 'var(--text-tertiary)', fontSize: '11px', marginTop: 4 }}>
+                {t('picker.personalLangDesc', 'Pre-selected as the manuscript language of new projects.')}
+              </div>
+            </div>
+          </div>
+        ) : (
         <div style={{ overflowY: 'auto', paddingInline: '20px', paddingBottom: '20px', display: 'flex', flexDirection: 'column', gap: 20 }}>
           {/* ── General / Accessibility (app-level) ── */}
           <section>
@@ -151,7 +231,30 @@ export default function PickerSettingsModal({ projects = [], onClose }) {
             </div>
           </section>
         </div>
+        )}
       </div>
+    </div>
+  )
+}
+
+function TextField({ label, desc, value, placeholder, onChange }) {
+  return (
+    <div>
+      <label style={{ color: 'var(--text-tertiary)', fontSize: '11px', fontFamily: 'var(--font-mono)', textTransform: 'uppercase', letterSpacing: '0.08em', display: 'block', marginBottom: 6 }}>
+        {label}
+      </label>
+      <input
+        type="text"
+        value={value}
+        placeholder={placeholder}
+        onChange={(e) => onChange(e.target.value)}
+        style={{
+          width: '100%', padding: '8px 10px', backgroundColor: 'var(--bg-elevated)',
+          border: '1px solid var(--border-subtle)', color: 'var(--text-primary)',
+          fontFamily: 'var(--font-sans)', fontSize: '13px', boxSizing: 'border-box',
+        }}
+      />
+      <div style={{ color: 'var(--text-tertiary)', fontSize: '11px', marginTop: 4 }}>{desc}</div>
     </div>
   )
 }
