@@ -6,6 +6,8 @@
 @import './styles/extractor.css';
 @import './styles/setup.css';
 @import './styles/brainstorm.css';
+@import './styles/picker.css';
+@import './styles/reviewer.css';
 
 @font-face {
   font-family: 'Crimson Pro';
@@ -137,7 +139,7 @@
   --font-mono: 'JetBrains Mono', monospace;
   --font-sans: 'Inter', sans-serif;
   --font-serif: 'Crimson Pro', serif;
-  --font-runes: 'Noto Sans Old Hungarian', serif;
+  --font-runes: 'Noto Sans Old Hungarian', 'NotoOldHungarian';
 }
 
 /* Dyslexia Mode Overrides */
@@ -149,6 +151,7 @@
 
 .rune-font {
   font-family: var(--font-runes) !important;
+  font-synthesis: none;
 }
 
 * {

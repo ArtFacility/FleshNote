@@ -1,11 +1,14 @@
 import os
 import json
+import shutil
 import sqlite3
 import uuid
 
 from fastapi import FastAPI, HTTPException
 from pydantic import BaseModel
 from db_setup import generate_project_db, apply_migrations
+import project_io
+import migration_engine
 
 from routes.chapters import router as chapters_router
 from routes.characters import router as characters_router
@@ -38,6 +41,7 @@ from routes.sync import router as sync_router
 from routes.remote_sync import router as remote_sync_router
 from routes.pentimento import router as pentimento_router
 from routes.chapter_history import router as chapter_history_router
+from routes.review_export import router as review_export_router
 
 app = FastAPI(title="FleshNote API")
 
@@ -73,6 +77,7 @@ app.include_router(sync_router)
 app.include_router(remote_sync_router)
 app.include_router(pentimento_router)
 app.include_router(chapter_history_router)
+app.include_router(review_export_router)
 
 # Define our data models so FastAPI knows what to expect
 class WorkspaceRequest(BaseModel):
@@ -159,8 +164,9 @@ def scan_workspace(request: WorkspaceRequest):
           pass
       
       projects.append({
-        "name": item,
+        "name": project_io.display_name(item),
         "path": item_path,
+        "is_legacy": project_io.is_legacy_folder(item_path),
         "lastOpened": last_opened,  # Unix ms timestamp — formatted by frontend
         "needs_migration": needs_migration
       })
@@ -173,7 +179,10 @@ def scan_workspace(request: WorkspaceRequest):
 
 @app.post("/api/project/init")
 def initialize_project(request: ProjectCreateRequest):
-  project_dir = os.path.join(request.workspace_path, request.project_name)
+  # Projects are extensioned folders: 'MyNovel.flnote' (behaves like a single
+  # file for users; still a directory on disk). project_name stays extension-free.
+  project_dir = os.path.join(
+    request.workspace_path, project_io.with_ext(request.project_name))
 
   if os.path.exists(project_dir):
     raise HTTPException(status_code=400, detail="Project folder already exists")
@@ -191,12 +200,16 @@ def initialize_project(request: ProjectCreateRequest):
     project_json_path = os.path.join(project_dir, "fleshnote_project.json")
     with open(project_json_path, "w", encoding="utf-8") as f:
       json.dump({
-        "project_name": request.project_name,
+        "project_name": project_io.sanitize_project_name(request.project_name),
         "schema_version": 2,
-        "created_version": "2.0.0",
-        "last_opened_version": "2.0.0",
+        "created_version": "2.1.0",
+        "last_opened_version": "2.1.0",
         "project_id": str(uuid.uuid4())
       }, f, indent=2)
+
+    # 4. Cosmetic: document-style folder icon (desktop.ini / gio metadata).
+    from folder_icon import apply_folder_icon
+    apply_folder_icon(project_dir)
 
     return {
       "status": "success",
@@ -217,6 +230,150 @@ def migrate_project_endpoint(request: ProjectMigrateRequest):
   if res.get("status") == "error":
     raise HTTPException(status_code=500, detail=res.get("message"))
   return res
+
+
+class ModernizeRequest(BaseModel):
+  workspace_path: str
+
+
+class ModernizeResult(BaseModel):
+  name: str
+  old_path: str
+  new_path: str | None = None
+  status: str        # "ok" | "renamed" | "migrated" | "error"
+  message: str = ""
+
+
+def _needs_migration_flag(project_path: str) -> bool:
+  json_path = os.path.join(project_path, "fleshnote_project.json")
+  if os.path.exists(json_path):
+    try:
+      with open(json_path, "r", encoding="utf-8") as f:
+        if json.load(f).get("schema_version", 1) >= 2:
+          return False
+    except Exception:
+      pass
+  return True
+
+
+@app.post("/api/projects/modernize")
+def modernize_projects(request: ModernizeRequest):
+  """One-click upgrade of legacy project folders:
+  rename 'MyNovel' -> 'MyNovel.flnote', then run the schema v1->v2 migration
+  for projects that still need it. Safe to call from the picker context (no
+  project is open, so no db file locks). Per-project results; never aborts."""
+  from migration_engine import migrate_project
+  path = request.workspace_path
+  if not os.path.exists(path):
+    raise HTTPException(status_code=404, detail="Workspace path does not exist")
+
+  results = []
+  for item in os.listdir(path):
+    item_path = os.path.join(path, item)
+    if not project_io.is_legacy_folder(item_path):
+      continue
+    target = os.path.join(path, project_io.with_ext(project_io.display_name(item)))
+    if os.path.exists(target):
+      results.append({"name": project_io.display_name(item), "old_path": item_path,
+                      "status": "error", "message": f"Target already exists: {target}"})
+      continue
+    try:
+      os.rename(item_path, target)
+    except OSError as e:
+      results.append({"name": project_io.display_name(item), "old_path": item_path,
+                      "status": "error", "message": f"Rename failed: {e}"})
+      continue
+    status = "renamed"
+    message = ""
+    if _needs_migration_flag(target):
+      res = migrate_project(target)
+      if res.get("status") == "error":
+        status = "error"
+        message = res.get("message", "Schema migration failed")
+      else:
+        status = "migrated"
+    results.append({"name": project_io.display_name(item), "old_path": item_path,
+                    "new_path": target, "status": status, "message": message})
+  return {"results": results}
+
+
+class ExportFlnoteRequest(BaseModel):
+  project_path: str
+  dest_path: str
+
+
+@app.post("/api/project/export-flnote")
+def export_flnote(request: ExportFlnoteRequest):
+  """Write the project as a single-file .flnote ZIP (share/backup artifact).
+  dest_path comes from the Electron save dialog. Never zips a live WAL db."""
+  db_path = os.path.join(request.project_path, "fleshnote.db")
+  if not os.path.exists(db_path):
+    raise HTTPException(status_code=404, detail="Database not found in project folder")
+  if not request.dest_path.lower().endswith(project_io.PROJECT_EXT):
+    raise HTTPException(status_code=400, detail="Destination must end with .flnote")
+  if os.path.exists(request.dest_path):
+    raise HTTPException(status_code=400, detail="Destination file already exists")
+  try:
+    project_io.zip_project(request.project_path, request.dest_path)
+  except Exception as e:
+    raise HTTPException(status_code=500, detail=f"Export failed: {e}")
+  return {"status": "ok", "path": request.dest_path}
+
+
+class ImportFlnoteRequest(BaseModel):
+  zip_path: str
+  workspace_path: str
+
+
+@app.post("/api/project/import-flnote")
+def import_flnote(request: ImportFlnoteRequest):
+  """Import a shared single-file .flnote ZIP into the workspace as a new
+  extensioned project folder. Validates hard (zip-slip/bombs/allowlist) and
+  auto-runs the v1->v2 migration for legacy-schema projects."""
+  import tempfile
+  if not os.path.isfile(request.zip_path):
+    raise HTTPException(status_code=404, detail="File not found")
+  if not os.path.isdir(request.workspace_path):
+    raise HTTPException(status_code=400, detail="Workspace path does not exist")
+
+  tmp_root = tempfile.mkdtemp(prefix="fleshnote_import_")
+  try:
+    extract_dir = os.path.join(tmp_root, "project")
+    try:
+      project_io.safe_extract_zip(request.zip_path, extract_dir, allowlist=True)
+    except ValueError as e:
+      raise HTTPException(status_code=400, detail=str(e))
+
+    if not os.path.exists(os.path.join(extract_dir, "fleshnote.db")):
+      raise HTTPException(status_code=400, detail="Not a FleshNote project (missing fleshnote.db)")
+    json_path = os.path.join(extract_dir, "fleshnote_project.json")
+    if not os.path.exists(json_path):
+      raise HTTPException(status_code=400, detail="Not a FleshNote project (missing descriptor)")
+
+    with open(json_path, "r", encoding="utf-8") as f:
+      meta = json.load(f)
+    base = project_io.sanitize_project_name(str(meta.get("project_name") or "Imported Project"))
+    target = project_io.next_available_project_dir(request.workspace_path, base)
+    shutil.copytree(extract_dir, target)
+  except HTTPException:
+    shutil.rmtree(tmp_root, ignore_errors=True)
+    raise
+  except Exception as e:
+    shutil.rmtree(tmp_root, ignore_errors=True)
+    raise HTTPException(status_code=500, detail=f"Import failed: {e}")
+  finally:
+    shutil.rmtree(tmp_root, ignore_errors=True)
+
+  if _needs_migration_flag(target):
+    from migration_engine import migrate_project
+    res = migrate_project(target)
+    if res.get("status") == "error":
+      # keep the imported project, but surface the failure
+      return {"status": "ok", "project_path": target, "name": project_io.display_name(os.path.basename(target)),
+              "needs_migration": True, "message": res.get("message")}
+
+  return {"status": "ok", "project_path": target,
+          "name": project_io.display_name(os.path.basename(target))}
 
 
 def ensure_project_id(project_path: str):

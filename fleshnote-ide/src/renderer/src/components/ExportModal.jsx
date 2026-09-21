@@ -328,6 +328,8 @@ export default function ExportModal({ isOpen, onClose, projectPath, projectConfi
   const [rightTab, setRightTab] = useState("preview"); // 'preview' | 'book'
   const [showChapterSelect, setShowChapterSelect] = useState(false);
   const [selectedChapterIds, setSelectedChapterIds] = useState(null); // null = all
+  const [reviewScope, setReviewScope] = useState({ entities: true, with_secrets: false, plot: false });
+  const [reviewerLabel, setReviewerLabel] = useState("");
 
   const [overrideFontSize, setOverrideFontSize] = useState(null);
   const [overrideGutter, setOverrideGutter] = useState(null);
@@ -360,6 +362,28 @@ export default function ExportModal({ isOpen, onClose, projectPath, projectConfi
     if (noChaptersSelected) return;
     setExporting(true);
     try {
+      if (format === 'flreview') {
+        const res = await window.api.exportReviewPackage({
+          project_path: projectPath,
+          defaultName: projectTitle,
+          reviewer_label: reviewerLabel,
+          scope: {
+            manuscript: true,
+            entities: reviewScope.entities,
+            with_secrets: reviewScope.entities && reviewScope.with_secrets,
+            plot: reviewScope.plot,
+            chapter_ids: chapterIdsPayload || [],
+          },
+        });
+        if (res && res.status === 'ok') {
+          setLastExportedPath(res.path);
+          setNotification({ message: t('exportModal.reviewExported', 'Review package saved.'), type: 'success', filepath: res.path });
+        } else if (res?.status !== 'cancelled') {
+          setNotification({ message: res?.message || t('exportModal.reviewExportFailed', 'Review export failed.'), type: 'error' });
+        }
+        return;
+      }
+
       const payload = {
         project_path: projectPath,
         content_mode: contentMode,
@@ -395,7 +419,7 @@ export default function ExportModal({ isOpen, onClose, projectPath, projectConfi
     } finally {
       setExporting(false);
     }
-  }, [projectPath, contentMode, format, trimKey, bookReady, effectiveFontSize, effectiveGutter, chapterIdsPayload, noChaptersSelected]);
+  }, [projectPath, contentMode, format, trimKey, bookReady, effectiveFontSize, effectiveGutter, chapterIdsPayload, noChaptersSelected, reviewScope, reviewerLabel, projectTitle, t]);
 
   // Live Preview Effect
   useMemo(() => {
@@ -425,6 +449,11 @@ export default function ExportModal({ isOpen, onClose, projectPath, projectConfi
       }
     };
 
+    if (format === 'flreview') {
+      setPreviewHtml("");
+      setLoadingPreview(false);
+      return () => {};
+    }
     const timer = setTimeout(fetchPreview, 400);
     return () => {
       active = false;
@@ -447,6 +476,7 @@ export default function ExportModal({ isOpen, onClose, projectPath, projectConfi
     docx: t('exportModal.formatDocxDesc', "Word document with manuscript-standard styles. Ready for editors or further formatting."),
     pdf: t('exportModal.formatPdfDesc', "Print-ready PDF. Optimized page layout, proper margins, publication standard."),
     epub: t('exportModal.formatEpubDesc', "E-book format. Reflowable content for Kindle, Kobo, Apple Books."),
+    flreview: t('exportModal.formatReviewDesc', "Pruned review package. Reviewer can leave notes and hand the file back."),
   };
 
   const contentDescriptions = {
@@ -526,8 +556,8 @@ export default function ExportModal({ isOpen, onClose, projectPath, projectConfi
 
             <div style={{ marginBottom: 28 }}>
               <SectionLabel>{t('exportModal.step2Title', "2 · Format")}</SectionLabel>
-              <div style={{ display: "grid", gridTemplateColumns: "repeat(6, 1fr)", gap: 6 }}>
-                {["txt", "md", "html", "docx", "pdf", "epub"].map(f => (
+              <div style={{ display: "grid", gridTemplateColumns: "repeat(7, 1fr)", gap: 6 }}>
+                {["txt", "md", "html", "docx", "pdf", "epub", "flreview"].map(f => (
                   <OptionButton key={f} selected={format === f} onClick={() => setFormat(f)}>
                     <div style={{ fontSize: 13, fontWeight: 600, ...mono }}>.{f}</div>
                   </OptionButton>
@@ -537,6 +567,40 @@ export default function ExportModal({ isOpen, onClose, projectPath, projectConfi
                 {formatDescriptions[format]}
               </div>
             </div>
+
+            {format === 'flreview' && (
+              <div style={{ marginBottom: 28 }}>
+                <SectionLabel>{t('exportModal.reviewScope', 'Review scope')}</SectionLabel>
+                <div style={{ fontSize: 12, color: 'var(--text-secondary)', marginBottom: 10, lineHeight: 1.5 }}>
+                  {t('exportModal.reviewScopeHint', 'Manuscript is always included. Secrets never leave the device unless you opt in.')}
+                </div>
+                {[
+                  { key: 'entities', label: t('exportModal.scopeEntities', 'Include entities') },
+                  { key: 'with_secrets', label: t('exportModal.scopeSecrets', 'Include author-only fields (bio, true goals)'), disabled: !reviewScope.entities },
+                  { key: 'plot', label: t('exportModal.scopePlot', 'Include plot / twists') },
+                ].map((opt) => (
+                  <label key={opt.key} style={{ display: 'flex', alignItems: 'center', gap: 8, marginBottom: 8, cursor: opt.disabled ? 'not-allowed' : 'pointer', opacity: opt.disabled ? 0.4 : 1, fontSize: 13, color: 'var(--text-primary)' }}>
+                    <input
+                      type="checkbox"
+                      checked={!!reviewScope[opt.key]}
+                      disabled={opt.disabled}
+                      onChange={(e) => setReviewScope((s) => ({ ...s, [opt.key]: e.target.checked, ...(opt.key === 'entities' && !e.target.checked ? { with_secrets: false } : {}) }))}
+                      style={{ accentColor: 'var(--accent-amber)' }}
+                    />
+                    {opt.label}
+                  </label>
+                ))}
+                <label style={{ display: 'block', marginTop: 12 }}>
+                  <span style={{ fontSize: 9, ...mono, color: 'var(--text-tertiary)', textTransform: 'uppercase', display: 'block', marginBottom: 4 }}>{t('exportModal.reviewerLabel', 'Intended reviewer (optional)')}</span>
+                  <input
+                    value={reviewerLabel}
+                    onChange={(e) => setReviewerLabel(e.target.value)}
+                    placeholder={t('exportModal.reviewerPlaceholder', 'e.g. beta reader name')}
+                    style={{ width: '100%', background: 'var(--bg-surface)', border: '1px solid var(--border-subtle)', padding: '8px 10px', color: 'var(--text-primary)', fontSize: 13, outline: 'none', boxSizing: 'border-box' }}
+                  />
+                </label>
+              </div>
+            )}
 
             {/* Chapter Selection */}
             {chapters && chapters.length > 1 && (

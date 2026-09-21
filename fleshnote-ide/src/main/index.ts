@@ -504,6 +504,122 @@ app.whenReady().then(async () => {
     return await backendPost('/api/project/migrate', { project_path: projectPath })
   })
 
+  ipcMain.handle('api:modernizeProjects', async (_event, workspacePath) => {
+    return await backendPost('/api/projects/modernize', { workspace_path: workspacePath })
+  })
+
+  // Share a project as a single-file .flnote ZIP (save dialog -> backend zips).
+  ipcMain.handle('api:exportFlnote', async (event, payload) => {
+    try {
+      const win = BrowserWindow.fromWebContents(event.sender)
+      if (!win) return { status: 'error', message: 'No window' }
+      const { canceled, filePath } = await dialog.showSaveDialog(win, {
+        title: 'Export Project (.flnote)',
+        defaultPath: `${payload?.defaultName || 'Project'}.flnote`,
+        filters: [{ name: 'FleshNote Project', extensions: ['flnote'] }]
+      })
+      if (canceled || !filePath) return { status: 'cancelled' }
+      return await backendPost('/api/project/export-flnote', {
+        project_path: payload.project_path,
+        dest_path: filePath
+      })
+    } catch (err: any) {
+      console.error('Export .flnote failed:', err)
+      return { status: 'error', message: err.message }
+    }
+  })
+
+  // Import a shared .flnote ZIP (open dialog -> backend validates + extracts).
+  ipcMain.handle('api:importFlnote', async (_event, payload) => {
+    try {
+      let zipPath = payload?.zip_path
+      if (!zipPath) {
+        const { canceled, filePaths } = await dialog.showOpenDialog({
+          properties: ['openFile'],
+          title: 'Open FleshNote Project File',
+          filters: [{ name: 'FleshNote Project', extensions: ['flnote'] }]
+        })
+        if (canceled || !filePaths[0]) return { status: 'cancelled' }
+        zipPath = filePaths[0]
+      }
+      return await backendPost('/api/project/import-flnote', {
+        zip_path: zipPath,
+        workspace_path: payload.workspace_path
+      })
+    } catch (err: any) {
+      console.error('Import .flnote failed:', err)
+      return { status: 'error', message: err.message }
+    }
+  })
+
+  ipcMain.handle('api:exportReviewPackage', async (event, payload) => {
+    try {
+      const win = BrowserWindow.fromWebContents(event.sender)
+      if (!win) return { status: 'error', message: 'No window' }
+      const { canceled, filePath } = await dialog.showSaveDialog(win, {
+        title: 'Export Review Package',
+        defaultPath: `${payload?.defaultName || 'Project'}.flreview`,
+        filters: [{ name: 'FleshNote Review', extensions: ['flreview'] }]
+      })
+      if (canceled || !filePath) return { status: 'cancelled' }
+      return await backendPost('/api/review/export', {
+        project_path: payload.project_path,
+        dest_path: filePath,
+        scope: payload.scope || {},
+        reviewer_label: payload.reviewer_label || ''
+      })
+    } catch (err: any) {
+      console.error('Export review package failed:', err)
+      return { status: 'error', message: err.message }
+    }
+  })
+
+  ipcMain.handle('api:openReviewPackage', async (event, payload) => {
+    try {
+      if (payload?.path) {
+        return await backendPost('/api/review/open', { path: payload.path })
+      }
+      const win = BrowserWindow.fromWebContents(event.sender)
+      const openOpts = {
+        properties: (payload?.multiple ? ['openFile', 'multiSelections'] : ['openFile']) as Array<'openFile' | 'multiSelections'>,
+        title: 'Open Review Package',
+        filters: [{ name: 'FleshNote Review', extensions: ['flreview'] }]
+      }
+      const { canceled, filePaths } = win
+        ? await dialog.showOpenDialog(win, openOpts)
+        : await dialog.showOpenDialog(openOpts)
+      if (canceled || !filePaths[0]) return { status: 'cancelled' }
+      if (payload?.multiple) {
+        const packages: Array<{ path: string; pkg: unknown }> = []
+        for (const p of filePaths) {
+          const res = await backendPost('/api/review/open', { path: p })
+          if (res?.status === 'ok') packages.push({ path: res.path, pkg: res.package })
+        }
+        return { status: 'ok', packages }
+      }
+      return await backendPost('/api/review/open', { path: filePaths[0] })
+    } catch (err: any) {
+      console.error('Open review package failed:', err)
+      return { status: 'error', message: err.message }
+    }
+  })
+
+  ipcMain.handle('api:saveReviewPackage', async (_event, payload) => {
+    try {
+      return await backendPost('/api/review/save', payload)
+    } catch (err: any) {
+      return { status: 'error', message: err.message }
+    }
+  })
+
+  ipcMain.handle('api:collectReviews', async (_event, payload) => {
+    try {
+      return await backendPost('/api/review/collect', payload)
+    } catch (err: any) {
+      return { status: 'error', message: err.message }
+    }
+  })
+
   ipcMain.handle('api:syncPreview', async (_event, payload) => {
     return await backendPost('/api/project/sync/preview', payload)
   })

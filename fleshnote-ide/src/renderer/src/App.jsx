@@ -5,6 +5,7 @@ import ProjectSetup from './components/ProjectSetup'
 import StoryArchitectSuite from './components/StoryArchitectSuite'
 import NewProjectChoiceModal from './components/NewProjectChoiceModal'
 import FleshNoteIDE from './components/FleshNoteIDE'
+import ReviewerIDE from './components/ReviewerIDE'
 import TitleBar from './components/TitleBar'
 import { applyToProject } from './utils/pentimentoVerification'
 import { useTranslation } from 'react-i18next'
@@ -12,11 +13,12 @@ import { useTranslation } from 'react-i18next'
 import './index.css'
 
 export default function App() {
-  const [currentView, setCurrentView] = useState('picker') // picker | questionnaire | setup | ide
+  const [currentView, setCurrentView] = useState('picker') // picker | questionnaire | setup | ide | reviewer
   const [activeProject, setActiveProject] = useState(null)
   const [workspacePath, setWorkspacePath] = useState(null)
   const [projectConfig, setProjectConfig] = useState(null)
   const [showChoiceModal, setShowChoiceModal] = useState(false)
+  const [reviewSession, setReviewSession] = useState(null)
   const { i18n } = useTranslation()
 
   useEffect(() => {
@@ -139,9 +141,24 @@ export default function App() {
     setCurrentView('picker')
   }
 
+  const handleOpenReviewer = (session) => {
+    setReviewSession({ ...session, mode: 'reviewer' })
+    setCurrentView('reviewer')
+  }
+
+  const handleOpenCollect = (session) => {
+    setReviewSession({ ...session, mode: 'collect' })
+    setCurrentView('reviewer')
+  }
+
+  const handleCloseReviewer = () => {
+    setReviewSession(null)
+    setCurrentView('picker')
+  }
+
   return (
     <div className="ide-root">
-      <TitleBar projectName={projectConfig?.project_name} />
+      <TitleBar projectName={projectConfig?.project_name || reviewSession?.pkg?.snapshot?.project?.title || reviewSession?.data?.snapshot?.project?.title} />
       {currentView === 'picker' && (
         <>
           <ProjectPicker
@@ -149,6 +166,8 @@ export default function App() {
             setWorkspacePath={handleWorkspaceChanged}
             onSelectProject={handleSelectProject}
             onCreateNew={handleCreateNew}
+            onOpenReviewer={handleOpenReviewer}
+            onOpenCollect={handleOpenCollect}
           />
           {showChoiceModal && (
             <NewProjectChoiceModal
@@ -190,6 +209,13 @@ export default function App() {
           projectPath={activeProject}
           onCloseProject={handleCloseProject}
           onConfigUpdate={setProjectConfig}
+        />
+      )}
+
+      {currentView === 'reviewer' && reviewSession && (
+        <ReviewerIDE
+          session={reviewSession}
+          onClose={handleCloseReviewer}
         />
       )}
     </div>
