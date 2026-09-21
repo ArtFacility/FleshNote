@@ -39,6 +39,19 @@ Runs are flushed to the backend and stored in **`pentimento_ops`**, keyed by
 > it as a 0-duration bookkeeping op. Consumers should strip those toggles and use the
 > `duration_ms` / ordering, not the literal nbsp.
 
+### Input provenance
+
+Every op carries a `source`: **`human`** (hardware keyboard / IME / undo-restore),
+**`paste`** (paste or drop), or **`machine`** (programmatic inserts — entity chips, AI
+text, IDE features). The editor's `beforeinput` DOM handler maps the real input type to
+a hint (`insertText`/`insertCompositionText` → human, `insertFromPaste`/`insertFromDrop`
+→ paste, `historyUndo`/`historyRedo` → human, `insertReplacementText` → machine); the
+recorder consumes one hint per transaction, falls back to the transaction's own meta
+(`history$`, `uiEvent`), and classifies everything with a hint but no DOM input as
+`machine`. Runs of different sources are never merged. The replay shows a per-paragraph
+rune cluster (Old Hungarian glyphs, right of each line) with the live typed/pasted/
+assisted mix, appearing as paragraphs are written and vanishing when they're deleted.
+
 ### Sessions
 
 A writing session opens when you start editing a chapter and is **sealed** at session end
@@ -46,6 +59,17 @@ into **`pentimento_sessions`**: `session_num` (per-chapter ordinal), `start_time
 and a SHA-256 chain (`previous_session_hash` -> `session_hash`) so the process log is
 tamper-evident. Old sessions can be **compacted** — their raw ops are pruned and replaced by
 aggregate totals in `summary_json`.
+
+Each session also carries a **`wpm_trace`** — a JSON array of `[para, word_offset, wpm]`
+triples (wpm clamped 10–300), one per completed word the recorder saw being typed. The
+offsets are read live from the TipTap doc at typing time, so a deletion mid-sentence
+requires no bookkeeping — the next word's offset simply self-corrects. Deletions and
+pauses restart the word clock so their dead time never deflates the next words' speed,
+and pastes emit cap-speed (300) samples. The recorder is authoritative: every flush
+**replaces** the stored trace (crash loses ≤12s of it), and the replay matches its diffed
+words to samples by `(para, word_offset)` — so even messy sessions with rewrites stay
+aligned. The trace lives on the session row, so it survives compaction and never syncs
+(device-local, like all pentimento data).
 
 ---
 
@@ -69,12 +93,18 @@ That's **`chapter_snapshots`**: the chapter's markdown, zlib-compressed, capture
 checkpoints. `kind` is one of:
 
 - `session` — auto-captured at session end (deduped on `prose_hash` so idle sessions don't
-  create duplicates). Gated by `prose_history`.
+  create duplicates). Gated by `prose_history`. The same hook also fires at **session start**
+  (`pentimento.py` `session_start`), giving every session a baseline "before" frame: a fresh
+  chapter snapshots as an empty page, so its first writing session replays as typed text
+  instead of appearing at once, and old chapters get an honest pre-session state to diff
+  from. Start and end snapshots of one session share the same `session_id` (the replay uses
+  that to label the starting frame).
 - `manual` — a version the writer explicitly pinned (optional `label`). Always kept.
 - `pre_restore` — a safety copy taken just before a restore, so restores are undoable.
 
-The auto-capture hook lives in `pentimento.py` `session/end`; the latest editor save is
-flushed to the `md/` file before the snapshot is taken so it captures the sealed state.
+The auto-capture hooks live in `pentimento.py` `session/start` + `session/end`; the latest
+editor save is flushed to the `md/` file before the session-end snapshot is taken so it
+captures the sealed state.
 
 ---
 
@@ -105,11 +135,11 @@ op-paced overlay*:
    span via common prefix/suffix trimming (`diffInline`, in `utils/proseDiff.js`). The
    animation deletes just the old span and types just the new one, leaving the rest of the
    paragraph steady — so a one-word edit reads as a one-word edit, not a full-line rewrite.
-3. **Pacing overlay.** For each transition, the originating session's `pentimento_ops`
-   (fetched via `pentimentoOps`, grouped by `session_id`) provide the *rhythm* — per-word
-   cadence and pauses — for typing the new span, **when they match** the diffed text.
-   Compacted or non-matching sessions fall back to synthetic even-paced typing. Ops never
-   supply content, only timing.
+3. **Pacing overlay.** For each transition, the typing rhythm comes from the originating
+    session with a three-tier fallback: the session's `wpm_trace` (per-word speeds, via
+    `pentimentoOps`' `wpm_by_session`; words past the trace default to 40 WPM) → the raw
+    `pentimento_ops` cadence (per-run `duration_ms`, when the volumes match the diffed
+    text) → synthetic even pacing. Timing sources never supply content.
 
 The manuscript view auto-scrolls to follow the active edit, and speed is adjustable
 (default 3×).

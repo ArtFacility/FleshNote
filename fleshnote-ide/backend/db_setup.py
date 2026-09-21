@@ -1120,6 +1120,7 @@ def generate_project_db(project_path: str, answers: dict) -> str:
             previous_session_hash TEXT,
             session_hash TEXT,
             summary_json TEXT,
+            wpm_trace TEXT,
             created_at TEXT DEFAULT (datetime('now')),
             FOREIGN KEY (chapter_id) REFERENCES chapters(id) ON DELETE CASCADE
         )
@@ -1145,6 +1146,7 @@ def generate_project_db(project_path: str, answers: dict) -> str:
             text_content TEXT,
             duration_ms INTEGER DEFAULT 0,
             origin TEXT NOT NULL,
+            source TEXT,
             FOREIGN KEY (session_id) REFERENCES pentimento_sessions(id) ON DELETE CASCADE,
             FOREIGN KEY (chapter_id) REFERENCES chapters(id) ON DELETE CASCADE
         )

@@ -551,6 +551,7 @@ tamper-evident receipt, and their ops may later be compacted into `summary_json`
 | `previous_session_hash` | TEXT | | Prior session's `session_hash` (chain link) |
 | `session_hash` | TEXT | | SHA-256 sealing this session's ops |
 | `summary_json` | TEXT | | Compacted aggregate totals once raw ops are pruned |
+| `wpm_trace` | TEXT | | JSON array of `[para, word_offset, wpm]` triples (wpm clamped 10–300), one per completed word typed — replay matches diffed words by `(para, word_offset)` for per-word pacing |
 | `created_at` | TEXT | DEFAULT `datetime('now')` | |
 
 ---
@@ -578,6 +579,7 @@ heatmap and the replay pacing overlay. Deleted for compacted sessions (see `summ
 | `text_content` | TEXT | | Text inserted/deleted (deletes may be stored reversed) |
 | `duration_ms` | INTEGER | DEFAULT 0 | Time spent on this coalesced run |
 | `origin` | TEXT | NOT NULL | Capture source (e.g. `desktop`) |
+| `source` | TEXT | | Input provenance: `human` (keyboard/IME/undo), `paste` (paste/drop), `machine` (entity chips, AI, IDE features) |
 
 ---
 

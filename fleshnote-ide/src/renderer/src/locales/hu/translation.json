@@ -439,7 +439,8 @@
     "toggleProgressBar": "Progress bar megjelenítése",
     "toggleStatusBar": "Status bar megjelenítése",
     "statusBarFormat": "Markdown · UTF-8",
-    "import": "Importálás..."
+    "import": "Importálás...",
+    "paletteHint": "Húzd a helyére"
   },
   "picker": {
     "title": "FleshNote Projektek",
@@ -1367,7 +1368,11 @@
     "thisDevice": "Ez az eszköz",
     "deviceLabel": "Eszköz {{id}}",
     "deviceUnknown": "Ismeretlen eszköz",
-    "byDevice": "Eszköz szerint"
+    "byDevice": "Eszköz szerint",
+    "sessionStart": "{{n}}. írásmunka — eleje",
+    "srcHuman": "Gépelve",
+    "srcPaste": "Beillesztve",
+    "srcMachine": "Segített"
   },
   "pentimentoSettings": {
     "title": "Írási folyamat (Pentimento)",

@@ -439,7 +439,8 @@
     "toggleProgressBar": "Pokaż pasek postępu",
     "toggleStatusBar": "Pokaż pasek stanu",
     "statusBarFormat": "Markdown · UTF-8",
-    "import": "Importuj..."
+    "import": "Importuj...",
+    "paletteHint": "Przeciągnij na miejsce"
   },
   "picker": {
     "title": "Projekty FleshNote",
@@ -1367,7 +1368,11 @@
     "thisDevice": "To urządzenie",
     "deviceLabel": "Urządzenie {{id}}",
     "deviceUnknown": "Nieznane urządzenie",
-    "byDevice": "Według urządzenia"
+    "byDevice": "Według urządzenia",
+    "sessionStart": "Sesja {{n}} — początek",
+    "srcHuman": "Pisane",
+    "srcPaste": "Wklejone",
+    "srcMachine": "Wspomagane"
   },
   "pentimentoSettings": {
     "title": "Proces pisania (Pentimento)",

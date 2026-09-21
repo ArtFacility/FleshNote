@@ -1247,11 +1247,11 @@ Used by `ImageGallery.jsx` to clean up the temporary full-resolution upload afte
 Defined in `backend/routes/pentimento.py`. Records coalesced writing ops into sealed,
 hash-chained sessions and aggregates them. See `backend/docs/PENTIMENTO.md`.
 
-- `POST /api/project/pentimento/session/start`: Opens a writing session for a chapter (returns `session_id`, `session_num`).
-- `POST /api/project/pentimento/flush`: Ingests a batch of coalesced ops (runs, not keystrokes).
+- `POST /api/project/pentimento/session/start`: Opens a writing session for a chapter (returns `session_id`, `session_num`); best-effort captures a baseline `session` prose snapshot of the pre-session state (deduped, gated by `prose_history`) so the replay can interpolate from it.
+- `POST /api/project/pentimento/flush`: Ingests a batch of coalesced ops (runs, not keystrokes, each tagged with an input-provenance `source`) and optionally stores `wpm_trace` ([para, word_offset, wpm] triples, recorder-authoritative full replacement).
 - `POST /api/project/pentimento/session/end`: Seals the session with a SHA-256 chain hash; auto-creates a `session` prose snapshot when `prose_history` is on.
 - `POST /api/project/pentimento/heatmap`: Returns per-paragraph effort metrics (time, inserted/deleted, churn, night ratio, normalized `heat`) + `session_count`.
-- `POST /api/project/pentimento/ops`: Returns raw ops for a chapter grouped by `session_id` — used to pace the replay simulation.
+- `POST /api/project/pentimento/ops`: Returns raw ops for a chapter grouped by `session_id`, plus `wpm_by_session` (per-word typing-speed traces) — used to pace the replay simulation.
 - `POST /api/project/pentimento/summary`: Whole-project totals (typed/deleted/kept words, time, day/night split, chain head hash).
 - `POST /api/project/pentimento/compact`: Prunes old raw ops into per-session `summary_json` aggregates.
 - `POST /api/project/pentimento/clear`: Deletes all telemetry (sessions + ops).

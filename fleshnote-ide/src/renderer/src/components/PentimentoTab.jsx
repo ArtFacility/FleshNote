@@ -83,6 +83,97 @@ function buildCadence(ops, insCount, addedText) {
   return out
 }
 
+// Per-word typing-speed pacing from a session's `wpm_trace` — [para, wordOffset, wpm]
+// triples recorded by the editor (offsets computed live at typing time, so mid-session
+// deletions self-correct). Each inserted char is matched to its (paragraph, word) in
+// the end-state text; chars with no sample (or past the trace) play at a default
+// 40 WPM. Returns null when the trace clearly doesn't belong to this transition —
+// the caller then falls back to ops cadence, then synthetic pacing.
+const clampWpm = (w) => Math.max(10, Math.min(300, Math.round(w) || 40))
+export function buildWpmCadence(trace, insKeys, insCount) {
+  if (!trace || !trace.length || !insCount || !insKeys || insKeys.length !== insCount) return null
+  const byKey = new Map()
+  for (const t of trace) {
+    if (!Array.isArray(t) || t.length < 3) return null
+    byKey.set(`${t[0]}:${t[1]}`, clampWpm(t[2])) // later samples (retypes) win
+  }
+  let matched = 0
+  const out = new Array(insCount)
+  for (let i = 0; i < insCount; i++) {
+    const w = byKey.get(insKeys[i])
+    if (w != null) { out[i] = 12000 / w; matched++ }
+    else out[i] = 300 // 40 WPM default
+  }
+  if (matched / insCount < 0.15) return null
+  return out
+}
+
+// Word index (whitespace-token ordinal) of every char position in a paragraph.
+export function wordIndexArray(text) {
+  const out = new Array(text.length)
+  let w = -1
+  let inWord = false
+  for (let i = 0; i < text.length; i++) {
+    if (/\s/.test(text[i])) { inWord = false; out[i] = Math.max(0, w) }
+    else {
+      if (!inWord) { w++; inWord = true }
+      out[i] = w
+    }
+  }
+  return out
+}
+
+// Final index (in the end-state paragraph) of each ins char, in edit order.
+// inlineChange edits can be non-contiguous (swapped words), so positions must be
+// simulated, not assumed — cheap at paragraph scale.
+export function insCharFinalPositions(before, edits) {
+  const live = []
+  for (const ch of (before || '')) live.push({ ch })
+  const marked = []
+  for (const e of edits) {
+    if (e.type === 'del') { if (e.pos >= 0 && e.pos < live.length) live.splice(e.pos, 1) }
+    else { const o = { slot: marked.length }; marked.push(o); live.splice(e.pos, 0, o) }
+  }
+  const out = new Array(marked.length).fill(0)
+  let idx = 0
+  for (const o of live) { if (o.slot !== undefined) out[o.slot] = idx; idx++ }
+  return out
+}
+
+// Provenance runes: walk the steps up to the current playback position,
+// maintaining each paragraph's source mix ({ h, p, m } char counts). add/del
+// steps shift paragraph indices exactly like the playback's splices do.
+export function deriveSrcTallies(simSteps, currentStepIndex) {
+  const map = {}
+  if (!simSteps) return map
+  const shiftFrom = (from, delta) => {
+    const shifted = {}
+    for (const k of Object.keys(map)) {
+      const n = parseInt(k, 10)
+      if (delta < 0 && n === from) continue
+      shifted[n >= from ? n + delta : n] = map[k]
+    }
+    for (const k of Object.keys(map)) delete map[k]
+    Object.assign(map, shifted)
+  }
+  const end = Math.min(currentStepIndex, simSteps.length - 1)
+  for (let i = 0; i <= end; i++) {
+    const st = simSteps[i]
+    if (st.type === 'set') {
+      for (const k of Object.keys(map)) delete map[k]
+    } else if (st.type === 'edit') {
+      if (st.kind === 'del') {
+        shiftFrom(st.index, -1)
+      } else {
+        if (st.kind === 'add') shiftFrom(st.index, 1)
+        // mods without op data keep the paragraph's existing story
+        if (st._tally || st.kind === 'add') map[st.index] = st._tally || null
+      }
+    }
+  }
+  return map
+}
+
 export default function PentimentoTab({ projectPath, chapters, projectConfig, activeChapter }) {
   const { t } = useTranslation()
   const [showcase, setShowcase] = useState(false)
@@ -176,6 +267,8 @@ export default function PentimentoTab({ projectPath, chapters, projectConfig, ac
         if (!opsBySession.has(o.session_id)) opsBySession.set(o.session_id, [])
         opsBySession.get(o.session_id).push(o)
       }
+      // Per-word typing-speed traces, keyed by session (recorder `wpm_trace`).
+      const wpmBySession = new Map(Object.entries(opsRes?.wpm_by_session || {}))
 
       // list is newest-first; replay oldest→newest, then the live chapter as the final frame.
       const sortedSnaps = [...visibleSnaps].reverse()
@@ -186,20 +279,46 @@ export default function PentimentoTab({ projectPath, chapters, projectConfig, ac
       }
       states.push({ html: content?.content || '', session_num: null, session_id: null, isLive: true })
 
-      const labelFor = (snap, ordinal) => snap?.isLive
-        ? t('pentimento.finalState', 'Final state')
-        : t('history.session', 'Session {{n}}', { n: (typeof snap?.session_num === 'number' ? snap.session_num : ordinal) })
+      // A session-start baseline snapshot shares its session_id with the end snapshot
+      // that follows it — label it as the session's starting state, not a duplicate.
+      const labelFor = (snap, ordinal, isStart) => {
+        if (snap?.isLive) return t('pentimento.finalState', 'Final state')
+        const n = (typeof snap?.session_num === 'number' ? snap.session_num : ordinal)
+        return isStart
+          ? t('pentimento.sessionStart', 'Session {{n}} — start', { n })
+          : t('history.session', 'Session {{n}}', { n })
+      }
+      const isStartFrame = (snap, next) =>
+        !snap?.isLive && next && !next.isLive && snap.session_id && snap.session_id === next.session_id
+
+      // Per-paragraph provenance tallies per session: para -> { h, p, m } inserted
+      // chars by source (human keyboard, paste, machine-assisted).
+      const srcTallyBySession = new Map()
+      for (const [sid2, ops] of opsBySession) {
+        const tally = {}
+        for (const o of ops) {
+          if (o.op_type !== 'insert' && o.op_type !== 'paste') continue
+          const n = (o.text_content || '').length || o.length || 0
+          if (!n) continue
+          const s = o.source === 'paste' ? 'p' : o.source === 'machine' ? 'm' : 'h'
+          const para = o.para_index || 0
+          if (!tally[para]) tally[para] = { h: 0, p: 0, m: 0 }
+          tally[para][s] += n
+        }
+        if (Object.keys(tally).length) srcTallyBySession.set(sid2, tally)
+      }
+      const tallyFor = (sessionId, para) => srcTallyBySession.get(sessionId)?.[para] || null
 
       const steps = []
       if (states.length > 0) {
         const firstParas = cleanProse(states[0].html).split('\n')
-        steps.push({ type: 'session', label: labelFor(states[0], 1), deviceId: visibleSnaps[0]?.device_id || null })
+        steps.push({ type: 'session', label: labelFor(states[0], 1, isStartFrame(states[0], states[1])), deviceId: visibleSnaps[0]?.device_id || null })
         steps.push({ type: 'set', paras: firstParas })
         let currentParas = [...firstParas]
 
         for (let i = 1; i < states.length; i++) {
           const snap = states[i]
-          steps.push({ type: 'session', label: labelFor(snap, i + 1), deviceId: snap.device_id || null })
+          steps.push({ type: 'session', label: labelFor(snap, i + 1, isStartFrame(snap, states[i + 1])), deviceId: snap.device_id || null })
 
           // Snapshot-anchored: diff full paragraph text, patch only what changed.
           const chunks = diffParagraphs(currentParas.join('\n'), cleanProse(snap.html))
@@ -210,12 +329,12 @@ export default function PentimentoTab({ projectPath, chapters, projectConfig, ac
             if (ch.type === 'same') { nextParas.push(ch.text); idx++ }
             else if (ch.type === 'mod') {
               const { edits, addedText, removedText } = inlineChange(ch.before, ch.after)
-              txSteps.push({ type: 'edit', kind: 'mod', index: idx, edits, deletedWords: countWords(removedText), _added: addedText })
+              txSteps.push({ type: 'edit', kind: 'mod', index: idx, edits, deletedWords: countWords(removedText), _added: addedText, _before: ch.before, _tally: tallyFor(snap.session_id, idx) })
               nextParas.push(ch.after); idx++
             }
             else if (ch.type === 'add') {
               const { edits, addedText } = inlineChange('', ch.text)
-              txSteps.push({ type: 'edit', kind: 'add', index: idx, edits, deletedWords: 0, _added: addedText })
+              txSteps.push({ type: 'edit', kind: 'add', index: idx, edits, deletedWords: 0, _added: addedText, _tally: tallyFor(snap.session_id, idx) })
               nextParas.push(ch.text); idx++
             }
             else if (ch.type === 'del') {
@@ -225,15 +344,30 @@ export default function PentimentoTab({ projectPath, chapters, projectConfig, ac
             }
           }
 
-          // Pacing overlay: pace this transition's typed chars with the session's real
-          // op cadence when it matches; otherwise the animation falls back to synthetic.
+          // Pacing overlay: type this transition's added chars with the session's
+          // per-word speeds when available, else its real op cadence, else synthetic.
           const insRefs = []
+          const insKeys = []
           let addedAll = ''
+          const wordIdCache = new Map()
           for (const st of txSteps) {
             addedAll += (st._added || '')
-            for (const e of st.edits) if (e.type === 'ins') insRefs.push(e)
+            if (!st.edits.some(e => e.type === 'ins')) continue
+            let wordIds = wordIdCache.get(st.index)
+            if (!wordIds) {
+              wordIds = wordIndexArray(nextParas[st.index] || '')
+              wordIdCache.set(st.index, wordIds)
+            }
+            const finals = insCharFinalPositions(st._before || '', st.edits)
+            let k = 0
+            for (const e of st.edits) {
+              if (e.type !== 'ins') continue
+              insRefs.push(e)
+              insKeys.push(`${st.index}:${wordIds[finals[k++]] ?? 0}`)
+            }
           }
-          const cadence = buildCadence(opsBySession.get(snap.session_id), insRefs.length, addedAll)
+          const cadence = buildWpmCadence(wpmBySession.get(snap.session_id), insKeys, insRefs.length)
+            || buildCadence(opsBySession.get(snap.session_id), insRefs.length, addedAll)
           if (cadence) insRefs.forEach((e, k) => { e.delay = cadence[k] })
 
           for (const st of txSteps) steps.push(st)
@@ -300,6 +434,45 @@ export default function PentimentoTab({ projectPath, chapters, projectConfig, ac
     if (!simSteps || simSteps.length === 0) return 0
     return (currentStepIndex / simSteps.length) * 100
   }, [currentStepIndex, simSteps])
+
+  // Provenance runes (see deriveSrcTallies).
+  const srcTallies = useMemo(
+    () => deriveSrcTallies(simSteps, currentStepIndex),
+    [simSteps, currentStepIndex])
+
+  const renderSrcRunes = (tally) => {
+    if (!tally) return null
+    const total = tally.h + tally.p + tally.m
+    if (!total) return null
+    const defs = [
+      { key: 'h', glyph: '\u{10C80}', color: 'var(--accent-amber)', label: t('pentimento.srcHuman', 'Typed') },
+      { key: 'p', glyph: '\u{10C82}', color: 'var(--accent-blue)', label: t('pentimento.srcPaste', 'Pasted') },
+      { key: 'm', glyph: '\u{10C85}', color: 'var(--accent-purple)', label: t('pentimento.srcMachine', 'Assisted') },
+    ].filter(d => tally[d.key] > 0)
+    if (!defs.length) return null
+    const dom = Math.max(...defs.map(d => tally[d.key]))
+    return (
+      <span
+        style={{
+          position: 'absolute', insetInlineEnd: -8, top: '50%',
+          transform: 'translateY(-50%)', display: 'inline-flex', gap: 4,
+        }}
+      >
+        {defs.map(d => (
+          <span
+            key={d.key}
+            title={`${d.label} — ${Math.round((tally[d.key] / total) * 100)}%`}
+            style={{
+              fontFamily: 'var(--font-runes)', fontSize: 13, lineHeight: 1,
+              color: d.color, opacity: tally[d.key] === dom ? 0.9 : 0.45,
+            }}
+          >
+            {d.glyph}
+          </span>
+        ))}
+      </span>
+    )
+  }
 
   const handleTimelineScrub = useCallback((e) => {
     if (!simSteps || simSteps.length === 0) return
@@ -518,19 +691,22 @@ export default function PentimentoTab({ projectPath, chapters, projectConfig, ac
                     animation: isPlaying ? 'none' : 'blink 1s steps(1) infinite',
                   }} />
                 )
+                const runes = renderSrcRunes(srcTallies[idx])
                 if (caretPara === idx) {
                   const off = Math.max(0, Math.min(caretOffset, paraText.length))
                   return (
-                    <p key={idx} ref={activeParaRef} style={{ marginBottom: 12 }}>
+                    <p key={idx} ref={activeParaRef} style={{ position: 'relative', marginBottom: 12 }}>
                       {paraText.slice(0, off)}{caret}{paraText.slice(off)}
+                      {runes}
                     </p>
                   )
                 }
                 return (
-                  <p key={idx} style={{ marginBottom: 12 }}>
+                  <p key={idx} style={{ position: 'relative', marginBottom: 12 }}>
                     {paraText || <span style={{ opacity: 0.3 }}>·</span>}
                     {/* idle caret trails the last paragraph when nothing is being typed */}
                     {caretPara === null && idx === simParas.length - 1 ? caret : null}
+                    {runes}
                   </p>
                 )
               })}

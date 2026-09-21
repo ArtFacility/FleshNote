@@ -429,6 +429,15 @@ export default function Editor({
         dir: i18n.dir()
       },
       handleDOMEvents: {
+          // Input provenance for Pentimento: classify how the upcoming transaction's
+          // text will arrive (hardware keyboard/IME vs paste vs undo vs spellcheck).
+          // Programmatic inserts (entity chips, AI, IDE features) never fire
+          // beforeinput and fall through to 'machine'.
+          beforeinput: (_view, event) => {
+            const src = PentimentoRecorder.sourceForInputType(event.inputType)
+            if (src) pentimentoRef.current?.hint(src)
+            return false
+          },
           mouseover: (view, event) => {
             const entityTarget = event.target.closest('[data-entity-type]')
             const twistTarget = event.target.closest('[data-twist-id]')

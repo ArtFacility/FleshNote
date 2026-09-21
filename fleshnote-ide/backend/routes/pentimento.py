@@ -18,6 +18,7 @@ Endpoints:
 import os
 import json
 import hashlib
+import json
 import sqlite3
 import datetime
 import threading
@@ -44,6 +45,7 @@ class Op(BaseModel):
     length: int = 0
     text_content: Optional[str] = None
     duration_ms: int = 0           # time spent producing this run / pause
+    source: Optional[str] = None   # 'human' (keyboard/IME/undo) | 'paste' | 'machine' (chips, AI, IDE)
 
 
 class SessionStart(BaseModel):
@@ -56,6 +58,10 @@ class FlushRequest(BaseModel):
     session_id: str
     chapter_id: str
     ops: List[Op]
+    # Full per-word typing-speed trace, recorder-authoritative: [para, word_offset, wpm]
+    # triples (wpm clamped 10-300). Replaces the stored trace on every flush so word
+    # offsets always reflect the latest deletions.
+    wpm_trace: Optional[List] = None
 
 
 class SessionEnd(BaseModel):
@@ -104,12 +110,17 @@ def _get_db(project_path: str):
         raise HTTPException(status_code=404, detail="Database not found")
     conn = sqlite3.connect(db_path)
     conn.row_factory = sqlite3.Row
-    # summary_json was added after these tables first shipped — patch older dev DBs.
+    # summary_json / wpm_trace were added after these tables first shipped — patch older dev DBs.
     try:
         cols = [c[1] for c in conn.execute("PRAGMA table_info(pentimento_sessions)").fetchall()]
         if "summary_json" not in cols:
             conn.execute("ALTER TABLE pentimento_sessions ADD COLUMN summary_json TEXT")
-            conn.commit()
+        if "wpm_trace" not in cols:
+            conn.execute("ALTER TABLE pentimento_sessions ADD COLUMN wpm_trace TEXT")
+        op_cols = [c[1] for c in conn.execute("PRAGMA table_info(pentimento_ops)").fetchall()]
+        if "source" not in op_cols:
+            conn.execute("ALTER TABLE pentimento_ops ADD COLUMN source TEXT")
+        conn.commit()
     except Exception:
         pass
     # server_receipts (Sealed Pentimento) — created on demand for legacy projects.
@@ -296,6 +307,23 @@ def session_start(req: SessionStart):
         "VALUES (?,?,?,?,?,?)",
         (session_id, req.chapter_id, DEVICE_ID, session_num,
          datetime.datetime.now().isoformat(), prev_hash))
+
+    # Baseline snapshot: capture the chapter's state BEFORE this session writes, so the
+    # replay always has a frame to interpolate from (a fresh chapter snapshots as an
+    # empty page → its first session animates as typed text instead of appearing at
+    # once). The dedup inside _create_snapshot makes this a no-op when nothing changed
+    # since the last snapshot. Best-effort, gated on the same prose_history setting
+    # session/end uses.
+    try:
+        cur.execute("SELECT config_value FROM project_config WHERE config_key='prose_history'")
+        pcfg = cur.fetchone()
+        prose_history_on = (pcfg is None) or (str(pcfg["config_value"]).lower() != "false")
+        if prose_history_on:
+            from routes.chapter_history import _create_snapshot
+            _create_snapshot(cur, req.project_path, req.chapter_id, "session", session_id=session_id)
+    except Exception:
+        pass
+
     conn.commit()
     conn.close()
     return {"session_id": session_id, "session_num": session_num,
@@ -309,7 +337,7 @@ def _new_uuid(cur):
 
 @router.post("/api/project/pentimento/flush")
 def flush(req: FlushRequest):
-    if not req.ops:
+    if not req.ops and req.wpm_trace is None:
         return {"status": "ok", "written": 0}
     conn = _get_db(req.project_path)
     cur = conn.cursor()
@@ -319,16 +347,39 @@ def flush(req: FlushRequest):
         conn.close()
         raise HTTPException(status_code=404, detail="Unknown session_id")
 
-    rows = [(req.session_id, req.chapter_id, op.timestamp, op.op_type, op.para_index,
-             op.char_offset, op.length, op.text_content, op.duration_ms, "desktop")
-            for op in req.ops]
-    cur.executemany(
-        "INSERT INTO pentimento_ops "
-        "(session_id, chapter_id, timestamp, op_type, para_index, char_offset, length, "
-        " text_content, duration_ms, origin) VALUES (?,?,?,?,?,?,?,?,?,?)", rows)
+    if req.ops:
+        def _norm_source(op):
+            s = (op.source or "").lower()
+            if s in ("human", "paste", "machine"):
+                return s
+            return "paste" if op.op_type == "paste" else "human"
+        rows = [(req.session_id, req.chapter_id, op.timestamp, op.op_type, op.para_index,
+                 op.char_offset, op.length, op.text_content, op.duration_ms, "desktop",
+                 _norm_source(op))
+                for op in req.ops]
+        cur.executemany(
+            "INSERT INTO pentimento_ops "
+            "(session_id, chapter_id, timestamp, op_type, para_index, char_offset, length, "
+            " text_content, duration_ms, origin, source) VALUES (?,?,?,?,?,?,?,?,?,?,?)", rows)
+
+    # Per-word typing-speed trace: the recorder is authoritative — replace wholesale.
+    if req.wpm_trace is not None:
+        try:
+            clean = []
+            for t in req.wpm_trace[:50000]:
+                try:
+                    p, w, s = int(t[0]), int(t[1]), max(10, min(300, int(t[2])))
+                    clean.append([p, w, s])
+                except Exception:
+                    continue
+            cur.execute("UPDATE pentimento_sessions SET wpm_trace=? WHERE id=?",
+                        (json.dumps(clean), req.session_id))
+        except Exception:
+            pass  # pacing trace is auxiliary — never fail a flush over it
+
     conn.commit()
     conn.close()
-    return {"status": "ok", "written": len(rows)}
+    return {"status": "ok", "written": len(req.ops)}
 
 
 @router.post("/api/project/pentimento/session/end")
@@ -524,18 +575,20 @@ def heatmap(req: ChapterDeviceScoped):
 def get_ops(req: ChapterDeviceScoped):
     conn = _get_db(req.project_path)
     cur = conn.cursor()
+    device_join = ""
+    device_filter = ""
+    params: list = [req.chapter_id]
     if req.device_id:
-        cur.execute(
-            "SELECT o.session_id AS session_id, o.op_type AS op_type, o.para_index AS para_index, "
-            "       o.char_offset AS char_offset, o.length AS length, o.text_content AS text_content, "
-            "       o.duration_ms AS duration_ms, o.timestamp AS timestamp "
-            "FROM pentimento_ops o JOIN pentimento_sessions ps ON ps.id = o.session_id "
-            "WHERE o.chapter_id=? AND ps.device_id=? ORDER BY o.timestamp, o.rowid",
-            (req.chapter_id, req.device_id))
-    else:
-        cur.execute(
-            "SELECT session_id, op_type, para_index, char_offset, length, text_content, duration_ms, timestamp "
-            "FROM pentimento_ops WHERE chapter_id=? ORDER BY timestamp, rowid", (req.chapter_id,))
+        device_join = " JOIN pentimento_sessions ps ON ps.id = o.session_id "
+        device_filter = " AND ps.device_id=? "
+        params.append(req.device_id)
+    cur.execute(
+        "SELECT o.session_id AS session_id, o.op_type AS op_type, o.para_index AS para_index, "
+        "       o.char_offset AS char_offset, o.length AS length, o.text_content AS text_content, "
+        "       o.duration_ms AS duration_ms, o.timestamp AS timestamp, o.source AS source "
+        f"FROM pentimento_ops o {device_join}"
+        f" WHERE o.chapter_id=? {device_filter} ORDER BY o.timestamp, o.rowid",
+        params)
     ops = [{
         "session_id": r["session_id"],
         "op_type": r["op_type"],
@@ -544,10 +597,34 @@ def get_ops(req: ChapterDeviceScoped):
         "length": r["length"],
         "text_content": r["text_content"],
         "duration_ms": r["duration_ms"] or 0,
-        "timestamp": r["timestamp"]
+        "timestamp": r["timestamp"],
+        "source": r["source"] or ("paste" if r["op_type"] == "paste" else "human"),
     } for r in cur.fetchall()]
+
+    # Per-word typing-speed traces (replay pacing), keyed by session id.
+    wpm_by_session = {}
+    try:
+        if req.device_id:
+            cur.execute(
+                "SELECT id, wpm_trace FROM pentimento_sessions "
+                "WHERE chapter_id=? AND device_id=? AND wpm_trace IS NOT NULL",
+                (req.chapter_id, req.device_id))
+        else:
+            cur.execute(
+                "SELECT id, wpm_trace FROM pentimento_sessions "
+                "WHERE chapter_id=? AND wpm_trace IS NOT NULL", (req.chapter_id,))
+        for r in cur.fetchall():
+            try:
+                trace = json.loads(r["wpm_trace"])
+                if isinstance(trace, list) and trace:
+                    wpm_by_session[r["id"]] = trace
+            except Exception:
+                pass
+    except Exception:
+        pass
+
     conn.close()
-    return {"ops": ops}
+    return {"ops": ops, "wpm_by_session": wpm_by_session}
 
 
 @router.post("/api/project/pentimento/summary")

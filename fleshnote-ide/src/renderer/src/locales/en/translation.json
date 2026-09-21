@@ -438,7 +438,8 @@
     "toggleProgressBar": "Show Progress Bar",
     "toggleStatusBar": "Show Status Bar",
     "statusBarFormat": "Markdown · UTF-8",
-    "import": "Import..."
+    "import": "Import...",
+    "paletteHint": "Drag to place"
   },
   "picker": {
     "title": "FleshNote Projects",
@@ -1380,7 +1381,11 @@
     "thisDevice": "This device",
     "deviceLabel": "Device {{id}}",
     "deviceUnknown": "Unknown device",
-    "byDevice": "By device"
+    "byDevice": "By device",
+    "sessionStart": "Session {{n}} — start",
+    "srcHuman": "Typed",
+    "srcPaste": "Pasted",
+    "srcMachine": "Assisted"
   },
   "pentimentoSettings": {
     "title": "Writing Process (Pentimento)",

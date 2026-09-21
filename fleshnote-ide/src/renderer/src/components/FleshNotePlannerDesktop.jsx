@@ -88,6 +88,11 @@ export default function FleshNotePlannerDesktop({ projectPath, chapters, activeC
     const [isCanvasPanning, setIsCanvasPanning] = useState(false);
     const [panStart, setPanStart] = useState({ x: 0, scrollLeft: 0 });
 
+    // Palette drag states (dragging a new block chip from the palette strip)
+    const [paletteDrag, setPaletteDrag] = useState(null); // { blockType, label }
+    const [palettePos, setPalettePos] = useState({ x: 0, y: 0 });
+    const [paletteDrop, setPaletteDrop] = useState(null); // { pct, lane } while over the canvas
+
     const [zoomMultiplier, setZoomMultiplier] = useState(1.5);
     const [containerWidth, setContainerWidth] = useState(800);
 
@@ -144,7 +149,15 @@ export default function FleshNotePlannerDesktop({ projectPath, chapters, activeC
         try {
             const res = await window.api.loadPlanner(projectPath);
             if (res.status === "ok") {
-                setSettings(res.settings || { theme: "", cursor_pct: 0, shadow_visible: 0 });
+                let nextSettings = res.settings || { theme: "", cursor_pct: 0, shadow_visible: 0 };
+                // Migrate the wizard's one-line story summary into the planner's
+                // summary field when it is still empty (one-time, then persisted)
+                const wizardSummary = typeof projectConfig?.story_summary === 'string' ? projectConfig.story_summary.trim() : '';
+                if (!nextSettings.theme && wizardSummary) {
+                    nextSettings = { ...nextSettings, theme: wizardSummary };
+                    apiUpdateSettings({ theme: wizardSummary });
+                }
+                setSettings(nextSettings);
                 setBlocks(res.blocks || []);
                 setArcs(res.arcs || []);
             }
@@ -249,17 +262,16 @@ export default function FleshNotePlannerDesktop({ projectPath, chapters, activeC
     };
 
     // Blocks
-    const addBlock = () => {
-        const newB = {
-            id: "b_" + uuid(),
-            layer: activeLayer,
-            block_type: "beat",
-            label: t('ide.newBeat', "New Beat"),
-            pct: 50,
-            lane: 0,
-        };
-        setBlocks((prev) => [...prev, newB]);
-        apiSaveBlock(newB);
+    const startPaletteDrag = (e, type, def) => {
+        if (e.button !== 0) return;
+        e.preventDefault();
+        e.stopPropagation();
+        setPaletteDrag({
+            blockType: type,
+            label: type === 'beat' ? t('ide.newBeat', "New Beat") : t(`ide.blockType_${type}`, def.label),
+        });
+        setPalettePos({ x: e.clientX, y: e.clientY });
+        setPaletteDrop(null);
     };
 
     const startDragBlock = (e, id) => {
@@ -367,6 +379,34 @@ export default function FleshNotePlannerDesktop({ projectPath, chapters, activeC
             );
         }
 
+        if (paletteDrag) {
+            setPalettePos({ x: e.clientX, y: e.clientY });
+
+            // Compute the drop target (pct + lane) from raw mouse coords —
+            // railGeom already reflects zoom, scrollLeft makes it scroll-accurate
+            const rect = canvasRef.current.getBoundingClientRect();
+            const overCanvas = e.clientX >= rect.left && e.clientX <= rect.right
+                && e.clientY >= rect.top && e.clientY <= rect.bottom;
+            if (overCanvas && railGeom.width > 0) {
+                const mouseX = (e.clientX - rect.left) + canvasRef.current.scrollLeft;
+                const mouseY = (e.clientY - rect.top) + canvasRef.current.scrollTop;
+                let pct = ((mouseX - railGeom.left) / railGeom.width) * 100;
+                pct = Math.max(0, Math.min(100, pct));
+                let nearestLane = 0;
+                let minD = Infinity;
+                LANE_Y.forEach((ly, idx) => {
+                    const d = Math.abs(mouseY - (ly + BLOCK_H / 2));
+                    if (d < minD) {
+                        minD = d;
+                        nearestLane = idx;
+                    }
+                });
+                setPaletteDrop({ pct, lane: nearestLane });
+            } else {
+                setPaletteDrop(null);
+            }
+        }
+
         if (resizingArc) {
             let pct = ((mouseX - railGeom.left) / railGeom.width) * 100;
             pct = Math.max(0, Math.min(100, pct));
@@ -384,9 +424,28 @@ export default function FleshNotePlannerDesktop({ projectPath, chapters, activeC
                 })
             );
         }
-    }, [draggingBlockId, dragOffset, resizingArc, railGeom]);
+        }, [draggingBlockId, dragOffset, paletteDrag, resizingArc, railGeom]);
 
     const onMouseUp = useCallback(() => {
+        if (paletteDrag) {
+            if (paletteDrop) {
+                const span = chapterSpans.find(s => paletteDrop.pct >= s.startPct && paletteDrop.pct < s.endPct)
+                    || (chapterSpans.length > 0 ? chapterSpans[chapterSpans.length - 1] : null);
+                const newB = {
+                    id: "b_" + uuid(),
+                    layer: activeLayer,
+                    block_type: paletteDrag.blockType,
+                    label: paletteDrag.label,
+                    pct: paletteDrop.pct,
+                    lane: paletteDrop.lane,
+                    ...(span ? { chapter_id: span.id, chapter_status: span.status } : {}),
+                };
+                setBlocks((prev) => [...prev, newB]);
+                apiSaveBlock(newB);
+            }
+            setPaletteDrag(null);
+            setPaletteDrop(null);
+        }
         if (draggingBlockId) {
             const target = blocks.find(b => b.id === draggingBlockId);
             if (target) {
@@ -411,7 +470,7 @@ export default function FleshNotePlannerDesktop({ projectPath, chapters, activeC
         if (isCanvasPanning) {
             setIsCanvasPanning(false);
         }
-    }, [draggingBlockId, resizingArc, blocks, arcs, isCanvasPanning, chapterSpans]);
+    }, [paletteDrag, paletteDrop, activeLayer, chapterSpans, draggingBlockId, resizingArc, blocks, arcs, isCanvasPanning]);
 
     useEffect(() => {
         window.addEventListener("mousemove", onMouseMove);
@@ -553,14 +612,6 @@ export default function FleshNotePlannerDesktop({ projectPath, chapters, activeC
                 position: "relative",
             }}
         >
-            {/* STORY SUMMARY (from Brainstorm Sigil Hub) */}
-            {typeof projectConfig?.story_summary === 'string' && projectConfig.story_summary.trim() ? (
-                <div className="planner-story-summary">
-                    <span className="rune-inline">𐲐</span>
-                    <span className="planner-story-summary-text">{projectConfig.story_summary}</span>
-                </div>
-            ) : null}
-
             {/* HEADER SECTION */}
             <div
                 style={{
@@ -620,25 +671,6 @@ export default function FleshNotePlannerDesktop({ projectPath, chapters, activeC
                         }}
                     >
                         {settings.shadow_visible ? <Icons.Eye /> : <Icons.EyeOff />}
-                    </button>
-
-                    <button
-                        onClick={addBlock}
-                        style={{
-                            display: "flex",
-                            alignItems: "center",
-                            gap: "6px",
-                            padding: "6px 14px",
-                            backgroundColor: "var(--bg-elevated)",
-                            color: "var(--text-primary)",
-                            border: "1px solid var(--border-default)",
-                            cursor: "pointer",
-                            fontFamily: "var(--font-mono)",
-                            fontSize: "11px",
-                            textTransform: "uppercase",
-                        }}
-                    >
-                        <Icons.Plus /> {t('ide.addBlock', 'Add Block')}
                     </button>
 
                     <button
@@ -717,6 +749,59 @@ export default function FleshNotePlannerDesktop({ projectPath, chapters, activeC
                         outline: "none",
                     }}
                 />
+            </div>
+
+            {/* BLOCK PALETTE — drag a chip onto the canvas to place it exactly where it belongs */}
+            <div
+                style={{
+                    display: "flex",
+                    alignItems: "center",
+                    gap: "8px",
+                    flexWrap: "wrap",
+                    padding: "0 40px 10px",
+                }}
+            >
+                <span
+                    style={{
+                        fontFamily: "var(--font-mono)",
+                        fontSize: "10px",
+                        color: "var(--text-tertiary)",
+                        textTransform: "uppercase",
+                        letterSpacing: "1px",
+                        marginInlineEnd: "6px",
+                    }}
+                >
+                    {t('ide.paletteHint', 'Drag to place')}
+                </span>
+                {Object.entries(activeLayer === "shadow" ? SHADOW_BLOCK_TYPES : BLOCK_TYPES).map(([type, def]) => {
+                    const isPaletteActive = paletteDrag?.blockType === type;
+                    return (
+                        <div
+                            key={type}
+                            onMouseDown={(e) => startPaletteDrag(e, type, def)}
+                            style={{
+                                display: "flex",
+                                alignItems: "center",
+                                gap: "5px",
+                                padding: "5px 12px",
+                                backgroundColor: isPaletteActive ? "var(--bg-elevated)" : "var(--bg-surface)",
+                                color: def.defaultColor,
+                                border: `1px solid ${isPaletteActive ? def.defaultColor : "var(--border-subtle)"}`,
+                                borderTopWidth: "2px",
+                                cursor: "grab",
+                                fontFamily: "var(--font-mono)",
+                                fontSize: "10px",
+                                textTransform: "uppercase",
+                                letterSpacing: "0.5px",
+                                userSelect: "none",
+                                WebkitUserSelect: "none",
+                                opacity: paletteDrag && !isPaletteActive ? 0.5 : 1,
+                            }}
+                        >
+                            <Icons.Plus /> {t(`ide.blockType_${type}`, def.label)}
+                        </div>
+                    );
+                })}
             </div>
 
             {/* PLANNER CANVAS */}
@@ -994,6 +1079,24 @@ export default function FleshNotePlannerDesktop({ projectPath, chapters, activeC
                             </div>
                         );
                     })}
+
+                    {/* Palette drop preview */}
+                    {paletteDrag && paletteDrop ? (
+                        <div
+                            style={{
+                                position: "absolute",
+                                left: railGeom.left + (paletteDrop.pct / 100) * railGeom.width - BLOCK_W / 2,
+                                top: LANE_Y[paletteDrop.lane],
+                                width: BLOCK_W,
+                                height: BLOCK_H,
+                                backgroundColor: "rgba(217, 119, 6, 0.08)",
+                                border: "1px dashed var(--accent-amber)",
+                                borderRadius: "2px",
+                                pointerEvents: "none",
+                                zIndex: 15,
+                            }}
+                        />
+                    ) : null}
 
                     {/* Render Blocks */}
                     {visibleBlocks.map((b) => {
@@ -1442,6 +1545,30 @@ export default function FleshNotePlannerDesktop({ projectPath, chapters, activeC
                     onApplied={handleFrameworkApplied}
                 />
             )}
+
+            {/* Ghost chip following the cursor during a palette drag */}
+            {paletteDrag ? (
+                <div
+                    style={{
+                        position: "fixed",
+                        left: palettePos.x + 10,
+                        top: palettePos.y + 10,
+                        padding: "5px 12px",
+                        backgroundColor: "var(--bg-elevated)",
+                        color: paletteDrop ? "var(--accent-amber)" : "var(--text-tertiary)",
+                        border: `1px solid ${paletteDrop ? "var(--accent-amber)" : "var(--border-default)"}`,
+                        fontFamily: "var(--font-mono)",
+                        fontSize: "10px",
+                        textTransform: "uppercase",
+                        letterSpacing: "0.5px",
+                        pointerEvents: "none",
+                        zIndex: 9999,
+                        opacity: 0.9,
+                    }}
+                >
+                    {paletteDrag.label}
+                </div>
+            ) : null}
         </div>
     );
 }

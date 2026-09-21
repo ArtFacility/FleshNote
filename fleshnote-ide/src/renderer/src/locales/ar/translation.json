@@ -437,7 +437,8 @@
     "toggleProgressBar": "إظهار شريط التقدم",
     "toggleStatusBar": "إظهار شريط الحالة",
     "statusBarFormat": "ماركداون · UTF-8",
-    "import": "استيراد..."
+    "import": "استيراد...",
+    "paletteHint": "اسحب لوضعه"
   },
   "picker": {
     "title": "مشاريع FleshNote",
@@ -1365,7 +1366,11 @@
     "thisDevice": "هذا الجهاز",
     "deviceLabel": "الجهاز {{id}}",
     "deviceUnknown": "جهاز غير معروف",
-    "byDevice": "حسب الجهاز"
+    "byDevice": "حسب الجهاز",
+    "sessionStart": "الجلسة {{n}} — البداية",
+    "srcHuman": "مكتوب",
+    "srcPaste": "ملصق",
+    "srcMachine": "بمساعدة"
   },
   "pentimentoSettings": {
     "title": "عملية الكتابة (Pentimento)",

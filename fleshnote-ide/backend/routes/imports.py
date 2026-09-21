@@ -114,7 +114,7 @@ def _plain_text_to_html(text: str) -> str:
         return ""
 
     # If the text already contains HTML tags, return as-is
-    if "<p>" in text or "<br" in text:
+    if "<p>" in text or "<br" in text or re.search(r'<h[1-6][>\s]', text):
         return text
 
     # Split on double newlines to get paragraphs
@@ -124,6 +124,12 @@ def _plain_text_to_html(text: str) -> str:
     for para in paragraphs:
         para = para.strip()
         if not para:
+            continue
+        # Markdown heading lines (e.g. scaffolded "# Chapter 1: ...") become <h1>-<h6>
+        heading_match = re.match(r'^(#{1,6})\s+(.+)$', para)
+        if heading_match:
+            level = len(heading_match.group(1))
+            html_parts.append(f"<h{level}>{heading_match.group(2).strip()}</h{level}>")
             continue
         # Convert single newlines within a paragraph to <br> tags
         para_html = para.replace('\n', '<br>')
