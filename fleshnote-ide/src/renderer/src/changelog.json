@@ -1,6 +1,15 @@
 {
-    "currentVersion": "2.0",
+    "currentVersion": "2.1",
     "history": [
+        {
+            "version": "2.1",
+            "date": "2026-09-17",
+            "changes": [
+                "Single-file projects — every project is now a .flnote file (existing projects upgrade with one click from the project picker)",
+                "Share projects as one file — Export/Open .flnote, ready for the web platform's upload flow",
+                "Hardened sync — merge engine validates foreign data, archives are bomb/slip/symlink-proof, backups are always consistent"
+            ]
+        },
         {
             "version": "2.0",
             "date": "2026-09-11",

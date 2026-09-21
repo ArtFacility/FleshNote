@@ -6,6 +6,7 @@ import shutil
 import re
 from datetime import datetime
 from db_setup import generate_project_db
+from project_io import backup_db_file, display_name
 
 # Reference columns copy_table() remaps and that fall back to the old id on a miss.
 # Covers polymorphic entity_id columns AND direct FKs whose target can go missing
@@ -81,10 +82,10 @@ def migrate_project(project_path: str) -> dict:
         except Exception:
             pass
 
-    # Backup the database first
+    # Backup the database first (snapshot API — consistent even under WAL)
     db_backup_path = os.path.join(project_path, "fleshnote.db.bak")
     try:
-        shutil.copy2(db_path, db_backup_path)
+        backup_db_file(project_path, db_backup_path)
     except Exception as e:
         return {"status": "error", "message": f"Failed to create database backup: {str(e)}"}
 
@@ -104,7 +105,7 @@ def migrate_project(project_path: str) -> dict:
         config_rows = old_cursor.fetchall()
         
         answers = {
-            "project_name": os.path.basename(project_path),
+            "project_name": display_name(os.path.basename(project_path)),
             "author_name": "Anonymous",
             "genre": "custom"
         }

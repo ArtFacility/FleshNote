@@ -8,6 +8,40 @@ Defined in `backend/db_setup.py`.
 
 ---
 
+## On-disk project format (`.flnote`)
+
+A project is an **extensioned directory** named `{Name}.flnote` — it behaves like a
+single file for users (share/backup = one ZIP artifact with the same name) but
+stays a plain folder on disk. All path handling lives in `backend/project_io.py`:
+
+```
+MyNovel.flnote/
+  fleshnote.db            SQLite, WAL mode
+  fleshnote_project.json  descriptor: project_name (NO extension), schema_version,
+                          created_version, last_opened_version, project_id (UUID)
+  md/                     chapter markdown (ch_NNN_slug.md)
+  assets/                 entity reference images
+  exports/                export pipeline output (never included in .flnote zips)
+```
+
+- **Display name** = folder name with the `.flnote` suffix stripped (`scan_workspace`
+  returns the stripped `name` plus an `is_legacy` flag for pre-2.1 folders).
+- **Share/export format** (`POST /api/project/export-flnote`): a ZIP of
+  `fleshnote.db` (snapshotted via the SQLite backup API — never the live WAL file),
+  `fleshnote_project.json`, `md/`, `assets/`. `desktop.ini`/`Thumbs.db`/`*.bak`
+  junk is excluded.
+- **Import** (`POST /api/project/import-flnote`) validates hard before extracting:
+  zip-slip paths, uncompressed-size caps, symlink entries, duplicate/absolute
+  paths, and a top-level allowlist (`fleshnote.db`, `fleshnote_project.json`,
+  `md/`, `assets/` only). See `project_io.safe_extract_zip`.
+- **Modernization** (`POST /api/projects/modernize`): renames legacy plain folders
+  to `Name.flnote` and auto-runs the v1→v2 schema migration where needed.
+- Old (pre-2.1) app versions still *find* `Name.flnote` folders — project discovery
+  is marker-based (`fleshnote.db` / `fleshnote_project.json`), not name-based — so
+  downgrading is safe.
+
+---
+
 ## 1. `project_config`
 
 Key-value store for all project settings and UI toggles.

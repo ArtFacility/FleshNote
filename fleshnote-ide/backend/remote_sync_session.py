@@ -33,12 +33,14 @@ import secrets
 import shutil
 import tempfile
 import threading
-import zipfile
 from typing import Optional
 
 import uvicorn
 from fastapi import FastAPI, HTTPException, UploadFile, File, Query
 from fastapi.responses import FileResponse
+
+import project_io
+from project_io import zip_project as _zip_project  # hardened + WAL-safe
 
 SESSION_TTL_SECONDS = 10 * 60
 MAX_UPLOAD_BYTES = 200 * 1024 * 1024
@@ -160,38 +162,9 @@ def _get_local_ips() -> list[str]:
 
 
 def _safe_extract_zip(zip_path: str, dest_dir: str):
-    """Extract with a zip-slip guard — every member must resolve inside dest_dir."""
-    dest_dir = os.path.realpath(dest_dir)
-    with zipfile.ZipFile(zip_path) as zf:
-        for member in zf.infolist():
-            member_path = os.path.realpath(os.path.join(dest_dir, member.filename))
-            if member_path != dest_dir and not member_path.startswith(dest_dir + os.sep):
-                raise ValueError(f"Unsafe path in uploaded archive: {member.filename}")
-        zf.extractall(dest_dir)
-
-
-def _zip_project(project_path: str) -> str:
-    """Zip fleshnote.db + md/ + assets/ + fleshnote_project.json for download."""
-    fd, zip_path = tempfile.mkstemp(prefix="fleshnote_merged_", suffix=".zip")
-    os.close(fd)
-    with zipfile.ZipFile(zip_path, "w", zipfile.ZIP_DEFLATED) as zf:
-        db_path = os.path.join(project_path, "fleshnote.db")
-        if os.path.exists(db_path):
-            zf.write(db_path, "fleshnote.db")
-        json_path = os.path.join(project_path, "fleshnote_project.json")
-        if os.path.exists(json_path):
-            zf.write(json_path, "fleshnote_project.json")
-        # md/ (prose) and assets/ (entity reference images + icons) both travel
-        # so the phone gets the desktop's latest files, not just DB rows.
-        for sub in ("md", "assets"):
-            sub_dir = os.path.join(project_path, sub)
-            if os.path.isdir(sub_dir):
-                for root, _dirs, files in os.walk(sub_dir):
-                    for fname in files:
-                        full = os.path.join(root, fname)
-                        rel = os.path.relpath(full, project_path)
-                        zf.write(full, rel)
-    return zip_path
+    """Extract with full validation — delegates to project_io (zip-slip, bombs,
+    symlinks, duplicates, entry allowlist)."""
+    return project_io.safe_extract_zip(zip_path, dest_dir)
 
 
 def _register_cloned_project(extract_dir: str, workspace_path: Optional[str]) -> str:
@@ -203,13 +176,9 @@ def _register_cloned_project(extract_dir: str, workspace_path: Optional[str]) ->
     with open(meta_path, encoding="utf-8") as f:
         meta = json.load(f)
     raw_name = str(meta.get("project_name") or "Received Project").strip()
-    base = "".join(c for c in raw_name if c.isalnum() or c in " -_").strip() or "Received_Project"
+    base = project_io.sanitize_project_name(raw_name)
 
-    target = os.path.join(workspace_path, base)
-    i = 2
-    while os.path.exists(target):
-        target = os.path.join(workspace_path, f"{base} ({i})")
-        i += 1
+    target = project_io.next_available_project_dir(workspace_path, base)
     shutil.copytree(extract_dir, target)
     return target
 

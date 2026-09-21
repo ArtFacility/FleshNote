@@ -80,6 +80,9 @@ datas = [
     # Name generator datasets (presets and real name lists)
     ('tools/name_gen/data', 'tools/name_gen/data'),
     ('stopwords.json', '.'),
+    # .flnote folder icon (desktop.ini IconResource needs an .ico)
+    ('../resources/icons/fleshnote.ico', 'icons'),
+    ('../resources/icons/fleshnote-project-256.png', 'icons'),
 ]
 
 from PyInstaller.utils.hooks import collect_submodules, collect_data_files

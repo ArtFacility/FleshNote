@@ -21,6 +21,18 @@ runs its own conflict-resolution UI against the desktop. This holds for both tra
   for the QR/LAN flow (§9).
 - Tables: `change_log`, `sync_meta` (see `DATABASE_SCHEMA.md` §27, §31).
 
+**Security notes (added 2.1):**
+- The merge engine never interpolates identifiers from a remote project file: every
+  `table_name`/`column_name` arriving in a `change_log` is checked against the
+  **local schema allowlist** (`_schema_allowlist` — built from `sqlite_master` +
+  `PRAGMA table_info` of the *local* db). Rows referencing unknown tables/columns
+  are skipped, so a hostile project file (shared folder, LAN peer, or imported
+  `.flnote` ZIP) cannot inject SQL.
+- Database backups and all ZIP transports go through `backend/project_io.py`:
+  `.bak` copies and archive payloads are **snapshotted via the SQLite backup API**
+  (a raw copy of a live WAL database can be torn), and all archive extraction runs
+  the hardened validator (zip-slip, bombs, symlinks, duplicates, entry allowlist).
+
 ---
 
 ## 1. The write path — how changes are tracked

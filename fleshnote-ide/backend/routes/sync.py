@@ -54,7 +54,27 @@ def _pk_col(table_name: str) -> str:
     return "config_key" if table_name in ["project_config", "calendar_config"] else "id"
 
 
-def _get_display_name(cursor, table_name: str, row_id: str) -> str:
+def _schema_allowlist(conn) -> Dict[str, set]:
+    """{table: {column}} built from THIS db's real schema. change_log rows carry
+    table/column names authored on another device (or inside a hostile project
+    file) — they are data, never SQL identifiers. Everything below interpolates
+    identifiers ONLY after checking them against this allowlist."""
+    allow = {}
+    cur = conn.cursor()
+    cur.execute("SELECT name FROM sqlite_master WHERE type='table' AND name NOT LIKE 'sqlite_%'")
+    for (table,) in cur.fetchall():
+        cur.execute(f"PRAGMA table_info({table})")
+        allow[table] = {c[1] for c in cur.fetchall()}
+    return allow
+
+
+def _ident_ok(allow: Dict[str, set], table_name, column_name) -> bool:
+    return table_name in allow and column_name in allow[table_name]
+
+
+def _get_display_name(cursor, table_name: str, row_id: str, allow: Dict[str, set] = None):
+    if allow is not None and table_name not in allow:
+        return f"{table_name} ({str(row_id)[:8]})"
     pk_col = _pk_col(table_name)
     try:
         cursor.execute(f"PRAGMA table_info({table_name})")
@@ -118,7 +138,8 @@ def _latest_by_field(logs):
 
 # ── Entity diff ─────────────────────────────────────────────────────────────
 
-def _compute_entity_changes(cursor_local, cursor_remote, unseen_remote, unseen_local):
+def _compute_entity_changes(cursor_local, cursor_remote, unseen_remote, unseen_local,
+                            allow: Dict[str, set] = None):
     """Return the list of remote field changes that would actually alter local state."""
     remote_grouped = _latest_by_field(unseen_remote)
     local_grouped = _latest_by_field(unseen_local)
@@ -128,6 +149,8 @@ def _compute_entity_changes(cursor_local, cursor_remote, unseen_remote, unseen_l
         table_name, row_id, column_name = key
         if column_name == "prose_hash":  # synthetic, handled by the prose engine
             continue
+        if allow is not None and not _ident_ok(allow, table_name, column_name):
+            continue  # unknown table/column on this schema — skip defensively
 
         local_log = local_grouped.get(key)
         if local_log and local_log["hlc"] > remote_log["hlc"]:
@@ -158,7 +181,7 @@ def _compute_entity_changes(cursor_local, cursor_remote, unseen_remote, unseen_l
             "table": table_name,
             "row_id": row_id,
             "column": column_name,
-            "display_name": _get_display_name(cursor_remote, table_name, row_id),
+            "display_name": _get_display_name(cursor_remote, table_name, row_id, allow),
             "action": action,
             "value": remote_val if remote_val is not None else "",
         })
@@ -284,6 +307,7 @@ def sync_preview(req: SyncPreviewRequest):
     remote_conn = _get_db(req.remote_path)
     try:
         cl, cr = local_conn.cursor(), remote_conn.cursor()
+        allow = _schema_allowlist(local_conn)
         local_vv, _, _ = _load_meta(cl)
         remote_vv, _, _ = _load_meta(cr)
 
@@ -291,7 +315,7 @@ def sync_preview(req: SyncPreviewRequest):
         unseen_remote = _unseen(remote_logs, local_vv)
         unseen_local = _unseen(local_logs, remote_vv)
 
-        entity_changes = _compute_entity_changes(cl, cr, unseen_remote, unseen_local)
+        entity_changes = _compute_entity_changes(cl, cr, unseen_remote, unseen_local, allow)
         takes, conflicts = _compute_prose_plan(cl, cr, req.local_path, req.remote_path)
 
         summary = _entity_summary(entity_changes)
@@ -327,7 +351,8 @@ def sync_apply(req: SyncApplyRequest):
     if not os.path.exists(db_path):
         raise HTTPException(status_code=404, detail="Local database not found")
     try:
-        shutil.copy2(db_path, db_bak_path)
+        from project_io import backup_db_file
+        backup_db_file(req.local_path, db_bak_path)
     except Exception as e:
         raise HTTPException(status_code=500, detail=f"Failed to create database backup: {str(e)}")
 
@@ -336,6 +361,7 @@ def sync_apply(req: SyncApplyRequest):
     remote_conn = _get_db(req.remote_path)
     try:
         cl, cr = local_conn.cursor(), remote_conn.cursor()
+        allow = _schema_allowlist(local_conn)
         local_vv, local_last_hlc, local_device = _load_meta(cl)
         remote_vv, remote_last_hlc, remote_device = _load_meta(cr)
 
@@ -344,12 +370,14 @@ def sync_apply(req: SyncApplyRequest):
         unseen_local = _unseen(local_logs, remote_vv)
 
         # 1. Entity field changes (reuse the exact same detection as preview)
-        entity_changes = _compute_entity_changes(cl, cr, unseen_remote, unseen_local)
+        entity_changes = _compute_entity_changes(cl, cr, unseen_remote, unseen_local, allow)
         remote_grouped = _latest_by_field(unseen_remote)
 
         # group changes per row for clean insert/update
         rows_to_apply = {}
         for ch in entity_changes:
+            if not _ident_ok(allow, ch["table"], ch["column"]):
+                continue  # belt-and-braces: never interpolate unvalidated identifiers
             rows_to_apply.setdefault((ch["table"], ch["row_id"]), {})[ch["column"]] = ch["value"]
 
         for (table_name, row_id), field_vals in rows_to_apply.items():
@@ -364,11 +392,15 @@ def sync_apply(req: SyncApplyRequest):
                 cr.execute(f"SELECT * FROM {table_name} WHERE {pk_col} = ?", (row_id,))
                 remote_row = cr.fetchone()
                 if remote_row:
-                    cols = list(remote_row.keys())
+                    # intersect remote columns with the local schema allowlist —
+                    # extra/unknown remote columns are never interpolated
+                    cols = [c for c in remote_row.keys() if c in allow[table_name]]
                     vals = [remote_row[c] for c in cols]
                     for c, v in field_vals.items():
                         if c in cols:
                             vals[cols.index(c)] = v
+                    if not cols:
+                        continue
                     cl.execute(
                         f"INSERT INTO {table_name} ({', '.join(cols)}) "
                         f"VALUES ({', '.join(['?'] * len(cols))})", vals)
@@ -495,7 +527,8 @@ def sync_apply(req: SyncApplyRequest):
             pass
         if os.path.exists(db_bak_path):
             try:
-                shutil.copy2(db_bak_path, db_path)
+                from project_io import restore_db_file
+                restore_db_file(req.local_path, db_bak_path)
             except Exception as backup_err:
                 print(f"CRITICAL: Failed to restore database backup: {str(backup_err)}")
         raise HTTPException(status_code=500, detail=f"Sync apply failed: {str(e)}")
