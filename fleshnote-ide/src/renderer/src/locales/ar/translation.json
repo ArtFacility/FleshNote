@@ -441,6 +441,36 @@
     "paletteHint": "اسحب لوضعه"
   },
   "picker": {
+    "shelf": {
+      "viewShelf": "الرف",
+      "viewList": "القائمة",
+      "newShelf": "+ رف جديد",
+      "newShelfName": "رف جديد",
+      "unsorted": "غير مصنّف",
+      "renameHint": "انقر نقرًا مزدوجًا لإعادة التسمية",
+      "moveUp": "نقل الرف للأعلى",
+      "moveDown": "نقل الرف للأسفل",
+      "deleteShelf": "حذف الرف",
+      "deleteShelfPrompt": "إزالة الرف \"{{name}}\"؟ ستعود كتبه إلى غير المصنّف — لن يُحذف أي مشروع.",
+      "emptyShelf": "اسحب الكتب إلى هنا",
+      "bookCount": "الكتب: {{n}}",
+      "words": "الكلمات: {{n}}",
+      "chapters": "الفصول النهائية: {{done}}/{{total}}",
+      "finished": "مكتمل",
+      "bookActions": "إجراءات الكتاب",
+      "open": "فتح",
+      "customize": "تخصيص الكتاب",
+      "moveTo": "نقل إلى رف",
+      "export": "تصدير ‎.flnote",
+      "customizeTitle": "تخصيص الكتاب",
+      "preview": "معاينة",
+      "color": "لون التجليد",
+      "customColor": "مخصص",
+      "rune": "رمز الكعب (الرونية المجرية القديمة)",
+      "noRune": "بلا",
+      "save": "حفظ",
+      "saveError": "تعذّر حفظ مظهر الكتاب: "
+    },
     "title": "مشاريع FleshNote",
     "subtitle": "اختر مشروعاً للبدء أو قم بإعداد مساحة عمل جديدة.",
     "whatsNew": "ما هو الجديد؟",
@@ -729,6 +759,20 @@
     "reviewerPlaceholder": "مثال: اسم القارئ التجريبي",
     "reviewExported": "تم حفظ حزمة المراجعة.",
     "reviewExportFailed": "فشل تصدير المراجعة."
+  },
+  "exportChooser": {
+    "title": "تصدير المشروع",
+    "manuscriptTitle": "المخطوطة الأدبية",
+    "manuscriptDesc": "تصدير المخطوطة نفسها — بصيغ الكتب مثل DOCX وPDF وEPUB، مع خيارات المحتوى والتنسيق.",
+    "obsidianTitle": "المشروع الكامل — خزنة Obsidian",
+    "obsidianDesc": "مجلدات مع ملف Markdown لكل فصل وكيان (الشخصيات، الأماكن، المعارف…) بروابط ويكي مع الصور. جاهز للفتح في Obsidian.",
+    "txtTitle": "المشروع الكامل — نص عادي",
+    "txtDesc": "بنية المجلدات نفسها، لكن كملفات ‎.txt عادية بلا تنسيق خاص — أقصى قابلية للنقل.",
+    "flnoteTitle": "ملف ‎.flnote (مشاركة / نسخ احتياطي)",
+    "flnoteDesc": "المشروع كله في ملف واحد يمكن فتحه مجددًا في FleshNote أو تسليمه لكاتب آخر.",
+    "working": "جارٍ التصدير…",
+    "done": "اكتمل التصدير",
+    "failed": "فشل التصدير."
   },
   "mention": {
     "noResult": "لا توجد نتائج"
@@ -1661,6 +1705,17 @@
       "pacing": "الإيقاع والتوتر",
       "five_senses": "حواس مفقودة",
       "readability": "سهولة القراءة"
+    },
+    "sdtKinds": {
+      "emotion_label": "تسمية الشعور",
+      "filter_verb": "فعل ترشيح",
+      "realize_verb": "فعل إدراكي",
+      "adverb_emotion": "حال شعوري",
+      "emotion_noun_frame": "شعور مسمّى",
+      "detached_emotion": "شعور في مستهل الجملة",
+      "emotion_verb": "فعل شعوري",
+      "emotion_manner": "الشعور كطريقة",
+      "emotion_attribute": "شعور على الوجه أو في الصوت"
     },
     "noted": "تم التنبيه",
     "missingSensesDesc": "غير موجود في هذا الفصل:",

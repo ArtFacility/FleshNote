@@ -1,0 +1,739 @@
+{
+  "lang": "hu",
+  "kind": "telling_cue",
+  "version": 1,
+  "entries": [
+    {
+      "id": "hu.cue.arckifejezés",
+      "lemma": "arckifejezés",
+      "pos": [
+        "NOUN"
+      ],
+      "kind": "telling_cue",
+      "strength": "strong",
+      "valence": 0.0,
+      "arousal": 0.4,
+      "emotions": {
+        "anticipation": 0.9
+      },
+      "source": "curated:gemini-2026-09",
+      "version": 1
+    },
+    {
+      "id": "hu.cue.tekintet",
+      "lemma": "tekintet",
+      "pos": [
+        "NOUN"
+      ],
+      "kind": "telling_cue",
+      "strength": "strong",
+      "valence": 0.0,
+      "arousal": 0.4,
+      "emotions": {
+        "anticipation": 0.9
+      },
+      "source": "curated:gemini-2026-09",
+      "version": 1
+    },
+    {
+      "id": "hu.cue.hanghordozás",
+      "lemma": "hanghordozás",
+      "pos": [
+        "NOUN"
+      ],
+      "kind": "telling_cue",
+      "strength": "strong",
+      "valence": 0.0,
+      "arousal": 0.4,
+      "emotions": {
+        "anticipation": 0.9
+      },
+      "source": "curated:gemini-2026-09",
+      "version": 1
+    },
+    {
+      "id": "hu.cue.hangszín",
+      "lemma": "hangszín",
+      "pos": [
+        "NOUN"
+      ],
+      "kind": "telling_cue",
+      "strength": "strong",
+      "valence": 0.0,
+      "arousal": 0.4,
+      "emotions": {
+        "anticipation": 0.9
+      },
+      "source": "curated:gemini-2026-09",
+      "version": 1
+    },
+    {
+      "id": "hu.cue.hangulat",
+      "lemma": "hangulat",
+      "pos": [
+        "NOUN"
+      ],
+      "kind": "telling_cue",
+      "strength": "strong",
+      "valence": 0.0,
+      "arousal": 0.4,
+      "emotions": {
+        "anticipation": 0.9
+      },
+      "source": "curated:gemini-2026-09",
+      "version": 1
+    },
+    {
+      "id": "hu.cue.érzés",
+      "lemma": "érzés",
+      "pos": [
+        "NOUN"
+      ],
+      "kind": "telling_cue",
+      "strength": "strong",
+      "valence": 0.0,
+      "arousal": 0.4,
+      "emotions": {
+        "anticipation": 0.9
+      },
+      "source": "curated:gemini-2026-09",
+      "version": 1
+    },
+    {
+      "id": "hu.cue.érzelem",
+      "lemma": "érzelem",
+      "pos": [
+        "NOUN"
+      ],
+      "kind": "telling_cue",
+      "strength": "strong",
+      "valence": 0.0,
+      "arousal": 0.4,
+      "emotions": {
+        "anticipation": 0.9
+      },
+      "source": "curated:gemini-2026-09",
+      "version": 1
+    },
+    {
+      "id": "hu.cue.lelkiállapot",
+      "lemma": "lelkiállapot",
+      "pos": [
+        "NOUN"
+      ],
+      "kind": "telling_cue",
+      "strength": "strong",
+      "valence": 0.0,
+      "arousal": 0.4,
+      "emotions": {
+        "anticipation": 0.9
+      },
+      "source": "curated:gemini-2026-09",
+      "version": 1
+    },
+    {
+      "id": "hu.cue.kedély",
+      "lemma": "kedély",
+      "pos": [
+        "NOUN"
+      ],
+      "kind": "telling_cue",
+      "strength": "strong",
+      "valence": 0.0,
+      "arousal": 0.4,
+      "emotions": {
+        "anticipation": 0.9
+      },
+      "source": "curated:gemini-2026-09",
+      "version": 1
+    },
+    {
+      "id": "hu.cue.hang",
+      "lemma": "hang",
+      "pos": [
+        "NOUN"
+      ],
+      "kind": "telling_cue",
+      "strength": "strong",
+      "valence": 0.0,
+      "arousal": 0.4,
+      "emotions": {
+        "anticipation": 0.9
+      },
+      "source": "curated:gemini-2026-09",
+      "version": 1
+    },
+    {
+      "id": "hu.cue.pillantás",
+      "lemma": "pillantás",
+      "pos": [
+        "NOUN"
+      ],
+      "kind": "telling_cue",
+      "strength": "strong",
+      "valence": 0.0,
+      "arousal": 0.4,
+      "emotions": {
+        "anticipation": 0.9
+      },
+      "source": "curated:gemini-2026-09",
+      "version": 1
+    },
+    {
+      "id": "hu.cue.mosoly",
+      "lemma": "mosoly",
+      "pos": [
+        "NOUN"
+      ],
+      "kind": "telling_cue",
+      "strength": "strong",
+      "valence": 0.6,
+      "arousal": 0.4,
+      "emotions": {
+        "joy": 0.9
+      },
+      "source": "curated:gemini-2026-09",
+      "version": 1
+    },
+    {
+      "id": "hu.cue.fintor",
+      "lemma": "fintor",
+      "pos": [
+        "NOUN"
+      ],
+      "kind": "telling_cue",
+      "strength": "strong",
+      "valence": -0.5,
+      "arousal": 0.4,
+      "emotions": {
+        "disgust": 0.9
+      },
+      "source": "curated:gemini-2026-09",
+      "version": 1
+    },
+    {
+      "id": "hu.cue.sóhaj",
+      "lemma": "sóhaj",
+      "pos": [
+        "NOUN"
+      ],
+      "kind": "telling_cue",
+      "strength": "strong",
+      "valence": -0.3,
+      "arousal": 0.3,
+      "emotions": {
+        "sadness": 0.9
+      },
+      "source": "curated:gemini-2026-09",
+      "version": 1
+    },
+    {
+      "id": "hu.cue.könny",
+      "lemma": "könny",
+      "pos": [
+        "NOUN"
+      ],
+      "kind": "telling_cue",
+      "strength": "strong",
+      "valence": -0.6,
+      "arousal": 0.5,
+      "emotions": {
+        "sadness": 0.9
+      },
+      "source": "curated:gemini-2026-09",
+      "version": 1
+    },
+    {
+      "id": "hu.cue.könnyes_szem",
+      "phrase": [
+        "könnyes",
+        "szem"
+      ],
+      "kind": "telling_cue",
+      "strength": "strong",
+      "valence": -0.7,
+      "arousal": 0.5,
+      "emotions": {
+        "sadness": 0.9
+      },
+      "source": "curated:gemini-2026-09",
+      "version": 1,
+      "example": "Könnyes szemmel intett búcsút a távolodó vitorlásnak."
+    },
+    {
+      "id": "hu.cue.remegő_hang",
+      "phrase": [
+        "remegő",
+        "hang"
+      ],
+      "kind": "telling_cue",
+      "strength": "strong",
+      "valence": -0.6,
+      "arousal": 0.6,
+      "emotions": {
+        "fear": 0.9
+      },
+      "source": "curated:gemini-2026-09",
+      "version": 1,
+      "example": "Remegő hangon kérte a király kegyelmét a fogoly."
+    },
+    {
+      "id": "hu.cue.fojtott_hang",
+      "phrase": [
+        "fojtott",
+        "hang"
+      ],
+      "kind": "telling_cue",
+      "strength": "strong",
+      "valence": -0.5,
+      "arousal": 0.5,
+      "emotions": {
+        "fear": 0.9
+      },
+      "source": "curated:gemini-2026-09",
+      "version": 1,
+      "example": "Fojtott hangon suttogta el a titkos jelszót a sötétben."
+    },
+    {
+      "id": "hu.cue.suttogva",
+      "lemma": "suttogva",
+      "pos": [
+        "NOUN"
+      ],
+      "kind": "telling_cue",
+      "strength": "strong",
+      "valence": 0.2,
+      "arousal": 0.2,
+      "emotions": {
+        "trust": 0.9
+      },
+      "source": "curated:gemini-2026-09",
+      "version": 1
+    },
+    {
+      "id": "hu.cue.elcsukló_hang",
+      "phrase": [
+        "elcsukló",
+        "hang"
+      ],
+      "kind": "telling_cue",
+      "strength": "strong",
+      "valence": -0.7,
+      "arousal": 0.6,
+      "emotions": {
+        "sadness": 0.9
+      },
+      "source": "curated:gemini-2026-09",
+      "version": 1,
+      "example": "Elcsukló hangon mondott köszönetet az önzetlen segítségért."
+    },
+    {
+      "id": "hu.cue.haragos_pillantás",
+      "phrase": [
+        "haragos",
+        "pillantás"
+      ],
+      "kind": "telling_cue",
+      "strength": "strong",
+      "valence": -0.7,
+      "arousal": 0.7,
+      "emotions": {
+        "anger": 0.9
+      },
+      "source": "curated:gemini-2026-09",
+      "version": 1,
+      "example": "Haragos pillantást vetett a későn érkező szolga felé."
+    },
+    {
+      "id": "hu.cue.gúnyos_mosoly",
+      "phrase": [
+        "gúnyos",
+        "mosoly"
+      ],
+      "kind": "telling_cue",
+      "strength": "strong",
+      "valence": -0.6,
+      "arousal": 0.5,
+      "emotions": {
+        "disgust": 0.9
+      },
+      "source": "curated:gemini-2026-09",
+      "version": 1,
+      "example": "Gúnyos mosoly jelent meg az arcán a vesztes láttán."
+    },
+    {
+      "id": "hu.cue.kesernyés_mosoly",
+      "phrase": [
+        "kesernyés",
+        "mosoly"
+      ],
+      "kind": "telling_cue",
+      "strength": "strong",
+      "valence": -0.4,
+      "arousal": 0.3,
+      "emotions": {
+        "sadness": 0.9
+      },
+      "source": "curated:gemini-2026-09",
+      "version": 1,
+      "example": "Kesernyés mosollyal vette tudomásul a megváltoztathatatlan hírt."
+    },
+    {
+      "id": "hu.cue.megvető_pillantás",
+      "phrase": [
+        "megvető",
+        "pillantás"
+      ],
+      "kind": "telling_cue",
+      "strength": "strong",
+      "valence": -0.7,
+      "arousal": 0.6,
+      "emotions": {
+        "disgust": 0.9
+      },
+      "source": "curated:gemini-2026-09",
+      "version": 1,
+      "example": "Megvető pillantással mérte végig a büszke lovag az árulót."
+    },
+    {
+      "id": "hu.cue.hideg_tekintet",
+      "phrase": [
+        "hideg",
+        "tekintet"
+      ],
+      "kind": "telling_cue",
+      "strength": "strong",
+      "valence": -0.5,
+      "arousal": 0.3,
+      "emotions": {
+        "disgust": 0.9
+      },
+      "source": "curated:gemini-2026-09",
+      "version": 1,
+      "example": "A bíró hideg tekintettel figyelte a vádlott védekezését."
+    },
+    {
+      "id": "hu.cue.meleg_mosoly",
+      "phrase": [
+        "meleg",
+        "mosoly"
+      ],
+      "kind": "telling_cue",
+      "strength": "strong",
+      "valence": 0.8,
+      "arousal": 0.4,
+      "emotions": {
+        "joy": 0.9
+      },
+      "source": "curated:gemini-2026-09",
+      "version": 1,
+      "example": "A háziasszony meleg mosollyal tessékelte be a didergő vendéget."
+    },
+    {
+      "id": "hu.cue.ijedt_tekintet",
+      "phrase": [
+        "ijedt",
+        "tekintet"
+      ],
+      "kind": "telling_cue",
+      "strength": "strong",
+      "valence": -0.7,
+      "arousal": 0.7,
+      "emotions": {
+        "fear": 0.9
+      },
+      "source": "curated:gemini-2026-09",
+      "version": 1,
+      "example": "Ijedt tekintettel fürkészte a sötét erdő sűrűjét."
+    },
+    {
+      "id": "hu.cue.rémült_pillantás",
+      "phrase": [
+        "rémült",
+        "pillantás"
+      ],
+      "kind": "telling_cue",
+      "strength": "strong",
+      "valence": -0.8,
+      "arousal": 0.8,
+      "emotions": {
+        "fear": 0.9
+      },
+      "source": "curated:gemini-2026-09",
+      "version": 1,
+      "example": "Rémült pillantást vetett a hátulról közeledő árnyékra."
+    },
+    {
+      "id": "hu.cue.kétségbeesett_pillantás",
+      "phrase": [
+        "kétségbeesett",
+        "pillantás"
+      ],
+      "kind": "telling_cue",
+      "strength": "strong",
+      "valence": -0.8,
+      "arousal": 0.8,
+      "emotions": {
+        "fear": 0.9
+      },
+      "source": "curated:gemini-2026-09",
+      "version": 1,
+      "example": "Kétségbeesett pillantással kért segítséget a fuldokló."
+    },
+    {
+      "id": "hu.cue.bánatos_tekintet",
+      "phrase": [
+        "bánatos",
+        "tekintet"
+      ],
+      "kind": "telling_cue",
+      "strength": "strong",
+      "valence": -0.7,
+      "arousal": 0.3,
+      "emotions": {
+        "sadness": 0.9
+      },
+      "source": "curated:gemini-2026-09",
+      "version": 1,
+      "example": "Bánatos tekintettel nézte a lerombolt szülői házat."
+    },
+    {
+      "id": "hu.cue.szomorú_pillantás",
+      "phrase": [
+        "szomorú",
+        "pillantás"
+      ],
+      "kind": "telling_cue",
+      "strength": "strong",
+      "valence": -0.7,
+      "arousal": 0.3,
+      "emotions": {
+        "sadness": 0.9
+      },
+      "source": "curated:gemini-2026-09",
+      "version": 1,
+      "example": "Szomorú pillantást vetett a távozó régi barát után."
+    },
+    {
+      "id": "hu.cue.vidám_tekintet",
+      "phrase": [
+        "vidám",
+        "tekintet"
+      ],
+      "kind": "telling_cue",
+      "strength": "strong",
+      "valence": 0.7,
+      "arousal": 0.5,
+      "emotions": {
+        "joy": 0.9
+      },
+      "source": "curated:gemini-2026-09",
+      "version": 1,
+      "example": "Vidám tekintettel lépett a terembe a győztes ifjú."
+    },
+    {
+      "id": "hu.cue.kíváncsi_pillantás",
+      "phrase": [
+        "kíváncsi",
+        "pillantás"
+      ],
+      "kind": "telling_cue",
+      "strength": "strong",
+      "valence": 0.4,
+      "arousal": 0.5,
+      "emotions": {
+        "anticipation": 0.9
+      },
+      "source": "curated:gemini-2026-09",
+      "version": 1,
+      "example": "Kíváncsi pillantással leste a csomag kibontását."
+    },
+    {
+      "id": "hu.cue.dühös_tekintet",
+      "phrase": [
+        "dühös",
+        "tekintet"
+      ],
+      "kind": "telling_cue",
+      "strength": "strong",
+      "valence": -0.8,
+      "arousal": 0.8,
+      "emotions": {
+        "anger": 0.9
+      },
+      "source": "curated:gemini-2026-09",
+      "version": 1,
+      "example": "Dühös tekintettel rivallt rá a hanyag cselédre."
+    },
+    {
+      "id": "hu.cue.vad_pillantás",
+      "phrase": [
+        "vad",
+        "pillantás"
+      ],
+      "kind": "telling_cue",
+      "strength": "strong",
+      "valence": -0.7,
+      "arousal": 0.7,
+      "emotions": {
+        "anger": 0.9
+      },
+      "source": "curated:gemini-2026-09",
+      "version": 1,
+      "example": "Vad pillantást lövellt ellenfelére a sarokba szorított farkas."
+    },
+    {
+      "id": "hu.cue.sötét_tekintet",
+      "phrase": [
+        "sötét",
+        "tekintet"
+      ],
+      "kind": "telling_cue",
+      "strength": "strong",
+      "valence": -0.6,
+      "arousal": 0.5,
+      "emotions": {
+        "anger": 0.9
+      },
+      "source": "curated:gemini-2026-09",
+      "version": 1,
+      "example": "Sötét tekintettel ült a sarokban és a bosszút fontolgatta."
+    },
+    {
+      "id": "hu.cue.villámló_tekintet",
+      "phrase": [
+        "villámló",
+        "tekintet"
+      ],
+      "kind": "telling_cue",
+      "strength": "strong",
+      "valence": -0.8,
+      "arousal": 0.8,
+      "emotions": {
+        "anger": 0.9
+      },
+      "source": "curated:gemini-2026-09",
+      "version": 1,
+      "example": "Villámló tekintettel utasította rendre a lázongó csapatot."
+    },
+    {
+      "id": "hu.cue.merev_tekintet",
+      "phrase": [
+        "merev",
+        "tekintet"
+      ],
+      "kind": "telling_cue",
+      "strength": "strong",
+      "valence": -0.4,
+      "arousal": 0.4,
+      "emotions": {
+        "fear": 0.9
+      },
+      "source": "curated:gemini-2026-09",
+      "version": 1,
+      "example": "Merev tekintettel bámult a hideg kandalló hamujába."
+    },
+    {
+      "id": "hu.cue.kérdő_tekintet",
+      "phrase": [
+        "kérdő",
+        "tekintet"
+      ],
+      "kind": "telling_cue",
+      "strength": "strong",
+      "valence": 0.1,
+      "arousal": 0.4,
+      "emotions": {
+        "anticipation": 0.9
+      },
+      "source": "curated:gemini-2026-09",
+      "version": 1,
+      "example": "Kérdő tekintettel fordult a váratlanul érkező vendég felé."
+    },
+    {
+      "id": "hu.cue.értetlen_tekintet",
+      "phrase": [
+        "értetlen",
+        "tekintet"
+      ],
+      "kind": "telling_cue",
+      "strength": "strong",
+      "valence": -0.2,
+      "arousal": 0.4,
+      "emotions": {
+        "surprise": 0.9
+      },
+      "source": "curated:gemini-2026-09",
+      "version": 1,
+      "example": "Értetlen tekintettel hallgatta a bonyolult magyarázatot."
+    },
+    {
+      "id": "hu.cue.zavart_tekintet",
+      "phrase": [
+        "zavart",
+        "tekintet"
+      ],
+      "kind": "telling_cue",
+      "strength": "strong",
+      "valence": -0.3,
+      "arousal": 0.5,
+      "emotions": {
+        "surprise": 0.9
+      },
+      "source": "curated:gemini-2026-09",
+      "version": 1,
+      "example": "Zavart tekintettel keresgélt a zsebében a leleplezett tolvaj."
+    },
+    {
+      "id": "hu.cue.gyengéd_tekintet",
+      "phrase": [
+        "gyengéd",
+        "tekintet"
+      ],
+      "kind": "telling_cue",
+      "strength": "strong",
+      "valence": 0.8,
+      "arousal": 0.3,
+      "emotions": {
+        "joy": 0.9
+      },
+      "source": "curated:gemini-2026-09",
+      "version": 1,
+      "example": "Gyengéd tekintettel nézett az alvó kisgyermekre."
+    },
+    {
+      "id": "hu.cue.szerető_tekintet",
+      "phrase": [
+        "szerető",
+        "tekintet"
+      ],
+      "kind": "telling_cue",
+      "strength": "strong",
+      "valence": 0.9,
+      "arousal": 0.4,
+      "emotions": {
+        "joy": 0.9
+      },
+      "source": "curated:gemini-2026-09",
+      "version": 1,
+      "example": "Szerető tekintettel ölelte át hazatérő fiát az édesanya."
+    },
+    {
+      "id": "hu.cue.hálás_pillantás",
+      "phrase": [
+        "hálás",
+        "pillantás"
+      ],
+      "kind": "telling_cue",
+      "strength": "strong",
+      "valence": 0.8,
+      "arousal": 0.4,
+      "emotions": {
+        "trust": 0.9
+      },
+      "source": "curated:gemini-2026-09",
+      "version": 1,
+      "example": "Hálás pillantást vetett megmentőjére a szorult helyzetből szabadult utas."
+    }
+  ]
+}

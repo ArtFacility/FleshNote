@@ -1,5 +1,6 @@
 import { useState } from 'react'
 import { useTranslation } from 'react-i18next'
+import Bookshelf from './Bookshelf'
 
 function formatRelativeTime(tsMs, t) {
   if (!tsMs) return t('picker.neverOpened', 'Never opened')
@@ -37,11 +38,20 @@ export default function ProjectListPane({
   onDelete,
   onSelect,
   onDropFlnote,
+  view = 'list',
+  onViewChange,
+  shelfLayout,
+  onShelfLayoutChange,
+  onCustomizeSave,
 }) {
   const { t } = useTranslation()
   const [dropActive, setDropActive] = useState(false)
 
+  // Only OS file drags import; book drags (shelf reordering) are handled by the shelf.
+  const isFileDrag = (e) => e.dataTransfer?.types?.includes('Files')
+
   const handleDrop = (e) => {
+    if (!isFileDrag(e)) return
     e.preventDefault()
     setDropActive(false)
     const file = e.dataTransfer?.files?.[0]
@@ -51,12 +61,42 @@ export default function ProjectListPane({
     }
   }
 
+  const openProject = (proj) => {
+    if (proj.needs_migration) {
+      alert(t('picker.migrationRequired', 'This project must be migrated before loading. Please click the Migrate button.'))
+      return
+    }
+    onSelect(proj.path)
+  }
+
+  const showShelf = view === 'shelf' && workspacePath && !loading && projects.length > 0
+
   return (
     <>
-      <div className="picker-main-head">
-        <span className="picker-kicker">{t('picker.navProjects', 'Projects')}</span>
-        <h2 className="picker-title">{t('picker.title', 'FleshNote Projects')}</h2>
-        <p className="picker-sub">{t('picker.subtitle', 'Select a project or establish a new workspace.')}</p>
+      <div className="picker-main-head-row">
+        <div className="picker-main-head">
+          <span className="picker-kicker">{t('picker.navProjects', 'Projects')}</span>
+          <h2 className="picker-title">{t('picker.title', 'FleshNote Projects')}</h2>
+          <p className="picker-sub">{t('picker.subtitle', 'Select a project or establish a new workspace.')}</p>
+        </div>
+        {onViewChange && (
+          <div className="picker-view-toggle" role="group">
+            <button type="button" className={view === 'shelf' ? 'active' : ''} onClick={() => onViewChange('shelf')}
+              title={t('picker.shelf.viewShelf', 'Shelf')} aria-pressed={view === 'shelf'}>
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                <rect x="3" y="4" width="4" height="15" /><rect x="8" y="6" width="3" height="13" />
+                <path d="M13 6.5l3.5-1 3.3 12.6-3.5 1z" /><line x1="2" y1="21" x2="22" y2="21" />
+              </svg>
+            </button>
+            <button type="button" className={view === 'list' ? 'active' : ''} onClick={() => onViewChange('list')}
+              title={t('picker.shelf.viewList', 'List')} aria-pressed={view === 'list'}>
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                <line x1="8" y1="6" x2="21" y2="6" /><line x1="8" y1="12" x2="21" y2="12" /><line x1="8" y1="18" x2="21" y2="18" />
+                <line x1="3" y1="6" x2="3.01" y2="6" /><line x1="3" y1="12" x2="3.01" y2="12" /><line x1="3" y1="18" x2="3.01" y2="18" />
+              </svg>
+            </button>
+          </div>
+        )}
       </div>
 
       {updateState.status !== 'idle' && updateState.status !== 'error' && (
@@ -123,11 +163,22 @@ export default function ProjectListPane({
 
       <div
         className={`picker-list ${dropActive ? 'drop-active' : ''}`}
-        onDragOver={(e) => { e.preventDefault(); setDropActive(true) }}
+        onDragOver={(e) => { if (!isFileDrag(e)) return; e.preventDefault(); setDropActive(true) }}
         onDragLeave={() => setDropActive(false)}
         onDrop={handleDrop}
       >
-        {!workspacePath ? (
+        {showShelf ? (
+          <Bookshelf
+            projects={projects}
+            layout={shelfLayout}
+            onLayoutChange={onShelfLayoutChange}
+            onOpen={openProject}
+            onExport={onExport}
+            onMigrate={onMigrate}
+            onDelete={onDelete}
+            onCustomizeSave={onCustomizeSave}
+          />
+        ) : !workspacePath ? (
           <div className="picker-empty">{t('picker.scanPrompt', 'Select a workspace folder to scan for projects.')}</div>
         ) : loading ? (
           <div className="picker-empty amber">
@@ -145,13 +196,7 @@ export default function ProjectListPane({
             <div key={proj.path || i} className="picker-row">
               <div
                 className="picker-row-body"
-                onClick={() => {
-                  if (proj.needs_migration) {
-                    alert(t('picker.migrationRequired', 'This project must be migrated before loading. Please click the Migrate button.'))
-                    return
-                  }
-                  onSelect(proj.path)
-                }}
+                onClick={() => openProject(proj)}
               >
                 <div className="picker-row-name">
                   {proj.name}

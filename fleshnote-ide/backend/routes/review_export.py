@@ -5,9 +5,9 @@ import re
 import sqlite3
 import uuid
 from datetime import datetime, timezone
-
 from fastapi import APIRouter, HTTPException
 from pydantic import BaseModel
+from project_io import safe_md_path
 
 router = APIRouter()
 
@@ -92,8 +92,8 @@ def _project_meta(project_path: str):
 def _read_md(project_path: str, md_filename: str | None) -> str:
     if not md_filename:
         return ""
-    path = os.path.join(project_path, "md", md_filename)
-    if not os.path.exists(path):
+    path = safe_md_path(os.path.join(project_path, "md"), md_filename)
+    if not path or not os.path.exists(path):
         return ""
     with open(path, encoding="utf-8") as f:
         return f.read()

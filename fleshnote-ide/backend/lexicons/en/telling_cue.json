@@ -1,0 +1,772 @@
+{
+  "lang": "en",
+  "kind": "telling_cue",
+  "version": 1,
+  "entries": [
+    {
+      "id": "en.cue.look_of",
+      "phrase": [
+        "look",
+        "of"
+      ],
+      "kind": "telling_cue",
+      "strength": "strong",
+      "valence": -0.5,
+      "arousal": 0.5,
+      "emotions": {
+        "fear": 0.9
+      },
+      "source": "curated:gemini-2026-09",
+      "version": 1,
+      "example": "There was a unmistakable look of defiance on the rebel's face."
+    },
+    {
+      "id": "en.cue.wave_of",
+      "phrase": [
+        "wave",
+        "of"
+      ],
+      "kind": "telling_cue",
+      "strength": "strong",
+      "valence": -0.5,
+      "arousal": 0.6,
+      "emotions": {
+        "fear": 0.9
+      },
+      "source": "curated:gemini-2026-09",
+      "version": 1,
+      "example": "A sudden wave of exhaustion washed over the tired traveler."
+    },
+    {
+      "id": "en.cue.pang_of",
+      "phrase": [
+        "pang",
+        "of"
+      ],
+      "kind": "telling_cue",
+      "strength": "strong",
+      "valence": -0.6,
+      "arousal": 0.5,
+      "emotions": {
+        "sadness": 0.9
+      },
+      "source": "curated:gemini-2026-09",
+      "version": 1,
+      "example": "He felt a sharp pang of regret for his harsh words."
+    },
+    {
+      "id": "en.cue.burst_of",
+      "phrase": [
+        "burst",
+        "of"
+      ],
+      "kind": "telling_cue",
+      "strength": "strong",
+      "valence": -0.5,
+      "arousal": 0.7,
+      "emotions": {
+        "anger": 0.9
+      },
+      "source": "curated:gemini-2026-09",
+      "version": 1,
+      "example": "A sudden burst of anger caused him to slam his fist down."
+    },
+    {
+      "id": "en.cue.flash_of",
+      "phrase": [
+        "flash",
+        "of"
+      ],
+      "kind": "telling_cue",
+      "strength": "strong",
+      "valence": -0.5,
+      "arousal": 0.7,
+      "emotions": {
+        "anger": 0.9
+      },
+      "source": "curated:gemini-2026-09",
+      "version": 1,
+      "example": "A sudden flash of inspiration illuminated his troubled mind."
+    },
+    {
+      "id": "en.cue.surge_of",
+      "phrase": [
+        "surge",
+        "of"
+      ],
+      "kind": "telling_cue",
+      "strength": "strong",
+      "valence": -0.5,
+      "arousal": 0.7,
+      "emotions": {
+        "anger": 0.9
+      },
+      "source": "curated:gemini-2026-09",
+      "version": 1,
+      "example": "She felt a powerful surge of adrenaline through her veins."
+    },
+    {
+      "id": "en.cue.fit_of",
+      "phrase": [
+        "fit",
+        "of"
+      ],
+      "kind": "telling_cue",
+      "strength": "strong",
+      "valence": -0.6,
+      "arousal": 0.7,
+      "emotions": {
+        "anger": 0.9
+      },
+      "source": "curated:gemini-2026-09",
+      "version": 1,
+      "example": "In a wild fit of passion, the artist painted through the night."
+    },
+    {
+      "id": "en.cue.sense_of",
+      "phrase": [
+        "sense",
+        "of"
+      ],
+      "kind": "telling_cue",
+      "strength": "strong",
+      "valence": 0.0,
+      "arousal": 0.4,
+      "emotions": {
+        "anticipation": 0.9
+      },
+      "source": "curated:gemini-2026-09",
+      "version": 1,
+      "example": "A quiet sense of relief settled over the weary villagers."
+    },
+    {
+      "id": "en.cue.feel_of",
+      "phrase": [
+        "feel",
+        "of"
+      ],
+      "kind": "telling_cue",
+      "strength": "strong",
+      "valence": 0.0,
+      "arousal": 0.4,
+      "emotions": {
+        "anticipation": 0.9
+      },
+      "source": "curated:gemini-2026-09",
+      "version": 1,
+      "example": "The cold stone gave him a strange feel of permanence."
+    },
+    {
+      "id": "en.cue.touch_of",
+      "phrase": [
+        "touch",
+        "of"
+      ],
+      "kind": "telling_cue",
+      "strength": "strong",
+      "valence": -0.3,
+      "arousal": 0.3,
+      "emotions": {
+        "sadness": 0.9
+      },
+      "source": "curated:gemini-2026-09",
+      "version": 1,
+      "example": "Her quiet greeting carried a gentle touch of warmth."
+    },
+    {
+      "id": "en.cue.tinge_of",
+      "phrase": [
+        "tinge",
+        "of"
+      ],
+      "kind": "telling_cue",
+      "strength": "strong",
+      "valence": -0.3,
+      "arousal": 0.3,
+      "emotions": {
+        "sadness": 0.9
+      },
+      "source": "curated:gemini-2026-09",
+      "version": 1,
+      "example": "There was a faint tinge of bitterness in his hollow laugh."
+    },
+    {
+      "id": "en.cue.shade_of",
+      "phrase": [
+        "shade",
+        "of"
+      ],
+      "kind": "telling_cue",
+      "strength": "strong",
+      "valence": -0.3,
+      "arousal": 0.3,
+      "emotions": {
+        "sadness": 0.9
+      },
+      "source": "curated:gemini-2026-09",
+      "version": 1,
+      "example": "His voice revealed a subtle shade of doubt about the plan."
+    },
+    {
+      "id": "en.cue.trace_of",
+      "phrase": [
+        "trace",
+        "of"
+      ],
+      "kind": "telling_cue",
+      "strength": "strong",
+      "valence": 0.1,
+      "arousal": 0.4,
+      "emotions": {
+        "surprise": 0.9
+      },
+      "source": "curated:gemini-2026-09",
+      "version": 1,
+      "example": "The detective noticed a faint trace of powder on the desk."
+    },
+    {
+      "id": "en.cue.hint_of",
+      "phrase": [
+        "hint",
+        "of"
+      ],
+      "kind": "telling_cue",
+      "strength": "strong",
+      "valence": 0.1,
+      "arousal": 0.4,
+      "emotions": {
+        "surprise": 0.9
+      },
+      "source": "curated:gemini-2026-09",
+      "version": 1,
+      "example": "A subtle hint of cinnamon drifted from the warm kitchen."
+    },
+    {
+      "id": "en.cue.glimmer_of",
+      "phrase": [
+        "glimmer",
+        "of"
+      ],
+      "kind": "telling_cue",
+      "strength": "strong",
+      "valence": 0.5,
+      "arousal": 0.4,
+      "emotions": {
+        "joy": 0.9
+      },
+      "source": "curated:gemini-2026-09",
+      "version": 1,
+      "example": "They held on to a slender glimmer of hope until dawn."
+    },
+    {
+      "id": "en.cue.spark_of",
+      "phrase": [
+        "spark",
+        "of"
+      ],
+      "kind": "telling_cue",
+      "strength": "strong",
+      "valence": 0.5,
+      "arousal": 0.5,
+      "emotions": {
+        "joy": 0.9
+      },
+      "source": "curated:gemini-2026-09",
+      "version": 1,
+      "example": "A tiny spark of defiance still burned within his eyes."
+    },
+    {
+      "id": "en.cue.ray_of",
+      "phrase": [
+        "ray",
+        "of"
+      ],
+      "kind": "telling_cue",
+      "strength": "strong",
+      "valence": 0.6,
+      "arousal": 0.4,
+      "emotions": {
+        "joy": 0.9
+      },
+      "source": "curated:gemini-2026-09",
+      "version": 1,
+      "example": "A single ray of sunlight pierced through the storm clouds."
+    },
+    {
+      "id": "en.cue.shadow_of",
+      "phrase": [
+        "shadow",
+        "of"
+      ],
+      "kind": "telling_cue",
+      "strength": "strong",
+      "valence": -0.5,
+      "arousal": 0.4,
+      "emotions": {
+        "fear": 0.9
+      },
+      "source": "curated:gemini-2026-09",
+      "version": 1,
+      "example": "A dark shadow of suspicion fell across the royal court."
+    },
+    {
+      "id": "en.cue.shiver_of",
+      "phrase": [
+        "shiver",
+        "of"
+      ],
+      "kind": "telling_cue",
+      "strength": "strong",
+      "valence": -0.6,
+      "arousal": 0.6,
+      "emotions": {
+        "fear": 0.9
+      },
+      "source": "curated:gemini-2026-09",
+      "version": 1,
+      "example": "A cold shiver of fear ran down the boy's spine."
+    },
+    {
+      "id": "en.cue.tremor_of",
+      "phrase": [
+        "tremor",
+        "of"
+      ],
+      "kind": "telling_cue",
+      "strength": "strong",
+      "valence": -0.6,
+      "arousal": 0.6,
+      "emotions": {
+        "fear": 0.9
+      },
+      "source": "curated:gemini-2026-09",
+      "version": 1,
+      "example": "There was a slight tremor of excitement in her voice."
+    },
+    {
+      "id": "en.cue.chill_of",
+      "phrase": [
+        "chill",
+        "of"
+      ],
+      "kind": "telling_cue",
+      "strength": "strong",
+      "valence": -0.6,
+      "arousal": 0.5,
+      "emotions": {
+        "fear": 0.9
+      },
+      "source": "curated:gemini-2026-09",
+      "version": 1,
+      "example": "He felt the icy chill of winter creeping through the floorboards."
+    },
+    {
+      "id": "en.cue.spasm_of",
+      "phrase": [
+        "spasm",
+        "of"
+      ],
+      "kind": "telling_cue",
+      "strength": "strong",
+      "valence": -0.7,
+      "arousal": 0.7,
+      "emotions": {
+        "fear": 0.9
+      },
+      "source": "curated:gemini-2026-09",
+      "version": 1,
+      "example": "A painful spasm of coughing seized the sick man."
+    },
+    {
+      "id": "en.cue.throb_of",
+      "phrase": [
+        "throb",
+        "of"
+      ],
+      "kind": "telling_cue",
+      "strength": "strong",
+      "valence": -0.6,
+      "arousal": 0.5,
+      "emotions": {
+        "sadness": 0.9
+      },
+      "source": "curated:gemini-2026-09",
+      "version": 1,
+      "example": "He could feel the steady throb of engines deep in the hull."
+    },
+    {
+      "id": "en.cue.glow_of",
+      "phrase": [
+        "glow",
+        "of"
+      ],
+      "kind": "telling_cue",
+      "strength": "strong",
+      "valence": 0.7,
+      "arousal": 0.4,
+      "emotions": {
+        "joy": 0.9
+      },
+      "source": "curated:gemini-2026-09",
+      "version": 1,
+      "example": "The warm glow of candlelight filled the quiet library."
+    },
+    {
+      "id": "en.cue.flush_of",
+      "phrase": [
+        "flush",
+        "of"
+      ],
+      "kind": "telling_cue",
+      "strength": "strong",
+      "valence": 0.6,
+      "arousal": 0.5,
+      "emotions": {
+        "joy": 0.9
+      },
+      "source": "curated:gemini-2026-09",
+      "version": 1,
+      "example": "A sudden flush of embarrassment colored his pale cheeks."
+    },
+    {
+      "id": "en.cue.flood_of",
+      "phrase": [
+        "flood",
+        "of"
+      ],
+      "kind": "telling_cue",
+      "strength": "strong",
+      "valence": 0.6,
+      "arousal": 0.6,
+      "emotions": {
+        "joy": 0.9
+      },
+      "source": "curated:gemini-2026-09",
+      "version": 1,
+      "example": "A sudden flood of memories rushed into the old soldier's mind."
+    },
+    {
+      "id": "en.cue.rush_of",
+      "phrase": [
+        "rush",
+        "of"
+      ],
+      "kind": "telling_cue",
+      "strength": "strong",
+      "valence": 0.4,
+      "arousal": 0.7,
+      "emotions": {
+        "anticipation": 0.9
+      },
+      "source": "curated:gemini-2026-09",
+      "version": 1,
+      "example": "He experienced an exhilarating rush of freedom on the open sea."
+    },
+    {
+      "id": "en.cue.tide_of",
+      "phrase": [
+        "tide",
+        "of"
+      ],
+      "kind": "telling_cue",
+      "strength": "strong",
+      "valence": -0.6,
+      "arousal": 0.5,
+      "emotions": {
+        "sadness": 0.9
+      },
+      "source": "curated:gemini-2026-09",
+      "version": 1,
+      "example": "The unstoppable tide of change swept across the entire nation."
+    },
+    {
+      "id": "en.cue.cloud_of",
+      "phrase": [
+        "cloud",
+        "of"
+      ],
+      "kind": "telling_cue",
+      "strength": "strong",
+      "valence": -0.6,
+      "arousal": 0.3,
+      "emotions": {
+        "sadness": 0.9
+      },
+      "source": "curated:gemini-2026-09",
+      "version": 1,
+      "example": "A thick cloud of dust arose behind the galloping horses."
+    },
+    {
+      "id": "en.cue.veil_of",
+      "phrase": [
+        "veil",
+        "of"
+      ],
+      "kind": "telling_cue",
+      "strength": "strong",
+      "valence": -0.5,
+      "arousal": 0.3,
+      "emotions": {
+        "sadness": 0.9
+      },
+      "source": "curated:gemini-2026-09",
+      "version": 1,
+      "example": "A delicate veil of mist hung over the silent valley."
+    },
+    {
+      "id": "en.cue.pall_of",
+      "phrase": [
+        "pall",
+        "of"
+      ],
+      "kind": "telling_cue",
+      "strength": "strong",
+      "valence": -0.7,
+      "arousal": 0.3,
+      "emotions": {
+        "sadness": 0.9
+      },
+      "source": "curated:gemini-2026-09",
+      "version": 1,
+      "example": "A dark pall of sorrow descended upon the mourning city."
+    },
+    {
+      "id": "en.cue.weight_of",
+      "phrase": [
+        "weight",
+        "of"
+      ],
+      "kind": "telling_cue",
+      "strength": "strong",
+      "valence": -0.7,
+      "arousal": 0.4,
+      "emotions": {
+        "sadness": 0.9
+      },
+      "source": "curated:gemini-2026-09",
+      "version": 1,
+      "example": "He felt the crushing weight of responsibility on his shoulders."
+    },
+    {
+      "id": "en.cue.burden_of",
+      "phrase": [
+        "burden",
+        "of"
+      ],
+      "kind": "telling_cue",
+      "strength": "strong",
+      "valence": -0.7,
+      "arousal": 0.4,
+      "emotions": {
+        "sadness": 0.9
+      },
+      "source": "curated:gemini-2026-09",
+      "version": 1,
+      "example": "The heavy burden of guilt followed him throughout his exile."
+    },
+    {
+      "id": "en.cue.mantle_of",
+      "phrase": [
+        "mantle",
+        "of"
+      ],
+      "kind": "telling_cue",
+      "strength": "strong",
+      "valence": -0.5,
+      "arousal": 0.3,
+      "emotions": {
+        "sadness": 0.9
+      },
+      "source": "curated:gemini-2026-09",
+      "version": 1,
+      "example": "The young prince took up the mantle of leadership with dignity."
+    },
+    {
+      "id": "en.cue.cloak_of",
+      "phrase": [
+        "cloak",
+        "of"
+      ],
+      "kind": "telling_cue",
+      "strength": "strong",
+      "valence": -0.5,
+      "arousal": 0.4,
+      "emotions": {
+        "fear": 0.9
+      },
+      "source": "curated:gemini-2026-09",
+      "version": 1,
+      "example": "The thief moved silently under the protective cloak of darkness."
+    },
+    {
+      "id": "en.cue.grip_of",
+      "phrase": [
+        "grip",
+        "of"
+      ],
+      "kind": "telling_cue",
+      "strength": "strong",
+      "valence": -0.8,
+      "arousal": 0.8,
+      "emotions": {
+        "fear": 0.9
+      },
+      "source": "curated:gemini-2026-09",
+      "version": 1,
+      "example": "The town remained trapped in the icy grip of winter."
+    },
+    {
+      "id": "en.cue.clutch_of",
+      "phrase": [
+        "clutch",
+        "of"
+      ],
+      "kind": "telling_cue",
+      "strength": "strong",
+      "valence": -0.8,
+      "arousal": 0.8,
+      "emotions": {
+        "fear": 0.9
+      },
+      "source": "curated:gemini-2026-09",
+      "version": 1,
+      "example": "She barely escaped from the brutal clutch of poverty."
+    },
+    {
+      "id": "en.cue.jaw_of",
+      "phrase": [
+        "jaw",
+        "of"
+      ],
+      "kind": "telling_cue",
+      "strength": "strong",
+      "valence": -0.8,
+      "arousal": 0.8,
+      "emotions": {
+        "fear": 0.9
+      },
+      "source": "curated:gemini-2026-09",
+      "version": 1,
+      "example": "The brave sailors sailed straight into the ravenous jaw of death."
+    },
+    {
+      "id": "en.cue.depth_of",
+      "phrase": [
+        "depth",
+        "of"
+      ],
+      "kind": "telling_cue",
+      "strength": "strong",
+      "valence": -0.8,
+      "arousal": 0.3,
+      "emotions": {
+        "sadness": 0.9
+      },
+      "source": "curated:gemini-2026-09",
+      "version": 1,
+      "example": "From the quiet depth of night came the lonely call of an owl."
+    },
+    {
+      "id": "en.cue.height_of",
+      "phrase": [
+        "height",
+        "of"
+      ],
+      "kind": "telling_cue",
+      "strength": "strong",
+      "valence": -0.6,
+      "arousal": 0.8,
+      "emotions": {
+        "anger": 0.9
+      },
+      "source": "curated:gemini-2026-09",
+      "version": 1,
+      "example": "At the height of summer, the garden blossomed into vivid colors."
+    },
+    {
+      "id": "en.cue.brink_of",
+      "phrase": [
+        "brink",
+        "of"
+      ],
+      "kind": "telling_cue",
+      "strength": "strong",
+      "valence": -0.6,
+      "arousal": 0.7,
+      "emotions": {
+        "fear": 0.9
+      },
+      "source": "curated:gemini-2026-09",
+      "version": 1,
+      "example": "The empire stood on the dangerous brink of ruin."
+    },
+    {
+      "id": "en.cue.verge_of",
+      "phrase": [
+        "verge",
+        "of"
+      ],
+      "kind": "telling_cue",
+      "strength": "strong",
+      "valence": -0.5,
+      "arousal": 0.6,
+      "emotions": {
+        "fear": 0.9
+      },
+      "source": "curated:gemini-2026-09",
+      "version": 1,
+      "example": "She was on the verge of collapse after the exhausting march."
+    },
+    {
+      "id": "en.cue.abyss_of",
+      "phrase": [
+        "abyss",
+        "of"
+      ],
+      "kind": "telling_cue",
+      "strength": "strong",
+      "valence": -0.9,
+      "arousal": 0.5,
+      "emotions": {
+        "sadness": 0.9
+      },
+      "source": "curated:gemini-2026-09",
+      "version": 1,
+      "example": "The wanderer stared down into the terrifying abyss of darkness."
+    },
+    {
+      "id": "en.cue.sea_of",
+      "phrase": [
+        "sea",
+        "of"
+      ],
+      "kind": "telling_cue",
+      "strength": "strong",
+      "valence": -0.7,
+      "arousal": 0.4,
+      "emotions": {
+        "sadness": 0.9
+      },
+      "source": "curated:gemini-2026-09",
+      "version": 1,
+      "example": "Before them stretched an endless sea of golden wheat fields."
+    },
+    {
+      "id": "en.cue.gulf_of",
+      "phrase": [
+        "gulf",
+        "of"
+      ],
+      "kind": "telling_cue",
+      "strength": "strong",
+      "valence": -0.6,
+      "arousal": 0.3,
+      "emotions": {
+        "sadness": 0.9
+      },
+      "source": "curated:gemini-2026-09",
+      "version": 1,
+      "example": "A wide gulf of misunderstanding separated the two estranged brothers."
+    }
+  ]
+}

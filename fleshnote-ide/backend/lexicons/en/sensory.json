@@ -1,0 +1,4094 @@
+{
+ "lang": "en",
+ "kind": "sensory",
+ "version": 1,
+ "entries": [
+  {
+   "id": "en.sens.sight_blaze",
+   "lemma": "blaze",
+   "kind": "sensory",
+   "sense": "sight",
+   "strength": "strong",
+   "valence": 0.0,
+   "arousal": 0.1,
+   "emotions": null,
+   "source": "migrated:janitor.py",
+   "version": 1,
+   "alt_lemmas": [
+    "blazing"
+   ],
+   "lemma_evidence": "corpus"
+  },
+  {
+   "id": "en.sens.sight_blind",
+   "lemma": "blind",
+   "kind": "sensory",
+   "sense": "sight",
+   "strength": "strong",
+   "valence": 0.0,
+   "arousal": 0.1,
+   "emotions": null,
+   "source": "migrated:janitor.py",
+   "version": 1
+  },
+  {
+   "id": "en.sens.sight_blur",
+   "lemma": "blur",
+   "kind": "sensory",
+   "sense": "sight",
+   "strength": "strong",
+   "valence": 0.0,
+   "arousal": 0.1,
+   "emotions": null,
+   "source": "migrated:janitor.py",
+   "version": 1
+  },
+  {
+   "id": "en.sens.sight_blurry",
+   "lemma": "blurry",
+   "kind": "sensory",
+   "sense": "sight",
+   "strength": "strong",
+   "valence": 0.0,
+   "arousal": 0.1,
+   "emotions": null,
+   "source": "migrated:janitor.py",
+   "version": 1
+  },
+  {
+   "id": "en.sens.sight_bright",
+   "lemma": "bright",
+   "kind": "sensory",
+   "sense": "sight",
+   "strength": "strong",
+   "valence": 0.0,
+   "arousal": 0.1,
+   "emotions": null,
+   "source": "migrated:janitor.py",
+   "version": 1
+  },
+  {
+   "id": "en.sens.sight_color",
+   "lemma": "color",
+   "kind": "sensory",
+   "sense": "sight",
+   "strength": "strong",
+   "valence": 0.0,
+   "arousal": 0.1,
+   "emotions": null,
+   "source": "migrated:janitor.py",
+   "version": 1
+  },
+  {
+   "id": "en.sens.sight_colour",
+   "lemma": "colour",
+   "kind": "sensory",
+   "sense": "sight",
+   "strength": "strong",
+   "valence": 0.0,
+   "arousal": 0.1,
+   "emotions": null,
+   "source": "migrated:janitor.py",
+   "version": 1
+  },
+  {
+   "id": "en.sens.sight_darkness",
+   "lemma": "darkness",
+   "kind": "sensory",
+   "sense": "sight",
+   "strength": "strong",
+   "valence": 0.0,
+   "arousal": 0.1,
+   "emotions": null,
+   "source": "migrated:janitor.py",
+   "version": 1
+  },
+  {
+   "id": "en.sens.sight_dazzle",
+   "lemma": "dazzle",
+   "kind": "sensory",
+   "sense": "sight",
+   "strength": "strong",
+   "valence": 0.0,
+   "arousal": 0.1,
+   "emotions": null,
+   "source": "migrated:janitor.py",
+   "version": 1,
+   "alt_lemmas": [
+    "dazzled",
+    "dazzling"
+   ],
+   "lemma_evidence": "corpus"
+  },
+  {
+   "id": "en.sens.sight_dim",
+   "lemma": "dim",
+   "kind": "sensory",
+   "sense": "sight",
+   "strength": "strong",
+   "valence": 0.0,
+   "arousal": 0.1,
+   "emotions": null,
+   "source": "migrated:janitor.py",
+   "version": 1
+  },
+  {
+   "id": "en.sens.sight_flash",
+   "lemma": "flash",
+   "kind": "sensory",
+   "sense": "sight",
+   "strength": "strong",
+   "valence": 0.0,
+   "arousal": 0.1,
+   "emotions": null,
+   "source": "migrated:janitor.py",
+   "version": 1
+  },
+  {
+   "id": "en.sens.sight_gaze",
+   "lemma": "gaze",
+   "kind": "sensory",
+   "sense": "sight",
+   "strength": "strong",
+   "valence": 0.0,
+   "arousal": 0.1,
+   "emotions": null,
+   "source": "migrated:janitor.py",
+   "version": 1,
+   "alt_lemmas": [
+    "gazed"
+   ],
+   "lemma_evidence": "corpus"
+  },
+  {
+   "id": "en.sens.sight_glance",
+   "lemma": "glance",
+   "kind": "sensory",
+   "sense": "sight",
+   "strength": "strong",
+   "valence": 0.0,
+   "arousal": 0.1,
+   "emotions": null,
+   "source": "migrated:janitor.py",
+   "version": 1,
+   "alt_lemmas": [
+    "glanced"
+   ],
+   "lemma_evidence": "corpus"
+  },
+  {
+   "id": "en.sens.sight_gleam",
+   "lemma": "gleam",
+   "kind": "sensory",
+   "sense": "sight",
+   "strength": "strong",
+   "valence": 0.0,
+   "arousal": 0.1,
+   "emotions": null,
+   "source": "migrated:janitor.py",
+   "version": 1
+  },
+  {
+   "id": "en.sens.sight_glimmer",
+   "lemma": "glimmer",
+   "kind": "sensory",
+   "sense": "sight",
+   "strength": "strong",
+   "valence": 0.0,
+   "arousal": 0.1,
+   "emotions": null,
+   "source": "migrated:janitor.py",
+   "version": 1,
+   "alt_lemmas": [
+    "glimmered"
+   ],
+   "lemma_evidence": "corpus"
+  },
+  {
+   "id": "en.sens.sight_glimpse",
+   "lemma": "glimpse",
+   "kind": "sensory",
+   "sense": "sight",
+   "strength": "strong",
+   "valence": 0.0,
+   "arousal": 0.1,
+   "emotions": null,
+   "source": "migrated:janitor.py",
+   "version": 1,
+   "alt_lemmas": [
+    "glimpsed"
+   ],
+   "lemma_evidence": "corpus"
+  },
+  {
+   "id": "en.sens.sight_glitter",
+   "lemma": "glitter",
+   "kind": "sensory",
+   "sense": "sight",
+   "strength": "strong",
+   "valence": 0.0,
+   "arousal": 0.1,
+   "emotions": null,
+   "source": "migrated:janitor.py",
+   "version": 1,
+   "alt_lemmas": [
+    "glittered"
+   ],
+   "lemma_evidence": "corpus"
+  },
+  {
+   "id": "en.sens.sight_glow",
+   "lemma": "glow",
+   "kind": "sensory",
+   "sense": "sight",
+   "strength": "strong",
+   "valence": 0.0,
+   "arousal": 0.1,
+   "emotions": null,
+   "source": "migrated:janitor.py",
+   "version": 1,
+   "alt_lemmas": [
+    "glowing"
+   ],
+   "lemma_evidence": "corpus"
+  },
+  {
+   "id": "en.sens.sight_illuminate",
+   "lemma": "illuminate",
+   "kind": "sensory",
+   "sense": "sight",
+   "strength": "strong",
+   "valence": 0.0,
+   "arousal": 0.1,
+   "emotions": null,
+   "source": "migrated:janitor.py",
+   "version": 1,
+   "alt_lemmas": [
+    "illuminated"
+   ],
+   "lemma_evidence": "corpus"
+  },
+  {
+   "id": "en.sens.sight_invisible",
+   "lemma": "invisible",
+   "kind": "sensory",
+   "sense": "sight",
+   "strength": "strong",
+   "valence": 0.0,
+   "arousal": 0.1,
+   "emotions": null,
+   "source": "migrated:janitor.py",
+   "version": 1
+  },
+  {
+   "id": "en.sens.sight_light",
+   "lemma": "light",
+   "kind": "sensory",
+   "sense": "sight",
+   "strength": "weak",
+   "valence": 0.0,
+   "arousal": 0.1,
+   "emotions": null,
+   "source": "migrated:janitor.py",
+   "version": 1,
+   "alt_lemmas": [
+    "lit"
+   ],
+   "lemma_evidence": "corpus"
+  },
+  {
+   "id": "en.sens.sight_look",
+   "lemma": "look",
+   "kind": "sensory",
+   "sense": "sight",
+   "strength": "weak",
+   "valence": 0.0,
+   "arousal": 0.1,
+   "emotions": null,
+   "source": "migrated:janitor.py",
+   "version": 1,
+   "alt_lemmas": [
+    "looked",
+    "looks"
+   ],
+   "lemma_evidence": "corpus"
+  },
+  {
+   "id": "en.sens.sight_observe",
+   "lemma": "observe",
+   "kind": "sensory",
+   "sense": "sight",
+   "strength": "strong",
+   "valence": 0.0,
+   "arousal": 0.1,
+   "emotions": null,
+   "source": "migrated:janitor.py",
+   "version": 1,
+   "alt_lemmas": [
+    "observed"
+   ],
+   "lemma_evidence": "corpus"
+  },
+  {
+   "id": "en.sens.sight_pale",
+   "lemma": "pale",
+   "kind": "sensory",
+   "sense": "sight",
+   "strength": "strong",
+   "valence": 0.0,
+   "arousal": 0.1,
+   "emotions": null,
+   "source": "migrated:janitor.py",
+   "version": 1
+  },
+  {
+   "id": "en.sens.sight_peer",
+   "lemma": "peer",
+   "kind": "sensory",
+   "sense": "sight",
+   "strength": "strong",
+   "valence": 0.0,
+   "arousal": 0.1,
+   "emotions": null,
+   "source": "migrated:janitor.py",
+   "version": 1,
+   "alt_lemmas": [
+    "peered",
+    "peering"
+   ],
+   "lemma_evidence": "corpus"
+  },
+  {
+   "id": "en.sens.sight_see",
+   "lemma": "see",
+   "kind": "sensory",
+   "sense": "sight",
+   "strength": "weak",
+   "valence": 0.0,
+   "arousal": 0.1,
+   "emotions": null,
+   "source": "migrated:janitor.py",
+   "version": 1,
+   "alt_lemmas": [
+    "saw",
+    "seen"
+   ],
+   "lemma_evidence": "corpus"
+  },
+  {
+   "id": "en.sens.sight_shadow",
+   "lemma": "shadow",
+   "kind": "sensory",
+   "sense": "sight",
+   "strength": "strong",
+   "valence": 0.0,
+   "arousal": 0.1,
+   "emotions": null,
+   "source": "migrated:janitor.py",
+   "version": 1
+  },
+  {
+   "id": "en.sens.sight_shadowy",
+   "lemma": "shadowy",
+   "kind": "sensory",
+   "sense": "sight",
+   "strength": "strong",
+   "valence": 0.0,
+   "arousal": 0.1,
+   "emotions": null,
+   "source": "migrated:janitor.py",
+   "version": 1
+  },
+  {
+   "id": "en.sens.sight_shimmer",
+   "lemma": "shimmer",
+   "kind": "sensory",
+   "sense": "sight",
+   "strength": "strong",
+   "valence": 0.0,
+   "arousal": 0.1,
+   "emotions": null,
+   "source": "migrated:janitor.py",
+   "version": 1
+  },
+  {
+   "id": "en.sens.sight_shine",
+   "lemma": "shine",
+   "kind": "sensory",
+   "sense": "sight",
+   "strength": "strong",
+   "valence": 0.0,
+   "arousal": 0.1,
+   "emotions": null,
+   "source": "migrated:janitor.py",
+   "version": 1,
+   "alt_lemmas": [
+    "shining",
+    "shone"
+   ],
+   "lemma_evidence": "corpus"
+  },
+  {
+   "id": "en.sens.sight_silhouette",
+   "lemma": "silhouette",
+   "kind": "sensory",
+   "sense": "sight",
+   "strength": "strong",
+   "valence": 0.0,
+   "arousal": 0.1,
+   "emotions": null,
+   "source": "migrated:janitor.py",
+   "version": 1
+  },
+  {
+   "id": "en.sens.sight_sparkle",
+   "lemma": "sparkle",
+   "kind": "sensory",
+   "sense": "sight",
+   "strength": "strong",
+   "valence": 0.0,
+   "arousal": 0.1,
+   "emotions": null,
+   "source": "migrated:janitor.py",
+   "version": 1,
+   "alt_lemmas": [
+    "sparkling"
+   ],
+   "lemma_evidence": "corpus"
+  },
+  {
+   "id": "en.sens.sight_spot",
+   "lemma": "spot",
+   "kind": "sensory",
+   "sense": "sight",
+   "strength": "strong",
+   "valence": 0.0,
+   "arousal": 0.1,
+   "emotions": null,
+   "source": "migrated:janitor.py",
+   "version": 1,
+   "alt_lemmas": [
+    "spotted"
+   ],
+   "lemma_evidence": "corpus"
+  },
+  {
+   "id": "en.sens.sight_squint",
+   "lemma": "squint",
+   "kind": "sensory",
+   "sense": "sight",
+   "strength": "strong",
+   "valence": 0.0,
+   "arousal": 0.1,
+   "emotions": null,
+   "source": "migrated:janitor.py",
+   "version": 1,
+   "alt_lemmas": [
+    "squinted"
+   ],
+   "lemma_evidence": "corpus"
+  },
+  {
+   "id": "en.sens.sight_stare",
+   "lemma": "stare",
+   "kind": "sensory",
+   "sense": "sight",
+   "strength": "strong",
+   "valence": 0.0,
+   "arousal": 0.1,
+   "emotions": null,
+   "source": "migrated:janitor.py",
+   "version": 1,
+   "alt_lemmas": [
+    "stared"
+   ],
+   "lemma_evidence": "corpus"
+  },
+  {
+   "id": "en.sens.sight_visible",
+   "lemma": "visible",
+   "kind": "sensory",
+   "sense": "sight",
+   "strength": "strong",
+   "valence": 0.0,
+   "arousal": 0.1,
+   "emotions": null,
+   "source": "migrated:janitor.py",
+   "version": 1
+  },
+  {
+   "id": "en.sens.sight_vivid",
+   "lemma": "vivid",
+   "kind": "sensory",
+   "sense": "sight",
+   "strength": "strong",
+   "valence": 0.0,
+   "arousal": 0.1,
+   "emotions": null,
+   "source": "migrated:janitor.py",
+   "version": 1
+  },
+  {
+   "id": "en.sens.sight_watch",
+   "lemma": "watch",
+   "kind": "sensory",
+   "sense": "sight",
+   "strength": "strong",
+   "valence": 0.0,
+   "arousal": 0.1,
+   "emotions": null,
+   "source": "migrated:janitor.py",
+   "version": 1,
+   "alt_lemmas": [
+    "watched"
+   ],
+   "lemma_evidence": "corpus"
+  },
+  {
+   "id": "en.sens.sound_bang",
+   "lemma": "bang",
+   "kind": "sensory",
+   "sense": "sound",
+   "strength": "strong",
+   "valence": 0.0,
+   "arousal": 0.1,
+   "emotions": null,
+   "source": "migrated:janitor.py",
+   "version": 1,
+   "alt_lemmas": [
+    "banged"
+   ],
+   "lemma_evidence": "corpus"
+  },
+  {
+   "id": "en.sens.sound_buzz",
+   "lemma": "buzz",
+   "kind": "sensory",
+   "sense": "sound",
+   "strength": "strong",
+   "valence": 0.0,
+   "arousal": 0.1,
+   "emotions": null,
+   "source": "migrated:janitor.py",
+   "version": 1,
+   "alt_lemmas": [
+    "buzzed"
+   ],
+   "lemma_evidence": "corpus"
+  },
+  {
+   "id": "en.sens.sound_clang",
+   "lemma": "clang",
+   "kind": "sensory",
+   "sense": "sound",
+   "strength": "strong",
+   "valence": 0.0,
+   "arousal": 0.1,
+   "emotions": null,
+   "source": "migrated:janitor.py",
+   "version": 1,
+   "alt_lemmas": [
+    "clanged"
+   ],
+   "lemma_evidence": "corpus"
+  },
+  {
+   "id": "en.sens.sound_clatter",
+   "lemma": "clatter",
+   "kind": "sensory",
+   "sense": "sound",
+   "strength": "strong",
+   "valence": 0.0,
+   "arousal": 0.1,
+   "emotions": null,
+   "source": "migrated:janitor.py",
+   "version": 1,
+   "alt_lemmas": [
+    "clattered"
+   ],
+   "lemma_evidence": "corpus"
+  },
+  {
+   "id": "en.sens.sound_click",
+   "lemma": "click",
+   "kind": "sensory",
+   "sense": "sound",
+   "strength": "strong",
+   "valence": 0.0,
+   "arousal": 0.1,
+   "emotions": null,
+   "source": "migrated:janitor.py",
+   "version": 1,
+   "alt_lemmas": [
+    "clicked"
+   ],
+   "lemma_evidence": "corpus"
+  },
+  {
+   "id": "en.sens.sound_crash",
+   "lemma": "crash",
+   "kind": "sensory",
+   "sense": "sound",
+   "strength": "strong",
+   "valence": 0.0,
+   "arousal": 0.1,
+   "emotions": null,
+   "source": "migrated:janitor.py",
+   "version": 1,
+   "alt_lemmas": [
+    "crashed"
+   ],
+   "lemma_evidence": "corpus"
+  },
+  {
+   "id": "en.sens.sound_creak",
+   "lemma": "creak",
+   "kind": "sensory",
+   "sense": "sound",
+   "strength": "strong",
+   "valence": 0.0,
+   "arousal": 0.1,
+   "emotions": null,
+   "source": "migrated:janitor.py",
+   "version": 1,
+   "alt_lemmas": [
+    "creaked"
+   ],
+   "lemma_evidence": "corpus"
+  },
+  {
+   "id": "en.sens.sound_echo",
+   "lemma": "echo",
+   "kind": "sensory",
+   "sense": "sound",
+   "strength": "strong",
+   "valence": 0.0,
+   "arousal": 0.1,
+   "emotions": null,
+   "source": "migrated:janitor.py",
+   "version": 1,
+   "alt_lemmas": [
+    "echoed"
+   ],
+   "lemma_evidence": "corpus"
+  },
+  {
+   "id": "en.sens.sound_groan",
+   "lemma": "groan",
+   "kind": "sensory",
+   "sense": "sound",
+   "strength": "strong",
+   "valence": 0.0,
+   "arousal": 0.1,
+   "emotions": null,
+   "source": "migrated:janitor.py",
+   "version": 1,
+   "alt_lemmas": [
+    "groaned"
+   ],
+   "lemma_evidence": "corpus"
+  },
+  {
+   "id": "en.sens.sound_hear",
+   "lemma": "hear",
+   "kind": "sensory",
+   "sense": "sound",
+   "strength": "weak",
+   "valence": 0.0,
+   "arousal": 0.1,
+   "emotions": null,
+   "source": "migrated:janitor.py",
+   "version": 1,
+   "alt_lemmas": [
+    "heard"
+   ],
+   "lemma_evidence": "corpus"
+  },
+  {
+   "id": "en.sens.sound_hum",
+   "lemma": "hum",
+   "kind": "sensory",
+   "sense": "sound",
+   "strength": "strong",
+   "valence": 0.0,
+   "arousal": 0.1,
+   "emotions": null,
+   "source": "migrated:janitor.py",
+   "version": 1,
+   "alt_lemmas": [
+    "hummed"
+   ],
+   "lemma_evidence": "corpus"
+  },
+  {
+   "id": "en.sens.sound_listen",
+   "lemma": "listen",
+   "kind": "sensory",
+   "sense": "sound",
+   "strength": "strong",
+   "valence": 0.0,
+   "arousal": 0.1,
+   "emotions": null,
+   "source": "migrated:janitor.py",
+   "version": 1,
+   "alt_lemmas": [
+    "listened"
+   ],
+   "lemma_evidence": "corpus"
+  },
+  {
+   "id": "en.sens.sound_loud",
+   "lemma": "loud",
+   "kind": "sensory",
+   "sense": "sound",
+   "strength": "strong",
+   "valence": 0.0,
+   "arousal": 0.1,
+   "emotions": null,
+   "source": "migrated:janitor.py",
+   "version": 1
+  },
+  {
+   "id": "en.sens.sound_murmur",
+   "lemma": "murmur",
+   "kind": "sensory",
+   "sense": "sound",
+   "strength": "strong",
+   "valence": 0.0,
+   "arousal": 0.1,
+   "emotions": null,
+   "source": "migrated:janitor.py",
+   "version": 1,
+   "alt_lemmas": [
+    "murmured"
+   ],
+   "lemma_evidence": "corpus"
+  },
+  {
+   "id": "en.sens.sound_noise",
+   "lemma": "noise",
+   "kind": "sensory",
+   "sense": "sound",
+   "strength": "strong",
+   "valence": 0.0,
+   "arousal": 0.1,
+   "emotions": null,
+   "source": "migrated:janitor.py",
+   "version": 1,
+   "alt_lemmas": [
+    "noisy"
+   ],
+   "lemma_evidence": "corpus"
+  },
+  {
+   "id": "en.sens.sound_quiet",
+   "lemma": "quiet",
+   "kind": "sensory",
+   "sense": "sound",
+   "strength": "strong",
+   "valence": 0.0,
+   "arousal": 0.1,
+   "emotions": null,
+   "source": "migrated:janitor.py",
+   "version": 1
+  },
+  {
+   "id": "en.sens.sound_ring",
+   "lemma": "ring",
+   "kind": "sensory",
+   "sense": "sound",
+   "strength": "strong",
+   "valence": 0.0,
+   "arousal": 0.1,
+   "emotions": null,
+   "source": "migrated:janitor.py",
+   "version": 1,
+   "alt_lemmas": [
+    "rang",
+    "ringing"
+   ],
+   "lemma_evidence": "corpus"
+  },
+  {
+   "id": "en.sens.sound_rattle",
+   "lemma": "rattle",
+   "kind": "sensory",
+   "sense": "sound",
+   "strength": "strong",
+   "valence": 0.0,
+   "arousal": 0.1,
+   "emotions": null,
+   "source": "migrated:janitor.py",
+   "version": 1,
+   "alt_lemmas": [
+    "rattled"
+   ],
+   "lemma_evidence": "corpus"
+  },
+  {
+   "id": "en.sens.sound_roar",
+   "lemma": "roar",
+   "kind": "sensory",
+   "sense": "sound",
+   "strength": "strong",
+   "valence": 0.0,
+   "arousal": 0.1,
+   "emotions": null,
+   "source": "migrated:janitor.py",
+   "version": 1,
+   "alt_lemmas": [
+    "roared"
+   ],
+   "lemma_evidence": "corpus"
+  },
+  {
+   "id": "en.sens.sound_rumble",
+   "lemma": "rumble",
+   "kind": "sensory",
+   "sense": "sound",
+   "strength": "strong",
+   "valence": 0.0,
+   "arousal": 0.1,
+   "emotions": null,
+   "source": "migrated:janitor.py",
+   "version": 1,
+   "alt_lemmas": [
+    "rumbled"
+   ],
+   "lemma_evidence": "corpus"
+  },
+  {
+   "id": "en.sens.sound_rustle",
+   "lemma": "rustle",
+   "kind": "sensory",
+   "sense": "sound",
+   "strength": "strong",
+   "valence": 0.0,
+   "arousal": 0.1,
+   "emotions": null,
+   "source": "migrated:janitor.py",
+   "version": 1,
+   "alt_lemmas": [
+    "rustled"
+   ],
+   "lemma_evidence": "corpus"
+  },
+  {
+   "id": "en.sens.sound_shout",
+   "lemma": "shout",
+   "kind": "sensory",
+   "sense": "sound",
+   "strength": "strong",
+   "valence": 0.0,
+   "arousal": 0.1,
+   "emotions": null,
+   "source": "migrated:janitor.py",
+   "version": 1,
+   "alt_lemmas": [
+    "shouted"
+   ],
+   "lemma_evidence": "corpus"
+  },
+  {
+   "id": "en.sens.sound_shriek",
+   "lemma": "shriek",
+   "kind": "sensory",
+   "sense": "sound",
+   "strength": "strong",
+   "valence": 0.0,
+   "arousal": 0.1,
+   "emotions": null,
+   "source": "migrated:janitor.py",
+   "version": 1,
+   "alt_lemmas": [
+    "shrieked"
+   ],
+   "lemma_evidence": "corpus"
+  },
+  {
+   "id": "en.sens.sound_silence",
+   "lemma": "silence",
+   "kind": "sensory",
+   "sense": "sound",
+   "strength": "strong",
+   "valence": 0.0,
+   "arousal": 0.1,
+   "emotions": null,
+   "source": "migrated:janitor.py",
+   "version": 1
+  },
+  {
+   "id": "en.sens.sound_silent",
+   "lemma": "silent",
+   "kind": "sensory",
+   "sense": "sound",
+   "strength": "strong",
+   "valence": 0.0,
+   "arousal": 0.1,
+   "emotions": null,
+   "source": "migrated:janitor.py",
+   "version": 1
+  },
+  {
+   "id": "en.sens.sound_snap",
+   "lemma": "snap",
+   "kind": "sensory",
+   "sense": "sound",
+   "strength": "strong",
+   "valence": 0.0,
+   "arousal": 0.1,
+   "emotions": null,
+   "source": "migrated:janitor.py",
+   "version": 1,
+   "alt_lemmas": [
+    "snapped"
+   ],
+   "lemma_evidence": "corpus"
+  },
+  {
+   "id": "en.sens.sound_sound",
+   "lemma": "sound",
+   "kind": "sensory",
+   "sense": "sound",
+   "strength": "weak",
+   "valence": 0.0,
+   "arousal": 0.1,
+   "emotions": null,
+   "source": "migrated:janitor.py",
+   "version": 1,
+   "alt_lemmas": [
+    "sounds"
+   ],
+   "lemma_evidence": "corpus"
+  },
+  {
+   "id": "en.sens.sound_squeak",
+   "lemma": "squeak",
+   "kind": "sensory",
+   "sense": "sound",
+   "strength": "strong",
+   "valence": 0.0,
+   "arousal": 0.1,
+   "emotions": null,
+   "source": "migrated:janitor.py",
+   "version": 1,
+   "alt_lemmas": [
+    "squeaked"
+   ],
+   "lemma_evidence": "corpus"
+  },
+  {
+   "id": "en.sens.sound_tap",
+   "lemma": "tap",
+   "kind": "sensory",
+   "sense": "sound",
+   "strength": "strong",
+   "valence": 0.0,
+   "arousal": 0.1,
+   "emotions": null,
+   "source": "migrated:janitor.py",
+   "version": 1,
+   "alt_lemmas": [
+    "tapped"
+   ],
+   "lemma_evidence": "corpus"
+  },
+  {
+   "id": "en.sens.sound_thud",
+   "lemma": "thud",
+   "kind": "sensory",
+   "sense": "sound",
+   "strength": "strong",
+   "valence": 0.0,
+   "arousal": 0.1,
+   "emotions": null,
+   "source": "migrated:janitor.py",
+   "version": 1,
+   "alt_lemmas": [
+    "thudded"
+   ],
+   "lemma_evidence": "corpus"
+  },
+  {
+   "id": "en.sens.sound_thunder",
+   "lemma": "thunder",
+   "kind": "sensory",
+   "sense": "sound",
+   "strength": "strong",
+   "valence": 0.0,
+   "arousal": 0.1,
+   "emotions": null,
+   "source": "migrated:janitor.py",
+   "version": 1,
+   "alt_lemmas": [
+    "thundered"
+   ],
+   "lemma_evidence": "corpus"
+  },
+  {
+   "id": "en.sens.sound_voice",
+   "lemma": "voice",
+   "kind": "sensory",
+   "sense": "sound",
+   "strength": "strong",
+   "valence": 0.0,
+   "arousal": 0.1,
+   "emotions": null,
+   "source": "migrated:janitor.py",
+   "version": 1,
+   "alt_lemmas": [
+    "voices"
+   ],
+   "lemma_evidence": "corpus"
+  },
+  {
+   "id": "en.sens.sound_whisper",
+   "lemma": "whisper",
+   "kind": "sensory",
+   "sense": "sound",
+   "strength": "strong",
+   "valence": 0.0,
+   "arousal": 0.1,
+   "emotions": null,
+   "source": "migrated:janitor.py",
+   "version": 1,
+   "alt_lemmas": [
+    "whispered"
+   ],
+   "lemma_evidence": "corpus"
+  },
+  {
+   "id": "en.sens.sound_whistle",
+   "lemma": "whistle",
+   "kind": "sensory",
+   "sense": "sound",
+   "strength": "strong",
+   "valence": 0.0,
+   "arousal": 0.1,
+   "emotions": null,
+   "source": "migrated:janitor.py",
+   "version": 1,
+   "alt_lemmas": [
+    "whistled"
+   ],
+   "lemma_evidence": "corpus"
+  },
+  {
+   "id": "en.sens.smell_acrid",
+   "lemma": "acrid",
+   "kind": "sensory",
+   "sense": "smell",
+   "strength": "strong",
+   "valence": 0.0,
+   "arousal": 0.1,
+   "emotions": null,
+   "source": "migrated:janitor.py",
+   "version": 1
+  },
+  {
+   "id": "en.sens.smell_aroma",
+   "lemma": "aroma",
+   "kind": "sensory",
+   "sense": "smell",
+   "strength": "strong",
+   "valence": 0.0,
+   "arousal": 0.1,
+   "emotions": null,
+   "source": "migrated:janitor.py",
+   "version": 1
+  },
+  {
+   "id": "en.sens.smell_earthy",
+   "lemma": "earthy",
+   "kind": "sensory",
+   "sense": "smell",
+   "strength": "strong",
+   "valence": 0.0,
+   "arousal": 0.1,
+   "emotions": null,
+   "source": "migrated:janitor.py",
+   "version": 1
+  },
+  {
+   "id": "en.sens.smell_floral",
+   "lemma": "floral",
+   "kind": "sensory",
+   "sense": "smell",
+   "strength": "strong",
+   "valence": 0.0,
+   "arousal": 0.1,
+   "emotions": null,
+   "source": "migrated:janitor.py",
+   "version": 1
+  },
+  {
+   "id": "en.sens.smell_foul",
+   "lemma": "foul",
+   "kind": "sensory",
+   "sense": "smell",
+   "strength": "strong",
+   "valence": -0.65,
+   "arousal": 0.5,
+   "emotions": {
+    "disgust": 0.85
+   },
+   "source": "migrated:janitor.py",
+   "version": 1
+  },
+  {
+   "id": "en.sens.smell_fragrance",
+   "lemma": "fragrance",
+   "kind": "sensory",
+   "sense": "smell",
+   "strength": "strong",
+   "valence": 0.6,
+   "arousal": 0.3,
+   "emotions": {
+    "joy": 0.6
+   },
+   "source": "migrated:janitor.py",
+   "version": 1
+  },
+  {
+   "id": "en.sens.smell_musty",
+   "lemma": "musty",
+   "kind": "sensory",
+   "sense": "smell",
+   "strength": "strong",
+   "valence": 0.0,
+   "arousal": 0.1,
+   "emotions": null,
+   "source": "migrated:janitor.py",
+   "version": 1
+  },
+  {
+   "id": "en.sens.smell_odor",
+   "lemma": "odor",
+   "kind": "sensory",
+   "sense": "smell",
+   "strength": "strong",
+   "valence": 0.0,
+   "arousal": 0.1,
+   "emotions": null,
+   "source": "migrated:janitor.py",
+   "version": 1,
+   "alt_lemmas": [
+    "odour"
+   ],
+   "lemma_evidence": "corpus"
+  },
+  {
+   "id": "en.sens.smell_perfume",
+   "lemma": "perfume",
+   "kind": "sensory",
+   "sense": "smell",
+   "strength": "strong",
+   "valence": 0.5,
+   "arousal": 0.3,
+   "emotions": {
+    "joy": 0.5
+   },
+   "source": "migrated:janitor.py",
+   "version": 1,
+   "alt_lemmas": [
+    "perfumed"
+   ],
+   "lemma_evidence": "corpus"
+  },
+  {
+   "id": "en.sens.smell_pungent",
+   "lemma": "pungent",
+   "kind": "sensory",
+   "sense": "smell",
+   "strength": "strong",
+   "valence": 0.0,
+   "arousal": 0.1,
+   "emotions": null,
+   "source": "migrated:janitor.py",
+   "version": 1
+  },
+  {
+   "id": "en.sens.smell_putrid",
+   "lemma": "putrid",
+   "kind": "sensory",
+   "sense": "smell",
+   "strength": "strong",
+   "valence": -0.7,
+   "arousal": 0.6,
+   "emotions": {
+    "disgust": 0.9
+   },
+   "source": "migrated:janitor.py",
+   "version": 1
+  },
+  {
+   "id": "en.sens.smell_rancid",
+   "lemma": "rancid",
+   "kind": "sensory",
+   "sense": "smell",
+   "strength": "strong",
+   "valence": -0.65,
+   "arousal": 0.5,
+   "emotions": {
+    "disgust": 0.85
+   },
+   "source": "migrated:janitor.py",
+   "version": 1
+  },
+  {
+   "id": "en.sens.smell_rank",
+   "lemma": "rank",
+   "kind": "sensory",
+   "sense": "smell",
+   "strength": "strong",
+   "valence": 0.0,
+   "arousal": 0.1,
+   "emotions": null,
+   "source": "migrated:janitor.py",
+   "version": 1
+  },
+  {
+   "id": "en.sens.smell_reek",
+   "lemma": "reek",
+   "kind": "sensory",
+   "sense": "smell",
+   "strength": "strong",
+   "valence": -0.6,
+   "arousal": 0.5,
+   "emotions": {
+    "disgust": 0.8
+   },
+   "source": "migrated:janitor.py",
+   "version": 1,
+   "alt_lemmas": [
+    "reeked"
+   ],
+   "lemma_evidence": "corpus"
+  },
+  {
+   "id": "en.sens.smell_scent",
+   "lemma": "scent",
+   "kind": "sensory",
+   "sense": "smell",
+   "strength": "strong",
+   "valence": 0.0,
+   "arousal": 0.1,
+   "emotions": null,
+   "source": "migrated:janitor.py",
+   "version": 1,
+   "alt_lemmas": [
+    "scented"
+   ],
+   "lemma_evidence": "corpus"
+  },
+  {
+   "id": "en.sens.smell_smell",
+   "lemma": "smell",
+   "kind": "sensory",
+   "sense": "smell",
+   "strength": "weak",
+   "valence": 0.0,
+   "arousal": 0.1,
+   "emotions": null,
+   "source": "migrated:janitor.py",
+   "version": 1,
+   "alt_lemmas": [
+    "smelled",
+    "smells",
+    "smelt"
+   ],
+   "lemma_evidence": "corpus"
+  },
+  {
+   "id": "en.sens.smell_smoky",
+   "lemma": "smoky",
+   "kind": "sensory",
+   "sense": "smell",
+   "strength": "strong",
+   "valence": 0.0,
+   "arousal": 0.1,
+   "emotions": null,
+   "source": "migrated:janitor.py",
+   "version": 1
+  },
+  {
+   "id": "en.sens.smell_sniff",
+   "lemma": "sniff",
+   "kind": "sensory",
+   "sense": "smell",
+   "strength": "strong",
+   "valence": 0.0,
+   "arousal": 0.1,
+   "emotions": null,
+   "source": "migrated:janitor.py",
+   "version": 1,
+   "alt_lemmas": [
+    "sniffed",
+    "sniffing"
+   ],
+   "lemma_evidence": "corpus"
+  },
+  {
+   "id": "en.sens.smell_stink",
+   "lemma": "stink",
+   "kind": "sensory",
+   "sense": "smell",
+   "strength": "strong",
+   "valence": -0.6,
+   "arousal": 0.5,
+   "emotions": {
+    "disgust": 0.8
+   },
+   "source": "migrated:janitor.py",
+   "version": 1,
+   "alt_lemmas": [
+    "stank"
+   ],
+   "lemma_evidence": "corpus"
+  },
+  {
+   "id": "en.sens.smell_stench",
+   "lemma": "stench",
+   "kind": "sensory",
+   "sense": "smell",
+   "strength": "strong",
+   "valence": -0.6,
+   "arousal": 0.5,
+   "emotions": {
+    "disgust": 0.8
+   },
+   "source": "migrated:janitor.py",
+   "version": 1
+  },
+  {
+   "id": "en.sens.smell_whiff",
+   "lemma": "whiff",
+   "kind": "sensory",
+   "sense": "smell",
+   "strength": "strong",
+   "valence": 0.0,
+   "arousal": 0.1,
+   "emotions": null,
+   "source": "migrated:janitor.py",
+   "version": 1
+  },
+  {
+   "id": "en.sens.touch_brush",
+   "lemma": "brush",
+   "kind": "sensory",
+   "sense": "touch",
+   "strength": "strong",
+   "valence": 0.0,
+   "arousal": 0.1,
+   "emotions": null,
+   "source": "migrated:janitor.py",
+   "version": 1,
+   "alt_lemmas": [
+    "brushed"
+   ],
+   "lemma_evidence": "corpus"
+  },
+  {
+   "id": "en.sens.touch_burn",
+   "lemma": "burn",
+   "kind": "sensory",
+   "sense": "touch",
+   "strength": "strong",
+   "valence": 0.0,
+   "arousal": 0.1,
+   "emotions": null,
+   "source": "migrated:janitor.py",
+   "version": 1,
+   "alt_lemmas": [
+    "burned",
+    "burning",
+    "burnt"
+   ],
+   "lemma_evidence": "corpus"
+  },
+  {
+   "id": "en.sens.touch_caress",
+   "lemma": "caress",
+   "kind": "sensory",
+   "sense": "touch",
+   "strength": "strong",
+   "valence": 0.0,
+   "arousal": 0.1,
+   "emotions": null,
+   "source": "migrated:janitor.py",
+   "version": 1,
+   "alt_lemmas": [
+    "caressed"
+   ],
+   "lemma_evidence": "corpus"
+  },
+  {
+   "id": "en.sens.touch_coarse",
+   "lemma": "coarse",
+   "kind": "sensory",
+   "sense": "touch",
+   "strength": "strong",
+   "valence": 0.0,
+   "arousal": 0.1,
+   "emotions": null,
+   "source": "migrated:janitor.py",
+   "version": 1
+  },
+  {
+   "id": "en.sens.touch_cold",
+   "lemma": "cold",
+   "kind": "sensory",
+   "sense": "touch",
+   "strength": "strong",
+   "valence": 0.0,
+   "arousal": 0.1,
+   "emotions": null,
+   "source": "migrated:janitor.py",
+   "version": 1
+  },
+  {
+   "id": "en.sens.touch_dry",
+   "lemma": "dry",
+   "kind": "sensory",
+   "sense": "touch",
+   "strength": "strong",
+   "valence": 0.0,
+   "arousal": 0.1,
+   "emotions": null,
+   "source": "migrated:janitor.py",
+   "version": 1
+  },
+  {
+   "id": "en.sens.touch_feel",
+   "lemma": "feel",
+   "kind": "sensory",
+   "sense": "touch",
+   "strength": "weak",
+   "valence": 0.0,
+   "arousal": 0.1,
+   "emotions": null,
+   "source": "migrated:janitor.py",
+   "version": 1,
+   "alt_lemmas": [
+    "feels",
+    "felt"
+   ],
+   "lemma_evidence": "corpus"
+  },
+  {
+   "id": "en.sens.touch_freeze",
+   "lemma": "freeze",
+   "kind": "sensory",
+   "sense": "touch",
+   "strength": "strong",
+   "valence": 0.0,
+   "arousal": 0.1,
+   "emotions": null,
+   "source": "migrated:janitor.py",
+   "version": 1,
+   "alt_lemmas": [
+    "freezing"
+   ],
+   "lemma_evidence": "corpus"
+  },
+  {
+   "id": "en.sens.touch_grasp",
+   "lemma": "grasp",
+   "kind": "sensory",
+   "sense": "touch",
+   "strength": "strong",
+   "valence": 0.0,
+   "arousal": 0.1,
+   "emotions": null,
+   "source": "migrated:janitor.py",
+   "version": 1,
+   "alt_lemmas": [
+    "grasped"
+   ],
+   "lemma_evidence": "corpus"
+  },
+  {
+   "id": "en.sens.touch_grip",
+   "lemma": "grip",
+   "kind": "sensory",
+   "sense": "touch",
+   "strength": "strong",
+   "valence": 0.0,
+   "arousal": 0.1,
+   "emotions": null,
+   "source": "migrated:janitor.py",
+   "version": 1,
+   "alt_lemmas": [
+    "gripped"
+   ],
+   "lemma_evidence": "corpus"
+  },
+  {
+   "id": "en.sens.touch_hard",
+   "lemma": "hard",
+   "kind": "sensory",
+   "sense": "touch",
+   "strength": "strong",
+   "valence": 0.0,
+   "arousal": 0.1,
+   "emotions": null,
+   "source": "migrated:janitor.py",
+   "version": 1
+  },
+  {
+   "id": "en.sens.touch_hot",
+   "lemma": "hot",
+   "kind": "sensory",
+   "sense": "touch",
+   "strength": "strong",
+   "valence": 0.0,
+   "arousal": 0.1,
+   "emotions": null,
+   "source": "migrated:janitor.py",
+   "version": 1
+  },
+  {
+   "id": "en.sens.touch_numb",
+   "lemma": "numb",
+   "kind": "sensory",
+   "sense": "touch",
+   "strength": "strong",
+   "valence": 0.0,
+   "arousal": 0.1,
+   "emotions": null,
+   "source": "migrated:janitor.py",
+   "version": 1
+  },
+  {
+   "id": "en.sens.touch_press",
+   "lemma": "press",
+   "kind": "sensory",
+   "sense": "touch",
+   "strength": "strong",
+   "valence": 0.0,
+   "arousal": 0.1,
+   "emotions": null,
+   "source": "migrated:janitor.py",
+   "version": 1,
+   "alt_lemmas": [
+    "pressed"
+   ],
+   "lemma_evidence": "corpus"
+  },
+  {
+   "id": "en.sens.touch_prick",
+   "lemma": "prick",
+   "kind": "sensory",
+   "sense": "touch",
+   "strength": "strong",
+   "valence": 0.0,
+   "arousal": 0.1,
+   "emotions": null,
+   "source": "migrated:janitor.py",
+   "version": 1,
+   "alt_lemmas": [
+    "pricked"
+   ],
+   "lemma_evidence": "corpus"
+  },
+  {
+   "id": "en.sens.touch_rough",
+   "lemma": "rough",
+   "kind": "sensory",
+   "sense": "touch",
+   "strength": "strong",
+   "valence": 0.0,
+   "arousal": 0.1,
+   "emotions": null,
+   "source": "migrated:janitor.py",
+   "version": 1
+  },
+  {
+   "id": "en.sens.touch_scratch",
+   "lemma": "scratch",
+   "kind": "sensory",
+   "sense": "touch",
+   "strength": "strong",
+   "valence": 0.0,
+   "arousal": 0.1,
+   "emotions": null,
+   "source": "migrated:janitor.py",
+   "version": 1,
+   "alt_lemmas": [
+    "scratched"
+   ],
+   "lemma_evidence": "corpus"
+  },
+  {
+   "id": "en.sens.touch_sharp",
+   "lemma": "sharp",
+   "kind": "sensory",
+   "sense": "touch",
+   "strength": "strong",
+   "valence": 0.0,
+   "arousal": 0.1,
+   "emotions": null,
+   "source": "migrated:janitor.py",
+   "version": 1
+  },
+  {
+   "id": "en.sens.touch_shiver",
+   "lemma": "shiver",
+   "kind": "sensory",
+   "sense": "touch",
+   "strength": "strong",
+   "valence": 0.0,
+   "arousal": 0.1,
+   "emotions": null,
+   "source": "migrated:janitor.py",
+   "version": 1,
+   "alt_lemmas": [
+    "shivered"
+   ],
+   "lemma_evidence": "corpus"
+  },
+  {
+   "id": "en.sens.touch_silky",
+   "lemma": "silky",
+   "kind": "sensory",
+   "sense": "touch",
+   "strength": "strong",
+   "valence": 0.0,
+   "arousal": 0.1,
+   "emotions": null,
+   "source": "migrated:janitor.py",
+   "version": 1
+  },
+  {
+   "id": "en.sens.touch_slimy",
+   "lemma": "slimy",
+   "kind": "sensory",
+   "sense": "touch",
+   "strength": "strong",
+   "valence": 0.0,
+   "arousal": 0.1,
+   "emotions": null,
+   "source": "migrated:janitor.py",
+   "version": 1
+  },
+  {
+   "id": "en.sens.touch_smooth",
+   "lemma": "smooth",
+   "kind": "sensory",
+   "sense": "touch",
+   "strength": "strong",
+   "valence": 0.0,
+   "arousal": 0.1,
+   "emotions": null,
+   "source": "migrated:janitor.py",
+   "version": 1
+  },
+  {
+   "id": "en.sens.touch_soft",
+   "lemma": "soft",
+   "kind": "sensory",
+   "sense": "touch",
+   "strength": "strong",
+   "valence": 0.0,
+   "arousal": 0.1,
+   "emotions": null,
+   "source": "migrated:janitor.py",
+   "version": 1
+  },
+  {
+   "id": "en.sens.touch_squeeze",
+   "lemma": "squeeze",
+   "kind": "sensory",
+   "sense": "touch",
+   "strength": "strong",
+   "valence": 0.0,
+   "arousal": 0.1,
+   "emotions": null,
+   "source": "migrated:janitor.py",
+   "version": 1,
+   "alt_lemmas": [
+    "squeezed"
+   ],
+   "lemma_evidence": "corpus"
+  },
+  {
+   "id": "en.sens.touch_sticky",
+   "lemma": "sticky",
+   "kind": "sensory",
+   "sense": "touch",
+   "strength": "strong",
+   "valence": 0.0,
+   "arousal": 0.1,
+   "emotions": null,
+   "source": "migrated:janitor.py",
+   "version": 1
+  },
+  {
+   "id": "en.sens.touch_sting",
+   "lemma": "sting",
+   "kind": "sensory",
+   "sense": "touch",
+   "strength": "strong",
+   "valence": 0.0,
+   "arousal": 0.1,
+   "emotions": null,
+   "source": "migrated:janitor.py",
+   "version": 1,
+   "alt_lemmas": [
+    "stung"
+   ],
+   "lemma_evidence": "corpus"
+  },
+  {
+   "id": "en.sens.touch_stroke",
+   "lemma": "stroke",
+   "kind": "sensory",
+   "sense": "touch",
+   "strength": "strong",
+   "valence": 0.0,
+   "arousal": 0.1,
+   "emotions": null,
+   "source": "migrated:janitor.py",
+   "version": 1,
+   "alt_lemmas": [
+    "stroked"
+   ],
+   "lemma_evidence": "corpus"
+  },
+  {
+   "id": "en.sens.touch_texture",
+   "lemma": "texture",
+   "kind": "sensory",
+   "sense": "touch",
+   "strength": "strong",
+   "valence": 0.0,
+   "arousal": 0.1,
+   "emotions": null,
+   "source": "migrated:janitor.py",
+   "version": 1
+  },
+  {
+   "id": "en.sens.touch_tingle",
+   "lemma": "tingle",
+   "kind": "sensory",
+   "sense": "touch",
+   "strength": "strong",
+   "valence": 0.0,
+   "arousal": 0.1,
+   "emotions": null,
+   "source": "migrated:janitor.py",
+   "version": 1,
+   "alt_lemmas": [
+    "tingled"
+   ],
+   "lemma_evidence": "corpus"
+  },
+  {
+   "id": "en.sens.touch_touch",
+   "lemma": "touch",
+   "kind": "sensory",
+   "sense": "touch",
+   "strength": "weak",
+   "valence": 0.0,
+   "arousal": 0.1,
+   "emotions": null,
+   "source": "migrated:janitor.py",
+   "version": 1,
+   "alt_lemmas": [
+    "touched",
+    "touches"
+   ],
+   "lemma_evidence": "corpus"
+  },
+  {
+   "id": "en.sens.touch_tremble",
+   "lemma": "tremble",
+   "kind": "sensory",
+   "sense": "touch",
+   "strength": "strong",
+   "valence": 0.0,
+   "arousal": 0.1,
+   "emotions": null,
+   "source": "migrated:janitor.py",
+   "version": 1,
+   "alt_lemmas": [
+    "trembled"
+   ],
+   "lemma_evidence": "corpus"
+  },
+  {
+   "id": "en.sens.touch_warm",
+   "lemma": "warm",
+   "kind": "sensory",
+   "sense": "touch",
+   "strength": "strong",
+   "valence": 0.0,
+   "arousal": 0.1,
+   "emotions": null,
+   "source": "migrated:janitor.py",
+   "version": 1,
+   "alt_lemmas": [
+    "warmth"
+   ],
+   "lemma_evidence": "corpus"
+  },
+  {
+   "id": "en.sens.touch_wet",
+   "lemma": "wet",
+   "kind": "sensory",
+   "sense": "touch",
+   "strength": "strong",
+   "valence": 0.0,
+   "arousal": 0.1,
+   "emotions": null,
+   "source": "migrated:janitor.py",
+   "version": 1
+  },
+  {
+   "id": "en.sens.taste_acidic",
+   "lemma": "acidic",
+   "kind": "sensory",
+   "sense": "taste",
+   "strength": "strong",
+   "valence": 0.0,
+   "arousal": 0.1,
+   "emotions": null,
+   "source": "migrated:janitor.py",
+   "version": 1
+  },
+  {
+   "id": "en.sens.taste_bite",
+   "lemma": "bite",
+   "kind": "sensory",
+   "sense": "taste",
+   "strength": "strong",
+   "valence": 0.0,
+   "arousal": 0.1,
+   "emotions": null,
+   "source": "migrated:janitor.py",
+   "version": 1,
+   "alt_lemmas": [
+    "bitten"
+   ],
+   "lemma_evidence": "corpus"
+  },
+  {
+   "id": "en.sens.taste_bitter",
+   "lemma": "bitter",
+   "kind": "sensory",
+   "sense": "taste",
+   "strength": "strong",
+   "valence": 0.0,
+   "arousal": 0.1,
+   "emotions": null,
+   "source": "migrated:janitor.py",
+   "version": 1
+  },
+  {
+   "id": "en.sens.taste_bland",
+   "lemma": "bland",
+   "kind": "sensory",
+   "sense": "taste",
+   "strength": "strong",
+   "valence": 0.0,
+   "arousal": 0.1,
+   "emotions": null,
+   "source": "migrated:janitor.py",
+   "version": 1
+  },
+  {
+   "id": "en.sens.taste_chew",
+   "lemma": "chew",
+   "kind": "sensory",
+   "sense": "taste",
+   "strength": "strong",
+   "valence": 0.0,
+   "arousal": 0.1,
+   "emotions": null,
+   "source": "migrated:janitor.py",
+   "version": 1,
+   "alt_lemmas": [
+    "chewed"
+   ],
+   "lemma_evidence": "corpus"
+  },
+  {
+   "id": "en.sens.taste_delicious",
+   "lemma": "delicious",
+   "kind": "sensory",
+   "sense": "taste",
+   "strength": "strong",
+   "valence": 0.7,
+   "arousal": 0.4,
+   "emotions": {
+    "joy": 0.7
+   },
+   "source": "migrated:janitor.py",
+   "version": 1
+  },
+  {
+   "id": "en.sens.taste_devour",
+   "lemma": "devour",
+   "kind": "sensory",
+   "sense": "taste",
+   "strength": "strong",
+   "valence": 0.0,
+   "arousal": 0.1,
+   "emotions": null,
+   "source": "migrated:janitor.py",
+   "version": 1,
+   "alt_lemmas": [
+    "devoured"
+   ],
+   "lemma_evidence": "corpus"
+  },
+  {
+   "id": "en.sens.taste_flavor",
+   "lemma": "flavor",
+   "kind": "sensory",
+   "sense": "taste",
+   "strength": "strong",
+   "valence": 0.0,
+   "arousal": 0.1,
+   "emotions": null,
+   "source": "migrated:janitor.py",
+   "version": 1,
+   "alt_lemmas": [
+    "flavour"
+   ],
+   "lemma_evidence": "corpus"
+  },
+  {
+   "id": "en.sens.taste_gulp",
+   "lemma": "gulp",
+   "kind": "sensory",
+   "sense": "taste",
+   "strength": "strong",
+   "valence": 0.0,
+   "arousal": 0.1,
+   "emotions": null,
+   "source": "migrated:janitor.py",
+   "version": 1,
+   "alt_lemmas": [
+    "gulped"
+   ],
+   "lemma_evidence": "corpus"
+  },
+  {
+   "id": "en.sens.taste_lick",
+   "lemma": "lick",
+   "kind": "sensory",
+   "sense": "taste",
+   "strength": "strong",
+   "valence": 0.0,
+   "arousal": 0.1,
+   "emotions": null,
+   "source": "migrated:janitor.py",
+   "version": 1,
+   "alt_lemmas": [
+    "licked"
+   ],
+   "lemma_evidence": "corpus"
+  },
+  {
+   "id": "en.sens.taste_metallic",
+   "lemma": "metallic",
+   "kind": "sensory",
+   "sense": "taste",
+   "strength": "strong",
+   "valence": 0.0,
+   "arousal": 0.1,
+   "emotions": null,
+   "source": "migrated:janitor.py",
+   "version": 1
+  },
+  {
+   "id": "en.sens.taste_salty",
+   "lemma": "salty",
+   "kind": "sensory",
+   "sense": "taste",
+   "strength": "strong",
+   "valence": 0.0,
+   "arousal": 0.1,
+   "emotions": null,
+   "source": "migrated:janitor.py",
+   "version": 1
+  },
+  {
+   "id": "en.sens.taste_savor",
+   "lemma": "savor",
+   "kind": "sensory",
+   "sense": "taste",
+   "strength": "strong",
+   "valence": 0.0,
+   "arousal": 0.1,
+   "emotions": null,
+   "source": "migrated:janitor.py",
+   "version": 1,
+   "alt_lemmas": [
+    "savored"
+   ],
+   "lemma_evidence": "corpus"
+  },
+  {
+   "id": "en.sens.taste_savory",
+   "lemma": "savory",
+   "kind": "sensory",
+   "sense": "taste",
+   "strength": "strong",
+   "valence": 0.0,
+   "arousal": 0.1,
+   "emotions": null,
+   "source": "migrated:janitor.py",
+   "version": 1,
+   "alt_lemmas": [
+    "savoury"
+   ],
+   "lemma_evidence": "corpus"
+  },
+  {
+   "id": "en.sens.taste_sip",
+   "lemma": "sip",
+   "kind": "sensory",
+   "sense": "taste",
+   "strength": "strong",
+   "valence": 0.0,
+   "arousal": 0.1,
+   "emotions": null,
+   "source": "migrated:janitor.py",
+   "version": 1,
+   "alt_lemmas": [
+    "sipped"
+   ],
+   "lemma_evidence": "corpus"
+  },
+  {
+   "id": "en.sens.taste_sour",
+   "lemma": "sour",
+   "kind": "sensory",
+   "sense": "taste",
+   "strength": "strong",
+   "valence": 0.0,
+   "arousal": 0.1,
+   "emotions": null,
+   "source": "migrated:janitor.py",
+   "version": 1
+  },
+  {
+   "id": "en.sens.taste_spicy",
+   "lemma": "spicy",
+   "kind": "sensory",
+   "sense": "taste",
+   "strength": "strong",
+   "valence": 0.0,
+   "arousal": 0.1,
+   "emotions": null,
+   "source": "migrated:janitor.py",
+   "version": 1
+  },
+  {
+   "id": "en.sens.taste_swallow",
+   "lemma": "swallow",
+   "kind": "sensory",
+   "sense": "taste",
+   "strength": "strong",
+   "valence": 0.0,
+   "arousal": 0.1,
+   "emotions": null,
+   "source": "migrated:janitor.py",
+   "version": 1,
+   "alt_lemmas": [
+    "swallowed"
+   ],
+   "lemma_evidence": "corpus"
+  },
+  {
+   "id": "en.sens.taste_sweet",
+   "lemma": "sweet",
+   "kind": "sensory",
+   "sense": "taste",
+   "strength": "strong",
+   "valence": 0.0,
+   "arousal": 0.1,
+   "emotions": null,
+   "source": "migrated:janitor.py",
+   "version": 1
+  },
+  {
+   "id": "en.sens.taste_tangy",
+   "lemma": "tangy",
+   "kind": "sensory",
+   "sense": "taste",
+   "strength": "strong",
+   "valence": 0.0,
+   "arousal": 0.1,
+   "emotions": null,
+   "source": "migrated:janitor.py",
+   "version": 1
+  },
+  {
+   "id": "en.sens.taste_taste",
+   "lemma": "taste",
+   "kind": "sensory",
+   "sense": "taste",
+   "strength": "weak",
+   "valence": 0.0,
+   "arousal": 0.1,
+   "emotions": null,
+   "source": "migrated:janitor.py",
+   "version": 1,
+   "alt_lemmas": [
+    "tasted",
+    "tastes"
+   ],
+   "lemma_evidence": "corpus"
+  },
+  {
+   "id": "en.sens.taste_tongue",
+   "lemma": "tongue",
+   "kind": "sensory",
+   "sense": "taste",
+   "strength": "strong",
+   "valence": 0.0,
+   "arousal": 0.1,
+   "emotions": null,
+   "source": "migrated:janitor.py",
+   "version": 1
+  },
+  {
+   "id": "en.sens.sight_crimson",
+   "lemma": "crimson",
+   "kind": "sensory",
+   "sense": "sight",
+   "strength": "strong",
+   "valence": 0.0,
+   "arousal": 0.1,
+   "emotions": null,
+   "source": "curated:gemini-2026-09",
+   "version": 1
+  },
+  {
+   "id": "en.sens.sight_scarlet",
+   "lemma": "scarlet",
+   "kind": "sensory",
+   "sense": "sight",
+   "strength": "strong",
+   "valence": 0.0,
+   "arousal": 0.1,
+   "emotions": null,
+   "source": "curated:gemini-2026-09",
+   "version": 1
+  },
+  {
+   "id": "en.sens.sight_azure",
+   "lemma": "azure",
+   "kind": "sensory",
+   "sense": "sight",
+   "strength": "strong",
+   "valence": 0.0,
+   "arousal": 0.1,
+   "emotions": null,
+   "source": "curated:gemini-2026-09",
+   "version": 1
+  },
+  {
+   "id": "en.sens.sight_emerald",
+   "lemma": "emerald",
+   "kind": "sensory",
+   "sense": "sight",
+   "strength": "strong",
+   "valence": 0.0,
+   "arousal": 0.1,
+   "emotions": null,
+   "source": "curated:gemini-2026-09",
+   "version": 1
+  },
+  {
+   "id": "en.sens.sight_golden",
+   "lemma": "golden",
+   "kind": "sensory",
+   "sense": "sight",
+   "strength": "strong",
+   "valence": 0.0,
+   "arousal": 0.1,
+   "emotions": null,
+   "source": "curated:gemini-2026-09",
+   "version": 1
+  },
+  {
+   "id": "en.sens.sight_silvery",
+   "lemma": "silvery",
+   "kind": "sensory",
+   "sense": "sight",
+   "strength": "strong",
+   "valence": 0.0,
+   "arousal": 0.1,
+   "emotions": null,
+   "source": "curated:gemini-2026-09",
+   "version": 1
+  },
+  {
+   "id": "en.sens.sight_opaque",
+   "lemma": "opaque",
+   "kind": "sensory",
+   "sense": "sight",
+   "strength": "strong",
+   "valence": 0.0,
+   "arousal": 0.1,
+   "emotions": null,
+   "source": "curated:gemini-2026-09",
+   "version": 1
+  },
+  {
+   "id": "en.sens.sight_translucent",
+   "lemma": "translucent",
+   "kind": "sensory",
+   "sense": "sight",
+   "strength": "strong",
+   "valence": 0.0,
+   "arousal": 0.1,
+   "emotions": null,
+   "source": "curated:gemini-2026-09",
+   "version": 1
+  },
+  {
+   "id": "en.sens.sight_glare",
+   "lemma": "glare",
+   "kind": "sensory",
+   "sense": "sight",
+   "strength": "strong",
+   "valence": 0.0,
+   "arousal": 0.1,
+   "emotions": null,
+   "source": "curated:gemini-2026-09",
+   "version": 1
+  },
+  {
+   "id": "en.sens.sight_iridescent",
+   "lemma": "iridescent",
+   "kind": "sensory",
+   "sense": "sight",
+   "strength": "strong",
+   "valence": 0.0,
+   "arousal": 0.1,
+   "emotions": null,
+   "source": "curated:gemini-2026-09",
+   "version": 1
+  },
+  {
+   "id": "en.sens.sight_radiant",
+   "lemma": "radiant",
+   "kind": "sensory",
+   "sense": "sight",
+   "strength": "strong",
+   "valence": 0.0,
+   "arousal": 0.1,
+   "emotions": null,
+   "source": "curated:gemini-2026-09",
+   "version": 1
+  },
+  {
+   "id": "en.sens.sight_luster",
+   "lemma": "luster",
+   "kind": "sensory",
+   "sense": "sight",
+   "strength": "strong",
+   "valence": 0.0,
+   "arousal": 0.1,
+   "emotions": null,
+   "source": "curated:gemini-2026-09",
+   "version": 1
+  },
+  {
+   "id": "en.sens.sight_murky",
+   "lemma": "murky",
+   "kind": "sensory",
+   "sense": "sight",
+   "strength": "strong",
+   "valence": 0.0,
+   "arousal": 0.1,
+   "emotions": null,
+   "source": "curated:gemini-2026-09",
+   "version": 1
+  },
+  {
+   "id": "en.sens.sight_dusk",
+   "lemma": "dusk",
+   "kind": "sensory",
+   "sense": "sight",
+   "strength": "strong",
+   "valence": 0.0,
+   "arousal": 0.1,
+   "emotions": null,
+   "source": "curated:gemini-2026-09",
+   "version": 1
+  },
+  {
+   "id": "en.sens.sight_crystalline",
+   "lemma": "crystalline",
+   "kind": "sensory",
+   "sense": "sight",
+   "strength": "strong",
+   "valence": 0.0,
+   "arousal": 0.1,
+   "emotions": null,
+   "source": "curated:gemini-2026-09",
+   "version": 1
+  },
+  {
+   "id": "en.sens.sight_flicker",
+   "lemma": "flicker",
+   "kind": "sensory",
+   "sense": "sight",
+   "strength": "strong",
+   "valence": 0.0,
+   "arousal": 0.1,
+   "emotions": null,
+   "source": "curated:gemini-2026-09",
+   "version": 1
+  },
+  {
+   "id": "en.sens.sight_beam",
+   "lemma": "beam",
+   "kind": "sensory",
+   "sense": "sight",
+   "strength": "strong",
+   "valence": 0.0,
+   "arousal": 0.1,
+   "emotions": null,
+   "source": "curated:gemini-2026-09",
+   "version": 1
+  },
+  {
+   "id": "en.sens.sight_flare",
+   "lemma": "flare",
+   "kind": "sensory",
+   "sense": "sight",
+   "strength": "strong",
+   "valence": 0.0,
+   "arousal": 0.1,
+   "emotions": null,
+   "source": "curated:gemini-2026-09",
+   "version": 1
+  },
+  {
+   "id": "en.sens.sight_beacon",
+   "lemma": "beacon",
+   "kind": "sensory",
+   "sense": "sight",
+   "strength": "strong",
+   "valence": 0.0,
+   "arousal": 0.1,
+   "emotions": null,
+   "source": "curated:gemini-2026-09",
+   "version": 1
+  },
+  {
+   "id": "en.sens.sight_glint",
+   "lemma": "glint",
+   "kind": "sensory",
+   "sense": "sight",
+   "strength": "strong",
+   "valence": 0.0,
+   "arousal": 0.1,
+   "emotions": null,
+   "source": "curated:gemini-2026-09",
+   "version": 1
+  },
+  {
+   "id": "en.sens.sight_twinkle",
+   "lemma": "twinkle",
+   "kind": "sensory",
+   "sense": "sight",
+   "strength": "strong",
+   "valence": 0.0,
+   "arousal": 0.1,
+   "emotions": null,
+   "source": "curated:gemini-2026-09",
+   "version": 1
+  },
+  {
+   "id": "en.sens.sight_luminous",
+   "lemma": "luminous",
+   "kind": "sensory",
+   "sense": "sight",
+   "strength": "strong",
+   "valence": 0.0,
+   "arousal": 0.1,
+   "emotions": null,
+   "source": "curated:gemini-2026-09",
+   "version": 1
+  },
+  {
+   "id": "en.sens.sight_incandescent",
+   "lemma": "incandescent",
+   "kind": "sensory",
+   "sense": "sight",
+   "strength": "strong",
+   "valence": 0.0,
+   "arousal": 0.1,
+   "emotions": null,
+   "source": "curated:gemini-2026-09",
+   "version": 1
+  },
+  {
+   "id": "en.sens.sight_phosphorescent",
+   "lemma": "phosphorescent",
+   "kind": "sensory",
+   "sense": "sight",
+   "strength": "strong",
+   "valence": 0.0,
+   "arousal": 0.1,
+   "emotions": null,
+   "source": "curated:gemini-2026-09",
+   "version": 1
+  },
+  {
+   "id": "en.sens.sight_glaze",
+   "lemma": "glaze",
+   "kind": "sensory",
+   "sense": "sight",
+   "strength": "strong",
+   "valence": 0.0,
+   "arousal": 0.1,
+   "emotions": null,
+   "source": "curated:gemini-2026-09",
+   "version": 1
+  },
+  {
+   "id": "en.sens.sight_sheen",
+   "lemma": "sheen",
+   "kind": "sensory",
+   "sense": "sight",
+   "strength": "strong",
+   "valence": 0.0,
+   "arousal": 0.1,
+   "emotions": null,
+   "source": "curated:gemini-2026-09",
+   "version": 1
+  },
+  {
+   "id": "en.sens.sight_gloss",
+   "lemma": "gloss",
+   "kind": "sensory",
+   "sense": "sight",
+   "strength": "strong",
+   "valence": 0.0,
+   "arousal": 0.1,
+   "emotions": null,
+   "source": "curated:gemini-2026-09",
+   "version": 1
+  },
+  {
+   "id": "en.sens.sight_hazy",
+   "lemma": "hazy",
+   "kind": "sensory",
+   "sense": "sight",
+   "strength": "strong",
+   "valence": 0.0,
+   "arousal": 0.1,
+   "emotions": null,
+   "source": "curated:gemini-2026-09",
+   "version": 1
+  },
+  {
+   "id": "en.sens.sight_foggy",
+   "lemma": "foggy",
+   "kind": "sensory",
+   "sense": "sight",
+   "strength": "strong",
+   "valence": 0.0,
+   "arousal": 0.1,
+   "emotions": null,
+   "source": "curated:gemini-2026-09",
+   "version": 1
+  },
+  {
+   "id": "en.sens.sight_misty",
+   "lemma": "misty",
+   "kind": "sensory",
+   "sense": "sight",
+   "strength": "strong",
+   "valence": 0.0,
+   "arousal": 0.1,
+   "emotions": null,
+   "source": "curated:gemini-2026-09",
+   "version": 1
+  },
+  {
+   "id": "en.sens.sight_pitch",
+   "lemma": "pitch",
+   "kind": "sensory",
+   "sense": "sight",
+   "strength": "strong",
+   "valence": 0.0,
+   "arousal": 0.1,
+   "emotions": null,
+   "source": "curated:gemini-2026-09",
+   "version": 1
+  },
+  {
+   "id": "en.sens.sight_inky",
+   "lemma": "inky",
+   "kind": "sensory",
+   "sense": "sight",
+   "strength": "strong",
+   "valence": 0.0,
+   "arousal": 0.1,
+   "emotions": null,
+   "source": "curated:gemini-2026-09",
+   "version": 1
+  },
+  {
+   "id": "en.sens.sight_ebon",
+   "lemma": "ebon",
+   "kind": "sensory",
+   "sense": "sight",
+   "strength": "strong",
+   "valence": 0.0,
+   "arousal": 0.1,
+   "emotions": null,
+   "source": "curated:gemini-2026-09",
+   "version": 1,
+   "spell_ok": "archaic poetic adjective for dark black or ebony"
+  },
+  {
+   "id": "en.sens.sight_radiance",
+   "lemma": "radiance",
+   "kind": "sensory",
+   "sense": "sight",
+   "strength": "strong",
+   "valence": 0.0,
+   "arousal": 0.1,
+   "emotions": null,
+   "source": "curated:gemini-2026-09",
+   "version": 1
+  },
+  {
+   "id": "en.sens.sight_iridescence",
+   "lemma": "iridescence",
+   "kind": "sensory",
+   "sense": "sight",
+   "strength": "strong",
+   "valence": 0.0,
+   "arousal": 0.1,
+   "emotions": null,
+   "source": "curated:gemini-2026-09",
+   "version": 1
+  },
+  {
+   "id": "en.sens.sound_cacophony",
+   "lemma": "cacophony",
+   "kind": "sensory",
+   "sense": "sound",
+   "strength": "strong",
+   "valence": -0.5,
+   "arousal": 0.6,
+   "emotions": {
+    "disgust": 0.5
+   },
+   "source": "curated:gemini-2026-09",
+   "version": 1
+  },
+  {
+   "id": "en.sens.sound_din",
+   "lemma": "din",
+   "kind": "sensory",
+   "sense": "sound",
+   "strength": "strong",
+   "valence": 0.0,
+   "arousal": 0.1,
+   "emotions": null,
+   "source": "curated:gemini-2026-09",
+   "version": 1
+  },
+  {
+   "id": "en.sens.sound_clamor",
+   "lemma": "clamor",
+   "kind": "sensory",
+   "sense": "sound",
+   "strength": "strong",
+   "valence": 0.0,
+   "arousal": 0.1,
+   "emotions": null,
+   "source": "curated:gemini-2026-09",
+   "version": 1
+  },
+  {
+   "id": "en.sens.sound_discord",
+   "lemma": "discord",
+   "kind": "sensory",
+   "sense": "sound",
+   "strength": "strong",
+   "valence": 0.0,
+   "arousal": 0.1,
+   "emotions": null,
+   "source": "curated:gemini-2026-09",
+   "version": 1
+  },
+  {
+   "id": "en.sens.sound_symphony",
+   "lemma": "symphony",
+   "kind": "sensory",
+   "sense": "sound",
+   "strength": "strong",
+   "valence": 0.0,
+   "arousal": 0.1,
+   "emotions": null,
+   "source": "curated:gemini-2026-09",
+   "version": 1
+  },
+  {
+   "id": "en.sens.sound_melody",
+   "lemma": "melody",
+   "kind": "sensory",
+   "sense": "sound",
+   "strength": "strong",
+   "valence": 0.0,
+   "arousal": 0.1,
+   "emotions": null,
+   "source": "curated:gemini-2026-09",
+   "version": 1
+  },
+  {
+   "id": "en.sens.sound_resonance",
+   "lemma": "resonance",
+   "kind": "sensory",
+   "sense": "sound",
+   "strength": "strong",
+   "valence": 0.0,
+   "arousal": 0.1,
+   "emotions": null,
+   "source": "curated:gemini-2026-09",
+   "version": 1
+  },
+  {
+   "id": "en.sens.sound_timbre",
+   "lemma": "timbre",
+   "kind": "sensory",
+   "sense": "sound",
+   "strength": "strong",
+   "valence": 0.0,
+   "arousal": 0.1,
+   "emotions": null,
+   "source": "curated:gemini-2026-09",
+   "version": 1
+  },
+  {
+   "id": "en.sens.sound_whimper",
+   "lemma": "whimper",
+   "kind": "sensory",
+   "sense": "sound",
+   "strength": "strong",
+   "valence": 0.0,
+   "arousal": 0.1,
+   "emotions": null,
+   "source": "curated:gemini-2026-09",
+   "version": 1
+  },
+  {
+   "id": "en.sens.sound_drone",
+   "lemma": "drone",
+   "kind": "sensory",
+   "sense": "sound",
+   "strength": "strong",
+   "valence": 0.0,
+   "arousal": 0.1,
+   "emotions": null,
+   "source": "curated:gemini-2026-09",
+   "version": 1
+  },
+  {
+   "id": "en.sens.sound_clangor",
+   "lemma": "clangor",
+   "kind": "sensory",
+   "sense": "sound",
+   "strength": "strong",
+   "valence": 0.0,
+   "arousal": 0.1,
+   "emotions": null,
+   "source": "curated:gemini-2026-09",
+   "version": 1
+  },
+  {
+   "id": "en.sens.sound_strident",
+   "lemma": "strident",
+   "kind": "sensory",
+   "sense": "sound",
+   "strength": "strong",
+   "valence": 0.0,
+   "arousal": 0.1,
+   "emotions": null,
+   "source": "curated:gemini-2026-09",
+   "version": 1
+  },
+  {
+   "id": "en.sens.sound_jarring",
+   "lemma": "jarring",
+   "kind": "sensory",
+   "sense": "sound",
+   "strength": "strong",
+   "valence": 0.0,
+   "arousal": 0.1,
+   "emotions": null,
+   "source": "curated:gemini-2026-09",
+   "version": 1
+  },
+  {
+   "id": "en.sens.sound_muffle",
+   "lemma": "muffle",
+   "kind": "sensory",
+   "sense": "sound",
+   "strength": "strong",
+   "valence": 0.0,
+   "arousal": 0.1,
+   "emotions": null,
+   "source": "curated:gemini-2026-09",
+   "version": 1
+  },
+  {
+   "id": "en.sens.sound_inaudible",
+   "lemma": "inaudible",
+   "kind": "sensory",
+   "sense": "sound",
+   "strength": "strong",
+   "valence": 0.0,
+   "arousal": 0.1,
+   "emotions": null,
+   "source": "curated:gemini-2026-09",
+   "version": 1
+  },
+  {
+   "id": "en.sens.sound_racket",
+   "lemma": "racket",
+   "kind": "sensory",
+   "sense": "sound",
+   "strength": "strong",
+   "valence": 0.0,
+   "arousal": 0.1,
+   "emotions": null,
+   "source": "curated:gemini-2026-09",
+   "version": 1
+  },
+  {
+   "id": "en.sens.sound_commotion",
+   "lemma": "commotion",
+   "kind": "sensory",
+   "sense": "sound",
+   "strength": "strong",
+   "valence": 0.0,
+   "arousal": 0.1,
+   "emotions": null,
+   "source": "curated:gemini-2026-09",
+   "version": 1
+  },
+  {
+   "id": "en.sens.sound_uproar",
+   "lemma": "uproar",
+   "kind": "sensory",
+   "sense": "sound",
+   "strength": "strong",
+   "valence": 0.0,
+   "arousal": 0.1,
+   "emotions": null,
+   "source": "curated:gemini-2026-09",
+   "version": 1
+  },
+  {
+   "id": "en.sens.sound_hubbub",
+   "lemma": "hubbub",
+   "kind": "sensory",
+   "sense": "sound",
+   "strength": "strong",
+   "valence": 0.0,
+   "arousal": 0.1,
+   "emotions": null,
+   "source": "curated:gemini-2026-09",
+   "version": 1
+  },
+  {
+   "id": "en.sens.sound_pandemonium",
+   "lemma": "pandemonium",
+   "kind": "sensory",
+   "sense": "sound",
+   "strength": "strong",
+   "valence": -0.6,
+   "arousal": 0.8,
+   "emotions": {
+    "fear": 0.6
+   },
+   "source": "curated:gemini-2026-09",
+   "version": 1
+  },
+  {
+   "id": "en.sens.sound_peal",
+   "lemma": "peal",
+   "kind": "sensory",
+   "sense": "sound",
+   "strength": "strong",
+   "valence": 0.0,
+   "arousal": 0.1,
+   "emotions": null,
+   "source": "curated:gemini-2026-09",
+   "version": 1
+  },
+  {
+   "id": "en.sens.sound_toll",
+   "lemma": "toll",
+   "kind": "sensory",
+   "sense": "sound",
+   "strength": "strong",
+   "valence": 0.0,
+   "arousal": 0.1,
+   "emotions": null,
+   "source": "curated:gemini-2026-09",
+   "version": 1
+  },
+  {
+   "id": "en.sens.sound_chime",
+   "lemma": "chime",
+   "kind": "sensory",
+   "sense": "sound",
+   "strength": "strong",
+   "valence": 0.0,
+   "arousal": 0.1,
+   "emotions": null,
+   "source": "curated:gemini-2026-09",
+   "version": 1
+  },
+  {
+   "id": "en.sens.sound_clink",
+   "lemma": "clink",
+   "kind": "sensory",
+   "sense": "sound",
+   "strength": "strong",
+   "valence": 0.0,
+   "arousal": 0.1,
+   "emotions": null,
+   "source": "curated:gemini-2026-09",
+   "version": 1
+  },
+  {
+   "id": "en.sens.sound_jingle",
+   "lemma": "jingle",
+   "kind": "sensory",
+   "sense": "sound",
+   "strength": "strong",
+   "valence": 0.0,
+   "arousal": 0.1,
+   "emotions": null,
+   "source": "curated:gemini-2026-09",
+   "version": 1
+  },
+  {
+   "id": "en.sens.sound_thump",
+   "lemma": "thump",
+   "kind": "sensory",
+   "sense": "sound",
+   "strength": "strong",
+   "valence": 0.0,
+   "arousal": 0.1,
+   "emotions": null,
+   "source": "curated:gemini-2026-09",
+   "version": 1
+  },
+  {
+   "id": "en.sens.sound_plop",
+   "lemma": "plop",
+   "kind": "sensory",
+   "sense": "sound",
+   "strength": "strong",
+   "valence": 0.0,
+   "arousal": 0.1,
+   "emotions": null,
+   "source": "curated:gemini-2026-09",
+   "version": 1
+  },
+  {
+   "id": "en.sens.sound_splash",
+   "lemma": "splash",
+   "kind": "sensory",
+   "sense": "sound",
+   "strength": "strong",
+   "valence": 0.0,
+   "arousal": 0.1,
+   "emotions": null,
+   "source": "curated:gemini-2026-09",
+   "version": 1
+  },
+  {
+   "id": "en.sens.sound_swish",
+   "lemma": "swish",
+   "kind": "sensory",
+   "sense": "sound",
+   "strength": "strong",
+   "valence": 0.0,
+   "arousal": 0.1,
+   "emotions": null,
+   "source": "curated:gemini-2026-09",
+   "version": 1
+  },
+  {
+   "id": "en.sens.sound_fizz",
+   "lemma": "fizz",
+   "kind": "sensory",
+   "sense": "sound",
+   "strength": "strong",
+   "valence": 0.0,
+   "arousal": 0.1,
+   "emotions": null,
+   "source": "curated:gemini-2026-09",
+   "version": 1
+  },
+  {
+   "id": "en.sens.sound_sizzle",
+   "lemma": "sizzle",
+   "kind": "sensory",
+   "sense": "sound",
+   "strength": "strong",
+   "valence": 0.0,
+   "arousal": 0.1,
+   "emotions": null,
+   "source": "curated:gemini-2026-09",
+   "version": 1
+  },
+  {
+   "id": "en.sens.sound_crackle",
+   "lemma": "crackle",
+   "kind": "sensory",
+   "sense": "sound",
+   "strength": "strong",
+   "valence": 0.0,
+   "arousal": 0.1,
+   "emotions": null,
+   "source": "curated:gemini-2026-09",
+   "version": 1
+  },
+  {
+   "id": "en.sens.sound_crank",
+   "lemma": "crank",
+   "kind": "sensory",
+   "sense": "sound",
+   "strength": "strong",
+   "valence": 0.0,
+   "arousal": 0.1,
+   "emotions": null,
+   "source": "curated:gemini-2026-09",
+   "version": 1
+  },
+  {
+   "id": "en.sens.sound_screech",
+   "lemma": "screech",
+   "kind": "sensory",
+   "sense": "sound",
+   "strength": "strong",
+   "valence": 0.0,
+   "arousal": 0.1,
+   "emotions": null,
+   "source": "curated:gemini-2026-09",
+   "version": 1
+  },
+  {
+   "id": "en.sens.sound_squawk",
+   "lemma": "squawk",
+   "kind": "sensory",
+   "sense": "sound",
+   "strength": "strong",
+   "valence": 0.0,
+   "arousal": 0.1,
+   "emotions": null,
+   "source": "curated:gemini-2026-09",
+   "version": 1
+  },
+  {
+   "id": "en.sens.sound_caw",
+   "lemma": "caw",
+   "kind": "sensory",
+   "sense": "sound",
+   "strength": "strong",
+   "valence": 0.0,
+   "arousal": 0.1,
+   "emotions": null,
+   "source": "curated:gemini-2026-09",
+   "version": 1
+  },
+  {
+   "id": "en.sens.sound_hoot",
+   "lemma": "hoot",
+   "kind": "sensory",
+   "sense": "sound",
+   "strength": "strong",
+   "valence": 0.0,
+   "arousal": 0.1,
+   "emotions": null,
+   "source": "curated:gemini-2026-09",
+   "version": 1
+  },
+  {
+   "id": "en.sens.sound_tinkle",
+   "lemma": "tinkle",
+   "kind": "sensory",
+   "sense": "sound",
+   "strength": "strong",
+   "valence": 0.0,
+   "arousal": 0.1,
+   "emotions": null,
+   "source": "curated:gemini-2026-09",
+   "version": 1
+  },
+  {
+   "id": "en.sens.smell_incense",
+   "lemma": "incense",
+   "kind": "sensory",
+   "sense": "smell",
+   "strength": "strong",
+   "valence": 0.0,
+   "arousal": 0.1,
+   "emotions": null,
+   "source": "curated:gemini-2026-09",
+   "version": 1
+  },
+  {
+   "id": "en.sens.smell_myrrh",
+   "lemma": "myrrh",
+   "kind": "sensory",
+   "sense": "smell",
+   "strength": "strong",
+   "valence": 0.0,
+   "arousal": 0.1,
+   "emotions": null,
+   "source": "curated:gemini-2026-09",
+   "version": 1
+  },
+  {
+   "id": "en.sens.smell_ozone",
+   "lemma": "ozone",
+   "kind": "sensory",
+   "sense": "smell",
+   "strength": "strong",
+   "valence": 0.0,
+   "arousal": 0.1,
+   "emotions": null,
+   "source": "curated:gemini-2026-09",
+   "version": 1
+  },
+  {
+   "id": "en.sens.smell_pine",
+   "lemma": "pine",
+   "kind": "sensory",
+   "sense": "smell",
+   "strength": "strong",
+   "valence": 0.0,
+   "arousal": 0.1,
+   "emotions": null,
+   "source": "curated:gemini-2026-09",
+   "version": 1
+  },
+  {
+   "id": "en.sens.smell_cedar",
+   "lemma": "cedar",
+   "kind": "sensory",
+   "sense": "smell",
+   "strength": "strong",
+   "valence": 0.0,
+   "arousal": 0.1,
+   "emotions": null,
+   "source": "curated:gemini-2026-09",
+   "version": 1
+  },
+  {
+   "id": "en.sens.smell_sulfur",
+   "lemma": "sulfur",
+   "kind": "sensory",
+   "sense": "smell",
+   "strength": "strong",
+   "valence": 0.0,
+   "arousal": 0.1,
+   "emotions": null,
+   "source": "curated:gemini-2026-09",
+   "version": 1
+  },
+  {
+   "id": "en.sens.smell_brimstone",
+   "lemma": "brimstone",
+   "kind": "sensory",
+   "sense": "smell",
+   "strength": "strong",
+   "valence": 0.0,
+   "arousal": 0.1,
+   "emotions": null,
+   "source": "curated:gemini-2026-09",
+   "version": 1
+  },
+  {
+   "id": "en.sens.smell_damp",
+   "lemma": "damp",
+   "kind": "sensory",
+   "sense": "smell",
+   "strength": "strong",
+   "valence": 0.0,
+   "arousal": 0.1,
+   "emotions": null,
+   "source": "curated:gemini-2026-09",
+   "version": 1
+  },
+  {
+   "id": "en.sens.smell_musk",
+   "lemma": "musk",
+   "kind": "sensory",
+   "sense": "smell",
+   "strength": "strong",
+   "valence": 0.0,
+   "arousal": 0.1,
+   "emotions": null,
+   "source": "curated:gemini-2026-09",
+   "version": 1
+  },
+  {
+   "id": "en.sens.smell_cinnamon",
+   "lemma": "cinnamon",
+   "kind": "sensory",
+   "sense": "smell",
+   "strength": "strong",
+   "valence": 0.0,
+   "arousal": 0.1,
+   "emotions": null,
+   "source": "curated:gemini-2026-09",
+   "version": 1
+  },
+  {
+   "id": "en.sens.smell_vanilla",
+   "lemma": "vanilla",
+   "kind": "sensory",
+   "sense": "smell",
+   "strength": "strong",
+   "valence": 0.0,
+   "arousal": 0.1,
+   "emotions": null,
+   "source": "curated:gemini-2026-09",
+   "version": 1
+  },
+  {
+   "id": "en.sens.smell_vinegar",
+   "lemma": "vinegar",
+   "kind": "sensory",
+   "sense": "smell",
+   "strength": "strong",
+   "valence": 0.0,
+   "arousal": 0.1,
+   "emotions": null,
+   "source": "curated:gemini-2026-09",
+   "version": 1
+  },
+  {
+   "id": "en.sens.smell_ammonia",
+   "lemma": "ammonia",
+   "kind": "sensory",
+   "sense": "smell",
+   "strength": "strong",
+   "valence": 0.0,
+   "arousal": 0.1,
+   "emotions": null,
+   "source": "curated:gemini-2026-09",
+   "version": 1
+  },
+  {
+   "id": "en.sens.smell_brine",
+   "lemma": "brine",
+   "kind": "sensory",
+   "sense": "smell",
+   "strength": "strong",
+   "valence": 0.0,
+   "arousal": 0.1,
+   "emotions": null,
+   "source": "curated:gemini-2026-09",
+   "version": 1
+  },
+  {
+   "id": "en.sens.smell_decay",
+   "lemma": "decay",
+   "kind": "sensory",
+   "sense": "smell",
+   "strength": "strong",
+   "valence": 0.0,
+   "arousal": 0.1,
+   "emotions": null,
+   "source": "curated:gemini-2026-09",
+   "version": 1
+  },
+  {
+   "id": "en.sens.smell_pungency",
+   "lemma": "pungency",
+   "kind": "sensory",
+   "sense": "smell",
+   "strength": "strong",
+   "valence": 0.0,
+   "arousal": 0.1,
+   "emotions": null,
+   "source": "curated:gemini-2026-09",
+   "version": 1
+  },
+  {
+   "id": "en.sens.smell_fetor",
+   "lemma": "fetor",
+   "kind": "sensory",
+   "sense": "smell",
+   "strength": "strong",
+   "valence": -0.7,
+   "arousal": 0.6,
+   "emotions": {
+    "disgust": 0.85
+   },
+   "source": "curated:gemini-2026-09",
+   "version": 1,
+   "spell_ok": "literary noun meaning an offensive odor or stench"
+  },
+  {
+   "id": "en.sens.smell_miasma",
+   "lemma": "miasma",
+   "kind": "sensory",
+   "sense": "smell",
+   "strength": "strong",
+   "valence": 0.0,
+   "arousal": 0.1,
+   "emotions": null,
+   "source": "curated:gemini-2026-09",
+   "version": 1
+  },
+  {
+   "id": "en.sens.smell_mustiness",
+   "lemma": "mustiness",
+   "kind": "sensory",
+   "sense": "smell",
+   "strength": "strong",
+   "valence": 0.0,
+   "arousal": 0.1,
+   "emotions": null,
+   "source": "curated:gemini-2026-09",
+   "version": 1
+  },
+  {
+   "id": "en.sens.smell_mold",
+   "lemma": "mold",
+   "kind": "sensory",
+   "sense": "smell",
+   "strength": "strong",
+   "valence": 0.0,
+   "arousal": 0.1,
+   "emotions": null,
+   "source": "curated:gemini-2026-09",
+   "version": 1
+  },
+  {
+   "id": "en.sens.smell_rot",
+   "lemma": "rot",
+   "kind": "sensory",
+   "sense": "smell",
+   "strength": "strong",
+   "valence": -0.6,
+   "arousal": 0.5,
+   "emotions": {
+    "disgust": 0.8
+   },
+   "source": "curated:gemini-2026-09",
+   "version": 1
+  },
+  {
+   "id": "en.sens.smell_bouquet",
+   "lemma": "bouquet",
+   "kind": "sensory",
+   "sense": "smell",
+   "strength": "strong",
+   "valence": 0.0,
+   "arousal": 0.1,
+   "emotions": null,
+   "source": "curated:gemini-2026-09",
+   "version": 1
+  },
+  {
+   "id": "en.sens.smell_tang",
+   "lemma": "tang",
+   "kind": "sensory",
+   "sense": "smell",
+   "strength": "strong",
+   "valence": 0.0,
+   "arousal": 0.1,
+   "emotions": null,
+   "source": "curated:gemini-2026-09",
+   "version": 1
+  },
+  {
+   "id": "en.sens.smell_z",
+   "lemma": "z",
+   "kind": "sensory",
+   "sense": "smell",
+   "strength": "strong",
+   "valence": 0.0,
+   "arousal": 0.1,
+   "emotions": null,
+   "source": "curated:gemini-2026-09",
+   "version": 1
+  },
+  {
+   "id": "en.sens.touch_frigid",
+   "lemma": "frigid",
+   "kind": "sensory",
+   "sense": "touch",
+   "strength": "strong",
+   "valence": 0.0,
+   "arousal": 0.1,
+   "emotions": null,
+   "source": "curated:gemini-2026-09",
+   "version": 1
+  },
+  {
+   "id": "en.sens.touch_scald",
+   "lemma": "scald",
+   "kind": "sensory",
+   "sense": "touch",
+   "strength": "strong",
+   "valence": 0.0,
+   "arousal": 0.1,
+   "emotions": null,
+   "source": "curated:gemini-2026-09",
+   "version": 1
+  },
+  {
+   "id": "en.sens.touch_clammy",
+   "lemma": "clammy",
+   "kind": "sensory",
+   "sense": "touch",
+   "strength": "strong",
+   "valence": 0.0,
+   "arousal": 0.1,
+   "emotions": null,
+   "source": "curated:gemini-2026-09",
+   "version": 1
+  },
+  {
+   "id": "en.sens.touch_damp",
+   "lemma": "damp",
+   "kind": "sensory",
+   "sense": "touch",
+   "strength": "strong",
+   "valence": 0.0,
+   "arousal": 0.1,
+   "emotions": null,
+   "source": "curated:gemini-2026-09",
+   "version": 1
+  },
+  {
+   "id": "en.sens.touch_arid",
+   "lemma": "arid",
+   "kind": "sensory",
+   "sense": "touch",
+   "strength": "strong",
+   "valence": 0.0,
+   "arousal": 0.1,
+   "emotions": null,
+   "source": "curated:gemini-2026-09",
+   "version": 1
+  },
+  {
+   "id": "en.sens.touch_granite",
+   "lemma": "granite",
+   "kind": "sensory",
+   "sense": "touch",
+   "strength": "strong",
+   "valence": 0.0,
+   "arousal": 0.1,
+   "emotions": null,
+   "source": "curated:gemini-2026-09",
+   "version": 1
+  },
+  {
+   "id": "en.sens.touch_velvet",
+   "lemma": "velvet",
+   "kind": "sensory",
+   "sense": "touch",
+   "strength": "strong",
+   "valence": 0.0,
+   "arousal": 0.1,
+   "emotions": null,
+   "source": "curated:gemini-2026-09",
+   "version": 1
+  },
+  {
+   "id": "en.sens.touch_sandpaper",
+   "lemma": "sandpaper",
+   "kind": "sensory",
+   "sense": "touch",
+   "strength": "strong",
+   "valence": 0.0,
+   "arousal": 0.1,
+   "emotions": null,
+   "source": "curated:gemini-2026-09",
+   "version": 1
+  },
+  {
+   "id": "en.sens.touch_feather",
+   "lemma": "feather",
+   "kind": "sensory",
+   "sense": "touch",
+   "strength": "strong",
+   "valence": 0.0,
+   "arousal": 0.1,
+   "emotions": null,
+   "source": "curated:gemini-2026-09",
+   "version": 1
+  },
+  {
+   "id": "en.sens.touch_gelid",
+   "lemma": "gelid",
+   "kind": "sensory",
+   "sense": "touch",
+   "strength": "strong",
+   "valence": 0.0,
+   "arousal": 0.1,
+   "emotions": null,
+   "source": "curated:gemini-2026-09",
+   "version": 1
+  },
+  {
+   "id": "en.sens.touch_sear",
+   "lemma": "sear",
+   "kind": "sensory",
+   "sense": "touch",
+   "strength": "strong",
+   "valence": 0.0,
+   "arousal": 0.1,
+   "emotions": null,
+   "source": "curated:gemini-2026-09",
+   "version": 1
+  },
+  {
+   "id": "en.sens.touch_tepid",
+   "lemma": "tepid",
+   "kind": "sensory",
+   "sense": "touch",
+   "strength": "strong",
+   "valence": 0.0,
+   "arousal": 0.1,
+   "emotions": null,
+   "source": "curated:gemini-2026-09",
+   "version": 1
+  },
+  {
+   "id": "en.sens.touch_slick",
+   "lemma": "slick",
+   "kind": "sensory",
+   "sense": "touch",
+   "strength": "strong",
+   "valence": 0.0,
+   "arousal": 0.1,
+   "emotions": null,
+   "source": "curated:gemini-2026-09",
+   "version": 1
+  },
+  {
+   "id": "en.sens.touch_prickly",
+   "lemma": "prickly",
+   "kind": "sensory",
+   "sense": "touch",
+   "strength": "strong",
+   "valence": 0.0,
+   "arousal": 0.1,
+   "emotions": null,
+   "source": "curated:gemini-2026-09",
+   "version": 1
+  },
+  {
+   "id": "en.sens.touch_satiny",
+   "lemma": "satiny",
+   "kind": "sensory",
+   "sense": "touch",
+   "strength": "strong",
+   "valence": 0.0,
+   "arousal": 0.1,
+   "emotions": null,
+   "source": "curated:gemini-2026-09",
+   "version": 1
+  },
+  {
+   "id": "en.sens.touch_leathery",
+   "lemma": "leathery",
+   "kind": "sensory",
+   "sense": "touch",
+   "strength": "strong",
+   "valence": 0.0,
+   "arousal": 0.1,
+   "emotions": null,
+   "source": "curated:gemini-2026-09",
+   "version": 1
+  },
+  {
+   "id": "en.sens.touch_woolen",
+   "lemma": "woolen",
+   "kind": "sensory",
+   "sense": "touch",
+   "strength": "strong",
+   "valence": 0.0,
+   "arousal": 0.1,
+   "emotions": null,
+   "source": "curated:gemini-2026-09",
+   "version": 1
+  },
+  {
+   "id": "en.sens.touch_silken",
+   "lemma": "silken",
+   "kind": "sensory",
+   "sense": "touch",
+   "strength": "strong",
+   "valence": 0.0,
+   "arousal": 0.1,
+   "emotions": null,
+   "source": "curated:gemini-2026-09",
+   "version": 1
+  },
+  {
+   "id": "en.sens.touch_abrasive",
+   "lemma": "abrasive",
+   "kind": "sensory",
+   "sense": "touch",
+   "strength": "strong",
+   "valence": 0.0,
+   "arousal": 0.1,
+   "emotions": null,
+   "source": "curated:gemini-2026-09",
+   "version": 1
+  },
+  {
+   "id": "en.sens.touch_gritty",
+   "lemma": "gritty",
+   "kind": "sensory",
+   "sense": "touch",
+   "strength": "strong",
+   "valence": 0.0,
+   "arousal": 0.1,
+   "emotions": null,
+   "source": "curated:gemini-2026-09",
+   "version": 1
+  },
+  {
+   "id": "en.sens.touch_pebbly",
+   "lemma": "pebbly",
+   "kind": "sensory",
+   "sense": "touch",
+   "strength": "strong",
+   "valence": 0.0,
+   "arousal": 0.1,
+   "emotions": null,
+   "source": "curated:gemini-2026-09",
+   "version": 1
+  },
+  {
+   "id": "en.sens.touch_greasy",
+   "lemma": "greasy",
+   "kind": "sensory",
+   "sense": "touch",
+   "strength": "strong",
+   "valence": 0.0,
+   "arousal": 0.1,
+   "emotions": null,
+   "source": "curated:gemini-2026-09",
+   "version": 1
+  },
+  {
+   "id": "en.sens.touch_oily",
+   "lemma": "oily",
+   "kind": "sensory",
+   "sense": "touch",
+   "strength": "strong",
+   "valence": 0.0,
+   "arousal": 0.1,
+   "emotions": null,
+   "source": "curated:gemini-2026-09",
+   "version": 1
+  },
+  {
+   "id": "en.sens.touch_waxy",
+   "lemma": "waxy",
+   "kind": "sensory",
+   "sense": "touch",
+   "strength": "strong",
+   "valence": 0.0,
+   "arousal": 0.1,
+   "emotions": null,
+   "source": "curated:gemini-2026-09",
+   "version": 1
+  },
+  {
+   "id": "en.sens.touch_tacky",
+   "lemma": "tacky",
+   "kind": "sensory",
+   "sense": "touch",
+   "strength": "strong",
+   "valence": 0.0,
+   "arousal": 0.1,
+   "emotions": null,
+   "source": "curated:gemini-2026-09",
+   "version": 1
+  },
+  {
+   "id": "en.sens.touch_crusty",
+   "lemma": "crusty",
+   "kind": "sensory",
+   "sense": "touch",
+   "strength": "strong",
+   "valence": 0.0,
+   "arousal": 0.1,
+   "emotions": null,
+   "source": "curated:gemini-2026-09",
+   "version": 1
+  },
+  {
+   "id": "en.sens.touch_brittle",
+   "lemma": "brittle",
+   "kind": "sensory",
+   "sense": "touch",
+   "strength": "strong",
+   "valence": 0.0,
+   "arousal": 0.1,
+   "emotions": null,
+   "source": "curated:gemini-2026-09",
+   "version": 1
+  },
+  {
+   "id": "en.sens.touch_elastic",
+   "lemma": "elastic",
+   "kind": "sensory",
+   "sense": "touch",
+   "strength": "strong",
+   "valence": 0.0,
+   "arousal": 0.1,
+   "emotions": null,
+   "source": "curated:gemini-2026-09",
+   "version": 1
+  },
+  {
+   "id": "en.sens.touch_rubbery",
+   "lemma": "rubbery",
+   "kind": "sensory",
+   "sense": "touch",
+   "strength": "strong",
+   "valence": 0.0,
+   "arousal": 0.1,
+   "emotions": null,
+   "source": "curated:gemini-2026-09",
+   "version": 1
+  },
+  {
+   "id": "en.sens.touch_springy",
+   "lemma": "springy",
+   "kind": "sensory",
+   "sense": "touch",
+   "strength": "strong",
+   "valence": 0.0,
+   "arousal": 0.1,
+   "emotions": null,
+   "source": "curated:gemini-2026-09",
+   "version": 1
+  },
+  {
+   "id": "en.sens.touch_pliant",
+   "lemma": "pliant",
+   "kind": "sensory",
+   "sense": "touch",
+   "strength": "strong",
+   "valence": 0.0,
+   "arousal": 0.1,
+   "emotions": null,
+   "source": "curated:gemini-2026-09",
+   "version": 1
+  },
+  {
+   "id": "en.sens.touch_supple",
+   "lemma": "supple",
+   "kind": "sensory",
+   "sense": "touch",
+   "strength": "strong",
+   "valence": 0.0,
+   "arousal": 0.1,
+   "emotions": null,
+   "source": "curated:gemini-2026-09",
+   "version": 1
+  },
+  {
+   "id": "en.sens.touch_yield",
+   "lemma": "yield",
+   "kind": "sensory",
+   "sense": "touch",
+   "strength": "strong",
+   "valence": 0.0,
+   "arousal": 0.1,
+   "emotions": null,
+   "source": "curated:gemini-2026-09",
+   "version": 1
+  },
+  {
+   "id": "en.sens.touch_unyielde",
+   "lemma": "unyielding",
+   "kind": "sensory",
+   "sense": "touch",
+   "strength": "strong",
+   "valence": 0.0,
+   "arousal": 0.1,
+   "emotions": null,
+   "source": "curated:gemini-2026-09",
+   "version": 1
+  },
+  {
+   "id": "en.sens.touch_rigid",
+   "lemma": "rigid",
+   "kind": "sensory",
+   "sense": "touch",
+   "strength": "strong",
+   "valence": 0.0,
+   "arousal": 0.1,
+   "emotions": null,
+   "source": "curated:gemini-2026-09",
+   "version": 1
+  },
+  {
+   "id": "en.sens.touch_stiff",
+   "lemma": "stiff",
+   "kind": "sensory",
+   "sense": "touch",
+   "strength": "strong",
+   "valence": 0.0,
+   "arousal": 0.1,
+   "emotions": null,
+   "source": "curated:gemini-2026-09",
+   "version": 1
+  },
+  {
+   "id": "en.sens.touch_limp",
+   "lemma": "limp",
+   "kind": "sensory",
+   "sense": "touch",
+   "strength": "strong",
+   "valence": 0.0,
+   "arousal": 0.1,
+   "emotions": null,
+   "source": "curated:gemini-2026-09",
+   "version": 1
+  },
+  {
+   "id": "en.sens.touch_flaccid",
+   "lemma": "flaccid",
+   "kind": "sensory",
+   "sense": "touch",
+   "strength": "strong",
+   "valence": 0.0,
+   "arousal": 0.1,
+   "emotions": null,
+   "source": "curated:gemini-2026-09",
+   "version": 1
+  },
+  {
+   "id": "en.sens.touch_velvety",
+   "lemma": "velvety",
+   "kind": "sensory",
+   "sense": "touch",
+   "strength": "strong",
+   "valence": 0.0,
+   "arousal": 0.1,
+   "emotions": null,
+   "source": "curated:gemini-2026-09",
+   "version": 1
+  },
+  {
+   "id": "en.sens.touch_fleece",
+   "lemma": "fleece",
+   "kind": "sensory",
+   "sense": "touch",
+   "strength": "strong",
+   "valence": 0.0,
+   "arousal": 0.1,
+   "emotions": null,
+   "source": "curated:gemini-2026-09",
+   "version": 1
+  },
+  {
+   "id": "en.sens.taste_piquant",
+   "lemma": "piquant",
+   "kind": "sensory",
+   "sense": "taste",
+   "strength": "strong",
+   "valence": 0.0,
+   "arousal": 0.1,
+   "emotions": null,
+   "source": "curated:gemini-2026-09",
+   "version": 1
+  },
+  {
+   "id": "en.sens.taste_luscious",
+   "lemma": "luscious",
+   "kind": "sensory",
+   "sense": "taste",
+   "strength": "strong",
+   "valence": 0.7,
+   "arousal": 0.4,
+   "emotions": {
+    "joy": 0.7
+   },
+   "source": "curated:gemini-2026-09",
+   "version": 1
+  },
+  {
+   "id": "en.sens.taste_nectar",
+   "lemma": "nectar",
+   "kind": "sensory",
+   "sense": "taste",
+   "strength": "strong",
+   "valence": 0.0,
+   "arousal": 0.1,
+   "emotions": null,
+   "source": "curated:gemini-2026-09",
+   "version": 1
+  },
+  {
+   "id": "en.sens.taste_briny",
+   "lemma": "briny",
+   "kind": "sensory",
+   "sense": "taste",
+   "strength": "strong",
+   "valence": 0.0,
+   "arousal": 0.1,
+   "emotions": null,
+   "source": "curated:gemini-2026-09",
+   "version": 1
+  },
+  {
+   "id": "en.sens.taste_tart",
+   "lemma": "tart",
+   "kind": "sensory",
+   "sense": "taste",
+   "strength": "strong",
+   "valence": 0.0,
+   "arousal": 0.1,
+   "emotions": null,
+   "source": "curated:gemini-2026-09",
+   "version": 1
+  },
+  {
+   "id": "en.sens.taste_peppery",
+   "lemma": "peppery",
+   "kind": "sensory",
+   "sense": "taste",
+   "strength": "strong",
+   "valence": 0.0,
+   "arousal": 0.1,
+   "emotions": null,
+   "source": "curated:gemini-2026-09",
+   "version": 1
+  },
+  {
+   "id": "en.sens.taste_syrupy",
+   "lemma": "syrupy",
+   "kind": "sensory",
+   "sense": "taste",
+   "strength": "strong",
+   "valence": 0.0,
+   "arousal": 0.1,
+   "emotions": null,
+   "source": "curated:gemini-2026-09",
+   "version": 1
+  },
+  {
+   "id": "en.sens.taste_astringent",
+   "lemma": "astringent",
+   "kind": "sensory",
+   "sense": "taste",
+   "strength": "strong",
+   "valence": 0.0,
+   "arousal": 0.1,
+   "emotions": null,
+   "source": "curated:gemini-2026-09",
+   "version": 1
+  },
+  {
+   "id": "en.sens.taste_honey",
+   "lemma": "honey",
+   "kind": "sensory",
+   "sense": "taste",
+   "strength": "strong",
+   "valence": 0.0,
+   "arousal": 0.1,
+   "emotions": null,
+   "source": "curated:gemini-2026-09",
+   "version": 1
+  },
+  {
+   "id": "en.sens.taste_zesty",
+   "lemma": "zesty",
+   "kind": "sensory",
+   "sense": "taste",
+   "strength": "strong",
+   "valence": 0.0,
+   "arousal": 0.1,
+   "emotions": null,
+   "source": "curated:gemini-2026-09",
+   "version": 1
+  },
+  {
+   "id": "en.sens.taste_sourish",
+   "lemma": "sourish",
+   "kind": "sensory",
+   "sense": "taste",
+   "strength": "strong",
+   "valence": 0.0,
+   "arousal": 0.1,
+   "emotions": null,
+   "source": "curated:gemini-2026-09",
+   "version": 1
+  },
+  {
+   "id": "en.sens.taste_sweetish",
+   "lemma": "sweetish",
+   "kind": "sensory",
+   "sense": "taste",
+   "strength": "strong",
+   "valence": 0.0,
+   "arousal": 0.1,
+   "emotions": null,
+   "source": "curated:gemini-2026-09",
+   "version": 1
+  },
+  {
+   "id": "en.sens.taste_appetize",
+   "lemma": "appetizing",
+   "kind": "sensory",
+   "sense": "taste",
+   "strength": "strong",
+   "valence": 0.0,
+   "arousal": 0.1,
+   "emotions": null,
+   "source": "curated:gemini-2026-09",
+   "version": 1
+  },
+  {
+   "id": "en.sens.taste_succulent",
+   "lemma": "succulent",
+   "kind": "sensory",
+   "sense": "taste",
+   "strength": "strong",
+   "valence": 0.6,
+   "arousal": 0.3,
+   "emotions": {
+    "joy": 0.6
+   },
+   "source": "curated:gemini-2026-09",
+   "version": 1
+  },
+  {
+   "id": "en.sens.taste_palatable",
+   "lemma": "palatable",
+   "kind": "sensory",
+   "sense": "taste",
+   "strength": "strong",
+   "valence": 0.0,
+   "arousal": 0.1,
+   "emotions": null,
+   "source": "curated:gemini-2026-09",
+   "version": 1
+  },
+  {
+   "id": "en.sens.taste_toothsome",
+   "lemma": "toothsome",
+   "kind": "sensory",
+   "sense": "taste",
+   "strength": "strong",
+   "valence": 0.0,
+   "arousal": 0.1,
+   "emotions": null,
+   "source": "curated:gemini-2026-09",
+   "version": 1
+  },
+  {
+   "id": "en.sens.taste_flavorful",
+   "lemma": "flavorful",
+   "kind": "sensory",
+   "sense": "taste",
+   "strength": "strong",
+   "valence": 0.0,
+   "arousal": 0.1,
+   "emotions": null,
+   "source": "curated:gemini-2026-09",
+   "version": 1
+  },
+  {
+   "id": "en.sens.taste_sapid",
+   "lemma": "sapid",
+   "kind": "sensory",
+   "sense": "taste",
+   "strength": "strong",
+   "valence": 0.0,
+   "arousal": 0.1,
+   "emotions": null,
+   "source": "curated:gemini-2026-09",
+   "version": 1,
+   "spell_ok": "literary adjective meaning flavorful or savory"
+  },
+  {
+   "id": "en.sens.taste_unpalatable",
+   "lemma": "unpalatable",
+   "kind": "sensory",
+   "sense": "taste",
+   "strength": "strong",
+   "valence": 0.0,
+   "arousal": 0.1,
+   "emotions": null,
+   "source": "curated:gemini-2026-09",
+   "version": 1
+  },
+  {
+   "id": "en.sens.taste_distasteful",
+   "lemma": "distasteful",
+   "kind": "sensory",
+   "sense": "taste",
+   "strength": "strong",
+   "valence": 0.0,
+   "arousal": 0.1,
+   "emotions": null,
+   "source": "curated:gemini-2026-09",
+   "version": 1
+  },
+  {
+   "id": "en.sens.taste_unsavory",
+   "lemma": "unsavory",
+   "kind": "sensory",
+   "sense": "taste",
+   "strength": "strong",
+   "valence": 0.0,
+   "arousal": 0.1,
+   "emotions": null,
+   "source": "curated:gemini-2026-09",
+   "version": 1
+  },
+  {
+   "id": "en.sens.taste_spice",
+   "lemma": "spice",
+   "kind": "sensory",
+   "sense": "taste",
+   "strength": "strong",
+   "valence": 0.0,
+   "arousal": 0.1,
+   "emotions": null,
+   "source": "curated:gemini-2026-09",
+   "version": 1
+  },
+  {
+   "id": "en.sens.taste_sweeten",
+   "lemma": "sweeten",
+   "kind": "sensory",
+   "sense": "taste",
+   "strength": "strong",
+   "valence": 0.0,
+   "arousal": 0.1,
+   "emotions": null,
+   "source": "curated:gemini-2026-09",
+   "version": 1
+  }
+ ]
+}

@@ -1,0 +1,676 @@
+{
+ "lang": "hu",
+ "kind": "stakes_word",
+ "version": 1,
+ "entries": [
+  {
+   "id": "hu.stakes.esk\u00fc",
+   "lemma": "esk\u00fc",
+   "kind": "stakes_word",
+   "strength": "strong",
+   "valence": 0.2,
+   "arousal": 0.5,
+   "emotions": {
+    "trust": 0.7
+   },
+   "source": "curated:gemini-2026-09",
+   "version": 1
+  },
+  {
+   "id": "hu.stakes.fogadalom",
+   "lemma": "fogadalom",
+   "kind": "stakes_word",
+   "strength": "strong",
+   "valence": 0.2,
+   "arousal": 0.5,
+   "emotions": {
+    "trust": 0.7
+   },
+   "source": "curated:gemini-2026-09",
+   "version": 1
+  },
+  {
+   "id": "hu.stakes.\u00edg\u00e9ret",
+   "lemma": "\u00edg\u00e9ret",
+   "kind": "stakes_word",
+   "strength": "strong",
+   "valence": 0.2,
+   "arousal": 0.4,
+   "emotions": {
+    "trust": 0.6
+   },
+   "source": "curated:gemini-2026-09",
+   "version": 1
+  },
+  {
+   "id": "hu.stakes.becs\u00fclet",
+   "lemma": "becs\u00fclet",
+   "kind": "stakes_word",
+   "strength": "strong",
+   "valence": 0.3,
+   "arousal": 0.5,
+   "emotions": {
+    "trust": 0.7
+   },
+   "source": "curated:gemini-2026-09",
+   "version": 1
+  },
+  {
+   "id": "hu.stakes.h\u00edrn\u00e9v",
+   "lemma": "h\u00edrn\u00e9v",
+   "kind": "stakes_word",
+   "strength": "strong",
+   "valence": 0.1,
+   "arousal": 0.45,
+   "emotions": {
+    "anticipation": 0.5
+   },
+   "source": "curated:gemini-2026-09",
+   "version": 1
+  },
+  {
+   "id": "hu.stakes.\u00edt\u00e9let",
+   "lemma": "\u00edt\u00e9let",
+   "kind": "stakes_word",
+   "strength": "strong",
+   "valence": -0.3,
+   "arousal": 0.55,
+   "emotions": {
+    "fear": 0.5
+   },
+   "source": "curated:gemini-2026-09",
+   "version": 1
+  },
+  {
+   "id": "hu.stakes.v\u00e9gz\u00e9s",
+   "lemma": "v\u00e9gz\u00e9s",
+   "kind": "stakes_word",
+   "strength": "strong",
+   "valence": -0.2,
+   "arousal": 0.55,
+   "emotions": {
+    "anticipation": 0.5
+   },
+   "source": "curated:gemini-2026-09",
+   "version": 1
+  },
+  {
+   "id": "hu.stakes.j\u00f3slat",
+   "lemma": "j\u00f3slat",
+   "kind": "stakes_word",
+   "strength": "strong",
+   "valence": 0.0,
+   "arousal": 0.5,
+   "emotions": {
+    "anticipation": 0.6
+   },
+   "source": "curated:gemini-2026-09",
+   "version": 1
+  },
+  {
+   "id": "hu.stakes.\u00f6r\u00f6ks\u00e9g",
+   "lemma": "\u00f6r\u00f6ks\u00e9g",
+   "kind": "stakes_word",
+   "strength": "strong",
+   "valence": 0.15,
+   "arousal": 0.45,
+   "emotions": {
+    "trust": 0.5
+   },
+   "source": "curated:gemini-2026-09",
+   "version": 1
+  },
+  {
+   "id": "hu.stakes.szabads\u00e1g",
+   "lemma": "szabads\u00e1g",
+   "kind": "stakes_word",
+   "strength": "strong",
+   "valence": 0.5,
+   "arousal": 0.7,
+   "emotions": {
+    "joy": 0.6
+   },
+   "source": "curated:gemini-2026-09",
+   "version": 1
+  },
+  {
+   "id": "hu.stakes.f\u00fcggetlens\u00e9g",
+   "lemma": "f\u00fcggetlens\u00e9g",
+   "kind": "stakes_word",
+   "strength": "strong",
+   "valence": 0.4,
+   "arousal": 0.65,
+   "emotions": {
+    "joy": 0.5
+   },
+   "source": "curated:gemini-2026-09",
+   "version": 1
+  },
+  {
+   "id": "hu.stakes.haza",
+   "lemma": "haza",
+   "kind": "stakes_word",
+   "strength": "strong",
+   "valence": 0.3,
+   "arousal": 0.6,
+   "emotions": {
+    "trust": 0.6
+   },
+   "source": "curated:gemini-2026-09",
+   "version": 1
+  },
+  {
+   "id": "hu.stakes.kir\u00e1lys\u00e1g",
+   "lemma": "kir\u00e1lys\u00e1g",
+   "kind": "stakes_word",
+   "strength": "strong",
+   "valence": 0.1,
+   "arousal": 0.65,
+   "emotions": {
+    "trust": 0.5
+   },
+   "source": "curated:gemini-2026-09",
+   "version": 1
+  },
+  {
+   "id": "hu.stakes.tr\u00f3n",
+   "lemma": "tr\u00f3n",
+   "kind": "stakes_word",
+   "strength": "strong",
+   "valence": 0.0,
+   "arousal": 0.65,
+   "emotions": {
+    "anticipation": 0.6
+   },
+   "source": "curated:gemini-2026-09",
+   "version": 1
+  },
+  {
+   "id": "hu.stakes.korona",
+   "lemma": "korona",
+   "kind": "stakes_word",
+   "strength": "strong",
+   "valence": 0.1,
+   "arousal": 0.6,
+   "emotions": {
+    "anticipation": 0.6
+   },
+   "source": "curated:gemini-2026-09",
+   "version": 1
+  },
+  {
+   "id": "hu.stakes.hatalom",
+   "lemma": "hatalom",
+   "kind": "stakes_word",
+   "strength": "strong",
+   "valence": 0.0,
+   "arousal": 0.7,
+   "emotions": {
+    "anticipation": 0.6
+   },
+   "source": "curated:gemini-2026-09",
+   "version": 1
+  },
+  {
+   "id": "hu.stakes.uralom",
+   "lemma": "uralom",
+   "kind": "stakes_word",
+   "strength": "strong",
+   "valence": 0.0,
+   "arousal": 0.65,
+   "emotions": {
+    "anticipation": 0.5
+   },
+   "source": "curated:gemini-2026-09",
+   "version": 1
+  },
+  {
+   "id": "hu.stakes.t\u00fal\u00e9l\u00e9s",
+   "lemma": "t\u00fal\u00e9l\u00e9s",
+   "kind": "stakes_word",
+   "strength": "strong",
+   "valence": -0.4,
+   "arousal": 0.75,
+   "emotions": {
+    "fear": 0.7
+   },
+   "source": "curated:gemini-2026-09",
+   "version": 1
+  },
+  {
+   "id": "hu.stakes.sors",
+   "lemma": "sors",
+   "kind": "stakes_word",
+   "strength": "strong",
+   "valence": -0.2,
+   "arousal": 0.65,
+   "emotions": {
+    "anticipation": 0.6
+   },
+   "source": "curated:gemini-2026-09",
+   "version": 1
+  },
+  {
+   "id": "hu.stakes.v\u00e9gzet",
+   "lemma": "v\u00e9gzet",
+   "kind": "stakes_word",
+   "strength": "strong",
+   "valence": -0.4,
+   "arousal": 0.75,
+   "emotions": {
+    "fear": 0.7
+   },
+   "source": "curated:gemini-2026-09",
+   "version": 1
+  },
+  {
+   "id": "hu.stakes.elhivatotts\u00e1g",
+   "lemma": "elhivatotts\u00e1g",
+   "kind": "stakes_word",
+   "strength": "strong",
+   "valence": 0.3,
+   "arousal": 0.6,
+   "emotions": {
+    "trust": 0.6
+   },
+   "source": "curated:gemini-2026-09",
+   "version": 1
+  },
+  {
+   "id": "hu.stakes.megv\u00e1lt\u00e1s",
+   "lemma": "megv\u00e1lt\u00e1s",
+   "kind": "stakes_word",
+   "strength": "strong",
+   "valence": 0.6,
+   "arousal": 0.65,
+   "emotions": {
+    "joy": 0.7
+   },
+   "source": "curated:gemini-2026-09",
+   "version": 1
+  },
+  {
+   "id": "hu.stakes.szabadul\u00e1s",
+   "lemma": "szabadul\u00e1s",
+   "kind": "stakes_word",
+   "strength": "strong",
+   "valence": 0.5,
+   "arousal": 0.65,
+   "emotions": {
+    "joy": 0.6
+   },
+   "source": "curated:gemini-2026-09",
+   "version": 1
+  },
+  {
+   "id": "hu.stakes.\u00e1ldozat",
+   "lemma": "\u00e1ldozat",
+   "kind": "stakes_word",
+   "strength": "strong",
+   "valence": -0.5,
+   "arousal": 0.7,
+   "emotions": {
+    "sadness": 0.7
+   },
+   "source": "curated:gemini-2026-09",
+   "version": 1
+  },
+  {
+   "id": "hu.stakes.v\u00e9rtan\u00fas\u00e1g",
+   "lemma": "v\u00e9rtan\u00fas\u00e1g",
+   "kind": "stakes_word",
+   "strength": "strong",
+   "valence": -0.6,
+   "arousal": 0.75,
+   "emotions": {
+    "sadness": 0.75
+   },
+   "source": "curated:gemini-2026-09",
+   "version": 1
+  },
+  {
+   "id": "hu.stakes.sz\u00e1m\u0171zet\u00e9s",
+   "lemma": "sz\u00e1m\u0171zet\u00e9s",
+   "kind": "stakes_word",
+   "strength": "strong",
+   "valence": -0.7,
+   "arousal": 0.7,
+   "emotions": {
+    "sadness": 0.8
+   },
+   "source": "curated:gemini-2026-09",
+   "version": 1
+  },
+  {
+   "id": "hu.stakes.rabs\u00e1g",
+   "lemma": "rabs\u00e1g",
+   "kind": "stakes_word",
+   "strength": "strong",
+   "valence": -0.8,
+   "arousal": 0.75,
+   "emotions": {
+    "sadness": 0.8,
+    "fear": 0.75
+   },
+   "source": "curated:gemini-2026-09",
+   "version": 1
+  },
+  {
+   "id": "hu.stakes.hal\u00e1l",
+   "lemma": "hal\u00e1l",
+   "kind": "stakes_word",
+   "strength": "strong",
+   "valence": -0.85,
+   "arousal": 0.85,
+   "emotions": {
+    "fear": 0.85,
+    "sadness": 0.85
+   },
+   "source": "curated:gemini-2026-09",
+   "version": 1
+  },
+  {
+   "id": "hu.stakes.haland\u00f3",
+   "lemma": "haland\u00f3",
+   "kind": "stakes_word",
+   "strength": "strong",
+   "valence": -0.5,
+   "arousal": 0.65,
+   "emotions": {
+    "fear": 0.5
+   },
+   "source": "curated:gemini-2026-09",
+   "version": 1
+  },
+  {
+   "id": "hu.stakes.pusztul\u00e1s",
+   "lemma": "pusztul\u00e1s",
+   "kind": "stakes_word",
+   "strength": "strong",
+   "valence": -0.9,
+   "arousal": 0.9,
+   "emotions": {
+    "fear": 0.9
+   },
+   "source": "curated:gemini-2026-09",
+   "version": 1
+  },
+  {
+   "id": "hu.stakes.megsemmis\u00fcl\u00e9s",
+   "lemma": "megsemmis\u00fcl\u00e9s",
+   "kind": "stakes_word",
+   "strength": "strong",
+   "valence": -0.95,
+   "arousal": 0.95,
+   "emotions": {
+    "fear": 0.95
+   },
+   "source": "curated:gemini-2026-09",
+   "version": 1
+  },
+  {
+   "id": "hu.stakes.k\u00e1rhozat",
+   "lemma": "k\u00e1rhozat",
+   "kind": "stakes_word",
+   "strength": "strong",
+   "valence": -0.9,
+   "arousal": 0.9,
+   "emotions": {
+    "fear": 0.9
+   },
+   "source": "curated:gemini-2026-09",
+   "version": 1
+  },
+  {
+   "id": "hu.stakes.\u00e1tok",
+   "lemma": "\u00e1tok",
+   "kind": "stakes_word",
+   "strength": "strong",
+   "valence": -0.75,
+   "arousal": 0.75,
+   "emotions": {
+    "fear": 0.75
+   },
+   "source": "curated:gemini-2026-09",
+   "version": 1
+  },
+  {
+   "id": "hu.stakes.b\u00fcntet\u00e9s",
+   "lemma": "b\u00fcntet\u00e9s",
+   "kind": "stakes_word",
+   "strength": "strong",
+   "valence": -0.65,
+   "arousal": 0.7,
+   "emotions": {
+    "anger": 0.7
+   },
+   "source": "curated:gemini-2026-09",
+   "version": 1
+  },
+  {
+   "id": "hu.stakes.\u00f6r\u00f6kk\u00e9val\u00f3s\u00e1g",
+   "lemma": "\u00f6r\u00f6kk\u00e9val\u00f3s\u00e1g",
+   "kind": "stakes_word",
+   "strength": "strong",
+   "valence": 0.1,
+   "arousal": 0.65,
+   "emotions": {
+    "anticipation": 0.5
+   },
+   "source": "curated:gemini-2026-09",
+   "version": 1
+  },
+  {
+   "id": "hu.stakes.\u00f6r\u00f6k",
+   "lemma": "\u00f6r\u00f6k",
+   "kind": "stakes_word",
+   "strength": "strong",
+   "valence": 0.1,
+   "arousal": 0.65,
+   "emotions": {
+    "anticipation": 0.5
+   },
+   "source": "curated:gemini-2026-09",
+   "version": 1
+  },
+  {
+   "id": "hu.stakes.halhatatlan",
+   "lemma": "halhatatlan",
+   "kind": "stakes_word",
+   "strength": "strong",
+   "valence": 0.3,
+   "arousal": 0.65,
+   "emotions": {
+    "trust": 0.6
+   },
+   "source": "curated:gemini-2026-09",
+   "version": 1
+  },
+  {
+   "id": "hu.stakes.v\u00e9g\u00edt\u00e9let",
+   "lemma": "v\u00e9g\u00edt\u00e9let",
+   "kind": "stakes_word",
+   "strength": "strong",
+   "valence": -0.95,
+   "arousal": 0.95,
+   "emotions": {
+    "fear": 0.95
+   },
+   "source": "curated:gemini-2026-09",
+   "version": 1
+  },
+  {
+   "id": "hu.stakes.katasztr\u00f3fa",
+   "lemma": "katasztr\u00f3fa",
+   "kind": "stakes_word",
+   "strength": "strong",
+   "valence": -0.85,
+   "arousal": 0.85,
+   "emotions": {
+    "fear": 0.85
+   },
+   "source": "curated:gemini-2026-09",
+   "version": 1
+  },
+  {
+   "id": "hu.stakes.vesztes\u00e9g",
+   "lemma": "vesztes\u00e9g",
+   "kind": "stakes_word",
+   "strength": "strong",
+   "valence": -0.71,
+   "arousal": 0.71,
+   "emotions": {
+    "sadness": 0.8
+   },
+   "source": "curated:gemini-2026-09",
+   "version": 1
+  },
+  {
+   "id": "hu.stakes.buk\u00e1s",
+   "lemma": "buk\u00e1s",
+   "kind": "stakes_word",
+   "strength": "strong",
+   "valence": -0.81,
+   "arousal": 0.76,
+   "emotions": {
+    "sadness": 0.8,
+    "fear": 0.7
+   },
+   "source": "curated:gemini-2026-09",
+   "version": 1
+  },
+  {
+   "id": "hu.stakes.gy\u0151zelem",
+   "lemma": "gy\u0151zelem",
+   "kind": "stakes_word",
+   "strength": "strong",
+   "valence": 0.86,
+   "arousal": 0.81,
+   "emotions": {
+    "joy": 0.85
+   },
+   "source": "curated:gemini-2026-09",
+   "version": 1
+  },
+  {
+   "id": "hu.stakes.diadal",
+   "lemma": "diadal",
+   "kind": "stakes_word",
+   "strength": "strong",
+   "valence": 0.91,
+   "arousal": 0.81,
+   "emotions": {
+    "joy": 0.9
+   },
+   "source": "curated:gemini-2026-09",
+   "version": 1
+  },
+  {
+   "id": "hu.stakes.\u00f6sszeoml\u00e1s",
+   "lemma": "\u00f6sszeoml\u00e1s",
+   "kind": "stakes_word",
+   "strength": "strong",
+   "valence": -0.86,
+   "arousal": 0.86,
+   "emotions": {
+    "fear": 0.85,
+    "sadness": 0.8
+   },
+   "source": "curated:gemini-2026-09",
+   "version": 1
+  },
+  {
+   "id": "hu.stakes.\u00f6nfel\u00e1ldoz\u00e1s",
+   "lemma": "\u00f6nfel\u00e1ldoz\u00e1s",
+   "kind": "stakes_word",
+   "strength": "strong",
+   "valence": 0.61,
+   "arousal": 0.76,
+   "emotions": {
+    "trust": 0.8
+   },
+   "source": "curated:gemini-2026-09",
+   "version": 1
+  },
+  {
+   "id": "hu.stakes.jog",
+   "lemma": "jog",
+   "kind": "stakes_word",
+   "strength": "strong",
+   "valence": 0.41,
+   "arousal": 0.46,
+   "emotions": {
+    "trust": 0.6
+   },
+   "source": "curated:gemini-2026-09",
+   "version": 1
+  },
+  {
+   "id": "hu.stakes.igazs\u00e1g",
+   "lemma": "igazs\u00e1g",
+   "kind": "stakes_word",
+   "strength": "strong",
+   "valence": 0.76,
+   "arousal": 0.61,
+   "emotions": {
+    "trust": 0.8
+   },
+   "source": "curated:gemini-2026-09",
+   "version": 1
+  },
+  {
+   "id": "hu.stakes.gyal\u00e1zat",
+   "lemma": "gyal\u00e1zat",
+   "kind": "stakes_word",
+   "strength": "strong",
+   "valence": -0.86,
+   "arousal": 0.76,
+   "emotions": {
+    "disgust": 0.85,
+    "sadness": 0.8
+   },
+   "source": "curated:gemini-2026-09",
+   "version": 1
+  },
+  {
+   "id": "hu.stakes.sz\u00e9gyen",
+   "lemma": "sz\u00e9gyen",
+   "kind": "stakes_word",
+   "strength": "strong",
+   "valence": -0.76,
+   "arousal": 0.66,
+   "emotions": {
+    "sadness": 0.8
+   },
+   "source": "curated:gemini-2026-09",
+   "version": 1
+  },
+  {
+   "id": "hu.stakes.h\u0171s\u00e9g",
+   "lemma": "h\u0171s\u00e9g",
+   "kind": "stakes_word",
+   "strength": "strong",
+   "valence": 0.81,
+   "arousal": 0.56,
+   "emotions": {
+    "trust": 0.9
+   },
+   "source": "curated:gemini-2026-09",
+   "version": 1
+  },
+  {
+   "id": "hu.stakes.h\u0171tlens\u00e9g",
+   "lemma": "h\u0171tlens\u00e9g",
+   "kind": "stakes_word",
+   "strength": "strong",
+   "valence": -0.81,
+   "arousal": 0.76,
+   "emotions": {
+    "anger": 0.8,
+    "sadness": 0.75
+   },
+   "source": "curated:gemini-2026-09",
+   "version": 1
+  }
+ ]
+}

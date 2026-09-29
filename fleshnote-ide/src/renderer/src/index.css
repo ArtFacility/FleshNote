@@ -7,6 +7,7 @@
 @import './styles/setup.css';
 @import './styles/brainstorm.css';
 @import './styles/picker.css';
+@import './styles/bookshelf.css';
 @import './styles/reviewer.css';
 
 @font-face {
@@ -174,9 +175,14 @@ body {
 
 ::-webkit-scrollbar {
   width: 6px;
+  height: 6px;
 }
 
 ::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+::-webkit-scrollbar-corner {
   background: transparent;
 }
 

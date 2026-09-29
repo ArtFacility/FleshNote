@@ -1,0 +1,279 @@
+{
+ "lang": "en",
+ "kind": "filter_verb",
+ "version": 1,
+ "entries": [
+  {
+   "id": "en.filter.see",
+   "lemma": "see",
+   "pos": [
+    "VERB"
+   ],
+   "kind": "filter_verb",
+   "strength": "weak",
+   "valence": 0.0,
+   "arousal": 0.15,
+   "emotions": {
+    "anticipation": 0.3
+   },
+   "source": "migrated:janitor.py",
+   "version": 1
+  },
+  {
+   "id": "en.filter.hear",
+   "lemma": "hear",
+   "pos": [
+    "VERB"
+   ],
+   "kind": "filter_verb",
+   "strength": "weak",
+   "valence": 0.0,
+   "arousal": 0.15,
+   "emotions": {
+    "anticipation": 0.3
+   },
+   "source": "migrated:janitor.py",
+   "version": 1
+  },
+  {
+   "id": "en.filter.feel",
+   "lemma": "feel",
+   "pos": [
+    "VERB"
+   ],
+   "kind": "filter_verb",
+   "strength": "weak",
+   "valence": 0.0,
+   "arousal": 0.25,
+   "emotions": {
+    "anticipation": 0.3
+   },
+   "source": "migrated:janitor.py",
+   "version": 1
+  },
+  {
+   "id": "en.filter.notice",
+   "lemma": "notice",
+   "pos": [
+    "VERB"
+   ],
+   "kind": "filter_verb",
+   "strength": "weak",
+   "valence": 0.05,
+   "arousal": 0.35,
+   "emotions": {
+    "anticipation": 0.3
+   },
+   "source": "migrated:janitor.py",
+   "version": 1
+  },
+  {
+   "id": "en.filter.watch",
+   "lemma": "watch",
+   "pos": [
+    "VERB"
+   ],
+   "kind": "filter_verb",
+   "strength": "weak",
+   "valence": 0.0,
+   "arousal": 0.3,
+   "emotions": {
+    "anticipation": 0.3
+   },
+   "source": "migrated:janitor.py",
+   "version": 1
+  },
+  {
+   "id": "en.filter.observe",
+   "lemma": "observe",
+   "pos": [
+    "VERB"
+   ],
+   "kind": "filter_verb",
+   "strength": "weak",
+   "valence": 0.0,
+   "arousal": 0.2,
+   "emotions": {
+    "anticipation": 0.3
+   },
+   "source": "migrated:janitor.py",
+   "version": 1
+  },
+  {
+   "id": "en.filter.smell",
+   "lemma": "smell",
+   "pos": [
+    "VERB"
+   ],
+   "kind": "filter_verb",
+   "strength": "weak",
+   "valence": 0.0,
+   "arousal": 0.15,
+   "emotions": {
+    "anticipation": 0.3
+   },
+   "source": "migrated:janitor.py",
+   "version": 1
+  },
+  {
+   "id": "en.filter.taste",
+   "lemma": "taste",
+   "pos": [
+    "VERB"
+   ],
+   "kind": "filter_verb",
+   "strength": "weak",
+   "valence": 0.0,
+   "arousal": 0.15,
+   "emotions": {
+    "anticipation": 0.3
+   },
+   "source": "migrated:janitor.py",
+   "version": 1
+  },
+  {
+   "id": "en.filter.glimpse",
+   "lemma": "glimpse",
+   "pos": [
+    "VERB"
+   ],
+   "kind": "filter_verb",
+   "strength": "weak",
+   "valence": 0.05,
+   "arousal": 0.35,
+   "emotions": {
+    "anticipation": 0.3
+   },
+   "source": "curated:gemini-2026-09",
+   "version": 1
+  },
+  {
+   "id": "en.filter.spot",
+   "lemma": "spot",
+   "pos": [
+    "VERB"
+   ],
+   "kind": "filter_verb",
+   "strength": "weak",
+   "valence": 0.05,
+   "arousal": 0.4,
+   "emotions": {
+    "anticipation": 0.3
+   },
+   "source": "curated:gemini-2026-09",
+   "version": 1
+  },
+  {
+   "id": "en.filter.glance",
+   "lemma": "glance",
+   "pos": [
+    "VERB"
+   ],
+   "kind": "filter_verb",
+   "strength": "weak",
+   "valence": 0.0,
+   "arousal": 0.25,
+   "emotions": {
+    "anticipation": 0.3
+   },
+   "source": "curated:gemini-2026-09",
+   "version": 1
+  },
+  {
+   "id": "en.filter.peer",
+   "lemma": "peer",
+   "pos": [
+    "VERB"
+   ],
+   "kind": "filter_verb",
+   "strength": "weak",
+   "valence": 0.0,
+   "arousal": 0.3,
+   "emotions": {
+    "anticipation": 0.3
+   },
+   "source": "curated:gemini-2026-09",
+   "version": 1
+  },
+  {
+   "id": "en.filter.stare",
+   "lemma": "stare",
+   "pos": [
+    "VERB"
+   ],
+   "kind": "filter_verb",
+   "strength": "weak",
+   "valence": -0.1,
+   "arousal": 0.35,
+   "emotions": {
+    "anticipation": 0.3
+   },
+   "source": "curated:gemini-2026-09",
+   "version": 1
+  },
+  {
+   "id": "en.filter.gaze",
+   "lemma": "gaze",
+   "pos": [
+    "VERB"
+   ],
+   "kind": "filter_verb",
+   "strength": "weak",
+   "valence": 0.1,
+   "arousal": 0.25,
+   "emotions": {
+    "anticipation": 0.3
+   },
+   "source": "curated:gemini-2026-09",
+   "version": 1
+  },
+  {
+   "id": "en.filter.behold",
+   "lemma": "behold",
+   "pos": [
+    "VERB"
+   ],
+   "kind": "filter_verb",
+   "strength": "weak",
+   "valence": 0.2,
+   "arousal": 0.45,
+   "emotions": {
+    "anticipation": 0.3
+   },
+   "source": "curated:gemini-2026-09",
+   "version": 1
+  },
+  {
+   "id": "en.filter.listen",
+   "lemma": "listen",
+   "pos": [
+    "VERB"
+   ],
+   "kind": "filter_verb",
+   "strength": "weak",
+   "valence": 0.0,
+   "arousal": 0.2,
+   "emotions": {
+    "anticipation": 0.3
+   },
+   "source": "curated:gemini-2026-09",
+   "version": 1
+  },
+  {
+   "id": "en.filter.overhear",
+   "lemma": "overhear",
+   "pos": [
+    "VERB"
+   ],
+   "kind": "filter_verb",
+   "strength": "weak",
+   "valence": 0.0,
+   "arousal": 0.4,
+   "emotions": {
+    "anticipation": 0.3
+   },
+   "source": "curated:gemini-2026-09",
+   "version": 1
+  }
+ ]
+}

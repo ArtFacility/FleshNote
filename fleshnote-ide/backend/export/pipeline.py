@@ -3,6 +3,7 @@ import sqlite3
 import datetime
 import re
 
+from project_io import safe_md_path
 from export.typography import apply_typography
 from export.strip import strip_prose, strip_notes, strip_full, strip_todo
 import export.render_txt as render_txt
@@ -56,9 +57,9 @@ class ExportPipeline:
             if id_set is not None and chapter_id not in id_set:
                 continue
 
-            file_path = os.path.join(self.md_dir, md_filename)
-            if os.path.exists(file_path):
-                with open(file_path, 'r', encoding='utf-8') as f:
+            contained = safe_md_path(self.md_dir, md_filename)
+            if contained and os.path.exists(contained):
+                with open(contained, 'r', encoding='utf-8') as f:
                     text = f.read()
             else:
                 text = ""

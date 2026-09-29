@@ -1,0 +1,1343 @@
+{
+ "lang": "en",
+ "kind": "calm_word",
+ "version": 1,
+ "entries": [
+  {
+   "id": "en.calm.whisper",
+   "lemma": "whisper",
+   "kind": "calm_word",
+   "strength": "strong",
+   "valence": 0.45,
+   "arousal": 0.15,
+   "emotions": {
+    "trust": 0.4
+   },
+   "source": "curated:gemini-2026-09",
+   "version": 1
+  },
+  {
+   "id": "en.calm.breeze",
+   "lemma": "breeze",
+   "kind": "calm_word",
+   "strength": "strong",
+   "valence": 0.5,
+   "arousal": 0.15,
+   "emotions": {
+    "joy": 0.4
+   },
+   "source": "curated:gemini-2026-09",
+   "version": 1
+  },
+  {
+   "id": "en.calm.murmur",
+   "lemma": "murmur",
+   "kind": "calm_word",
+   "strength": "strong",
+   "valence": 0.4,
+   "arousal": 0.15,
+   "emotions": null,
+   "source": "curated:gemini-2026-09",
+   "version": 1
+  },
+  {
+   "id": "en.calm.dusk",
+   "lemma": "dusk",
+   "kind": "calm_word",
+   "strength": "weak",
+   "valence": 0.35,
+   "arousal": 0.12,
+   "emotions": null,
+   "source": "curated:gemini-2026-09",
+   "version": 1
+  },
+  {
+   "id": "en.calm.stillness",
+   "lemma": "stillness",
+   "kind": "calm_word",
+   "strength": "strong",
+   "valence": 0.6,
+   "arousal": 0.1,
+   "emotions": {
+    "trust": 0.5
+   },
+   "source": "curated:gemini-2026-09",
+   "version": 1
+  },
+  {
+   "id": "en.calm.lull",
+   "lemma": "lull",
+   "kind": "calm_word",
+   "strength": "strong",
+   "valence": 0.5,
+   "arousal": 0.1,
+   "emotions": {
+    "trust": 0.4
+   },
+   "source": "curated:gemini-2026-09",
+   "version": 1
+  },
+  {
+   "id": "en.calm.silence",
+   "lemma": "silence",
+   "kind": "calm_word",
+   "strength": "strong",
+   "valence": 0.4,
+   "arousal": 0.08,
+   "emotions": {
+    "trust": 0.3
+   },
+   "source": "curated:gemini-2026-09",
+   "version": 1
+  },
+  {
+   "id": "en.calm.hush",
+   "lemma": "hush",
+   "kind": "calm_word",
+   "strength": "strong",
+   "valence": 0.5,
+   "arousal": 0.1,
+   "emotions": {
+    "trust": 0.4
+   },
+   "source": "curated:gemini-2026-09",
+   "version": 1
+  },
+  {
+   "id": "en.calm.twilight",
+   "lemma": "twilight",
+   "kind": "calm_word",
+   "strength": "strong",
+   "valence": 0.45,
+   "arousal": 0.12,
+   "emotions": null,
+   "source": "curated:gemini-2026-09",
+   "version": 1
+  },
+  {
+   "id": "en.calm.zephyr",
+   "lemma": "zephyr",
+   "kind": "calm_word",
+   "strength": "strong",
+   "valence": 0.5,
+   "arousal": 0.15,
+   "emotions": {
+    "joy": 0.3
+   },
+   "source": "curated:gemini-2026-09",
+   "version": 1
+  },
+  {
+   "id": "en.calm.shadow",
+   "lemma": "shadow",
+   "kind": "calm_word",
+   "strength": "weak",
+   "valence": 0.2,
+   "arousal": 0.15,
+   "emotions": null,
+   "source": "curated:gemini-2026-09",
+   "version": 1
+  },
+  {
+   "id": "en.calm.rustle",
+   "lemma": "rustle",
+   "kind": "calm_word",
+   "strength": "strong",
+   "valence": 0.3,
+   "arousal": 0.18,
+   "emotions": null,
+   "source": "curated:gemini-2026-09",
+   "version": 1
+  },
+  {
+   "id": "en.calm.sigh",
+   "lemma": "sigh",
+   "kind": "calm_word",
+   "strength": "strong",
+   "valence": 0.3,
+   "arousal": 0.15,
+   "emotions": null,
+   "source": "curated:gemini-2026-09",
+   "version": 1
+  },
+  {
+   "id": "en.calm.peace",
+   "lemma": "peace",
+   "kind": "calm_word",
+   "strength": "strong",
+   "valence": 0.85,
+   "arousal": 0.05,
+   "emotions": {
+    "joy": 0.7,
+    "trust": 0.8
+   },
+   "source": "curated:gemini-2026-09",
+   "version": 1
+  },
+  {
+   "id": "en.calm.calm",
+   "lemma": "calm",
+   "kind": "calm_word",
+   "strength": "strong",
+   "valence": 0.8,
+   "arousal": 0.05,
+   "emotions": {
+    "trust": 0.8
+   },
+   "source": "curated:gemini-2026-09",
+   "version": 1
+  },
+  {
+   "id": "en.calm.serenity",
+   "lemma": "serenity",
+   "kind": "calm_word",
+   "strength": "strong",
+   "valence": 0.9,
+   "arousal": 0.05,
+   "emotions": {
+    "joy": 0.8,
+    "trust": 0.8
+   },
+   "source": "curated:gemini-2026-09",
+   "version": 1
+  },
+  {
+   "id": "en.calm.tranquility",
+   "lemma": "tranquility",
+   "kind": "calm_word",
+   "strength": "strong",
+   "valence": 0.85,
+   "arousal": 0.05,
+   "emotions": {
+    "trust": 0.8
+   },
+   "source": "curated:gemini-2026-09",
+   "version": 1
+  },
+  {
+   "id": "en.calm.rest",
+   "lemma": "rest",
+   "kind": "calm_word",
+   "strength": "strong",
+   "valence": 0.7,
+   "arousal": 0.06,
+   "emotions": {
+    "trust": 0.6
+   },
+   "source": "curated:gemini-2026-09",
+   "version": 1
+  },
+  {
+   "id": "en.calm.repose",
+   "lemma": "repose",
+   "kind": "calm_word",
+   "strength": "strong",
+   "valence": 0.75,
+   "arousal": 0.06,
+   "emotions": {
+    "trust": 0.7
+   },
+   "source": "curated:gemini-2026-09",
+   "version": 1
+  },
+  {
+   "id": "en.calm.solace",
+   "lemma": "solace",
+   "kind": "calm_word",
+   "strength": "strong",
+   "valence": 0.75,
+   "arousal": 0.12,
+   "emotions": {
+    "joy": 0.6,
+    "trust": 0.7
+   },
+   "source": "curated:gemini-2026-09",
+   "version": 1
+  },
+  {
+   "id": "en.calm.comfort",
+   "lemma": "comfort",
+   "kind": "calm_word",
+   "strength": "strong",
+   "valence": 0.7,
+   "arousal": 0.12,
+   "emotions": {
+    "trust": 0.7
+   },
+   "source": "curated:gemini-2026-09",
+   "version": 1
+  },
+  {
+   "id": "en.calm.ease",
+   "lemma": "ease",
+   "kind": "calm_word",
+   "strength": "strong",
+   "valence": 0.65,
+   "arousal": 0.1,
+   "emotions": {
+    "trust": 0.6
+   },
+   "source": "curated:gemini-2026-09",
+   "version": 1
+  },
+  {
+   "id": "en.calm.quiet",
+   "lemma": "quiet",
+   "kind": "calm_word",
+   "strength": "strong",
+   "valence": 0.6,
+   "arousal": 0.08,
+   "emotions": {
+    "trust": 0.5
+   },
+   "source": "curated:gemini-2026-09",
+   "version": 1
+  },
+  {
+   "id": "en.calm.slumber",
+   "lemma": "slumber",
+   "kind": "calm_word",
+   "strength": "strong",
+   "valence": 0.65,
+   "arousal": 0.05,
+   "emotions": {
+    "trust": 0.5
+   },
+   "source": "curated:gemini-2026-09",
+   "version": 1
+  },
+  {
+   "id": "en.calm.sleep",
+   "lemma": "sleep",
+   "kind": "calm_word",
+   "strength": "strong",
+   "valence": 0.6,
+   "arousal": 0.05,
+   "emotions": null,
+   "source": "curated:gemini-2026-09",
+   "version": 1
+  },
+  {
+   "id": "en.calm.nap",
+   "lemma": "nap",
+   "kind": "calm_word",
+   "strength": "strong",
+   "valence": 0.55,
+   "arousal": 0.06,
+   "emotions": null,
+   "source": "curated:gemini-2026-09",
+   "version": 1
+  },
+  {
+   "id": "en.calm.doze",
+   "lemma": "doze",
+   "kind": "calm_word",
+   "strength": "strong",
+   "valence": 0.5,
+   "arousal": 0.06,
+   "emotions": null,
+   "source": "curated:gemini-2026-09",
+   "version": 1
+  },
+  {
+   "id": "en.calm.respite",
+   "lemma": "respite",
+   "kind": "calm_word",
+   "strength": "strong",
+   "valence": 0.65,
+   "arousal": 0.1,
+   "emotions": {
+    "trust": 0.6
+   },
+   "source": "curated:gemini-2026-09",
+   "version": 1
+  },
+  {
+   "id": "en.calm.leisure",
+   "lemma": "leisure",
+   "kind": "calm_word",
+   "strength": "strong",
+   "valence": 0.7,
+   "arousal": 0.15,
+   "emotions": {
+    "joy": 0.5
+   },
+   "source": "curated:gemini-2026-09",
+   "version": 1
+  },
+  {
+   "id": "en.calm.unwind",
+   "lemma": "unwind",
+   "kind": "calm_word",
+   "strength": "strong",
+   "valence": 0.65,
+   "arousal": 0.1,
+   "emotions": {
+    "trust": 0.5
+   },
+   "source": "curated:gemini-2026-09",
+   "version": 1
+  },
+  {
+   "id": "en.calm.soothe",
+   "lemma": "soothe",
+   "kind": "calm_word",
+   "strength": "strong",
+   "valence": 0.75,
+   "arousal": 0.08,
+   "emotions": {
+    "trust": 0.7
+   },
+   "source": "curated:gemini-2026-09",
+   "version": 1
+  },
+  {
+   "id": "en.calm.mellow",
+   "lemma": "mellow",
+   "kind": "calm_word",
+   "strength": "strong",
+   "valence": 0.65,
+   "arousal": 0.1,
+   "emotions": {
+    "joy": 0.4
+   },
+   "source": "curated:gemini-2026-09",
+   "version": 1
+  },
+  {
+   "id": "en.calm.gentle",
+   "lemma": "gentle",
+   "kind": "calm_word",
+   "strength": "strong",
+   "valence": 0.7,
+   "arousal": 0.12,
+   "emotions": {
+    "joy": 0.5
+   },
+   "source": "curated:gemini-2026-09",
+   "version": 1
+  },
+  {
+   "id": "en.calm.mild",
+   "lemma": "mild",
+   "kind": "calm_word",
+   "strength": "strong",
+   "valence": 0.5,
+   "arousal": 0.1,
+   "emotions": null,
+   "source": "curated:gemini-2026-09",
+   "version": 1
+  },
+  {
+   "id": "en.calm.balmy",
+   "lemma": "balmy",
+   "kind": "calm_word",
+   "strength": "strong",
+   "valence": 0.6,
+   "arousal": 0.12,
+   "emotions": {
+    "joy": 0.4
+   },
+   "source": "curated:gemini-2026-09",
+   "version": 1
+  },
+  {
+   "id": "en.calm.soft",
+   "lemma": "soft",
+   "kind": "calm_word",
+   "strength": "weak",
+   "valence": 0.6,
+   "arousal": 0.1,
+   "emotions": null,
+   "source": "curated:gemini-2026-09",
+   "version": 1
+  },
+  {
+   "id": "en.calm.smooth",
+   "lemma": "smooth",
+   "kind": "calm_word",
+   "strength": "weak",
+   "valence": 0.55,
+   "arousal": 0.1,
+   "emotions": null,
+   "source": "curated:gemini-2026-09",
+   "version": 1
+  },
+  {
+   "id": "en.calm.haven",
+   "lemma": "haven",
+   "kind": "calm_word",
+   "strength": "strong",
+   "valence": 0.75,
+   "arousal": 0.2,
+   "emotions": {
+    "trust": 0.8
+   },
+   "source": "curated:gemini-2026-09",
+   "version": 1
+  },
+  {
+   "id": "en.calm.sanctuary",
+   "lemma": "sanctuary",
+   "kind": "calm_word",
+   "strength": "strong",
+   "valence": 0.8,
+   "arousal": 0.2,
+   "emotions": {
+    "trust": 0.8
+   },
+   "source": "curated:gemini-2026-09",
+   "version": 1
+  },
+  {
+   "id": "en.calm.refuge",
+   "lemma": "refuge",
+   "kind": "calm_word",
+   "strength": "strong",
+   "valence": 0.75,
+   "arousal": 0.22,
+   "emotions": {
+    "trust": 0.8
+   },
+   "source": "curated:gemini-2026-09",
+   "version": 1
+  },
+  {
+   "id": "en.calm.shelter",
+   "lemma": "shelter",
+   "kind": "calm_word",
+   "strength": "strong",
+   "valence": 0.7,
+   "arousal": 0.2,
+   "emotions": {
+    "trust": 0.7
+   },
+   "source": "curated:gemini-2026-09",
+   "version": 1
+  },
+  {
+   "id": "en.calm.harbor",
+   "lemma": "harbor",
+   "kind": "calm_word",
+   "strength": "strong",
+   "valence": 0.65,
+   "arousal": 0.18,
+   "emotions": {
+    "trust": 0.7
+   },
+   "source": "curated:gemini-2026-09",
+   "version": 1
+  },
+  {
+   "id": "en.calm.anchorage",
+   "lemma": "anchorage",
+   "kind": "calm_word",
+   "strength": "strong",
+   "valence": 0.6,
+   "arousal": 0.18,
+   "emotions": {
+    "trust": 0.6
+   },
+   "source": "curated:gemini-2026-09",
+   "version": 1
+  },
+  {
+   "id": "en.calm.oasis",
+   "lemma": "oasis",
+   "kind": "calm_word",
+   "strength": "strong",
+   "valence": 0.8,
+   "arousal": 0.22,
+   "emotions": {
+    "joy": 0.7,
+    "trust": 0.7
+   },
+   "source": "curated:gemini-2026-09",
+   "version": 1
+  },
+  {
+   "id": "en.calm.cradle",
+   "lemma": "cradle",
+   "kind": "calm_word",
+   "strength": "strong",
+   "valence": 0.7,
+   "arousal": 0.15,
+   "emotions": {
+    "trust": 0.6
+   },
+   "source": "curated:gemini-2026-09",
+   "version": 1
+  },
+  {
+   "id": "en.calm.hearth",
+   "lemma": "hearth",
+   "kind": "calm_word",
+   "strength": "strong",
+   "valence": 0.75,
+   "arousal": 0.18,
+   "emotions": {
+    "joy": 0.6,
+    "trust": 0.7
+   },
+   "source": "curated:gemini-2026-09",
+   "version": 1
+  },
+  {
+   "id": "en.calm.nest",
+   "lemma": "nest",
+   "kind": "calm_word",
+   "strength": "strong",
+   "valence": 0.65,
+   "arousal": 0.15,
+   "emotions": {
+    "trust": 0.6
+   },
+   "source": "curated:gemini-2026-09",
+   "version": 1
+  },
+  {
+   "id": "en.calm.burrow",
+   "lemma": "burrow",
+   "kind": "calm_word",
+   "strength": "strong",
+   "valence": 0.55,
+   "arousal": 0.15,
+   "emotions": null,
+   "source": "curated:gemini-2026-09",
+   "version": 1
+  },
+  {
+   "id": "en.calm.asylum",
+   "lemma": "asylum",
+   "kind": "calm_word",
+   "strength": "strong",
+   "valence": 0.6,
+   "arousal": 0.2,
+   "emotions": {
+    "trust": 0.6
+   },
+   "source": "curated:gemini-2026-09",
+   "version": 1
+  },
+  {
+   "id": "en.calm.retreat",
+   "lemma": "retreat",
+   "kind": "calm_word",
+   "strength": "strong",
+   "valence": 0.65,
+   "arousal": 0.18,
+   "emotions": {
+    "trust": 0.6
+   },
+   "source": "curated:gemini-2026-09",
+   "version": 1
+  },
+  {
+   "id": "en.calm.safeguard",
+   "lemma": "safeguard",
+   "kind": "calm_word",
+   "strength": "strong",
+   "valence": 0.7,
+   "arousal": 0.22,
+   "emotions": {
+    "trust": 0.7
+   },
+   "source": "curated:gemini-2026-09",
+   "version": 1
+  },
+  {
+   "id": "en.calm.shield",
+   "lemma": "shield",
+   "kind": "calm_word",
+   "strength": "weak",
+   "valence": 0.65,
+   "arousal": 0.25,
+   "emotions": {
+    "trust": 0.7
+   },
+   "source": "curated:gemini-2026-09",
+   "version": 1
+  },
+  {
+   "id": "en.calm.protection",
+   "lemma": "protection",
+   "kind": "calm_word",
+   "strength": "strong",
+   "valence": 0.7,
+   "arousal": 0.2,
+   "emotions": {
+    "trust": 0.7
+   },
+   "source": "curated:gemini-2026-09",
+   "version": 1
+  },
+  {
+   "id": "en.calm.security",
+   "lemma": "security",
+   "kind": "calm_word",
+   "strength": "strong",
+   "valence": 0.75,
+   "arousal": 0.18,
+   "emotions": {
+    "trust": 0.8
+   },
+   "source": "curated:gemini-2026-09",
+   "version": 1
+  },
+  {
+   "id": "en.calm.safety",
+   "lemma": "safety",
+   "kind": "calm_word",
+   "strength": "strong",
+   "valence": 0.75,
+   "arousal": 0.18,
+   "emotions": {
+    "trust": 0.8
+   },
+   "source": "curated:gemini-2026-09",
+   "version": 1
+  },
+  {
+   "id": "en.calm.relief",
+   "lemma": "relief",
+   "kind": "calm_word",
+   "strength": "strong",
+   "valence": 0.75,
+   "arousal": 0.2,
+   "emotions": {
+    "joy": 0.7
+   },
+   "source": "curated:gemini-2026-09",
+   "version": 1
+  },
+  {
+   "id": "en.calm.consolation",
+   "lemma": "consolation",
+   "kind": "calm_word",
+   "strength": "strong",
+   "valence": 0.7,
+   "arousal": 0.15,
+   "emotions": {
+    "trust": 0.6
+   },
+   "source": "curated:gemini-2026-09",
+   "version": 1
+  },
+  {
+   "id": "en.calm.quietude",
+   "lemma": "quietude",
+   "kind": "calm_word",
+   "strength": "strong",
+   "valence": 0.66,
+   "arousal": 0.05,
+   "emotions": null,
+   "source": "curated:gemini-2026-09",
+   "version": 1
+  },
+  {
+   "id": "en.calm.tranquillity",
+   "lemma": "tranquillity",
+   "kind": "calm_word",
+   "strength": "strong",
+   "valence": 0.76,
+   "arousal": 0.06,
+   "emotions": {
+    "trust": 0.7
+   },
+   "source": "curated:gemini-2026-09",
+   "version": 1
+  },
+  {
+   "id": "en.calm.equanimity",
+   "lemma": "equanimity",
+   "kind": "calm_word",
+   "strength": "strong",
+   "valence": 0.69,
+   "arousal": 0.08,
+   "emotions": {
+    "trust": 0.7
+   },
+   "source": "curated:gemini-2026-09",
+   "version": 1
+  },
+  {
+   "id": "en.calm.composure",
+   "lemma": "composure",
+   "kind": "calm_word",
+   "strength": "strong",
+   "valence": 0.64,
+   "arousal": 0.1,
+   "emotions": {
+    "trust": 0.7
+   },
+   "source": "curated:gemini-2026-09",
+   "version": 1
+  },
+  {
+   "id": "en.calm.calmness",
+   "lemma": "calmness",
+   "kind": "calm_word",
+   "strength": "strong",
+   "valence": 0.68,
+   "arousal": 0.08,
+   "emotions": null,
+   "source": "curated:gemini-2026-09",
+   "version": 1
+  },
+  {
+   "id": "en.calm.pacific",
+   "lemma": "pacific",
+   "kind": "calm_word",
+   "strength": "strong",
+   "valence": 0.61,
+   "arousal": 0.08,
+   "emotions": null,
+   "source": "curated:gemini-2026-09",
+   "version": 1
+  },
+  {
+   "id": "en.calm.unruffled",
+   "lemma": "unruffled",
+   "kind": "calm_word",
+   "strength": "strong",
+   "valence": 0.66,
+   "arousal": 0.07,
+   "emotions": null,
+   "source": "curated:gemini-2026-09",
+   "version": 1
+  },
+  {
+   "id": "en.calm.untroubled",
+   "lemma": "untroubled",
+   "kind": "calm_word",
+   "strength": "strong",
+   "valence": 0.72,
+   "arousal": 0.07,
+   "emotions": {
+    "trust": 0.6
+   },
+   "source": "curated:gemini-2026-09",
+   "version": 1
+  },
+  {
+   "id": "en.calm.peaceable",
+   "lemma": "peaceable",
+   "kind": "calm_word",
+   "strength": "strong",
+   "valence": 0.67,
+   "arousal": 0.1,
+   "emotions": {
+    "trust": 0.6
+   },
+   "source": "curated:gemini-2026-09",
+   "version": 1
+  },
+  {
+   "id": "en.calm.gentleness",
+   "lemma": "gentleness",
+   "kind": "calm_word",
+   "strength": "strong",
+   "valence": 0.71,
+   "arousal": 0.12,
+   "emotions": {
+    "joy": 0.5
+   },
+   "source": "curated:gemini-2026-09",
+   "version": 1
+  },
+  {
+   "id": "en.calm.mildness",
+   "lemma": "mildness",
+   "kind": "calm_word",
+   "strength": "strong",
+   "valence": 0.56,
+   "arousal": 0.1,
+   "emotions": null,
+   "source": "curated:gemini-2026-09",
+   "version": 1
+  },
+  {
+   "id": "en.calm.halcyon",
+   "lemma": "halcyon",
+   "kind": "calm_word",
+   "strength": "strong",
+   "valence": 0.77,
+   "arousal": 0.1,
+   "emotions": {
+    "joy": 0.6
+   },
+   "source": "curated:gemini-2026-09",
+   "version": 1
+  },
+  {
+   "id": "en.calm.leisurely",
+   "lemma": "leisurely",
+   "kind": "calm_word",
+   "strength": "strong",
+   "valence": 0.62,
+   "arousal": 0.1,
+   "emotions": null,
+   "source": "curated:gemini-2026-09",
+   "version": 1
+  },
+  {
+   "id": "en.calm.assuage",
+   "lemma": "assuage",
+   "kind": "calm_word",
+   "strength": "strong",
+   "valence": 0.67,
+   "arousal": 0.12,
+   "emotions": {
+    "trust": 0.6
+   },
+   "source": "curated:gemini-2026-09",
+   "version": 1
+  },
+  {
+   "id": "en.calm.mollify",
+   "lemma": "mollify",
+   "kind": "calm_word",
+   "strength": "strong",
+   "valence": 0.58,
+   "arousal": 0.14,
+   "emotions": null,
+   "source": "curated:gemini-2026-09",
+   "version": 1
+  },
+  {
+   "id": "en.calm.pacify",
+   "lemma": "pacify",
+   "kind": "calm_word",
+   "strength": "strong",
+   "valence": 0.66,
+   "arousal": 0.15,
+   "emotions": {
+    "trust": 0.6
+   },
+   "source": "curated:gemini-2026-09",
+   "version": 1
+  },
+  {
+   "id": "en.calm.appease",
+   "lemma": "appease",
+   "kind": "calm_word",
+   "strength": "strong",
+   "valence": 0.54,
+   "arousal": 0.16,
+   "emotions": null,
+   "source": "curated:gemini-2026-09",
+   "version": 1
+  },
+  {
+   "id": "en.calm.reconcile",
+   "lemma": "reconcile",
+   "kind": "calm_word",
+   "strength": "strong",
+   "valence": 0.68,
+   "arousal": 0.18,
+   "emotions": {
+    "trust": 0.6
+   },
+   "source": "curated:gemini-2026-09",
+   "version": 1
+  },
+  {
+   "id": "en.calm.harmony",
+   "lemma": "harmony",
+   "kind": "calm_word",
+   "strength": "strong",
+   "valence": 0.76,
+   "arousal": 0.15,
+   "emotions": {
+    "joy": 0.6,
+    "trust": 0.7
+   },
+   "source": "curated:gemini-2026-09",
+   "version": 1
+  },
+  {
+   "id": "en.calm.harmonious",
+   "lemma": "harmonious",
+   "kind": "calm_word",
+   "strength": "strong",
+   "valence": 0.74,
+   "arousal": 0.14,
+   "emotions": {
+    "joy": 0.6
+   },
+   "source": "curated:gemini-2026-09",
+   "version": 1
+  },
+  {
+   "id": "en.calm.concord",
+   "lemma": "concord",
+   "kind": "calm_word",
+   "strength": "strong",
+   "valence": 0.72,
+   "arousal": 0.12,
+   "emotions": {
+    "trust": 0.7
+   },
+   "source": "curated:gemini-2026-09",
+   "version": 1
+  },
+  {
+   "id": "en.calm.interlude",
+   "lemma": "interlude",
+   "kind": "calm_word",
+   "strength": "strong",
+   "valence": 0.52,
+   "arousal": 0.12,
+   "emotions": null,
+   "source": "curated:gemini-2026-09",
+   "version": 1
+  },
+  {
+   "id": "en.calm.breather",
+   "lemma": "breather",
+   "kind": "calm_word",
+   "strength": "strong",
+   "valence": 0.61,
+   "arousal": 0.12,
+   "emotions": null,
+   "source": "curated:gemini-2026-09",
+   "version": 1
+  },
+  {
+   "id": "en.calm.pause",
+   "lemma": "pause",
+   "kind": "calm_word",
+   "strength": "strong",
+   "valence": 0.46,
+   "arousal": 0.1,
+   "emotions": null,
+   "source": "curated:gemini-2026-09",
+   "version": 1
+  },
+  {
+   "id": "en.calm.intermission",
+   "lemma": "intermission",
+   "kind": "calm_word",
+   "strength": "strong",
+   "valence": 0.51,
+   "arousal": 0.12,
+   "emotions": null,
+   "source": "curated:gemini-2026-09",
+   "version": 1
+  },
+  {
+   "id": "en.calm.truce",
+   "lemma": "truce",
+   "kind": "calm_word",
+   "strength": "strong",
+   "valence": 0.67,
+   "arousal": 0.15,
+   "emotions": {
+    "trust": 0.6
+   },
+   "source": "curated:gemini-2026-09",
+   "version": 1
+  },
+  {
+   "id": "en.calm.armistice",
+   "lemma": "armistice",
+   "kind": "calm_word",
+   "strength": "strong",
+   "valence": 0.68,
+   "arousal": 0.16,
+   "emotions": {
+    "trust": 0.6
+   },
+   "source": "curated:gemini-2026-09",
+   "version": 1
+  },
+  {
+   "id": "en.calm.ceasefire",
+   "lemma": "ceasefire",
+   "kind": "calm_word",
+   "strength": "strong",
+   "valence": 0.62,
+   "arousal": 0.18,
+   "emotions": {
+    "trust": 0.5
+   },
+   "source": "curated:gemini-2026-09",
+   "version": 1
+  },
+  {
+   "id": "en.calm.drowse",
+   "lemma": "drowse",
+   "kind": "calm_word",
+   "strength": "strong",
+   "valence": 0.52,
+   "arousal": 0.05,
+   "emotions": null,
+   "source": "curated:gemini-2026-09",
+   "version": 1
+  },
+  {
+   "id": "en.calm.snooze",
+   "lemma": "snooze",
+   "kind": "calm_word",
+   "strength": "strong",
+   "valence": 0.57,
+   "arousal": 0.06,
+   "emotions": null,
+   "source": "curated:gemini-2026-09",
+   "version": 1
+  },
+  {
+   "id": "en.calm.siesta",
+   "lemma": "siesta",
+   "kind": "calm_word",
+   "strength": "strong",
+   "valence": 0.63,
+   "arousal": 0.08,
+   "emotions": null,
+   "source": "curated:gemini-2026-09",
+   "version": 1
+  },
+  {
+   "id": "en.calm.cushion",
+   "lemma": "cushion",
+   "kind": "calm_word",
+   "strength": "strong",
+   "valence": 0.57,
+   "arousal": 0.1,
+   "emotions": null,
+   "source": "curated:gemini-2026-09",
+   "version": 1
+  },
+  {
+   "id": "en.calm.pillow",
+   "lemma": "pillow",
+   "kind": "calm_word",
+   "strength": "strong",
+   "valence": 0.62,
+   "arousal": 0.08,
+   "emotions": null,
+   "source": "curated:gemini-2026-09",
+   "version": 1
+  },
+  {
+   "id": "en.calm.blanket",
+   "lemma": "blanket",
+   "kind": "calm_word",
+   "strength": "strong",
+   "valence": 0.61,
+   "arousal": 0.1,
+   "emotions": null,
+   "source": "curated:gemini-2026-09",
+   "version": 1
+  },
+  {
+   "id": "en.calm.hammock",
+   "lemma": "hammock",
+   "kind": "calm_word",
+   "strength": "strong",
+   "valence": 0.66,
+   "arousal": 0.08,
+   "emotions": null,
+   "source": "curated:gemini-2026-09",
+   "version": 1
+  },
+  {
+   "id": "en.calm.pastoral",
+   "lemma": "pastoral",
+   "kind": "calm_word",
+   "strength": "strong",
+   "valence": 0.67,
+   "arousal": 0.12,
+   "emotions": {
+    "joy": 0.4
+   },
+   "source": "curated:gemini-2026-09",
+   "version": 1
+  },
+  {
+   "id": "en.calm.bucolic",
+   "lemma": "bucolic",
+   "kind": "calm_word",
+   "strength": "strong",
+   "valence": 0.62,
+   "arousal": 0.12,
+   "emotions": null,
+   "source": "curated:gemini-2026-09",
+   "version": 1
+  },
+  {
+   "id": "en.calm.idyllic",
+   "lemma": "idyllic",
+   "kind": "calm_word",
+   "strength": "strong",
+   "valence": 0.78,
+   "arousal": 0.12,
+   "emotions": {
+    "joy": 0.7
+   },
+   "source": "curated:gemini-2026-09",
+   "version": 1
+  },
+  {
+   "id": "en.calm.meadow",
+   "lemma": "meadow",
+   "kind": "calm_word",
+   "strength": "strong",
+   "valence": 0.66,
+   "arousal": 0.12,
+   "emotions": {
+    "joy": 0.5
+   },
+   "source": "curated:gemini-2026-09",
+   "version": 1
+  },
+  {
+   "id": "en.calm.snug",
+   "lemma": "snug",
+   "kind": "calm_word",
+   "strength": "strong",
+   "valence": 0.67,
+   "arousal": 0.1,
+   "emotions": {
+    "joy": 0.5
+   },
+   "source": "curated:gemini-2026-09",
+   "version": 1
+  },
+  {
+   "id": "en.calm.cozy",
+   "lemma": "cozy",
+   "kind": "calm_word",
+   "strength": "strong",
+   "valence": 0.72,
+   "arousal": 0.1,
+   "emotions": {
+    "joy": 0.6
+   },
+   "source": "curated:gemini-2026-09",
+   "version": 1
+  },
+  {
+   "id": "en.calm.cosy",
+   "lemma": "cosy",
+   "kind": "calm_word",
+   "strength": "strong",
+   "valence": 0.72,
+   "arousal": 0.1,
+   "emotions": {
+    "joy": 0.6
+   },
+   "source": "curated:gemini-2026-09",
+   "version": 1
+  },
+  {
+   "id": "en.calm.fireside",
+   "lemma": "fireside",
+   "kind": "calm_word",
+   "strength": "strong",
+   "valence": 0.69,
+   "arousal": 0.12,
+   "emotions": {
+    "joy": 0.5
+   },
+   "source": "curated:gemini-2026-09",
+   "version": 1
+  },
+  {
+   "id": "en.calm.alcove",
+   "lemma": "alcove",
+   "kind": "calm_word",
+   "strength": "strong",
+   "valence": 0.58,
+   "arousal": 0.1,
+   "emotions": null,
+   "source": "curated:gemini-2026-09",
+   "version": 1
+  },
+  {
+   "id": "en.calm.nook",
+   "lemma": "nook",
+   "kind": "calm_word",
+   "strength": "strong",
+   "valence": 0.59,
+   "arousal": 0.1,
+   "emotions": null,
+   "source": "curated:gemini-2026-09",
+   "version": 1
+  },
+  {
+   "id": "en.calm.bower",
+   "lemma": "bower",
+   "kind": "calm_word",
+   "strength": "strong",
+   "valence": 0.64,
+   "arousal": 0.1,
+   "emotions": null,
+   "source": "curated:gemini-2026-09",
+   "version": 1
+  },
+  {
+   "id": "en.calm.restfulness",
+   "lemma": "restfulness",
+   "kind": "calm_word",
+   "strength": "strong",
+   "valence": 0.73,
+   "arousal": 0.06,
+   "emotions": {
+    "trust": 0.7
+   },
+   "source": "curated:gemini-2026-09",
+   "version": 1
+  },
+  {
+   "id": "en.calm.peacefulness",
+   "lemma": "peacefulness",
+   "kind": "calm_word",
+   "strength": "strong",
+   "valence": 0.78,
+   "arousal": 0.06,
+   "emotions": {
+    "trust": 0.8
+   },
+   "source": "curated:gemini-2026-09",
+   "version": 1
+  },
+  {
+   "id": "en.calm.placidity",
+   "lemma": "placidity",
+   "kind": "calm_word",
+   "strength": "strong",
+   "valence": 0.67,
+   "arousal": 0.08,
+   "emotions": null,
+   "source": "curated:gemini-2026-09",
+   "version": 1
+  },
+  {
+   "id": "en.calm.unperturbed",
+   "lemma": "unperturbed",
+   "kind": "calm_word",
+   "strength": "strong",
+   "valence": 0.66,
+   "arousal": 0.07,
+   "emotions": {
+    "trust": 0.6
+   },
+   "source": "curated:gemini-2026-09",
+   "version": 1
+  },
+  {
+   "id": "en.calm.unshaken",
+   "lemma": "unshaken",
+   "kind": "calm_word",
+   "strength": "strong",
+   "valence": 0.68,
+   "arousal": 0.1,
+   "emotions": {
+    "trust": 0.7
+   },
+   "source": "curated:gemini-2026-09",
+   "version": 1
+  }
+ ]
+}

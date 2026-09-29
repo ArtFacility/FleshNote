@@ -9,6 +9,7 @@ import sqlite3
 import re
 from fastapi import APIRouter, HTTPException
 from pydantic import BaseModel
+from project_io import safe_md_path
 
 router = APIRouter()
 
@@ -505,8 +506,8 @@ def scan_entity_references(req: ScanReferencesRequest):
     unique_matches = {}
 
     for row in files:
-        md_file = os.path.join(req.project_path, "md", row["md_filename"])
-        if not os.path.exists(md_file):
+        md_file = safe_md_path(os.path.join(req.project_path, "md"), row["md_filename"])
+        if not md_file or not os.path.exists(md_file):
             continue
         with open(md_file, "r", encoding="utf-8") as f:
             content = f.read()
@@ -553,10 +554,10 @@ def replace_entity_references(req: ReplaceReferencesRequest):
     aliases_to_add = set()
 
     for row in files:
-        md_file = os.path.join(req.project_path, "md", row["md_filename"])
-        if not os.path.exists(md_file):
+        md_file = safe_md_path(os.path.join(req.project_path, "md"), row["md_filename"])
+        if not md_file or not os.path.exists(md_file):
             continue
-            
+
         with open(md_file, "r", encoding="utf-8") as f:
             content = f.read()
 

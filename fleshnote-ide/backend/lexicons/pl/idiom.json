@@ -1,0 +1,641 @@
+{
+  "lang": "pl",
+  "kind": "idiom",
+  "version": 1,
+  "entries": [
+    {
+      "id": "pl.idiom.z_zimny_krew",
+      "phrase": [
+        "z",
+        "zimny",
+        "krew"
+      ],
+      "kind": "idiom",
+      "strength": "strong",
+      "blocks": [
+        "pl.danger.krew"
+      ],
+      "source": "curated:gemini-2026-09",
+      "version": 1,
+      "example": "Kapitan działał z zimną krwią nawet w obliczu potężnego sztormu."
+    },
+    {
+      "id": "pl.idiom.z_ciepły_serce",
+      "phrase": [
+        "z",
+        "ciepły",
+        "serce"
+      ],
+      "kind": "idiom",
+      "strength": "strong",
+      "blocks": [],
+      "source": "curated:gemini-2026-09",
+      "version": 1,
+      "example": "Gospodarz przyjął wędrowców z ciepłym sercem pod swój skromny dach."
+    },
+    {
+      "id": "pl.idiom.zły_krew",
+      "phrase": [
+        "zły",
+        "krew"
+      ],
+      "kind": "idiom",
+      "strength": "strong",
+      "blocks": [
+        "pl.danger.krew"
+      ],
+      "source": "curated:gemini-2026-09",
+      "version": 1,
+      "example": "Nierozsądny spór zasiał złą krew między zwaśnionymi rodami."
+    },
+    {
+      "id": "pl.idiom.krew_z_nos",
+      "phrase": [
+        "krew",
+        "z",
+        "nos"
+      ],
+      "kind": "idiom",
+      "strength": "strong",
+      "blocks": [
+        "pl.danger.krew"
+      ],
+      "source": "curated:gemini-2026-09",
+      "version": 1,
+      "example": "Po niefortunnym zderzeniu poleciała mu krew z nosa."
+    },
+    {
+      "id": "pl.idiom.krew_nie_woda",
+      "phrase": [
+        "krew",
+        "nie",
+        "woda"
+      ],
+      "kind": "idiom",
+      "strength": "strong",
+      "blocks": [
+        "pl.danger.krew"
+      ],
+      "source": "curated:gemini-2026-09",
+      "version": 1,
+      "example": "Wiedział doskonale, że krew nie woda, gdy stanął w obronie brata."
+    },
+    {
+      "id": "pl.idiom.igrać_z_ogień",
+      "phrase": [
+        "igrać",
+        "z",
+        "ogień"
+      ],
+      "kind": "idiom",
+      "strength": "strong",
+      "blocks": [
+        "pl.danger.ogień"
+      ],
+      "source": "curated:gemini-2026-09",
+      "version": 1,
+      "example": "Kto podważa władzę króla, ten zaczyna igrać z ogniem."
+    },
+    {
+      "id": "pl.idiom.dolewać_oliwa_do_ogień",
+      "phrase": [
+        "dolewać",
+        "oliwa",
+        "do",
+        "ogień"
+      ],
+      "kind": "idiom",
+      "strength": "strong",
+      "blocks": [
+        "pl.danger.ogień"
+      ],
+      "source": "curated:gemini-2026-09",
+      "version": 1,
+      "example": "Złośliwe plotki mogły tylko dolewać oliwy do ognia nienawiści."
+    },
+    {
+      "id": "pl.idiom.w_ogień_walka",
+      "phrase": [
+        "w",
+        "ogień",
+        "walka"
+      ],
+      "kind": "idiom",
+      "strength": "strong",
+      "blocks": [
+        "pl.danger.ogień"
+      ],
+      "source": "curated:gemini-2026-09",
+      "version": 1,
+      "example": "Mężny chorąży poległ w ogniu walki o sztandar pułku."
+    },
+    {
+      "id": "pl.idiom.skoczyć_w_ogień",
+      "phrase": [
+        "skoczyć",
+        "w",
+        "ogień"
+      ],
+      "kind": "idiom",
+      "strength": "strong",
+      "blocks": [
+        "pl.danger.ogień"
+      ],
+      "source": "curated:gemini-2026-09",
+      "version": 1,
+      "example": "Dla wiernego przyjaciela gotów był w każdej chwili skoczyć w ogień."
+    },
+    {
+      "id": "pl.idiom.pójść_pod_miecz",
+      "phrase": [
+        "pójść",
+        "pod",
+        "miecz"
+      ],
+      "kind": "idiom",
+      "strength": "strong",
+      "blocks": [
+        "pl.danger.miecz"
+      ],
+      "source": "curated:gemini-2026-09",
+      "version": 1,
+      "example": "Zbuntowani zdrajcy musieli pójść pod miecz na rozkaz monarchy."
+    },
+    {
+      "id": "pl.idiom.dobyć_miecz",
+      "phrase": [
+        "dobyć",
+        "miecz"
+      ],
+      "kind": "idiom",
+      "strength": "strong",
+      "blocks": [
+        "pl.danger.miecz"
+      ],
+      "source": "curated:gemini-2026-09",
+      "version": 1,
+      "example": "Błyskawicznie zdołał dobyć miecza i odepchnąć nacierającego zbója."
+    },
+    {
+      "id": "pl.idiom.miecz_obosieczny",
+      "phrase": [
+        "miecz",
+        "obosieczny"
+      ],
+      "kind": "idiom",
+      "strength": "strong",
+      "blocks": [
+        "pl.danger.miecz"
+      ],
+      "source": "curated:gemini-2026-09",
+      "version": 1,
+      "example": "Użycie czarnej magii to miecz obosieczny dla każdego czarnoksiężnika."
+    },
+    {
+      "id": "pl.idiom.zamknąć_oko",
+      "phrase": [
+        "zamknąć",
+        "oko"
+      ],
+      "kind": "idiom",
+      "strength": "strong",
+      "blocks": [],
+      "source": "curated:gemini-2026-09",
+      "version": 1,
+      "example": "Z powodu niepokoju nie zdołał zamknąć oka przez całą długą noc."
+    },
+    {
+      "id": "pl.idiom.otworzyć_oko",
+      "phrase": [
+        "otworzyć",
+        "oko"
+      ],
+      "kind": "idiom",
+      "strength": "strong",
+      "blocks": [],
+      "source": "curated:gemini-2026-09",
+      "version": 1,
+      "example": "To bolesne doświadczenie pomogło mu otworzyć oczy na obłudę fałszywych doradców."
+    },
+    {
+      "id": "pl.idiom.wpaść_w_oko",
+      "phrase": [
+        "wpaść",
+        "w",
+        "oko"
+      ],
+      "kind": "idiom",
+      "strength": "strong",
+      "blocks": [],
+      "source": "curated:gemini-2026-09",
+      "version": 1,
+      "example": "Niezwykłej urody klejnot musiał natychmiast wpaść w oko wprawnemu jubilerowi."
+    },
+    {
+      "id": "pl.idiom.mieć_na_ok",
+      "phrase": [
+        "mieć",
+        "na",
+        "oku"
+      ],
+      "kind": "idiom",
+      "strength": "strong",
+      "blocks": [],
+      "source": "curated:gemini-2026-09",
+      "version": 1,
+      "alt_lemmas": [
+        "około"
+      ],
+      "lemma_evidence": "carrier",
+      "example": "Czujny wartownik musiał mieć na oku każdego nieznajomego."
+    },
+    {
+      "id": "pl.idiom.zniknąć_z_oko",
+      "phrase": [
+        "zniknąć",
+        "z",
+        "oko"
+      ],
+      "kind": "idiom",
+      "strength": "strong",
+      "blocks": [],
+      "source": "curated:gemini-2026-09",
+      "version": 1,
+      "example": "Szybki jeździec zdążył zniknąć z oczu pośród gęstych zarośli."
+    },
+    {
+      "id": "pl.idiom.zwrócić_uwaga",
+      "phrase": [
+        "zwrócić",
+        "uwaga"
+      ],
+      "kind": "idiom",
+      "strength": "strong",
+      "blocks": [],
+      "source": "curated:gemini-2026-09",
+      "version": 1,
+      "example": "Nauczyciel pragnął zwrócić uwagę uczniów na kluczową zasadę."
+    },
+    {
+      "id": "pl.idiom.rzucić_oko",
+      "phrase": [
+        "rzucić",
+        "oko"
+      ],
+      "kind": "idiom",
+      "strength": "strong",
+      "blocks": [],
+      "source": "curated:gemini-2026-09",
+      "version": 1,
+      "example": "Warto było rzucić okiem na starą mapę przed wyruszeniem w drogę."
+    },
+    {
+      "id": "pl.idiom.spojrzeć_prawda_w_oko",
+      "phrase": [
+        "spojrzeć",
+        "prawdzie",
+        "w",
+        "oko"
+      ],
+      "kind": "idiom",
+      "strength": "strong",
+      "blocks": [],
+      "source": "curated:gemini-2026-09",
+      "version": 1,
+      "example": "Wódz musiał wreszcie spojrzeć prawdzie w oczy i zarządzić odwrót."
+    },
+    {
+      "id": "pl.idiom.nie_wierzyć_własny_oko",
+      "phrase": [
+        "nie",
+        "wierzyć",
+        "własny",
+        "oko"
+      ],
+      "kind": "idiom",
+      "strength": "strong",
+      "blocks": [],
+      "source": "curated:gemini-2026-09",
+      "version": 1,
+      "example": "Zdumiony żeglarz nie mógł nie wierzyć własnym oczom, widząc wyspę."
+    },
+    {
+      "id": "pl.idiom.udawać_głuchy",
+      "phrase": [
+        "udawać",
+        "głuchy"
+      ],
+      "kind": "idiom",
+      "strength": "strong",
+      "blocks": [],
+      "source": "curated:gemini-2026-09",
+      "version": 1,
+      "example": "Chytry sługa wolał udawać głuchego, by uniknąć trudnej pracy."
+    },
+    {
+      "id": "pl.idiom.zamienić_się_w_słuch",
+      "phrase": [
+        "zamienić",
+        "się",
+        "w",
+        "słuch"
+      ],
+      "kind": "idiom",
+      "strength": "strong",
+      "blocks": [],
+      "source": "curated:gemini-2026-09",
+      "version": 1,
+      "example": "Ciekawski dwór postanowił zamienić się w słuch przed ogłoszeniem testamentu."
+    },
+    {
+      "id": "pl.idiom.wpaść_w_ucho",
+      "phrase": [
+        "wpaść",
+        "w",
+        "ucho"
+      ],
+      "kind": "idiom",
+      "strength": "strong",
+      "blocks": [],
+      "source": "curated:gemini-2026-09",
+      "version": 1,
+      "example": "Ta skoczna piosenka musiała wpaść w ucho wszystkim biesiadnikom."
+    },
+    {
+      "id": "pl.idiom.mieć_ucho",
+      "phrase": [
+        "mieć",
+        "ucho"
+      ],
+      "kind": "idiom",
+      "strength": "strong",
+      "blocks": [],
+      "source": "curated:gemini-2026-09",
+      "version": 1,
+      "example": "Utalentowany kompozytor powinien mieć ucho do subtelnych tonów."
+    },
+    {
+      "id": "pl.idiom.utrzeć_nos",
+      "phrase": [
+        "utrzeć",
+        "nos"
+      ],
+      "kind": "idiom",
+      "strength": "strong",
+      "blocks": [],
+      "source": "curated:gemini-2026-09",
+      "version": 1,
+      "example": "Zuchwały fechmistrz zdołał utrzeć nosa chełpliwemu rywalowi."
+    },
+    {
+      "id": "pl.idiom.kręcić_nos",
+      "phrase": [
+        "kręcić",
+        "nos"
+      ],
+      "kind": "idiom",
+      "strength": "strong",
+      "blocks": [],
+      "source": "curated:gemini-2026-09",
+      "version": 1,
+      "example": "Niezadowolony szlachcic zaczął kręcić nosem nad podaną pieczenią."
+    },
+    {
+      "id": "pl.idiom.mieć_nos",
+      "phrase": [
+        "mieć",
+        "nos"
+      ],
+      "kind": "idiom",
+      "strength": "strong",
+      "blocks": [],
+      "source": "curated:gemini-2026-09",
+      "version": 1,
+      "example": "Wytrawny traper musiał mieć nosa do tropienia zwierzyny."
+    },
+    {
+      "id": "pl.idiom.ostrzyć_ząb",
+      "phrase": [
+        "ostrzyć",
+        "ząb"
+      ],
+      "kind": "idiom",
+      "strength": "strong",
+      "blocks": [],
+      "source": "curated:gemini-2026-09",
+      "version": 1,
+      "example": "Głodne drapieżniki zaczęły ostrzyć zęby na zabłąkaną owcę."
+    },
+    {
+      "id": "pl.idiom.zgrzytać_ząb",
+      "phrase": [
+        "zgrzytać",
+        "ząb"
+      ],
+      "kind": "idiom",
+      "strength": "strong",
+      "blocks": [],
+      "source": "curated:gemini-2026-09",
+      "version": 1,
+      "example": "Więzień mógł jedynie zgrzytać zębami z bezsilnej wściekłości."
+    },
+    {
+      "id": "pl.idiom.wziąć_noga_za_pas",
+      "phrase": [
+        "wziąć",
+        "noga",
+        "za",
+        "pas"
+      ],
+      "kind": "idiom",
+      "strength": "strong",
+      "blocks": [],
+      "source": "curated:gemini-2026-09",
+      "version": 1,
+      "example": "Przerażony rzezimieszek wolał wziąć nogi za pas przed strażą miejską."
+    },
+    {
+      "id": "pl.idiom.umywać_ręka",
+      "phrase": [
+        "umywać",
+        "ręka"
+      ],
+      "kind": "idiom",
+      "strength": "strong",
+      "blocks": [],
+      "source": "curated:gemini-2026-09",
+      "version": 1,
+      "example": "Niesprawiedliwy sędzia wolał umywać ręce od odpowiedzialności za proces."
+    },
+    {
+      "id": "pl.idiom.wziąć_do_serce",
+      "phrase": [
+        "wziąć",
+        "do",
+        "serce"
+      ],
+      "kind": "idiom",
+      "strength": "strong",
+      "blocks": [],
+      "source": "curated:gemini-2026-09",
+      "version": 1,
+      "example": "Młody czeladnik postanowił wziąć do serca mądre rady swego nauczyciela."
+    },
+    {
+      "id": "pl.idiom.kamień_z_serce",
+      "phrase": [
+        "kamień",
+        "z",
+        "serce"
+      ],
+      "kind": "idiom",
+      "strength": "strong",
+      "blocks": [],
+      "source": "curated:gemini-2026-09",
+      "version": 1,
+      "example": "Po pomyślnych wieściach spadł mu kamień z serca."
+    },
+    {
+      "id": "pl.idiom.związać_ręka",
+      "phrase": [
+        "związać",
+        "ręka"
+      ],
+      "kind": "idiom",
+      "strength": "strong",
+      "blocks": [],
+      "source": "curated:gemini-2026-09",
+      "version": 1,
+      "example": "Biurokratyczne nakazy mogły całkowicie związać ręce młodemu lekarzowi."
+    },
+    {
+      "id": "pl.idiom.grać_na_nerw",
+      "phrase": [
+        "grać",
+        "na",
+        "nerw"
+      ],
+      "kind": "idiom",
+      "strength": "strong",
+      "blocks": [],
+      "source": "curated:gemini-2026-09",
+      "version": 1,
+      "example": "Nieustanny pisk kół zaczął grać na nerwach zmęczonym podróżnym."
+    },
+    {
+      "id": "pl.idiom.trzymać_język_za_ząb",
+      "phrase": [
+        "trzymać",
+        "język",
+        "za",
+        "ząb"
+      ],
+      "kind": "idiom",
+      "strength": "strong",
+      "blocks": [],
+      "source": "curated:gemini-2026-09",
+      "version": 1,
+      "example": "Dyskretny powiernik potrafił trzymać język za zębami nawet pod presją."
+    },
+    {
+      "id": "pl.idiom.rzucić_słowo_na_wiatr",
+      "phrase": [
+        "rzucić",
+        "słowo",
+        "na",
+        "wiatr"
+      ],
+      "kind": "idiom",
+      "strength": "strong",
+      "blocks": [],
+      "source": "curated:gemini-2026-09",
+      "version": 1,
+      "example": "Uczciwy kupiec nigdy by nie rzucił słowa na wiatr."
+    },
+    {
+      "id": "pl.idiom.dotrzymać_słowo",
+      "phrase": [
+        "dotrzymać",
+        "słowo"
+      ],
+      "kind": "idiom",
+      "strength": "strong",
+      "blocks": [],
+      "source": "curated:gemini-2026-09",
+      "version": 1,
+      "example": "Honorowy rycerz zawsze starał się dotrzymać słowa danego damie."
+    },
+    {
+      "id": "pl.idiom.zwrócić_się_plecy",
+      "phrase": [
+        "zwrócić",
+        "się",
+        "plecy"
+      ],
+      "kind": "idiom",
+      "strength": "strong",
+      "blocks": [],
+      "source": "curated:gemini-2026-09",
+      "version": 1,
+      "example": "Nie uchodziło zwrócić się plecami do witającego gościa."
+    },
+    {
+      "id": "pl.idiom.stanąć_na_noga",
+      "phrase": [
+        "stanąć",
+        "na",
+        "noga"
+      ],
+      "kind": "idiom",
+      "strength": "strong",
+      "blocks": [],
+      "source": "curated:gemini-2026-09",
+      "version": 1,
+      "example": "Po długiej i ciężkiej chorobie pacjent zdołał wreszcie stanąć na nogi."
+    },
+    {
+      "id": "pl.idiom.zawrzeć_pokój",
+      "phrase": [
+        "zawrzeć",
+        "pokój"
+      ],
+      "kind": "idiom",
+      "strength": "strong",
+      "blocks": [
+        "pl.calm.pokój"
+      ],
+      "source": "curated:gemini-2026-09",
+      "version": 1,
+      "example": "Wycieńczeni wojną monarchowie postanowili zawrzeć pokój na granicy."
+    },
+    {
+      "id": "pl.idiom.oddać_życie",
+      "phrase": [
+        "oddać",
+        "życie"
+      ],
+      "kind": "idiom",
+      "strength": "strong",
+      "blocks": [
+        "pl.stakes.życie"
+      ],
+      "source": "curated:gemini-2026-09",
+      "version": 1,
+      "example": "Niezłomny żołnierz był gotów oddać życie za wolność swojej ojczyzny."
+    },
+    {
+      "id": "pl.idiom.postawić_na_karta",
+      "phrase": [
+        "postawić",
+        "na",
+        "karta"
+      ],
+      "kind": "idiom",
+      "strength": "strong",
+      "blocks": [],
+      "source": "curated:gemini-2026-09",
+      "version": 1,
+      "example": "Zdesperowany dowódca postanowił postawić na kartę losy całej armii."
+    }
+  ]
+}

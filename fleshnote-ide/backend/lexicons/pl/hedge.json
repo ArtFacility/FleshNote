@@ -1,0 +1,176 @@
+{
+  "lang": "pl",
+  "kind": "hedge",
+  "version": 1,
+  "entries": [
+    {
+      "id": "pl.hedge.chyba",
+      "lemma": "chyba",
+      "kind": "hedge",
+      "strength": "weak",
+      "factor": 0.5,
+      "source": "migrated:pol_janitor.py",
+      "version": 1
+    },
+    {
+      "id": "pl.hedge.móc",
+      "lemma": "móc",
+      "kind": "hedge",
+      "strength": "weak",
+      "factor": 0.5,
+      "source": "migrated:pol_janitor.py",
+      "version": 1
+    },
+    {
+      "id": "pl.hedge.pewnie",
+      "lemma": "pewnie",
+      "kind": "hedge",
+      "strength": "weak",
+      "factor": 0.5,
+      "source": "migrated:pol_janitor.py",
+      "version": 1
+    },
+    {
+      "id": "pl.hedge.zapewne",
+      "lemma": "zapewne",
+      "kind": "hedge",
+      "strength": "weak",
+      "factor": 0.5,
+      "source": "curated:gemini-2026-09",
+      "version": 1
+    },
+    {
+      "id": "pl.hedge.prawdopodobnie",
+      "lemma": "prawdopodobnie",
+      "kind": "hedge",
+      "strength": "weak",
+      "factor": 0.5,
+      "source": "curated:gemini-2026-09",
+      "version": 1
+    },
+    {
+      "id": "pl.hedge.widocznie",
+      "lemma": "widocznie",
+      "kind": "hedge",
+      "strength": "weak",
+      "factor": 0.5,
+      "source": "curated:gemini-2026-09",
+      "version": 1
+    },
+    {
+      "id": "pl.hedge.podobno",
+      "lemma": "podobno",
+      "kind": "hedge",
+      "strength": "weak",
+      "factor": 0.5,
+      "source": "curated:gemini-2026-09",
+      "version": 1
+    },
+    {
+      "id": "pl.hedge.rzekomo",
+      "lemma": "rzekomo",
+      "kind": "hedge",
+      "strength": "weak",
+      "factor": 0.5,
+      "source": "curated:gemini-2026-09",
+      "version": 1
+    },
+    {
+      "id": "pl.hedge.jakoby",
+      "lemma": "jakoby",
+      "kind": "hedge",
+      "strength": "weak",
+      "factor": 0.5,
+      "source": "curated:gemini-2026-09",
+      "version": 1
+    },
+    {
+      "id": "pl.hedge.ponoć",
+      "lemma": "ponoć",
+      "kind": "hedge",
+      "strength": "weak",
+      "factor": 0.5,
+      "source": "curated:gemini-2026-09",
+      "version": 1
+    },
+    {
+      "id": "pl.hedge.zdawać_się",
+      "phrase": [
+        "zdawać",
+        "się"
+      ],
+      "kind": "hedge",
+      "strength": "weak",
+      "factor": 0.5,
+      "source": "curated:gemini-2026-09",
+      "version": 1,
+      "example": "Wszystko zdawało się zmierzać ku pomyślnemu końcowi."
+    },
+    {
+      "id": "pl.hedge.wydawać_się",
+      "phrase": [
+        "wydawać",
+        "się"
+      ],
+      "kind": "hedge",
+      "strength": "weak",
+      "factor": 0.5,
+      "source": "curated:gemini-2026-09",
+      "version": 1,
+      "example": "Stary zamek wydawał się zupełnie opuszczony od stuleci."
+    },
+    {
+      "id": "pl.hedge.jakby",
+      "lemma": "jakby",
+      "kind": "hedge",
+      "strength": "weak",
+      "factor": 0.5,
+      "source": "curated:gemini-2026-09",
+      "version": 1
+    },
+    {
+      "id": "pl.hedge.niejako",
+      "lemma": "niejako",
+      "kind": "hedge",
+      "strength": "weak",
+      "factor": 0.5,
+      "source": "curated:gemini-2026-09",
+      "version": 1
+    },
+    {
+      "id": "pl.hedge.możliwy",
+      "lemma": "możliwy",
+      "kind": "hedge",
+      "strength": "weak",
+      "factor": 0.5,
+      "source": "curated:gemini-2026-09",
+      "version": 1
+    },
+    {
+      "id": "pl.hedge.jak_gdyby",
+      "phrase": [
+        "jak",
+        "gdyby"
+      ],
+      "kind": "hedge",
+      "strength": "weak",
+      "factor": 0.5,
+      "source": "curated:gemini-2026-09",
+      "version": 1,
+      "example": "Mówił spokojnie, jak gdyby nie dostrzegał zbliżającego się niebezpieczeństwa."
+    },
+    {
+      "id": "pl.hedge.tak_jakby",
+      "phrase": [
+        "tak",
+        "jakby"
+      ],
+      "kind": "hedge",
+      "strength": "weak",
+      "factor": 0.5,
+      "source": "curated:gemini-2026-09",
+      "version": 1,
+      "example": "Przybysz wyglądał tak jakby wędrował pieszo przez całą zimę."
+    }
+  ]
+}

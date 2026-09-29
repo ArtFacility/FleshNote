@@ -12,6 +12,7 @@ __pycache__/
 backend/build/
 backend/dist/
 backend/nltk_data/
+backend/temp_test_*/
 # *.spec (removed to allow tracking backend.spec)
 .venv
 env/

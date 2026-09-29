@@ -1,0 +1,231 @@
+{
+ "lang": "pl",
+ "kind": "realize_verb",
+ "version": 1,
+ "entries": [
+  {
+   "id": "pl.realize.rozpozna\u0107",
+   "lemma": "rozpozna\u0107",
+   "pos": [
+    "VERB"
+   ],
+   "kind": "realize_verb",
+   "strength": "weak",
+   "valence": 0.05,
+   "arousal": 0.3,
+   "emotions": {
+    "anticipation": 0.4
+   },
+   "source": "migrated:pol_janitor.py",
+   "version": 1
+  },
+  {
+   "id": "pl.realize.rozumie\u0107",
+   "lemma": "rozumie\u0107",
+   "pos": [
+    "VERB"
+   ],
+   "kind": "realize_verb",
+   "strength": "weak",
+   "valence": 0.05,
+   "arousal": 0.3,
+   "emotions": {
+    "anticipation": 0.4
+   },
+   "source": "migrated:pol_janitor.py",
+   "version": 1
+  },
+  {
+   "id": "pl.realize.u\u015bwiadomi\u0107",
+   "lemma": "u\u015bwiadomi\u0107",
+   "pos": [
+    "VERB"
+   ],
+   "kind": "realize_verb",
+   "strength": "weak",
+   "valence": 0.05,
+   "arousal": 0.3,
+   "emotions": {
+    "anticipation": 0.4
+   },
+   "source": "migrated:pol_janitor.py",
+   "version": 1
+  },
+  {
+   "id": "pl.realize.zda\u0107",
+   "lemma": "zda\u0107",
+   "pos": [
+    "VERB"
+   ],
+   "kind": "realize_verb",
+   "strength": "weak",
+   "valence": 0.05,
+   "arousal": 0.3,
+   "emotions": {
+    "anticipation": 0.4
+   },
+   "source": "migrated:pol_janitor.py",
+   "version": 1
+  },
+  {
+   "id": "pl.realize.zrozumie\u0107",
+   "lemma": "zrozumie\u0107",
+   "pos": [
+    "VERB"
+   ],
+   "kind": "realize_verb",
+   "strength": "weak",
+   "valence": 0.05,
+   "arousal": 0.3,
+   "emotions": {
+    "anticipation": 0.4
+   },
+   "source": "migrated:pol_janitor.py",
+   "version": 1
+  },
+  {
+   "id": "pl.realize.poj\u0105\u0107",
+   "lemma": "poj\u0105\u0107",
+   "pos": [
+    "VERB"
+   ],
+   "kind": "realize_verb",
+   "strength": "weak",
+   "valence": 0.05,
+   "arousal": 0.3,
+   "emotions": {
+    "anticipation": 0.4
+   },
+   "source": "curated:gemini-2026-09",
+   "version": 1
+  },
+  {
+   "id": "pl.realize.dostrzec",
+   "lemma": "dostrzec",
+   "pos": [
+    "VERB"
+   ],
+   "kind": "realize_verb",
+   "strength": "weak",
+   "valence": 0.05,
+   "arousal": 0.3,
+   "emotions": {
+    "anticipation": 0.4
+   },
+   "source": "curated:gemini-2026-09",
+   "version": 1
+  },
+  {
+   "id": "pl.realize.przejrze\u0107",
+   "lemma": "przejrze\u0107",
+   "pos": [
+    "VERB"
+   ],
+   "kind": "realize_verb",
+   "strength": "weak",
+   "valence": 0.05,
+   "arousal": 0.3,
+   "emotions": {
+    "anticipation": 0.4
+   },
+   "source": "curated:gemini-2026-09",
+   "version": 1
+  },
+  {
+   "id": "pl.realize.odgadn\u0105\u0107",
+   "lemma": "odgadn\u0105\u0107",
+   "pos": [
+    "VERB"
+   ],
+   "kind": "realize_verb",
+   "strength": "weak",
+   "valence": 0.05,
+   "arousal": 0.3,
+   "emotions": {
+    "anticipation": 0.4
+   },
+   "source": "curated:gemini-2026-09",
+   "version": 1
+  },
+  {
+   "id": "pl.realize.domy\u015bli\u0107",
+   "lemma": "domy\u015bli\u0107",
+   "pos": [
+    "VERB"
+   ],
+   "kind": "realize_verb",
+   "strength": "weak",
+   "valence": 0.05,
+   "arousal": 0.3,
+   "emotions": {
+    "anticipation": 0.4
+   },
+   "source": "curated:gemini-2026-09",
+   "version": 1
+  },
+  {
+   "id": "pl.realize.wywnioskowa\u0107",
+   "lemma": "wywnioskowa\u0107",
+   "pos": [
+    "VERB"
+   ],
+   "kind": "realize_verb",
+   "strength": "weak",
+   "valence": 0.05,
+   "arousal": 0.3,
+   "emotions": {
+    "anticipation": 0.4
+   },
+   "source": "curated:gemini-2026-09",
+   "version": 1
+  },
+  {
+   "id": "pl.realize.zmiarkowa\u0107",
+   "lemma": "zmiarkowa\u0107",
+   "pos": [
+    "VERB"
+   ],
+   "kind": "realize_verb",
+   "strength": "weak",
+   "valence": 0.05,
+   "arousal": 0.3,
+   "emotions": {
+    "anticipation": 0.4
+   },
+   "source": "curated:gemini-2026-09",
+   "version": 1
+  },
+  {
+   "id": "pl.realize.spostrzec",
+   "lemma": "spostrzec",
+   "pos": [
+    "VERB"
+   ],
+   "kind": "realize_verb",
+   "strength": "weak",
+   "valence": 0.05,
+   "arousal": 0.3,
+   "emotions": {
+    "anticipation": 0.4
+   },
+   "source": "curated:gemini-2026-09",
+   "version": 1
+  },
+  {
+   "id": "pl.realize.zauwa\u017cy\u0107",
+   "lemma": "zauwa\u017cy\u0107",
+   "pos": [
+    "VERB"
+   ],
+   "kind": "realize_verb",
+   "strength": "weak",
+   "valence": 0.05,
+   "arousal": 0.3,
+   "emotions": {
+    "anticipation": 0.4
+   },
+   "source": "curated:gemini-2026-09",
+   "version": 1
+  }
+ ]
+}

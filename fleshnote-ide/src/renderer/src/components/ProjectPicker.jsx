@@ -1,5 +1,6 @@
-import { useState, useEffect } from 'react'
+import { useState, useEffect, useRef } from 'react'
 import { useTranslation } from 'react-i18next'
+import { EMPTY_LAYOUT, pruneLayout } from '../utils/bookshelfLayout'
 import changelogData from '../changelog.json'
 import CloneModal from './CloneModal'
 import PentimentoFirstRunModal from './PentimentoFirstRunModal'
@@ -35,6 +36,52 @@ export default function ProjectPicker({
   const [showSettings, setShowSettings] = useState(false)
   const [showFirstRun, setShowFirstRun] = useState(false)
   const [updateState, setUpdateState] = useState({ status: 'idle' })
+  const [bookshelf, setBookshelf] = useState({ view: 'shelf', workspaces: {} })
+  const saveShelfTimer = useRef(null)
+  const pendingShelf = useRef(null)
+
+  const flushBookshelf = () => {
+    clearTimeout(saveShelfTimer.current)
+    if (pendingShelf.current) {
+      window.api.updateGlobalConfig({ bookshelf: pendingShelf.current })
+      pendingShelf.current = null
+    }
+  }
+
+  useEffect(() => {
+    window.api.getGlobalConfig?.().then((config) => {
+      if (config?.bookshelf) setBookshelf((prev) => ({ ...prev, ...config.bookshelf }))
+    }).catch(() => {})
+    return flushBookshelf
+  }, [])
+
+  const persistBookshelf = (next) => {
+    setBookshelf(next)
+    pendingShelf.current = next
+    clearTimeout(saveShelfTimer.current)
+    saveShelfTimer.current = setTimeout(flushBookshelf, 300)
+  }
+
+  const shelfLayout = bookshelf.workspaces?.[workspacePath] || EMPTY_LAYOUT
+
+  const handleShelfLayoutChange = (layout) => {
+    persistBookshelf({
+      ...bookshelf,
+      workspaces: { ...bookshelf.workspaces, [workspacePath]: pruneLayout(layout, projects) },
+    })
+  }
+
+  const handleCustomizeSave = async (proj, { color, rune }) => {
+    try {
+      await window.api.updateProjectConfig(proj.path, 'book_color', color, 'meta')
+      await window.api.updateProjectConfig(proj.path, 'book_rune', rune, 'meta')
+      setProjects((prev) => prev.map((p) => (
+        p.path === proj.path ? { ...p, book_color: color, book_rune: rune || null } : p
+      )))
+    } catch (err) {
+      alert(t('picker.shelf.saveError', "Could not save the book's look: ") + (err.message || err))
+    }
+  }
 
   useEffect(() => {
     let timer = null
@@ -208,6 +255,11 @@ export default function ProjectPicker({
             onDelete={setDeletingProject}
             onSelect={onSelectProject}
             onDropFlnote={handleDropFlnote}
+            view={bookshelf.view}
+            onViewChange={(view) => persistBookshelf({ ...bookshelf, view })}
+            shelfLayout={shelfLayout}
+            onShelfLayoutChange={handleShelfLayoutChange}
+            onCustomizeSave={handleCustomizeSave}
           />
         )}
         {section === 'reviewer' && (

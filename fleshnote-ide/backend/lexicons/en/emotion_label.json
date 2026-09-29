@@ -1,0 +1,6266 @@
+{
+  "lang": "en",
+  "kind": "emotion_label",
+  "version": 1,
+  "entries": [
+    {
+      "id": "en.emo.angry",
+      "lemma": "angry",
+      "pos": [
+        "ADJ"
+      ],
+      "kind": "emotion_label",
+      "strength": "strong",
+      "valence": -0.8,
+      "arousal": 0.8,
+      "emotions": {
+        "anger": 0.9
+      },
+      "source": "migrated:janitor.py",
+      "version": 1,
+      "felt": "state"
+    },
+    {
+      "id": "en.emo.sad",
+      "lemma": "sad",
+      "pos": [
+        "ADJ"
+      ],
+      "kind": "emotion_label",
+      "strength": "strong",
+      "valence": -0.8,
+      "arousal": 0.35,
+      "emotions": {
+        "sadness": 0.85
+      },
+      "source": "migrated:janitor.py",
+      "version": 1,
+      "felt": "state"
+    },
+    {
+      "id": "en.emo.happy",
+      "lemma": "happy",
+      "pos": [
+        "ADJ"
+      ],
+      "kind": "emotion_label",
+      "strength": "strong",
+      "valence": 0.85,
+      "arousal": 0.65,
+      "emotions": {
+        "joy": 0.9
+      },
+      "source": "migrated:janitor.py",
+      "version": 1,
+      "felt": "state"
+    },
+    {
+      "id": "en.emo.afraid",
+      "lemma": "afraid",
+      "pos": [
+        "ADJ"
+      ],
+      "kind": "emotion_label",
+      "strength": "strong",
+      "valence": -0.75,
+      "arousal": 0.75,
+      "emotions": {
+        "fear": 0.85
+      },
+      "source": "migrated:janitor.py",
+      "version": 1,
+      "felt": "state"
+    },
+    {
+      "id": "en.emo.scared",
+      "lemma": "scared",
+      "pos": [
+        "ADJ"
+      ],
+      "kind": "emotion_label",
+      "strength": "strong",
+      "valence": -0.8,
+      "arousal": 0.8,
+      "emotions": {
+        "fear": 0.85
+      },
+      "source": "migrated:janitor.py",
+      "version": 1,
+      "alt_lemmas": [
+        "scare"
+      ],
+      "lemma_evidence": "carrier",
+      "felt": "state"
+    },
+    {
+      "id": "en.emo.anxious",
+      "lemma": "anxious",
+      "pos": [
+        "ADJ"
+      ],
+      "kind": "emotion_label",
+      "strength": "strong",
+      "valence": -0.65,
+      "arousal": 0.7,
+      "emotions": {
+        "fear": 0.75,
+        "anticipation": 0.4
+      },
+      "source": "migrated:janitor.py",
+      "version": 1,
+      "felt": "state"
+    },
+    {
+      "id": "en.emo.nervous",
+      "lemma": "nervous",
+      "pos": [
+        "ADJ"
+      ],
+      "kind": "emotion_label",
+      "strength": "strong",
+      "valence": -0.55,
+      "arousal": 0.6,
+      "emotions": {
+        "fear": 0.7
+      },
+      "source": "migrated:janitor.py",
+      "version": 1,
+      "felt": "state"
+    },
+    {
+      "id": "en.emo.furious",
+      "lemma": "furious",
+      "pos": [
+        "ADJ"
+      ],
+      "kind": "emotion_label",
+      "strength": "strong",
+      "valence": -0.9,
+      "arousal": 0.95,
+      "emotions": {
+        "anger": 0.95
+      },
+      "source": "migrated:janitor.py",
+      "version": 1,
+      "felt": "state"
+    },
+    {
+      "id": "en.emo.jealous",
+      "lemma": "jealous",
+      "pos": [
+        "ADJ"
+      ],
+      "kind": "emotion_label",
+      "strength": "strong",
+      "valence": -0.7,
+      "arousal": 0.65,
+      "emotions": {
+        "disgust": 0.7,
+        "anger": 0.6
+      },
+      "source": "migrated:janitor.py",
+      "version": 1,
+      "felt": "state"
+    },
+    {
+      "id": "en.emo.excited",
+      "lemma": "excited",
+      "pos": [
+        "ADJ"
+      ],
+      "kind": "emotion_label",
+      "strength": "strong",
+      "valence": 0.75,
+      "arousal": 0.85,
+      "emotions": {
+        "anticipation": 0.8,
+        "joy": 0.7
+      },
+      "source": "migrated:janitor.py",
+      "version": 1,
+      "alt_lemmas": [
+        "excite"
+      ],
+      "lemma_evidence": "carrier",
+      "felt": "state"
+    },
+    {
+      "id": "en.emo.depressed",
+      "lemma": "depressed",
+      "pos": [
+        "ADJ"
+      ],
+      "kind": "emotion_label",
+      "strength": "strong",
+      "valence": -0.85,
+      "arousal": 0.2,
+      "emotions": {
+        "sadness": 0.9
+      },
+      "source": "migrated:janitor.py",
+      "version": 1,
+      "alt_lemmas": [
+        "depress"
+      ],
+      "lemma_evidence": "carrier",
+      "felt": "state"
+    },
+    {
+      "id": "en.emo.miserable",
+      "lemma": "miserable",
+      "pos": [
+        "ADJ"
+      ],
+      "kind": "emotion_label",
+      "strength": "strong",
+      "valence": -0.8,
+      "arousal": 0.35,
+      "emotions": {
+        "sadness": 0.85
+      },
+      "source": "migrated:janitor.py",
+      "version": 1,
+      "felt": "state"
+    },
+    {
+      "id": "en.emo.terrified",
+      "lemma": "terrified",
+      "pos": [
+        "ADJ"
+      ],
+      "kind": "emotion_label",
+      "strength": "strong",
+      "valence": -0.9,
+      "arousal": 0.95,
+      "emotions": {
+        "fear": 0.95
+      },
+      "source": "migrated:janitor.py",
+      "version": 1,
+      "alt_lemmas": [
+        "terrify"
+      ],
+      "lemma_evidence": "carrier",
+      "felt": "state"
+    },
+    {
+      "id": "en.emo.embarrassed",
+      "lemma": "embarrassed",
+      "pos": [
+        "ADJ"
+      ],
+      "kind": "emotion_label",
+      "strength": "strong",
+      "valence": -0.6,
+      "arousal": 0.6,
+      "emotions": {
+        "fear": 0.5,
+        "sadness": 0.5
+      },
+      "source": "migrated:janitor.py",
+      "version": 1,
+      "alt_lemmas": [
+        "embarrass"
+      ],
+      "lemma_evidence": "carrier",
+      "felt": "state"
+    },
+    {
+      "id": "en.emo.ashamed",
+      "lemma": "ashamed",
+      "pos": [
+        "ADJ"
+      ],
+      "kind": "emotion_label",
+      "strength": "strong",
+      "valence": -0.75,
+      "arousal": 0.5,
+      "emotions": {
+        "sadness": 0.7,
+        "disgust": 0.6
+      },
+      "source": "migrated:janitor.py",
+      "version": 1,
+      "alt_lemmas": [
+        "ashame"
+      ],
+      "lemma_evidence": "carrier",
+      "felt": "state"
+    },
+    {
+      "id": "en.emo.frustrated",
+      "lemma": "frustrated",
+      "pos": [
+        "ADJ"
+      ],
+      "kind": "emotion_label",
+      "strength": "strong",
+      "valence": -0.7,
+      "arousal": 0.7,
+      "emotions": {
+        "anger": 0.8
+      },
+      "source": "migrated:janitor.py",
+      "version": 1,
+      "alt_lemmas": [
+        "frustrate"
+      ],
+      "lemma_evidence": "carrier",
+      "felt": "state"
+    },
+    {
+      "id": "en.emo.annoyed",
+      "lemma": "annoyed",
+      "pos": [
+        "ADJ"
+      ],
+      "kind": "emotion_label",
+      "strength": "strong",
+      "valence": -0.5,
+      "arousal": 0.5,
+      "emotions": {
+        "anger": 0.6
+      },
+      "source": "migrated:janitor.py",
+      "version": 1,
+      "alt_lemmas": [
+        "annoy"
+      ],
+      "lemma_evidence": "carrier",
+      "felt": "state"
+    },
+    {
+      "id": "en.emo.irritated",
+      "lemma": "irritated",
+      "pos": [
+        "ADJ"
+      ],
+      "kind": "emotion_label",
+      "strength": "strong",
+      "valence": -0.6,
+      "arousal": 0.6,
+      "emotions": {
+        "anger": 0.7
+      },
+      "source": "migrated:janitor.py",
+      "version": 1,
+      "alt_lemmas": [
+        "irritate"
+      ],
+      "lemma_evidence": "carrier",
+      "felt": "state"
+    },
+    {
+      "id": "en.emo.disgusted",
+      "lemma": "disgusted",
+      "pos": [
+        "ADJ"
+      ],
+      "kind": "emotion_label",
+      "strength": "strong",
+      "valence": -0.85,
+      "arousal": 0.7,
+      "emotions": {
+        "disgust": 0.9
+      },
+      "source": "migrated:janitor.py",
+      "version": 1,
+      "alt_lemmas": [
+        "disgust"
+      ],
+      "lemma_evidence": "carrier",
+      "felt": "state"
+    },
+    {
+      "id": "en.emo.lonely",
+      "lemma": "lonely",
+      "pos": [
+        "ADJ"
+      ],
+      "kind": "emotion_label",
+      "strength": "strong",
+      "valence": -0.7,
+      "arousal": 0.3,
+      "emotions": {
+        "sadness": 0.8
+      },
+      "source": "migrated:janitor.py",
+      "version": 1,
+      "felt": "state"
+    },
+    {
+      "id": "en.emo.desperate",
+      "lemma": "desperate",
+      "pos": [
+        "ADJ"
+      ],
+      "kind": "emotion_label",
+      "strength": "strong",
+      "valence": -0.8,
+      "arousal": 0.8,
+      "emotions": {
+        "fear": 0.7,
+        "sadness": 0.7
+      },
+      "source": "migrated:janitor.py",
+      "version": 1,
+      "felt": "state"
+    },
+    {
+      "id": "en.emo.hopeful",
+      "lemma": "hopeful",
+      "pos": [
+        "ADJ"
+      ],
+      "kind": "emotion_label",
+      "strength": "strong",
+      "valence": 0.7,
+      "arousal": 0.5,
+      "emotions": {
+        "anticipation": 0.8,
+        "joy": 0.6
+      },
+      "source": "migrated:janitor.py",
+      "version": 1,
+      "felt": "state"
+    },
+    {
+      "id": "en.emo.relieved",
+      "lemma": "relieved",
+      "pos": [
+        "ADJ"
+      ],
+      "kind": "emotion_label",
+      "strength": "strong",
+      "valence": 0.65,
+      "arousal": 0.4,
+      "emotions": {
+        "joy": 0.75
+      },
+      "source": "migrated:janitor.py",
+      "version": 1,
+      "alt_lemmas": [
+        "relieve"
+      ],
+      "lemma_evidence": "carrier",
+      "felt": "state"
+    },
+    {
+      "id": "en.emo.proud",
+      "lemma": "proud",
+      "pos": [
+        "ADJ"
+      ],
+      "kind": "emotion_label",
+      "strength": "strong",
+      "valence": 0.7,
+      "arousal": 0.6,
+      "emotions": {
+        "joy": 0.7,
+        "trust": 0.6
+      },
+      "source": "migrated:janitor.py",
+      "version": 1,
+      "felt": "state",
+      "note": "also trait reading"
+    },
+    {
+      "id": "en.emo.heartbroken",
+      "lemma": "heartbroken",
+      "pos": [
+        "ADJ"
+      ],
+      "kind": "emotion_label",
+      "strength": "strong",
+      "valence": -0.9,
+      "arousal": 0.5,
+      "emotions": {
+        "sadness": 0.95
+      },
+      "source": "migrated:janitor.py",
+      "version": 1,
+      "felt": "state"
+    },
+    {
+      "id": "en.emo.devastated",
+      "lemma": "devastated",
+      "pos": [
+        "ADJ"
+      ],
+      "kind": "emotion_label",
+      "strength": "strong",
+      "valence": -0.9,
+      "arousal": 0.7,
+      "emotions": {
+        "sadness": 0.95
+      },
+      "source": "migrated:janitor.py",
+      "version": 1,
+      "alt_lemmas": [
+        "devastate"
+      ],
+      "lemma_evidence": "carrier",
+      "felt": "state"
+    },
+    {
+      "id": "en.emo.elated",
+      "lemma": "elated",
+      "pos": [
+        "ADJ"
+      ],
+      "kind": "emotion_label",
+      "strength": "strong",
+      "valence": 0.9,
+      "arousal": 0.85,
+      "emotions": {
+        "joy": 0.95
+      },
+      "source": "migrated:janitor.py",
+      "version": 1,
+      "alt_lemmas": [
+        "elate"
+      ],
+      "lemma_evidence": "carrier",
+      "felt": "state"
+    },
+    {
+      "id": "en.emo.content",
+      "lemma": "content",
+      "pos": [
+        "ADJ"
+      ],
+      "kind": "emotion_label",
+      "strength": "weak",
+      "valence": 0.6,
+      "arousal": 0.2,
+      "emotions": {
+        "joy": 0.6
+      },
+      "source": "migrated:janitor.py",
+      "version": 1,
+      "note": "non-emotional: table of contents, content of container; emotional needs predicative/manner reading",
+      "felt": "state"
+    },
+    {
+      "id": "en.emo.resentful",
+      "lemma": "resentful",
+      "pos": [
+        "ADJ"
+      ],
+      "kind": "emotion_label",
+      "strength": "strong",
+      "valence": -0.7,
+      "arousal": 0.6,
+      "emotions": {
+        "anger": 0.8
+      },
+      "source": "migrated:janitor.py",
+      "version": 1,
+      "felt": "state"
+    },
+    {
+      "id": "en.emo.bitter",
+      "lemma": "bitter",
+      "pos": [
+        "ADJ"
+      ],
+      "kind": "emotion_label",
+      "strength": "weak",
+      "valence": -0.65,
+      "arousal": 0.55,
+      "emotions": {
+        "anger": 0.7,
+        "disgust": 0.5
+      },
+      "source": "migrated:janitor.py",
+      "version": 1,
+      "note": "taste (bitter herbs) vs emotional resentment",
+      "felt": "state"
+    },
+    {
+      "id": "en.emo.gloomy",
+      "lemma": "gloomy",
+      "pos": [
+        "ADJ"
+      ],
+      "kind": "emotion_label",
+      "strength": "weak",
+      "valence": -0.6,
+      "arousal": 0.3,
+      "emotions": {
+        "sadness": 0.7
+      },
+      "source": "migrated:janitor.py",
+      "version": 1,
+      "note": "lighting/weather (gloomy sky) vs emotional mood",
+      "felt": "state"
+    },
+    {
+      "id": "en.emo.ecstatic",
+      "lemma": "ecstatic",
+      "pos": [
+        "ADJ"
+      ],
+      "kind": "emotion_label",
+      "strength": "strong",
+      "valence": 0.95,
+      "arousal": 0.95,
+      "emotions": {
+        "joy": 0.95
+      },
+      "source": "migrated:janitor.py",
+      "version": 1,
+      "felt": "state"
+    },
+    {
+      "id": "en.emo.remorseful",
+      "lemma": "remorseful",
+      "pos": [
+        "ADJ"
+      ],
+      "kind": "emotion_label",
+      "strength": "strong",
+      "valence": -0.7,
+      "arousal": 0.45,
+      "emotions": {
+        "sadness": 0.8
+      },
+      "source": "migrated:janitor.py",
+      "version": 1,
+      "felt": "state"
+    },
+    {
+      "id": "en.emo.surprised",
+      "lemma": "surprised",
+      "pos": [
+        "ADJ"
+      ],
+      "kind": "emotion_label",
+      "strength": "strong",
+      "valence": 0.2,
+      "arousal": 0.7,
+      "emotions": {
+        "surprise": 0.85
+      },
+      "source": "migrated:janitor.py",
+      "version": 1,
+      "alt_lemmas": [
+        "surprise"
+      ],
+      "lemma_evidence": "carrier",
+      "felt": "state"
+    },
+    {
+      "id": "en.emo.guilty",
+      "lemma": "guilty",
+      "pos": [
+        "ADJ"
+      ],
+      "kind": "emotion_label",
+      "strength": "strong",
+      "valence": -0.7,
+      "arousal": 0.5,
+      "emotions": {
+        "sadness": 0.75
+      },
+      "source": "migrated:janitor.py",
+      "version": 1,
+      "felt": "state"
+    },
+    {
+      "id": "en.emo.worried",
+      "lemma": "worried",
+      "pos": [
+        "ADJ"
+      ],
+      "kind": "emotion_label",
+      "strength": "strong",
+      "valence": -0.65,
+      "arousal": 0.65,
+      "emotions": {
+        "fear": 0.75
+      },
+      "source": "migrated:janitor.py",
+      "version": 1,
+      "alt_lemmas": [
+        "worry"
+      ],
+      "lemma_evidence": "carrier",
+      "felt": "state"
+    },
+    {
+      "id": "en.emo.upset",
+      "lemma": "upset",
+      "pos": [
+        "ADJ"
+      ],
+      "kind": "emotion_label",
+      "strength": "weak",
+      "valence": -0.65,
+      "arousal": 0.65,
+      "emotions": {
+        "sadness": 0.7,
+        "anger": 0.5
+      },
+      "source": "migrated:janitor.py",
+      "version": 1,
+      "note": "physical overturn (upset the cart) vs emotional distress",
+      "felt": "state"
+    },
+    {
+      "id": "en.emo.confused",
+      "lemma": "confused",
+      "pos": [
+        "ADJ"
+      ],
+      "kind": "emotion_label",
+      "strength": "strong",
+      "valence": -0.4,
+      "arousal": 0.5,
+      "emotions": {
+        "surprise": 0.6,
+        "fear": 0.4
+      },
+      "source": "migrated:janitor.py",
+      "version": 1,
+      "alt_lemmas": [
+        "confuse"
+      ],
+      "lemma_evidence": "carrier",
+      "felt": "state"
+    },
+    {
+      "id": "en.emo.shocked",
+      "lemma": "shocked",
+      "pos": [
+        "ADJ"
+      ],
+      "kind": "emotion_label",
+      "strength": "strong",
+      "valence": -0.6,
+      "arousal": 0.85,
+      "emotions": {
+        "surprise": 0.8,
+        "fear": 0.7
+      },
+      "source": "migrated:janitor.py",
+      "version": 1,
+      "alt_lemmas": [
+        "shock"
+      ],
+      "lemma_evidence": "carrier",
+      "felt": "state"
+    },
+    {
+      "id": "en.emo.horrified",
+      "lemma": "horrified",
+      "pos": [
+        "ADJ"
+      ],
+      "kind": "emotion_label",
+      "strength": "strong",
+      "valence": -0.9,
+      "arousal": 0.85,
+      "emotions": {
+        "fear": 0.9,
+        "disgust": 0.7
+      },
+      "source": "migrated:janitor.py",
+      "version": 1,
+      "alt_lemmas": [
+        "horrify"
+      ],
+      "lemma_evidence": "carrier",
+      "felt": "state"
+    },
+    {
+      "id": "en.emo.astonished",
+      "lemma": "astonished",
+      "pos": [
+        "ADJ"
+      ],
+      "kind": "emotion_label",
+      "strength": "strong",
+      "valence": 0.3,
+      "arousal": 0.8,
+      "emotions": {
+        "surprise": 0.9
+      },
+      "source": "curated:gemini-2026-09",
+      "version": 1,
+      "alt_lemmas": [
+        "astound",
+        "astonish"
+      ],
+      "lemma_evidence": "carrier",
+      "felt": "state"
+    },
+    {
+      "id": "en.emo.enraged",
+      "lemma": "enraged",
+      "pos": [
+        "ADJ"
+      ],
+      "kind": "emotion_label",
+      "strength": "strong",
+      "valence": -0.9,
+      "arousal": 0.9,
+      "emotions": {
+        "anger": 0.9
+      },
+      "source": "curated:gemini-2026-09",
+      "version": 1,
+      "alt_lemmas": [
+        "enrage"
+      ],
+      "lemma_evidence": "carrier",
+      "felt": "state"
+    },
+    {
+      "id": "en.emo.indignant",
+      "lemma": "indignant",
+      "pos": [
+        "ADJ"
+      ],
+      "kind": "emotion_label",
+      "strength": "strong",
+      "valence": -0.7,
+      "arousal": 0.7,
+      "emotions": {
+        "anger": 0.9
+      },
+      "source": "curated:gemini-2026-09",
+      "version": 1,
+      "felt": "state"
+    },
+    {
+      "id": "en.emo.appalled",
+      "lemma": "appalled",
+      "pos": [
+        "ADJ"
+      ],
+      "kind": "emotion_label",
+      "strength": "strong",
+      "valence": -0.8,
+      "arousal": 0.8,
+      "emotions": {
+        "disgust": 0.9
+      },
+      "source": "curated:gemini-2026-09",
+      "version": 1,
+      "alt_lemmas": [
+        "appall",
+        "appal"
+      ],
+      "lemma_evidence": "carrier",
+      "felt": "state"
+    },
+    {
+      "id": "en.emo.disheartened",
+      "lemma": "disheartened",
+      "pos": [
+        "ADJ"
+      ],
+      "kind": "emotion_label",
+      "strength": "strong",
+      "valence": -0.6,
+      "arousal": 0.4,
+      "emotions": {
+        "sadness": 0.9
+      },
+      "source": "curated:gemini-2026-09",
+      "version": 1,
+      "alt_lemmas": [
+        "dishearten"
+      ],
+      "lemma_evidence": "carrier",
+      "felt": "state"
+    },
+    {
+      "id": "en.emo.dismayed",
+      "lemma": "dismayed",
+      "pos": [
+        "ADJ"
+      ],
+      "kind": "emotion_label",
+      "strength": "strong",
+      "valence": -0.6,
+      "arousal": 0.6,
+      "emotions": {
+        "fear": 0.9
+      },
+      "source": "curated:gemini-2026-09",
+      "version": 1,
+      "alt_lemmas": [
+        "dismay"
+      ],
+      "lemma_evidence": "carrier",
+      "felt": "state"
+    },
+    {
+      "id": "en.emo.exasperated",
+      "lemma": "exasperated",
+      "pos": [
+        "ADJ"
+      ],
+      "kind": "emotion_label",
+      "strength": "strong",
+      "valence": -0.6,
+      "arousal": 0.7,
+      "emotions": {
+        "anger": 0.9
+      },
+      "source": "curated:gemini-2026-09",
+      "version": 1,
+      "alt_lemmas": [
+        "exasperate"
+      ],
+      "lemma_evidence": "carrier",
+      "felt": "state"
+    },
+    {
+      "id": "en.emo.frightened",
+      "lemma": "frightened",
+      "pos": [
+        "ADJ"
+      ],
+      "kind": "emotion_label",
+      "strength": "strong",
+      "valence": -0.7,
+      "arousal": 0.8,
+      "emotions": {
+        "fear": 0.9
+      },
+      "source": "curated:gemini-2026-09",
+      "version": 1,
+      "alt_lemmas": [
+        "frighten"
+      ],
+      "lemma_evidence": "carrier",
+      "felt": "state"
+    },
+    {
+      "id": "en.emo.aghast",
+      "lemma": "aghast",
+      "pos": [
+        "ADJ"
+      ],
+      "kind": "emotion_label",
+      "strength": "strong",
+      "valence": -0.8,
+      "arousal": 0.8,
+      "emotions": {
+        "fear": 0.9
+      },
+      "source": "curated:gemini-2026-09",
+      "version": 1,
+      "felt": "state"
+    },
+    {
+      "id": "en.emo.crestfallen",
+      "lemma": "crestfallen",
+      "pos": [
+        "ADJ"
+      ],
+      "kind": "emotion_label",
+      "strength": "strong",
+      "valence": -0.7,
+      "arousal": 0.3,
+      "emotions": {
+        "sadness": 0.9
+      },
+      "source": "curated:gemini-2026-09",
+      "version": 1,
+      "felt": "state"
+    },
+    {
+      "id": "en.emo.dejected",
+      "lemma": "dejected",
+      "pos": [
+        "ADJ"
+      ],
+      "kind": "emotion_label",
+      "strength": "strong",
+      "valence": -0.7,
+      "arousal": 0.3,
+      "emotions": {
+        "sadness": 0.9
+      },
+      "source": "curated:gemini-2026-09",
+      "version": 1,
+      "alt_lemmas": [
+        "deject"
+      ],
+      "lemma_evidence": "carrier",
+      "felt": "state"
+    },
+    {
+      "id": "en.emo.despondent",
+      "lemma": "despondent",
+      "pos": [
+        "ADJ"
+      ],
+      "kind": "emotion_label",
+      "strength": "strong",
+      "valence": -0.8,
+      "arousal": 0.2,
+      "emotions": {
+        "sadness": 0.9
+      },
+      "source": "curated:gemini-2026-09",
+      "version": 1,
+      "felt": "state"
+    },
+    {
+      "id": "en.emo.jubilant",
+      "lemma": "jubilant",
+      "pos": [
+        "ADJ"
+      ],
+      "kind": "emotion_label",
+      "strength": "strong",
+      "valence": 0.9,
+      "arousal": 0.8,
+      "emotions": {
+        "joy": 0.9
+      },
+      "source": "curated:gemini-2026-09",
+      "version": 1,
+      "felt": "state"
+    },
+    {
+      "id": "en.emo.euphoric",
+      "lemma": "euphoric",
+      "pos": [
+        "ADJ"
+      ],
+      "kind": "emotion_label",
+      "strength": "strong",
+      "valence": 0.9,
+      "arousal": 0.9,
+      "emotions": {
+        "joy": 0.9
+      },
+      "source": "curated:gemini-2026-09",
+      "version": 1,
+      "felt": "state"
+    },
+    {
+      "id": "en.emo.delighted",
+      "lemma": "delighted",
+      "pos": [
+        "ADJ"
+      ],
+      "kind": "emotion_label",
+      "strength": "strong",
+      "valence": 0.8,
+      "arousal": 0.7,
+      "emotions": {
+        "joy": 0.9
+      },
+      "source": "curated:gemini-2026-09",
+      "version": 1,
+      "alt_lemmas": [
+        "delight"
+      ],
+      "lemma_evidence": "carrier",
+      "felt": "state"
+    },
+    {
+      "id": "en.emo.fearful",
+      "lemma": "fearful",
+      "pos": [
+        "ADJ"
+      ],
+      "kind": "emotion_label",
+      "strength": "strong",
+      "valence": -0.7,
+      "arousal": 0.7,
+      "emotions": {
+        "fear": 0.9
+      },
+      "source": "curated:gemini-2026-09",
+      "version": 1,
+      "felt": "state"
+    },
+    {
+      "id": "en.emo.spiteful",
+      "lemma": "spiteful",
+      "pos": [
+        "ADJ"
+      ],
+      "kind": "emotion_label",
+      "strength": "strong",
+      "valence": -0.7,
+      "arousal": 0.6,
+      "emotions": {
+        "anger": 0.9
+      },
+      "source": "curated:gemini-2026-09",
+      "version": 1,
+      "felt": "trait"
+    },
+    {
+      "id": "en.emo.vindictive",
+      "lemma": "vindictive",
+      "pos": [
+        "ADJ"
+      ],
+      "kind": "emotion_label",
+      "strength": "strong",
+      "valence": -0.8,
+      "arousal": 0.7,
+      "emotions": {
+        "anger": 0.9
+      },
+      "source": "curated:gemini-2026-09",
+      "version": 1,
+      "felt": "trait"
+    },
+    {
+      "id": "en.emo.scornful",
+      "lemma": "scornful",
+      "pos": [
+        "ADJ"
+      ],
+      "kind": "emotion_label",
+      "strength": "strong",
+      "valence": -0.7,
+      "arousal": 0.6,
+      "emotions": {
+        "disgust": 0.9
+      },
+      "source": "curated:gemini-2026-09",
+      "version": 1,
+      "felt": "state"
+    },
+    {
+      "id": "en.emo.disdainful",
+      "lemma": "disdainful",
+      "pos": [
+        "ADJ"
+      ],
+      "kind": "emotion_label",
+      "strength": "strong",
+      "valence": -0.7,
+      "arousal": 0.5,
+      "emotions": {
+        "disgust": 0.9
+      },
+      "source": "curated:gemini-2026-09",
+      "version": 1,
+      "felt": "state"
+    },
+    {
+      "id": "en.emo.contrite",
+      "lemma": "contrite",
+      "pos": [
+        "ADJ"
+      ],
+      "kind": "emotion_label",
+      "strength": "strong",
+      "valence": -0.5,
+      "arousal": 0.4,
+      "emotions": {
+        "sadness": 0.9
+      },
+      "source": "curated:gemini-2026-09",
+      "version": 1,
+      "felt": "state"
+    },
+    {
+      "id": "en.emo.panicked",
+      "lemma": "panicked",
+      "pos": [
+        "ADJ"
+      ],
+      "kind": "emotion_label",
+      "strength": "strong",
+      "valence": -0.8,
+      "arousal": 0.9,
+      "emotions": {
+        "fear": 0.9
+      },
+      "source": "curated:gemini-2026-09",
+      "version": 1,
+      "alt_lemmas": [
+        "panic"
+      ],
+      "lemma_evidence": "carrier",
+      "felt": "state"
+    },
+    {
+      "id": "en.emo.alarmed",
+      "lemma": "alarmed",
+      "pos": [
+        "ADJ"
+      ],
+      "kind": "emotion_label",
+      "strength": "strong",
+      "valence": -0.6,
+      "arousal": 0.7,
+      "emotions": {
+        "fear": 0.9
+      },
+      "source": "curated:gemini-2026-09",
+      "version": 1,
+      "alt_lemmas": [
+        "alarm"
+      ],
+      "lemma_evidence": "carrier",
+      "felt": "state"
+    },
+    {
+      "id": "en.emo.distressed",
+      "lemma": "distressed",
+      "pos": [
+        "ADJ"
+      ],
+      "kind": "emotion_label",
+      "strength": "strong",
+      "valence": -0.7,
+      "arousal": 0.7,
+      "emotions": {
+        "fear": 0.9
+      },
+      "source": "curated:gemini-2026-09",
+      "version": 1,
+      "alt_lemmas": [
+        "distress"
+      ],
+      "lemma_evidence": "carrier",
+      "felt": "state"
+    },
+    {
+      "id": "en.emo.tormented",
+      "lemma": "tormented",
+      "pos": [
+        "ADJ"
+      ],
+      "kind": "emotion_label",
+      "strength": "strong",
+      "valence": -0.8,
+      "arousal": 0.8,
+      "emotions": {
+        "sadness": 0.9
+      },
+      "source": "curated:gemini-2026-09",
+      "version": 1,
+      "alt_lemmas": [
+        "torment"
+      ],
+      "lemma_evidence": "carrier",
+      "felt": "state"
+    },
+    {
+      "id": "en.emo.anguished",
+      "lemma": "anguished",
+      "pos": [
+        "ADJ"
+      ],
+      "kind": "emotion_label",
+      "strength": "strong",
+      "valence": -0.9,
+      "arousal": 0.8,
+      "emotions": {
+        "sadness": 0.9
+      },
+      "source": "curated:gemini-2026-09",
+      "version": 1,
+      "alt_lemmas": [
+        "anguish"
+      ],
+      "lemma_evidence": "carrier",
+      "felt": "state"
+    },
+    {
+      "id": "en.emo.woeful",
+      "lemma": "woeful",
+      "pos": [
+        "ADJ"
+      ],
+      "kind": "emotion_label",
+      "strength": "strong",
+      "valence": -0.8,
+      "arousal": 0.3,
+      "emotions": {
+        "sadness": 0.9
+      },
+      "source": "curated:gemini-2026-09",
+      "version": 1,
+      "felt": "state"
+    },
+    {
+      "id": "en.emo.mournful",
+      "lemma": "mournful",
+      "pos": [
+        "ADJ"
+      ],
+      "kind": "emotion_label",
+      "strength": "strong",
+      "valence": -0.7,
+      "arousal": 0.4,
+      "emotions": {
+        "sadness": 0.9
+      },
+      "source": "curated:gemini-2026-09",
+      "version": 1,
+      "felt": "state"
+    },
+    {
+      "id": "en.emo.melancholy",
+      "lemma": "melancholy",
+      "pos": [
+        "ADJ"
+      ],
+      "kind": "emotion_label",
+      "strength": "strong",
+      "valence": -0.6,
+      "arousal": 0.3,
+      "emotions": {
+        "sadness": 0.9
+      },
+      "source": "curated:gemini-2026-09",
+      "version": 1,
+      "felt": "state"
+    },
+    {
+      "id": "en.emo.glum",
+      "lemma": "glum",
+      "pos": [
+        "ADJ"
+      ],
+      "kind": "emotion_label",
+      "strength": "strong",
+      "valence": -0.5,
+      "arousal": 0.3,
+      "emotions": {
+        "sadness": 0.9
+      },
+      "source": "curated:gemini-2026-09",
+      "version": 1,
+      "felt": "state"
+    },
+    {
+      "id": "en.emo.morose",
+      "lemma": "morose",
+      "pos": [
+        "ADJ"
+      ],
+      "kind": "emotion_label",
+      "strength": "strong",
+      "valence": -0.6,
+      "arousal": 0.3,
+      "emotions": {
+        "sadness": 0.9
+      },
+      "source": "curated:gemini-2026-09",
+      "version": 1,
+      "felt": "trait"
+    },
+    {
+      "id": "en.emo.sullen",
+      "lemma": "sullen",
+      "pos": [
+        "ADJ"
+      ],
+      "kind": "emotion_label",
+      "strength": "strong",
+      "valence": -0.6,
+      "arousal": 0.4,
+      "emotions": {
+        "anger": 0.9
+      },
+      "source": "curated:gemini-2026-09",
+      "version": 1,
+      "felt": "state"
+    },
+    {
+      "id": "en.emo.sulky",
+      "lemma": "sulky",
+      "pos": [
+        "ADJ"
+      ],
+      "kind": "emotion_label",
+      "strength": "strong",
+      "valence": -0.5,
+      "arousal": 0.4,
+      "emotions": {
+        "anger": 0.9
+      },
+      "source": "curated:gemini-2026-09",
+      "version": 1,
+      "felt": "state"
+    },
+    {
+      "id": "en.emo.petulant",
+      "lemma": "petulant",
+      "pos": [
+        "ADJ"
+      ],
+      "kind": "emotion_label",
+      "strength": "strong",
+      "valence": -0.5,
+      "arousal": 0.5,
+      "emotions": {
+        "anger": 0.9
+      },
+      "source": "curated:gemini-2026-09",
+      "version": 1,
+      "felt": "trait"
+    },
+    {
+      "id": "en.emo.peevish",
+      "lemma": "peevish",
+      "pos": [
+        "ADJ"
+      ],
+      "kind": "emotion_label",
+      "strength": "strong",
+      "valence": -0.5,
+      "arousal": 0.5,
+      "emotions": {
+        "anger": 0.9
+      },
+      "source": "curated:gemini-2026-09",
+      "version": 1,
+      "felt": "trait"
+    },
+    {
+      "id": "en.emo.querulous",
+      "lemma": "querulous",
+      "pos": [
+        "ADJ"
+      ],
+      "kind": "emotion_label",
+      "strength": "strong",
+      "valence": -0.5,
+      "arousal": 0.5,
+      "emotions": {
+        "anger": 0.9
+      },
+      "source": "curated:gemini-2026-09",
+      "version": 1,
+      "felt": "trait"
+    },
+    {
+      "id": "en.emo.wrathful",
+      "lemma": "wrathful",
+      "pos": [
+        "ADJ"
+      ],
+      "kind": "emotion_label",
+      "strength": "strong",
+      "valence": -0.9,
+      "arousal": 0.9,
+      "emotions": {
+        "anger": 0.9
+      },
+      "source": "curated:gemini-2026-09",
+      "version": 1,
+      "felt": "state"
+    },
+    {
+      "id": "en.emo.livid",
+      "lemma": "livid",
+      "pos": [
+        "ADJ"
+      ],
+      "kind": "emotion_label",
+      "strength": "strong",
+      "valence": -0.9,
+      "arousal": 0.9,
+      "emotions": {
+        "anger": 0.9
+      },
+      "source": "curated:gemini-2026-09",
+      "version": 1,
+      "felt": "state"
+    },
+    {
+      "id": "en.emo.infuriated",
+      "lemma": "infuriated",
+      "pos": [
+        "ADJ"
+      ],
+      "kind": "emotion_label",
+      "strength": "strong",
+      "valence": -0.9,
+      "arousal": 0.9,
+      "emotions": {
+        "anger": 0.9
+      },
+      "source": "curated:gemini-2026-09",
+      "version": 1,
+      "alt_lemmas": [
+        "infuriate"
+      ],
+      "lemma_evidence": "carrier",
+      "felt": "state"
+    },
+    {
+      "id": "en.emo.incensed",
+      "lemma": "incensed",
+      "pos": [
+        "ADJ"
+      ],
+      "kind": "emotion_label",
+      "strength": "strong",
+      "valence": -0.8,
+      "arousal": 0.8,
+      "emotions": {
+        "anger": 0.9
+      },
+      "source": "curated:gemini-2026-09",
+      "version": 1,
+      "alt_lemmas": [
+        "incense"
+      ],
+      "lemma_evidence": "carrier",
+      "felt": "state"
+    },
+    {
+      "id": "en.emo.irate",
+      "lemma": "irate",
+      "pos": [
+        "ADJ"
+      ],
+      "kind": "emotion_label",
+      "strength": "strong",
+      "valence": -0.8,
+      "arousal": 0.8,
+      "emotions": {
+        "anger": 0.9
+      },
+      "source": "curated:gemini-2026-09",
+      "version": 1,
+      "felt": "state"
+    },
+    {
+      "id": "en.emo.choleric",
+      "lemma": "choleric",
+      "pos": [
+        "ADJ"
+      ],
+      "kind": "emotion_label",
+      "strength": "strong",
+      "valence": -0.7,
+      "arousal": 0.7,
+      "emotions": {
+        "anger": 0.9
+      },
+      "source": "curated:gemini-2026-09",
+      "version": 1,
+      "felt": "trait"
+    },
+    {
+      "id": "en.emo.cross",
+      "lemma": "cross",
+      "pos": [
+        "ADJ"
+      ],
+      "kind": "emotion_label",
+      "strength": "weak",
+      "valence": -0.4,
+      "arousal": 0.5,
+      "emotions": {
+        "anger": 0.9
+      },
+      "source": "curated:gemini-2026-09",
+      "version": 1,
+      "note": "spatial/geometric (cross the road) vs angry demeanor",
+      "felt": "state"
+    },
+    {
+      "id": "en.emo.touchy",
+      "lemma": "touchy",
+      "pos": [
+        "ADJ"
+      ],
+      "kind": "emotion_label",
+      "strength": "weak",
+      "valence": -0.4,
+      "arousal": 0.5,
+      "emotions": {
+        "anger": 0.9
+      },
+      "source": "curated:gemini-2026-09",
+      "version": 1,
+      "note": "tactile sensitivity vs easily offended/irritable",
+      "felt": "trait"
+    },
+    {
+      "id": "en.emo.crabby",
+      "lemma": "crabby",
+      "pos": [
+        "ADJ"
+      ],
+      "kind": "emotion_label",
+      "strength": "strong",
+      "valence": -0.5,
+      "arousal": 0.5,
+      "emotions": {
+        "anger": 0.9
+      },
+      "source": "curated:gemini-2026-09",
+      "version": 1,
+      "felt": "trait"
+    },
+    {
+      "id": "en.emo.grumpy",
+      "lemma": "grumpy",
+      "pos": [
+        "ADJ"
+      ],
+      "kind": "emotion_label",
+      "strength": "strong",
+      "valence": -0.5,
+      "arousal": 0.4,
+      "emotions": {
+        "anger": 0.9
+      },
+      "source": "curated:gemini-2026-09",
+      "version": 1,
+      "felt": "trait"
+    },
+    {
+      "id": "en.emo.cantankerous",
+      "lemma": "cantankerous",
+      "pos": [
+        "ADJ"
+      ],
+      "kind": "emotion_label",
+      "strength": "strong",
+      "valence": -0.6,
+      "arousal": 0.5,
+      "emotions": {
+        "anger": 0.9
+      },
+      "source": "curated:gemini-2026-09",
+      "version": 1,
+      "felt": "trait"
+    },
+    {
+      "id": "en.emo.apprehensive",
+      "lemma": "apprehensive",
+      "pos": [
+        "ADJ"
+      ],
+      "kind": "emotion_label",
+      "strength": "strong",
+      "valence": -0.5,
+      "arousal": 0.6,
+      "emotions": {
+        "fear": 0.9
+      },
+      "source": "curated:gemini-2026-09",
+      "version": 1,
+      "felt": "state"
+    },
+    {
+      "id": "en.emo.dreadful",
+      "lemma": "dreadful",
+      "pos": [
+        "ADJ"
+      ],
+      "kind": "emotion_label",
+      "strength": "strong",
+      "valence": -0.7,
+      "arousal": 0.7,
+      "emotions": {
+        "fear": 0.9
+      },
+      "source": "curated:gemini-2026-09",
+      "version": 1,
+      "felt": "evaluative"
+    },
+    {
+      "id": "en.emo.timid",
+      "lemma": "timid",
+      "pos": [
+        "ADJ"
+      ],
+      "kind": "emotion_label",
+      "strength": "strong",
+      "valence": -0.3,
+      "arousal": 0.4,
+      "emotions": {
+        "fear": 0.9
+      },
+      "source": "curated:gemini-2026-09",
+      "version": 1,
+      "felt": "trait"
+    },
+    {
+      "id": "en.emo.timorous",
+      "lemma": "timorous",
+      "pos": [
+        "ADJ"
+      ],
+      "kind": "emotion_label",
+      "strength": "strong",
+      "valence": -0.4,
+      "arousal": 0.4,
+      "emotions": {
+        "fear": 0.9
+      },
+      "source": "curated:gemini-2026-09",
+      "version": 1,
+      "felt": "trait"
+    },
+    {
+      "id": "en.emo.cowed",
+      "lemma": "cowed",
+      "pos": [
+        "ADJ"
+      ],
+      "kind": "emotion_label",
+      "strength": "strong",
+      "valence": -0.6,
+      "arousal": 0.5,
+      "emotions": {
+        "fear": 0.9
+      },
+      "source": "curated:gemini-2026-09",
+      "version": 1,
+      "alt_lemmas": [
+        "cow"
+      ],
+      "lemma_evidence": "carrier",
+      "felt": "state"
+    },
+    {
+      "id": "en.emo.daunted",
+      "lemma": "daunted",
+      "pos": [
+        "ADJ"
+      ],
+      "kind": "emotion_label",
+      "strength": "strong",
+      "valence": -0.5,
+      "arousal": 0.5,
+      "emotions": {
+        "fear": 0.9
+      },
+      "source": "curated:gemini-2026-09",
+      "version": 1,
+      "alt_lemmas": [
+        "daunt"
+      ],
+      "lemma_evidence": "carrier",
+      "felt": "state"
+    },
+    {
+      "id": "en.emo.rattled",
+      "lemma": "rattled",
+      "pos": [
+        "ADJ"
+      ],
+      "kind": "emotion_label",
+      "strength": "strong",
+      "valence": -0.5,
+      "arousal": 0.6,
+      "emotions": {
+        "fear": 0.9
+      },
+      "source": "curated:gemini-2026-09",
+      "version": 1,
+      "alt_lemmas": [
+        "rattle"
+      ],
+      "lemma_evidence": "carrier",
+      "felt": "state"
+    },
+    {
+      "id": "en.emo.flustered",
+      "lemma": "flustered",
+      "pos": [
+        "ADJ"
+      ],
+      "kind": "emotion_label",
+      "strength": "strong",
+      "valence": -0.4,
+      "arousal": 0.6,
+      "emotions": {
+        "surprise": 0.9
+      },
+      "source": "curated:gemini-2026-09",
+      "version": 1,
+      "alt_lemmas": [
+        "fluster"
+      ],
+      "lemma_evidence": "carrier",
+      "felt": "state"
+    },
+    {
+      "id": "en.emo.perplexed",
+      "lemma": "perplexed",
+      "pos": [
+        "ADJ"
+      ],
+      "kind": "emotion_label",
+      "strength": "strong",
+      "valence": -0.2,
+      "arousal": 0.5,
+      "emotions": {
+        "surprise": 0.9
+      },
+      "source": "curated:gemini-2026-09",
+      "version": 1,
+      "alt_lemmas": [
+        "perplex"
+      ],
+      "lemma_evidence": "carrier",
+      "felt": "state"
+    },
+    {
+      "id": "en.emo.bewildered",
+      "lemma": "bewildered",
+      "pos": [
+        "ADJ"
+      ],
+      "kind": "emotion_label",
+      "strength": "strong",
+      "valence": -0.3,
+      "arousal": 0.6,
+      "emotions": {
+        "surprise": 0.9
+      },
+      "source": "curated:gemini-2026-09",
+      "version": 1,
+      "alt_lemmas": [
+        "bewilder"
+      ],
+      "lemma_evidence": "carrier",
+      "felt": "state"
+    },
+    {
+      "id": "en.emo.baffled",
+      "lemma": "baffled",
+      "pos": [
+        "ADJ"
+      ],
+      "kind": "emotion_label",
+      "strength": "strong",
+      "valence": -0.2,
+      "arousal": 0.5,
+      "emotions": {
+        "surprise": 0.9
+      },
+      "source": "curated:gemini-2026-09",
+      "version": 1,
+      "alt_lemmas": [
+        "baffle"
+      ],
+      "lemma_evidence": "carrier",
+      "felt": "state"
+    },
+    {
+      "id": "en.emo.mystified",
+      "lemma": "mystified",
+      "pos": [
+        "ADJ"
+      ],
+      "kind": "emotion_label",
+      "strength": "strong",
+      "valence": 0.0,
+      "arousal": 0.5,
+      "emotions": {
+        "surprise": 0.9
+      },
+      "source": "curated:gemini-2026-09",
+      "version": 1,
+      "alt_lemmas": [
+        "mystify"
+      ],
+      "lemma_evidence": "carrier",
+      "felt": "state"
+    },
+    {
+      "id": "en.emo.nonplussed",
+      "lemma": "nonplussed",
+      "pos": [
+        "ADJ"
+      ],
+      "kind": "emotion_label",
+      "strength": "strong",
+      "valence": -0.2,
+      "arousal": 0.5,
+      "emotions": {
+        "surprise": 0.9
+      },
+      "source": "curated:gemini-2026-09",
+      "version": 1,
+      "alt_lemmas": [
+        "nonplus"
+      ],
+      "lemma_evidence": "carrier",
+      "felt": "state"
+    },
+    {
+      "id": "en.emo.dumbfounded",
+      "lemma": "dumbfounded",
+      "pos": [
+        "ADJ"
+      ],
+      "kind": "emotion_label",
+      "strength": "strong",
+      "valence": -0.2,
+      "arousal": 0.7,
+      "emotions": {
+        "surprise": 0.9
+      },
+      "source": "curated:gemini-2026-09",
+      "version": 1,
+      "alt_lemmas": [
+        "dumbfound"
+      ],
+      "lemma_evidence": "carrier",
+      "felt": "state"
+    },
+    {
+      "id": "en.emo.flabbergasted",
+      "lemma": "flabbergasted",
+      "pos": [
+        "ADJ"
+      ],
+      "kind": "emotion_label",
+      "strength": "strong",
+      "valence": 0.0,
+      "arousal": 0.8,
+      "emotions": {
+        "surprise": 0.9
+      },
+      "source": "curated:gemini-2026-09",
+      "version": 1,
+      "alt_lemmas": [
+        "flabbergast"
+      ],
+      "lemma_evidence": "carrier",
+      "felt": "state"
+    },
+    {
+      "id": "en.emo.stupefied",
+      "lemma": "stupefied",
+      "pos": [
+        "ADJ"
+      ],
+      "kind": "emotion_label",
+      "strength": "strong",
+      "valence": -0.3,
+      "arousal": 0.6,
+      "emotions": {
+        "surprise": 0.9
+      },
+      "source": "curated:gemini-2026-09",
+      "version": 1,
+      "alt_lemmas": [
+        "stupefy"
+      ],
+      "lemma_evidence": "carrier",
+      "felt": "state"
+    },
+    {
+      "id": "en.emo.awestruck",
+      "lemma": "awestruck",
+      "pos": [
+        "ADJ"
+      ],
+      "kind": "emotion_label",
+      "strength": "strong",
+      "valence": 0.6,
+      "arousal": 0.8,
+      "emotions": {
+        "surprise": 0.9
+      },
+      "source": "curated:gemini-2026-09",
+      "version": 1,
+      "felt": "state"
+    },
+    {
+      "id": "en.emo.wonderstruck",
+      "lemma": "wonderstruck",
+      "pos": [
+        "ADJ"
+      ],
+      "kind": "emotion_label",
+      "strength": "strong",
+      "valence": 0.7,
+      "arousal": 0.8,
+      "emotions": {
+        "surprise": 0.9
+      },
+      "source": "curated:gemini-2026-09",
+      "version": 1,
+      "spell_ok": "literary compound adjective meaning struck with wonder",
+      "felt": "state"
+    },
+    {
+      "id": "en.emo.enchanted",
+      "lemma": "enchanted",
+      "pos": [
+        "ADJ"
+      ],
+      "kind": "emotion_label",
+      "strength": "strong",
+      "valence": 0.8,
+      "arousal": 0.7,
+      "emotions": {
+        "joy": 0.9
+      },
+      "source": "curated:gemini-2026-09",
+      "version": 1,
+      "alt_lemmas": [
+        "enchant"
+      ],
+      "lemma_evidence": "carrier",
+      "felt": "state"
+    },
+    {
+      "id": "en.emo.enthralled",
+      "lemma": "enthralled",
+      "pos": [
+        "ADJ"
+      ],
+      "kind": "emotion_label",
+      "strength": "strong",
+      "valence": 0.8,
+      "arousal": 0.7,
+      "emotions": {
+        "joy": 0.9
+      },
+      "source": "curated:gemini-2026-09",
+      "version": 1,
+      "alt_lemmas": [
+        "enthral",
+        "enthrall"
+      ],
+      "lemma_evidence": "carrier",
+      "felt": "state"
+    },
+    {
+      "id": "en.emo.rapturous",
+      "lemma": "rapturous",
+      "pos": [
+        "ADJ"
+      ],
+      "kind": "emotion_label",
+      "strength": "strong",
+      "valence": 0.9,
+      "arousal": 0.8,
+      "emotions": {
+        "joy": 0.9
+      },
+      "source": "curated:gemini-2026-09",
+      "version": 1,
+      "felt": "state"
+    },
+    {
+      "id": "en.emo.blissful",
+      "lemma": "blissful",
+      "pos": [
+        "ADJ"
+      ],
+      "kind": "emotion_label",
+      "strength": "strong",
+      "valence": 0.9,
+      "arousal": 0.5,
+      "emotions": {
+        "joy": 0.9
+      },
+      "source": "curated:gemini-2026-09",
+      "version": 1,
+      "felt": "state"
+    },
+    {
+      "id": "en.emo.serene",
+      "lemma": "serene",
+      "pos": [
+        "ADJ"
+      ],
+      "kind": "emotion_label",
+      "strength": "strong",
+      "valence": 0.7,
+      "arousal": 0.2,
+      "emotions": {
+        "trust": 0.9
+      },
+      "source": "curated:gemini-2026-09",
+      "version": 1,
+      "felt": "state"
+    },
+    {
+      "id": "en.emo.placid",
+      "lemma": "placid",
+      "pos": [
+        "ADJ"
+      ],
+      "kind": "emotion_label",
+      "strength": "strong",
+      "valence": 0.6,
+      "arousal": 0.2,
+      "emotions": {
+        "trust": 0.9
+      },
+      "source": "curated:gemini-2026-09",
+      "version": 1,
+      "felt": "trait"
+    },
+    {
+      "id": "en.emo.cheerful",
+      "lemma": "cheerful",
+      "pos": [
+        "ADJ"
+      ],
+      "kind": "emotion_label",
+      "strength": "strong",
+      "valence": 0.7,
+      "arousal": 0.6,
+      "emotions": {
+        "joy": 0.9
+      },
+      "source": "curated:gemini-2026-09",
+      "version": 1,
+      "felt": "trait"
+    },
+    {
+      "id": "en.emo.buoyant",
+      "lemma": "buoyant",
+      "pos": [
+        "ADJ"
+      ],
+      "kind": "emotion_label",
+      "strength": "strong",
+      "valence": 0.7,
+      "arousal": 0.6,
+      "emotions": {
+        "joy": 0.9
+      },
+      "source": "curated:gemini-2026-09",
+      "version": 1,
+      "felt": "state"
+    },
+    {
+      "id": "en.emo.lighthearted",
+      "lemma": "lighthearted",
+      "pos": [
+        "ADJ"
+      ],
+      "kind": "emotion_label",
+      "strength": "strong",
+      "valence": 0.7,
+      "arousal": 0.5,
+      "emotions": {
+        "joy": 0.9
+      },
+      "source": "curated:gemini-2026-09",
+      "version": 1,
+      "alt_lemmas": [
+        "lighthearte"
+      ],
+      "lemma_evidence": "carrier",
+      "felt": "state"
+    },
+    {
+      "id": "en.emo.gleeful",
+      "lemma": "gleeful",
+      "pos": [
+        "ADJ"
+      ],
+      "kind": "emotion_label",
+      "strength": "strong",
+      "valence": 0.8,
+      "arousal": 0.7,
+      "emotions": {
+        "joy": 0.9
+      },
+      "source": "curated:gemini-2026-09",
+      "version": 1,
+      "felt": "state"
+    },
+    {
+      "id": "en.emo.jovial",
+      "lemma": "jovial",
+      "pos": [
+        "ADJ"
+      ],
+      "kind": "emotion_label",
+      "strength": "strong",
+      "valence": 0.7,
+      "arousal": 0.6,
+      "emotions": {
+        "joy": 0.9
+      },
+      "source": "curated:gemini-2026-09",
+      "version": 1,
+      "felt": "trait"
+    },
+    {
+      "id": "en.emo.mirthful",
+      "lemma": "mirthful",
+      "pos": [
+        "ADJ"
+      ],
+      "kind": "emotion_label",
+      "strength": "strong",
+      "valence": 0.7,
+      "arousal": 0.6,
+      "emotions": {
+        "joy": 0.9
+      },
+      "source": "curated:gemini-2026-09",
+      "version": 1,
+      "felt": "state"
+    },
+    {
+      "id": "en.emo.merry",
+      "lemma": "merry",
+      "pos": [
+        "ADJ"
+      ],
+      "kind": "emotion_label",
+      "strength": "strong",
+      "valence": 0.7,
+      "arousal": 0.6,
+      "emotions": {
+        "joy": 0.9
+      },
+      "source": "curated:gemini-2026-09",
+      "version": 1,
+      "felt": "state"
+    },
+    {
+      "id": "en.emo.exultant",
+      "lemma": "exultant",
+      "pos": [
+        "ADJ"
+      ],
+      "kind": "emotion_label",
+      "strength": "strong",
+      "valence": 0.8,
+      "arousal": 0.8,
+      "emotions": {
+        "joy": 0.9
+      },
+      "source": "curated:gemini-2026-09",
+      "version": 1,
+      "felt": "state"
+    },
+    {
+      "id": "en.emo.triumphant",
+      "lemma": "triumphant",
+      "pos": [
+        "ADJ"
+      ],
+      "kind": "emotion_label",
+      "strength": "strong",
+      "valence": 0.8,
+      "arousal": 0.8,
+      "emotions": {
+        "joy": 0.9
+      },
+      "source": "curated:gemini-2026-09",
+      "version": 1,
+      "felt": "state"
+    },
+    {
+      "id": "en.emo.confident",
+      "lemma": "confident",
+      "pos": [
+        "ADJ"
+      ],
+      "kind": "emotion_label",
+      "strength": "strong",
+      "valence": 0.7,
+      "arousal": 0.6,
+      "emotions": {
+        "trust": 0.9
+      },
+      "source": "curated:gemini-2026-09",
+      "version": 1,
+      "felt": "state"
+    },
+    {
+      "id": "en.emo.sanguine",
+      "lemma": "sanguine",
+      "pos": [
+        "ADJ"
+      ],
+      "kind": "emotion_label",
+      "strength": "strong",
+      "valence": 0.6,
+      "arousal": 0.5,
+      "emotions": {
+        "trust": 0.9
+      },
+      "source": "curated:gemini-2026-09",
+      "version": 1,
+      "felt": "trait"
+    },
+    {
+      "id": "en.emo.optimistic",
+      "lemma": "optimistic",
+      "pos": [
+        "ADJ"
+      ],
+      "kind": "emotion_label",
+      "strength": "strong",
+      "valence": 0.7,
+      "arousal": 0.5,
+      "emotions": {
+        "anticipation": 0.9
+      },
+      "source": "curated:gemini-2026-09",
+      "version": 1,
+      "felt": "trait"
+    },
+    {
+      "id": "en.emo.trusting",
+      "lemma": "trusting",
+      "pos": [
+        "ADJ"
+      ],
+      "kind": "emotion_label",
+      "strength": "strong",
+      "valence": 0.7,
+      "arousal": 0.4,
+      "emotions": {
+        "trust": 0.9
+      },
+      "source": "curated:gemini-2026-09",
+      "version": 1,
+      "alt_lemmas": [
+        "trust"
+      ],
+      "lemma_evidence": "carrier",
+      "felt": "trait"
+    },
+    {
+      "id": "en.emo.affectionate",
+      "lemma": "affectionate",
+      "pos": [
+        "ADJ"
+      ],
+      "kind": "emotion_label",
+      "strength": "strong",
+      "valence": 0.8,
+      "arousal": 0.5,
+      "emotions": {
+        "joy": 0.9
+      },
+      "source": "curated:gemini-2026-09",
+      "version": 1,
+      "felt": "trait"
+    },
+    {
+      "id": "en.emo.fond",
+      "lemma": "fond",
+      "pos": [
+        "ADJ"
+      ],
+      "kind": "emotion_label",
+      "strength": "strong",
+      "valence": 0.6,
+      "arousal": 0.4,
+      "emotions": {
+        "joy": 0.9
+      },
+      "source": "curated:gemini-2026-09",
+      "version": 1,
+      "felt": "state"
+    },
+    {
+      "id": "en.emo.tender",
+      "lemma": "tender",
+      "pos": [
+        "ADJ"
+      ],
+      "kind": "emotion_label",
+      "strength": "weak",
+      "valence": 0.7,
+      "arousal": 0.3,
+      "emotions": {
+        "joy": 0.9
+      },
+      "source": "curated:gemini-2026-09",
+      "version": 1,
+      "note": "meat tenderness vs gentle affection",
+      "felt": "state"
+    },
+    {
+      "id": "en.emo.loving",
+      "lemma": "loving",
+      "pos": [
+        "ADJ"
+      ],
+      "kind": "emotion_label",
+      "strength": "strong",
+      "valence": 0.9,
+      "arousal": 0.6,
+      "emotions": {
+        "joy": 0.9
+      },
+      "source": "curated:gemini-2026-09",
+      "version": 1,
+      "alt_lemmas": [
+        "love"
+      ],
+      "lemma_evidence": "carrier",
+      "felt": "state"
+    },
+    {
+      "id": "en.emo.devoted",
+      "lemma": "devoted",
+      "pos": [
+        "ADJ"
+      ],
+      "kind": "emotion_label",
+      "strength": "strong",
+      "valence": 0.8,
+      "arousal": 0.5,
+      "emotions": {
+        "trust": 0.9
+      },
+      "source": "curated:gemini-2026-09",
+      "version": 1,
+      "alt_lemmas": [
+        "devote"
+      ],
+      "lemma_evidence": "carrier",
+      "felt": "state"
+    },
+    {
+      "id": "en.emo.adoring",
+      "lemma": "adoring",
+      "pos": [
+        "ADJ"
+      ],
+      "kind": "emotion_label",
+      "strength": "strong",
+      "valence": 0.9,
+      "arousal": 0.7,
+      "emotions": {
+        "joy": 0.9
+      },
+      "source": "curated:gemini-2026-09",
+      "version": 1,
+      "alt_lemmas": [
+        "adore"
+      ],
+      "lemma_evidence": "carrier",
+      "felt": "state"
+    },
+    {
+      "id": "en.emo.sympathetic",
+      "lemma": "sympathetic",
+      "pos": [
+        "ADJ"
+      ],
+      "kind": "emotion_label",
+      "strength": "strong",
+      "valence": 0.6,
+      "arousal": 0.4,
+      "emotions": {
+        "trust": 0.9
+      },
+      "source": "curated:gemini-2026-09",
+      "version": 1,
+      "felt": "state"
+    },
+    {
+      "id": "en.emo.compassionate",
+      "lemma": "compassionate",
+      "pos": [
+        "ADJ"
+      ],
+      "kind": "emotion_label",
+      "strength": "strong",
+      "valence": 0.7,
+      "arousal": 0.4,
+      "emotions": {
+        "trust": 0.9
+      },
+      "source": "curated:gemini-2026-09",
+      "version": 1,
+      "felt": "trait"
+    },
+    {
+      "id": "en.emo.pitiful",
+      "lemma": "pitiful",
+      "pos": [
+        "ADJ"
+      ],
+      "kind": "emotion_label",
+      "strength": "strong",
+      "valence": -0.5,
+      "arousal": 0.4,
+      "emotions": {
+        "sadness": 0.9
+      },
+      "source": "curated:gemini-2026-09",
+      "version": 1,
+      "felt": "evaluative"
+    },
+    {
+      "id": "en.emo.envious",
+      "lemma": "envious",
+      "pos": [
+        "ADJ"
+      ],
+      "kind": "emotion_label",
+      "strength": "strong",
+      "valence": -0.7,
+      "arousal": 0.6,
+      "emotions": {
+        "disgust": 0.9
+      },
+      "source": "curated:gemini-2026-09",
+      "version": 1,
+      "felt": "state"
+    },
+    {
+      "id": "en.emo.covetous",
+      "lemma": "covetous",
+      "pos": [
+        "ADJ"
+      ],
+      "kind": "emotion_label",
+      "strength": "strong",
+      "valence": -0.5,
+      "arousal": 0.6,
+      "emotions": {
+        "anticipation": 0.9
+      },
+      "source": "curated:gemini-2026-09",
+      "version": 1,
+      "felt": "trait"
+    },
+    {
+      "id": "en.emo.begrudging",
+      "lemma": "begrudging",
+      "pos": [
+        "ADJ"
+      ],
+      "kind": "emotion_label",
+      "strength": "strong",
+      "valence": -0.6,
+      "arousal": 0.5,
+      "emotions": {
+        "anger": 0.9
+      },
+      "source": "curated:gemini-2026-09",
+      "version": 1,
+      "alt_lemmas": [
+        "begrudge"
+      ],
+      "lemma_evidence": "carrier",
+      "felt": "state"
+    },
+    {
+      "id": "en.emo.malicious",
+      "lemma": "malicious",
+      "pos": [
+        "ADJ"
+      ],
+      "kind": "emotion_label",
+      "strength": "strong",
+      "valence": -0.8,
+      "arousal": 0.7,
+      "emotions": {
+        "disgust": 0.9
+      },
+      "source": "curated:gemini-2026-09",
+      "version": 1,
+      "felt": "trait"
+    },
+    {
+      "id": "en.emo.hateful",
+      "lemma": "hateful",
+      "pos": [
+        "ADJ"
+      ],
+      "kind": "emotion_label",
+      "strength": "strong",
+      "valence": -0.9,
+      "arousal": 0.8,
+      "emotions": {
+        "disgust": 0.9
+      },
+      "source": "curated:gemini-2026-09",
+      "version": 1,
+      "felt": "evaluative"
+    },
+    {
+      "id": "en.emo.loathsome",
+      "lemma": "loathsome",
+      "pos": [
+        "ADJ"
+      ],
+      "kind": "emotion_label",
+      "strength": "strong",
+      "valence": -0.8,
+      "arousal": 0.7,
+      "emotions": {
+        "disgust": 0.9
+      },
+      "source": "curated:gemini-2026-09",
+      "version": 1,
+      "felt": "evaluative"
+    },
+    {
+      "id": "en.emo.abhorrent",
+      "lemma": "abhorrent",
+      "pos": [
+        "ADJ"
+      ],
+      "kind": "emotion_label",
+      "strength": "strong",
+      "valence": -0.9,
+      "arousal": 0.8,
+      "emotions": {
+        "disgust": 0.9
+      },
+      "source": "curated:gemini-2026-09",
+      "version": 1,
+      "felt": "evaluative"
+    },
+    {
+      "id": "en.emo.repulsed",
+      "lemma": "repulsed",
+      "pos": [
+        "ADJ"
+      ],
+      "kind": "emotion_label",
+      "strength": "strong",
+      "valence": -0.8,
+      "arousal": 0.7,
+      "emotions": {
+        "disgust": 0.9
+      },
+      "source": "curated:gemini-2026-09",
+      "version": 1,
+      "alt_lemmas": [
+        "repulse"
+      ],
+      "lemma_evidence": "carrier",
+      "felt": "state"
+    },
+    {
+      "id": "en.emo.revolted",
+      "lemma": "revolted",
+      "pos": [
+        "ADJ"
+      ],
+      "kind": "emotion_label",
+      "strength": "strong",
+      "valence": -0.8,
+      "arousal": 0.8,
+      "emotions": {
+        "disgust": 0.9
+      },
+      "source": "curated:gemini-2026-09",
+      "version": 1,
+      "alt_lemmas": [
+        "revolt"
+      ],
+      "lemma_evidence": "carrier",
+      "felt": "state"
+    },
+    {
+      "id": "en.emo.nauseated",
+      "lemma": "nauseated",
+      "pos": [
+        "ADJ"
+      ],
+      "kind": "emotion_label",
+      "strength": "strong",
+      "valence": -0.8,
+      "arousal": 0.6,
+      "emotions": {
+        "disgust": 0.9
+      },
+      "source": "curated:gemini-2026-09",
+      "version": 1,
+      "alt_lemmas": [
+        "nauseate"
+      ],
+      "lemma_evidence": "carrier",
+      "felt": "state"
+    },
+    {
+      "id": "en.emo.displeased",
+      "lemma": "displeased",
+      "pos": [
+        "ADJ"
+      ],
+      "kind": "emotion_label",
+      "strength": "strong",
+      "valence": -0.5,
+      "arousal": 0.4,
+      "emotions": {
+        "anger": 0.9
+      },
+      "source": "curated:gemini-2026-09",
+      "version": 1,
+      "alt_lemmas": [
+        "displease"
+      ],
+      "lemma_evidence": "carrier",
+      "felt": "state"
+    },
+    {
+      "id": "en.emo.dissatisfied",
+      "lemma": "dissatisfied",
+      "pos": [
+        "ADJ"
+      ],
+      "kind": "emotion_label",
+      "strength": "strong",
+      "valence": -0.5,
+      "arousal": 0.4,
+      "emotions": {
+        "sadness": 0.9
+      },
+      "source": "curated:gemini-2026-09",
+      "version": 1,
+      "alt_lemmas": [
+        "dissatisfy"
+      ],
+      "lemma_evidence": "carrier",
+      "felt": "state"
+    },
+    {
+      "id": "en.emo.disillusioned",
+      "lemma": "disillusioned",
+      "pos": [
+        "ADJ"
+      ],
+      "kind": "emotion_label",
+      "strength": "strong",
+      "valence": -0.6,
+      "arousal": 0.3,
+      "emotions": {
+        "sadness": 0.9
+      },
+      "source": "curated:gemini-2026-09",
+      "version": 1,
+      "alt_lemmas": [
+        "disillusion"
+      ],
+      "lemma_evidence": "carrier",
+      "felt": "state"
+    },
+    {
+      "id": "en.emo.cynical",
+      "lemma": "cynical",
+      "pos": [
+        "ADJ"
+      ],
+      "kind": "emotion_label",
+      "strength": "strong",
+      "valence": -0.5,
+      "arousal": 0.4,
+      "emotions": {
+        "disgust": 0.9
+      },
+      "source": "curated:gemini-2026-09",
+      "version": 1,
+      "felt": "trait"
+    },
+    {
+      "id": "en.emo.weary",
+      "lemma": "weary",
+      "pos": [
+        "ADJ"
+      ],
+      "kind": "emotion_label",
+      "strength": "strong",
+      "valence": -0.4,
+      "arousal": 0.2,
+      "emotions": {
+        "sadness": 0.9
+      },
+      "source": "curated:gemini-2026-09",
+      "version": 1,
+      "felt": "state"
+    },
+    {
+      "id": "en.emo.exhausted",
+      "lemma": "exhausted",
+      "pos": [
+        "ADJ"
+      ],
+      "kind": "emotion_label",
+      "strength": "strong",
+      "valence": -0.4,
+      "arousal": 0.3,
+      "emotions": {
+        "sadness": 0.9
+      },
+      "source": "curated:gemini-2026-09",
+      "version": 1,
+      "alt_lemmas": [
+        "exhaust"
+      ],
+      "lemma_evidence": "carrier",
+      "felt": "state"
+    },
+    {
+      "id": "en.emo.drained",
+      "lemma": "drained",
+      "pos": [
+        "ADJ"
+      ],
+      "kind": "emotion_label",
+      "strength": "strong",
+      "valence": -0.5,
+      "arousal": 0.2,
+      "emotions": {
+        "sadness": 0.9
+      },
+      "source": "curated:gemini-2026-09",
+      "version": 1,
+      "alt_lemmas": [
+        "drain"
+      ],
+      "lemma_evidence": "carrier",
+      "felt": "state"
+    },
+    {
+      "id": "en.emo.listless",
+      "lemma": "listless",
+      "pos": [
+        "ADJ"
+      ],
+      "kind": "emotion_label",
+      "strength": "strong",
+      "valence": -0.4,
+      "arousal": 0.2,
+      "emotions": {
+        "sadness": 0.9
+      },
+      "source": "curated:gemini-2026-09",
+      "version": 1,
+      "felt": "state"
+    },
+    {
+      "id": "en.emo.apathetic",
+      "lemma": "apathetic",
+      "pos": [
+        "ADJ"
+      ],
+      "kind": "emotion_label",
+      "strength": "strong",
+      "valence": -0.3,
+      "arousal": 0.1,
+      "emotions": null,
+      "source": "curated:gemini-2026-09",
+      "version": 1,
+      "felt": "state"
+    },
+    {
+      "id": "en.emo.indifferent",
+      "lemma": "indifferent",
+      "pos": [
+        "ADJ"
+      ],
+      "kind": "emotion_label",
+      "strength": "strong",
+      "valence": 0.0,
+      "arousal": 0.1,
+      "emotions": null,
+      "source": "curated:gemini-2026-09",
+      "version": 1,
+      "felt": "state"
+    },
+    {
+      "id": "en.emo.curious",
+      "lemma": "curious",
+      "pos": [
+        "ADJ"
+      ],
+      "kind": "emotion_label",
+      "strength": "strong",
+      "valence": 0.5,
+      "arousal": 0.5,
+      "emotions": {
+        "anticipation": 0.9
+      },
+      "source": "curated:gemini-2026-09",
+      "version": 1,
+      "felt": "state",
+      "note": "usually state; also evaluative (strange)"
+    },
+    {
+      "id": "en.emo.inquisitive",
+      "lemma": "inquisitive",
+      "pos": [
+        "ADJ"
+      ],
+      "kind": "emotion_label",
+      "strength": "strong",
+      "valence": 0.4,
+      "arousal": 0.5,
+      "emotions": {
+        "anticipation": 0.9
+      },
+      "source": "curated:gemini-2026-09",
+      "version": 1,
+      "felt": "trait"
+    },
+    {
+      "id": "en.emo.eager",
+      "lemma": "eager",
+      "pos": [
+        "ADJ"
+      ],
+      "kind": "emotion_label",
+      "strength": "strong",
+      "valence": 0.7,
+      "arousal": 0.7,
+      "emotions": {
+        "anticipation": 0.9
+      },
+      "source": "curated:gemini-2026-09",
+      "version": 1,
+      "felt": "state"
+    },
+    {
+      "id": "en.emo.avid",
+      "lemma": "avid",
+      "pos": [
+        "ADJ"
+      ],
+      "kind": "emotion_label",
+      "strength": "strong",
+      "valence": 0.6,
+      "arousal": 0.7,
+      "emotions": {
+        "anticipation": 0.9
+      },
+      "source": "curated:gemini-2026-09",
+      "version": 1,
+      "felt": "trait"
+    },
+    {
+      "id": "en.emo.impatient",
+      "lemma": "impatient",
+      "pos": [
+        "ADJ"
+      ],
+      "kind": "emotion_label",
+      "strength": "strong",
+      "valence": -0.3,
+      "arousal": 0.7,
+      "emotions": {
+        "anticipation": 0.9
+      },
+      "source": "curated:gemini-2026-09",
+      "version": 1,
+      "felt": "state"
+    },
+    {
+      "id": "en.emo.restless",
+      "lemma": "restless",
+      "pos": [
+        "ADJ"
+      ],
+      "kind": "emotion_label",
+      "strength": "strong",
+      "valence": -0.3,
+      "arousal": 0.6,
+      "emotions": {
+        "anticipation": 0.9
+      },
+      "source": "curated:gemini-2026-09",
+      "version": 1,
+      "felt": "state"
+    },
+    {
+      "id": "en.emo.agitated",
+      "lemma": "agitated",
+      "pos": [
+        "ADJ"
+      ],
+      "kind": "emotion_label",
+      "strength": "strong",
+      "valence": -0.6,
+      "arousal": 0.8,
+      "emotions": {
+        "fear": 0.9
+      },
+      "source": "curated:gemini-2026-09",
+      "version": 1,
+      "alt_lemmas": [
+        "agitate"
+      ],
+      "lemma_evidence": "carrier",
+      "felt": "state"
+    },
+    {
+      "id": "en.emo.tense",
+      "lemma": "tense",
+      "pos": [
+        "ADJ"
+      ],
+      "kind": "emotion_label",
+      "strength": "weak",
+      "valence": -0.5,
+      "arousal": 0.7,
+      "emotions": {
+        "fear": 0.9
+      },
+      "source": "curated:gemini-2026-09",
+      "version": 1,
+      "note": "physical tension (tense muscle) vs emotional nervousness",
+      "felt": "state"
+    },
+    {
+      "id": "en.emo.jumpy",
+      "lemma": "jumpy",
+      "pos": [
+        "ADJ"
+      ],
+      "kind": "emotion_label",
+      "strength": "strong",
+      "valence": -0.4,
+      "arousal": 0.7,
+      "emotions": {
+        "fear": 0.9
+      },
+      "source": "curated:gemini-2026-09",
+      "version": 1,
+      "felt": "state"
+    },
+    {
+      "id": "en.emo.edgy",
+      "lemma": "edgy",
+      "pos": [
+        "ADJ"
+      ],
+      "kind": "emotion_label",
+      "strength": "strong",
+      "valence": -0.4,
+      "arousal": 0.6,
+      "emotions": {
+        "fear": 0.9
+      },
+      "source": "curated:gemini-2026-09",
+      "version": 1,
+      "felt": "state"
+    },
+    {
+      "id": "en.emo.frantic",
+      "lemma": "frantic",
+      "pos": [
+        "ADJ"
+      ],
+      "kind": "emotion_label",
+      "strength": "strong",
+      "valence": -0.7,
+      "arousal": 0.9,
+      "emotions": {
+        "fear": 0.9
+      },
+      "source": "curated:gemini-2026-09",
+      "version": 1,
+      "felt": "state"
+    },
+    {
+      "id": "en.emo.frenzied",
+      "lemma": "frenzied",
+      "pos": [
+        "ADJ"
+      ],
+      "kind": "emotion_label",
+      "strength": "strong",
+      "valence": -0.6,
+      "arousal": 0.9,
+      "emotions": {
+        "anger": 0.9
+      },
+      "source": "curated:gemini-2026-09",
+      "version": 1,
+      "felt": "state"
+    },
+    {
+      "id": "en.emo.hysterical",
+      "lemma": "hysterical",
+      "pos": [
+        "ADJ"
+      ],
+      "kind": "emotion_label",
+      "strength": "strong",
+      "valence": -0.8,
+      "arousal": 0.9,
+      "emotions": {
+        "fear": 0.9
+      },
+      "source": "curated:gemini-2026-09",
+      "version": 1,
+      "felt": "state"
+    },
+    {
+      "id": "en.emo.feverish",
+      "lemma": "feverish",
+      "pos": [
+        "ADJ"
+      ],
+      "kind": "emotion_label",
+      "strength": "weak",
+      "valence": 0.1,
+      "arousal": 0.8,
+      "emotions": {
+        "anticipation": 0.9
+      },
+      "source": "curated:gemini-2026-09",
+      "version": 1,
+      "note": "medical fever vs excited emotion",
+      "felt": "state"
+    },
+    {
+      "id": "en.emo.thrilled",
+      "lemma": "thrilled",
+      "pos": [
+        "ADJ"
+      ],
+      "kind": "emotion_label",
+      "strength": "strong",
+      "valence": 0.8,
+      "arousal": 0.8,
+      "emotions": {
+        "joy": 0.9
+      },
+      "source": "curated:gemini-2026-09",
+      "version": 1,
+      "alt_lemmas": [
+        "thrill"
+      ],
+      "lemma_evidence": "carrier",
+      "felt": "state"
+    },
+    {
+      "id": "en.emo.exhilarated",
+      "lemma": "exhilarated",
+      "pos": [
+        "ADJ"
+      ],
+      "kind": "emotion_label",
+      "strength": "strong",
+      "valence": 0.8,
+      "arousal": 0.9,
+      "emotions": {
+        "joy": 0.9
+      },
+      "source": "curated:gemini-2026-09",
+      "version": 1,
+      "alt_lemmas": [
+        "exhilarate"
+      ],
+      "lemma_evidence": "carrier",
+      "felt": "state"
+    },
+    {
+      "id": "en.emo.electrified",
+      "lemma": "electrified",
+      "pos": [
+        "ADJ"
+      ],
+      "kind": "emotion_label",
+      "strength": "weak",
+      "valence": 0.6,
+      "arousal": 0.9,
+      "emotions": {
+        "surprise": 0.9
+      },
+      "source": "curated:gemini-2026-09",
+      "version": 1,
+      "alt_lemmas": [
+        "electrify"
+      ],
+      "lemma_evidence": "carrier",
+      "note": "physical electrical current vs electric excitement",
+      "felt": "state"
+    },
+    {
+      "id": "en.emo.overjoyed",
+      "lemma": "overjoyed",
+      "pos": [
+        "ADJ"
+      ],
+      "kind": "emotion_label",
+      "strength": "strong",
+      "valence": 0.9,
+      "arousal": 0.8,
+      "emotions": {
+        "joy": 0.9
+      },
+      "source": "curated:gemini-2026-09",
+      "version": 1,
+      "alt_lemmas": [
+        "overjoy"
+      ],
+      "lemma_evidence": "carrier",
+      "felt": "state"
+    },
+    {
+      "id": "en.emo.entranced",
+      "lemma": "entranced",
+      "pos": [
+        "ADJ"
+      ],
+      "kind": "emotion_label",
+      "strength": "strong",
+      "valence": 0.7,
+      "arousal": 0.6,
+      "emotions": {
+        "joy": 0.9
+      },
+      "source": "curated:gemini-2026-09",
+      "version": 1,
+      "alt_lemmas": [
+        "entrance"
+      ],
+      "lemma_evidence": "carrier",
+      "felt": "state"
+    },
+    {
+      "id": "en.emo.spellbound",
+      "lemma": "spellbound",
+      "pos": [
+        "ADJ"
+      ],
+      "kind": "emotion_label",
+      "strength": "strong",
+      "valence": 0.7,
+      "arousal": 0.7,
+      "emotions": {
+        "surprise": 0.9
+      },
+      "source": "curated:gemini-2026-09",
+      "version": 1,
+      "felt": "state"
+    },
+    {
+      "id": "en.emo.fascinated",
+      "lemma": "fascinated",
+      "pos": [
+        "ADJ"
+      ],
+      "kind": "emotion_label",
+      "strength": "strong",
+      "valence": 0.7,
+      "arousal": 0.6,
+      "emotions": {
+        "anticipation": 0.9
+      },
+      "source": "curated:gemini-2026-09",
+      "version": 1,
+      "alt_lemmas": [
+        "fascinate"
+      ],
+      "lemma_evidence": "carrier",
+      "felt": "state"
+    },
+    {
+      "id": "en.emo.captivated",
+      "lemma": "captivated",
+      "pos": [
+        "ADJ"
+      ],
+      "kind": "emotion_label",
+      "strength": "strong",
+      "valence": 0.8,
+      "arousal": 0.6,
+      "emotions": {
+        "joy": 0.9
+      },
+      "source": "curated:gemini-2026-09",
+      "version": 1,
+      "alt_lemmas": [
+        "captivate"
+      ],
+      "lemma_evidence": "carrier",
+      "felt": "state"
+    },
+    {
+      "id": "en.emo.charmed",
+      "lemma": "charmed",
+      "pos": [
+        "ADJ"
+      ],
+      "kind": "emotion_label",
+      "strength": "strong",
+      "valence": 0.7,
+      "arousal": 0.5,
+      "emotions": {
+        "joy": 0.9
+      },
+      "source": "curated:gemini-2026-09",
+      "version": 1,
+      "alt_lemmas": [
+        "charm"
+      ],
+      "lemma_evidence": "carrier",
+      "felt": "state"
+    },
+    {
+      "id": "en.emo.bewitched",
+      "lemma": "bewitched",
+      "pos": [
+        "ADJ"
+      ],
+      "kind": "emotion_label",
+      "strength": "strong",
+      "valence": 0.6,
+      "arousal": 0.6,
+      "emotions": {
+        "surprise": 0.9
+      },
+      "source": "curated:gemini-2026-09",
+      "version": 1,
+      "alt_lemmas": [
+        "bewitch"
+      ],
+      "lemma_evidence": "carrier",
+      "felt": "state"
+    },
+    {
+      "id": "en.emo.humbled",
+      "lemma": "humbled",
+      "pos": [
+        "ADJ"
+      ],
+      "kind": "emotion_label",
+      "strength": "strong",
+      "valence": 0.4,
+      "arousal": 0.3,
+      "emotions": {
+        "trust": 0.9
+      },
+      "source": "curated:gemini-2026-09",
+      "version": 1,
+      "alt_lemmas": [
+        "humble"
+      ],
+      "lemma_evidence": "carrier",
+      "felt": "state"
+    },
+    {
+      "id": "en.emo.mortified",
+      "lemma": "mortified",
+      "pos": [
+        "ADJ"
+      ],
+      "kind": "emotion_label",
+      "strength": "strong",
+      "valence": -0.8,
+      "arousal": 0.7,
+      "emotions": {
+        "fear": 0.9
+      },
+      "source": "curated:gemini-2026-09",
+      "version": 1,
+      "alt_lemmas": [
+        "mortify"
+      ],
+      "lemma_evidence": "carrier",
+      "felt": "state"
+    },
+    {
+      "id": "en.emo.chagrined",
+      "lemma": "chagrined",
+      "pos": [
+        "ADJ"
+      ],
+      "kind": "emotion_label",
+      "strength": "strong",
+      "valence": -0.5,
+      "arousal": 0.5,
+      "emotions": {
+        "anger": 0.9
+      },
+      "source": "curated:gemini-2026-09",
+      "version": 1,
+      "alt_lemmas": [
+        "chagrin"
+      ],
+      "lemma_evidence": "carrier",
+      "felt": "state"
+    },
+    {
+      "id": "en.emo.humiliated",
+      "lemma": "humiliated",
+      "pos": [
+        "ADJ"
+      ],
+      "kind": "emotion_label",
+      "strength": "strong",
+      "valence": -0.8,
+      "arousal": 0.7,
+      "emotions": {
+        "sadness": 0.9
+      },
+      "source": "curated:gemini-2026-09",
+      "version": 1,
+      "alt_lemmas": [
+        "humiliate"
+      ],
+      "lemma_evidence": "carrier",
+      "felt": "state"
+    },
+    {
+      "id": "en.emo.disgraced",
+      "lemma": "disgraced",
+      "pos": [
+        "ADJ"
+      ],
+      "kind": "emotion_label",
+      "strength": "strong",
+      "valence": -0.8,
+      "arousal": 0.6,
+      "emotions": {
+        "sadness": 0.9
+      },
+      "source": "curated:gemini-2026-09",
+      "version": 1,
+      "alt_lemmas": [
+        "disgrace"
+      ],
+      "lemma_evidence": "carrier",
+      "felt": "state"
+    },
+    {
+      "id": "en.emo.scandalized",
+      "lemma": "scandalized",
+      "pos": [
+        "ADJ"
+      ],
+      "kind": "emotion_label",
+      "strength": "strong",
+      "valence": -0.7,
+      "arousal": 0.7,
+      "emotions": {
+        "disgust": 0.9
+      },
+      "source": "curated:gemini-2026-09",
+      "version": 1,
+      "alt_lemmas": [
+        "scandalize"
+      ],
+      "lemma_evidence": "carrier",
+      "felt": "state"
+    },
+    {
+      "id": "en.emo.offended",
+      "lemma": "offended",
+      "pos": [
+        "ADJ"
+      ],
+      "kind": "emotion_label",
+      "strength": "strong",
+      "valence": -0.6,
+      "arousal": 0.6,
+      "emotions": {
+        "anger": 0.9
+      },
+      "source": "curated:gemini-2026-09",
+      "version": 1,
+      "alt_lemmas": [
+        "offend"
+      ],
+      "lemma_evidence": "carrier",
+      "felt": "state"
+    },
+    {
+      "id": "en.emo.aggrieved",
+      "lemma": "aggrieved",
+      "pos": [
+        "ADJ"
+      ],
+      "kind": "emotion_label",
+      "strength": "strong",
+      "valence": -0.6,
+      "arousal": 0.5,
+      "emotions": {
+        "sadness": 0.9
+      },
+      "source": "curated:gemini-2026-09",
+      "version": 1,
+      "alt_lemmas": [
+        "aggrieve"
+      ],
+      "lemma_evidence": "carrier",
+      "felt": "state"
+    },
+    {
+      "id": "en.emo.afflicted",
+      "lemma": "afflicted",
+      "pos": [
+        "ADJ"
+      ],
+      "kind": "emotion_label",
+      "strength": "strong",
+      "valence": -0.7,
+      "arousal": 0.5,
+      "emotions": {
+        "sadness": 0.9
+      },
+      "source": "curated:gemini-2026-09",
+      "version": 1,
+      "alt_lemmas": [
+        "afflict"
+      ],
+      "lemma_evidence": "carrier",
+      "felt": "state"
+    },
+    {
+      "id": "en.emo.grief_stricken",
+      "lemma": "grief-stricken",
+      "pos": [
+        "ADJ"
+      ],
+      "kind": "emotion_label",
+      "strength": "strong",
+      "valence": -0.9,
+      "arousal": 0.7,
+      "emotions": {
+        "sadness": 0.9
+      },
+      "source": "curated:gemini-2026-09",
+      "version": 1,
+      "felt": "state"
+    },
+    {
+      "id": "en.emo.sorrowful",
+      "lemma": "sorrowful",
+      "pos": [
+        "ADJ"
+      ],
+      "kind": "emotion_label",
+      "strength": "strong",
+      "valence": -0.8,
+      "arousal": 0.4,
+      "emotions": {
+        "sadness": 0.9
+      },
+      "source": "curated:gemini-2026-09",
+      "version": 1,
+      "felt": "state"
+    },
+    {
+      "id": "en.emo.crushed",
+      "lemma": "crushed",
+      "pos": [
+        "ADJ"
+      ],
+      "kind": "emotion_label",
+      "strength": "weak",
+      "valence": -0.8,
+      "arousal": 0.5,
+      "emotions": {
+        "sadness": 0.9
+      },
+      "source": "curated:gemini-2026-09",
+      "version": 1,
+      "alt_lemmas": [
+        "crush"
+      ],
+      "lemma_evidence": "carrier",
+      "note": "physical compression vs heartbroken",
+      "felt": "state"
+    },
+    {
+      "id": "en.emo.shattered",
+      "lemma": "shattered",
+      "pos": [
+        "ADJ"
+      ],
+      "kind": "emotion_label",
+      "strength": "weak",
+      "valence": -0.8,
+      "arousal": 0.7,
+      "emotions": {
+        "sadness": 0.9
+      },
+      "source": "curated:gemini-2026-09",
+      "version": 1,
+      "alt_lemmas": [
+        "shatter"
+      ],
+      "lemma_evidence": "carrier",
+      "note": "broken physical object vs devastated emotionally",
+      "felt": "state"
+    },
+    {
+      "id": "en.emo.broken",
+      "lemma": "broken",
+      "pos": [
+        "ADJ"
+      ],
+      "kind": "emotion_label",
+      "strength": "weak",
+      "valence": -0.7,
+      "arousal": 0.4,
+      "emotions": {
+        "sadness": 0.9
+      },
+      "source": "curated:gemini-2026-09",
+      "version": 1,
+      "alt_lemmas": [
+        "break"
+      ],
+      "lemma_evidence": "carrier",
+      "note": "fractured item vs broken spirit",
+      "felt": "state"
+    },
+    {
+      "id": "en.emo.hopeless",
+      "lemma": "hopeless",
+      "pos": [
+        "ADJ"
+      ],
+      "kind": "emotion_label",
+      "strength": "strong",
+      "valence": -0.9,
+      "arousal": 0.2,
+      "emotions": {
+        "sadness": 0.9
+      },
+      "source": "curated:gemini-2026-09",
+      "version": 1,
+      "felt": "state"
+    },
+    {
+      "id": "en.emo.despairing",
+      "lemma": "despairing",
+      "pos": [
+        "ADJ"
+      ],
+      "kind": "emotion_label",
+      "strength": "strong",
+      "valence": -0.9,
+      "arousal": 0.5,
+      "emotions": {
+        "sadness": 0.9
+      },
+      "source": "curated:gemini-2026-09",
+      "version": 1,
+      "alt_lemmas": [
+        "despair"
+      ],
+      "lemma_evidence": "carrier",
+      "felt": "state"
+    },
+    {
+      "id": "en.emo.forlorn",
+      "lemma": "forlorn",
+      "pos": [
+        "ADJ"
+      ],
+      "kind": "emotion_label",
+      "strength": "strong",
+      "valence": -0.7,
+      "arousal": 0.3,
+      "emotions": {
+        "sadness": 0.9
+      },
+      "source": "curated:gemini-2026-09",
+      "version": 1,
+      "felt": "state"
+    },
+    {
+      "id": "en.emo.isolated",
+      "lemma": "isolated",
+      "pos": [
+        "ADJ"
+      ],
+      "kind": "emotion_label",
+      "strength": "weak",
+      "valence": -0.5,
+      "arousal": 0.2,
+      "emotions": {
+        "sadness": 0.9
+      },
+      "source": "curated:gemini-2026-09",
+      "version": 1,
+      "alt_lemmas": [
+        "isolate"
+      ],
+      "lemma_evidence": "carrier",
+      "note": "physical separation vs emotional loneliness",
+      "felt": "state"
+    },
+    {
+      "id": "en.emo.alienated",
+      "lemma": "alienated",
+      "pos": [
+        "ADJ"
+      ],
+      "kind": "emotion_label",
+      "strength": "strong",
+      "valence": -0.6,
+      "arousal": 0.4,
+      "emotions": {
+        "sadness": 0.9
+      },
+      "source": "curated:gemini-2026-09",
+      "version": 1,
+      "alt_lemmas": [
+        "alienate"
+      ],
+      "lemma_evidence": "carrier",
+      "felt": "state"
+    },
+    {
+      "id": "en.emo.abandoned",
+      "lemma": "abandoned",
+      "pos": [
+        "ADJ"
+      ],
+      "kind": "emotion_label",
+      "strength": "weak",
+      "valence": -0.8,
+      "arousal": 0.5,
+      "emotions": {
+        "sadness": 0.9
+      },
+      "source": "curated:gemini-2026-09",
+      "version": 1,
+      "alt_lemmas": [
+        "abandon"
+      ],
+      "lemma_evidence": "carrier",
+      "note": "deserted place vs abandoned emotionally",
+      "felt": "state"
+    },
+    {
+      "id": "en.emo.forsaken",
+      "lemma": "forsaken",
+      "pos": [
+        "ADJ"
+      ],
+      "kind": "emotion_label",
+      "strength": "strong",
+      "valence": -0.8,
+      "arousal": 0.4,
+      "emotions": {
+        "sadness": 0.9
+      },
+      "source": "curated:gemini-2026-09",
+      "version": 1,
+      "alt_lemmas": [
+        "forsake"
+      ],
+      "lemma_evidence": "carrier",
+      "felt": "state"
+    },
+    {
+      "id": "en.emo.bereft",
+      "lemma": "bereft",
+      "pos": [
+        "ADJ"
+      ],
+      "kind": "emotion_label",
+      "strength": "strong",
+      "valence": -0.8,
+      "arousal": 0.4,
+      "emotions": {
+        "sadness": 0.9
+      },
+      "source": "curated:gemini-2026-09",
+      "version": 1,
+      "felt": "state"
+    },
+    {
+      "id": "en.emo.disconsolate",
+      "lemma": "disconsolate",
+      "pos": [
+        "ADJ"
+      ],
+      "kind": "emotion_label",
+      "strength": "strong",
+      "valence": -0.8,
+      "arousal": 0.3,
+      "emotions": {
+        "sadness": 0.9
+      },
+      "source": "curated:gemini-2026-09",
+      "version": 1,
+      "felt": "state"
+    },
+    {
+      "id": "en.emo.inconsolable",
+      "lemma": "inconsolable",
+      "pos": [
+        "ADJ"
+      ],
+      "kind": "emotion_label",
+      "strength": "strong",
+      "valence": -0.9,
+      "arousal": 0.6,
+      "emotions": {
+        "sadness": 0.9
+      },
+      "source": "curated:gemini-2026-09",
+      "version": 1,
+      "felt": "state"
+    },
+    {
+      "id": "en.emo.cheerless",
+      "lemma": "cheerless",
+      "pos": [
+        "ADJ"
+      ],
+      "kind": "emotion_label",
+      "strength": "strong",
+      "valence": -0.6,
+      "arousal": 0.2,
+      "emotions": {
+        "sadness": 0.9
+      },
+      "source": "curated:gemini-2026-09",
+      "version": 1,
+      "felt": "evaluative"
+    },
+    {
+      "id": "en.emo.grim",
+      "lemma": "grim",
+      "pos": [
+        "ADJ"
+      ],
+      "kind": "emotion_label",
+      "strength": "strong",
+      "valence": -0.6,
+      "arousal": 0.5,
+      "emotions": {
+        "anger": 0.9
+      },
+      "source": "curated:gemini-2026-09",
+      "version": 1,
+      "felt": "state"
+    },
+    {
+      "id": "en.emo.bleak",
+      "lemma": "bleak",
+      "pos": [
+        "ADJ"
+      ],
+      "kind": "emotion_label",
+      "strength": "weak",
+      "valence": -0.6,
+      "arousal": 0.2,
+      "emotions": {
+        "sadness": 0.9
+      },
+      "source": "curated:gemini-2026-09",
+      "version": 1,
+      "note": "landscape vs gloomy emotion",
+      "felt": "evaluative"
+    },
+    {
+      "id": "en.emo.somber",
+      "lemma": "somber",
+      "pos": [
+        "ADJ"
+      ],
+      "kind": "emotion_label",
+      "strength": "weak",
+      "valence": -0.5,
+      "arousal": 0.3,
+      "emotions": {
+        "sadness": 0.9
+      },
+      "source": "curated:gemini-2026-09",
+      "version": 1,
+      "note": "dark colors vs somber demeanor",
+      "felt": "state"
+    },
+    {
+      "id": "en.emo.doleful",
+      "lemma": "doleful",
+      "pos": [
+        "ADJ"
+      ],
+      "kind": "emotion_label",
+      "strength": "strong",
+      "valence": -0.7,
+      "arousal": 0.3,
+      "emotions": {
+        "sadness": 0.9
+      },
+      "source": "curated:gemini-2026-09",
+      "version": 1,
+      "felt": "state"
+    },
+    {
+      "id": "en.emo.funereal",
+      "lemma": "funereal",
+      "pos": [
+        "ADJ"
+      ],
+      "kind": "emotion_label",
+      "strength": "strong",
+      "valence": -0.7,
+      "arousal": 0.2,
+      "emotions": {
+        "sadness": 0.9
+      },
+      "source": "curated:gemini-2026-09",
+      "version": 1,
+      "felt": "evaluative"
+    },
+    {
+      "id": "en.emo.lugubrious",
+      "lemma": "lugubrious",
+      "pos": [
+        "ADJ"
+      ],
+      "kind": "emotion_label",
+      "strength": "strong",
+      "valence": -0.6,
+      "arousal": 0.3,
+      "emotions": {
+        "sadness": 0.9
+      },
+      "source": "curated:gemini-2026-09",
+      "version": 1,
+      "felt": "trait"
+    },
+    {
+      "id": "en.emo.sepulchral",
+      "lemma": "sepulchral",
+      "pos": [
+        "ADJ"
+      ],
+      "kind": "emotion_label",
+      "strength": "strong",
+      "valence": -0.6,
+      "arousal": 0.3,
+      "emotions": {
+        "fear": 0.9
+      },
+      "source": "curated:gemini-2026-09",
+      "version": 1,
+      "felt": "evaluative"
+    },
+    {
+      "id": "en.emo.ghastly",
+      "lemma": "ghastly",
+      "pos": [
+        "ADJ"
+      ],
+      "kind": "emotion_label",
+      "strength": "strong",
+      "valence": -0.8,
+      "arousal": 0.7,
+      "emotions": {
+        "fear": 0.9
+      },
+      "source": "curated:gemini-2026-09",
+      "version": 1,
+      "felt": "evaluative"
+    },
+    {
+      "id": "en.emo.macabre",
+      "lemma": "macabre",
+      "pos": [
+        "ADJ"
+      ],
+      "kind": "emotion_label",
+      "strength": "strong",
+      "valence": -0.7,
+      "arousal": 0.6,
+      "emotions": {
+        "fear": 0.9
+      },
+      "source": "curated:gemini-2026-09",
+      "version": 1,
+      "felt": "evaluative"
+    },
+    {
+      "id": "en.emo.sinister",
+      "lemma": "sinister",
+      "pos": [
+        "ADJ"
+      ],
+      "kind": "emotion_label",
+      "strength": "strong",
+      "valence": -0.8,
+      "arousal": 0.7,
+      "emotions": {
+        "fear": 0.9
+      },
+      "source": "curated:gemini-2026-09",
+      "version": 1,
+      "felt": "evaluative"
+    },
+    {
+      "id": "en.emo.menacing",
+      "lemma": "menacing",
+      "pos": [
+        "ADJ"
+      ],
+      "kind": "emotion_label",
+      "strength": "strong",
+      "valence": -0.7,
+      "arousal": 0.7,
+      "emotions": {
+        "anger": 0.9
+      },
+      "source": "curated:gemini-2026-09",
+      "version": 1,
+      "alt_lemmas": [
+        "menace"
+      ],
+      "lemma_evidence": "carrier",
+      "felt": "evaluative"
+    },
+    {
+      "id": "en.emo.threatening",
+      "lemma": "threatening",
+      "pos": [
+        "ADJ"
+      ],
+      "kind": "emotion_label",
+      "strength": "strong",
+      "valence": -0.7,
+      "arousal": 0.7,
+      "emotions": {
+        "anger": 0.9
+      },
+      "source": "curated:gemini-2026-09",
+      "version": 1,
+      "alt_lemmas": [
+        "threaten"
+      ],
+      "lemma_evidence": "carrier",
+      "felt": "evaluative"
+    },
+    {
+      "id": "en.emo.hostile",
+      "lemma": "hostile",
+      "pos": [
+        "ADJ"
+      ],
+      "kind": "emotion_label",
+      "strength": "strong",
+      "valence": -0.7,
+      "arousal": 0.7,
+      "emotions": {
+        "anger": 0.9
+      },
+      "source": "curated:gemini-2026-09",
+      "version": 1,
+      "felt": "trait"
+    },
+    {
+      "id": "en.emo.belligerent",
+      "lemma": "belligerent",
+      "pos": [
+        "ADJ"
+      ],
+      "kind": "emotion_label",
+      "strength": "strong",
+      "valence": -0.7,
+      "arousal": 0.8,
+      "emotions": {
+        "anger": 0.9
+      },
+      "source": "curated:gemini-2026-09",
+      "version": 1,
+      "felt": "trait"
+    },
+    {
+      "id": "en.emo.pugnacious",
+      "lemma": "pugnacious",
+      "pos": [
+        "ADJ"
+      ],
+      "kind": "emotion_label",
+      "strength": "strong",
+      "valence": -0.6,
+      "arousal": 0.7,
+      "emotions": {
+        "anger": 0.9
+      },
+      "source": "curated:gemini-2026-09",
+      "version": 1,
+      "felt": "trait"
+    },
+    {
+      "id": "en.emo.truculent",
+      "lemma": "truculent",
+      "pos": [
+        "ADJ"
+      ],
+      "kind": "emotion_label",
+      "strength": "strong",
+      "valence": -0.7,
+      "arousal": 0.7,
+      "emotions": {
+        "anger": 0.9
+      },
+      "source": "curated:gemini-2026-09",
+      "version": 1,
+      "felt": "trait"
+    },
+    {
+      "id": "en.emo.antagonistic",
+      "lemma": "antagonistic",
+      "pos": [
+        "ADJ"
+      ],
+      "kind": "emotion_label",
+      "strength": "strong",
+      "valence": -0.6,
+      "arousal": 0.6,
+      "emotions": {
+        "anger": 0.9
+      },
+      "source": "curated:gemini-2026-09",
+      "version": 1,
+      "felt": "trait"
+    },
+    {
+      "id": "en.emo.combative",
+      "lemma": "combative",
+      "pos": [
+        "ADJ"
+      ],
+      "kind": "emotion_label",
+      "strength": "strong",
+      "valence": -0.5,
+      "arousal": 0.7,
+      "emotions": {
+        "anger": 0.9
+      },
+      "source": "curated:gemini-2026-09",
+      "version": 1,
+      "felt": "trait"
+    },
+    {
+      "id": "en.emo.defiant",
+      "lemma": "defiant",
+      "pos": [
+        "ADJ"
+      ],
+      "kind": "emotion_label",
+      "strength": "strong",
+      "valence": -0.4,
+      "arousal": 0.7,
+      "emotions": {
+        "anger": 0.9
+      },
+      "source": "curated:gemini-2026-09",
+      "version": 1,
+      "felt": "state"
+    },
+    {
+      "id": "en.emo.rebellious",
+      "lemma": "rebellious",
+      "pos": [
+        "ADJ"
+      ],
+      "kind": "emotion_label",
+      "strength": "strong",
+      "valence": -0.4,
+      "arousal": 0.7,
+      "emotions": {
+        "anger": 0.9
+      },
+      "source": "curated:gemini-2026-09",
+      "version": 1,
+      "felt": "trait"
+    },
+    {
+      "id": "en.emo.insolent",
+      "lemma": "insolent",
+      "pos": [
+        "ADJ"
+      ],
+      "kind": "emotion_label",
+      "strength": "strong",
+      "valence": -0.6,
+      "arousal": 0.6,
+      "emotions": {
+        "anger": 0.9
+      },
+      "source": "curated:gemini-2026-09",
+      "version": 1,
+      "felt": "trait"
+    },
+    {
+      "id": "en.emo.brazen",
+      "lemma": "brazen",
+      "pos": [
+        "ADJ"
+      ],
+      "kind": "emotion_label",
+      "strength": "strong",
+      "valence": -0.4,
+      "arousal": 0.6,
+      "emotions": {
+        "anger": 0.9
+      },
+      "source": "curated:gemini-2026-09",
+      "version": 1,
+      "felt": "trait"
+    },
+    {
+      "id": "en.emo.arrogant",
+      "lemma": "arrogant",
+      "pos": [
+        "ADJ"
+      ],
+      "kind": "emotion_label",
+      "strength": "strong",
+      "valence": -0.6,
+      "arousal": 0.5,
+      "emotions": {
+        "disgust": 0.9
+      },
+      "source": "curated:gemini-2026-09",
+      "version": 1,
+      "felt": "trait"
+    },
+    {
+      "id": "en.emo.haughty",
+      "lemma": "haughty",
+      "pos": [
+        "ADJ"
+      ],
+      "kind": "emotion_label",
+      "strength": "strong",
+      "valence": -0.6,
+      "arousal": 0.4,
+      "emotions": {
+        "disgust": 0.9
+      },
+      "source": "curated:gemini-2026-09",
+      "version": 1,
+      "felt": "trait"
+    },
+    {
+      "id": "en.emo.conceited",
+      "lemma": "conceited",
+      "pos": [
+        "ADJ"
+      ],
+      "kind": "emotion_label",
+      "strength": "strong",
+      "valence": -0.5,
+      "arousal": 0.4,
+      "emotions": {
+        "disgust": 0.9
+      },
+      "source": "curated:gemini-2026-09",
+      "version": 1,
+      "alt_lemmas": [
+        "conceite"
+      ],
+      "lemma_evidence": "carrier",
+      "felt": "trait"
+    },
+    {
+      "id": "en.emo.pompous",
+      "lemma": "pompous",
+      "pos": [
+        "ADJ"
+      ],
+      "kind": "emotion_label",
+      "strength": "strong",
+      "valence": -0.5,
+      "arousal": 0.4,
+      "emotions": {
+        "disgust": 0.9
+      },
+      "source": "curated:gemini-2026-09",
+      "version": 1,
+      "felt": "trait"
+    },
+    {
+      "id": "en.emo.vain",
+      "lemma": "vain",
+      "pos": [
+        "ADJ"
+      ],
+      "kind": "emotion_label",
+      "strength": "weak",
+      "valence": -0.4,
+      "arousal": 0.4,
+      "emotions": {
+        "disgust": 0.9
+      },
+      "source": "curated:gemini-2026-09",
+      "version": 1,
+      "note": "vain effort vs conceited person",
+      "felt": "trait"
+    },
+    {
+      "id": "en.emo.smug",
+      "lemma": "smug",
+      "pos": [
+        "ADJ"
+      ],
+      "kind": "emotion_label",
+      "strength": "strong",
+      "valence": -0.4,
+      "arousal": 0.4,
+      "emotions": {
+        "disgust": 0.9
+      },
+      "source": "curated:gemini-2026-09",
+      "version": 1,
+      "felt": "trait"
+    },
+    {
+      "id": "en.emo.complacent",
+      "lemma": "complacent",
+      "pos": [
+        "ADJ"
+      ],
+      "kind": "emotion_label",
+      "strength": "strong",
+      "valence": 0.1,
+      "arousal": 0.2,
+      "emotions": null,
+      "source": "curated:gemini-2026-09",
+      "version": 1,
+      "felt": "trait"
+    },
+    {
+      "id": "en.emo.self_satisfied",
+      "lemma": "self-satisfied",
+      "pos": [
+        "ADJ"
+      ],
+      "kind": "emotion_label",
+      "strength": "strong",
+      "valence": -0.3,
+      "arousal": 0.3,
+      "emotions": {
+        "disgust": 0.9
+      },
+      "source": "curated:gemini-2026-09",
+      "version": 1,
+      "felt": "trait"
+    },
+    {
+      "id": "en.emo.supercilious",
+      "lemma": "supercilious",
+      "pos": [
+        "ADJ"
+      ],
+      "kind": "emotion_label",
+      "strength": "strong",
+      "valence": -0.6,
+      "arousal": 0.4,
+      "emotions": {
+        "disgust": 0.9
+      },
+      "source": "curated:gemini-2026-09",
+      "version": 1,
+      "felt": "trait"
+    },
+    {
+      "id": "en.emo.condescending",
+      "lemma": "condescending",
+      "pos": [
+        "ADJ"
+      ],
+      "kind": "emotion_label",
+      "strength": "strong",
+      "valence": -0.6,
+      "arousal": 0.4,
+      "emotions": {
+        "disgust": 0.9
+      },
+      "source": "curated:gemini-2026-09",
+      "version": 1,
+      "alt_lemmas": [
+        "condescend"
+      ],
+      "lemma_evidence": "carrier",
+      "felt": "trait"
+    },
+    {
+      "id": "en.emo.patronizing",
+      "lemma": "patronizing",
+      "pos": [
+        "ADJ"
+      ],
+      "kind": "emotion_label",
+      "strength": "strong",
+      "valence": -0.6,
+      "arousal": 0.4,
+      "emotions": {
+        "disgust": 0.9
+      },
+      "source": "curated:gemini-2026-09",
+      "version": 1,
+      "alt_lemmas": [
+        "patronize"
+      ],
+      "lemma_evidence": "carrier",
+      "felt": "trait"
+    },
+    {
+      "id": "en.emo.imperious",
+      "lemma": "imperious",
+      "pos": [
+        "ADJ"
+      ],
+      "kind": "emotion_label",
+      "strength": "strong",
+      "valence": -0.5,
+      "arousal": 0.6,
+      "emotions": {
+        "anger": 0.9
+      },
+      "source": "curated:gemini-2026-09",
+      "version": 1,
+      "felt": "trait"
+    },
+    {
+      "id": "en.emo.domineering",
+      "lemma": "domineering",
+      "pos": [
+        "ADJ"
+      ],
+      "kind": "emotion_label",
+      "strength": "strong",
+      "valence": -0.6,
+      "arousal": 0.6,
+      "emotions": {
+        "anger": 0.9
+      },
+      "source": "curated:gemini-2026-09",
+      "version": 1,
+      "alt_lemmas": [
+        "domineer"
+      ],
+      "lemma_evidence": "carrier",
+      "felt": "trait"
+    },
+    {
+      "id": "en.emo.tyrannical",
+      "lemma": "tyrannical",
+      "pos": [
+        "ADJ"
+      ],
+      "kind": "emotion_label",
+      "strength": "strong",
+      "valence": -0.8,
+      "arousal": 0.7,
+      "emotions": {
+        "anger": 0.9
+      },
+      "source": "curated:gemini-2026-09",
+      "version": 1,
+      "felt": "trait"
+    },
+    {
+      "id": "en.emo.oppressive",
+      "lemma": "oppressive",
+      "pos": [
+        "ADJ"
+      ],
+      "kind": "emotion_label",
+      "strength": "weak",
+      "valence": -0.7,
+      "arousal": 0.5,
+      "emotions": {
+        "sadness": 0.9
+      },
+      "source": "curated:gemini-2026-09",
+      "version": 1,
+      "note": "weather humidity vs oppressive demeanor",
+      "felt": "evaluative"
+    },
+    {
+      "id": "en.emo.overbearing",
+      "lemma": "overbearing",
+      "pos": [
+        "ADJ"
+      ],
+      "kind": "emotion_label",
+      "strength": "strong",
+      "valence": -0.6,
+      "arousal": 0.6,
+      "emotions": {
+        "anger": 0.9
+      },
+      "source": "curated:gemini-2026-09",
+      "version": 1,
+      "alt_lemmas": [
+        "overbear"
+      ],
+      "lemma_evidence": "carrier",
+      "felt": "trait"
+    },
+    {
+      "id": "en.emo.stubborn",
+      "lemma": "stubborn",
+      "pos": [
+        "ADJ"
+      ],
+      "kind": "emotion_label",
+      "strength": "strong",
+      "valence": -0.3,
+      "arousal": 0.5,
+      "emotions": {
+        "anger": 0.9
+      },
+      "source": "curated:gemini-2026-09",
+      "version": 1,
+      "felt": "trait"
+    },
+    {
+      "id": "en.emo.obstinate",
+      "lemma": "obstinate",
+      "pos": [
+        "ADJ"
+      ],
+      "kind": "emotion_label",
+      "strength": "strong",
+      "valence": -0.4,
+      "arousal": 0.5,
+      "emotions": {
+        "anger": 0.9
+      },
+      "source": "curated:gemini-2026-09",
+      "version": 1,
+      "felt": "trait"
+    },
+    {
+      "id": "en.emo.intractable",
+      "lemma": "intractable",
+      "pos": [
+        "ADJ"
+      ],
+      "kind": "emotion_label",
+      "strength": "strong",
+      "valence": -0.4,
+      "arousal": 0.5,
+      "emotions": {
+        "anger": 0.9
+      },
+      "source": "curated:gemini-2026-09",
+      "version": 1,
+      "felt": "trait"
+    },
+    {
+      "id": "en.emo.relentless",
+      "lemma": "relentless",
+      "pos": [
+        "ADJ"
+      ],
+      "kind": "emotion_label",
+      "strength": "strong",
+      "valence": -0.3,
+      "arousal": 0.7,
+      "emotions": {
+        "anger": 0.9
+      },
+      "source": "curated:gemini-2026-09",
+      "version": 1,
+      "felt": "trait"
+    },
+    {
+      "id": "en.emo.unyielding",
+      "lemma": "unyielding",
+      "pos": [
+        "ADJ"
+      ],
+      "kind": "emotion_label",
+      "strength": "weak",
+      "valence": -0.2,
+      "arousal": 0.6,
+      "emotions": {
+        "anger": 0.9
+      },
+      "source": "curated:gemini-2026-09",
+      "version": 1,
+      "note": "solid surface vs unyielding attitude",
+      "alt_lemmas": [
+        "unyielde"
+      ],
+      "lemma_evidence": "carrier",
+      "felt": "trait"
+    },
+    {
+      "id": "en.emo.ruthless",
+      "lemma": "ruthless",
+      "pos": [
+        "ADJ"
+      ],
+      "kind": "emotion_label",
+      "strength": "strong",
+      "valence": -0.8,
+      "arousal": 0.7,
+      "emotions": {
+        "disgust": 0.9
+      },
+      "source": "curated:gemini-2026-09",
+      "version": 1,
+      "felt": "trait"
+    },
+    {
+      "id": "en.emo.merciless",
+      "lemma": "merciless",
+      "pos": [
+        "ADJ"
+      ],
+      "kind": "emotion_label",
+      "strength": "strong",
+      "valence": -0.8,
+      "arousal": 0.7,
+      "emotions": {
+        "disgust": 0.9
+      },
+      "source": "curated:gemini-2026-09",
+      "version": 1,
+      "felt": "trait"
+    },
+    {
+      "id": "en.emo.pitiless",
+      "lemma": "pitiless",
+      "pos": [
+        "ADJ"
+      ],
+      "kind": "emotion_label",
+      "strength": "strong",
+      "valence": -0.8,
+      "arousal": 0.6,
+      "emotions": {
+        "disgust": 0.9
+      },
+      "source": "curated:gemini-2026-09",
+      "version": 1,
+      "felt": "trait"
+    },
+    {
+      "id": "en.emo.callous",
+      "lemma": "callous",
+      "pos": [
+        "ADJ"
+      ],
+      "kind": "emotion_label",
+      "strength": "weak",
+      "valence": -0.7,
+      "arousal": 0.4,
+      "emotions": {
+        "disgust": 0.9
+      },
+      "source": "curated:gemini-2026-09",
+      "version": 1,
+      "note": "hard skin vs unfeeling callousness",
+      "felt": "trait"
+    },
+    {
+      "id": "en.emo.heartless",
+      "lemma": "heartless",
+      "pos": [
+        "ADJ"
+      ],
+      "kind": "emotion_label",
+      "strength": "strong",
+      "valence": -0.8,
+      "arousal": 0.5,
+      "emotions": {
+        "disgust": 0.9
+      },
+      "source": "curated:gemini-2026-09",
+      "version": 1,
+      "felt": "trait"
+    },
+    {
+      "id": "en.emo.unfeeling",
+      "lemma": "unfeeling",
+      "pos": [
+        "ADJ"
+      ],
+      "kind": "emotion_label",
+      "strength": "weak",
+      "valence": -0.6,
+      "arousal": 0.3,
+      "emotions": {
+        "disgust": 0.9
+      },
+      "source": "curated:gemini-2026-09",
+      "version": 1,
+      "note": "loss of sensation vs callous emotion",
+      "alt_lemmas": [
+        "unfeele"
+      ],
+      "lemma_evidence": "carrier",
+      "felt": "trait"
+    },
+    {
+      "id": "en.emo.cold",
+      "lemma": "cold",
+      "pos": [
+        "ADJ"
+      ],
+      "kind": "emotion_label",
+      "strength": "weak",
+      "valence": -0.4,
+      "arousal": 0.3,
+      "emotions": {
+        "disgust": 0.9
+      },
+      "source": "curated:gemini-2026-09",
+      "version": 1,
+      "note": "physical temperature vs aloof demeanor",
+      "felt": "trait"
+    },
+    {
+      "id": "en.emo.aloof",
+      "lemma": "aloof",
+      "pos": [
+        "ADJ"
+      ],
+      "kind": "emotion_label",
+      "strength": "strong",
+      "valence": -0.2,
+      "arousal": 0.2,
+      "emotions": null,
+      "source": "curated:gemini-2026-09",
+      "version": 1,
+      "felt": "trait"
+    },
+    {
+      "id": "en.emo.distant",
+      "lemma": "distant",
+      "pos": [
+        "ADJ"
+      ],
+      "kind": "emotion_label",
+      "strength": "weak",
+      "valence": -0.2,
+      "arousal": 0.2,
+      "emotions": null,
+      "source": "curated:gemini-2026-09",
+      "version": 1,
+      "note": "spatial distance vs reserved demeanor",
+      "felt": "trait"
+    },
+    {
+      "id": "en.emo.detached",
+      "lemma": "detached",
+      "pos": [
+        "ADJ"
+      ],
+      "kind": "emotion_label",
+      "strength": "weak",
+      "valence": 0.0,
+      "arousal": 0.1,
+      "emotions": null,
+      "source": "curated:gemini-2026-09",
+      "version": 1,
+      "alt_lemmas": [
+        "detach"
+      ],
+      "lemma_evidence": "carrier",
+      "note": "unfastened vs emotionally neutral",
+      "felt": "trait"
+    },
+    {
+      "id": "en.emo.dispassionate",
+      "lemma": "dispassionate",
+      "pos": [
+        "ADJ"
+      ],
+      "kind": "emotion_label",
+      "strength": "strong",
+      "valence": 0.1,
+      "arousal": 0.1,
+      "emotions": null,
+      "source": "curated:gemini-2026-09",
+      "version": 1,
+      "felt": "trait"
+    },
+    {
+      "id": "en.emo.stoic",
+      "lemma": "stoic",
+      "pos": [
+        "ADJ"
+      ],
+      "kind": "emotion_label",
+      "strength": "strong",
+      "valence": 0.2,
+      "arousal": 0.2,
+      "emotions": {
+        "trust": 0.9
+      },
+      "source": "curated:gemini-2026-09",
+      "version": 1,
+      "felt": "trait"
+    },
+    {
+      "id": "en.emo.resigned",
+      "lemma": "resigned",
+      "pos": [
+        "ADJ"
+      ],
+      "kind": "emotion_label",
+      "strength": "weak",
+      "valence": -0.4,
+      "arousal": 0.2,
+      "emotions": {
+        "sadness": 0.9
+      },
+      "source": "curated:gemini-2026-09",
+      "version": 1,
+      "alt_lemmas": [
+        "resign"
+      ],
+      "lemma_evidence": "carrier",
+      "note": "quit job vs resigned to fate",
+      "felt": "state"
+    },
+    {
+      "id": "en.emo.submissive",
+      "lemma": "submissive",
+      "pos": [
+        "ADJ"
+      ],
+      "kind": "emotion_label",
+      "strength": "strong",
+      "valence": -0.4,
+      "arousal": 0.3,
+      "emotions": {
+        "fear": 0.9
+      },
+      "source": "curated:gemini-2026-09",
+      "version": 1,
+      "felt": "trait"
+    },
+    {
+      "id": "en.emo.meek",
+      "lemma": "meek",
+      "pos": [
+        "ADJ"
+      ],
+      "kind": "emotion_label",
+      "strength": "strong",
+      "valence": -0.2,
+      "arousal": 0.3,
+      "emotions": {
+        "fear": 0.9
+      },
+      "source": "curated:gemini-2026-09",
+      "version": 1,
+      "felt": "trait"
+    },
+    {
+      "id": "en.emo.docile",
+      "lemma": "docile",
+      "pos": [
+        "ADJ"
+      ],
+      "kind": "emotion_label",
+      "strength": "strong",
+      "valence": 0.2,
+      "arousal": 0.2,
+      "emotions": {
+        "trust": 0.9
+      },
+      "source": "curated:gemini-2026-09",
+      "version": 1,
+      "felt": "trait"
+    },
+    {
+      "id": "en.emo.obedient",
+      "lemma": "obedient",
+      "pos": [
+        "ADJ"
+      ],
+      "kind": "emotion_label",
+      "strength": "strong",
+      "valence": 0.3,
+      "arousal": 0.3,
+      "emotions": {
+        "trust": 0.9
+      },
+      "source": "curated:gemini-2026-09",
+      "version": 1,
+      "felt": "trait"
+    },
+    {
+      "id": "en.emo.servile",
+      "lemma": "servile",
+      "pos": [
+        "ADJ"
+      ],
+      "kind": "emotion_label",
+      "strength": "strong",
+      "valence": -0.6,
+      "arousal": 0.3,
+      "emotions": {
+        "disgust": 0.9
+      },
+      "source": "curated:gemini-2026-09",
+      "version": 1,
+      "felt": "trait"
+    },
+    {
+      "id": "en.emo.fawning",
+      "lemma": "fawning",
+      "pos": [
+        "ADJ"
+      ],
+      "kind": "emotion_label",
+      "strength": "strong",
+      "valence": -0.6,
+      "arousal": 0.4,
+      "emotions": {
+        "disgust": 0.9
+      },
+      "source": "curated:gemini-2026-09",
+      "version": 1,
+      "alt_lemmas": [
+        "fawn"
+      ],
+      "lemma_evidence": "carrier",
+      "felt": "trait"
+    },
+    {
+      "id": "en.emo.sycophantic",
+      "lemma": "sycophantic",
+      "pos": [
+        "ADJ"
+      ],
+      "kind": "emotion_label",
+      "strength": "strong",
+      "valence": -0.7,
+      "arousal": 0.4,
+      "emotions": {
+        "disgust": 0.9
+      },
+      "source": "curated:gemini-2026-09",
+      "version": 1,
+      "felt": "trait"
+    },
+    {
+      "id": "en.emo.obsequious",
+      "lemma": "obsequious",
+      "pos": [
+        "ADJ"
+      ],
+      "kind": "emotion_label",
+      "strength": "strong",
+      "valence": -0.7,
+      "arousal": 0.4,
+      "emotions": {
+        "disgust": 0.9
+      },
+      "source": "curated:gemini-2026-09",
+      "version": 1,
+      "felt": "trait"
+    },
+    {
+      "id": "en.emo.ingratiating",
+      "lemma": "ingratiating",
+      "pos": [
+        "ADJ"
+      ],
+      "kind": "emotion_label",
+      "strength": "strong",
+      "valence": -0.5,
+      "arousal": 0.4,
+      "emotions": {
+        "disgust": 0.9
+      },
+      "source": "curated:gemini-2026-09",
+      "version": 1,
+      "alt_lemmas": [
+        "ingratiate"
+      ],
+      "lemma_evidence": "carrier",
+      "felt": "trait"
+    },
+    {
+      "id": "en.emo.suspicious",
+      "lemma": "suspicious",
+      "pos": [
+        "ADJ"
+      ],
+      "kind": "emotion_label",
+      "strength": "strong",
+      "valence": -0.5,
+      "arousal": 0.6,
+      "emotions": {
+        "fear": 0.9
+      },
+      "source": "curated:gemini-2026-09",
+      "version": 1,
+      "felt": "state"
+    },
+    {
+      "id": "en.emo.distrustful",
+      "lemma": "distrustful",
+      "pos": [
+        "ADJ"
+      ],
+      "kind": "emotion_label",
+      "strength": "strong",
+      "valence": -0.6,
+      "arousal": 0.5,
+      "emotions": {
+        "fear": 0.9
+      },
+      "source": "curated:gemini-2026-09",
+      "version": 1,
+      "felt": "trait"
+    },
+    {
+      "id": "en.emo.wary",
+      "lemma": "wary",
+      "pos": [
+        "ADJ"
+      ],
+      "kind": "emotion_label",
+      "strength": "strong",
+      "valence": -0.3,
+      "arousal": 0.5,
+      "emotions": {
+        "anticipation": 0.9
+      },
+      "source": "curated:gemini-2026-09",
+      "version": 1,
+      "felt": "state"
+    },
+    {
+      "id": "en.emo.cautious",
+      "lemma": "cautious",
+      "pos": [
+        "ADJ"
+      ],
+      "kind": "emotion_label",
+      "strength": "strong",
+      "valence": 0.1,
+      "arousal": 0.4,
+      "emotions": {
+        "anticipation": 0.9
+      },
+      "source": "curated:gemini-2026-09",
+      "version": 1,
+      "felt": "trait"
+    },
+    {
+      "id": "en.emo.guarded",
+      "lemma": "guarded",
+      "pos": [
+        "ADJ"
+      ],
+      "kind": "emotion_label",
+      "strength": "weak",
+      "valence": -0.2,
+      "arousal": 0.4,
+      "emotions": {
+        "anticipation": 0.9
+      },
+      "source": "curated:gemini-2026-09",
+      "version": 1,
+      "alt_lemmas": [
+        "guard"
+      ],
+      "lemma_evidence": "carrier",
+      "note": "physically guarded vs emotionally reserved",
+      "felt": "state"
+    },
+    {
+      "id": "en.emo.skeptical",
+      "lemma": "skeptical",
+      "pos": [
+        "ADJ"
+      ],
+      "kind": "emotion_label",
+      "strength": "strong",
+      "valence": -0.3,
+      "arousal": 0.4,
+      "emotions": {
+        "disgust": 0.9
+      },
+      "source": "curated:gemini-2026-09",
+      "version": 1,
+      "felt": "trait"
+    },
+    {
+      "id": "en.emo.incredulous",
+      "lemma": "incredulous",
+      "pos": [
+        "ADJ"
+      ],
+      "kind": "emotion_label",
+      "strength": "strong",
+      "valence": -0.2,
+      "arousal": 0.6,
+      "emotions": {
+        "surprise": 0.9
+      },
+      "source": "curated:gemini-2026-09",
+      "version": 1,
+      "felt": "state"
+    },
+    {
+      "id": "en.emo.disbelieving",
+      "lemma": "disbelieving",
+      "pos": [
+        "ADJ"
+      ],
+      "kind": "emotion_label",
+      "strength": "strong",
+      "valence": -0.3,
+      "arousal": 0.5,
+      "emotions": {
+        "surprise": 0.9
+      },
+      "source": "curated:gemini-2026-09",
+      "version": 1,
+      "alt_lemmas": [
+        "disbelieve"
+      ],
+      "lemma_evidence": "carrier",
+      "felt": "state"
+    },
+    {
+      "id": "en.emo.derisive",
+      "lemma": "derisive",
+      "pos": [
+        "ADJ"
+      ],
+      "kind": "emotion_label",
+      "strength": "strong",
+      "valence": -0.7,
+      "arousal": 0.6,
+      "emotions": {
+        "disgust": 0.9
+      },
+      "source": "curated:gemini-2026-09",
+      "version": 1,
+      "felt": "state"
+    },
+    {
+      "id": "en.emo.mocking",
+      "lemma": "mocking",
+      "pos": [
+        "ADJ"
+      ],
+      "kind": "emotion_label",
+      "strength": "strong",
+      "valence": -0.6,
+      "arousal": 0.6,
+      "emotions": {
+        "disgust": 0.9
+      },
+      "source": "curated:gemini-2026-09",
+      "version": 1,
+      "alt_lemmas": [
+        "mock"
+      ],
+      "lemma_evidence": "carrier",
+      "felt": "state"
+    },
+    {
+      "id": "en.emo.sarcastic",
+      "lemma": "sarcastic",
+      "pos": [
+        "ADJ"
+      ],
+      "kind": "emotion_label",
+      "strength": "strong",
+      "valence": -0.5,
+      "arousal": 0.5,
+      "emotions": {
+        "disgust": 0.9
+      },
+      "source": "curated:gemini-2026-09",
+      "version": 1,
+      "felt": "trait"
+    },
+    {
+      "id": "en.emo.ironic",
+      "lemma": "ironic",
+      "pos": [
+        "ADJ"
+      ],
+      "kind": "emotion_label",
+      "strength": "strong",
+      "valence": 0.1,
+      "arousal": 0.4,
+      "emotions": {
+        "surprise": 0.9
+      },
+      "source": "curated:gemini-2026-09",
+      "version": 1,
+      "felt": "trait"
+    },
+    {
+      "id": "en.emo.wry",
+      "lemma": "wry",
+      "pos": [
+        "ADJ"
+      ],
+      "kind": "emotion_label",
+      "strength": "strong",
+      "valence": 0.2,
+      "arousal": 0.3,
+      "emotions": {
+        "joy": 0.9
+      },
+      "source": "curated:gemini-2026-09",
+      "version": 1,
+      "felt": "state"
+    },
+    {
+      "id": "en.emo.bemused",
+      "lemma": "bemused",
+      "pos": [
+        "ADJ"
+      ],
+      "kind": "emotion_label",
+      "strength": "strong",
+      "valence": 0.1,
+      "arousal": 0.4,
+      "emotions": {
+        "surprise": 0.9
+      },
+      "source": "curated:gemini-2026-09",
+      "version": 1,
+      "alt_lemmas": [
+        "bemuse"
+      ],
+      "lemma_evidence": "carrier",
+      "felt": "state"
+    },
+    {
+      "id": "en.emo.amused",
+      "lemma": "amused",
+      "pos": [
+        "ADJ"
+      ],
+      "kind": "emotion_label",
+      "strength": "strong",
+      "valence": 0.6,
+      "arousal": 0.5,
+      "emotions": {
+        "joy": 0.9
+      },
+      "source": "curated:gemini-2026-09",
+      "version": 1,
+      "alt_lemmas": [
+        "amuse"
+      ],
+      "lemma_evidence": "carrier",
+      "felt": "state"
+    },
+    {
+      "id": "en.emo.entertained",
+      "lemma": "entertained",
+      "pos": [
+        "ADJ"
+      ],
+      "kind": "emotion_label",
+      "strength": "strong",
+      "valence": 0.6,
+      "arousal": 0.5,
+      "emotions": {
+        "joy": 0.9
+      },
+      "source": "curated:gemini-2026-09",
+      "version": 1,
+      "alt_lemmas": [
+        "entertain"
+      ],
+      "lemma_evidence": "carrier",
+      "felt": "state"
+    },
+    {
+      "id": "en.emo.exuberant",
+      "lemma": "exuberant",
+      "pos": [
+        "ADJ"
+      ],
+      "kind": "emotion_label",
+      "strength": "strong",
+      "valence": 0.8,
+      "arousal": 0.8,
+      "emotions": {
+        "joy": 0.9
+      },
+      "source": "curated:gemini-2026-09",
+      "version": 1,
+      "felt": "trait"
+    },
+    {
+      "id": "en.emo.ebullient",
+      "lemma": "ebullient",
+      "pos": [
+        "ADJ"
+      ],
+      "kind": "emotion_label",
+      "strength": "strong",
+      "valence": 0.8,
+      "arousal": 0.8,
+      "emotions": {
+        "joy": 0.9
+      },
+      "source": "curated:gemini-2026-09",
+      "version": 1,
+      "felt": "trait"
+    },
+    {
+      "id": "en.emo.effervescent",
+      "lemma": "effervescent",
+      "pos": [
+        "ADJ"
+      ],
+      "kind": "emotion_label",
+      "strength": "weak",
+      "valence": 0.8,
+      "arousal": 0.7,
+      "emotions": {
+        "joy": 0.9
+      },
+      "source": "curated:gemini-2026-09",
+      "version": 1,
+      "note": "carbonated bubbles vs bubbly personality",
+      "felt": "trait"
+    },
+    {
+      "id": "en.emo.vivacious",
+      "lemma": "vivacious",
+      "pos": [
+        "ADJ"
+      ],
+      "kind": "emotion_label",
+      "strength": "strong",
+      "valence": 0.7,
+      "arousal": 0.7,
+      "emotions": {
+        "joy": 0.9
+      },
+      "source": "curated:gemini-2026-09",
+      "version": 1,
+      "felt": "trait"
+    },
+    {
+      "id": "en.emo.spirited",
+      "lemma": "spirited",
+      "pos": [
+        "ADJ"
+      ],
+      "kind": "emotion_label",
+      "strength": "weak",
+      "valence": 0.6,
+      "arousal": 0.7,
+      "emotions": {
+        "anticipation": 0.9
+      },
+      "source": "curated:gemini-2026-09",
+      "version": 1,
+      "note": "spirit/ghost vs lively emotion",
+      "alt_lemmas": [
+        "spirit"
+      ],
+      "lemma_evidence": "carrier",
+      "felt": "trait"
+    },
+    {
+      "id": "en.emo.zealous",
+      "lemma": "zealous",
+      "pos": [
+        "ADJ"
+      ],
+      "kind": "emotion_label",
+      "strength": "strong",
+      "valence": 0.5,
+      "arousal": 0.8,
+      "emotions": {
+        "anticipation": 0.9
+      },
+      "source": "curated:gemini-2026-09",
+      "version": 1,
+      "felt": "trait"
+    },
+    {
+      "id": "en.emo.fervent",
+      "lemma": "fervent",
+      "pos": [
+        "ADJ"
+      ],
+      "kind": "emotion_label",
+      "strength": "strong",
+      "valence": 0.6,
+      "arousal": 0.8,
+      "emotions": {
+        "anticipation": 0.9
+      },
+      "source": "curated:gemini-2026-09",
+      "version": 1,
+      "felt": "state"
+    },
+    {
+      "id": "en.emo.ardent",
+      "lemma": "ardent",
+      "pos": [
+        "ADJ"
+      ],
+      "kind": "emotion_label",
+      "strength": "strong",
+      "valence": 0.7,
+      "arousal": 0.8,
+      "emotions": {
+        "anticipation": 0.9
+      },
+      "source": "curated:gemini-2026-09",
+      "version": 1,
+      "felt": "state"
+    },
+    {
+      "id": "en.emo.impassioned",
+      "lemma": "impassioned",
+      "pos": [
+        "ADJ"
+      ],
+      "kind": "emotion_label",
+      "strength": "strong",
+      "valence": 0.6,
+      "arousal": 0.8,
+      "emotions": {
+        "anticipation": 0.9
+      },
+      "source": "curated:gemini-2026-09",
+      "version": 1,
+      "alt_lemmas": [
+        "impassione"
+      ],
+      "lemma_evidence": "carrier",
+      "felt": "state"
+    },
+    {
+      "id": "en.emo.vehement",
+      "lemma": "vehement",
+      "pos": [
+        "ADJ"
+      ],
+      "kind": "emotion_label",
+      "strength": "strong",
+      "valence": -0.4,
+      "arousal": 0.8,
+      "emotions": {
+        "anger": 0.9
+      },
+      "source": "curated:gemini-2026-09",
+      "version": 1,
+      "felt": "state"
+    },
+    {
+      "id": "en.emo.violent",
+      "lemma": "violent",
+      "pos": [
+        "ADJ"
+      ],
+      "kind": "emotion_label",
+      "strength": "weak",
+      "valence": -0.8,
+      "arousal": 0.9,
+      "emotions": {
+        "anger": 0.9
+      },
+      "source": "curated:gemini-2026-09",
+      "version": 1,
+      "note": "physical assault vs violent emotion",
+      "felt": "trait"
+    },
+    {
+      "id": "en.emo.tempestuous",
+      "lemma": "tempestuous",
+      "pos": [
+        "ADJ"
+      ],
+      "kind": "emotion_label",
+      "strength": "weak",
+      "valence": -0.6,
+      "arousal": 0.8,
+      "emotions": {
+        "anger": 0.9
+      },
+      "source": "curated:gemini-2026-09",
+      "version": 1,
+      "note": "weather storm vs stormy emotions",
+      "felt": "trait"
+    },
+    {
+      "id": "en.emo.turbulent",
+      "lemma": "turbulent",
+      "pos": [
+        "ADJ"
+      ],
+      "kind": "emotion_label",
+      "strength": "weak",
+      "valence": -0.5,
+      "arousal": 0.7,
+      "emotions": {
+        "fear": 0.9
+      },
+      "source": "curated:gemini-2026-09",
+      "version": 1,
+      "note": "fluid flow vs emotional turmoil",
+      "felt": "evaluative"
+    },
+    {
+      "id": "en.emo.fuming",
+      "lemma": "fuming",
+      "pos": [
+        "ADJ"
+      ],
+      "kind": "emotion_label",
+      "strength": "weak",
+      "valence": -0.8,
+      "arousal": 0.8,
+      "emotions": {
+        "anger": 0.9
+      },
+      "source": "curated:gemini-2026-09",
+      "version": 1,
+      "alt_lemmas": [
+        "fume"
+      ],
+      "lemma_evidence": "carrier",
+      "note": "emitting fumes vs fuming mad",
+      "felt": "state"
+    },
+    {
+      "id": "en.emo.seething",
+      "lemma": "seething",
+      "pos": [
+        "ADJ"
+      ],
+      "kind": "emotion_label",
+      "strength": "weak",
+      "valence": -0.8,
+      "arousal": 0.8,
+      "emotions": {
+        "anger": 0.9
+      },
+      "source": "curated:gemini-2026-09",
+      "version": 1,
+      "alt_lemmas": [
+        "seethe"
+      ],
+      "lemma_evidence": "carrier",
+      "note": "boiling liquid vs seething rage",
+      "felt": "state"
+    },
+    {
+      "id": "en.emo.boiling",
+      "lemma": "boiling",
+      "pos": [
+        "ADJ"
+      ],
+      "kind": "emotion_label",
+      "strength": "weak",
+      "valence": -0.8,
+      "arousal": 0.8,
+      "emotions": {
+        "anger": 0.9
+      },
+      "source": "curated:gemini-2026-09",
+      "version": 1,
+      "alt_lemmas": [
+        "boil"
+      ],
+      "lemma_evidence": "carrier",
+      "note": "temperature 100C vs boiling mad",
+      "felt": "state"
+    },
+    {
+      "id": "en.emo.smoldering",
+      "lemma": "smoldering",
+      "pos": [
+        "ADJ"
+      ],
+      "kind": "emotion_label",
+      "strength": "weak",
+      "valence": -0.6,
+      "arousal": 0.6,
+      "emotions": {
+        "anger": 0.9
+      },
+      "source": "curated:gemini-2026-09",
+      "version": 1,
+      "alt_lemmas": [
+        "smolder"
+      ],
+      "lemma_evidence": "carrier",
+      "note": "burning without flame vs smoldering look",
+      "felt": "state"
+    },
+    {
+      "id": "en.emo.grudging",
+      "lemma": "grudging",
+      "pos": [
+        "ADJ"
+      ],
+      "kind": "emotion_label",
+      "strength": "strong",
+      "valence": -0.5,
+      "arousal": 0.5,
+      "emotions": {
+        "anger": 0.9
+      },
+      "source": "curated:gemini-2026-09",
+      "version": 1,
+      "alt_lemmas": [
+        "grudge"
+      ],
+      "lemma_evidence": "carrier",
+      "felt": "state"
+    },
+    {
+      "id": "en.emo.sour",
+      "lemma": "sour",
+      "pos": [
+        "ADJ"
+      ],
+      "kind": "emotion_label",
+      "strength": "weak",
+      "valence": -0.5,
+      "arousal": 0.4,
+      "emotions": {
+        "disgust": 0.9
+      },
+      "source": "curated:gemini-2026-09",
+      "version": 1,
+      "note": "lemon taste vs sour attitude",
+      "felt": "trait"
+    },
+    {
+      "id": "en.emo.curmudgeonly",
+      "lemma": "curmudgeonly",
+      "pos": [
+        "ADJ"
+      ],
+      "kind": "emotion_label",
+      "strength": "strong",
+      "valence": -0.5,
+      "arousal": 0.4,
+      "emotions": {
+        "anger": 0.9
+      },
+      "source": "curated:gemini-2026-09",
+      "version": 1,
+      "felt": "trait"
+    },
+    {
+      "id": "en.emo.grouchy",
+      "lemma": "grouchy",
+      "pos": [
+        "ADJ"
+      ],
+      "kind": "emotion_label",
+      "strength": "strong",
+      "valence": -0.5,
+      "arousal": 0.4,
+      "emotions": {
+        "anger": 0.9
+      },
+      "source": "curated:gemini-2026-09",
+      "version": 1,
+      "felt": "trait"
+    },
+    {
+      "id": "en.emo.tearful",
+      "lemma": "tearful",
+      "pos": [
+        "ADJ"
+      ],
+      "kind": "emotion_label",
+      "strength": "strong",
+      "valence": -0.7,
+      "arousal": 0.5,
+      "emotions": {
+        "sadness": 0.9
+      },
+      "source": "curated:gemini-2026-09",
+      "version": 1,
+      "felt": "state"
+    },
+    {
+      "id": "en.emo.weepy",
+      "lemma": "weepy",
+      "pos": [
+        "ADJ"
+      ],
+      "kind": "emotion_label",
+      "strength": "strong",
+      "valence": -0.6,
+      "arousal": 0.4,
+      "emotions": {
+        "sadness": 0.9
+      },
+      "source": "curated:gemini-2026-09",
+      "version": 1,
+      "felt": "state"
+    },
+    {
+      "id": "en.emo.sobbing",
+      "lemma": "sobbing",
+      "pos": [
+        "ADJ"
+      ],
+      "kind": "emotion_label",
+      "strength": "strong",
+      "valence": -0.8,
+      "arousal": 0.7,
+      "emotions": {
+        "sadness": 0.9
+      },
+      "source": "curated:gemini-2026-09",
+      "version": 1,
+      "alt_lemmas": [
+        "sob"
+      ],
+      "lemma_evidence": "carrier",
+      "felt": "state"
+    },
+    {
+      "id": "en.emo.wailing",
+      "lemma": "wailing",
+      "pos": [
+        "ADJ"
+      ],
+      "kind": "emotion_label",
+      "strength": "strong",
+      "valence": -0.8,
+      "arousal": 0.8,
+      "emotions": {
+        "sadness": 0.9
+      },
+      "source": "curated:gemini-2026-09",
+      "version": 1,
+      "alt_lemmas": [
+        "wail"
+      ],
+      "lemma_evidence": "carrier",
+      "felt": "state"
+    },
+    {
+      "id": "en.emo.bewailing",
+      "lemma": "bewailing",
+      "pos": [
+        "ADJ"
+      ],
+      "kind": "emotion_label",
+      "strength": "strong",
+      "valence": -0.7,
+      "arousal": 0.6,
+      "emotions": {
+        "sadness": 0.9
+      },
+      "source": "curated:gemini-2026-09",
+      "version": 1,
+      "alt_lemmas": [
+        "bewail"
+      ],
+      "lemma_evidence": "carrier",
+      "felt": "state"
+    },
+    {
+      "id": "en.emo.lamenting",
+      "lemma": "lamenting",
+      "pos": [
+        "ADJ"
+      ],
+      "kind": "emotion_label",
+      "strength": "strong",
+      "valence": -0.7,
+      "arousal": 0.5,
+      "emotions": {
+        "sadness": 0.9
+      },
+      "source": "curated:gemini-2026-09",
+      "version": 1,
+      "alt_lemmas": [
+        "lament"
+      ],
+      "lemma_evidence": "carrier",
+      "felt": "state"
+    },
+    {
+      "id": "en.emo.rueful",
+      "lemma": "rueful",
+      "pos": [
+        "ADJ"
+      ],
+      "kind": "emotion_label",
+      "strength": "strong",
+      "valence": -0.4,
+      "arousal": 0.3,
+      "emotions": {
+        "sadness": 0.9
+      },
+      "source": "curated:gemini-2026-09",
+      "version": 1,
+      "felt": "state"
+    },
+    {
+      "id": "en.emo.regretful",
+      "lemma": "regretful",
+      "pos": [
+        "ADJ"
+      ],
+      "kind": "emotion_label",
+      "strength": "strong",
+      "valence": -0.5,
+      "arousal": 0.4,
+      "emotions": {
+        "sadness": 0.9
+      },
+      "source": "curated:gemini-2026-09",
+      "version": 1,
+      "felt": "state"
+    },
+    {
+      "id": "en.emo.penitent",
+      "lemma": "penitent",
+      "pos": [
+        "ADJ"
+      ],
+      "kind": "emotion_label",
+      "strength": "strong",
+      "valence": -0.4,
+      "arousal": 0.4,
+      "emotions": {
+        "sadness": 0.9
+      },
+      "source": "curated:gemini-2026-09",
+      "version": 1,
+      "felt": "state"
+    },
+    {
+      "id": "en.emo.shamefaced",
+      "lemma": "shamefaced",
+      "pos": [
+        "ADJ"
+      ],
+      "kind": "emotion_label",
+      "strength": "strong",
+      "valence": -0.6,
+      "arousal": 0.4,
+      "emotions": {
+        "sadness": 0.9
+      },
+      "source": "curated:gemini-2026-09",
+      "version": 1,
+      "alt_lemmas": [
+        "shameface"
+      ],
+      "lemma_evidence": "carrier",
+      "felt": "state"
+    },
+    {
+      "id": "en.emo.sheepish",
+      "lemma": "sheepish",
+      "pos": [
+        "ADJ"
+      ],
+      "kind": "emotion_label",
+      "strength": "strong",
+      "valence": -0.3,
+      "arousal": 0.3,
+      "emotions": {
+        "sadness": 0.9
+      },
+      "source": "curated:gemini-2026-09",
+      "version": 1,
+      "felt": "state"
+    },
+    {
+      "id": "en.emo.culpable",
+      "lemma": "culpable",
+      "pos": [
+        "ADJ"
+      ],
+      "kind": "emotion_label",
+      "strength": "strong",
+      "valence": -0.5,
+      "arousal": 0.4,
+      "emotions": {
+        "sadness": 0.9
+      },
+      "source": "curated:gemini-2026-09",
+      "version": 1,
+      "felt": "evaluative"
+    },
+    {
+      "id": "en.emo.panicky",
+      "lemma": "panicky",
+      "pos": [
+        "ADJ"
+      ],
+      "kind": "emotion_label",
+      "strength": "strong",
+      "valence": -0.8,
+      "arousal": 0.9,
+      "emotions": {
+        "fear": 0.9
+      },
+      "source": "curated:gemini-2026-09",
+      "version": 1,
+      "felt": "state"
+    },
+    {
+      "id": "en.emo.trembling",
+      "lemma": "trembling",
+      "pos": [
+        "ADJ"
+      ],
+      "kind": "emotion_label",
+      "strength": "weak",
+      "valence": -0.7,
+      "arousal": 0.8,
+      "emotions": {
+        "fear": 0.9
+      },
+      "source": "curated:gemini-2026-09",
+      "version": 1,
+      "alt_lemmas": [
+        "tremble"
+      ],
+      "lemma_evidence": "carrier",
+      "note": "physical vibration/cold vs fear/anticipation",
+      "felt": "state"
+    },
+    {
+      "id": "en.emo.shivering",
+      "lemma": "shivering",
+      "pos": [
+        "ADJ"
+      ],
+      "kind": "emotion_label",
+      "strength": "weak",
+      "valence": -0.5,
+      "arousal": 0.6,
+      "emotions": {
+        "fear": 0.9
+      },
+      "source": "curated:gemini-2026-09",
+      "version": 1,
+      "alt_lemmas": [
+        "shiver"
+      ],
+      "lemma_evidence": "carrier",
+      "note": "cold sensation vs fear/dread",
+      "felt": "state"
+    },
+    {
+      "id": "en.emo.quaking",
+      "lemma": "quaking",
+      "pos": [
+        "ADJ"
+      ],
+      "kind": "emotion_label",
+      "strength": "weak",
+      "valence": -0.7,
+      "arousal": 0.8,
+      "emotions": {
+        "fear": 0.9
+      },
+      "source": "curated:gemini-2026-09",
+      "version": 1,
+      "alt_lemmas": [
+        "quake"
+      ],
+      "lemma_evidence": "carrier",
+      "note": "earthquake vs trembling with fear",
+      "felt": "state"
+    },
+    {
+      "id": "en.emo.shuddering",
+      "lemma": "shuddering",
+      "pos": [
+        "ADJ"
+      ],
+      "kind": "emotion_label",
+      "strength": "weak",
+      "valence": -0.7,
+      "arousal": 0.7,
+      "emotions": {
+        "fear": 0.9
+      },
+      "source": "curated:gemini-2026-09",
+      "version": 1,
+      "alt_lemmas": [
+        "shudder"
+      ],
+      "lemma_evidence": "carrier",
+      "note": "engine shudder vs body shuddering in horror",
+      "felt": "state"
+    },
+    {
+      "id": "en.emo.petrified",
+      "lemma": "petrified",
+      "pos": [
+        "ADJ"
+      ],
+      "kind": "emotion_label",
+      "strength": "weak",
+      "valence": -0.9,
+      "arousal": 0.9,
+      "emotions": {
+        "fear": 0.9
+      },
+      "source": "curated:gemini-2026-09",
+      "version": 1,
+      "alt_lemmas": [
+        "petrify"
+      ],
+      "lemma_evidence": "carrier",
+      "note": "fossilized wood vs paralyzed by fear",
+      "felt": "state"
+    },
+    {
+      "id": "en.emo.paralyzed",
+      "lemma": "paralyzed",
+      "pos": [
+        "ADJ"
+      ],
+      "kind": "emotion_label",
+      "strength": "weak",
+      "valence": -0.8,
+      "arousal": 0.8,
+      "emotions": {
+        "fear": 0.9
+      },
+      "source": "curated:gemini-2026-09",
+      "version": 1,
+      "alt_lemmas": [
+        "paralyze"
+      ],
+      "lemma_evidence": "carrier",
+      "note": "medical paralysis vs frozen with fear",
+      "felt": "state"
+    },
+    {
+      "id": "en.emo.frozen",
+      "lemma": "frozen",
+      "pos": [
+        "ADJ"
+      ],
+      "kind": "emotion_label",
+      "strength": "weak",
+      "valence": -0.6,
+      "arousal": 0.6,
+      "emotions": {
+        "fear": 0.9
+      },
+      "source": "curated:gemini-2026-09",
+      "version": 1,
+      "alt_lemmas": [
+        "freeze"
+      ],
+      "lemma_evidence": "carrier",
+      "note": "ice temperature vs frozen in terror",
+      "felt": "state"
+    },
+    {
+      "id": "en.emo.startled",
+      "lemma": "startled",
+      "pos": [
+        "ADJ"
+      ],
+      "kind": "emotion_label",
+      "strength": "strong",
+      "valence": -0.1,
+      "arousal": 0.7,
+      "emotions": {
+        "surprise": 0.9
+      },
+      "source": "curated:gemini-2026-09",
+      "version": 1,
+      "alt_lemmas": [
+        "startle"
+      ],
+      "lemma_evidence": "carrier",
+      "felt": "state"
+    },
+    {
+      "id": "en.emo.jolted",
+      "lemma": "jolted",
+      "pos": [
+        "ADJ"
+      ],
+      "kind": "emotion_label",
+      "strength": "weak",
+      "valence": -0.2,
+      "arousal": 0.7,
+      "emotions": {
+        "surprise": 0.9
+      },
+      "source": "curated:gemini-2026-09",
+      "version": 1,
+      "alt_lemmas": [
+        "jolt"
+      ],
+      "lemma_evidence": "carrier",
+      "note": "mechanical jerk vs surprise jolt",
+      "felt": "state"
+    },
+    {
+      "id": "en.emo.delirious",
+      "lemma": "delirious",
+      "pos": [
+        "ADJ"
+      ],
+      "kind": "emotion_label",
+      "strength": "weak",
+      "valence": 0.6,
+      "arousal": 0.9,
+      "emotions": {
+        "joy": 0.9
+      },
+      "source": "curated:gemini-2026-09",
+      "version": 1,
+      "note": "medical delirium vs deliriously happy",
+      "felt": "state"
+    },
+    {
+      "id": "en.emo.manic",
+      "lemma": "manic",
+      "pos": [
+        "ADJ"
+      ],
+      "kind": "emotion_label",
+      "strength": "strong",
+      "valence": 0.3,
+      "arousal": 0.9,
+      "emotions": {
+        "anticipation": 0.9
+      },
+      "source": "curated:gemini-2026-09",
+      "version": 1,
+      "felt": "state"
+    },
+    {
+      "id": "en.emo.moved",
+      "lemma": "moved",
+      "pos": [
+        "ADJ"
+      ],
+      "kind": "emotion_label",
+      "strength": "weak",
+      "valence": 0.6,
+      "arousal": 0.5,
+      "emotions": {
+        "joy": 0.9
+      },
+      "source": "curated:gemini-2026-09",
+      "version": 1,
+      "alt_lemmas": [
+        "move"
+      ],
+      "lemma_evidence": "carrier",
+      "note": "spatial motion (moved house) vs emotionally touched",
+      "felt": "state"
+    },
+    {
+      "id": "en.emo.struck",
+      "lemma": "struck",
+      "pos": [
+        "ADJ"
+      ],
+      "kind": "emotion_label",
+      "strength": "weak",
+      "valence": 0.4,
+      "arousal": 0.7,
+      "emotions": {
+        "surprise": 0.9
+      },
+      "source": "curated:gemini-2026-09",
+      "version": 1,
+      "alt_lemmas": [
+        "strike"
+      ],
+      "lemma_evidence": "carrier",
+      "note": "physical blow vs struck with awe",
+      "felt": "state"
+    },
+    {
+      "id": "en.emo.blue",
+      "lemma": "blue",
+      "pos": [
+        "ADJ"
+      ],
+      "kind": "emotion_label",
+      "strength": "weak",
+      "valence": -0.5,
+      "arousal": 0.3,
+      "emotions": {
+        "sadness": 0.9
+      },
+      "source": "curated:gemini-2026-09",
+      "version": 1,
+      "note": "color vs melancholy emotion",
+      "felt": "state"
+    },
+    {
+      "id": "en.emo.low",
+      "lemma": "low",
+      "pos": [
+        "ADJ"
+      ],
+      "kind": "emotion_label",
+      "strength": "weak",
+      "valence": -0.4,
+      "arousal": 0.2,
+      "emotions": {
+        "sadness": 0.9
+      },
+      "source": "curated:gemini-2026-09",
+      "version": 1,
+      "note": "height/volume vs feeling low/dejected",
+      "felt": "state"
+    },
+    {
+      "id": "en.emo.pale",
+      "lemma": "pale",
+      "pos": [
+        "ADJ"
+      ],
+      "kind": "emotion_label",
+      "strength": "weak",
+      "valence": -0.5,
+      "arousal": 0.6,
+      "emotions": {
+        "fear": 0.9
+      },
+      "source": "curated:gemini-2026-09",
+      "version": 1,
+      "note": "light color shade vs pale with fear",
+      "felt": "state"
+    },
+    {
+      "id": "en.emo.numb",
+      "lemma": "numb",
+      "pos": [
+        "ADJ"
+      ],
+      "kind": "emotion_label",
+      "strength": "weak",
+      "valence": -0.5,
+      "arousal": 0.2,
+      "emotions": {
+        "sadness": 0.9
+      },
+      "source": "curated:gemini-2026-09",
+      "version": 1,
+      "note": "physical loss of sensation vs emotional shock",
+      "felt": "state"
+    }
+  ]
+}

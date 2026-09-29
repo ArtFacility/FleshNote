@@ -10,9 +10,10 @@ import json
 import sqlite3
 import hashlib
 import html as html_lib
-
 from fastapi import APIRouter
 from pydantic import BaseModel
+from project_io import safe_md_path
+from lexicon_engine import get_lexicon
 
 router = APIRouter()
 
@@ -34,15 +35,19 @@ WEAK_WORDS = [
 ]
 
 # --- Show, Don't Tell lexicons (English) ---
+# Word lists live in backend/lexicons/en/*.json (see lexicon_engine.py). The
+# legacy tier is exactly the list this analyzer was tuned on; widening one to the
+# full kind is a behavior change that needs benchmark numbers.
+_LEX_EN = get_lexicon("en")
+
 LINKING_VERBS_EN = {"be", "feel", "seem", "appear", "look", "become", "grow"}
 
-EMOTION_LEXICON_EN = {
-    "angry", "sad", "happy", "afraid", "scared", "anxious", "nervous", "furious",
-    "jealous", "excited", "depressed", "miserable", "terrified", "embarrassed",
-    "ashamed", "frustrated", "annoyed", "irritated", "disgusted", "lonely",
-    "desperate", "hopeful", "relieved", "proud", "heartbroken", "devastated",
-    "elated", "content", "resentful", "bitter", "gloomy", "ecstatic", "remorseful",
-}
+# Original tuned list plus every strong entry, keeping only felt states: weak
+# entries (cold, broken, moved…) are only evidence in the right company, and
+# traits (arrogant, cautious) or evaluative words (dreadful) aren't a feeling.
+EMOTION_LEXICON_EN = ((_LEX_EN.lemmas("emotion_label", legacy_only=True)
+                       | _LEX_EN.lemmas("emotion_label", strength="strong"))
+                      & _LEX_EN.lemmas("emotion_label", felt="state"))
 
 STATE_EXEMPTIONS_EN = {
     "tall", "short", "old", "young", "open", "closed", "dead", "alive",
@@ -50,21 +55,20 @@ STATE_EXEMPTIONS_EN = {
     "asleep", "awake", "drunk", "clean", "dirty", "wet", "dry", "busy",
 }
 
-SPEECH_VERBS_EN = {
-    "say", "tell", "ask", "whisper", "shout", "mutter", "reply", "snap",
-    "growl", "hiss", "call", "cry", "exclaim", "murmur", "stammer", "bark",
-    "snarl", "plead", "demand", "insist", "think", "wonder", "muse", "reflect",
-}
+# Emotion adjectives that mean "willing" when a to-infinitive follows
+# ("content to sharpen his harpoon"), so that reading isn't a stated emotion.
+WILLING_BEFORE_INFINITIVE_EN = {"content"}
 
-FILTER_VERBS_EN = {"see", "hear", "feel", "notice", "watch", "observe", "smell", "taste"}
+# Dialogue/thought attribution verbs (say, whisper, think…); the lexicon files
+# them under conflict_speech, where the neutral ones are strength "weak".
+SPEECH_VERBS_EN = _LEX_EN.lemmas("conflict_speech", legacy_only=True)
 
-REALIZE_VERBS_EN = {"realize", "understand", "know", "recognize", "sense", "decide"}
+FILTER_VERBS_EN = _LEX_EN.lemmas("filter_verb", legacy_only=True)
 
-EMOTION_ADVERBS_EN = {
-    "angrily", "sadly", "happily", "nervously", "anxiously", "bitterly",
-    "jealously", "desperately", "proudly", "resentfully", "gleefully",
-    "miserably", "furiously",
-}
+# Knowing/deciding is plot information, not a stated emotion — not flagged.
+REALIZE_VERBS_EN = _LEX_EN.lemmas("realize_verb", legacy_only=True)
+
+EMOTION_ADVERBS_EN = _LEX_EN.lemmas("emotion_adverb", legacy_only=True)
 
 IGNORE_ADVERBS_EN = {
     "really", "simply", "only", "hardly", "especially", "finally",
@@ -75,6 +79,8 @@ IGNORE_ADVERBS_EN = {
 }
 
 # --- Five Senses Lexicons (English) ---
+# Matched as surface words, not lemmas, so these stay here until sense detection
+# moves onto the lexicon's sensory entries (plan §4.4) instead of being ported.
 SIGHT_WORDS_EN = frozenset({
     "see", "saw", "seen", "look", "looks", "looked", "watch", "watched", "gaze", "gazed",
     "glance", "glanced", "stare", "stared", "glimpse", "glimpsed", "observe", "observed",
@@ -106,12 +112,12 @@ TOUCH_WORDS_EN = frozenset({
     "silky", "coarse", "grip", "gripped", "press", "pressed", "squeeze", "squeezed",
     "stroke", "stroked", "brush", "brushed", "grasp", "grasped", "caress", "caressed",
     "scratch", "scratched", "prick", "pricked", "sting", "stung", "tingle", "tingled",
-    "numb", "freezing", "burning", "shiver", "shivered", "trembled", "texture",
+    "numb", "freezing", "burning", "burned", "burnt", "shiver", "shivered", "trembled", "texture",
 })
 TASTE_WORDS_EN = frozenset({
     "taste", "tasted", "tastes", "flavor", "flavour", "bitter", "sweet", "sour", "salty",
     "savory", "savoury", "bland", "delicious", "swallow", "swallowed",
-    "bite", "bit", "bitten", "chew", "chewed", "lick", "licked", "tongue",
+    "bite", "bitten", "chew", "chewed", "lick", "licked", "tongue",
     "gulp", "gulped", "sip", "sipped", "devour", "devoured", "savor", "savored",
     "metallic", "spicy", "tangy", "acidic",
 })
@@ -590,8 +596,25 @@ def _analyze_weak_adverbs(plain_text: str, language: str, cap: int = 5) -> list[
     return suggestions
 
 
+def _has_person_agent(verb) -> bool:
+    """True if a passive verb has a 'by X' agent where X is a person/pronoun."""
+    for agent in verb.children:
+        if agent.dep_ != "agent":
+            continue
+        for obj in agent.children:
+            if obj.dep_ == "pobj" and (obj.pos_ in ("PROPN", "PRON") or obj.ent_type_ in ("PERSON", "NORP", "ORG")):
+                return True
+    return False
+
+
 def _analyze_passive_voice(plain_text: str, language: str, cap: int = 3) -> list[dict]:
-    """Detect passive voice constructions (auxpass dependency)."""
+    """Detect passives whose doer is a named person ('was kicked by John').
+
+    Agentless passives ('he was born', 'the king was murdered') are usually
+    deliberate, and inanimate doers ('bordered by bushes', 'separated by
+    glass') are how descriptive prose is written — on labeled literary prose
+    those made up nearly all flags. Only person/pronoun agents are flagged.
+    """
     if language != "en":
         return []
     suggestions = []
@@ -606,7 +629,7 @@ def _analyze_passive_voice(plain_text: str, language: str, cap: int = 3) -> list
     for token in doc:
         if len(suggestions) >= cap:
             break
-        if token.dep_ == "auxpass":
+        if token.dep_ == "auxpass" and _has_person_agent(token.head):
             start_char = min(token.idx, token.head.idx)
             end_char = max(token.idx + len(token), token.head.idx + len(token.head))
             if end_char - start_char > 50:
@@ -630,9 +653,61 @@ def _analyze_passive_voice(plain_text: str, language: str, cap: int = 3) -> list
     return suggestions
 
 
+_QUOTED_SPEECH_RE = re.compile(
+    r'“[^”\n]*”'            # “…”
+    r'|"[^"\n]*"'                          # "…"
+    r'|„[^”“"\n]*[”“"]'  # „…” (HU/PL)
+    r'|«[^»\n]*»|»[^«\n]*«'  # «…» and »…«
+    r"|(?<!\w)‘[^\n]*?’(?!\w)"       # ‘…’ (’ inside words is an apostrophe)
+    r"|(?<!\w)'[^\n]*?'(?!\w)"                 # '…' (Conrad-style)
+)
+_SPACED_DASH_RE = re.compile(r"(?:^|\s)[–—](?=\s)")
+
+
+def _speech_spans(text: str, dash_dialogue: bool = False) -> list[tuple[int, int]]:
+    """Character ranges of spoken text: quoted passages, and for HU/PL the dash
+    dialogue convention ('– Nem – mondta büszkén Weisz. – Igen.'), where a line
+    that opens with a dash (or ': –') is speech until the next spaced dash, and
+    each further spaced dash switches between speech and narration.
+
+    Show-don't-tell only skips flags inside these ranges, so the narration around
+    a line of dialogue ('mondta büszkén') is still checked."""
+    spans = [m.span() for m in _QUOTED_SPEECH_RE.finditer(text)]
+    if dash_dialogue:
+        pos = 0
+        for line in text.split("\n"):
+            dashes = [m.end() for m in _SPACED_DASH_RE.finditer(line)]
+            if dashes:
+                stripped = line.lstrip()
+                opens = stripped[:1] in ("–", "—")
+                if not opens:
+                    # 'fordult a paphoz: – Mi lesz…' opens speech mid-line.
+                    first = next((m for m in _SPACED_DASH_RE.finditer(line)
+                                  if line[:m.start()].rstrip().endswith(":")), None)
+                    if first is not None:
+                        dashes = [d for d in dashes if d >= first.end()]
+                        opens = True
+                if opens:
+                    bounds = dashes + [len(line)]
+                    for i in range(0, len(bounds) - 1, 2):
+                        spans.append((pos + bounds[i], pos + bounds[i + 1]))
+            pos += len(line) + 1
+    return spans
+
+
+def _in_speech(offset: int, spans: list[tuple[int, int]]) -> bool:
+    return any(start <= offset < end for start, end in spans)
+
+
+def _touches_speech(sent, spans: list[tuple[int, int]]) -> bool:
+    return any(start < sent.end_char and sent.start_char < end for start, end in spans)
+
+
 def _is_dialogue_en(sent) -> bool:
-    """Return True if this sentence is (part of) dialogue and should be skipped by SDT."""
-    quote_chars = {'"', '\u201c', '\u201d', '\u00ab', '\u00bb', "'", '\u2018', '\u2019'}
+    """Return True if this sentence looks like dialogue that _speech_spans can't
+    delimit: an unpaired quote mark, or reported speech ('he said that…').
+    Apostrophes (Ahab's, don't) are not quote marks."""
+    quote_chars = {'"', '\u201c', '\u201d', '\u00ab', '\u00bb', '\u2018'}
     if any(c in sent.text for c in quote_chars):
         return True
     for token in sent:
@@ -645,16 +720,71 @@ def _is_dialogue_en(sent) -> bool:
     return False
 
 
+_ANIMATE_PRONOUNS_EN = {
+    "i", "you", "he", "she", "we", "they", "me", "him", "her", "us", "them",
+    "one", "who", "someone", "somebody", "everyone", "everybody", "anyone", "anybody",
+    "nobody", "myself", "yourself", "himself", "herself", "ourselves", "themselves",
+}
+_animate_noun_cache: dict[str, bool] = {}
+
+
+def _is_animate_noun_en(lemma: str) -> bool:
+    """True if WordNet files the noun under person/animal/people (captain, crew,
+    whale) or body part (heart, eyes — feelings are told through them too).
+
+    Without WordNet nothing is ruled out, which keeps the pre-lexicon behavior."""
+    if lemma not in _animate_noun_cache:
+        try:
+            from nltk_manager import check_wordnet_exists
+            if not check_wordnet_exists():
+                return True
+            from nltk.corpus import wordnet as wn
+            roots = {wn.synset(s) for s in ("person.n.01", "animal.n.01", "people.n.01",
+                                            "social_group.n.01", "body_part.n.01")}
+            _animate_noun_cache[lemma] = any(
+                roots.intersection(path)
+                for syn in wn.synsets(lemma, pos="n")[:3]
+                for path in syn.hypernym_paths()
+            )
+        except Exception:
+            return True
+    return _animate_noun_cache[lemma]
+
+
+def _has_animate_subject_en(verb) -> bool:
+    """True unless the clause's subject is clearly not a character ('the fight', 'it').
+
+    An emotion adjective predicated of a thing is description ('the silence was
+    menacing'), not a character's stated feeling. No subject found → True."""
+    subjects = [c for c in verb.children if c.dep_ in ("nsubj", "nsubjpass")]
+    if not subjects and verb.dep_ in ("xcomp", "ccomp", "conj"):
+        subjects = [c for c in verb.head.children if c.dep_ in ("nsubj", "nsubjpass")]
+    if not subjects:
+        return True
+    subj = subjects[0]
+    if subj.pos_ == "PROPN":
+        return True
+    if subj.pos_ == "PRON":
+        return subj.lower_ in _ANIMATE_PRONOUNS_EN
+    if subj.pos_ == "NOUN":
+        return _is_animate_noun_en(subj.lemma_.lower())
+    return True
+
+
 def _detect_emotion_label_en(sent) -> dict | None:
-    """Detect: linking verb + emotion adjective (e.g. 'She was furious')."""
+    """Detect a stated emotion: linking verb + emotion adjective ('She was furious',
+    'he grew impatient') or an emotion participle as passive ('she was terrified')."""
     for token in sent:
-        if token.lemma_ in LINKING_VERBS_EN:
+        if token.lemma_ in LINKING_VERBS_EN and token.pos_ in ("VERB", "AUX"):
             for child in token.children:
                 if child.pos_ == "ADJ":
                     lemma = child.lemma_.lower()
                     if lemma in STATE_EXEMPTIONS_EN:
                         continue
-                    if lemma in EMOTION_LEXICON_EN:
+                    if lemma in WILLING_BEFORE_INFINITIVE_EN and any(
+                            c.dep_ == "xcomp" and c.pos_ in ("VERB", "AUX") for c in child.children):
+                        continue
+                    if lemma in EMOTION_LEXICON_EN and _has_animate_subject_en(token):
                         start_char = min(token.idx, child.idx)
                         end_char = max(token.idx + len(token.text), child.idx + len(child.text))
                         return {
@@ -664,6 +794,22 @@ def _detect_emotion_label_en(sent) -> dict | None:
                             "entity_type": "emotion_label",
                             "confidence": 0.85,
                         }
+        # The parser often reads 'was terrified' as a verbal passive; the
+        # participle's own spelling is the adjective entry. A 'by' doer makes it
+        # an event instead ('was relieved by the day watch').
+        if token.tag_ == "VBN" and token.lower_ in EMOTION_LEXICON_EN:
+            aux = next((c for c in token.children if c.dep_ == "auxpass"), None)
+            has_agent = any(c.dep_ == "agent" for c in token.children)
+            if aux is not None and not has_agent and _has_animate_subject_en(token):
+                start_char = min(aux.idx, token.idx)
+                end_char = max(aux.idx + len(aux.text), token.idx + len(token.text))
+                return {
+                    "matched_text": None,
+                    "start_char": start_char,
+                    "end_char": end_char,
+                    "entity_type": "emotion_label",
+                    "confidence": 0.85,
+                }
     return None
 
 
@@ -719,13 +865,145 @@ def _detect_adverb_emotion_en(sent) -> dict | None:
     return None
 
 
+EMOTION_NOUNS_EN = _LEX_EN.lemmas("emotion_noun", felt="state")
+STRONG_EMOTION_NOUNS_EN = _LEX_EN.lemmas("emotion_noun", strength="strong", felt="state")
+# Nouns that name how an emotion shows or arrives: 'a look of horror', 'a wave of
+# grief', plus the face/voice nouns ('eyes of scorn'). Telling only with an
+# emotion noun after 'of'.
+EMOTION_CUE_HEADS_EN = {
+    e["phrase"][0] for e in _LEX_EN.entries("telling_cue")
+    if len(e.get("phrase") or ()) == 2 and e["phrase"][1] == "of"
+} | {"eye", "face", "voice", "expression", "tone", "smile", "glance", "gaze", "air"}
+# 'a sort of dread': look through these to the real frame.
+_OF_PASS_THROUGH_EN = {"sort", "kind", "degree", "state", "mixture"}
+
+
+def _detect_emotion_noun_frame_en(sent) -> dict | None:
+    """Detect an emotion named as a noun in a stock frame: 'much to my surprise',
+    'in wonderment', 'trembled with fear', 'full of wonder', 'choked by
+    indignation', 'a look of horror'.
+
+    Weak nouns (surprise, hope, love…) count only in the tight frames (to my X,
+    full of X, a look of X); strong ones also after in/with/by/out of."""
+    for tok in sent:
+        if tok.pos_ != "NOUN" or tok.lemma_.lower() not in EMOTION_NOUNS_EN:
+            continue
+        strong = tok.lemma_.lower() in STRONG_EMOTION_NOUNS_EN
+        noun = tok
+        while noun.dep_ == "conj" and noun.head.pos_ == "NOUN":
+            noun = noun.head
+        if noun.dep_ != "pobj":
+            continue
+        prep = noun.head
+        while (prep.lower_ == "of" and prep.head.lemma_ in _OF_PASS_THROUGH_EN
+               and prep.head.dep_ == "pobj"):
+            prep = prep.head.head
+        head = prep.head
+        word = prep.lower_
+        if word == "to":
+            fires = any(c.dep_ == "poss" for c in noun.children)
+        elif word == "of":
+            fires = (head.lemma_ == "full" or head.lemma_ in EMOTION_CUE_HEADS_EN
+                     or (strong and head.lower_ == "out"))
+        elif word in ("in", "with", "by"):
+            # 'the day was ending in a serenity…' is description, not a feeling.
+            fires = (strong and head.pos_ in ("VERB", "AUX", "ADJ")
+                     and _has_animate_subject_en(head if head.pos_ != "ADJ" else head.head))
+        else:
+            fires = False
+        if fires:
+            start = min(prep.idx, tok.idx)
+            end = max(prep.idx + len(prep.text), tok.idx + len(tok.text))
+            return {
+                "matched_text": None,
+                "start_char": start,
+                "end_char": end,
+                "entity_type": "emotion_noun_frame",
+                "confidence": 0.8,
+            }
+    return None
+
+
+def _detect_detached_emotion_en(sent) -> dict | None:
+    """Detect a sentence that opens on a detached emotion adjective or participle:
+    'Furious, Ned tried…', 'Rather surprised, I said…'."""
+    toks = [t for t in sent if not (t.is_punct or t.is_space)]
+    i = 0
+    while i < len(toks) and (toks[i].pos_ in ("ADV", "CCONJ") or toks[i].lower_ in ("so", "then")):
+        i += 1
+    if i >= len(toks):
+        return None
+    cand = toks[i]
+    is_label = ((cand.pos_ == "ADJ" and cand.lemma_.lower() in EMOTION_LEXICON_EN)
+                or (cand.tag_ == "VBN" and cand.lower_ in EMOTION_LEXICON_EN))
+    if not is_label or cand.dep_ == "ROOT":
+        return None
+    after = cand.right_edge.i + 1
+    if after >= len(cand.doc) or cand.doc[after].text != ",":
+        return None
+    start = cand.left_edge.idx  # include its own modifier ('Rather surprised')
+    return {
+        "matched_text": None,
+        "start_char": start,
+        "end_char": cand.idx + len(cand.text),
+        "entity_type": "detached_emotion",
+        "confidence": 0.8,
+    }
+
+
+# Emotion verbs by who feels the emotion: the subject ('she envied him') or the
+# object ('the news appalled her'). Behaviors (weep, tremble) show an emotion and
+# speech acts (scold, mock) are actions, so their roles never fire.
+EXPERIENCER_VERBS_EN = _LEX_EN.lemmas("emotion_verb", role="experiencer")
+STIMULUS_VERBS_EN = _LEX_EN.lemmas("emotion_verb", role="stimulus")
+
+
+def _detect_emotion_verb_en(sent) -> dict | None:
+    """Detect an emotion stated as a verb: 'I almost envied him', 'he dreaded the
+    voyage', 'the sight appalled her'."""
+    for tok in sent:
+        if tok.pos_ != "VERB" or tok.tag_ in ("VBG", "VBN"):
+            continue
+        # 'the power to charm or frighten souls' is a capacity, not a feeling.
+        verb = tok.head if tok.dep_ == "conj" else tok
+        if any(c.dep_ == "aux" and c.lower_ == "to" for c in verb.children):
+            continue
+        lemma = tok.lemma_.lower()
+        if lemma in EXPERIENCER_VERBS_EN:
+            subj = next((c for c in tok.children if c.dep_ == "nsubj"), None)
+            if subj is None or not _has_animate_subject_en(tok):
+                continue
+        elif lemma in STIMULUS_VERBS_EN:
+            obj = next((c for c in tok.children if c.dep_ == "dobj"), None)
+            if obj is None or not (
+                    obj.pos_ == "PROPN"
+                    or (obj.pos_ == "PRON" and obj.lower_ in _ANIMATE_PRONOUNS_EN)
+                    or (obj.pos_ == "NOUN" and _is_animate_noun_en(obj.lemma_.lower()))):
+                continue
+        else:
+            continue
+        return {
+            "matched_text": None,
+            "start_char": tok.idx,
+            "end_char": tok.idx + len(tok.text),
+            "entity_type": "emotion_verb",
+            "confidence": 0.75,
+        }
+    return None
+
+
 def _analyze_show_dont_tell(
     plain_text: str,
     language: str,
     confidence_threshold: float = 0.5,
     cap: int = 5
 ) -> list[dict]:
-    """4-detector show-don't-tell pipeline with dialogue exclusion."""
+    """Show-don't-tell pipeline with dialogue exclusion.
+
+    The filter-verb detector ('she heard footsteps') is kept but not run:
+    on labeled prose it produced only false positives — perception verbs are
+    usually how sensory showing is written.
+    """
     if language != "en":
         return []
     suggestions = []
@@ -738,16 +1016,21 @@ def _analyze_show_dont_tell(
 
     detectors = [
         _detect_emotion_label_en,
-        _detect_filter_verb_en,
         _detect_realize_verb_en,
         _detect_adverb_emotion_en,
+        _detect_emotion_noun_frame_en,
+        _detect_detached_emotion_en,
+        _detect_emotion_verb_en,
     ]
 
+    speech = _speech_spans(plain_text, dash_dialogue=False)
     seen_offsets: set = set()
     for sent in doc.sents:
         if len(suggestions) >= cap:
             break
-        if _is_dialogue_en(sent):
+        # Marked dialogue is handled per flag below; the sentence-level check is
+        # for dialogue the marks can't delimit.
+        if not _touches_speech(sent, speech) and _is_dialogue_en(sent):
             continue
         for detector in detectors:
             if len(suggestions) >= cap:
@@ -758,7 +1041,8 @@ def _analyze_show_dont_tell(
             if result["confidence"] < confidence_threshold:
                 continue
             start_char = result["start_char"]
-            if start_char in seen_offsets:
+            if (start_char in seen_offsets or _in_speech(start_char, speech)
+                    or _in_speech(result["end_char"] - 1, speech)):
                 continue
             seen_offsets.add(start_char)
             end_char = result["end_char"]
@@ -969,8 +1253,8 @@ def janitor_senses_overview(req: SensesOverviewRequest):
         for ch in chapters:
             if not ch["md_filename"]:
                 continue
-            md_path = os.path.join(req.project_path, "md", ch["md_filename"])
-            if not os.path.exists(md_path):
+            md_path = safe_md_path(os.path.join(req.project_path, "md"), ch["md_filename"])
+            if not md_path or not os.path.exists(md_path):
                 continue
             with open(md_path, "r", encoding="utf-8") as f:
                 raw = f.read()

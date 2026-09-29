@@ -1,33 +1,84 @@
 import re
-from routes.janitor import _build_context, _make_id
+from routes.janitor import _build_context, _make_id, _speech_spans, _in_speech, _touches_speech
+from lexicon_engine import get_lexicon
 
 # --- Polish SDT lexicons ---
+# Word lists live in backend/lexicons/pl/*.json; legacy tier = the tuned lists
+# (see the note in routes/janitor.py).
+_LEX_PL = get_lexicon("pl")
+
 LINKING_VERBS_PL = {"być", "stać", "wydawać", "wyglądać", "pozostawać", "czuć", "okazać", "okazywać"}
 
-SPEECH_VERBS_PL = {
-    "mówić", "powiedzieć", "zapytać", "pytać", "krzyczeć", "szeptać", "mruczeć",
-    "odpowiedzieć", "wołać", "odrzec", "stwierdzić", "rzucić", "mruknąć",
-    "warknąć", "szlochać", "błagać", "myśleć", "zastanawiać", "rozmyślać",
+SPEECH_VERBS_PL = _LEX_PL.lemmas("conflict_speech", legacy_only=True)
+
+FILTER_VERBS_PL = _LEX_PL.lemmas("filter_verb", legacy_only=True)
+
+# Knowing/deciding is plot information, not a stated emotion — not flagged.
+REALIZE_VERBS_PL = _LEX_PL.lemmas("realize_verb", legacy_only=True)
+
+EMOTION_LEXICON_PL = _LEX_PL.lemmas("emotion_label", legacy_only=True)
+
+EMOTION_NOUNS_PL = _LEX_PL.lemmas("emotion_noun", felt="state")
+ALL_EMOTION_ADVERBS_PL = _LEX_PL.lemmas("emotion_adverb", felt="state")
+
+_ADJ_ENDINGS_PL = sorted(("ymi", "imi", "ego", "emu", "ych", "ich", "ym", "im", "ej",
+                          "ą", "a", "e", "y", "i"), key=len, reverse=True)
+
+
+def _adj_stem_pl(word: str) -> str:
+    """Rough stem of a Polish adjective/participle form, so 'zdumiona',
+    'zdumionym' and 'zdumieni' all meet 'zdumiony'. The small Polish model
+    often mislemmatizes these ('zdumiić') or tags them NOUN, so the analyzers
+    match the spelling instead of the lemma."""
+    w = word.lower()
+    for end in _ADJ_ENDINGS_PL:
+        if w.endswith(end) and len(w) - len(end) >= 4:
+            w = w[:-len(end)]
+            break
+    if w.endswith("en"):      # zdumieni -> zdumion (masc. personal plural)
+        w = w[:-2] + "on"
+    elif w.endswith("l"):     # wściekli -> wściekł
+        w = w[:-1] + "ł"
+    return w
+
+
+# Stems of the strong emotion adjectives (plus the tuned list) that name a felt
+# state, not a trait ('uparty') or what something is like ('straszny'). Short
+# stems ('zł' from 'zły') would collide with unrelated words, so they're left out.
+EMOTION_LABEL_STEMS_PL = {
+    _adj_stem_pl(lemma)
+    for lemma in ((EMOTION_LEXICON_PL | _LEX_PL.lemmas("emotion_label", strength="strong"))
+                  & _LEX_PL.lemmas("emotion_label", felt="state"))
+    if lemma[-1:] in ("y", "i") and len(_adj_stem_pl(lemma)) >= 5
 }
 
-FILTER_VERBS_PL = {"widzieć", "zobaczyć", "słyszeć", "usłyszeć", "czuć", "poczuć", "zauważyć", "obserwować", "wąchać"}
-
-REALIZE_VERBS_PL = {"zrozumieć", "rozumieć", "wiedzieć", "zdać", "rozpoznać", "poczuć", "zdecydować", "postanowić", "uświadomić"}
-
-EMOTION_LEXICON_PL = {
-    "zły", "wściekły", "smutny", "szczęśliwy", "przestraszony", "przerażony",
-    "zdenerwowany", "nerwowy", "zazdrosny", "podekscytowany", "przygnębiony",
-    "samotny", "zrozpaczony", "dumny", "rozczarowany", "zawstydzony",
-    "winny", "niespokojny", "zaniepokojony", "sfrustrowany", "rozgoryczony",
-    "rozżalony", "uradowany", "zasmucony", "wzburzony", "przygnębiony",
-    "podniecony", "zbulwersowany", "zakłopotany", "skrępowany", "zirytowany",
+# On a face, look or voice a trait word shows the moment's state too
+# ('pogardliwy grymas', 'nieśmiałe spojrzenie'); evaluative words stay out.
+FACE_ADJECTIVE_STEMS_PL = EMOTION_LABEL_STEMS_PL | {
+    _adj_stem_pl(lemma) for lemma in _LEX_PL.lemmas("emotion_label", felt="trait")
+    if lemma[-1:] in ("y", "i") and len(_adj_stem_pl(lemma)) >= 5
 }
 
-EMOTION_ADVERBS_PL = {
-    "złośliwie", "smutnie", "szczęśliwie", "nerwowo", "zazdrośnie", "dumnie",
-    "desperacko", "gniewnie", "boleśnie", "radośnie", "ponuro", "żałośnie",
-    "ze złością", "ze smutkiem", "z dumą", "z zazdrością",
+# Face/look/voice nouns: an emotion adjective on them tells the feeling
+# ('zaniepokojonym głosem', 'z twarzą niespokojną').
+FACE_NOUNS_PL = {
+    "twarz", "głos", "spojrzenie", "wzrok", "oko", "mina", "uśmiech", "ton", "grymas",
+    "wyraz", "lico",
 }
+
+# Emotion verbs whose subject feels the emotion ('wstydziła się', 'zdumiał się');
+# behaviors (płakać, drżeć, śmiać się) show rather than tell.
+EXPERIENCER_VERBS_PL = _LEX_PL.lemmas("emotion_verb", role="experiencer")
+
+_FRAME_PREPS_PL = {"z", "ze", "ku", "w", "we", "od"}
+# Nouns in the lexicon whose frames are mostly not a feeling: 'ku wierze'
+# (faith), 'w czasie spokoju' (peacetime), 'w nadziei, że' (in the hope that),
+# 'z bólu' (usually physical pain).
+NOT_FRAME_NOUNS_PL = {"wiara", "spokój", "pokój", "nadzieja", "ból"}
+
+# Single-token adverbs only; manner phrases ("ze złością") are phrase entries in
+# the lexicon and need the phrase matcher.
+EMOTION_ADVERBS_PL = _LEX_PL.lemmas("emotion_adverb", legacy_only=True)
 
 STATE_EXEMPTIONS_PL = {
     "wysoki", "niski", "stary", "młody", "otwarty", "zamknięty", "martwy", "żywy",
@@ -60,6 +111,7 @@ PASSIVE_AUX_PL = {"być", "zostać", "bywać", "zostawać"}
 
 # --- Five Senses Lexicons (Polish) ---
 # Stem-based: Polish is inflected, so prefix matching is used.
+# Stays here until sense detection moves onto the lexicon's sensory entries (plan §4.4).
 SIGHT_STEMS_PL = (
     "widz", "patrz", "spojrz", "wzrok", "blask", "ciemn", "jasn", "kolor",
     "świat", "migot", "lśni", "błyszk", "połysk", "widocz", "niewidocz",
@@ -184,12 +236,56 @@ def _analyze_weak_adverbs_pl(plain_text: str, language: str, cap: int = 5) -> li
     return suggestions
 
 
+_PERSON_PRONOUNS_PL = {
+    "ja", "ty", "on", "ona", "ono", "my", "wy", "oni", "one", "ktoś", "nikt", "kto",
+    "wszyscy", "każdy",
+}
+
+
+# Polish marks animacy only on masculine nouns (Animacy=Hum/Nhum), so feminine
+# and neuter person nouns need a list.
+_PERSON_NOUNS_FEM_NEUT_PL = {
+    "matka", "kobieta", "dziewczyna", "dziewczynka", "królowa", "księżna", "pani",
+    "panna", "siostra", "córka", "żona", "babka", "babcia", "ciotka", "służąca",
+    "dama", "osoba", "dziecko", "dziewczę", "pacholę", "niewiasta", "wdowa", "zakonnica",
+    "nauczycielka", "sąsiadka", "przyjaciółka", "matula",
+}
+
+
+def _has_person_agent_pl(participle) -> bool:
+    """True if the participle's 'przez X' names a doer who is a person (or animal).
+
+    'przez chwilę' (for a moment) hangs off participles too, and inanimate
+    doers ('oświetlony przez okna', 'otoczone przez las') are how descriptive
+    prose is written, so a bare 'przez' is not enough — the same person-only
+    rule as the English check."""
+    for child in participle.children:
+        if not any(c.dep_ == "case" and c.lower_ == "przez" for c in child.children):
+            continue
+        if child.pos_ == "PROPN":
+            return True
+        if child.pos_ == "PRON":
+            if child.lemma_.lower() in _PERSON_PRONOUNS_PL:
+                return True
+            continue
+        if child.dep_ != "obl:agent" or child.pos_ != "NOUN":
+            continue
+        animacy = child.morph.get("Animacy")
+        if "Hum" in animacy or "Nhum" in animacy:
+            return True
+        if not animacy and child.lemma_.lower() in _PERSON_NOUNS_FEM_NEUT_PL:
+            return True
+    return False
+
+
 def _analyze_passive_voice_pl(plain_text: str, language: str, cap: int = 3) -> list[dict]:
-    """Detect passive constructions in Polish.
+    """Detect passive constructions in Polish that name a person as their doer
+    ('został napisany przez króla').
 
     Polish passive: 'zostać/być' + past passive participle (-ny/-na/-ne/-ty/-ta/-te suffix).
     spaCy Polish model often tags these as VERB with 'aux:pass' or 'auxpass' dependency,
     but it's inconsistent; we therefore also catch ADJ participle forms directly.
+    Agentless passives are usually deliberate and are not flagged.
     """
     if language != "pl":
         return []
@@ -210,9 +306,12 @@ def _analyze_passive_voice_pl(plain_text: str, language: str, cap: int = 3) -> l
         if len(suggestions) >= cap:
             break
         lower_text = token.text.lower()
+        if not any(t.lower_ == "przez" for t in token.sent):
+            continue
 
         # Path 1: spaCy marks the auxiliary as auxpass
-        if token.dep_ in ("auxpass", "aux:pass") and token.head.pos_ == "VERB":
+        if (token.dep_ in ("auxpass", "aux:pass") and token.head.pos_ == "VERB"
+                and _has_person_agent_pl(token.head)):
             start_char = min(token.idx, token.head.idx)
             end_char = max(token.idx + len(token.text), token.head.idx + len(token.head.text))
             matched_text = plain_text[start_char:end_char]
@@ -245,7 +344,7 @@ def _analyze_passive_voice_pl(plain_text: str, language: str, cap: int = 3) -> l
             token.head.lemma_ in PASSIVE_AUX_PL
             or any(c.lemma_ in PASSIVE_AUX_PL for c in token.children)
         )
-        if not has_aux:
+        if not has_aux or not _has_person_agent_pl(token):
             continue
         start_char = token.idx
         end_char = token.idx + len(token.text)
@@ -304,18 +403,22 @@ def _detect_emotion_label_pl(sent) -> dict | None:
                             "entity_type": "emotion_label",
                             "confidence": 0.75,
                         }
-    # Zero-copula: ADJ as ROOT with nsubj child
-    root_tokens = [t for t in sent if t.dep_ == "ROOT"]
-    if root_tokens and root_tokens[0].pos_ == "ADJ":
-        adj = root_tokens[0]
-        if any(c.dep_ == "nsubj" for c in adj.children):
-            if adj.lemma_.lower() in EMOTION_LEXICON_PL:
-                return {
-                    "start_char": adj.idx,
-                    "end_char": adj.idx + len(adj.text),
-                    "entity_type": "emotion_label",
-                    "confidence": 0.65,
-                }
+    # UD parse — the ADJ is the predicate head and 'być' hangs off it as `cop`.
+    # Polish drops subject pronouns ('Był bardzo zły'), so a cop child alone is enough.
+    for adj in sent:
+        if adj.pos_ != "ADJ":
+            continue
+        if (adj.lemma_.lower() not in EMOTION_LEXICON_PL
+                and _adj_stem_pl(adj.text) not in EMOTION_LABEL_STEMS_PL):
+            continue
+        # 'była zdumiona', 'był zaskoczony' come out as participle + aux:pass.
+        if any(c.dep_ in ("cop", "nsubj", "aux:pass") for c in adj.children):
+            return {
+                "start_char": adj.idx,
+                "end_char": adj.idx + len(adj.text),
+                "entity_type": "emotion_label",
+                "confidence": 0.65,
+            }
     return None
 
 
@@ -367,13 +470,114 @@ def _detect_adverb_emotion_pl(sent) -> dict | None:
     return None
 
 
+def _detect_detached_emotion_pl(sent) -> dict | None:
+    """Detect a depictive emotion adjective on a character in an action clause:
+    'wrócił na obiad bardzo zakłopotany', 'zawołał uradowany Zych'."""
+    for tok in sent:
+        if tok.pos_ not in ("ADJ", "NOUN") or tok.dep_.startswith("amod"):
+            continue
+        if "Nom" not in tok.morph.get("Case") or tok.head.pos_ != "VERB" or tok.head is tok:
+            continue
+        if any(c.dep_ in ("cop", "aux:pass") for c in tok.children):
+            continue  # a predicate; the emotion-label detector handles those
+        if _adj_stem_pl(tok.text) in EMOTION_LABEL_STEMS_PL:
+            return {
+                "start_char": tok.idx,
+                "end_char": tok.idx + len(tok.text),
+                "entity_type": "detached_emotion",
+                "confidence": 0.7,
+            }
+    return None
+
+
+def _detect_emotion_attribute_pl(sent) -> dict | None:
+    """Detect an emotion adjective on a face/voice noun or a 'z' + instrumental
+    manner phrase: 'zaniepokojonym głosem', 'z nerwowym pośpiechem'."""
+    for tok in sent:
+        if tok.pos_ != "ADJ" or not tok.dep_.startswith("amod"):
+            continue
+        stem = _adj_stem_pl(tok.text)
+        noun = tok.head
+        manner = ("Ins" in noun.morph.get("Case")
+                  and (noun.dep_ in ("obl", "obl:arg", "iobj")
+                       or any(c.dep_ == "case" and c.lower_ in ("z", "ze") for c in noun.children)))
+        on_face = noun.lemma_.lower() in FACE_NOUNS_PL and stem in FACE_ADJECTIVE_STEMS_PL
+        if on_face or (manner and stem in EMOTION_LABEL_STEMS_PL):
+            return {
+                "start_char": min(tok.idx, noun.idx),
+                "end_char": max(tok.idx + len(tok.text), noun.idx + len(noun.text)),
+                "entity_type": "emotion_attribute",
+                "confidence": 0.7,
+            }
+    return None
+
+
+def _detect_emotion_noun_frame_pl(sent) -> dict | None:
+    """Detect an emotion noun in a stock frame: 'z trwogi', 'ku mojemu zdumieniu',
+    'w gniewie', 'napełniał ją wstrętem'."""
+    for tok in sent:
+        lemma = tok.lemma_.lower()
+        if tok.pos_ != "NOUN" or lemma not in EMOTION_NOUNS_PL or lemma in NOT_FRAME_NOUNS_PL:
+            continue
+        prep = next((c for c in tok.children if c.dep_ == "case" and c.lower_ in _FRAME_PREPS_PL), None)
+        bare_ins = ("Ins" in tok.morph.get("Case") and prep is None
+                    and tok.dep_ in ("obl", "obl:arg", "iobj") and tok.head.pos_ == "VERB")
+        if prep is not None or bare_ins:
+            start = prep.idx if prep is not None and prep.idx < tok.idx else tok.idx
+            return {
+                "start_char": start,
+                "end_char": tok.idx + len(tok.text),
+                "entity_type": "emotion_noun_frame",
+                "confidence": 0.7,
+            }
+    return None
+
+
+def _detect_emotion_manner_pl(sent) -> dict | None:
+    """Detect an emotion adverb on any action: 'spojrzał gniewnie', 'smutnie odszedł'."""
+    for tok in sent:
+        if tok.pos_ != "ADV" or tok.dep_ != "advmod" or tok.head.pos_ != "VERB":
+            continue
+        word = tok.lower_
+        if word in ALL_EMOTION_ADVERBS_PL or tok.lemma_.lower() in ALL_EMOTION_ADVERBS_PL:
+            return {
+                "start_char": tok.idx,
+                "end_char": tok.idx + len(tok.text),
+                "entity_type": "emotion_manner",
+                "confidence": 0.7,
+            }
+    return None
+
+
+def _detect_emotion_verb_pl(sent) -> dict | None:
+    """Detect an emotion stated as a finite verb: 'wstydziła się', 'zdumiał się'."""
+    for tok in sent:
+        if tok.pos_ != "VERB" or "Fin" not in tok.morph.get("VerbForm"):
+            continue
+        # 'bałby się' — a hypothetical, not a feeling anyone had.
+        if "Cnd" in tok.morph.get("Mood") or any(c.lower_ == "by" for c in tok.children):
+            continue
+        if tok.lemma_.lower() in EXPERIENCER_VERBS_PL:
+            return {
+                "start_char": tok.idx,
+                "end_char": tok.idx + len(tok.text),
+                "entity_type": "emotion_verb",
+                "confidence": 0.7,
+            }
+    return None
+
+
 def _analyze_show_dont_tell_pl(
     plain_text: str,
     language: str,
     confidence_threshold: float = 0.5,
     cap: int = 5
 ) -> list[dict]:
-    """4-detector show-don't-tell pipeline for Polish with em-dash dialogue exclusion."""
+    """Show-don't-tell pipeline for Polish with em-dash dialogue exclusion.
+
+    The filter-verb detector is kept but not run (perception verbs are mostly
+    sensory showing; it produced only false positives in evaluation).
+    """
     if language != "pl":
         return []
     suggestions = []
@@ -386,16 +590,23 @@ def _analyze_show_dont_tell_pl(
 
     detectors = [
         _detect_emotion_label_pl,
-        _detect_filter_verb_pl,
         _detect_realize_verb_pl,
         _detect_adverb_emotion_pl,
+        _detect_detached_emotion_pl,
+        _detect_emotion_attribute_pl,
+        _detect_emotion_noun_frame_pl,
+        _detect_emotion_manner_pl,
+        _detect_emotion_verb_pl,
     ]
 
+    speech = _speech_spans(plain_text, dash_dialogue=True)
     seen_offsets: set = set()
     for sent in doc.sents:
         if len(suggestions) >= cap:
             break
-        if _is_dialogue_pl(sent):
+        # Marked dialogue is handled per flag below; the sentence-level check is
+        # for dialogue the marks can't delimit.
+        if not _touches_speech(sent, speech) and _is_dialogue_pl(sent):
             continue
         for detector in detectors:
             if len(suggestions) >= cap:
@@ -406,7 +617,8 @@ def _analyze_show_dont_tell_pl(
             if result["confidence"] < confidence_threshold:
                 continue
             start_char = result["start_char"]
-            if start_char in seen_offsets:
+            if (start_char in seen_offsets or _in_speech(start_char, speech)
+                    or _in_speech(result["end_char"] - 1, speech)):
                 continue
             seen_offsets.add(start_char)
             end_char = result["end_char"]

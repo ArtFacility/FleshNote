@@ -9,6 +9,7 @@ import re
 import uuid
 from fastapi import APIRouter, HTTPException, BackgroundTasks
 from pydantic import BaseModel
+from project_io import safe_md_path
 from routes.imports import _plain_text_to_html
 
 router = APIRouter()
@@ -238,8 +239,9 @@ def _update_foreshadowings(cursor, chapter_id: str | int, md_content: str):
                 if old_ch:
                     for row_info in cursor.execute("PRAGMA database_list").fetchall():
                         proj_dir = os.path.dirname(row_info[2])
-                        old_md_path = os.path.join(proj_dir, "md", old_ch["md_filename"])
-                        if os.path.exists(old_md_path):
+                        old_md_path = safe_md_path(
+                            os.path.join(proj_dir, "md"), old_ch["md_filename"])
+                        if old_md_path and os.path.exists(old_md_path):
                             with open(old_md_path, "r", encoding="utf-8") as f:
                                 old_content = f.read()
                             old_content = re.sub(
@@ -696,11 +698,14 @@ def load_chapter_content(req: ChapterLoad):
     if not row:
         raise HTTPException(status_code=404, detail="Chapter not found")
 
-    md_path = os.path.join(req.project_path, "md", row["md_filename"])
+    md_path = safe_md_path(os.path.join(req.project_path, "md"), row["md_filename"])
     content = ""
-    if os.path.exists(md_path):
+    unsafe_file = False
+    if md_path and os.path.exists(md_path):
         with open(md_path, "r", encoding="utf-8") as f:
             content = f.read()
+    elif md_path is None:
+        unsafe_file = True   # poisoned md_filename row — fail closed, show nothing
 
     # Safety net: if content is plain text (no HTML tags), convert to <p> tags
     # so TipTap renders line breaks correctly
@@ -718,7 +723,8 @@ def load_chapter_content(req: ChapterLoad):
     content = _milestone_md_to_html(content)
     content = _time_md_to_html(content)
 
-    return {"content": content, "md_filename": row["md_filename"]}
+    return {"content": content, "md_filename": row["md_filename"],
+            "unsafe_file": unsafe_file}
 
 
 @router.post("/api/project/chapter/save")
@@ -746,8 +752,13 @@ def save_chapter_content(req: ChapterSave, background_tasks: BackgroundTasks):
     md_content = _milestone_html_to_md(md_content)
     md_content = _time_html_to_md(md_content)
 
-    # Write the md file
-    md_path = os.path.join(req.project_path, "md", row["md_filename"])
+    # Write the md file — but never through a poisoned (traversal) filename
+    md_path = safe_md_path(os.path.join(req.project_path, "md"), row["md_filename"])
+    if not md_path:
+        conn.close()
+        raise HTTPException(status_code=409,
+                            detail="Chapter has an unsafe filename; refusing to write. "
+                                   "Rename or re-sync the chapter first.")
     os.makedirs(os.path.dirname(md_path), exist_ok=True)
     with open(md_path, "w", encoding="utf-8") as f:
         f.write(md_content)
@@ -998,8 +1009,8 @@ def get_todos(req: ProjectPath):
         md_filename = ch["md_filename"]
         if not md_filename:
             continue
-        md_path = os.path.join(req.project_path, "md", md_filename)
-        if not os.path.exists(md_path):
+        md_path = safe_md_path(os.path.join(req.project_path, "md"), md_filename)
+        if not md_path or not os.path.exists(md_path):
             continue
 
         with open(md_path, "r", encoding="utf-8") as f:

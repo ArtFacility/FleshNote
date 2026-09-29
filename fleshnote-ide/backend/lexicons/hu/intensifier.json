@@ -1,0 +1,241 @@
+{
+ "lang": "hu",
+ "kind": "intensifier",
+ "version": 1,
+ "entries": [
+  {
+   "id": "hu.intens.nagyon",
+   "lemma": "nagyon",
+   "kind": "intensifier",
+   "strength": "strong",
+   "factor": 1.4,
+   "source": "curated:gemini-2026-09",
+   "version": 1
+  },
+  {
+   "id": "hu.intens.rendk\u00edv\u00fcl",
+   "lemma": "rendk\u00edv\u00fcl",
+   "kind": "intensifier",
+   "strength": "strong",
+   "factor": 1.6,
+   "source": "curated:gemini-2026-09",
+   "version": 1
+  },
+  {
+   "id": "hu.intens.igen",
+   "lemma": "igen",
+   "kind": "intensifier",
+   "strength": "strong",
+   "factor": 1.3,
+   "source": "curated:gemini-2026-09",
+   "version": 1
+  },
+  {
+   "id": "hu.intens.felett\u00e9bb",
+   "lemma": "felett\u00e9bb",
+   "kind": "intensifier",
+   "strength": "strong",
+   "factor": 1.5,
+   "source": "curated:gemini-2026-09",
+   "version": 1
+  },
+  {
+   "id": "hu.intens.t\u00fals\u00e1gos",
+   "lemma": "t\u00fals\u00e1gos",
+   "kind": "intensifier",
+   "strength": "strong",
+   "factor": 1.5,
+   "source": "curated:gemini-2026-09",
+   "version": 1
+  },
+  {
+   "id": "hu.intens.v\u00e9gtelen",
+   "lemma": "v\u00e9gtelen",
+   "kind": "intensifier",
+   "strength": "strong",
+   "factor": 1.7,
+   "source": "curated:gemini-2026-09",
+   "version": 1
+  },
+  {
+   "id": "hu.intens.teljes",
+   "lemma": "teljes",
+   "kind": "intensifier",
+   "strength": "strong",
+   "factor": 1.6,
+   "source": "curated:gemini-2026-09",
+   "version": 1
+  },
+  {
+   "id": "hu.intens.eg\u00e9szen",
+   "lemma": "eg\u00e9szen",
+   "kind": "intensifier",
+   "strength": "strong",
+   "factor": 1.4,
+   "source": "curated:gemini-2026-09",
+   "version": 1
+  },
+  {
+   "id": "hu.intens.abszol\u00fat",
+   "lemma": "abszol\u00fat",
+   "kind": "intensifier",
+   "strength": "strong",
+   "factor": 1.7,
+   "source": "curated:gemini-2026-09",
+   "version": 1
+  },
+  {
+   "id": "hu.intens.kimondhatatlan",
+   "lemma": "kimondhatatlan",
+   "kind": "intensifier",
+   "strength": "strong",
+   "factor": 1.7,
+   "source": "curated:gemini-2026-09",
+   "version": 1
+  },
+  {
+   "id": "hu.intens.le\u00edrhatatlan",
+   "lemma": "le\u00edrhatatlan",
+   "kind": "intensifier",
+   "strength": "strong",
+   "factor": 1.7,
+   "source": "curated:gemini-2026-09",
+   "version": 1
+  },
+  {
+   "id": "hu.intens.rettenetes",
+   "lemma": "rettenetes",
+   "kind": "intensifier",
+   "strength": "strong",
+   "factor": 1.6,
+   "source": "curated:gemini-2026-09",
+   "version": 1
+  },
+  {
+   "id": "hu.intens.sz\u00f6rny\u0171",
+   "lemma": "sz\u00f6rny\u0171",
+   "kind": "intensifier",
+   "strength": "strong",
+   "factor": 1.6,
+   "source": "curated:gemini-2026-09",
+   "version": 1
+  },
+  {
+   "id": "hu.intens.irt\u00f3zatos",
+   "lemma": "irt\u00f3zatos",
+   "kind": "intensifier",
+   "strength": "strong",
+   "factor": 1.6,
+   "source": "curated:gemini-2026-09",
+   "version": 1
+  },
+  {
+   "id": "hu.intens.borzaszt\u00f3",
+   "lemma": "borzaszt\u00f3",
+   "kind": "intensifier",
+   "strength": "strong",
+   "factor": 1.6,
+   "source": "curated:gemini-2026-09",
+   "version": 1
+  },
+  {
+   "id": "hu.intens.csod\u00e1latos",
+   "lemma": "csod\u00e1latos",
+   "kind": "intensifier",
+   "strength": "strong",
+   "factor": 1.5,
+   "source": "curated:gemini-2026-09",
+   "version": 1
+  },
+  {
+   "id": "hu.intens.roppant",
+   "lemma": "roppant",
+   "kind": "intensifier",
+   "strength": "strong",
+   "factor": 1.5,
+   "source": "curated:gemini-2026-09",
+   "version": 1
+  },
+  {
+   "id": "hu.intens.szerfelett",
+   "lemma": "szerfelett",
+   "kind": "intensifier",
+   "strength": "strong",
+   "factor": 1.5,
+   "source": "curated:gemini-2026-09",
+   "version": 1
+  },
+  {
+   "id": "hu.intens.igencsak",
+   "lemma": "igencsak",
+   "kind": "intensifier",
+   "strength": "strong",
+   "factor": 1.4,
+   "source": "curated:gemini-2026-09",
+   "version": 1
+  },
+  {
+   "id": "hu.intens.alapos",
+   "lemma": "alapos",
+   "kind": "intensifier",
+   "strength": "strong",
+   "factor": 1.4,
+   "source": "curated:gemini-2026-09",
+   "version": 1
+  },
+  {
+   "id": "hu.intens.teljess\u00e9g",
+   "lemma": "teljess\u00e9g",
+   "kind": "intensifier",
+   "strength": "strong",
+   "factor": 1.6,
+   "source": "curated:gemini-2026-09",
+   "version": 1
+  },
+  {
+   "id": "hu.intens.m\u00e9lys\u00e9ges",
+   "lemma": "m\u00e9lys\u00e9ges",
+   "kind": "intensifier",
+   "strength": "strong",
+   "factor": 1.5,
+   "source": "curated:gemini-2026-09",
+   "version": 1
+  },
+  {
+   "id": "hu.intens.hat\u00e1rtalan",
+   "lemma": "hat\u00e1rtalan",
+   "kind": "intensifier",
+   "strength": "strong",
+   "factor": 1.7,
+   "source": "curated:gemini-2026-09",
+   "version": 1
+  },
+  {
+   "id": "hu.intens.elmondhatatlan",
+   "lemma": "elmondhatatlan",
+   "kind": "intensifier",
+   "strength": "strong",
+   "factor": 1.7,
+   "source": "curated:gemini-2026-09",
+   "version": 1
+  },
+  {
+   "id": "hu.intens.f\u00f6l\u00f6tt\u00e9bb",
+   "lemma": "f\u00f6l\u00f6tt\u00e9bb",
+   "kind": "intensifier",
+   "strength": "strong",
+   "factor": 1.5,
+   "source": "curated:gemini-2026-09",
+   "version": 1
+  },
+  {
+   "id": "hu.intens.n\u00e9mik\u00e9pp",
+   "lemma": "n\u00e9mik\u00e9pp",
+   "kind": "intensifier",
+   "strength": "strong",
+   "factor": 1.2,
+   "source": "curated:gemini-2026-09",
+   "version": 1
+  }
+ ]
+}

@@ -1,0 +1,88 @@
+{
+ "lang": "en",
+ "kind": "negator",
+ "version": 1,
+ "entries": [
+  {
+   "id": "en.neg.not",
+   "lemma": "not",
+   "kind": "negator",
+   "strength": "strong",
+   "factor": -1.0,
+   "source": "curated:gemini-2026-09",
+   "version": 1
+  },
+  {
+   "id": "en.neg.never",
+   "lemma": "never",
+   "kind": "negator",
+   "strength": "strong",
+   "factor": -1.0,
+   "source": "curated:gemini-2026-09",
+   "version": 1
+  },
+  {
+   "id": "en.neg.no",
+   "lemma": "no",
+   "kind": "negator",
+   "strength": "strong",
+   "factor": -1.0,
+   "source": "curated:gemini-2026-09",
+   "version": 1
+  },
+  {
+   "id": "en.neg.neither",
+   "lemma": "neither",
+   "kind": "negator",
+   "strength": "strong",
+   "factor": -1.0,
+   "source": "curated:gemini-2026-09",
+   "version": 1
+  },
+  {
+   "id": "en.neg.nor",
+   "lemma": "nor",
+   "kind": "negator",
+   "strength": "strong",
+   "factor": -1.0,
+   "source": "curated:gemini-2026-09",
+   "version": 1
+  },
+  {
+   "id": "en.neg.none",
+   "lemma": "none",
+   "kind": "negator",
+   "strength": "strong",
+   "factor": -1.0,
+   "source": "curated:gemini-2026-09",
+   "version": 1
+  },
+  {
+   "id": "en.neg.nowhere",
+   "lemma": "nowhere",
+   "kind": "negator",
+   "strength": "strong",
+   "factor": -1.0,
+   "source": "curated:gemini-2026-09",
+   "version": 1
+  },
+  {
+   "id": "en.neg.nothing",
+   "lemma": "nothing",
+   "kind": "negator",
+   "strength": "strong",
+   "factor": -1.0,
+   "source": "curated:gemini-2026-09",
+   "version": 1
+  },
+  {
+   "id": "en.neg.hardly",
+   "lemma": "hardly",
+   "kind": "negator",
+   "strength": "strong",
+   "factor": -1.0,
+   "source": "curated:gemini-2026-09",
+   "version": 1
+  }
+ ]
+}

@@ -1,0 +1,322 @@
+{
+ "lang": "en",
+ "kind": "intensifier",
+ "version": 1,
+ "entries": [
+  {
+   "id": "en.intens.very",
+   "lemma": "very",
+   "kind": "intensifier",
+   "strength": "strong",
+   "factor": 1.3,
+   "source": "curated:gemini-2026-09",
+   "version": 1
+  },
+  {
+   "id": "en.intens.extremely",
+   "lemma": "extremely",
+   "kind": "intensifier",
+   "strength": "strong",
+   "factor": 1.6,
+   "source": "curated:gemini-2026-09",
+   "version": 1
+  },
+  {
+   "id": "en.intens.incredibly",
+   "lemma": "incredibly",
+   "kind": "intensifier",
+   "strength": "strong",
+   "factor": 1.6,
+   "source": "curated:gemini-2026-09",
+   "version": 1
+  },
+  {
+   "id": "en.intens.deeply",
+   "lemma": "deeply",
+   "kind": "intensifier",
+   "strength": "strong",
+   "factor": 1.4,
+   "source": "curated:gemini-2026-09",
+   "version": 1
+  },
+  {
+   "id": "en.intens.profoundly",
+   "lemma": "profoundly",
+   "kind": "intensifier",
+   "strength": "strong",
+   "factor": 1.5,
+   "source": "curated:gemini-2026-09",
+   "version": 1
+  },
+  {
+   "id": "en.intens.utterly",
+   "lemma": "utterly",
+   "kind": "intensifier",
+   "strength": "strong",
+   "factor": 1.7,
+   "source": "curated:gemini-2026-09",
+   "version": 1
+  },
+  {
+   "id": "en.intens.completely",
+   "lemma": "completely",
+   "kind": "intensifier",
+   "strength": "strong",
+   "factor": 1.6,
+   "source": "curated:gemini-2026-09",
+   "version": 1
+  },
+  {
+   "id": "en.intens.totally",
+   "lemma": "totally",
+   "kind": "intensifier",
+   "strength": "strong",
+   "factor": 1.6,
+   "source": "curated:gemini-2026-09",
+   "version": 1
+  },
+  {
+   "id": "en.intens.absolutely",
+   "lemma": "absolutely",
+   "kind": "intensifier",
+   "strength": "strong",
+   "factor": 1.7,
+   "source": "curated:gemini-2026-09",
+   "version": 1
+  },
+  {
+   "id": "en.intens.entirely",
+   "lemma": "entirely",
+   "kind": "intensifier",
+   "strength": "strong",
+   "factor": 1.5,
+   "source": "curated:gemini-2026-09",
+   "version": 1
+  },
+  {
+   "id": "en.intens.immensely",
+   "lemma": "immensely",
+   "kind": "intensifier",
+   "strength": "strong",
+   "factor": 1.6,
+   "source": "curated:gemini-2026-09",
+   "version": 1
+  },
+  {
+   "id": "en.intens.enormously",
+   "lemma": "enormously",
+   "kind": "intensifier",
+   "strength": "strong",
+   "factor": 1.6,
+   "source": "curated:gemini-2026-09",
+   "version": 1
+  },
+  {
+   "id": "en.intens.vastly",
+   "lemma": "vastly",
+   "kind": "intensifier",
+   "strength": "strong",
+   "factor": 1.5,
+   "source": "curated:gemini-2026-09",
+   "version": 1
+  },
+  {
+   "id": "en.intens.tremendously",
+   "lemma": "tremendously",
+   "kind": "intensifier",
+   "strength": "strong",
+   "factor": 1.6,
+   "source": "curated:gemini-2026-09",
+   "version": 1
+  },
+  {
+   "id": "en.intens.intensely",
+   "lemma": "intensely",
+   "kind": "intensifier",
+   "strength": "strong",
+   "factor": 1.6,
+   "source": "curated:gemini-2026-09",
+   "version": 1
+  },
+  {
+   "id": "en.intens.exceedingly",
+   "lemma": "exceedingly",
+   "kind": "intensifier",
+   "strength": "strong",
+   "factor": 1.5,
+   "source": "curated:gemini-2026-09",
+   "version": 1
+  },
+  {
+   "id": "en.intens.exceptionally",
+   "lemma": "exceptionally",
+   "kind": "intensifier",
+   "strength": "strong",
+   "factor": 1.6,
+   "source": "curated:gemini-2026-09",
+   "version": 1
+  },
+  {
+   "id": "en.intens.extraordinarily",
+   "lemma": "extraordinarily",
+   "kind": "intensifier",
+   "strength": "strong",
+   "factor": 1.7,
+   "source": "curated:gemini-2026-09",
+   "version": 1
+  },
+  {
+   "id": "en.intens.remarkably",
+   "lemma": "remarkably",
+   "kind": "intensifier",
+   "strength": "strong",
+   "factor": 1.4,
+   "source": "curated:gemini-2026-09",
+   "version": 1
+  },
+  {
+   "id": "en.intens.terribly",
+   "lemma": "terribly",
+   "kind": "intensifier",
+   "strength": "strong",
+   "factor": 1.5,
+   "source": "curated:gemini-2026-09",
+   "version": 1
+  },
+  {
+   "id": "en.intens.awfully",
+   "lemma": "awfully",
+   "kind": "intensifier",
+   "strength": "strong",
+   "factor": 1.4,
+   "source": "curated:gemini-2026-09",
+   "version": 1
+  },
+  {
+   "id": "en.intens.desperately",
+   "lemma": "desperately",
+   "kind": "intensifier",
+   "strength": "strong",
+   "factor": 1.5,
+   "source": "curated:gemini-2026-09",
+   "version": 1
+  },
+  {
+   "id": "en.intens.wildly",
+   "lemma": "wildly",
+   "kind": "intensifier",
+   "strength": "strong",
+   "factor": 1.5,
+   "source": "curated:gemini-2026-09",
+   "version": 1
+  },
+  {
+   "id": "en.intens.fiercely",
+   "lemma": "fiercely",
+   "kind": "intensifier",
+   "strength": "strong",
+   "factor": 1.5,
+   "source": "curated:gemini-2026-09",
+   "version": 1
+  },
+  {
+   "id": "en.intens.severely",
+   "lemma": "severely",
+   "kind": "intensifier",
+   "strength": "strong",
+   "factor": 1.5,
+   "source": "curated:gemini-2026-09",
+   "version": 1
+  },
+  {
+   "id": "en.intens.drastically",
+   "lemma": "drastically",
+   "kind": "intensifier",
+   "strength": "strong",
+   "factor": 1.5,
+   "source": "curated:gemini-2026-09",
+   "version": 1
+  },
+  {
+   "id": "en.intens.overwhelmingly",
+   "lemma": "overwhelmingly",
+   "kind": "intensifier",
+   "strength": "strong",
+   "factor": 1.7,
+   "source": "curated:gemini-2026-09",
+   "version": 1
+  },
+  {
+   "id": "en.intens.unbearably",
+   "lemma": "unbearably",
+   "kind": "intensifier",
+   "strength": "strong",
+   "factor": 1.7,
+   "source": "curated:gemini-2026-09",
+   "version": 1
+  },
+  {
+   "id": "en.intens.acutely",
+   "lemma": "acutely",
+   "kind": "intensifier",
+   "strength": "strong",
+   "factor": 1.5,
+   "source": "curated:gemini-2026-09",
+   "version": 1
+  },
+  {
+   "id": "en.intens.bitterly",
+   "lemma": "bitterly",
+   "kind": "intensifier",
+   "strength": "strong",
+   "factor": 1.4,
+   "source": "curated:gemini-2026-09",
+   "version": 1
+  },
+  {
+   "id": "en.intens.thoroughly",
+   "lemma": "thoroughly",
+   "kind": "intensifier",
+   "strength": "strong",
+   "factor": 1.4,
+   "source": "curated:gemini-2026-09",
+   "version": 1
+  },
+  {
+   "id": "en.intens.wholly",
+   "lemma": "wholly",
+   "kind": "intensifier",
+   "strength": "strong",
+   "factor": 1.5,
+   "source": "curated:gemini-2026-09",
+   "version": 1
+  },
+  {
+   "id": "en.intens.purely",
+   "lemma": "purely",
+   "kind": "intensifier",
+   "strength": "strong",
+   "factor": 1.3,
+   "source": "curated:gemini-2026-09",
+   "version": 1
+  },
+  {
+   "id": "en.intens.unquestionably",
+   "lemma": "unquestionably",
+   "kind": "intensifier",
+   "strength": "strong",
+   "factor": 1.4,
+   "source": "curated:gemini-2026-09",
+   "version": 1
+  },
+  {
+   "id": "en.intens.undeniably",
+   "lemma": "undeniably",
+   "kind": "intensifier",
+   "strength": "strong",
+   "factor": 1.4,
+   "source": "curated:gemini-2026-09",
+   "version": 1
+  }
+ ]
+}

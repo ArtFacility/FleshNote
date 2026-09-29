@@ -16,16 +16,36 @@ Diff model
 
 import os
 import json
+import uuid
 import shutil
 import sqlite3
 import hashlib
+import unicodedata
 from fastapi import APIRouter, HTTPException
 from pydantic import BaseModel
 from typing import Dict
 
 from sync_core import log_change
+from project_io import md_filename_ok, safe_md_path
 
 router = APIRouter()
+
+# Device-local tables a remote party may never write through sync: they hold
+# tamper-evidence (server_receipts), process history (pentimento_*),
+# snapshots, and the merge machinery itself (sync_meta, change_log). A forged
+# change_log row naming any of these is untrusted data, not code.
+DEVICE_LOCAL_TABLES = {
+    "server_receipts", "pentimento_sessions", "pentimento_ops",
+    "chapter_snapshots", "sync_meta", "change_log",
+}
+
+# project_config keys that change SECURITY POSTURE when synced: a hostile
+# pentimento_tsa_url would make the device beacon chain hashes + its stable
+# device token to an attacker's https endpoint on every session end. These
+# stay device-local (configurable via this device's settings UI only).
+SECURITY_CONFIG_KEYS = {
+    "pentimento_tsa_url", "pentimento_verification", "pentimento_external_tsa",
+}
 
 
 class SyncPreviewRequest(BaseModel):
@@ -70,6 +90,23 @@ def _schema_allowlist(conn) -> Dict[str, set]:
 
 def _ident_ok(allow: Dict[str, set], table_name, column_name) -> bool:
     return table_name in allow and column_name in allow[table_name]
+
+
+def _mergeable(allow: Dict[str, set], table_name, column_name) -> bool:
+    """Merge gate for a remote change_log row's (table, column): the table must
+    not be device-local AND the identifier must exist in the local schema."""
+    if table_name in DEVICE_LOCAL_TABLES:
+        return False
+    if allow is None:
+        return False  # fail closed: never interpolate identifiers without an allowlist
+    return _ident_ok(allow, table_name, column_name)
+
+
+def _chapter_md_filename_ok(value) -> bool:
+    """chapters.md_filename is a merge special case: it later drives every md/
+    file sink, so its VALUE (not just the identifier) must be a safe flat
+    basename even before it reaches a file boundary."""
+    return value is not None and md_filename_ok(value)
 
 
 def _get_display_name(cursor, table_name: str, row_id: str, allow: Dict[str, set] = None):
@@ -138,19 +175,48 @@ def _latest_by_field(logs):
 
 # ── Entity diff ─────────────────────────────────────────────────────────────
 
+
 def _compute_entity_changes(cursor_local, cursor_remote, unseen_remote, unseen_local,
                             allow: Dict[str, set] = None):
-    """Return the list of remote field changes that would actually alter local state."""
+    """Return (changes, warnings): the list of remote field changes that would
+    actually alter local state, plus security-relevant skips the UI should
+    surface (hostile filenames, forged device-local rows)."""
     remote_grouped = _latest_by_field(unseen_remote)
     local_grouped = _latest_by_field(unseen_local)
 
     changes = []
+    warnings = []
     for key, remote_log in remote_grouped.items():
         table_name, row_id, column_name = key
         if column_name == "prose_hash":  # synthetic, handled by the prose engine
             continue
-        if allow is not None and not _ident_ok(allow, table_name, column_name):
-            continue  # unknown table/column on this schema — skip defensively
+        if not _mergeable(allow, table_name, column_name):
+            warnings.append({
+                "code": "device_local_change",
+                "table": table_name,
+                "row_id": row_id,
+                "column": column_name,
+            })
+            continue  # device-local table or unknown schema on this device — skip
+        if table_name == "project_config" and row_id in SECURITY_CONFIG_KEYS:
+            warnings.append({
+                "code": "security_config_change",
+                "table": table_name,
+                "row_id": row_id,
+                "column": column_name,
+                "value": str(remote_log["value"])[:120],
+            })
+            continue  # security-posture keys stay device-local — never merge
+        if table_name == "chapters" and column_name == "md_filename" \
+                and not _chapter_md_filename_ok(remote_log["value"]):
+            warnings.append({
+                "code": "hostile_md_filename",
+                "table": table_name,
+                "row_id": row_id,
+                "column": column_name,
+                "value": str(remote_log["value"])[:120],
+            })
+            continue  # hostile filename value — never merge, never poison the row
 
         local_log = local_grouped.get(key)
         if local_log and local_log["hlc"] > remote_log["hlc"]:
@@ -174,18 +240,32 @@ def _compute_entity_changes(cursor_local, cursor_remote, unseen_remote, unseen_l
             action = "delete"
         elif not exists_locally:
             action = "create"
+            if table_name == "chapters":
+                # INSERT path: the hostile value can ride in the remote ROW
+                # itself (not only in change_log) — vet it here too, so a
+                # poisoned chapter is never even previewed as a create.
+                try:
+                    cursor_remote.execute(
+                        f"SELECT md_filename FROM chapters WHERE {_pk_col(table_name)} = ?",
+                        (row_id,))
+                    remote_row = cursor_remote.fetchone()
+                    if remote_row and not _chapter_md_filename_ok(remote_row["md_filename"]):
+                        continue
+                except Exception:
+                    continue
         else:
             action = "update"
 
-        changes.append({
+        entry = {
             "table": table_name,
             "row_id": row_id,
             "column": column_name,
             "display_name": _get_display_name(cursor_remote, table_name, row_id, allow),
             "action": action,
             "value": remote_val if remote_val is not None else "",
-        })
-    return changes
+        }
+        changes.append(entry)
+    return changes, warnings
 
 
 def _entity_summary(changes):
@@ -231,11 +311,52 @@ def _read_md(project_path, cursor, chap_id):
     title, fname = row["title"], row["md_filename"]
     text = ""
     if fname:
-        path = os.path.join(project_path, "md", fname)
-        if os.path.exists(path):
+        path = safe_md_path(os.path.join(project_path, "md"), fname)
+        if path and os.path.exists(path):
             with open(path, "r", encoding="utf-8") as f:
                 text = f.read()
     return title, fname, text
+
+
+def _repair_poisoned_md_filenames(cursor, project_path):
+    """Give every local chapters row with an unsafe md_filename a fresh safe
+    generated name (and rename along any physical md file a flat-but-invalid
+    value pointed at inside md/), then log the change so peers converge.
+    Called at the start of sync apply, before any file sink runs."""
+    md_dir = os.path.join(project_path, "md")
+    real_md = os.path.realpath(md_dir)
+    cursor.execute("SELECT id, chapter_number, md_filename FROM chapters")
+    rows = cursor.fetchall()
+    repaired = 0
+    for row in rows:
+        fname = row["md_filename"]
+        if not fname or safe_md_path(md_dir, fname):
+            continue
+        try:
+            num = int(row["chapter_number"] or 0)   # hostile DBs can store text here
+        except (TypeError, ValueError):
+            num = 0
+        new_name = f"ch_{num:03d}_repaired_{uuid.uuid4().hex[:8]}.md"
+        old_path = None
+        raw = unicodedata.normalize("NFC", str(fname))
+        if "/" not in raw and "\\" not in raw and "\x00" not in raw:
+            candidate = os.path.realpath(os.path.join(real_md, raw))
+            try:
+                contained = os.path.normcase(
+                    os.path.commonpath([real_md, candidate])) == os.path.normcase(real_md)
+            except ValueError:
+                contained = False
+            if contained and os.path.isfile(candidate) and not os.path.islink(candidate):
+                old_path = candidate
+        try:
+            if old_path:
+                os.replace(old_path, os.path.join(real_md, new_name))
+        except OSError:
+            old_path = None  # prose is orphaned rather than unsafe — acceptable
+        cursor.execute("UPDATE chapters SET md_filename=? WHERE id=?", (new_name, row["id"]))
+        log_change(cursor, "chapters", row["id"], {"md_filename": new_name})
+        repaired += 1
+    return repaired
 
 
 def _compute_prose_plan(cursor_local, cursor_remote, local_path, remote_path):
@@ -315,7 +436,8 @@ def sync_preview(req: SyncPreviewRequest):
         unseen_remote = _unseen(remote_logs, local_vv)
         unseen_local = _unseen(local_logs, remote_vv)
 
-        entity_changes = _compute_entity_changes(cl, cr, unseen_remote, unseen_local, allow)
+        entity_changes, security_warnings = _compute_entity_changes(
+            cl, cr, unseen_remote, unseen_local, allow)
         takes, conflicts = _compute_prose_plan(cl, cr, req.local_path, req.remote_path)
 
         summary = _entity_summary(entity_changes)
@@ -331,6 +453,7 @@ def sync_preview(req: SyncPreviewRequest):
             "prose_takes": takes,
             "prose_conflicts": conflicts,
             "summary": summary,
+            "security_warnings": security_warnings,
         }
     finally:
         local_conn.close()
@@ -370,14 +493,21 @@ def sync_apply(req: SyncApplyRequest):
         unseen_local = _unseen(local_logs, remote_vv)
 
         # 1. Entity field changes (reuse the exact same detection as preview)
-        entity_changes = _compute_entity_changes(cl, cr, unseen_remote, unseen_local, allow)
+        entity_changes, _ = _compute_entity_changes(cl, cr, unseen_remote, unseen_local, allow)
         remote_grouped = _latest_by_field(unseen_remote)
+
+        # 1.5 Repair legacy/poisoned md_filename rows BEFORE any file sink runs:
+        # rows poisoned before this guard shipped (or via a hostile import)
+        # get a fresh safe generated name so chapter I/O keeps working.
+        _repair_poisoned_md_filenames(cl, req.local_path)
 
         # group changes per row for clean insert/update
         rows_to_apply = {}
         for ch in entity_changes:
-            if not _ident_ok(allow, ch["table"], ch["column"]):
-                continue  # belt-and-braces: never interpolate unvalidated identifiers
+            if not _mergeable(allow, ch["table"], ch["column"]) \
+                    or (ch["table"] == "project_config"
+                        and ch["row_id"] in SECURITY_CONFIG_KEYS):
+                continue  # belt-and-braces: never apply device-local/unvalidated identifiers
             rows_to_apply.setdefault((ch["table"], ch["row_id"]), {})[ch["column"]] = ch["value"]
 
         for (table_name, row_id), field_vals in rows_to_apply.items():
@@ -395,6 +525,13 @@ def sync_apply(req: SyncApplyRequest):
                     # intersect remote columns with the local schema allowlist —
                     # extra/unknown remote columns are never interpolated
                     cols = [c for c in remote_row.keys() if c in allow[table_name]]
+                    if table_name == "project_config" and row_id in SECURITY_CONFIG_KEYS:
+                        continue  # the row itself carries the hostile key — refuse
+                    if table_name == "chapters" and "md_filename" in cols \
+                            and not _chapter_md_filename_ok(remote_row["md_filename"]):
+                        # the INSERT path carries the hostile value in the row
+                        # itself (not only in change_log) — refuse to plant it
+                        continue
                     vals = [remote_row[c] for c in cols]
                     for c, v in field_vals.items():
                         if c in cols:
@@ -408,7 +545,7 @@ def sync_apply(req: SyncApplyRequest):
             # mark the winning remote logs as seen locally
             for c in field_vals:
                 lg = remote_grouped.get((table_name, row_id, c))
-                if lg:
+                if lg and _mergeable(allow, lg["table_name"], lg["column_name"]):
                     cl.execute(
                         "INSERT OR IGNORE INTO change_log "
                         "(table_name, row_id, column_name, value, hlc, device_id, origin) "
@@ -437,9 +574,9 @@ def sync_apply(req: SyncApplyRequest):
         for take in takes:
             if take["direction"] != "remote_to_local" or not take["md_filename"]:
                 continue
-            rpath = os.path.join(req.remote_path, "md", take["md_filename"])
-            lpath = os.path.join(req.local_path, "md", take["md_filename"])
-            if os.path.exists(rpath):
+            rpath = safe_md_path(os.path.join(req.remote_path, "md"), take["md_filename"])
+            lpath = safe_md_path(os.path.join(req.local_path, "md"), take["md_filename"])
+            if rpath and lpath and os.path.exists(rpath):
                 os.makedirs(os.path.dirname(lpath), exist_ok=True)
                 shutil.copy2(rpath, lpath)
                 _copy_remote_prose_log(take["chapter_id"])
@@ -449,13 +586,26 @@ def sync_apply(req: SyncApplyRequest):
         # change_log above, but the files live in assets/. Copy any remote asset
         # we don't already have — filenames are UUID-unique, so copy-if-absent
         # can't clobber a different image. Inside the backup/rollback envelope.
+        # Symlinks are never dereferenced: a hostile project can point one at
+        # any file outside the project, and copy2 would copy that content in.
         remote_assets = os.path.join(req.remote_path, "assets")
+        local_assets = os.path.realpath(os.path.join(req.local_path, "assets"))
         if os.path.isdir(remote_assets):
             for root, _dirs, files in os.walk(remote_assets):
                 for fname in files:
                     src = os.path.join(root, fname)
+                    if os.path.islink(src):
+                        continue
                     rel = os.path.relpath(src, remote_assets)
                     dst = os.path.join(req.local_path, "assets", rel)
+                    try:
+                        contained = os.path.normcase(
+                            os.path.commonpath([local_assets, os.path.realpath(dst)])
+                        ) == os.path.normcase(local_assets)
+                    except ValueError:
+                        contained = False
+                    if not contained:
+                        continue
                     if not os.path.exists(dst):
                         os.makedirs(os.path.dirname(dst), exist_ok=True)
                         shutil.copy2(src, dst)
@@ -465,8 +615,9 @@ def sync_apply(req: SyncApplyRequest):
             chap_id, fname = conflict["chapter_id"], conflict["md_filename"]
             if not fname:
                 continue
-            lpath = os.path.join(req.local_path, "md", fname)
-            rpath = os.path.join(req.remote_path, "md", fname)
+            lpath = safe_md_path(os.path.join(req.local_path, "md"), fname)
+            if not lpath:
+                continue  # hostile/conflicting filename — never write it locally
             choice = req.resolutions.get(chap_id, "local")
 
             if choice == "remote":
@@ -498,8 +649,8 @@ def sync_apply(req: SyncApplyRequest):
             cl.execute("SELECT md_filename FROM chapters WHERE id=? AND deleted=0", (chap_id,))
             row = cl.fetchone()
             if row and row["md_filename"]:
-                lpath = os.path.join(req.local_path, "md", row["md_filename"])
-                if os.path.exists(lpath):
+                lpath = safe_md_path(os.path.join(req.local_path, "md"), row["md_filename"])
+                if lpath and os.path.exists(lpath):
                     with open(lpath, "r", encoding="utf-8") as f:
                         content = f.read()
                     _update_entity_appearances(cl, chap_id, content)

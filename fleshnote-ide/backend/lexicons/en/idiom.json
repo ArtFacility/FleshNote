@@ -1,0 +1,836 @@
+{
+  "lang": "en",
+  "kind": "idiom",
+  "version": 1,
+  "entries": [
+    {
+      "id": "en.idiom.heart_sink",
+      "phrase": [
+        "heart",
+        "sink"
+      ],
+      "kind": "idiom",
+      "strength": "strong",
+      "valence": -0.7,
+      "arousal": 0.4,
+      "emotions": {
+        "sadness": 0.8
+      },
+      "blocks": [],
+      "source": "curated:gemini-2026-09",
+      "version": 1,
+      "example": "Her heart sank when she saw the tragic news arrive."
+    },
+    {
+      "id": "en.idiom.blood_run_cold",
+      "phrase": [
+        "blood",
+        "run",
+        "cold"
+      ],
+      "kind": "idiom",
+      "strength": "strong",
+      "valence": -0.85,
+      "arousal": 0.85,
+      "emotions": {
+        "fear": 0.9
+      },
+      "blocks": [],
+      "source": "curated:gemini-2026-09",
+      "version": 1,
+      "example": "His blood ran cold at the terrifying sound in the dark."
+    },
+    {
+      "id": "en.idiom.beside_oneself",
+      "phrase": [
+        "beside",
+        "oneself"
+      ],
+      "kind": "idiom",
+      "strength": "weak",
+      "valence": -0.6,
+      "arousal": 0.8,
+      "emotions": {
+        "anger": 0.6,
+        "fear": 0.6
+      },
+      "blocks": [],
+      "source": "curated:gemini-2026-09",
+      "version": 1,
+      "note": "spatial proximity vs overcome with emotion",
+      "example": "To be beside oneself with grief is completely overwhelming."
+    },
+    {
+      "id": "en.idiom.at_wit_end",
+      "phrase": [
+        "at",
+        "wit",
+        "end"
+      ],
+      "kind": "idiom",
+      "strength": "strong",
+      "valence": -0.7,
+      "arousal": 0.7,
+      "emotions": {
+        "fear": 0.7
+      },
+      "blocks": [],
+      "source": "curated:gemini-2026-09",
+      "version": 1,
+      "example": "He was at wit end trying to solve the complex riddle."
+    },
+    {
+      "id": "en.idiom.lump_in_throat",
+      "phrase": [
+        "lump",
+        "in",
+        "throat"
+      ],
+      "kind": "idiom",
+      "strength": "strong",
+      "valence": -0.6,
+      "arousal": 0.4,
+      "emotions": {
+        "sadness": 0.7
+      },
+      "blocks": [],
+      "source": "curated:gemini-2026-09",
+      "version": 1,
+      "example": "He felt a lump in throat as he said his final farewell."
+    },
+    {
+      "id": "en.idiom.make_blood_boil",
+      "phrase": [
+        "make",
+        "blood",
+        "boil"
+      ],
+      "kind": "idiom",
+      "strength": "strong",
+      "valence": -0.85,
+      "arousal": 0.9,
+      "emotions": {
+        "anger": 0.9
+      },
+      "blocks": [],
+      "source": "curated:gemini-2026-09",
+      "version": 1,
+      "example": "Cruelty like that will make blood boil in any decent person."
+    },
+    {
+      "id": "en.idiom.fly_into_rage",
+      "phrase": [
+        "fly",
+        "into",
+        "rage"
+      ],
+      "kind": "idiom",
+      "strength": "strong",
+      "valence": -0.9,
+      "arousal": 0.9,
+      "emotions": {
+        "anger": 0.95
+      },
+      "blocks": [
+        "en.emonoun.rage"
+      ],
+      "source": "curated:gemini-2026-09",
+      "version": 1,
+      "example": "The tyrant would often fly into rage over minor mistakes."
+    },
+    {
+      "id": "en.idiom.breathe_sigh_of_relief",
+      "phrase": [
+        "breathe",
+        "sigh",
+        "of",
+        "relief"
+      ],
+      "kind": "idiom",
+      "strength": "strong",
+      "valence": 0.7,
+      "arousal": 0.3,
+      "emotions": {
+        "joy": 0.7
+      },
+      "blocks": [],
+      "source": "curated:gemini-2026-09",
+      "version": 1,
+      "example": "The crew could breathe sigh of relief when the ship reached port."
+    },
+    {
+      "id": "en.idiom.lose_temper",
+      "phrase": [
+        "lose",
+        "temper"
+      ],
+      "kind": "idiom",
+      "strength": "strong",
+      "valence": -0.75,
+      "arousal": 0.8,
+      "emotions": {
+        "anger": 0.85
+      },
+      "blocks": [],
+      "source": "curated:gemini-2026-09",
+      "version": 1,
+      "example": "A good diplomat should never lose temper during negotiations."
+    },
+    {
+      "id": "en.idiom.on_cloud_nine",
+      "phrase": [
+        "on",
+        "cloud",
+        "nine"
+      ],
+      "kind": "idiom",
+      "strength": "strong",
+      "valence": 0.9,
+      "arousal": 0.7,
+      "emotions": {
+        "joy": 0.9
+      },
+      "blocks": [],
+      "source": "curated:gemini-2026-09",
+      "version": 1,
+      "example": "She was on cloud nine after receiving the scholarship."
+    },
+    {
+      "id": "en.idiom.down_in_dump",
+      "phrase": [
+        "down",
+        "in",
+        "dump"
+      ],
+      "kind": "idiom",
+      "strength": "strong",
+      "valence": -0.7,
+      "arousal": 0.3,
+      "emotions": {
+        "sadness": 0.8
+      },
+      "blocks": [],
+      "source": "curated:gemini-2026-09",
+      "version": 1,
+      "example": "He felt down in dump after losing the final match."
+    },
+    {
+      "id": "en.idiom.scared_to_death",
+      "phrase": [
+        "scared",
+        "to",
+        "death"
+      ],
+      "kind": "idiom",
+      "strength": "strong",
+      "valence": -0.9,
+      "arousal": 0.9,
+      "emotions": {
+        "fear": 0.95
+      },
+      "blocks": [
+        "en.emo.scared",
+        "en.stakes.death"
+      ],
+      "source": "curated:gemini-2026-09",
+      "version": 1,
+      "alt_lemmas": [],
+      "lemma_evidence": "carrier",
+      "example": "The child was scared to death by the sudden thunder."
+    },
+    {
+      "id": "en.idiom.grin_from_ear_to_ear",
+      "phrase": [
+        "grin",
+        "from",
+        "ear",
+        "to",
+        "ear"
+      ],
+      "kind": "idiom",
+      "strength": "strong",
+      "valence": 0.8,
+      "arousal": 0.6,
+      "emotions": {
+        "joy": 0.85
+      },
+      "blocks": [],
+      "source": "curated:gemini-2026-09",
+      "version": 1,
+      "example": "He began to grin from ear to ear upon seeing his gift."
+    },
+    {
+      "id": "en.idiom.tear_hair_out",
+      "phrase": [
+        "tear",
+        "hair",
+        "out"
+      ],
+      "kind": "idiom",
+      "strength": "strong",
+      "valence": -0.75,
+      "arousal": 0.85,
+      "emotions": {
+        "anger": 0.8,
+        "fear": 0.7
+      },
+      "blocks": [],
+      "source": "curated:gemini-2026-09",
+      "version": 1,
+      "example": "The desperate father would tear hair out in grief."
+    },
+    {
+      "id": "en.idiom.chill_to_bone",
+      "phrase": [
+        "chill",
+        "to",
+        "bone"
+      ],
+      "kind": "idiom",
+      "strength": "strong",
+      "valence": -0.8,
+      "arousal": 0.8,
+      "emotions": {
+        "fear": 0.85
+      },
+      "blocks": [],
+      "source": "curated:gemini-2026-09",
+      "version": 1,
+      "example": "The freezing wind began to chill to bone every sentry."
+    },
+    {
+      "id": "en.idiom.hair_stand_on_end",
+      "phrase": [
+        "hair",
+        "stand",
+        "on",
+        "end"
+      ],
+      "kind": "idiom",
+      "strength": "strong",
+      "valence": -0.8,
+      "arousal": 0.8,
+      "emotions": {
+        "fear": 0.85
+      },
+      "blocks": [],
+      "source": "curated:gemini-2026-09",
+      "version": 1,
+      "example": "The terrifying roar made his hair stand on end."
+    },
+    {
+      "id": "en.idiom.burst_into_tear",
+      "phrase": [
+        "burst",
+        "into",
+        "tear"
+      ],
+      "kind": "idiom",
+      "strength": "strong",
+      "valence": -0.75,
+      "arousal": 0.7,
+      "emotions": {
+        "sadness": 0.85
+      },
+      "blocks": [],
+      "source": "curated:gemini-2026-09",
+      "version": 1,
+      "example": "Overwhelmed with sorrow, she began to burst into tear."
+    },
+    {
+      "id": "en.idiom.grind_teeth",
+      "phrase": [
+        "grind",
+        "tooth"
+      ],
+      "kind": "idiom",
+      "strength": "strong",
+      "valence": -0.65,
+      "arousal": 0.7,
+      "emotions": {
+        "anger": 0.75
+      },
+      "blocks": [],
+      "source": "curated:gemini-2026-09",
+      "version": 1,
+      "alt_lemmas": [
+        "tooth"
+      ],
+      "lemma_evidence": "carrier",
+      "example": "He could only grind teeth in silence when confronted."
+    },
+    {
+      "id": "en.idiom.foam_at_mouth",
+      "phrase": [
+        "foam",
+        "at",
+        "mouth"
+      ],
+      "kind": "idiom",
+      "strength": "strong",
+      "valence": -0.9,
+      "arousal": 0.9,
+      "emotions": {
+        "anger": 0.95
+      },
+      "blocks": [],
+      "source": "curated:gemini-2026-09",
+      "version": 1,
+      "example": "The rabid dog started to foam at mouth as it barked."
+    },
+    {
+      "id": "en.idiom.jump_out_of_skin",
+      "phrase": [
+        "jump",
+        "out",
+        "of",
+        "skin"
+      ],
+      "kind": "idiom",
+      "strength": "strong",
+      "valence": -0.4,
+      "arousal": 0.8,
+      "emotions": {
+        "surprise": 0.8,
+        "fear": 0.7
+      },
+      "blocks": [],
+      "source": "curated:gemini-2026-09",
+      "version": 1,
+      "example": "The sudden gunshot made him jump out of skin."
+    },
+    {
+      "id": "en.idiom.green_with_envy",
+      "phrase": [
+        "green",
+        "with",
+        "envy"
+      ],
+      "kind": "idiom",
+      "strength": "strong",
+      "valence": -0.7,
+      "arousal": 0.6,
+      "emotions": {
+        "disgust": 0.7,
+        "anger": 0.6
+      },
+      "blocks": [],
+      "source": "curated:gemini-2026-09",
+      "version": 1,
+      "example": "The rivals were green with envy at his sudden success."
+    },
+    {
+      "id": "en.idiom.swallow_pride",
+      "phrase": [
+        "swallow",
+        "pride"
+      ],
+      "kind": "idiom",
+      "strength": "strong",
+      "valence": -0.4,
+      "arousal": 0.4,
+      "emotions": {
+        "sadness": 0.5
+      },
+      "blocks": [
+        "en.emonoun.pride"
+      ],
+      "source": "curated:gemini-2026-09",
+      "version": 1,
+      "example": "He had to swallow pride and apologize sincerely."
+    },
+    {
+      "id": "en.idiom.cross_finger",
+      "phrase": [
+        "cross",
+        "finger"
+      ],
+      "kind": "idiom",
+      "strength": "strong",
+      "valence": 0.5,
+      "arousal": 0.5,
+      "emotions": {
+        "anticipation": 0.7
+      },
+      "blocks": [],
+      "source": "curated:gemini-2026-09",
+      "version": 1,
+      "example": "We can only cross finger and hope for the best outcome."
+    },
+    {
+      "id": "en.idiom.heavy_heart",
+      "phrase": [
+        "heavy",
+        "heart"
+      ],
+      "kind": "idiom",
+      "strength": "strong",
+      "valence": -0.75,
+      "arousal": 0.3,
+      "emotions": {
+        "sadness": 0.8
+      },
+      "blocks": [],
+      "source": "curated:gemini-2026-09",
+      "version": 1,
+      "example": "With a heavy heart, the king signed the declaration of war."
+    },
+    {
+      "id": "en.idiom.light_at_end_of_tunnel",
+      "phrase": [
+        "light",
+        "at",
+        "end",
+        "of",
+        "tunnel"
+      ],
+      "kind": "idiom",
+      "strength": "strong",
+      "valence": 0.7,
+      "arousal": 0.5,
+      "emotions": {
+        "anticipation": 0.8,
+        "joy": 0.6
+      },
+      "blocks": [],
+      "source": "curated:gemini-2026-09",
+      "version": 1,
+      "example": "They finally saw light at end of tunnel as the storm passed."
+    },
+    {
+      "id": "en.idiom.heart_skip_beat",
+      "phrase": [
+        "heart",
+        "skip",
+        "beat"
+      ],
+      "kind": "idiom",
+      "strength": "strong",
+      "valence": -0.2,
+      "arousal": 0.7,
+      "emotions": {
+        "surprise": 0.8
+      },
+      "blocks": [],
+      "source": "curated:gemini-2026-09",
+      "version": 1,
+      "example": "She felt her heart skip beat when the messenger arrived."
+    },
+    {
+      "id": "en.idiom.on_pin_and_needle",
+      "phrase": [
+        "on",
+        "pin",
+        "and",
+        "needle"
+      ],
+      "kind": "idiom",
+      "strength": "strong",
+      "valence": -0.5,
+      "arousal": 0.7,
+      "emotions": {
+        "anticipation": 0.6,
+        "fear": 0.6
+      },
+      "blocks": [],
+      "source": "curated:gemini-2026-09",
+      "version": 1,
+      "example": "They sat on pin and needle waiting for the diagnosis."
+    },
+    {
+      "id": "en.idiom.in_seventh_heaven",
+      "phrase": [
+        "in",
+        "seventh",
+        "heaven"
+      ],
+      "kind": "idiom",
+      "strength": "strong",
+      "valence": 0.9,
+      "arousal": 0.7,
+      "emotions": {
+        "joy": 0.9
+      },
+      "blocks": [],
+      "source": "curated:gemini-2026-09",
+      "version": 1,
+      "example": "The bride was in seventh heaven throughout the wedding day."
+    },
+    {
+      "id": "en.idiom.hang_head",
+      "phrase": [
+        "hang",
+        "head"
+      ],
+      "kind": "idiom",
+      "strength": "strong",
+      "valence": -0.65,
+      "arousal": 0.3,
+      "emotions": {
+        "sadness": 0.7
+      },
+      "blocks": [],
+      "source": "curated:gemini-2026-09",
+      "version": 1,
+      "example": "Ashamed of his mistake, the boy could only hang head in silence."
+    },
+    {
+      "id": "en.idiom.keep_chin_up",
+      "phrase": [
+        "keep",
+        "chin",
+        "up"
+      ],
+      "kind": "idiom",
+      "strength": "strong",
+      "valence": 0.6,
+      "arousal": 0.4,
+      "emotions": {
+        "trust": 0.7
+      },
+      "blocks": [],
+      "source": "curated:gemini-2026-09",
+      "version": 1,
+      "example": "She told her brother to keep chin up despite the setback."
+    },
+    {
+      "id": "en.idiom.sick_to_stomach",
+      "phrase": [
+        "sick",
+        "to",
+        "stomach"
+      ],
+      "kind": "idiom",
+      "strength": "strong",
+      "valence": -0.8,
+      "arousal": 0.6,
+      "emotions": {
+        "disgust": 0.85
+      },
+      "blocks": [],
+      "source": "curated:gemini-2026-09",
+      "version": 1,
+      "example": "The sight of the battlefield made him sick to stomach."
+    },
+    {
+      "id": "en.idiom.take_breath_away",
+      "phrase": [
+        "take",
+        "breath",
+        "away"
+      ],
+      "kind": "idiom",
+      "strength": "strong",
+      "valence": 0.7,
+      "arousal": 0.8,
+      "emotions": {
+        "surprise": 0.8,
+        "joy": 0.7
+      },
+      "blocks": [],
+      "source": "curated:gemini-2026-09",
+      "version": 1,
+      "example": "The breathtaking view from the cliff will take breath away."
+    },
+    {
+      "id": "en.idiom.bite_tongue",
+      "phrase": [
+        "bite",
+        "tongue"
+      ],
+      "kind": "idiom",
+      "strength": "strong",
+      "valence": -0.4,
+      "arousal": 0.5,
+      "emotions": {
+        "anger": 0.6
+      },
+      "blocks": [],
+      "source": "curated:gemini-2026-09",
+      "version": 1,
+      "example": "He had to bite tongue rather than speak out in anger."
+    },
+    {
+      "id": "en.idiom.keep_cool",
+      "phrase": [
+        "keep",
+        "cool"
+      ],
+      "kind": "idiom",
+      "strength": "strong",
+      "valence": 0.5,
+      "arousal": 0.3,
+      "emotions": {
+        "trust": 0.6
+      },
+      "blocks": [],
+      "source": "curated:gemini-2026-09",
+      "version": 1,
+      "example": "A good captain must keep cool during a severe gale."
+    },
+    {
+      "id": "en.idiom.lose_cool",
+      "phrase": [
+        "lose",
+        "cool"
+      ],
+      "kind": "idiom",
+      "strength": "strong",
+      "valence": -0.7,
+      "arousal": 0.8,
+      "emotions": {
+        "anger": 0.8
+      },
+      "blocks": [],
+      "source": "curated:gemini-2026-09",
+      "version": 1,
+      "example": "It is dangerous for a commander to lose cool in battle."
+    },
+    {
+      "id": "en.idiom.get_on_nerve",
+      "phrase": [
+        "get",
+        "on",
+        "nerve"
+      ],
+      "kind": "idiom",
+      "strength": "strong",
+      "valence": -0.6,
+      "arousal": 0.6,
+      "emotions": {
+        "anger": 0.7
+      },
+      "blocks": [],
+      "source": "curated:gemini-2026-09",
+      "version": 1,
+      "example": "The repetitive clicking noise began to get on nerve after hours."
+    },
+    {
+      "id": "en.idiom.clench_fist",
+      "phrase": [
+        "clench",
+        "fist"
+      ],
+      "kind": "idiom",
+      "strength": "strong",
+      "valence": -0.6,
+      "arousal": 0.7,
+      "emotions": {
+        "anger": 0.8
+      },
+      "blocks": [],
+      "source": "curated:gemini-2026-09",
+      "version": 1,
+      "example": "He felt his anger rise and began to clench fist tightly."
+    },
+    {
+      "id": "en.idiom.drop_jaw",
+      "phrase": [
+        "drop",
+        "jaw"
+      ],
+      "kind": "idiom",
+      "strength": "strong",
+      "valence": 0.0,
+      "arousal": 0.7,
+      "emotions": {
+        "surprise": 0.8
+      },
+      "blocks": [],
+      "source": "curated:gemini-2026-09",
+      "version": 1,
+      "example": "The astonishing discovery made him drop jaw in wonder."
+    },
+    {
+      "id": "en.idiom.turn_pale",
+      "phrase": [
+        "turn",
+        "pale"
+      ],
+      "kind": "idiom",
+      "strength": "strong",
+      "valence": -0.6,
+      "arousal": 0.7,
+      "emotions": {
+        "fear": 0.8
+      },
+      "blocks": [],
+      "source": "curated:gemini-2026-09",
+      "version": 1,
+      "example": "She started to turn pale when the doctor delivered the news."
+    },
+    {
+      "id": "en.idiom.cross_arm",
+      "phrase": [
+        "cross",
+        "arm"
+      ],
+      "kind": "idiom",
+      "strength": "strong",
+      "valence": -0.3,
+      "arousal": 0.4,
+      "emotions": {
+        "anger": 0.4
+      },
+      "blocks": [],
+      "source": "curated:gemini-2026-09",
+      "version": 1,
+      "example": "The stubborn guard decided to cross arm and block the door."
+    },
+    {
+      "id": "en.idiom.raise_eyebrow",
+      "phrase": [
+        "raise",
+        "eyebrow"
+      ],
+      "kind": "idiom",
+      "strength": "strong",
+      "valence": 0.1,
+      "arousal": 0.5,
+      "emotions": {
+        "surprise": 0.6
+      },
+      "blocks": [],
+      "source": "curated:gemini-2026-09",
+      "version": 1,
+      "example": "Her bizarre story caused the inspector to raise eyebrow in doubt."
+    },
+    {
+      "id": "en.idiom.shake_in_shoe",
+      "phrase": [
+        "shake",
+        "in",
+        "shoe"
+      ],
+      "kind": "idiom",
+      "strength": "strong",
+      "valence": -0.8,
+      "arousal": 0.8,
+      "emotions": {
+        "fear": 0.85
+      },
+      "blocks": [],
+      "source": "curated:gemini-2026-09",
+      "version": 1,
+      "example": "The frightened recruits began to shake in shoe before the assault."
+    },
+    {
+      "id": "en.idiom.see_red",
+      "phrase": [
+        "see",
+        "red"
+      ],
+      "kind": "idiom",
+      "strength": "strong",
+      "valence": -0.85,
+      "arousal": 0.9,
+      "emotions": {
+        "anger": 0.95
+      },
+      "blocks": [],
+      "source": "curated:gemini-2026-09",
+      "version": 1,
+      "example": "Whenever he saw injustice against children, he would see red."
+    }
+  ]
+}

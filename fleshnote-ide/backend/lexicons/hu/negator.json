@@ -1,0 +1,97 @@
+{
+ "lang": "hu",
+ "kind": "negator",
+ "version": 1,
+ "entries": [
+  {
+   "id": "hu.neg.nem",
+   "lemma": "nem",
+   "kind": "negator",
+   "strength": "strong",
+   "factor": -1.0,
+   "source": "curated:gemini-2026-09",
+   "version": 1
+  },
+  {
+   "id": "hu.neg.sem",
+   "lemma": "sem",
+   "kind": "negator",
+   "strength": "strong",
+   "factor": -1.0,
+   "source": "curated:gemini-2026-09",
+   "version": 1
+  },
+  {
+   "id": "hu.neg.se",
+   "lemma": "se",
+   "kind": "negator",
+   "strength": "strong",
+   "factor": -1.0,
+   "source": "curated:gemini-2026-09",
+   "version": 1
+  },
+  {
+   "id": "hu.neg.soha",
+   "lemma": "soha",
+   "kind": "negator",
+   "strength": "strong",
+   "factor": -1.0,
+   "source": "curated:gemini-2026-09",
+   "version": 1
+  },
+  {
+   "id": "hu.neg.sehogy",
+   "lemma": "sehogy",
+   "kind": "negator",
+   "strength": "strong",
+   "factor": -1.0,
+   "source": "curated:gemini-2026-09",
+   "version": 1
+  },
+  {
+   "id": "hu.neg.sehol",
+   "lemma": "sehol",
+   "kind": "negator",
+   "strength": "strong",
+   "factor": -1.0,
+   "source": "curated:gemini-2026-09",
+   "version": 1
+  },
+  {
+   "id": "hu.neg.semmi",
+   "lemma": "semmi",
+   "kind": "negator",
+   "strength": "strong",
+   "factor": -1.0,
+   "source": "curated:gemini-2026-09",
+   "version": 1
+  },
+  {
+   "id": "hu.neg.senki",
+   "lemma": "senki",
+   "kind": "negator",
+   "strength": "strong",
+   "factor": -1.0,
+   "source": "curated:gemini-2026-09",
+   "version": 1
+  },
+  {
+   "id": "hu.neg.semmik\u00e9pp",
+   "lemma": "semmik\u00e9pp",
+   "kind": "negator",
+   "strength": "strong",
+   "factor": -1.0,
+   "source": "curated:gemini-2026-09",
+   "version": 1
+  },
+  {
+   "id": "hu.neg.sehogyan",
+   "lemma": "sehogyan",
+   "kind": "negator",
+   "strength": "strong",
+   "factor": -1.0,
+   "source": "curated:gemini-2026-09",
+   "version": 1
+  }
+ ]
+}

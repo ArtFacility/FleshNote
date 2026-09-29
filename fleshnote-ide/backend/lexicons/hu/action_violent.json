@@ -1,0 +1,2509 @@
+{
+ "lang": "hu",
+ "kind": "action_violent",
+ "version": 1,
+ "entries": [
+  {
+   "id": "hu.act.megl",
+   "lemma": "meglök",
+   "pos": [
+    "VERB"
+   ],
+   "kind": "action_violent",
+   "strength": "strong",
+   "valence": -0.4,
+   "arousal": 0.45,
+   "emotions": {
+    "anger": 0.5
+   },
+   "source": "curated:gemini-2026-09",
+   "version": 1
+  },
+  {
+   "id": "hu.act.taszít",
+   "lemma": "taszít",
+   "pos": [
+    "VERB"
+   ],
+   "kind": "action_violent",
+   "strength": "weak",
+   "valence": -0.4,
+   "arousal": 0.45,
+   "emotions": {
+    "anger": 0.5
+   },
+   "source": "curated:gemini-2026-09",
+   "version": 1,
+   "note": "taszító viselkedés vs fizikai taszítás"
+  },
+  {
+   "id": "hu.act.pofoz",
+   "lemma": "pofoz",
+   "pos": [
+    "VERB"
+   ],
+   "kind": "action_violent",
+   "strength": "strong",
+   "valence": -0.5,
+   "arousal": 0.55,
+   "emotions": {
+    "anger": 0.6
+   },
+   "source": "curated:gemini-2026-09",
+   "version": 1
+  },
+  {
+   "id": "hu.act.felpofoz",
+   "lemma": "felpofoz",
+   "pos": [
+    "VERB"
+   ],
+   "kind": "action_violent",
+   "strength": "strong",
+   "valence": -0.55,
+   "arousal": 0.6,
+   "emotions": {
+    "anger": 0.65
+   },
+   "source": "curated:gemini-2026-09",
+   "version": 1
+  },
+  {
+   "id": "hu.act.elgáncsol",
+   "lemma": "elgáncsol",
+   "pos": [
+    "VERB"
+   ],
+   "kind": "action_violent",
+   "strength": "strong",
+   "valence": -0.4,
+   "arousal": 0.45,
+   "emotions": {
+    "anger": 0.5
+   },
+   "source": "curated:gemini-2026-09",
+   "version": 1
+  },
+  {
+   "id": "hu.act.tülekedik",
+   "lemma": "tülekedik",
+   "pos": [
+    "VERB"
+   ],
+   "kind": "action_violent",
+   "strength": "strong",
+   "valence": -0.35,
+   "arousal": 0.45,
+   "emotions": {
+    "anger": 0.4
+   },
+   "source": "curated:gemini-2026-09",
+   "version": 1
+  },
+  {
+   "id": "hu.act.viaskodik",
+   "lemma": "viaskodik",
+   "pos": [
+    "VERB"
+   ],
+   "kind": "action_violent",
+   "strength": "strong",
+   "valence": -0.5,
+   "arousal": 0.55,
+   "emotions": {
+    "anger": 0.5
+   },
+   "source": "curated:gemini-2026-09",
+   "version": 1
+  },
+  {
+   "id": "hu.act.birkózik",
+   "lemma": "birkózik",
+   "pos": [
+    "VERB"
+   ],
+   "kind": "action_violent",
+   "strength": "weak",
+   "valence": -0.45,
+   "arousal": 0.55,
+   "emotions": {
+    "anger": 0.5
+   },
+   "source": "curated:gemini-2026-09",
+   "version": 1,
+   "note": "birkózik a feladattal vs fizikai birkózás"
+  },
+  {
+   "id": "hu.act.verekszik",
+   "lemma": "verekszik",
+   "pos": [
+    "VERB"
+   ],
+   "kind": "action_violent",
+   "strength": "strong",
+   "valence": -0.55,
+   "arousal": 0.6,
+   "emotions": {
+    "anger": 0.65
+   },
+   "source": "curated:gemini-2026-09",
+   "version": 1
+  },
+  {
+   "id": "hu.act.párbajozik",
+   "lemma": "párbajozik",
+   "pos": [
+    "VERB"
+   ],
+   "kind": "action_violent",
+   "strength": "strong",
+   "valence": -0.55,
+   "arousal": 0.65,
+   "emotions": {
+    "anger": 0.6
+   },
+   "source": "curated:gemini-2026-09",
+   "version": 1
+  },
+  {
+   "id": "hu.act.üt",
+   "lemma": "üt",
+   "pos": [
+    "VERB"
+   ],
+   "kind": "action_violent",
+   "strength": "weak",
+   "valence": -0.6,
+   "arousal": 0.65,
+   "emotions": {
+    "anger": 0.7
+   },
+   "source": "curated:gemini-2026-09",
+   "version": 1,
+   "note": "üt az óra vs embert megüt"
+  },
+  {
+   "id": "hu.act.ver",
+   "lemma": "ver",
+   "pos": [
+    "VERB"
+   ],
+   "kind": "action_violent",
+   "strength": "weak",
+   "valence": -0.65,
+   "arousal": 0.7,
+   "emotions": {
+    "anger": 0.75
+   },
+   "source": "curated:gemini-2026-09",
+   "version": 1,
+   "note": "dobverés / szívverés vs megver valakit"
+  },
+  {
+   "id": "hu.act.csap",
+   "lemma": "csap",
+   "pos": [
+    "VERB"
+   ],
+   "kind": "action_violent",
+   "strength": "weak",
+   "valence": -0.6,
+   "arousal": 0.65,
+   "emotions": {
+    "anger": 0.7
+   },
+   "source": "curated:gemini-2026-09",
+   "version": 1,
+   "note": "csap az ajtó vs fejbe csap"
+  },
+  {
+   "id": "hu.act.rugdos",
+   "lemma": "rugdos",
+   "pos": [
+    "VERB"
+   ],
+   "kind": "action_violent",
+   "strength": "strong",
+   "valence": -0.65,
+   "arousal": 0.7,
+   "emotions": {
+    "anger": 0.7
+   },
+   "source": "curated:gemini-2026-09",
+   "version": 1
+  },
+  {
+   "id": "hu.act.megrugdos",
+   "lemma": "megrugdos",
+   "pos": [
+    "VERB"
+   ],
+   "kind": "action_violent",
+   "strength": "strong",
+   "valence": -0.7,
+   "arousal": 0.75,
+   "emotions": {
+    "anger": 0.75
+   },
+   "source": "curated:gemini-2026-09",
+   "version": 1
+  },
+  {
+   "id": "hu.act.harap",
+   "lemma": "harap",
+   "pos": [
+    "VERB"
+   ],
+   "kind": "action_violent",
+   "strength": "weak",
+   "valence": -0.6,
+   "arousal": 0.65,
+   "emotions": {
+    "anger": 0.6
+   },
+   "source": "curated:gemini-2026-09",
+   "version": 1,
+   "note": "harap ételt vs haragjában harap"
+  },
+  {
+   "id": "hu.act.sújt",
+   "lemma": "sújt",
+   "pos": [
+    "VERB"
+   ],
+   "kind": "action_violent",
+   "strength": "weak",
+   "valence": -0.75,
+   "arousal": 0.75,
+   "emotions": {
+    "anger": 0.8
+   },
+   "source": "curated:gemini-2026-09",
+   "version": 1,
+   "note": "sorscsapás sújt vs karddal lesújt"
+  },
+  {
+   "id": "hu.act.ostoroz",
+   "lemma": "ostoroz",
+   "pos": [
+    "VERB"
+   ],
+   "kind": "action_violent",
+   "strength": "weak",
+   "valence": -0.75,
+   "arousal": 0.75,
+   "emotions": {
+    "anger": 0.8
+   },
+   "source": "curated:gemini-2026-09",
+   "version": 1,
+   "note": "hibát ostoroz vs korbáccsal ostoroz"
+  },
+  {
+   "id": "hu.act.korbácsol",
+   "lemma": "korbácsol",
+   "pos": [
+    "VERB"
+   ],
+   "kind": "action_violent",
+   "strength": "strong",
+   "valence": -0.75,
+   "arousal": 0.8,
+   "emotions": {
+    "anger": 0.8
+   },
+   "source": "curated:gemini-2026-09",
+   "version": 1
+  },
+  {
+   "id": "hu.act.ütlegel",
+   "lemma": "ütlegel",
+   "pos": [
+    "VERB"
+   ],
+   "kind": "action_violent",
+   "strength": "strong",
+   "valence": -0.7,
+   "arousal": 0.75,
+   "emotions": {
+    "anger": 0.75
+   },
+   "source": "curated:gemini-2026-09",
+   "version": 1
+  },
+  {
+   "id": "hu.act.bántalmaz",
+   "lemma": "bántalmaz",
+   "pos": [
+    "VERB"
+   ],
+   "kind": "action_violent",
+   "strength": "strong",
+   "valence": -0.7,
+   "arousal": 0.7,
+   "emotions": {
+    "anger": 0.75
+   },
+   "source": "curated:gemini-2026-09",
+   "version": 1
+  },
+  {
+   "id": "hu.act.megver",
+   "lemma": "megver",
+   "pos": [
+    "VERB"
+   ],
+   "kind": "action_violent",
+   "strength": "strong",
+   "valence": -0.7,
+   "arousal": 0.75,
+   "emotions": {
+    "anger": 0.75
+   },
+   "source": "curated:gemini-2026-09",
+   "version": 1
+  },
+  {
+   "id": "hu.act.kardlapoz",
+   "lemma": "kardlapoz",
+   "pos": [
+    "VERB"
+   ],
+   "kind": "action_violent",
+   "strength": "strong",
+   "valence": -0.6,
+   "arousal": 0.65,
+   "emotions": {
+    "anger": 0.65
+   },
+   "source": "curated:gemini-2026-09",
+   "version": 1
+  },
+  {
+   "id": "hu.act.küzd",
+   "lemma": "küzd",
+   "pos": [
+    "VERB"
+   ],
+   "kind": "action_violent",
+   "strength": "weak",
+   "valence": -0.5,
+   "arousal": 0.65,
+   "emotions": {
+    "anger": 0.5
+   },
+   "source": "curated:gemini-2026-09",
+   "version": 1,
+   "note": "küzd a célért vs ellenséggel küzd"
+  },
+  {
+   "id": "hu.act.harcol",
+   "lemma": "harcol",
+   "pos": [
+    "VERB"
+   ],
+   "kind": "action_violent",
+   "strength": "weak",
+   "valence": -0.6,
+   "arousal": 0.7,
+   "emotions": {
+    "anger": 0.65
+   },
+   "source": "curated:gemini-2026-09",
+   "version": 1,
+   "note": "harcol az igazságért vs csatában harcol"
+  },
+  {
+   "id": "hu.act.hadakozik",
+   "lemma": "hadakozik",
+   "pos": [
+    "VERB"
+   ],
+   "kind": "action_violent",
+   "strength": "strong",
+   "valence": -0.55,
+   "arousal": 0.65,
+   "emotions": {
+    "anger": 0.6
+   },
+   "source": "curated:gemini-2026-09",
+   "version": 1
+  },
+  {
+   "id": "hu.act.csatázik",
+   "lemma": "csatázik",
+   "pos": [
+    "VERB"
+   ],
+   "kind": "action_violent",
+   "strength": "strong",
+   "valence": -0.65,
+   "arousal": 0.7,
+   "emotions": {
+    "anger": 0.7
+   },
+   "source": "curated:gemini-2026-09",
+   "version": 1
+  },
+  {
+   "id": "hu.act.kicsavar",
+   "lemma": "kicsavar",
+   "pos": [
+    "VERB"
+   ],
+   "kind": "action_violent",
+   "strength": "weak",
+   "valence": -0.55,
+   "arousal": 0.6,
+   "emotions": {
+    "anger": 0.6
+   },
+   "source": "curated:gemini-2026-09",
+   "version": 1,
+   "note": "ruhát kicsavar vs fegyvert kicsavar"
+  },
+  {
+   "id": "hu.act.kiteker",
+   "lemma": "kiteker",
+   "pos": [
+    "VERB"
+   ],
+   "kind": "action_violent",
+   "strength": "weak",
+   "valence": -0.6,
+   "arousal": 0.65,
+   "emotions": {
+    "anger": 0.65
+   },
+   "source": "curated:gemini-2026-09",
+   "version": 1,
+   "note": "csavart kiteker vs nyakat kiteker"
+  },
+  {
+   "id": "hu.act.szorongat",
+   "lemma": "szorongat",
+   "pos": [
+    "VERB"
+   ],
+   "kind": "action_violent",
+   "strength": "weak",
+   "valence": -0.65,
+   "arousal": 0.7,
+   "emotions": {
+    "fear": 0.7,
+    "anger": 0.6
+   },
+   "source": "curated:gemini-2026-09",
+   "version": 1,
+   "note": "szorongatja a kezét vs torkát szorongatja"
+  },
+  {
+   "id": "hu.act.agyonny",
+   "lemma": "agyonnyom",
+   "pos": [
+    "VERB"
+   ],
+   "kind": "action_violent",
+   "strength": "strong",
+   "valence": -0.75,
+   "arousal": 0.75,
+   "emotions": {
+    "fear": 0.8
+   },
+   "source": "curated:gemini-2026-09",
+   "version": 1
+  },
+  {
+   "id": "hu.act.összetör",
+   "lemma": "összetör",
+   "pos": [
+    "VERB"
+   ],
+   "kind": "action_violent",
+   "strength": "weak",
+   "valence": -0.7,
+   "arousal": 0.7,
+   "emotions": {
+    "anger": 0.7
+   },
+   "source": "curated:gemini-2026-09",
+   "version": 1,
+   "note": "tányért összetör vs lelkileg összetör"
+  },
+  {
+   "id": "hu.act.összezúz",
+   "lemma": "összezúz",
+   "pos": [
+    "VERB"
+   ],
+   "kind": "action_violent",
+   "strength": "strong",
+   "valence": -0.75,
+   "arousal": 0.75,
+   "emotions": {
+    "anger": 0.75
+   },
+   "source": "curated:gemini-2026-09",
+   "version": 1
+  },
+  {
+   "id": "hu.act.szétzúz",
+   "lemma": "szétzúz",
+   "pos": [
+    "VERB"
+   ],
+   "kind": "action_violent",
+   "strength": "strong",
+   "valence": -0.8,
+   "arousal": 0.8,
+   "emotions": {
+    "anger": 0.8
+   },
+   "source": "curated:gemini-2026-09",
+   "version": 1
+  },
+  {
+   "id": "hu.act.széttör",
+   "lemma": "széttör",
+   "pos": [
+    "VERB"
+   ],
+   "kind": "action_violent",
+   "strength": "strong",
+   "valence": -0.75,
+   "arousal": 0.75,
+   "emotions": {
+    "anger": 0.75
+   },
+   "source": "curated:gemini-2026-09",
+   "version": 1
+  },
+  {
+   "id": "hu.act.eltipor",
+   "lemma": "eltipor",
+   "pos": [
+    "VERB"
+   ],
+   "kind": "action_violent",
+   "strength": "strong",
+   "valence": -0.8,
+   "arousal": 0.8,
+   "emotions": {
+    "anger": 0.85,
+    "fear": 0.75
+   },
+   "source": "curated:gemini-2026-09",
+   "version": 1
+  },
+  {
+   "id": "hu.act.letapos",
+   "lemma": "letapos",
+   "pos": [
+    "VERB"
+   ],
+   "kind": "action_violent",
+   "strength": "strong",
+   "valence": -0.75,
+   "arousal": 0.75,
+   "emotions": {
+    "anger": 0.8
+   },
+   "source": "curated:gemini-2026-09",
+   "version": 1
+  },
+  {
+   "id": "hu.act.elgázol",
+   "lemma": "elgázol",
+   "pos": [
+    "VERB"
+   ],
+   "kind": "action_violent",
+   "strength": "strong",
+   "valence": -0.8,
+   "arousal": 0.8,
+   "emotions": {
+    "fear": 0.85
+   },
+   "source": "curated:gemini-2026-09",
+   "version": 1
+  },
+  {
+   "id": "hu.act.tapos",
+   "lemma": "tapos",
+   "pos": [
+    "VERB"
+   ],
+   "kind": "action_violent",
+   "strength": "weak",
+   "valence": -0.7,
+   "arousal": 0.7,
+   "emotions": {
+    "anger": 0.75
+   },
+   "source": "curated:gemini-2026-09",
+   "version": 1,
+   "note": "szőlőt tapos vs embert tapos"
+  },
+  {
+   "id": "hu.act.vág",
+   "lemma": "vág",
+   "pos": [
+    "VERB"
+   ],
+   "kind": "action_violent",
+   "strength": "weak",
+   "valence": -0.7,
+   "arousal": 0.7,
+   "emotions": {
+    "anger": 0.7
+   },
+   "source": "curated:gemini-2026-09",
+   "version": 1,
+   "note": "kenyeret vág vs karddal vág"
+  },
+  {
+   "id": "hu.act.szúr",
+   "lemma": "szúr",
+   "pos": [
+    "VERB"
+   ],
+   "kind": "action_violent",
+   "strength": "weak",
+   "valence": -0.8,
+   "arousal": 0.8,
+   "emotions": {
+    "anger": 0.75,
+    "fear": 0.75
+   },
+   "source": "curated:gemini-2026-09",
+   "version": 1,
+   "note": "szúr a szeme vs tőrrel szúr"
+  },
+  {
+   "id": "hu.act.döf",
+   "lemma": "döf",
+   "pos": [
+    "VERB"
+   ],
+   "kind": "action_violent",
+   "strength": "strong",
+   "valence": -0.85,
+   "arousal": 0.85,
+   "emotions": {
+    "anger": 0.8,
+    "fear": 0.8
+   },
+   "source": "curated:gemini-2026-09",
+   "version": 1
+  },
+  {
+   "id": "hu.act.hasít",
+   "lemma": "hasít",
+   "pos": [
+    "VERB"
+   ],
+   "kind": "action_violent",
+   "strength": "weak",
+   "valence": -0.75,
+   "arousal": 0.75,
+   "emotions": {
+    "anger": 0.75
+   },
+   "source": "curated:gemini-2026-09",
+   "version": 1,
+   "note": "fát hasít vs karddal hasít"
+  },
+  {
+   "id": "hu.act.szaggat",
+   "lemma": "szaggat",
+   "pos": [
+    "VERB"
+   ],
+   "kind": "action_violent",
+   "strength": "weak",
+   "valence": -0.75,
+   "arousal": 0.75,
+   "emotions": {
+    "anger": 0.75
+   },
+   "source": "curated:gemini-2026-09",
+   "version": 1,
+   "note": "szaggat a feje vs húst szaggat"
+  },
+  {
+   "id": "hu.act.tép",
+   "lemma": "tép",
+   "pos": [
+    "VERB"
+   ],
+   "kind": "action_violent",
+   "strength": "weak",
+   "valence": -0.75,
+   "arousal": 0.75,
+   "emotions": {
+    "anger": 0.75
+   },
+   "source": "curated:gemini-2026-09",
+   "version": 1,
+   "note": "papírt tép vs hajat tép"
+  },
+  {
+   "id": "hu.act.kitép",
+   "lemma": "kitép",
+   "pos": [
+    "VERB"
+   ],
+   "kind": "action_violent",
+   "strength": "strong",
+   "valence": -0.75,
+   "arousal": 0.75,
+   "emotions": {
+    "anger": 0.8
+   },
+   "source": "curated:gemini-2026-09",
+   "version": 1
+  },
+  {
+   "id": "hu.act.széttép",
+   "lemma": "széttép",
+   "pos": [
+    "VERB"
+   ],
+   "kind": "action_violent",
+   "strength": "strong",
+   "valence": -0.85,
+   "arousal": 0.85,
+   "emotions": {
+    "anger": 0.85,
+    "fear": 0.8
+   },
+   "source": "curated:gemini-2026-09",
+   "version": 1
+  },
+  {
+   "id": "hu.act.elvág",
+   "lemma": "elvág",
+   "pos": [
+    "VERB"
+   ],
+   "kind": "action_violent",
+   "strength": "weak",
+   "valence": -0.8,
+   "arousal": 0.8,
+   "emotions": {
+    "anger": 0.8
+   },
+   "source": "curated:gemini-2026-09",
+   "version": 1,
+   "note": "fonalat elvág vs torkot elvág"
+  },
+  {
+   "id": "hu.act.átvág",
+   "lemma": "átvág",
+   "pos": [
+    "VERB"
+   ],
+   "kind": "action_violent",
+   "strength": "weak",
+   "valence": -0.8,
+   "arousal": 0.8,
+   "emotions": {
+    "anger": 0.8
+   },
+   "source": "curated:gemini-2026-09",
+   "version": 1,
+   "note": "erdőn átvág vs torkot átvág"
+  },
+  {
+   "id": "hu.act.kettévág",
+   "lemma": "kettévág",
+   "pos": [
+    "VERB"
+   ],
+   "kind": "action_violent",
+   "strength": "strong",
+   "valence": -0.85,
+   "arousal": 0.85,
+   "emotions": {
+    "anger": 0.85
+   },
+   "source": "curated:gemini-2026-09",
+   "version": 1
+  },
+  {
+   "id": "hu.act.leszúr",
+   "lemma": "leszúr",
+   "pos": [
+    "VERB"
+   ],
+   "kind": "action_violent",
+   "strength": "strong",
+   "valence": -0.85,
+   "arousal": 0.85,
+   "emotions": {
+    "anger": 0.85,
+    "fear": 0.85
+   },
+   "source": "curated:gemini-2026-09",
+   "version": 1
+  },
+  {
+   "id": "hu.act.ledöf",
+   "lemma": "ledöf",
+   "pos": [
+    "VERB"
+   ],
+   "kind": "action_violent",
+   "strength": "strong",
+   "valence": -0.85,
+   "arousal": 0.85,
+   "emotions": {
+    "anger": 0.85,
+    "fear": 0.85
+   },
+   "source": "curated:gemini-2026-09",
+   "version": 1
+  },
+  {
+   "id": "hu.act.fojt",
+   "lemma": "fojt",
+   "pos": [
+    "VERB"
+   ],
+   "kind": "action_violent",
+   "strength": "weak",
+   "valence": -0.85,
+   "arousal": 0.85,
+   "emotions": {
+    "fear": 0.9,
+    "anger": 0.8
+   },
+   "source": "curated:gemini-2026-09",
+   "version": 1,
+   "note": "fojtja a szót vs embert fojtogat"
+  },
+  {
+   "id": "hu.act.megfojt",
+   "lemma": "megfojt",
+   "pos": [
+    "VERB"
+   ],
+   "kind": "action_violent",
+   "strength": "strong",
+   "valence": -0.9,
+   "arousal": 0.9,
+   "emotions": {
+    "fear": 0.9,
+    "anger": 0.85
+   },
+   "source": "curated:gemini-2026-09",
+   "version": 1
+  },
+  {
+   "id": "hu.act.megfullaszt",
+   "lemma": "megfullaszt",
+   "pos": [
+    "VERB"
+   ],
+   "kind": "action_violent",
+   "strength": "strong",
+   "valence": -0.9,
+   "arousal": 0.9,
+   "emotions": {
+    "fear": 0.9
+   },
+   "source": "curated:gemini-2026-09",
+   "version": 1
+  },
+  {
+   "id": "hu.act.akasz",
+   "lemma": "akaszt",
+   "pos": [
+    "VERB"
+   ],
+   "kind": "action_violent",
+   "strength": "weak",
+   "valence": -0.85,
+   "arousal": 0.85,
+   "emotions": {
+    "fear": 0.85
+   },
+   "source": "curated:gemini-2026-09",
+   "version": 1,
+   "note": "kabátot akaszt vs bitóra akaszt"
+  },
+  {
+   "id": "hu.act.akasztat",
+   "lemma": "akasztat",
+   "pos": [
+    "VERB"
+   ],
+   "kind": "action_violent",
+   "strength": "strong",
+   "valence": -0.85,
+   "arousal": 0.85,
+   "emotions": {
+    "fear": 0.85
+   },
+   "source": "curated:gemini-2026-09",
+   "version": 1
+  },
+  {
+   "id": "hu.act.éget",
+   "lemma": "éget",
+   "pos": [
+    "VERB"
+   ],
+   "kind": "action_violent",
+   "strength": "weak",
+   "valence": -0.7,
+   "arousal": 0.75,
+   "emotions": {
+    "fear": 0.75
+   },
+   "source": "curated:gemini-2026-09",
+   "version": 1,
+   "note": "ég a gyertya vs máglyán éget"
+  },
+  {
+   "id": "hu.act.perz",
+   "lemma": "perzsel",
+   "pos": [
+    "VERB"
+   ],
+   "kind": "action_violent",
+   "strength": "weak",
+   "valence": -0.65,
+   "arousal": 0.7,
+   "emotions": {
+    "fear": 0.65
+   },
+   "source": "curated:gemini-2026-09",
+   "version": 1,
+   "note": "napsütés perzsel vs láng perzsel"
+  },
+  {
+   "id": "hu.act.felgyújt",
+   "lemma": "felgyújt",
+   "pos": [
+    "VERB"
+   ],
+   "kind": "action_violent",
+   "strength": "strong",
+   "valence": -0.8,
+   "arousal": 0.8,
+   "emotions": {
+    "anger": 0.8,
+    "fear": 0.8
+   },
+   "source": "curated:gemini-2026-09",
+   "version": 1
+  },
+  {
+   "id": "hu.act.lő",
+   "lemma": "lő",
+   "pos": [
+    "VERB"
+   ],
+   "kind": "action_violent",
+   "strength": "weak",
+   "valence": -0.75,
+   "arousal": 0.75,
+   "emotions": {
+    "fear": 0.8
+   },
+   "source": "curated:gemini-2026-09",
+   "version": 1,
+   "note": "gólt lő vs puskával lő"
+  },
+  {
+   "id": "hu.act.lelő",
+   "lemma": "lelő",
+   "pos": [
+    "VERB"
+   ],
+   "kind": "action_violent",
+   "strength": "strong",
+   "valence": -0.85,
+   "arousal": 0.85,
+   "emotions": {
+    "fear": 0.85,
+    "anger": 0.8
+   },
+   "source": "curated:gemini-2026-09",
+   "version": 1
+  },
+  {
+   "id": "hu.act.szétlő",
+   "lemma": "szétlő",
+   "pos": [
+    "VERB"
+   ],
+   "kind": "action_violent",
+   "strength": "strong",
+   "valence": -0.85,
+   "arousal": 0.85,
+   "emotions": {
+    "fear": 0.85
+   },
+   "source": "curated:gemini-2026-09",
+   "version": 1
+  },
+  {
+   "id": "hu.act.sebez",
+   "lemma": "sebez",
+   "pos": [
+    "VERB"
+   ],
+   "kind": "action_violent",
+   "strength": "strong",
+   "valence": -0.7,
+   "arousal": 0.65,
+   "emotions": {
+    "fear": 0.7
+   },
+   "source": "curated:gemini-2026-09",
+   "version": 1
+  },
+  {
+   "id": "hu.act.megsebesít",
+   "lemma": "megsebesít",
+   "pos": [
+    "VERB"
+   ],
+   "kind": "action_violent",
+   "strength": "strong",
+   "valence": -0.75,
+   "arousal": 0.7,
+   "emotions": {
+    "fear": 0.75
+   },
+   "source": "curated:gemini-2026-09",
+   "version": 1
+  },
+  {
+   "id": "hu.act.kion",
+   "lemma": "kiont",
+   "pos": [
+    "VERB"
+   ],
+   "kind": "action_violent",
+   "strength": "strong",
+   "valence": -0.85,
+   "arousal": 0.8,
+   "emotions": {
+    "anger": 0.85,
+    "fear": 0.8
+   },
+   "source": "curated:gemini-2026-09",
+   "version": 1
+  },
+  {
+   "id": "hu.act.kínvallat",
+   "lemma": "kínvallat",
+   "pos": [
+    "VERB"
+   ],
+   "kind": "action_violent",
+   "strength": "strong",
+   "valence": -0.95,
+   "arousal": 0.9,
+   "emotions": {
+    "fear": 0.95,
+    "sadness": 0.9
+   },
+   "source": "curated:gemini-2026-09",
+   "version": 1,
+   "spell_ok": "Hungarian compound verb (kín + vallat) meaning to interrogate under torture"
+  },
+  {
+   "id": "hu.act.kínoz",
+   "lemma": "kínoz",
+   "pos": [
+    "VERB"
+   ],
+   "kind": "action_violent",
+   "strength": "strong",
+   "valence": -0.9,
+   "arousal": 0.9,
+   "emotions": {
+    "fear": 0.9,
+    "sadness": 0.9
+   },
+   "source": "curated:gemini-2026-09",
+   "version": 1
+  },
+  {
+   "id": "hu.act.megkínoz",
+   "lemma": "megkínoz",
+   "pos": [
+    "VERB"
+   ],
+   "kind": "action_violent",
+   "strength": "strong",
+   "valence": -0.9,
+   "arousal": 0.9,
+   "emotions": {
+    "fear": 0.9,
+    "sadness": 0.9
+   },
+   "source": "curated:gemini-2026-09",
+   "version": 1
+  },
+  {
+   "id": "hu.act.sanyargat",
+   "lemma": "sanyargat",
+   "pos": [
+    "VERB"
+   ],
+   "kind": "action_violent",
+   "strength": "strong",
+   "valence": -0.8,
+   "arousal": 0.75,
+   "emotions": {
+    "sadness": 0.8
+   },
+   "source": "curated:gemini-2026-09",
+   "version": 1
+  },
+  {
+   "id": "hu.act.öl",
+   "lemma": "öl",
+   "pos": [
+    "VERB"
+   ],
+   "kind": "action_violent",
+   "strength": "strong",
+   "valence": -0.9,
+   "arousal": 0.9,
+   "emotions": {
+    "fear": 0.9,
+    "anger": 0.85
+   },
+   "source": "curated:gemini-2026-09",
+   "version": 1
+  },
+  {
+   "id": "hu.act.megöl",
+   "lemma": "megöl",
+   "pos": [
+    "VERB"
+   ],
+   "kind": "action_violent",
+   "strength": "strong",
+   "valence": -0.9,
+   "arousal": 0.9,
+   "emotions": {
+    "fear": 0.9,
+    "anger": 0.85
+   },
+   "source": "curated:gemini-2026-09",
+   "version": 1
+  },
+  {
+   "id": "hu.act.gyilkol",
+   "lemma": "gyilkol",
+   "pos": [
+    "VERB"
+   ],
+   "kind": "action_violent",
+   "strength": "strong",
+   "valence": -0.95,
+   "arousal": 0.95,
+   "emotions": {
+    "fear": 0.95,
+    "anger": 0.9
+   },
+   "source": "curated:gemini-2026-09",
+   "version": 1
+  },
+  {
+   "id": "hu.act.meggyilkol",
+   "lemma": "meggyilkol",
+   "pos": [
+    "VERB"
+   ],
+   "kind": "action_violent",
+   "strength": "strong",
+   "valence": -0.95,
+   "arousal": 0.95,
+   "emotions": {
+    "fear": 0.95,
+    "anger": 0.9
+   },
+   "source": "curated:gemini-2026-09",
+   "version": 1
+  },
+  {
+   "id": "hu.act.kivégez",
+   "lemma": "kivégez",
+   "pos": [
+    "VERB"
+   ],
+   "kind": "action_violent",
+   "strength": "strong",
+   "valence": -0.9,
+   "arousal": 0.85,
+   "emotions": {
+    "fear": 0.9
+   },
+   "source": "curated:gemini-2026-09",
+   "version": 1
+  },
+  {
+   "id": "hu.act.lefejez",
+   "lemma": "lefejez",
+   "pos": [
+    "VERB"
+   ],
+   "kind": "action_violent",
+   "strength": "strong",
+   "valence": -0.95,
+   "arousal": 0.95,
+   "emotions": {
+    "fear": 0.95,
+    "anger": 0.9
+   },
+   "source": "curated:gemini-2026-09",
+   "version": 1
+  },
+  {
+   "id": "hu.act.felkoncol",
+   "lemma": "felkoncol",
+   "pos": [
+    "VERB"
+   ],
+   "kind": "action_violent",
+   "strength": "strong",
+   "valence": -0.95,
+   "arousal": 0.95,
+   "emotions": {
+    "fear": 0.95,
+    "anger": 0.95
+   },
+   "source": "curated:gemini-2026-09",
+   "version": 1
+  },
+  {
+   "id": "hu.act.lemészárol",
+   "lemma": "lemészárol",
+   "pos": [
+    "VERB"
+   ],
+   "kind": "action_violent",
+   "strength": "strong",
+   "valence": -0.95,
+   "arousal": 0.95,
+   "emotions": {
+    "fear": 0.95,
+    "anger": 0.95
+   },
+   "source": "curated:gemini-2026-09",
+   "version": 1
+  },
+  {
+   "id": "hu.act.öldököl",
+   "lemma": "öldököl",
+   "pos": [
+    "VERB"
+   ],
+   "kind": "action_violent",
+   "strength": "strong",
+   "valence": -0.95,
+   "arousal": 0.95,
+   "emotions": {
+    "fear": 0.95,
+    "anger": 0.95
+   },
+   "source": "curated:gemini-2026-09",
+   "version": 1
+  },
+  {
+   "id": "hu.act.elpusztít",
+   "lemma": "elpusztít",
+   "pos": [
+    "VERB"
+   ],
+   "kind": "action_violent",
+   "strength": "strong",
+   "valence": -0.9,
+   "arousal": 0.9,
+   "emotions": {
+    "anger": 0.9,
+    "fear": 0.85
+   },
+   "source": "curated:gemini-2026-09",
+   "version": 1
+  },
+  {
+   "id": "hu.act.megsemmisít",
+   "lemma": "megsemmisít",
+   "pos": [
+    "VERB"
+   ],
+   "kind": "action_violent",
+   "strength": "strong",
+   "valence": -0.95,
+   "arousal": 0.95,
+   "emotions": {
+    "anger": 0.95,
+    "fear": 0.95
+   },
+   "source": "curated:gemini-2026-09",
+   "version": 1
+  },
+  {
+   "id": "hu.act.kiirt",
+   "lemma": "kiirt",
+   "pos": [
+    "VERB"
+   ],
+   "kind": "action_violent",
+   "strength": "strong",
+   "valence": -0.95,
+   "arousal": 0.95,
+   "emotions": {
+    "fear": 0.95,
+    "anger": 0.95
+   },
+   "source": "curated:gemini-2026-09",
+   "version": 1
+  },
+  {
+   "id": "hu.act.marcangol",
+   "lemma": "marcangol",
+   "pos": [
+    "VERB"
+   ],
+   "kind": "action_violent",
+   "strength": "strong",
+   "valence": -0.9,
+   "arousal": 0.9,
+   "emotions": {
+    "fear": 0.9,
+    "disgust": 0.85
+   },
+   "source": "curated:gemini-2026-09",
+   "version": 1
+  },
+  {
+   "id": "hu.act.szétmarcangol",
+   "lemma": "szétmarcangol",
+   "pos": [
+    "VERB"
+   ],
+   "kind": "action_violent",
+   "strength": "strong",
+   "valence": -0.95,
+   "arousal": 0.95,
+   "emotions": {
+    "fear": 0.95,
+    "disgust": 0.9
+   },
+   "source": "curated:gemini-2026-09",
+   "version": 1
+  },
+  {
+   "id": "hu.act.kizsige",
+   "lemma": "kizsigerel",
+   "pos": [
+    "VERB"
+   ],
+   "kind": "action_violent",
+   "strength": "strong",
+   "valence": -0.95,
+   "arousal": 0.95,
+   "emotions": {
+    "disgust": 0.95,
+    "fear": 0.95
+   },
+   "source": "curated:gemini-2026-09",
+   "version": 1
+  },
+  {
+   "id": "hu.act.felnyár",
+   "lemma": "felnyársal",
+   "pos": [
+    "VERB"
+   ],
+   "kind": "action_violent",
+   "strength": "strong",
+   "valence": -0.95,
+   "arousal": 0.95,
+   "emotions": {
+    "fear": 0.95,
+    "anger": 0.9
+   },
+   "source": "curated:gemini-2026-09",
+   "version": 1
+  },
+  {
+   "id": "hu.act.agyonver",
+   "lemma": "agyonver",
+   "pos": [
+    "VERB"
+   ],
+   "kind": "action_violent",
+   "strength": "strong",
+   "valence": -0.9,
+   "arousal": 0.9,
+   "emotions": {
+    "anger": 0.9,
+    "fear": 0.9
+   },
+   "source": "curated:gemini-2026-09",
+   "version": 1
+  },
+  {
+   "id": "hu.act.agyonlő",
+   "lemma": "agyonlő",
+   "pos": [
+    "VERB"
+   ],
+   "kind": "action_violent",
+   "strength": "strong",
+   "valence": -0.9,
+   "arousal": 0.9,
+   "emotions": {
+    "fear": 0.9,
+    "anger": 0.85
+   },
+   "source": "curated:gemini-2026-09",
+   "version": 1
+  },
+  {
+   "id": "hu.act.megnyomorít",
+   "lemma": "megnyomorít",
+   "pos": [
+    "VERB"
+   ],
+   "kind": "action_violent",
+   "strength": "strong",
+   "valence": -0.9,
+   "arousal": 0.85,
+   "emotions": {
+    "sadness": 0.9,
+    "fear": 0.85
+   },
+   "source": "curated:gemini-2026-09",
+   "version": 1
+  },
+  {
+   "id": "hu.act.csonkít",
+   "lemma": "csonkít",
+   "pos": [
+    "VERB"
+   ],
+   "kind": "action_violent",
+   "strength": "strong",
+   "valence": -0.9,
+   "arousal": 0.85,
+   "emotions": {
+    "disgust": 0.9,
+    "fear": 0.85
+   },
+   "source": "curated:gemini-2026-09",
+   "version": 1
+  },
+  {
+   "id": "hu.act.megvakít",
+   "lemma": "megvakít",
+   "pos": [
+    "VERB"
+   ],
+   "kind": "action_violent",
+   "strength": "strong",
+   "valence": -0.85,
+   "arousal": 0.8,
+   "emotions": {
+    "fear": 0.9
+   },
+   "source": "curated:gemini-2026-09",
+   "version": 1
+  },
+  {
+   "id": "hu.act.kiszúr",
+   "lemma": "kiszúr",
+   "pos": [
+    "VERB"
+   ],
+   "kind": "action_violent",
+   "strength": "strong",
+   "valence": -0.8,
+   "arousal": 0.8,
+   "emotions": {
+    "anger": 0.8,
+    "fear": 0.8
+   },
+   "source": "curated:gemini-2026-09",
+   "version": 1
+  },
+  {
+   "id": "hu.act.robban",
+   "lemma": "robban",
+   "pos": [
+    "VERB"
+   ],
+   "kind": "action_violent",
+   "strength": "strong",
+   "valence": -0.85,
+   "arousal": 0.9,
+   "emotions": {
+    "fear": 0.9
+   },
+   "source": "curated:gemini-2026-09",
+   "version": 1
+  },
+  {
+   "id": "hu.act.felrobbant",
+   "lemma": "felrobbant",
+   "pos": [
+    "VERB"
+   ],
+   "kind": "action_violent",
+   "strength": "strong",
+   "valence": -0.85,
+   "arousal": 0.9,
+   "emotions": {
+    "fear": 0.9
+   },
+   "source": "curated:gemini-2026-09",
+   "version": 1
+  },
+  {
+   "id": "hu.act.rombol",
+   "lemma": "rombol",
+   "pos": [
+    "VERB"
+   ],
+   "kind": "action_violent",
+   "strength": "strong",
+   "valence": -0.8,
+   "arousal": 0.8,
+   "emotions": {
+    "anger": 0.8
+   },
+   "source": "curated:gemini-2026-09",
+   "version": 1
+  },
+  {
+   "id": "hu.act.lerombol",
+   "lemma": "lerombol",
+   "pos": [
+    "VERB"
+   ],
+   "kind": "action_violent",
+   "strength": "strong",
+   "valence": -0.85,
+   "arousal": 0.85,
+   "emotions": {
+    "anger": 0.85
+   },
+   "source": "curated:gemini-2026-09",
+   "version": 1
+  },
+  {
+   "id": "hu.act.dúl",
+   "lemma": "dúl",
+   "pos": [
+    "VERB"
+   ],
+   "kind": "action_violent",
+   "strength": "strong",
+   "valence": -0.8,
+   "arousal": 0.8,
+   "emotions": {
+    "anger": 0.8
+   },
+   "source": "curated:gemini-2026-09",
+   "version": 1
+  },
+  {
+   "id": "hu.act.pusztít",
+   "lemma": "pusztít",
+   "pos": [
+    "VERB"
+   ],
+   "kind": "action_violent",
+   "strength": "strong",
+   "valence": -0.85,
+   "arousal": 0.85,
+   "emotions": {
+    "anger": 0.85
+   },
+   "source": "curated:gemini-2026-09",
+   "version": 1
+  },
+  {
+   "id": "hu.act.kifoszt",
+   "lemma": "kifoszt",
+   "pos": [
+    "VERB"
+   ],
+   "kind": "action_violent",
+   "strength": "strong",
+   "valence": -0.8,
+   "arousal": 0.75,
+   "emotions": {
+    "anger": 0.8,
+    "sadness": 0.75
+   },
+   "source": "curated:gemini-2026-09",
+   "version": 1
+  },
+  {
+   "id": "hu.act.zsákmányol",
+   "lemma": "zsákmányol",
+   "pos": [
+    "VERB"
+   ],
+   "kind": "action_violent",
+   "strength": "strong",
+   "valence": -0.75,
+   "arousal": 0.7,
+   "emotions": {
+    "anger": 0.75
+   },
+   "source": "curated:gemini-2026-09",
+   "version": 1
+  },
+  {
+   "id": "hu.act.ostromol",
+   "lemma": "ostromol",
+   "pos": [
+    "VERB"
+   ],
+   "kind": "action_violent",
+   "strength": "strong",
+   "valence": -0.75,
+   "arousal": 0.8,
+   "emotions": {
+    "fear": 0.8
+   },
+   "source": "curated:gemini-2026-09",
+   "version": 1
+  },
+  {
+   "id": "hu.act.megrohamoz",
+   "lemma": "megrohamoz",
+   "pos": [
+    "VERB"
+   ],
+   "kind": "action_violent",
+   "strength": "strong",
+   "valence": -0.8,
+   "arousal": 0.85,
+   "emotions": {
+    "fear": 0.85,
+    "anger": 0.8
+   },
+   "source": "curated:gemini-2026-09",
+   "version": 1
+  },
+  {
+   "id": "hu.act.támad",
+   "lemma": "támad",
+   "pos": [
+    "VERB"
+   ],
+   "kind": "action_violent",
+   "strength": "strong",
+   "valence": -0.75,
+   "arousal": 0.8,
+   "emotions": {
+    "anger": 0.8,
+    "fear": 0.75
+   },
+   "source": "curated:gemini-2026-09",
+   "version": 1
+  },
+  {
+   "id": "hu.act.lerohan",
+   "lemma": "lerohan",
+   "pos": [
+    "VERB"
+   ],
+   "kind": "action_violent",
+   "strength": "strong",
+   "valence": -0.8,
+   "arousal": 0.85,
+   "emotions": {
+    "fear": 0.85
+   },
+   "source": "curated:gemini-2026-09",
+   "version": 1
+  },
+  {
+   "id": "hu.act.leigáz",
+   "lemma": "leigáz",
+   "pos": [
+    "VERB"
+   ],
+   "kind": "action_violent",
+   "strength": "strong",
+   "valence": -0.85,
+   "arousal": 0.8,
+   "emotions": {
+    "anger": 0.85
+   },
+   "source": "curated:gemini-2026-09",
+   "version": 1
+  },
+  {
+   "id": "hu.act.legyőz",
+   "lemma": "legyőz",
+   "pos": [
+    "VERB"
+   ],
+   "kind": "action_violent",
+   "strength": "strong",
+   "valence": -0.65,
+   "arousal": 0.75,
+   "emotions": {
+    "anger": 0.7
+   },
+   "source": "curated:gemini-2026-09",
+   "version": 1
+  },
+  {
+   "id": "hu.act.megmérgez",
+   "lemma": "megmérgez",
+   "pos": [
+    "VERB"
+   ],
+   "kind": "action_violent",
+   "strength": "strong",
+   "valence": -0.9,
+   "arousal": 0.8,
+   "emotions": {
+    "fear": 0.9,
+    "disgust": 0.8
+   },
+   "source": "curated:gemini-2026-09",
+   "version": 1
+  },
+  {
+   "id": "hu.act.leteper",
+   "lemma": "leteper",
+   "pos": [
+    "VERB"
+   ],
+   "kind": "action_violent",
+   "strength": "strong",
+   "valence": -0.75,
+   "arousal": 0.8,
+   "emotions": {
+    "anger": 0.8
+   },
+   "source": "curated:gemini-2026-09",
+   "version": 1
+  },
+  {
+   "id": "hu.act.nyár",
+   "lemma": "nyár",
+   "pos": [
+    "VERB"
+   ],
+   "kind": "action_violent",
+   "strength": "strong",
+   "valence": -0.92,
+   "arousal": 0.92,
+   "emotions": {
+    "fear": 0.9,
+    "disgust": 0.85
+   },
+   "source": "curated:gemini-2026-09",
+   "version": 1
+  },
+  {
+   "id": "hu.act.megnyár",
+   "lemma": "megnyársal",
+   "pos": [
+    "VERB"
+   ],
+   "kind": "action_violent",
+   "strength": "strong",
+   "valence": -0.92,
+   "arousal": 0.92,
+   "emotions": {
+    "fear": 0.9,
+    "disgust": 0.85
+   },
+   "source": "curated:gemini-2026-09",
+   "version": 1
+  },
+  {
+   "id": "hu.act.karóz",
+   "lemma": "karóz",
+   "pos": [
+    "VERB"
+   ],
+   "kind": "action_violent",
+   "strength": "strong",
+   "valence": -0.95,
+   "arousal": 0.94,
+   "emotions": {
+    "fear": 0.95,
+    "disgust": 0.9
+   },
+   "source": "curated:gemini-2026-09",
+   "version": 1
+  },
+  {
+   "id": "hu.act.átdöf",
+   "lemma": "átdöf",
+   "pos": [
+    "VERB"
+   ],
+   "kind": "action_violent",
+   "strength": "strong",
+   "valence": -0.91,
+   "arousal": 0.91,
+   "emotions": {
+    "fear": 0.9
+   },
+   "source": "curated:gemini-2026-09",
+   "version": 1
+  },
+  {
+   "id": "hu.act.átszúr",
+   "lemma": "átszúr",
+   "pos": [
+    "VERB"
+   ],
+   "kind": "action_violent",
+   "strength": "strong",
+   "valence": -0.89,
+   "arousal": 0.86,
+   "emotions": {
+    "fear": 0.85
+   },
+   "source": "curated:gemini-2026-09",
+   "version": 1
+  },
+  {
+   "id": "hu.act.belédöf",
+   "lemma": "beledöf",
+   "pos": [
+    "VERB"
+   ],
+   "kind": "action_violent",
+   "strength": "strong",
+   "valence": -0.91,
+   "arousal": 0.89,
+   "emotions": {
+    "fear": 0.9
+   },
+   "source": "curated:gemini-2026-09",
+   "version": 1
+  },
+  {
+   "id": "hu.act.kikapar",
+   "lemma": "kikapar",
+   "pos": [
+    "VERB"
+   ],
+   "kind": "action_violent",
+   "strength": "weak",
+   "valence": -0.78,
+   "arousal": 0.76,
+   "emotions": {
+    "anger": 0.8
+   },
+   "source": "curated:gemini-2026-09",
+   "version": 1,
+   "note": "földet kikapar vs szemet kikapar"
+  },
+  {
+   "id": "hu.act.szétroncsol",
+   "lemma": "szétroncsol",
+   "pos": [
+    "VERB"
+   ],
+   "kind": "action_violent",
+   "strength": "strong",
+   "valence": -0.92,
+   "arousal": 0.92,
+   "emotions": {
+    "disgust": 0.9,
+    "fear": 0.85
+   },
+   "source": "curated:gemini-2026-09",
+   "version": 1
+  },
+  {
+   "id": "hu.act.szétdarabol",
+   "lemma": "szétdarabol",
+   "pos": [
+    "VERB"
+   ],
+   "kind": "action_violent",
+   "strength": "strong",
+   "valence": -0.91,
+   "arousal": 0.87,
+   "emotions": {
+    "disgust": 0.9
+   },
+   "source": "curated:gemini-2026-09",
+   "version": 1
+  },
+  {
+   "id": "hu.act.fojtogat",
+   "lemma": "fojtogat",
+   "pos": [
+    "VERB"
+   ],
+   "kind": "action_violent",
+   "strength": "strong",
+   "valence": -0.86,
+   "arousal": 0.86,
+   "emotions": {
+    "fear": 0.9,
+    "anger": 0.85
+   },
+   "source": "curated:gemini-2026-09",
+   "version": 1
+  },
+  {
+   "id": "hu.act.megfullad",
+   "lemma": "megfullad",
+   "pos": [
+    "VERB"
+   ],
+   "kind": "action_violent",
+   "strength": "strong",
+   "valence": -0.87,
+   "arousal": 0.87,
+   "emotions": {
+    "fear": 0.9
+   },
+   "source": "curated:gemini-2026-09",
+   "version": 1
+  },
+  {
+   "id": "hu.act.felakaszt",
+   "lemma": "felakaszt",
+   "pos": [
+    "VERB"
+   ],
+   "kind": "action_violent",
+   "strength": "strong",
+   "valence": -0.95,
+   "arousal": 0.91,
+   "emotions": {
+    "fear": 0.95
+   },
+   "source": "curated:gemini-2026-09",
+   "version": 1
+  },
+  {
+   "id": "hu.act.gyötör",
+   "lemma": "gyötör",
+   "pos": [
+    "VERB"
+   ],
+   "kind": "action_violent",
+   "strength": "strong",
+   "valence": -0.84,
+   "arousal": 0.81,
+   "emotions": {
+    "sadness": 0.85
+   },
+   "source": "curated:gemini-2026-09",
+   "version": 1
+  },
+  {
+   "id": "hu.act.megkorbácsol",
+   "lemma": "megkorbácsol",
+   "pos": [
+    "VERB"
+   ],
+   "kind": "action_violent",
+   "strength": "strong",
+   "valence": -0.86,
+   "arousal": 0.86,
+   "emotions": {
+    "anger": 0.85
+   },
+   "source": "curated:gemini-2026-09",
+   "version": 1
+  },
+  {
+   "id": "hu.act.elpáhol",
+   "lemma": "elpáhol",
+   "pos": [
+    "VERB"
+   ],
+   "kind": "action_violent",
+   "strength": "strong",
+   "valence": -0.71,
+   "arousal": 0.74,
+   "emotions": {
+    "anger": 0.75
+   },
+   "source": "curated:gemini-2026-09",
+   "version": 1
+  },
+  {
+   "id": "hu.act.leterít",
+   "lemma": "leterít",
+   "pos": [
+    "VERB"
+   ],
+   "kind": "action_violent",
+   "strength": "weak",
+   "valence": -0.74,
+   "arousal": 0.79,
+   "emotions": {
+    "anger": 0.75
+   },
+   "source": "curated:gemini-2026-09",
+   "version": 1,
+   "note": "asztalt leterít vs vadat leterít"
+  },
+  {
+   "id": "hu.act.lecsap",
+   "lemma": "lecsap",
+   "pos": [
+    "VERB"
+   ],
+   "kind": "action_violent",
+   "strength": "weak",
+   "valence": -0.76,
+   "arousal": 0.81,
+   "emotions": {
+    "anger": 0.8
+   },
+   "source": "curated:gemini-2026-09",
+   "version": 1,
+   "note": "villám lecsap vs fegyverrel lecsap"
+  },
+  {
+   "id": "hu.act.kettéhasít",
+   "lemma": "kettéhasít",
+   "pos": [
+    "VERB"
+   ],
+   "kind": "action_violent",
+   "strength": "strong",
+   "valence": -0.86,
+   "arousal": 0.86,
+   "emotions": {
+    "fear": 0.85
+   },
+   "source": "curated:gemini-2026-09",
+   "version": 1
+  },
+  {
+   "id": "hu.act.felhasít",
+   "lemma": "felhasít",
+   "pos": [
+    "VERB"
+   ],
+   "kind": "action_violent",
+   "strength": "strong",
+   "valence": -0.81,
+   "arousal": 0.81,
+   "emotions": {
+    "fear": 0.8
+   },
+   "source": "curated:gemini-2026-09",
+   "version": 1
+  },
+  {
+   "id": "hu.act.vérzik",
+   "lemma": "vérzik",
+   "pos": [
+    "VERB"
+   ],
+   "kind": "action_violent",
+   "strength": "strong",
+   "valence": -0.71,
+   "arousal": 0.71,
+   "emotions": {
+    "fear": 0.75
+   },
+   "source": "curated:gemini-2026-09",
+   "version": 1
+  },
+  {
+   "id": "hu.act.elvérzik",
+   "lemma": "elvérzik",
+   "pos": [
+    "VERB"
+   ],
+   "kind": "action_violent",
+   "strength": "strong",
+   "valence": -0.86,
+   "arousal": 0.81,
+   "emotions": {
+    "fear": 0.85,
+    "sadness": 0.8
+   },
+   "source": "curated:gemini-2026-09",
+   "version": 1
+  },
+  {
+   "id": "hu.act.megcsonkít",
+   "lemma": "megcsonkít",
+   "pos": [
+    "VERB"
+   ],
+   "kind": "action_violent",
+   "strength": "strong",
+   "valence": -0.91,
+   "arousal": 0.86,
+   "emotions": {
+    "disgust": 0.9,
+    "fear": 0.85
+   },
+   "source": "curated:gemini-2026-09",
+   "version": 1
+  },
+  {
+   "id": "hu.act.letipor",
+   "lemma": "letipor",
+   "pos": [
+    "VERB"
+   ],
+   "kind": "action_violent",
+   "strength": "strong",
+   "valence": -0.86,
+   "arousal": 0.86,
+   "emotions": {
+    "anger": 0.85
+   },
+   "source": "curated:gemini-2026-09",
+   "version": 1
+  },
+  {
+   "id": "hu.act.agyoncsap",
+   "lemma": "agyoncsap",
+   "pos": [
+    "VERB"
+   ],
+   "kind": "action_violent",
+   "strength": "strong",
+   "valence": -0.95,
+   "arousal": 0.95,
+   "emotions": {
+    "fear": 0.95,
+    "anger": 0.9
+   },
+   "source": "curated:gemini-2026-09",
+   "version": 1
+  },
+  {
+   "id": "hu.act.fejbever",
+   "lemma": "fejbever",
+   "pos": [
+    "VERB"
+   ],
+   "kind": "action_violent",
+   "strength": "strong",
+   "valence": -0.85,
+   "arousal": 0.85,
+   "emotions": {
+    "anger": 0.85
+   },
+   "source": "curated:gemini-2026-09",
+   "version": 1,
+   "spell_ok": "Hungarian compound verb (fejbe + ver) meaning to strike on the head"
+  },
+  {
+   "id": "hu.act.leüt",
+   "lemma": "leüt",
+   "pos": [
+    "VERB"
+   ],
+   "kind": "action_violent",
+   "strength": "strong",
+   "valence": -0.75,
+   "arousal": 0.8,
+   "emotions": {
+    "anger": 0.8
+   },
+   "source": "curated:gemini-2026-09",
+   "version": 1
+  },
+  {
+   "id": "hu.act.kiváj",
+   "lemma": "kiváj",
+   "pos": [
+    "VERB"
+   ],
+   "kind": "action_violent",
+   "strength": "strong",
+   "valence": -0.85,
+   "arousal": 0.8,
+   "emotions": {
+    "disgust": 0.85
+   },
+   "source": "curated:gemini-2026-09",
+   "version": 1
+  },
+  {
+   "id": "hu.act.széttipor",
+   "lemma": "széttipor",
+   "pos": [
+    "VERB"
+   ],
+   "kind": "action_violent",
+   "strength": "strong",
+   "valence": -0.9,
+   "arousal": 0.9,
+   "emotions": {
+    "fear": 0.9,
+    "anger": 0.85
+   },
+   "source": "curated:gemini-2026-09",
+   "version": 1
+  },
+  {
+   "id": "hu.act.széthasít",
+   "lemma": "széthasít",
+   "pos": [
+    "VERB"
+   ],
+   "kind": "action_violent",
+   "strength": "strong",
+   "valence": -0.85,
+   "arousal": 0.85,
+   "emotions": {
+    "fear": 0.85
+   },
+   "source": "curated:gemini-2026-09",
+   "version": 1
+  },
+  {
+   "id": "hu.act.levág",
+   "lemma": "levág",
+   "pos": [
+    "VERB"
+   ],
+   "kind": "action_violent",
+   "strength": "weak",
+   "valence": -0.8,
+   "arousal": 0.8,
+   "emotions": {
+    "fear": 0.8
+   },
+   "source": "curated:gemini-2026-09",
+   "version": 1,
+   "note": "fát levág vs embert levág"
+  },
+  {
+   "id": "hu.act.nyakaz",
+   "lemma": "nyakaz",
+   "pos": [
+    "VERB"
+   ],
+   "kind": "action_violent",
+   "strength": "strong",
+   "valence": -0.95,
+   "arousal": 0.9,
+   "emotions": {
+    "fear": 0.95
+   },
+   "source": "curated:gemini-2026-09",
+   "version": 1
+  },
+  {
+   "id": "hu.act.szétver",
+   "lemma": "szétver",
+   "pos": [
+    "VERB"
+   ],
+   "kind": "action_violent",
+   "strength": "strong",
+   "valence": -0.85,
+   "arousal": 0.85,
+   "emotions": {
+    "anger": 0.85
+   },
+   "source": "curated:gemini-2026-09",
+   "version": 1
+  },
+  {
+   "id": "hu.act.szétmorzsol",
+   "lemma": "szétmorzsol",
+   "pos": [
+    "VERB"
+   ],
+   "kind": "action_violent",
+   "strength": "strong",
+   "valence": -0.8,
+   "arousal": 0.8,
+   "emotions": {
+    "anger": 0.8
+   },
+   "source": "curated:gemini-2026-09",
+   "version": 1
+  },
+  {
+   "id": "hu.act.összeroppan",
+   "lemma": "összeroppan",
+   "pos": [
+    "VERB"
+   ],
+   "kind": "action_violent",
+   "strength": "strong",
+   "valence": -0.85,
+   "arousal": 0.85,
+   "emotions": {
+    "fear": 0.85
+   },
+   "source": "curated:gemini-2026-09",
+   "version": 1
+  },
+  {
+   "id": "hu.act.hátbaszúr",
+   "lemma": "hátbaszúr",
+   "pos": [
+    "VERB"
+   ],
+   "kind": "action_violent",
+   "strength": "strong",
+   "valence": -0.95,
+   "arousal": 0.9,
+   "emotions": {
+    "anger": 0.95,
+    "fear": 0.9
+   },
+   "source": "curated:gemini-2026-09",
+   "version": 1,
+   "spell_ok": "Hungarian compound verb (hátba + szúr) meaning to stab in the back"
+  },
+  {
+   "id": "hu.act.lemetél",
+   "lemma": "lemetél",
+   "pos": [
+    "VERB"
+   ],
+   "kind": "action_violent",
+   "strength": "strong",
+   "valence": -0.85,
+   "arousal": 0.85,
+   "emotions": {
+    "disgust": 0.85
+   },
+   "source": "curated:gemini-2026-09",
+   "version": 1
+  },
+  {
+   "id": "hu.act.letaglóz",
+   "lemma": "letaglóz",
+   "pos": [
+    "VERB"
+   ],
+   "kind": "action_violent",
+   "strength": "strong",
+   "valence": -0.85,
+   "arousal": 0.85,
+   "emotions": {
+    "fear": 0.85
+   },
+   "source": "curated:gemini-2026-09",
+   "version": 1
+  },
+  {
+   "id": "hu.act.megbéklyóz",
+   "lemma": "megbéklyóz",
+   "pos": [
+    "VERB"
+   ],
+   "kind": "action_violent",
+   "strength": "strong",
+   "valence": -0.75,
+   "arousal": 0.7,
+   "emotions": {
+    "fear": 0.75
+   },
+   "source": "curated:gemini-2026-09",
+   "version": 1
+  },
+  {
+   "id": "hu.act.bilinc",
+   "lemma": "bilincsel",
+   "pos": [
+    "VERB"
+   ],
+   "kind": "action_violent",
+   "strength": "strong",
+   "valence": -0.7,
+   "arousal": 0.7,
+   "emotions": {
+    "fear": 0.7
+   },
+   "source": "curated:gemini-2026-09",
+   "version": 1
+  },
+  {
+   "id": "hu.act.agyonüt",
+   "lemma": "agyonüt",
+   "pos": [
+    "VERB"
+   ],
+   "kind": "action_violent",
+   "strength": "strong",
+   "valence": -0.95,
+   "arousal": 0.95,
+   "emotions": {
+    "fear": 0.95,
+    "anger": 0.9
+   },
+   "source": "curated:gemini-2026-09",
+   "version": 1
+  },
+  {
+   "id": "hu.act.kinyír",
+   "lemma": "kinyír",
+   "pos": [
+    "VERB"
+   ],
+   "kind": "action_violent",
+   "strength": "strong",
+   "valence": -0.9,
+   "arousal": 0.9,
+   "emotions": {
+    "fear": 0.9,
+    "anger": 0.85
+   },
+   "source": "curated:gemini-2026-09",
+   "version": 1
+  },
+  {
+   "id": "hu.act.megostromol",
+   "lemma": "megostromol",
+   "pos": [
+    "VERB"
+   ],
+   "kind": "action_violent",
+   "strength": "strong",
+   "valence": -0.8,
+   "arousal": 0.85,
+   "emotions": {
+    "fear": 0.85
+   },
+   "source": "curated:gemini-2026-09",
+   "version": 1
+  },
+  {
+   "id": "hu.act.csonkol",
+   "lemma": "csonkol",
+   "pos": [
+    "VERB"
+   ],
+   "kind": "action_violent",
+   "strength": "strong",
+   "valence": -0.85,
+   "arousal": 0.85,
+   "emotions": {
+    "disgust": 0.85,
+    "fear": 0.85
+   },
+   "source": "curated:gemini-2026-09",
+   "version": 1
+  }
+ ]
+}

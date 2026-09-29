@@ -1,0 +1,878 @@
+{
+  "lang": "pl",
+  "kind": "conflict_speech",
+  "version": 1,
+  "entries": [
+    {
+      "id": "pl.speech.mówić",
+      "lemma": "mówić",
+      "pos": [
+        "VERB"
+      ],
+      "kind": "conflict_speech",
+      "strength": "weak",
+      "valence": 0.0,
+      "arousal": 0.2,
+      "emotions": null,
+      "source": "migrated:pol_janitor.py",
+      "version": 1,
+      "note": "semantycznie neutralny znacznik dialogowy"
+    },
+    {
+      "id": "pl.speech.powiedzieć",
+      "lemma": "powiedzieć",
+      "pos": [
+        "VERB"
+      ],
+      "kind": "conflict_speech",
+      "strength": "weak",
+      "valence": 0.0,
+      "arousal": 0.2,
+      "emotions": null,
+      "source": "migrated:pol_janitor.py",
+      "version": 1,
+      "note": "semantycznie neutralny znacznik dialogowy"
+    },
+    {
+      "id": "pl.speech.zapytać",
+      "lemma": "zapytać",
+      "pos": [
+        "VERB"
+      ],
+      "kind": "conflict_speech",
+      "strength": "weak",
+      "valence": 0.05,
+      "arousal": 0.3,
+      "emotions": {
+        "anticipation": 0.3
+      },
+      "source": "migrated:pol_janitor.py",
+      "version": 1,
+      "note": "neutralne zadanie pytania"
+    },
+    {
+      "id": "pl.speech.pytać",
+      "lemma": "pytać",
+      "pos": [
+        "VERB"
+      ],
+      "kind": "conflict_speech",
+      "strength": "weak",
+      "valence": 0.05,
+      "arousal": 0.3,
+      "emotions": {
+        "anticipation": 0.3
+      },
+      "source": "migrated:pol_janitor.py",
+      "version": 1,
+      "note": "neutralne zadawanie pytań"
+    },
+    {
+      "id": "pl.speech.krzyczeć",
+      "lemma": "krzyczeć",
+      "pos": [
+        "VERB"
+      ],
+      "kind": "conflict_speech",
+      "strength": "strong",
+      "valence": -0.74,
+      "arousal": 0.86,
+      "emotions": {
+        "anger": 0.85
+      },
+      "source": "migrated:pol_janitor.py",
+      "version": 1
+    },
+    {
+      "id": "pl.speech.szeptać",
+      "lemma": "szeptać",
+      "pos": [
+        "VERB"
+      ],
+      "kind": "conflict_speech",
+      "strength": "weak",
+      "valence": 0.15,
+      "arousal": 0.2,
+      "emotions": null,
+      "source": "migrated:pol_janitor.py",
+      "version": 1,
+      "note": "cichy sposób mówienia"
+    },
+    {
+      "id": "pl.speech.mruczeć",
+      "lemma": "mruczeć",
+      "pos": [
+        "VERB"
+      ],
+      "kind": "conflict_speech",
+      "strength": "weak",
+      "valence": 0.05,
+      "arousal": 0.2,
+      "emotions": null,
+      "source": "migrated:pol_janitor.py",
+      "version": 1,
+      "note": "ciche mruczenie"
+    },
+    {
+      "id": "pl.speech.odpowiedzieć",
+      "lemma": "odpowiedzieć",
+      "pos": [
+        "VERB"
+      ],
+      "kind": "conflict_speech",
+      "strength": "weak",
+      "valence": 0.0,
+      "arousal": 0.25,
+      "emotions": null,
+      "source": "migrated:pol_janitor.py",
+      "version": 1,
+      "note": "neutralna odpowiedź"
+    },
+    {
+      "id": "pl.speech.wołać",
+      "lemma": "wołać",
+      "pos": [
+        "VERB"
+      ],
+      "kind": "conflict_speech",
+      "strength": "strong",
+      "valence": -0.48,
+      "arousal": 0.74,
+      "emotions": {
+        "anticipation": 0.5
+      },
+      "source": "migrated:pol_janitor.py",
+      "version": 1
+    },
+    {
+      "id": "pl.speech.odrzec",
+      "lemma": "odrzec",
+      "pos": [
+        "VERB"
+      ],
+      "kind": "conflict_speech",
+      "strength": "weak",
+      "valence": 0.0,
+      "arousal": 0.25,
+      "emotions": null,
+      "source": "migrated:pol_janitor.py",
+      "version": 1,
+      "note": "archaiczna neutralna odpowiedź"
+    },
+    {
+      "id": "pl.speech.stwierdzić",
+      "lemma": "stwierdzić",
+      "pos": [
+        "VERB"
+      ],
+      "kind": "conflict_speech",
+      "strength": "weak",
+      "valence": 0.0,
+      "arousal": 0.2,
+      "emotions": null,
+      "source": "migrated:pol_janitor.py",
+      "version": 1,
+      "note": "neutralne stwierdzenie faktu"
+    },
+    {
+      "id": "pl.speech.rzucić",
+      "lemma": "rzucić",
+      "pos": [
+        "VERB"
+      ],
+      "kind": "conflict_speech",
+      "strength": "weak",
+      "valence": -0.36,
+      "arousal": 0.46,
+      "emotions": null,
+      "source": "migrated:pol_janitor.py",
+      "version": 1,
+      "note": "krótka uwaga w dialogu"
+    },
+    {
+      "id": "pl.speech.mruknąć",
+      "lemma": "mruknąć",
+      "pos": [
+        "VERB"
+      ],
+      "kind": "conflict_speech",
+      "strength": "weak",
+      "valence": -0.32,
+      "arousal": 0.36,
+      "emotions": null,
+      "source": "migrated:pol_janitor.py",
+      "version": 1,
+      "note": "niechętna odpowiedź"
+    },
+    {
+      "id": "pl.speech.warknąć",
+      "lemma": "warknąć",
+      "pos": [
+        "VERB"
+      ],
+      "kind": "conflict_speech",
+      "strength": "strong",
+      "valence": -0.8,
+      "arousal": 0.86,
+      "emotions": {
+        "anger": 0.9
+      },
+      "source": "migrated:pol_janitor.py",
+      "version": 1
+    },
+    {
+      "id": "pl.speech.szlochać",
+      "lemma": "szlochać",
+      "pos": [
+        "VERB"
+      ],
+      "kind": "conflict_speech",
+      "strength": "strong",
+      "valence": -0.8,
+      "arousal": 0.74,
+      "emotions": {
+        "sadness": 0.85
+      },
+      "source": "migrated:pol_janitor.py",
+      "version": 1
+    },
+    {
+      "id": "pl.speech.błagać",
+      "lemma": "błagać",
+      "pos": [
+        "VERB"
+      ],
+      "kind": "conflict_speech",
+      "strength": "strong",
+      "valence": -0.66,
+      "arousal": 0.82,
+      "emotions": {
+        "fear": 0.7,
+        "sadness": 0.7
+      },
+      "source": "migrated:pol_janitor.py",
+      "version": 1
+    },
+    {
+      "id": "pl.speech.myśleć",
+      "lemma": "myśleć",
+      "pos": [
+        "VERB"
+      ],
+      "kind": "conflict_speech",
+      "strength": "weak",
+      "valence": 0.0,
+      "arousal": 0.2,
+      "emotions": null,
+      "source": "migrated:pol_janitor.py",
+      "version": 1,
+      "note": "proces myślowy narratora"
+    },
+    {
+      "id": "pl.speech.zastanawiać",
+      "lemma": "zastanawiać",
+      "pos": [
+        "VERB"
+      ],
+      "kind": "conflict_speech",
+      "strength": "weak",
+      "valence": 0.05,
+      "arousal": 0.25,
+      "emotions": null,
+      "source": "migrated:pol_janitor.py",
+      "version": 1,
+      "note": "refleksja wewnętrzna"
+    },
+    {
+      "id": "pl.speech.rozmyślać",
+      "lemma": "rozmyślać",
+      "pos": [
+        "VERB"
+      ],
+      "kind": "conflict_speech",
+      "strength": "weak",
+      "valence": 0.05,
+      "arousal": 0.2,
+      "emotions": null,
+      "source": "migrated:pol_janitor.py",
+      "version": 1,
+      "note": "kontemplacja wewnętrzna"
+    },
+    {
+      "id": "pl.speech.ryczeć",
+      "lemma": "ryczeć",
+      "pos": [
+        "VERB"
+      ],
+      "kind": "conflict_speech",
+      "strength": "strong",
+      "valence": -0.78,
+      "arousal": 0.86,
+      "emotions": {
+        "anger": 0.85
+      },
+      "source": "curated:gemini-2026-09",
+      "version": 1
+    },
+    {
+      "id": "pl.speech.wrzasnąć",
+      "lemma": "wrzasnąć",
+      "pos": [
+        "VERB"
+      ],
+      "kind": "conflict_speech",
+      "strength": "strong",
+      "valence": -0.78,
+      "arousal": 0.88,
+      "emotions": {
+        "anger": 0.85
+      },
+      "source": "curated:gemini-2026-09",
+      "version": 1
+    },
+    {
+      "id": "pl.speech.zawrzasnąć",
+      "lemma": "zawrzasnąć",
+      "pos": [
+        "VERB"
+      ],
+      "kind": "conflict_speech",
+      "strength": "strong",
+      "valence": -0.8,
+      "arousal": 0.88,
+      "emotions": {
+        "anger": 0.85
+      },
+      "source": "curated:gemini-2026-09",
+      "version": 1
+    },
+    {
+      "id": "pl.speech.huknąć",
+      "lemma": "huknąć",
+      "pos": [
+        "VERB"
+      ],
+      "kind": "conflict_speech",
+      "strength": "strong",
+      "valence": -0.74,
+      "arousal": 0.84,
+      "emotions": {
+        "anger": 0.8
+      },
+      "source": "curated:gemini-2026-09",
+      "version": 1
+    },
+    {
+      "id": "pl.speech.ryknąć",
+      "lemma": "ryknąć",
+      "pos": [
+        "VERB"
+      ],
+      "kind": "conflict_speech",
+      "strength": "strong",
+      "valence": -0.78,
+      "arousal": 0.86,
+      "emotions": {
+        "anger": 0.85
+      },
+      "source": "curated:gemini-2026-09",
+      "version": 1
+    },
+    {
+      "id": "pl.speech.syknąć",
+      "lemma": "syknąć",
+      "pos": [
+        "VERB"
+      ],
+      "kind": "conflict_speech",
+      "strength": "strong",
+      "valence": -0.68,
+      "arousal": 0.72,
+      "emotions": {
+        "anger": 0.75
+      },
+      "source": "curated:gemini-2026-09",
+      "version": 1
+    },
+    {
+      "id": "pl.speech.zawołać",
+      "lemma": "zawołać",
+      "pos": [
+        "VERB"
+      ],
+      "kind": "conflict_speech",
+      "strength": "strong",
+      "valence": -0.46,
+      "arousal": 0.72,
+      "emotions": {
+        "anticipation": 0.4
+      },
+      "source": "curated:gemini-2026-09",
+      "version": 1
+    },
+    {
+      "id": "pl.speech.zagrzmieć",
+      "lemma": "zagrzmieć",
+      "pos": [
+        "VERB"
+      ],
+      "kind": "conflict_speech",
+      "strength": "strong",
+      "valence": -0.76,
+      "arousal": 0.84,
+      "emotions": {
+        "anger": 0.8
+      },
+      "source": "curated:gemini-2026-09",
+      "version": 1
+    },
+    {
+      "id": "pl.speech.fuknąć",
+      "lemma": "fuknąć",
+      "pos": [
+        "VERB"
+      ],
+      "kind": "conflict_speech",
+      "strength": "strong",
+      "valence": -0.62,
+      "arousal": 0.68,
+      "emotions": {
+        "anger": 0.7
+      },
+      "source": "curated:gemini-2026-09",
+      "version": 1
+    },
+    {
+      "id": "pl.speech.burknąć",
+      "lemma": "burknąć",
+      "pos": [
+        "VERB"
+      ],
+      "kind": "conflict_speech",
+      "strength": "strong",
+      "valence": -0.54,
+      "arousal": 0.55,
+      "emotions": {
+        "anger": 0.6
+      },
+      "source": "curated:gemini-2026-09",
+      "version": 1
+    },
+    {
+      "id": "pl.speech.odburknąć",
+      "lemma": "odburknąć",
+      "pos": [
+        "VERB"
+      ],
+      "kind": "conflict_speech",
+      "strength": "strong",
+      "valence": -0.58,
+      "arousal": 0.6,
+      "emotions": {
+        "anger": 0.65
+      },
+      "source": "curated:gemini-2026-09",
+      "version": 1
+    },
+    {
+      "id": "pl.speech.złorzeczyć",
+      "lemma": "złorzeczyć",
+      "pos": [
+        "VERB"
+      ],
+      "kind": "conflict_speech",
+      "strength": "strong",
+      "valence": -0.84,
+      "arousal": 0.84,
+      "emotions": {
+        "anger": 0.9
+      },
+      "source": "curated:gemini-2026-09",
+      "version": 1
+    },
+    {
+      "id": "pl.speech.przeklinać",
+      "lemma": "przeklinać",
+      "pos": [
+        "VERB"
+      ],
+      "kind": "conflict_speech",
+      "strength": "strong",
+      "valence": -0.82,
+      "arousal": 0.82,
+      "emotions": {
+        "anger": 0.85
+      },
+      "source": "curated:gemini-2026-09",
+      "version": 1
+    },
+    {
+      "id": "pl.speech.bluźnić",
+      "lemma": "bluźnić",
+      "pos": [
+        "VERB"
+      ],
+      "kind": "conflict_speech",
+      "strength": "strong",
+      "valence": -0.82,
+      "arousal": 0.82,
+      "emotions": {
+        "anger": 0.85
+      },
+      "source": "curated:gemini-2026-09",
+      "version": 1
+    },
+    {
+      "id": "pl.speech.przekląć",
+      "lemma": "przekląć",
+      "pos": [
+        "VERB"
+      ],
+      "kind": "conflict_speech",
+      "strength": "strong",
+      "valence": -0.82,
+      "arousal": 0.82,
+      "emotions": {
+        "anger": 0.85
+      },
+      "source": "curated:gemini-2026-09",
+      "version": 1
+    },
+    {
+      "id": "pl.speech.grozić",
+      "lemma": "grozić",
+      "pos": [
+        "VERB"
+      ],
+      "kind": "conflict_speech",
+      "strength": "strong",
+      "valence": -0.78,
+      "arousal": 0.82,
+      "emotions": {
+        "anger": 0.85
+      },
+      "source": "curated:gemini-2026-09",
+      "version": 1
+    },
+    {
+      "id": "pl.speech.odgrażać",
+      "lemma": "odgrażać",
+      "pos": [
+        "VERB"
+      ],
+      "kind": "conflict_speech",
+      "strength": "strong",
+      "valence": -0.78,
+      "arousal": 0.82,
+      "emotions": {
+        "anger": 0.85
+      },
+      "source": "curated:gemini-2026-09",
+      "version": 1
+    },
+    {
+      "id": "pl.speech.żądać",
+      "lemma": "żądać",
+      "pos": [
+        "VERB"
+      ],
+      "kind": "conflict_speech",
+      "strength": "strong",
+      "valence": -0.52,
+      "arousal": 0.72,
+      "emotions": {
+        "anger": 0.65
+      },
+      "source": "curated:gemini-2026-09",
+      "version": 1
+    },
+    {
+      "id": "pl.speech.rozkazywać",
+      "lemma": "rozkazywać",
+      "pos": [
+        "VERB"
+      ],
+      "kind": "conflict_speech",
+      "strength": "strong",
+      "valence": -0.48,
+      "arousal": 0.72,
+      "emotions": {
+        "anger": 0.6
+      },
+      "source": "curated:gemini-2026-09",
+      "version": 1
+    },
+    {
+      "id": "pl.speech.nakazywać",
+      "lemma": "nakazywać",
+      "pos": [
+        "VERB"
+      ],
+      "kind": "conflict_speech",
+      "strength": "strong",
+      "valence": -0.42,
+      "arousal": 0.68,
+      "emotions": {
+        "anger": 0.6
+      },
+      "source": "curated:gemini-2026-09",
+      "version": 1
+    },
+    {
+      "id": "pl.speech.kazać",
+      "lemma": "kazać",
+      "pos": [
+        "VERB"
+      ],
+      "kind": "conflict_speech",
+      "strength": "strong",
+      "valence": -0.4,
+      "arousal": 0.65,
+      "emotions": null,
+      "source": "curated:gemini-2026-09",
+      "version": 1
+    },
+    {
+      "id": "pl.speech.wykrzyknąć",
+      "lemma": "wykrzyknąć",
+      "pos": [
+        "VERB"
+      ],
+      "kind": "conflict_speech",
+      "strength": "strong",
+      "valence": -0.64,
+      "arousal": 0.82,
+      "emotions": {
+        "surprise": 0.6,
+        "anger": 0.5
+      },
+      "source": "curated:gemini-2026-09",
+      "version": 1
+    },
+    {
+      "id": "pl.speech.wykrzykiwać",
+      "lemma": "wykrzykiwać",
+      "pos": [
+        "VERB"
+      ],
+      "kind": "conflict_speech",
+      "strength": "strong",
+      "valence": -0.72,
+      "arousal": 0.84,
+      "emotions": {
+        "anger": 0.8
+      },
+      "source": "curated:gemini-2026-09",
+      "version": 1
+    },
+    {
+      "id": "pl.speech.szydzić",
+      "lemma": "szydzić",
+      "pos": [
+        "VERB"
+      ],
+      "kind": "conflict_speech",
+      "strength": "strong",
+      "valence": -0.74,
+      "arousal": 0.68,
+      "emotions": {
+        "disgust": 0.8
+      },
+      "source": "curated:gemini-2026-09",
+      "version": 1
+    },
+    {
+      "id": "pl.speech.drwić",
+      "lemma": "drwić",
+      "pos": [
+        "VERB"
+      ],
+      "kind": "conflict_speech",
+      "strength": "strong",
+      "valence": -0.72,
+      "arousal": 0.66,
+      "emotions": {
+        "disgust": 0.75
+      },
+      "source": "curated:gemini-2026-09",
+      "version": 1
+    },
+    {
+      "id": "pl.speech.kpić",
+      "lemma": "kpić",
+      "pos": [
+        "VERB"
+      ],
+      "kind": "conflict_speech",
+      "strength": "strong",
+      "valence": -0.68,
+      "arousal": 0.64,
+      "emotions": {
+        "disgust": 0.7
+      },
+      "source": "curated:gemini-2026-09",
+      "version": 1
+    },
+    {
+      "id": "pl.speech.wyśmiewać",
+      "lemma": "wyśmiewać",
+      "pos": [
+        "VERB"
+      ],
+      "kind": "conflict_speech",
+      "strength": "strong",
+      "valence": -0.7,
+      "arousal": 0.66,
+      "emotions": {
+        "disgust": 0.75
+      },
+      "source": "curated:gemini-2026-09",
+      "version": 1
+    },
+    {
+      "id": "pl.speech.zarzucać",
+      "lemma": "zarzucać",
+      "pos": [
+        "VERB"
+      ],
+      "kind": "conflict_speech",
+      "strength": "strong",
+      "valence": -0.62,
+      "arousal": 0.62,
+      "emotions": {
+        "anger": 0.65
+      },
+      "source": "curated:gemini-2026-09",
+      "version": 1
+    },
+    {
+      "id": "pl.speech.oskarżać",
+      "lemma": "oskarżać",
+      "pos": [
+        "VERB"
+      ],
+      "kind": "conflict_speech",
+      "strength": "strong",
+      "valence": -0.72,
+      "arousal": 0.72,
+      "emotions": {
+        "anger": 0.75
+      },
+      "source": "curated:gemini-2026-09",
+      "version": 1
+    },
+    {
+      "id": "pl.speech.obwiniać",
+      "lemma": "obwiniać",
+      "pos": [
+        "VERB"
+      ],
+      "kind": "conflict_speech",
+      "strength": "strong",
+      "valence": -0.7,
+      "arousal": 0.68,
+      "emotions": {
+        "anger": 0.7
+      },
+      "source": "curated:gemini-2026-09",
+      "version": 1
+    },
+    {
+      "id": "pl.speech.wypominać",
+      "lemma": "wypominać",
+      "pos": [
+        "VERB"
+      ],
+      "kind": "conflict_speech",
+      "strength": "strong",
+      "valence": -0.64,
+      "arousal": 0.6,
+      "emotions": {
+        "anger": 0.65
+      },
+      "source": "curated:gemini-2026-09",
+      "version": 1
+    },
+    {
+      "id": "pl.speech.łajać",
+      "lemma": "łajać",
+      "pos": [
+        "VERB"
+      ],
+      "kind": "conflict_speech",
+      "strength": "strong",
+      "valence": -0.72,
+      "arousal": 0.7,
+      "emotions": {
+        "anger": 0.75
+      },
+      "source": "curated:gemini-2026-09",
+      "version": 1
+    },
+    {
+      "id": "pl.speech.złajać",
+      "lemma": "złajać",
+      "pos": [
+        "VERB"
+      ],
+      "kind": "conflict_speech",
+      "strength": "strong",
+      "valence": -0.74,
+      "arousal": 0.72,
+      "emotions": {
+        "anger": 0.75
+      },
+      "source": "curated:gemini-2026-09",
+      "version": 1
+    },
+    {
+      "id": "pl.speech.zrugać",
+      "lemma": "zrugać",
+      "pos": [
+        "VERB"
+      ],
+      "kind": "conflict_speech",
+      "strength": "strong",
+      "valence": -0.76,
+      "arousal": 0.74,
+      "emotions": {
+        "anger": 0.8
+      },
+      "source": "curated:gemini-2026-09",
+      "version": 1
+    },
+    {
+      "id": "pl.speech.karać_słownie",
+      "phrase": [
+        "karać",
+        "słownie"
+      ],
+      "kind": "conflict_speech",
+      "strength": "strong",
+      "valence": -0.7,
+      "arousal": 0.68,
+      "emotions": {
+        "anger": 0.7
+      },
+      "source": "curated:gemini-2026-09",
+      "version": 1,
+      "example": "Surowy przełożony musiał karać słownie nieposłusznego podwładnego."
+    },
+    {
+      "id": "pl.speech.pokrzykiwać",
+      "lemma": "pokrzykiwać",
+      "pos": [
+        "VERB"
+      ],
+      "kind": "conflict_speech",
+      "strength": "strong",
+      "valence": -0.62,
+      "arousal": 0.74,
+      "emotions": {
+        "anger": 0.65
+      },
+      "source": "curated:gemini-2026-09",
+      "version": 1
+    }
+  ]
+}

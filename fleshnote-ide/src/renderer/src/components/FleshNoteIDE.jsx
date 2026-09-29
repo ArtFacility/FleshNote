@@ -17,6 +17,7 @@ import ExportModal from './ExportModal'
 import SyncModal from './SyncModal'
 import RemoteSyncModal from './RemoteSyncModal'
 import SyncChooserModal from './SyncChooserModal'
+import ExportChooserModal from './ExportChooserModal'
 import CloneModal from './CloneModal'
 import StatsDashboard from './StatsDashboard'
 import EntityManager from './EntityManager'
@@ -328,12 +329,14 @@ export default function FleshNoteIDE({ projectConfig, projectPath, onCloseProjec
   // Settings modal state
   const [showSettings, setShowSettings] = useState(false)
   const [showExportModal, setShowExportModal] = useState(false)
+  const [showExportChooser, setShowExportChooser] = useState(false)
   const [showImportModal, setShowImportModal] = useState(false)
   const [showSyncModal, setShowSyncModal] = useState(false)
   const [showRemoteSyncModal, setShowRemoteSyncModal] = useState(false)
   const [showSyncChooser, setShowSyncChooser] = useState(false)
   const [cloneMode, setCloneMode] = useState(null) // 'send' | 'receive' | null
   const [isSaving, setIsSaving] = useState(false)
+  const [chapterFileWarning, setChapterFileWarning] = useState(false)
 
   // UI Toggles & Header Menu
   const [showHeaderMenu, setShowHeaderMenu] = useState(false)
@@ -521,6 +524,7 @@ export default function FleshNoteIDE({ projectConfig, projectPath, onCloseProjec
     setActiveChapter(chapter)
     try {
       const data = await window.api.loadChapterContent(projectPath, chapter.id)
+      setChapterFileWarning(Boolean(data.unsafe_file))
       setChapterContent({
         ...chapter,
         content: data.content || '',
@@ -528,6 +532,7 @@ export default function FleshNoteIDE({ projectConfig, projectPath, onCloseProjec
       })
     } catch (err) {
       console.error('Failed to load chapter content:', err)
+      setChapterFileWarning(false)
       setChapterContent({ ...chapter, content: '', _rev: Date.now() })
     }
   }
@@ -553,6 +558,11 @@ export default function FleshNoteIDE({ projectConfig, projectPath, onCloseProjec
         )
       } catch (err) {
         console.error('Failed to save chapter:', err)
+        // the backend refuses writes through poisoned filenames (409) —
+        // surface it in the status bar just like on load
+        if (String(err?.message || err).includes('unsafe filename')) {
+          setChapterFileWarning(true)
+        }
       } finally {
         // Just a small delay so it doesn't flicker too fast
         setTimeout(() => setIsSaving(false), 1000)
@@ -1037,7 +1047,7 @@ export default function FleshNoteIDE({ projectConfig, projectPath, onCloseProjec
                 flexDirection: 'column'
               }}>
                 <button
-                  onClick={() => { setShowHeaderMenu(false); setShowExportModal(true); }}
+                  onClick={() => { setShowHeaderMenu(false); setShowExportChooser(true); }}
                   style={{ display: 'flex', alignItems: 'center', gap: 12, padding: '8px 16px', background: 'transparent', border: 'none', color: 'var(--text-primary)', fontFamily: 'var(--font-mono)', fontSize: 12, cursor: 'pointer', textAlign: 'left', width: '100%' }}
                   onMouseEnter={e => e.currentTarget.style.background = 'var(--bg-surface)'}
                   onMouseLeave={e => e.currentTarget.style.background = 'transparent'}
@@ -1672,6 +1682,13 @@ export default function FleshNoteIDE({ projectConfig, projectPath, onCloseProjec
               {t('ide.saving', 'Saving...')}
             </span>
           </div>
+          {chapterFileWarning && (
+            <div className="status-bar-item" title={t('ide.unsafeFileHint', 'This chapter has an unsafe filename. Its text cannot be read or saved until it is re-synced or renamed.')}>
+              <span style={{ color: 'var(--accent-red)', fontWeight: 'bold' }}>
+                {t('ide.unsafeFileWarning', '⚠ Unsafe chapter filename — content hidden')}
+              </span>
+            </div>
+          )}
           <div className="status-bar-right">
             <div className="status-bar-item">{t('ide.statusBarFormat', 'Markdown \u00b7 UTF-8')}</div>
           </div>
@@ -1770,6 +1787,13 @@ export default function FleshNoteIDE({ projectConfig, projectPath, onCloseProjec
         projectConfig={projectConfig}
         chapters={chapters}
         entities={entities}
+      />
+
+      <ExportChooserModal
+        isOpen={showExportChooser}
+        onClose={() => setShowExportChooser(false)}
+        projectPath={projectPath}
+        onPickManuscript={() => setShowExportModal(true)}
       />
 
       <ImportModal

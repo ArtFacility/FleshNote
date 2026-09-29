@@ -1,0 +1,168 @@
+{
+  "lang": "hu",
+  "kind": "hedge",
+  "version": 1,
+  "entries": [
+    {
+      "id": "hu.hedge.talán",
+      "lemma": "talán",
+      "kind": "hedge",
+      "strength": "weak",
+      "factor": 0.6,
+      "source": "curated:gemini-2026-09",
+      "version": 1
+    },
+    {
+      "id": "hu.hedge.esetleg",
+      "lemma": "esetleg",
+      "kind": "hedge",
+      "strength": "weak",
+      "factor": 0.6,
+      "source": "curated:gemini-2026-09",
+      "version": 1
+    },
+    {
+      "id": "hu.hedge.valószínűleg",
+      "lemma": "valószínűleg",
+      "kind": "hedge",
+      "strength": "weak",
+      "factor": 0.6,
+      "source": "curated:gemini-2026-09",
+      "version": 1
+    },
+    {
+      "id": "hu.hedge.feltehető",
+      "lemma": "feltehető",
+      "kind": "hedge",
+      "strength": "weak",
+      "factor": 0.6,
+      "source": "curated:gemini-2026-09",
+      "version": 1
+    },
+    {
+      "id": "hu.hedge.állítólag",
+      "lemma": "állítólag",
+      "kind": "hedge",
+      "strength": "weak",
+      "factor": 0.6,
+      "source": "curated:gemini-2026-09",
+      "version": 1
+    },
+    {
+      "id": "hu.hedge.úgy_tűnik",
+      "phrase": [
+        "úgy",
+        "tűnik"
+      ],
+      "kind": "hedge",
+      "strength": "weak",
+      "factor": 0.6,
+      "source": "curated:gemini-2026-09",
+      "version": 1,
+      "example": "A jelek szerint úgy tűnik, holnapra megérkezik a felmentő sereg."
+    },
+    {
+      "id": "hu.hedge.látszólag",
+      "lemma": "látszólag",
+      "kind": "hedge",
+      "strength": "weak",
+      "factor": 0.6,
+      "source": "curated:gemini-2026-09",
+      "version": 1
+    },
+    {
+      "id": "hu.hedge.mintha",
+      "lemma": "mintha",
+      "kind": "hedge",
+      "strength": "weak",
+      "factor": 0.6,
+      "source": "curated:gemini-2026-09",
+      "version": 1
+    },
+    {
+      "id": "hu.hedge.mintegy",
+      "lemma": "mintegy",
+      "kind": "hedge",
+      "strength": "weak",
+      "factor": 0.6,
+      "source": "curated:gemini-2026-09",
+      "version": 1
+    },
+    {
+      "id": "hu.hedge.körülbelül",
+      "lemma": "körülbelül",
+      "kind": "hedge",
+      "strength": "weak",
+      "factor": 0.6,
+      "source": "curated:gemini-2026-09",
+      "version": 1
+    },
+    {
+      "id": "hu.hedge.meglehet",
+      "lemma": "meglehet",
+      "kind": "hedge",
+      "strength": "weak",
+      "factor": 0.6,
+      "source": "curated:gemini-2026-09",
+      "version": 1
+    },
+    {
+      "id": "hu.hedge.többé_kevésbé",
+      "lemma": "többé-kevésbé",
+      "kind": "hedge",
+      "strength": "weak",
+      "factor": 0.6,
+      "source": "curated:gemini-2026-09",
+      "version": 1
+    },
+    {
+      "id": "hu.hedge.valamelyest",
+      "lemma": "valamelyest",
+      "kind": "hedge",
+      "strength": "weak",
+      "factor": 0.6,
+      "source": "curated:gemini-2026-09",
+      "version": 1
+    },
+    {
+      "id": "hu.hedge.szinte",
+      "lemma": "szinte",
+      "kind": "hedge",
+      "strength": "weak",
+      "factor": 0.6,
+      "source": "curated:gemini-2026-09",
+      "version": 1
+    },
+    {
+      "id": "hu.hedge.majdnem",
+      "lemma": "majdnem",
+      "kind": "hedge",
+      "strength": "weak",
+      "factor": 0.6,
+      "source": "curated:gemini-2026-09",
+      "version": 1
+    },
+    {
+      "id": "hu.hedge.úgyszólván",
+      "lemma": "úgyszólván",
+      "kind": "hedge",
+      "strength": "weak",
+      "factor": 0.6,
+      "source": "curated:gemini-2026-09",
+      "version": 1
+    },
+    {
+      "id": "hu.hedge.mondhat",
+      "lemma": "mondhat",
+      "kind": "hedge",
+      "strength": "weak",
+      "factor": 0.6,
+      "source": "curated:gemini-2026-09",
+      "version": 1,
+      "alt_lemmas": [
+        "mond"
+      ],
+      "lemma_evidence": "carrier"
+    }
+  ]
+}

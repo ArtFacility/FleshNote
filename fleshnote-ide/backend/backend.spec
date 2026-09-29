@@ -79,6 +79,8 @@ datas = [
     ('nltk_data', 'nltk_data'),
     # Name generator datasets (presets and real name lists)
     ('tools/name_gen/data', 'tools/name_gen/data'),
+    # Janitor word library (lexicon_engine.py raises at import if missing)
+    ('lexicons', 'lexicons'),
     ('stopwords.json', '.'),
     # .flnote folder icon (desktop.ini IconResource needs an .ico)
     ('../resources/icons/fleshnote.ico', 'icons'),

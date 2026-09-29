@@ -1,0 +1,824 @@
+{
+ "lang": "en",
+ "kind": "conflict_speech",
+ "version": 1,
+ "entries": [
+  {
+   "id": "en.speech.say",
+   "lemma": "say",
+   "pos": [
+    "VERB"
+   ],
+   "kind": "conflict_speech",
+   "strength": "weak",
+   "valence": 0.0,
+   "arousal": 0.2,
+   "emotions": null,
+   "source": "migrated:janitor.py",
+   "version": 1,
+   "note": "neutral dialogue tag"
+  },
+  {
+   "id": "en.speech.tell",
+   "lemma": "tell",
+   "pos": [
+    "VERB"
+   ],
+   "kind": "conflict_speech",
+   "strength": "weak",
+   "valence": 0.0,
+   "arousal": 0.25,
+   "emotions": null,
+   "source": "migrated:janitor.py",
+   "version": 1,
+   "note": "neutral narration tag"
+  },
+  {
+   "id": "en.speech.ask",
+   "lemma": "ask",
+   "pos": [
+    "VERB"
+   ],
+   "kind": "conflict_speech",
+   "strength": "weak",
+   "valence": 0.05,
+   "arousal": 0.3,
+   "emotions": {
+    "anticipation": 0.3
+   },
+   "source": "migrated:janitor.py",
+   "version": 1,
+   "note": "neutral question tag"
+  },
+  {
+   "id": "en.speech.whisper",
+   "lemma": "whisper",
+   "pos": [
+    "VERB"
+   ],
+   "kind": "conflict_speech",
+   "strength": "weak",
+   "valence": 0.2,
+   "arousal": 0.15,
+   "emotions": null,
+   "source": "migrated:janitor.py",
+   "version": 1,
+   "note": "quiet manner of speaking"
+  },
+  {
+   "id": "en.speech.shout",
+   "lemma": "shout",
+   "pos": [
+    "VERB"
+   ],
+   "kind": "conflict_speech",
+   "strength": "strong",
+   "valence": -0.6,
+   "arousal": 0.75,
+   "emotions": {
+    "anger": 0.6
+   },
+   "source": "migrated:janitor.py",
+   "version": 1
+  },
+  {
+   "id": "en.speech.mutter",
+   "lemma": "mutter",
+   "pos": [
+    "VERB"
+   ],
+   "kind": "conflict_speech",
+   "strength": "strong",
+   "valence": -0.45,
+   "arousal": 0.4,
+   "emotions": {
+    "anger": 0.5
+   },
+   "source": "migrated:janitor.py",
+   "version": 1
+  },
+  {
+   "id": "en.speech.reply",
+   "lemma": "reply",
+   "pos": [
+    "VERB"
+   ],
+   "kind": "conflict_speech",
+   "strength": "weak",
+   "valence": 0.0,
+   "arousal": 0.25,
+   "emotions": null,
+   "source": "migrated:janitor.py",
+   "version": 1,
+   "note": "neutral dialogue response"
+  },
+  {
+   "id": "en.speech.snap",
+   "lemma": "snap",
+   "pos": [
+    "VERB"
+   ],
+   "kind": "conflict_speech",
+   "strength": "strong",
+   "valence": -0.6,
+   "arousal": 0.65,
+   "emotions": {
+    "anger": 0.65
+   },
+   "source": "migrated:janitor.py",
+   "version": 1
+  },
+  {
+   "id": "en.speech.growl",
+   "lemma": "growl",
+   "pos": [
+    "VERB"
+   ],
+   "kind": "conflict_speech",
+   "strength": "strong",
+   "valence": -0.65,
+   "arousal": 0.65,
+   "emotions": {
+    "anger": 0.7
+   },
+   "source": "migrated:janitor.py",
+   "version": 1
+  },
+  {
+   "id": "en.speech.hiss",
+   "lemma": "hiss",
+   "pos": [
+    "VERB"
+   ],
+   "kind": "conflict_speech",
+   "strength": "strong",
+   "valence": -0.65,
+   "arousal": 0.65,
+   "emotions": {
+    "anger": 0.7
+   },
+   "source": "migrated:janitor.py",
+   "version": 1
+  },
+  {
+   "id": "en.speech.call",
+   "lemma": "call",
+   "pos": [
+    "VERB"
+   ],
+   "kind": "conflict_speech",
+   "strength": "weak",
+   "valence": 0.0,
+   "arousal": 0.4,
+   "emotions": null,
+   "source": "migrated:janitor.py",
+   "version": 1,
+   "note": "calling someone vs loud shouting"
+  },
+  {
+   "id": "en.speech.cry",
+   "lemma": "cry",
+   "pos": [
+    "VERB"
+   ],
+   "kind": "conflict_speech",
+   "strength": "weak",
+   "valence": -0.5,
+   "arousal": 0.65,
+   "emotions": {
+    "sadness": 0.6
+   },
+   "source": "migrated:janitor.py",
+   "version": 1,
+   "note": "crying tears vs shouting in surprise"
+  },
+  {
+   "id": "en.speech.exclaim",
+   "lemma": "exclaim",
+   "pos": [
+    "VERB"
+   ],
+   "kind": "conflict_speech",
+   "strength": "strong",
+   "valence": 0.1,
+   "arousal": 0.6,
+   "emotions": {
+    "surprise": 0.6
+   },
+   "source": "migrated:janitor.py",
+   "version": 1
+  },
+  {
+   "id": "en.speech.murmur",
+   "lemma": "murmur",
+   "pos": [
+    "VERB"
+   ],
+   "kind": "conflict_speech",
+   "strength": "weak",
+   "valence": 0.1,
+   "arousal": 0.2,
+   "emotions": null,
+   "source": "migrated:janitor.py",
+   "version": 1,
+   "note": "quiet voice"
+  },
+  {
+   "id": "en.speech.stammer",
+   "lemma": "stammer",
+   "pos": [
+    "VERB"
+   ],
+   "kind": "conflict_speech",
+   "strength": "strong",
+   "valence": -0.4,
+   "arousal": 0.55,
+   "emotions": {
+    "fear": 0.6
+   },
+   "source": "migrated:janitor.py",
+   "version": 1
+  },
+  {
+   "id": "en.speech.bark",
+   "lemma": "bark",
+   "pos": [
+    "VERB"
+   ],
+   "kind": "conflict_speech",
+   "strength": "weak",
+   "valence": -0.65,
+   "arousal": 0.7,
+   "emotions": {
+    "anger": 0.7
+   },
+   "source": "migrated:janitor.py",
+   "version": 1,
+   "note": "dog barking vs barking an order"
+  },
+  {
+   "id": "en.speech.snarl",
+   "lemma": "snarl",
+   "pos": [
+    "VERB"
+   ],
+   "kind": "conflict_speech",
+   "strength": "strong",
+   "valence": -0.75,
+   "arousal": 0.75,
+   "emotions": {
+    "anger": 0.8
+   },
+   "source": "migrated:janitor.py",
+   "version": 1
+  },
+  {
+   "id": "en.speech.plead",
+   "lemma": "plead",
+   "pos": [
+    "VERB"
+   ],
+   "kind": "conflict_speech",
+   "strength": "strong",
+   "valence": -0.6,
+   "arousal": 0.7,
+   "emotions": {
+    "fear": 0.7,
+    "sadness": 0.6
+   },
+   "source": "migrated:janitor.py",
+   "version": 1
+  },
+  {
+   "id": "en.speech.demand",
+   "lemma": "demand",
+   "pos": [
+    "VERB"
+   ],
+   "kind": "conflict_speech",
+   "strength": "strong",
+   "valence": -0.45,
+   "arousal": 0.55,
+   "emotions": {
+    "anger": 0.5
+   },
+   "source": "migrated:janitor.py",
+   "version": 1
+  },
+  {
+   "id": "en.speech.insist",
+   "lemma": "insist",
+   "pos": [
+    "VERB"
+   ],
+   "kind": "conflict_speech",
+   "strength": "strong",
+   "valence": -0.35,
+   "arousal": 0.45,
+   "emotions": {
+    "anger": 0.4
+   },
+   "source": "migrated:janitor.py",
+   "version": 1
+  },
+  {
+   "id": "en.speech.think",
+   "lemma": "think",
+   "pos": [
+    "VERB"
+   ],
+   "kind": "conflict_speech",
+   "strength": "weak",
+   "valence": 0.0,
+   "arousal": 0.2,
+   "emotions": null,
+   "source": "migrated:janitor.py",
+   "version": 1,
+   "note": "mental reflection"
+  },
+  {
+   "id": "en.speech.wonder",
+   "lemma": "wonder",
+   "pos": [
+    "VERB"
+   ],
+   "kind": "conflict_speech",
+   "strength": "weak",
+   "valence": 0.2,
+   "arousal": 0.35,
+   "emotions": {
+    "surprise": 0.4
+   },
+   "source": "migrated:janitor.py",
+   "version": 1,
+   "note": "mental speculation"
+  },
+  {
+   "id": "en.speech.muse",
+   "lemma": "muse",
+   "pos": [
+    "VERB"
+   ],
+   "kind": "conflict_speech",
+   "strength": "weak",
+   "valence": 0.15,
+   "arousal": 0.25,
+   "emotions": null,
+   "source": "migrated:janitor.py",
+   "version": 1,
+   "note": "contemplative thinking"
+  },
+  {
+   "id": "en.speech.reflect",
+   "lemma": "reflect",
+   "pos": [
+    "VERB"
+   ],
+   "kind": "conflict_speech",
+   "strength": "weak",
+   "valence": 0.1,
+   "arousal": 0.2,
+   "emotions": null,
+   "source": "migrated:janitor.py",
+   "version": 1,
+   "note": "mirror reflection vs pondering"
+  },
+  {
+   "id": "en.speech.yell",
+   "lemma": "yell",
+   "pos": [
+    "VERB"
+   ],
+   "kind": "conflict_speech",
+   "strength": "strong",
+   "valence": -0.65,
+   "arousal": 0.8,
+   "emotions": {
+    "anger": 0.7
+   },
+   "source": "curated:gemini-2026-09",
+   "version": 1
+  },
+  {
+   "id": "en.speech.screech",
+   "lemma": "screech",
+   "pos": [
+    "VERB"
+   ],
+   "kind": "conflict_speech",
+   "strength": "strong",
+   "valence": -0.75,
+   "arousal": 0.8,
+   "emotions": {
+    "anger": 0.7,
+    "fear": 0.7
+   },
+   "source": "curated:gemini-2026-09",
+   "version": 1
+  },
+  {
+   "id": "en.speech.shriek",
+   "lemma": "shriek",
+   "pos": [
+    "VERB"
+   ],
+   "kind": "conflict_speech",
+   "strength": "strong",
+   "valence": -0.8,
+   "arousal": 0.85,
+   "emotions": {
+    "fear": 0.8,
+    "anger": 0.7
+   },
+   "source": "curated:gemini-2026-09",
+   "version": 1
+  },
+  {
+   "id": "en.speech.bellow",
+   "lemma": "bellow",
+   "pos": [
+    "VERB"
+   ],
+   "kind": "conflict_speech",
+   "strength": "strong",
+   "valence": -0.75,
+   "arousal": 0.85,
+   "emotions": {
+    "anger": 0.8
+   },
+   "source": "curated:gemini-2026-09",
+   "version": 1
+  },
+  {
+   "id": "en.speech.roar",
+   "lemma": "roar",
+   "pos": [
+    "VERB"
+   ],
+   "kind": "conflict_speech",
+   "strength": "strong",
+   "valence": -0.8,
+   "arousal": 0.85,
+   "emotions": {
+    "anger": 0.85
+   },
+   "source": "curated:gemini-2026-09",
+   "version": 1
+  },
+  {
+   "id": "en.speech.sneer",
+   "lemma": "sneer",
+   "pos": [
+    "VERB"
+   ],
+   "kind": "conflict_speech",
+   "strength": "strong",
+   "valence": -0.65,
+   "arousal": 0.65,
+   "emotions": {
+    "disgust": 0.7,
+    "anger": 0.5
+   },
+   "source": "curated:gemini-2026-09",
+   "version": 1
+  },
+  {
+   "id": "en.speech.scoff",
+   "lemma": "scoff",
+   "pos": [
+    "VERB"
+   ],
+   "kind": "conflict_speech",
+   "strength": "strong",
+   "valence": -0.5,
+   "arousal": 0.5,
+   "emotions": {
+    "disgust": 0.5
+   },
+   "source": "curated:gemini-2026-09",
+   "version": 1
+  },
+  {
+   "id": "en.speech.taunt",
+   "lemma": "taunt",
+   "pos": [
+    "VERB"
+   ],
+   "kind": "conflict_speech",
+   "strength": "strong",
+   "valence": -0.65,
+   "arousal": 0.65,
+   "emotions": {
+    "anger": 0.65
+   },
+   "source": "curated:gemini-2026-09",
+   "version": 1
+  },
+  {
+   "id": "en.speech.jeer",
+   "lemma": "jeer",
+   "pos": [
+    "VERB"
+   ],
+   "kind": "conflict_speech",
+   "strength": "strong",
+   "valence": -0.65,
+   "arousal": 0.65,
+   "emotions": {
+    "disgust": 0.65
+   },
+   "source": "curated:gemini-2026-09",
+   "version": 1
+  },
+  {
+   "id": "en.speech.mock",
+   "lemma": "mock",
+   "pos": [
+    "VERB"
+   ],
+   "kind": "conflict_speech",
+   "strength": "strong",
+   "valence": -0.6,
+   "arousal": 0.65,
+   "emotions": {
+    "disgust": 0.6
+   },
+   "source": "curated:gemini-2026-09",
+   "version": 1
+  },
+  {
+   "id": "en.speech.scold",
+   "lemma": "scold",
+   "pos": [
+    "VERB"
+   ],
+   "kind": "conflict_speech",
+   "strength": "strong",
+   "valence": -0.5,
+   "arousal": 0.55,
+   "emotions": {
+    "anger": 0.6
+   },
+   "source": "curated:gemini-2026-09",
+   "version": 1
+  },
+  {
+   "id": "en.speech.chide",
+   "lemma": "chide",
+   "pos": [
+    "VERB"
+   ],
+   "kind": "conflict_speech",
+   "strength": "strong",
+   "valence": -0.4,
+   "arousal": 0.45,
+   "emotions": {
+    "anger": 0.5
+   },
+   "source": "curated:gemini-2026-09",
+   "version": 1
+  },
+  {
+   "id": "en.speech.berate",
+   "lemma": "berate",
+   "pos": [
+    "VERB"
+   ],
+   "kind": "conflict_speech",
+   "strength": "strong",
+   "valence": -0.7,
+   "arousal": 0.7,
+   "emotions": {
+    "anger": 0.75
+   },
+   "source": "curated:gemini-2026-09",
+   "version": 1
+  },
+  {
+   "id": "en.speech.upbraid",
+   "lemma": "upbraid",
+   "pos": [
+    "VERB"
+   ],
+   "kind": "conflict_speech",
+   "strength": "strong",
+   "valence": -0.65,
+   "arousal": 0.65,
+   "emotions": {
+    "anger": 0.7
+   },
+   "source": "curated:gemini-2026-09",
+   "version": 1
+  },
+  {
+   "id": "en.speech.reproach",
+   "lemma": "reproach",
+   "pos": [
+    "VERB"
+   ],
+   "kind": "conflict_speech",
+   "strength": "strong",
+   "valence": -0.5,
+   "arousal": 0.55,
+   "emotions": {
+    "anger": 0.55
+   },
+   "source": "curated:gemini-2026-09",
+   "version": 1
+  },
+  {
+   "id": "en.speech.threaten",
+   "lemma": "threaten",
+   "pos": [
+    "VERB"
+   ],
+   "kind": "conflict_speech",
+   "strength": "strong",
+   "valence": -0.75,
+   "arousal": 0.75,
+   "emotions": {
+    "anger": 0.75,
+    "fear": 0.7
+   },
+   "source": "curated:gemini-2026-09",
+   "version": 1
+  },
+  {
+   "id": "en.speech.intimidate",
+   "lemma": "intimidate",
+   "pos": [
+    "VERB"
+   ],
+   "kind": "conflict_speech",
+   "strength": "strong",
+   "valence": -0.75,
+   "arousal": 0.75,
+   "emotions": {
+    "anger": 0.75
+   },
+   "source": "curated:gemini-2026-09",
+   "version": 1
+  },
+  {
+   "id": "en.speech.challenge",
+   "lemma": "challenge",
+   "pos": [
+    "VERB"
+   ],
+   "kind": "conflict_speech",
+   "strength": "strong",
+   "valence": -0.3,
+   "arousal": 0.6,
+   "emotions": {
+    "anger": 0.5
+   },
+   "source": "curated:gemini-2026-09",
+   "version": 1
+  },
+  {
+   "id": "en.speech.defy",
+   "lemma": "defy",
+   "pos": [
+    "VERB"
+   ],
+   "kind": "conflict_speech",
+   "strength": "strong",
+   "valence": -0.4,
+   "arousal": 0.65,
+   "emotions": {
+    "anger": 0.6
+   },
+   "source": "curated:gemini-2026-09",
+   "version": 1
+  },
+  {
+   "id": "en.speech.protest",
+   "lemma": "protest",
+   "pos": [
+    "VERB"
+   ],
+   "kind": "conflict_speech",
+   "strength": "strong",
+   "valence": -0.45,
+   "arousal": 0.55,
+   "emotions": {
+    "anger": 0.5
+   },
+   "source": "curated:gemini-2026-09",
+   "version": 1
+  },
+  {
+   "id": "en.speech.argue",
+   "lemma": "argue",
+   "pos": [
+    "VERB"
+   ],
+   "kind": "conflict_speech",
+   "strength": "strong",
+   "valence": -0.5,
+   "arousal": 0.55,
+   "emotions": {
+    "anger": 0.55
+   },
+   "source": "curated:gemini-2026-09",
+   "version": 1
+  },
+  {
+   "id": "en.speech.bicker",
+   "lemma": "bicker",
+   "pos": [
+    "VERB"
+   ],
+   "kind": "conflict_speech",
+   "strength": "strong",
+   "valence": -0.5,
+   "arousal": 0.5,
+   "emotions": {
+    "anger": 0.5
+   },
+   "source": "curated:gemini-2026-09",
+   "version": 1
+  },
+  {
+   "id": "en.speech.squabble",
+   "lemma": "squabble",
+   "pos": [
+    "VERB"
+   ],
+   "kind": "conflict_speech",
+   "strength": "strong",
+   "valence": -0.45,
+   "arousal": 0.45,
+   "emotions": {
+    "anger": 0.45
+   },
+   "source": "curated:gemini-2026-09",
+   "version": 1
+  },
+  {
+   "id": "en.speech.curse",
+   "lemma": "curse",
+   "pos": [
+    "VERB"
+   ],
+   "kind": "conflict_speech",
+   "strength": "strong",
+   "valence": -0.8,
+   "arousal": 0.8,
+   "emotions": {
+    "anger": 0.85
+   },
+   "source": "curated:gemini-2026-09",
+   "version": 1
+  },
+  {
+   "id": "en.speech.swear",
+   "lemma": "swear",
+   "pos": [
+    "VERB"
+   ],
+   "kind": "conflict_speech",
+   "strength": "strong",
+   "valence": -0.65,
+   "arousal": 0.7,
+   "emotions": {
+    "anger": 0.7
+   },
+   "source": "curated:gemini-2026-09",
+   "version": 1
+  },
+  {
+   "id": "en.speech.rage",
+   "lemma": "rage",
+   "pos": [
+    "VERB"
+   ],
+   "kind": "conflict_speech",
+   "strength": "strong",
+   "valence": -0.9,
+   "arousal": 0.9,
+   "emotions": {
+    "anger": 0.95
+   },
+   "source": "curated:gemini-2026-09",
+   "version": 1
+  },
+  {
+   "id": "en.speech.howl",
+   "lemma": "howl",
+   "pos": [
+    "VERB"
+   ],
+   "kind": "conflict_speech",
+   "strength": "strong",
+   "valence": -0.75,
+   "arousal": 0.85,
+   "emotions": {
+    "sadness": 0.7,
+    "anger": 0.7
+   },
+   "source": "curated:gemini-2026-09",
+   "version": 1
+  }
+ ]
+}

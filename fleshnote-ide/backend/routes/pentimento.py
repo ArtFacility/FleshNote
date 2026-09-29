@@ -19,9 +19,13 @@ import os
 import json
 import hashlib
 import json
+import base64
+import re
 import sqlite3
 import datetime
 import threading
+import urllib.error
+from urllib.parse import urlsplit
 from fastapi import APIRouter, HTTPException
 from pydantic import BaseModel
 from typing import List, Optional
@@ -33,6 +37,17 @@ router = APIRouter()
 NIGHT_START, NIGHT_END = 0, 6  # local hours counted as "after midnight"
 REVISION_MIN_CHARS = 6         # a delete run this big counts as a "revision" (~a word),
                                # so typo backspaces don't inflate the count
+
+# Receipt retry policy: 409 forks and permanent 4xx are terminal states; other
+# errors retry with an attempts cap so a dead/hanging TSA can't burn the
+# server's rate limits (or our daily budget) forever.
+MAX_ANCHOR_ATTEMPTS = 10
+_TERMINAL_4XX = {400, 404, 405, 410, 413, 414, 431}
+
+# loopback-only plain-http allowlist for self-hosters (exact literals only)
+_TSA_LOOPBACK_HOSTS = {"localhost", "127.0.0.1", "::1"}
+_RFC3339_RE = re.compile(
+    r"^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}(\.\d+)?(Z|[+-]\d{2}:\d{2})?$")
 
 
 # ── Models ──────────────────────────────────────────────────────────────────
@@ -195,6 +210,60 @@ def _insert_receipt(cur, session_id, chapter_id, kind, anchored_hash, previous_h
     return receipt_id
 
 
+def _validated_tsa_url(url):
+    """Validate a per-project TSA endpoint at USE time (project_config values
+    are untrusted data). https-only; plain http only for exact loopback hosts
+    so self-hosters keep their hook without an eavesdropping surface. Returns
+    the usable base string, or None when the URL must never be contacted."""
+    if not url:
+        return None
+    url = str(url).strip()
+    try:
+        parts = urlsplit(url)
+    except ValueError:
+        return None
+    host = (parts.hostname or "").strip().lower()
+    if not host or parts.username or parts.password or parts.fragment:
+        return None
+    scheme = parts.scheme.lower()
+    if scheme == "https":
+        return url
+    if scheme == "http" and host in _TSA_LOOPBACK_HOSTS:
+        return url
+    return None
+
+
+def _receipt_shape_ok(result):
+    """Cheap shape validation of a TSA receipt — malformed-response rejection,
+    NOT signature verification (verification lives in the CLI/web verifiers)."""
+    if not isinstance(result, dict):
+        return False
+    st, sig, kid = result.get("server_time"), result.get("server_signature"), result.get("key_id")
+    if not isinstance(st, str) or not _RFC3339_RE.match(st):
+        return False
+    if not isinstance(sig, str) or not sig:
+        return False
+    try:
+        base64.b64decode(sig, validate=True)
+    except Exception:
+        return False
+    if not isinstance(kid, str) or not kid or len(kid) % 2 or len(kid) > 64 \
+            or any(c not in "0123456789abcdefABCDEF" for c in kid):
+        return False
+    return True
+
+
+def _record_receipt_failure(cur, receipt, reason):
+    """Bump attempts atomically; terminal 'failed' once the cap is reached
+    (must be retried manually). Never silently resets another pass's counter."""
+    cur.execute(
+        "UPDATE server_receipts SET "
+        "attempts=attempts+1, "
+        "status=CASE WHEN attempts+1 >= ? THEN 'failed' ELSE 'pending' END, "
+        "failure_reason=?, updated_at=datetime('now') WHERE id=?",
+        (MAX_ANCHOR_ATTEMPTS, str(reason)[:300], receipt["id"]))
+
+
 def _process_receipt(project_path, receipt_id):
     """Anchor one pending receipt (and opportunistically a few others) in a
     background thread — a slow/unreachable TSA must never stall the editor."""
@@ -213,7 +282,17 @@ def _process_receipt(project_path, receipt_id):
             conn.close()
             return
         external_on = _external_tsa_enabled(cur)
-        tsa_url = _tsa_url(cur)
+        raw_tsa_url = _tsa_url(cur)
+        if raw_tsa_url is not None and _validated_tsa_url(raw_tsa_url) is None:
+            # hostile/broken per-project endpoint (project_config is syncable
+            # data) — never contact it; leave pending with a reason to fix.
+            cur.execute(
+                "UPDATE server_receipts SET failure_reason=? WHERE id=?",
+                ("invalid pentimento_tsa_url (rejected)", receipt["id"]))
+            conn.commit()
+            conn.close()
+            return
+        tsa_url = _validated_tsa_url(raw_tsa_url)
         targets = [dict(receipt)]
         cur.execute(
             "SELECT * FROM server_receipts WHERE status='pending' AND id != ? "
@@ -223,6 +302,8 @@ def _process_receipt(project_path, receipt_id):
         for t in targets:
             try:
                 result = tsa_client.anchor_hash(t["anchored_hash"], t["previous_hash"], tsa_url=tsa_url)
+                if not _receipt_shape_ok(result):
+                    raise ValueError("Malformed TSA receipt shape")
                 tsa_token = None
                 if external_on:
                     try:
@@ -236,21 +317,45 @@ def _process_receipt(project_path, receipt_id):
                     "WHERE id=?",
                     (result.get("server_time"), result.get("server_signature"),
                      result.get("key_id"), tsa_token, t["id"]))
+            except urllib.error.HTTPError as e:
+                code = getattr(e, "code", 0)
+                if code == 409:
+                    # history-rewrite evidence from the TSA — terminal, never
+                    # auto-resubmitted; surfaced in the receipts UI.
+                    cur.execute(
+                        "UPDATE server_receipts SET status='forked', failure_reason=?, "
+                        "attempts=attempts+1, updated_at=datetime('now') WHERE id=?",
+                        (str(e)[:300], t["id"]))
+                elif code in _TERMINAL_4XX:
+                    cur.execute(
+                        "UPDATE server_receipts SET status='failed', failure_reason=?, "
+                        "attempts=attempts+1, updated_at=datetime('now') WHERE id=?",
+                        (str(e)[:300], t["id"]))
+                else:
+                    _record_receipt_failure(cur, t, e)
             except Exception as e:
-                cur.execute(
-                    "UPDATE server_receipts SET status='pending', failure_reason=?, "
-                    "attempts=attempts+1, updated_at=datetime('now') WHERE id=?",
-                    (str(e)[:300], t["id"]))
+                _record_receipt_failure(cur, t, e)
         conn.commit()
         conn.close()
     except Exception:
         pass
 
 
+# Anchor queue re-entrancy guard: _spawn_anchor fires per receipt, and two
+# overlapping passes would double-anchor the same pending set. Non-blocking
+# acquire → skip if a pass is already running (the next session boundary
+# retries); the Go TSA also de-dupes identical re-anchors server-side.
+_ANCHOR_LOCK = threading.Lock()
+
+
 def _spawn_anchor(project_path, receipt_id):
-    threading.Thread(
-        target=_process_receipt, args=(project_path, receipt_id),
-        daemon=True, name="pentimento-anchor").start()
+    def _run():
+        if _ANCHOR_LOCK.acquire(blocking=False):
+            try:
+                _process_receipt(project_path, receipt_id)
+            finally:
+                _ANCHOR_LOCK.release()
+    threading.Thread(target=_run, daemon=True, name="pentimento-anchor").start()
 
 
 def _hour(ts: str) -> Optional[int]:

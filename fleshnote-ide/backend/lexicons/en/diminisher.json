@@ -1,0 +1,168 @@
+{
+  "lang": "en",
+  "kind": "diminisher",
+  "version": 1,
+  "entries": [
+    {
+      "id": "en.dimin.slightly",
+      "lemma": "slightly",
+      "kind": "diminisher",
+      "strength": "strong",
+      "factor": 0.7,
+      "source": "curated:gemini-2026-09",
+      "version": 1
+    },
+    {
+      "id": "en.dimin.somewhat",
+      "lemma": "somewhat",
+      "kind": "diminisher",
+      "strength": "strong",
+      "factor": 0.7,
+      "source": "curated:gemini-2026-09",
+      "version": 1
+    },
+    {
+      "id": "en.dimin.barely",
+      "lemma": "barely",
+      "kind": "diminisher",
+      "strength": "strong",
+      "factor": 0.4,
+      "source": "curated:gemini-2026-09",
+      "version": 1
+    },
+    {
+      "id": "en.dimin.scarcely",
+      "lemma": "scarcely",
+      "kind": "diminisher",
+      "strength": "strong",
+      "factor": 0.4,
+      "source": "curated:gemini-2026-09",
+      "version": 1
+    },
+    {
+      "id": "en.dimin.hardly",
+      "lemma": "hardly",
+      "kind": "diminisher",
+      "strength": "strong",
+      "factor": 0.4,
+      "source": "curated:gemini-2026-09",
+      "version": 1
+    },
+    {
+      "id": "en.dimin.faintly",
+      "lemma": "faintly",
+      "kind": "diminisher",
+      "strength": "strong",
+      "factor": 0.5,
+      "source": "curated:gemini-2026-09",
+      "version": 1
+    },
+    {
+      "id": "en.dimin.vaguely",
+      "lemma": "vaguely",
+      "kind": "diminisher",
+      "strength": "strong",
+      "factor": 0.5,
+      "source": "curated:gemini-2026-09",
+      "version": 1
+    },
+    {
+      "id": "en.dimin.mildly",
+      "lemma": "mildly",
+      "kind": "diminisher",
+      "strength": "strong",
+      "factor": 0.6,
+      "source": "curated:gemini-2026-09",
+      "version": 1
+    },
+    {
+      "id": "en.dimin.a_little",
+      "phrase": [
+        "a",
+        "little"
+      ],
+      "kind": "diminisher",
+      "strength": "strong",
+      "factor": 0.7,
+      "source": "curated:gemini-2026-09",
+      "version": 1,
+      "example": "She smiled a little when she heard the good news."
+    },
+    {
+      "id": "en.dimin.a_bit",
+      "phrase": [
+        "a",
+        "bit"
+      ],
+      "kind": "diminisher",
+      "strength": "strong",
+      "factor": 0.7,
+      "source": "curated:gemini-2026-09",
+      "version": 1,
+      "example": "He felt a bit tired after the long journey."
+    },
+    {
+      "id": "en.dimin.marginally",
+      "lemma": "marginally",
+      "kind": "diminisher",
+      "strength": "strong",
+      "factor": 0.8,
+      "source": "curated:gemini-2026-09",
+      "version": 1
+    },
+    {
+      "id": "en.dimin.nominally",
+      "lemma": "nominally",
+      "kind": "diminisher",
+      "strength": "strong",
+      "factor": 0.8,
+      "source": "curated:gemini-2026-09",
+      "version": 1
+    },
+    {
+      "id": "en.dimin.partially",
+      "lemma": "partially",
+      "kind": "diminisher",
+      "strength": "strong",
+      "factor": 0.6,
+      "source": "curated:gemini-2026-09",
+      "version": 1
+    },
+    {
+      "id": "en.dimin.partly",
+      "lemma": "partly",
+      "kind": "diminisher",
+      "strength": "strong",
+      "factor": 0.6,
+      "source": "curated:gemini-2026-09",
+      "version": 1
+    },
+    {
+      "id": "en.dimin.fractionally",
+      "lemma": "fractionally",
+      "kind": "diminisher",
+      "strength": "strong",
+      "factor": 0.7,
+      "source": "curated:gemini-2026-09",
+      "version": 1
+    },
+    {
+      "id": "en.dimin.scantily",
+      "lemma": "scantily",
+      "kind": "diminisher",
+      "strength": "strong",
+      "factor": 0.5,
+      "source": "curated:gemini-2026-09",
+      "version": 1
+    },
+    {
+      "id": "en.dimin.subtly",
+      "lemma": "subtly",
+      "kind": "diminisher",
+      "strength": "strong",
+      "factor": 0.6,
+      "source": "curated:gemini-2026-09",
+      "version": 1
+    }
+  ]
+}

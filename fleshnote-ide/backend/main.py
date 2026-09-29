@@ -1,4 +1,5 @@
 import os
+import re
 import json
 import shutil
 import sqlite3
@@ -42,6 +43,7 @@ from routes.remote_sync import router as remote_sync_router
 from routes.pentimento import router as pentimento_router
 from routes.chapter_history import router as chapter_history_router
 from routes.review_export import router as review_export_router
+from routes.vault_export import router as vault_export_router
 
 app = FastAPI(title="FleshNote API")
 
@@ -78,6 +80,7 @@ app.include_router(remote_sync_router)
 app.include_router(pentimento_router)
 app.include_router(chapter_history_router)
 app.include_router(review_export_router)
+app.include_router(vault_export_router)
 
 # Define our data models so FastAPI knows what to expect
 class WorkspaceRequest(BaseModel):
@@ -132,6 +135,57 @@ def _get_project_last_opened(project_path: str) -> int | None:
   return int(os.path.getmtime(db_path) * 1000)
 
 
+_BOOK_COLOR_RE = re.compile(r"^#[0-9a-fA-F]{6}$")
+
+
+def _get_book_stats(project_path: str) -> dict:
+  """
+  Bookshelf data for the project picker: manuscript size, chapter completion
+  and the book's cosmetic look (color + rovás glyph from project_config).
+  Never raises — legacy/unmigrated schemas degrade to zeros/nulls.
+  """
+  stats = {
+    "word_count": 0,
+    "chapter_count": 0,
+    "final_count": 0,
+    "finished": False,
+    "book_color": None,
+    "book_rune": None,
+  }
+  db_path = os.path.join(project_path, "fleshnote.db")
+  if not os.path.exists(db_path):
+    return stats
+  try:
+    conn = sqlite3.connect(db_path)
+    try:
+      agg = "SELECT COALESCE(SUM(word_count), 0), COUNT(*), COALESCE(SUM(status = 'final'), 0) FROM chapters"
+      try:
+        row = conn.execute(agg + " WHERE deleted = 0").fetchone()
+      except sqlite3.OperationalError:
+        # v1 schema has no soft-delete column
+        row = conn.execute(agg).fetchone()
+      stats["word_count"], stats["chapter_count"], stats["final_count"] = (int(v or 0) for v in row)
+    except Exception:
+      pass
+    try:
+      # Look values arrive via shared .flnote files/sync — only pass through
+      # a plain hex color and a single rovás glyph (they end up in CSS).
+      for key, value in conn.execute(
+        "SELECT config_key, config_value FROM project_config WHERE config_key IN ('book_color', 'book_rune')"
+      ):
+        if key == "book_color" and value and _BOOK_COLOR_RE.match(value):
+          stats[key] = value
+        elif key == "book_rune" and value and len(value) == 1 and 0x10C80 <= ord(value) <= 0x10CFF:
+          stats[key] = value
+    except Exception:
+      pass
+    conn.close()
+  except Exception:
+    pass
+  stats["finished"] = stats["chapter_count"] > 0 and stats["final_count"] == stats["chapter_count"]
+  return stats
+
+
 @app.post("/api/projects")
 def scan_workspace(request: WorkspaceRequest):
   """Scans the given workspace path for valid FleshNote projects."""
@@ -141,6 +195,7 @@ def scan_workspace(request: WorkspaceRequest):
     raise HTTPException(status_code=404, detail="Workspace path does not exist")
 
   projects = []
+  seen_ids = set()
 
   try:
     for item in os.listdir(path):
@@ -154,21 +209,30 @@ def scan_workspace(request: WorkspaceRequest):
       # Determine if project needs migration (Schema Version 2)
       json_path = os.path.join(item_path, "fleshnote_project.json")
       needs_migration = True
+      project_id = None
       if os.path.exists(json_path):
         try:
           with open(json_path, "r", encoding="utf-8") as f:
             metadata = json.load(f)
             if metadata.get("schema_version", 1) >= 2:
               needs_migration = False
+            project_id = metadata.get("project_id")
         except Exception:
           pass
-      
+      # Clones/copies share a project_id; the picker needs a per-folder key
+      if not project_id or project_id in seen_ids:
+        project_id = item_path
+      seen_ids.add(project_id)
+
       projects.append({
         "name": project_io.display_name(item),
         "path": item_path,
+        # Stable across renames/moves; legacy projects without one fall back to path
+        "project_id": project_id,
         "is_legacy": project_io.is_legacy_folder(item_path),
         "lastOpened": last_opened,  # Unix ms timestamp — formatted by frontend
-        "needs_migration": needs_migration
+        "needs_migration": needs_migration,
+        **_get_book_stats(item_path),
       })
     # Sort most-recently-opened first
     projects.sort(key=lambda p: p["lastOpened"], reverse=True)

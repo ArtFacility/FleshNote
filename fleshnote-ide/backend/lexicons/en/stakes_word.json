@@ -1,0 +1,738 @@
+{
+ "lang": "en",
+ "kind": "stakes_word",
+ "version": 1,
+ "entries": [
+  {
+   "id": "en.stakes.bet",
+   "lemma": "bet",
+   "kind": "stakes_word",
+   "strength": "strong",
+   "valence": -0.1,
+   "arousal": 0.4,
+   "emotions": {
+    "anticipation": 0.5
+   },
+   "source": "curated:gemini-2026-09",
+   "version": 1
+  },
+  {
+   "id": "en.stakes.promise",
+   "lemma": "promise",
+   "kind": "stakes_word",
+   "strength": "strong",
+   "valence": 0.2,
+   "arousal": 0.4,
+   "emotions": {
+    "trust": 0.6
+   },
+   "source": "curated:gemini-2026-09",
+   "version": 1
+  },
+  {
+   "id": "en.stakes.pledge",
+   "lemma": "pledge",
+   "kind": "stakes_word",
+   "strength": "strong",
+   "valence": 0.2,
+   "arousal": 0.45,
+   "emotions": {
+    "trust": 0.6
+   },
+   "source": "curated:gemini-2026-09",
+   "version": 1
+  },
+  {
+   "id": "en.stakes.reputation",
+   "lemma": "reputation",
+   "kind": "stakes_word",
+   "strength": "strong",
+   "valence": -0.2,
+   "arousal": 0.45,
+   "emotions": {
+    "anticipation": 0.5
+   },
+   "source": "curated:gemini-2026-09",
+   "version": 1
+  },
+  {
+   "id": "en.stakes.honor",
+   "lemma": "honor",
+   "kind": "stakes_word",
+   "strength": "strong",
+   "valence": 0.3,
+   "arousal": 0.5,
+   "emotions": {
+    "trust": 0.7
+   },
+   "source": "curated:gemini-2026-09",
+   "version": 1
+  },
+  {
+   "id": "en.stakes.oath",
+   "lemma": "oath",
+   "kind": "stakes_word",
+   "strength": "strong",
+   "valence": 0.2,
+   "arousal": 0.5,
+   "emotions": {
+    "trust": 0.7
+   },
+   "source": "curated:gemini-2026-09",
+   "version": 1
+  },
+  {
+   "id": "en.stakes.vow",
+   "lemma": "vow",
+   "kind": "stakes_word",
+   "strength": "strong",
+   "valence": 0.2,
+   "arousal": 0.5,
+   "emotions": {
+    "trust": 0.7
+   },
+   "source": "curated:gemini-2026-09",
+   "version": 1
+  },
+  {
+   "id": "en.stakes.covenant",
+   "lemma": "covenant",
+   "kind": "stakes_word",
+   "strength": "strong",
+   "valence": 0.25,
+   "arousal": 0.5,
+   "emotions": {
+    "trust": 0.7
+   },
+   "source": "curated:gemini-2026-09",
+   "version": 1
+  },
+  {
+   "id": "en.stakes.heritage",
+   "lemma": "heritage",
+   "kind": "stakes_word",
+   "strength": "strong",
+   "valence": 0.15,
+   "arousal": 0.45,
+   "emotions": {
+    "trust": 0.5
+   },
+   "source": "curated:gemini-2026-09",
+   "version": 1
+  },
+  {
+   "id": "en.stakes.lineage",
+   "lemma": "lineage",
+   "kind": "stakes_word",
+   "strength": "strong",
+   "valence": 0.1,
+   "arousal": 0.45,
+   "emotions": {
+    "trust": 0.5
+   },
+   "source": "curated:gemini-2026-09",
+   "version": 1
+  },
+  {
+   "id": "en.stakes.dynasty",
+   "lemma": "dynasty",
+   "kind": "stakes_word",
+   "strength": "strong",
+   "valence": 0.05,
+   "arousal": 0.55,
+   "emotions": {
+    "anticipation": 0.5
+   },
+   "source": "curated:gemini-2026-09",
+   "version": 1
+  },
+  {
+   "id": "en.stakes.judgment",
+   "lemma": "judgment",
+   "kind": "stakes_word",
+   "strength": "strong",
+   "valence": -0.3,
+   "arousal": 0.55,
+   "emotions": {
+    "fear": 0.5
+   },
+   "source": "curated:gemini-2026-09",
+   "version": 1
+  },
+  {
+   "id": "en.stakes.verdict",
+   "lemma": "verdict",
+   "kind": "stakes_word",
+   "strength": "strong",
+   "valence": -0.25,
+   "arousal": 0.55,
+   "emotions": {
+    "anticipation": 0.6
+   },
+   "source": "curated:gemini-2026-09",
+   "version": 1
+  },
+  {
+   "id": "en.stakes.reckon",
+   "lemma": "reckon",
+   "kind": "stakes_word",
+   "strength": "strong",
+   "valence": -0.5,
+   "arousal": 0.6,
+   "emotions": {
+    "fear": 0.6
+   },
+   "source": "curated:gemini-2026-09",
+   "version": 1
+  },
+  {
+   "id": "en.stakes.prophecy",
+   "lemma": "prophecy",
+   "kind": "stakes_word",
+   "strength": "strong",
+   "valence": 0.0,
+   "arousal": 0.55,
+   "emotions": {
+    "anticipation": 0.7
+   },
+   "source": "curated:gemini-2026-09",
+   "version": 1
+  },
+  {
+   "id": "en.stakes.crown",
+   "lemma": "crown",
+   "kind": "stakes_word",
+   "strength": "strong",
+   "valence": 0.1,
+   "arousal": 0.6,
+   "emotions": {
+    "anticipation": 0.6
+   },
+   "source": "curated:gemini-2026-09",
+   "version": 1
+  },
+  {
+   "id": "en.stakes.throne",
+   "lemma": "throne",
+   "kind": "stakes_word",
+   "strength": "strong",
+   "valence": 0.0,
+   "arousal": 0.65,
+   "emotions": {
+    "anticipation": 0.6
+   },
+   "source": "curated:gemini-2026-09",
+   "version": 1
+  },
+  {
+   "id": "en.stakes.kingdom",
+   "lemma": "kingdom",
+   "kind": "stakes_word",
+   "strength": "strong",
+   "valence": 0.1,
+   "arousal": 0.65,
+   "emotions": {
+    "trust": 0.5
+   },
+   "source": "curated:gemini-2026-09",
+   "version": 1
+  },
+  {
+   "id": "en.stakes.empire",
+   "lemma": "empire",
+   "kind": "stakes_word",
+   "strength": "strong",
+   "valence": 0.0,
+   "arousal": 0.65,
+   "emotions": {
+    "anticipation": 0.6
+   },
+   "source": "curated:gemini-2026-09",
+   "version": 1
+  },
+  {
+   "id": "en.stakes.sovereignty",
+   "lemma": "sovereignty",
+   "kind": "stakes_word",
+   "strength": "strong",
+   "valence": 0.2,
+   "arousal": 0.65,
+   "emotions": {
+    "trust": 0.6
+   },
+   "source": "curated:gemini-2026-09",
+   "version": 1
+  },
+  {
+   "id": "en.stakes.liberty",
+   "lemma": "liberty",
+   "kind": "stakes_word",
+   "strength": "strong",
+   "valence": 0.5,
+   "arousal": 0.7,
+   "emotions": {
+    "joy": 0.6
+   },
+   "source": "curated:gemini-2026-09",
+   "version": 1
+  },
+  {
+   "id": "en.stakes.freedom",
+   "lemma": "freedom",
+   "kind": "stakes_word",
+   "strength": "strong",
+   "valence": 0.5,
+   "arousal": 0.7,
+   "emotions": {
+    "joy": 0.6
+   },
+   "source": "curated:gemini-2026-09",
+   "version": 1
+  },
+  {
+   "id": "en.stakes.survival",
+   "lemma": "survival",
+   "kind": "stakes_word",
+   "strength": "strong",
+   "valence": -0.4,
+   "arousal": 0.75,
+   "emotions": {
+    "fear": 0.7
+   },
+   "source": "curated:gemini-2026-09",
+   "version": 1
+  },
+  {
+   "id": "en.stakes.destiny",
+   "lemma": "destiny",
+   "kind": "stakes_word",
+   "strength": "strong",
+   "valence": 0.1,
+   "arousal": 0.7,
+   "emotions": {
+    "anticipation": 0.7
+   },
+   "source": "curated:gemini-2026-09",
+   "version": 1
+  },
+  {
+   "id": "en.stakes.fate",
+   "lemma": "fate",
+   "kind": "stakes_word",
+   "strength": "strong",
+   "valence": -0.3,
+   "arousal": 0.7,
+   "emotions": {
+    "anticipation": 0.6
+   },
+   "source": "curated:gemini-2026-09",
+   "version": 1
+  },
+  {
+   "id": "en.stakes.legacy",
+   "lemma": "legacy",
+   "kind": "stakes_word",
+   "strength": "strong",
+   "valence": 0.2,
+   "arousal": 0.6,
+   "emotions": {
+    "trust": 0.6
+   },
+   "source": "curated:gemini-2026-09",
+   "version": 1
+  },
+  {
+   "id": "en.stakes.salvation",
+   "lemma": "salvation",
+   "kind": "stakes_word",
+   "strength": "strong",
+   "valence": 0.6,
+   "arousal": 0.65,
+   "emotions": {
+    "joy": 0.7
+   },
+   "source": "curated:gemini-2026-09",
+   "version": 1
+  },
+  {
+   "id": "en.stakes.redemption",
+   "lemma": "redemption",
+   "kind": "stakes_word",
+   "strength": "strong",
+   "valence": 0.5,
+   "arousal": 0.65,
+   "emotions": {
+    "joy": 0.6
+   },
+   "source": "curated:gemini-2026-09",
+   "version": 1
+  },
+  {
+   "id": "en.stakes.deliverance",
+   "lemma": "deliverance",
+   "kind": "stakes_word",
+   "strength": "strong",
+   "valence": 0.5,
+   "arousal": 0.65,
+   "emotions": {
+    "joy": 0.6
+   },
+   "source": "curated:gemini-2026-09",
+   "version": 1
+  },
+  {
+   "id": "en.stakes.predestination",
+   "lemma": "predestination",
+   "kind": "stakes_word",
+   "strength": "strong",
+   "valence": 0.0,
+   "arousal": 0.6,
+   "emotions": {
+    "anticipation": 0.5
+   },
+   "source": "curated:gemini-2026-09",
+   "version": 1
+  },
+  {
+   "id": "en.stakes.inevitable",
+   "lemma": "inevitable",
+   "kind": "stakes_word",
+   "strength": "strong",
+   "valence": -0.35,
+   "arousal": 0.65,
+   "emotions": {
+    "fear": 0.5
+   },
+   "source": "curated:gemini-2026-09",
+   "version": 1
+  },
+  {
+   "id": "en.stakes.irrevocable",
+   "lemma": "irrevocable",
+   "kind": "stakes_word",
+   "strength": "strong",
+   "valence": -0.4,
+   "arousal": 0.65,
+   "emotions": {
+    "fear": 0.5
+   },
+   "source": "curated:gemini-2026-09",
+   "version": 1
+  },
+  {
+   "id": "en.stakes.sacrifice",
+   "lemma": "sacrifice",
+   "kind": "stakes_word",
+   "strength": "strong",
+   "valence": -0.5,
+   "arousal": 0.7,
+   "emotions": {
+    "sadness": 0.6
+   },
+   "source": "curated:gemini-2026-09",
+   "version": 1
+  },
+  {
+   "id": "en.stakes.martyrdom",
+   "lemma": "martyrdom",
+   "kind": "stakes_word",
+   "strength": "strong",
+   "valence": -0.6,
+   "arousal": 0.75,
+   "emotions": {
+    "sadness": 0.7
+   },
+   "source": "curated:gemini-2026-09",
+   "version": 1
+  },
+  {
+   "id": "en.stakes.slavery",
+   "lemma": "slavery",
+   "kind": "stakes_word",
+   "strength": "strong",
+   "valence": -0.85,
+   "arousal": 0.75,
+   "emotions": {
+    "sadness": 0.85,
+    "fear": 0.8
+   },
+   "source": "curated:gemini-2026-09",
+   "version": 1
+  },
+  {
+   "id": "en.stakes.bondage",
+   "lemma": "bondage",
+   "kind": "stakes_word",
+   "strength": "strong",
+   "valence": -0.8,
+   "arousal": 0.75,
+   "emotions": {
+    "sadness": 0.8,
+    "fear": 0.75
+   },
+   "source": "curated:gemini-2026-09",
+   "version": 1
+  },
+  {
+   "id": "en.stakes.exile",
+   "lemma": "exile",
+   "kind": "stakes_word",
+   "strength": "strong",
+   "valence": -0.7,
+   "arousal": 0.7,
+   "emotions": {
+    "sadness": 0.8
+   },
+   "source": "curated:gemini-2026-09",
+   "version": 1
+  },
+  {
+   "id": "en.stakes.banishment",
+   "lemma": "banishment",
+   "kind": "stakes_word",
+   "strength": "strong",
+   "valence": -0.7,
+   "arousal": 0.7,
+   "emotions": {
+    "sadness": 0.75
+   },
+   "source": "curated:gemini-2026-09",
+   "version": 1
+  },
+  {
+   "id": "en.stakes.death",
+   "lemma": "death",
+   "kind": "stakes_word",
+   "strength": "strong",
+   "valence": -0.85,
+   "arousal": 0.85,
+   "emotions": {
+    "fear": 0.85,
+    "sadness": 0.85
+   },
+   "source": "curated:gemini-2026-09",
+   "version": 1
+  },
+  {
+   "id": "en.stakes.mortal",
+   "lemma": "mortal",
+   "kind": "stakes_word",
+   "strength": "strong",
+   "valence": -0.65,
+   "arousal": 0.75,
+   "emotions": {
+    "fear": 0.7
+   },
+   "source": "curated:gemini-2026-09",
+   "version": 1
+  },
+  {
+   "id": "en.stakes.fatal",
+   "lemma": "fatal",
+   "kind": "stakes_word",
+   "strength": "strong",
+   "valence": -0.85,
+   "arousal": 0.85,
+   "emotions": {
+    "fear": 0.85
+   },
+   "source": "curated:gemini-2026-09",
+   "version": 1
+  },
+  {
+   "id": "en.stakes.perish",
+   "lemma": "perish",
+   "kind": "stakes_word",
+   "strength": "strong",
+   "valence": -0.8,
+   "arousal": 0.8,
+   "emotions": {
+    "fear": 0.8
+   },
+   "source": "curated:gemini-2026-09",
+   "version": 1
+  },
+  {
+   "id": "en.stakes.doom",
+   "lemma": "doom",
+   "kind": "stakes_word",
+   "strength": "strong",
+   "valence": -0.9,
+   "arousal": 0.9,
+   "emotions": {
+    "fear": 0.9
+   },
+   "source": "curated:gemini-2026-09",
+   "version": 1
+  },
+  {
+   "id": "en.stakes.annihilation",
+   "lemma": "annihilation",
+   "kind": "stakes_word",
+   "strength": "strong",
+   "valence": -0.95,
+   "arousal": 0.95,
+   "emotions": {
+    "fear": 0.95
+   },
+   "source": "curated:gemini-2026-09",
+   "version": 1
+  },
+  {
+   "id": "en.stakes.extinction",
+   "lemma": "extinction",
+   "kind": "stakes_word",
+   "strength": "strong",
+   "valence": -0.95,
+   "arousal": 0.95,
+   "emotions": {
+    "fear": 0.95
+   },
+   "source": "curated:gemini-2026-09",
+   "version": 1
+  },
+  {
+   "id": "en.stakes.damnation",
+   "lemma": "damnation",
+   "kind": "stakes_word",
+   "strength": "strong",
+   "valence": -0.9,
+   "arousal": 0.9,
+   "emotions": {
+    "fear": 0.9
+   },
+   "source": "curated:gemini-2026-09",
+   "version": 1
+  },
+  {
+   "id": "en.stakes.cataclysm",
+   "lemma": "cataclysm",
+   "kind": "stakes_word",
+   "strength": "strong",
+   "valence": -0.9,
+   "arousal": 0.9,
+   "emotions": {
+    "fear": 0.9
+   },
+   "source": "curated:gemini-2026-09",
+   "version": 1
+  },
+  {
+   "id": "en.stakes.apocalypse",
+   "lemma": "apocalypse",
+   "kind": "stakes_word",
+   "strength": "strong",
+   "valence": -0.95,
+   "arousal": 0.95,
+   "emotions": {
+    "fear": 0.95
+   },
+   "source": "curated:gemini-2026-09",
+   "version": 1
+  },
+  {
+   "id": "en.stakes.retribution",
+   "lemma": "retribution",
+   "kind": "stakes_word",
+   "strength": "strong",
+   "valence": -0.75,
+   "arousal": 0.8,
+   "emotions": {
+    "anger": 0.8
+   },
+   "source": "curated:gemini-2026-09",
+   "version": 1
+  },
+  {
+   "id": "en.stakes.curse",
+   "lemma": "curse",
+   "kind": "stakes_word",
+   "strength": "strong",
+   "valence": -0.75,
+   "arousal": 0.75,
+   "emotions": {
+    "fear": 0.75
+   },
+   "source": "curated:gemini-2026-09",
+   "version": 1
+  },
+  {
+   "id": "en.stakes.ruin",
+   "lemma": "ruin",
+   "kind": "stakes_word",
+   "strength": "strong",
+   "valence": -0.8,
+   "arousal": 0.8,
+   "emotions": {
+    "sadness": 0.8
+   },
+   "source": "curated:gemini-2026-09",
+   "version": 1
+  },
+  {
+   "id": "en.stakes.finality",
+   "lemma": "finality",
+   "kind": "stakes_word",
+   "strength": "strong",
+   "valence": -0.5,
+   "arousal": 0.7,
+   "emotions": {
+    "sadness": 0.6
+   },
+   "source": "curated:gemini-2026-09",
+   "version": 1
+  },
+  {
+   "id": "en.stakes.eternity",
+   "lemma": "eternity",
+   "kind": "stakes_word",
+   "strength": "strong",
+   "valence": 0.1,
+   "arousal": 0.65,
+   "emotions": {
+    "anticipation": 0.5
+   },
+   "source": "curated:gemini-2026-09",
+   "version": 1
+  },
+  {
+   "id": "en.stakes.eternal",
+   "lemma": "eternal",
+   "kind": "stakes_word",
+   "strength": "strong",
+   "valence": 0.1,
+   "arousal": 0.65,
+   "emotions": {
+    "anticipation": 0.5
+   },
+   "source": "curated:gemini-2026-09",
+   "version": 1
+  },
+  {
+   "id": "en.stakes.immortal",
+   "lemma": "immortal",
+   "kind": "stakes_word",
+   "strength": "strong",
+   "valence": 0.3,
+   "arousal": 0.65,
+   "emotions": {
+    "trust": 0.6
+   },
+   "source": "curated:gemini-2026-09",
+   "version": 1
+  },
+  {
+   "id": "en.stakes.forever",
+   "lemma": "forever",
+   "kind": "stakes_word",
+   "strength": "strong",
+   "valence": 0.0,
+   "arousal": 0.6,
+   "emotions": {
+    "anticipation": 0.5
+   },
+   "source": "curated:gemini-2026-09",
+   "version": 1
+  }
+ ]
+}

@@ -443,6 +443,36 @@
     "paletteHint": "Húzd a helyére"
   },
   "picker": {
+    "shelf": {
+      "viewShelf": "Polc",
+      "viewList": "Lista",
+      "newShelf": "+ Új polc",
+      "newShelfName": "Új polc",
+      "unsorted": "Rendezetlen",
+      "renameHint": "Dupla kattintás az átnevezéshez",
+      "moveUp": "Polc feljebb",
+      "moveDown": "Polc lejjebb",
+      "deleteShelf": "Polc törlése",
+      "deleteShelfPrompt": "Eltávolítod a(z) „{{name}}” polcot? A könyvei visszakerülnek a Rendezetlen polcra — egyetlen projekt sem törlődik.",
+      "emptyShelf": "Húzz ide könyveket",
+      "bookCount": "Könyvek: {{n}}",
+      "words": "{{n}} szó",
+      "chapters": "{{done}}/{{total}} fejezet kész",
+      "finished": "Befejezve",
+      "bookActions": "Könyv műveletek",
+      "open": "Megnyitás",
+      "customize": "Könyv testreszabása",
+      "moveTo": "Áthelyezés polcra",
+      "export": ".flnote exportálása",
+      "customizeTitle": "Könyv testreszabása",
+      "preview": "Előnézet",
+      "color": "Kötés színe",
+      "customColor": "Egyéni",
+      "rune": "Gerinc rovásjel (székely-magyar rovás)",
+      "noRune": "Nincs",
+      "save": "Mentés",
+      "saveError": "Nem sikerült menteni a könyv kinézetét: "
+    },
     "title": "FleshNote Projektek",
     "subtitle": "Válassz ki egy projektet vagy hozz létre egy új munkaterületet.",
     "whatsNew": "Újdonságok",
@@ -731,6 +761,20 @@
     "reviewerPlaceholder": "pl. béta olvasó neve",
     "reviewExported": "Véleményező csomag elmentve.",
     "reviewExportFailed": "A véleményező exportálás sikertelen."
+  },
+  "exportChooser": {
+    "title": "Projekt exportálása",
+    "manuscriptTitle": "Kézirat",
+    "manuscriptDesc": "Csak a kézirat exportálása — DOCX, PDF, EPUB és egyéb könyvformátumok, tartalmi és formázási beállításokkal.",
+    "obsidianTitle": "Teljes projekt — Obsidian tároló",
+    "obsidianDesc": "Mappák fejezetenként és entitásonként (karakterek, helyszínek, lore…) egy-egy Markdown fájllal, wikilinkekkel és képekkel. Obsidianban azonnal használható.",
+    "txtTitle": "Teljes projekt — egyszerű szöveg",
+    "txtDesc": "Ugyanaz a mappaszerkezet, de sima .txt fájlokként, különleges formázás nélkül — maximális hordozhatóság.",
+    "flnoteTitle": ".flnote fájl (megosztás / biztonsági mentés)",
+    "flnoteDesc": "A teljes projekt egyetlen fájlként, amely újra megnyitható FleshNote-ban vagy átadható másik írónak.",
+    "working": "Exportálás…",
+    "done": "Exportálás kész",
+    "failed": "Az exportálás sikertelen volt."
   },
   "mention": {
     "noResult": "Nincs találat"
@@ -1663,6 +1707,17 @@
       "pacing": "Ritmus és tempó",
       "five_senses": "Hiányzó érzékszervek",
       "readability": "Olvashatóság"
+    },
+    "sdtKinds": {
+      "emotion_label": "érzelemcímke",
+      "filter_verb": "szűrőige",
+      "realize_verb": "megismerő ige",
+      "adverb_emotion": "érzelmi határozó",
+      "emotion_noun_frame": "megnevezett érzelem",
+      "detached_emotion": "érzelmi mondatkezdés",
+      "emotion_verb": "érzelmi ige",
+      "emotion_manner": "érzelem mint mód",
+      "emotion_attribute": "érzelem arcon vagy hangon"
     },
     "noted": "Tudomásul vett",
     "missingSensesDesc": "Ebben a fejezetben nem szerepel:",

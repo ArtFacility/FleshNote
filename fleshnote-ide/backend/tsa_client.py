@@ -23,8 +23,31 @@ DEFAULT_EXTERNAL_TSA_URL = os.environ.get("FLESHNOTE_EXTERNAL_TSA_URL", "https:/
 ANCHOR_TIMEOUT = 6          # seconds — anchoring must never stall the writing flow
 EXTERNAL_TIMEOUT = 12       # public TSAs can be slow
 MAX_ATTEMPT_MS = 8000
+MAX_RESPONSE_BYTES = 64 * 1024   # Go receipts are ~300 B; freetsa TSRs a few KB
+_READ_CHUNK = 8192
 
 SHA256_OID = bytes([0x06, 0x09, 0x60, 0x86, 0x48, 0x01, 0x65, 0x03, 0x04, 0x02, 0x01])
+
+
+def _read_capped(resp, max_total_seconds):
+    """Read a response body with a hard byte cap AND a total-time deadline —
+    a hostile tsa_url streaming gigabytes or slow-dripping bytes must never
+    balloon memory or wedge the anchor thread (socket timeouts are per-recv,
+    not cumulative)."""
+    started = time.monotonic()
+    length = resp.headers.get("Content-Length")
+    if length is not None and length.isdigit() and int(length) > MAX_RESPONSE_BYTES:
+        raise ValueError("TSA response too large")
+    data = b""
+    while True:
+        chunk = resp.read(_READ_CHUNK)
+        if not chunk:
+            return data
+        data += chunk
+        if len(data) > MAX_RESPONSE_BYTES:
+            raise ValueError("TSA response too large")
+        if time.monotonic() - started > max_total_seconds:
+            raise ValueError("TSA response timed out")
 
 
 def _config_dir():
@@ -68,7 +91,7 @@ def anchor_hash(anchored_hash, previous_hash=None, tsa_url=None):
         headers={"Content-Type": "application/json"}, method="POST")
     started = time.time()
     with urllib.request.urlopen(req, timeout=ANCHOR_TIMEOUT) as resp:
-        data = json.loads(resp.read().decode("utf-8"))
+        data = json.loads(_read_capped(resp, MAX_ATTEMPT_MS / 1000).decode("utf-8"))
     if not isinstance(data, dict) or "server_time" not in data or "server_signature" not in data:
         raise ValueError("Malformed TSA receipt")
     return data
@@ -107,15 +130,22 @@ def _build_timestamp_req(sha256_digest):
 
 
 def _der_parse_tlv(data, offset=0):
-    """Returns (tag, content_bytes, next_offset)."""
+    """Returns (tag, content_bytes, next_offset). Bounds-checked: a truncated or
+    nonsensical DER reply from a hostile/broken TSA raises, never slices wild."""
+    if offset + 2 > len(data):
+        raise ValueError("Malformed TSA response (truncated DER)")
     tag = data[offset]
     offset += 1
     length = data[offset]
     offset += 1
     if length & 0x80:
         n = length & 0x7F
+        if n == 0 or n > 4 or offset + n > len(data):
+            raise ValueError("Malformed TSA response (bad DER length)")
         length = int.from_bytes(data[offset:offset + n], "big")
         offset += n
+    if length < 0 or offset + length > len(data):
+        raise ValueError("Malformed TSA response (DER overruns buffer)")
     return tag, data[offset:offset + length], offset + length
 
 
@@ -135,7 +165,7 @@ def external_tsa_token(anchored_hash, url=None):
                  "Accept": "application/timestamp-reply"},
         method="POST")
     with urllib.request.urlopen(req, timeout=EXTERNAL_TIMEOUT) as resp:
-        resp_der = resp.read()
+        resp_der = _read_capped(resp, EXTERNAL_TIMEOUT + 3)
 
     # TimeStampResp ::= SEQUENCE { PKIStatusInfo, TimeStampToken OPTIONAL }
     tag, body, _ = _der_parse_tlv(resp_der, 0)

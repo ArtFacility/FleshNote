@@ -443,6 +443,36 @@
     "paletteHint": "Przeciągnij na miejsce"
   },
   "picker": {
+    "shelf": {
+      "viewShelf": "Półka",
+      "viewList": "Lista",
+      "newShelf": "+ Nowa półka",
+      "newShelfName": "Nowa półka",
+      "unsorted": "Nieposortowane",
+      "renameHint": "Kliknij dwukrotnie, aby zmienić nazwę",
+      "moveUp": "Przesuń półkę wyżej",
+      "moveDown": "Przesuń półkę niżej",
+      "deleteShelf": "Usuń półkę",
+      "deleteShelfPrompt": "Usunąć półkę „{{name}}”? Jej książki wrócą do Nieposortowanych — żaden projekt nie zostanie usunięty.",
+      "emptyShelf": "Przeciągnij tu książki",
+      "bookCount": "Książki: {{n}}",
+      "words": "Słowa: {{n}}",
+      "chapters": "Ukończone rozdziały: {{done}}/{{total}}",
+      "finished": "Ukończona",
+      "bookActions": "Akcje książki",
+      "open": "Otwórz",
+      "customize": "Dostosuj książkę",
+      "moveTo": "Przenieś na półkę",
+      "export": "Eksportuj .flnote",
+      "customizeTitle": "Dostosuj książkę",
+      "preview": "Podgląd",
+      "color": "Kolor oprawy",
+      "customColor": "Własny",
+      "rune": "Runa na grzbiecie (Rovás / staro-węgierskie)",
+      "noRune": "Brak",
+      "save": "Zapisz",
+      "saveError": "Nie udało się zapisać wyglądu książki: "
+    },
     "title": "Projekty FleshNote",
     "subtitle": "Wybierz projekt lub załóż nowe miejsce pracy.",
     "whatsNew": "Co nowego?",
@@ -731,6 +761,20 @@
     "reviewerPlaceholder": "np. imię beta-czytelnika",
     "reviewExported": "Paczka recenzji zapisana.",
     "reviewExportFailed": "Eksport paczki recenzji nie powiódł się."
+  },
+  "exportChooser": {
+    "title": "Eksport projektu",
+    "manuscriptTitle": "Manuskrypt",
+    "manuscriptDesc": "Eksport samego manuskryptu — DOCX, PDF, EPUB i inne formaty książkowe, z opcjami treści i formatowania.",
+    "obsidianTitle": "Cały projekt — sejf Obsidian",
+    "obsidianDesc": "Foldery z plikiem Markdown dla każdego rozdziału i bytu (postacie, miejsca, lore…), z linkami wiki i obrazami. Gotowe do otwarcia w Obsidian.",
+    "txtTitle": "Cały projekt — zwykły tekst",
+    "txtDesc": "Ta sama struktura folderów, ale jako zwykłe pliki .txt bez formatowania — maksymalna przenośność.",
+    "flnoteTitle": "Plik .flnote (udostępnianie / kopia zapasowa)",
+    "flnoteDesc": "Cały projekt jako jeden plik, który można ponownie otworzyć w FleshNote lub przekazać innemu pisarzowi.",
+    "working": "Eksportowanie…",
+    "done": "Eksport ukończony",
+    "failed": "Eksport nie powiódł się."
   },
   "mention": {
     "noResult": "Brak wyników"
@@ -1663,6 +1707,17 @@
       "pacing": "Rytm i tempo",
       "five_senses": "Brakujące zmysły",
       "readability": "Czytelność"
+    },
+    "sdtKinds": {
+      "emotion_label": "etykieta emocji",
+      "filter_verb": "czasownik filtrujący",
+      "realize_verb": "czasownik poznawczy",
+      "adverb_emotion": "przysłówek emocji",
+      "emotion_noun_frame": "nazwana emocja",
+      "detached_emotion": "emocja na początku zdania",
+      "emotion_verb": "czasownik emocji",
+      "emotion_manner": "emocja jako sposób",
+      "emotion_attribute": "emocja na twarzy lub w głosie"
     },
     "noted": "Zanotowano",
     "missingSensesDesc": "Nieobecne w tym rozdziale:",

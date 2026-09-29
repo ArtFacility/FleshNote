@@ -5,6 +5,7 @@ Operationalizes classical dramatic theory, mythic monomyths, and commercial beat
 """
 
 import os
+import re
 import copy
 import uuid
 import sqlite3
@@ -1458,7 +1459,10 @@ def scaffold_chapters_for_framework(
 
     for ch_num, blk in enumerate(blocks, start=1):
         ch_id = str(uuid.uuid4())
-        title = blk["label"]
+        # Beat labels like "15. Final Image" carry their own ordinal; the chapter
+        # already has chapter_number (shown by the editor), and the two drift
+        # apart once chapters are reordered — keep the title number-free.
+        title = re.sub(r"^\d+\.\s*", "", blk["label"]) or blk["label"]
         # Clean safe slug
         slug = "".join(c if c.isalnum() else "_" for c in title.lower())
         slug = "_".join(filter(None, slug.split("_")))[:30]
@@ -1467,7 +1471,7 @@ def scaffold_chapters_for_framework(
 
         # Write starter markdown file with beat title header
         with open(filepath, "w", encoding="utf-8") as f:
-            f.write(f"# Chapter {ch_num}: {title}\n\n")
+            f.write(f"# {title}\n\n")
 
         cursor.execute("""
             INSERT INTO chapters (
@@ -1488,7 +1492,7 @@ def scaffold_chapters_for_framework(
             UPDATE planner_blocks
             SET chapter_id = ?, chapter_status = 'planned'
             WHERE label = ? AND abs(pct - ?) < 0.1
-        """, (ch_id, title[:50], blk["pct"]))
+        """, (ch_id, blk["label"][:50], blk["pct"]))
 
         created_ids.append(ch_id)
 

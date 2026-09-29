@@ -11,6 +11,7 @@ from collections import Counter
 from fastapi import APIRouter, HTTPException, BackgroundTasks
 from pydantic import BaseModel
 from typing import Optional, Dict, Any
+from project_io import safe_md_path
 
 router = APIRouter()
 
@@ -169,8 +170,8 @@ def _calculate_top_words(project_path: str):
         word_counter = Counter()
         
         for ch in chapters:
-            md_path = os.path.join(md_dir, ch["md_filename"])
-            if os.path.exists(md_path):
+            md_path = safe_md_path(md_dir, ch["md_filename"])
+            if md_path and os.path.exists(md_path):
                 with open(md_path, "r", encoding="utf-8") as f:
                     content = f.read()
                     # Remove markers

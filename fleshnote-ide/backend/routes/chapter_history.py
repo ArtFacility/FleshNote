@@ -27,6 +27,7 @@ from pydantic import BaseModel
 from typing import List, Optional
 
 from sync_core import DEVICE_ID, log_change
+from project_io import safe_md_path
 from routes.chapters import (
     _get_db,
     _entity_md_to_html, _twist_md_to_html, _knowledge_md_to_html,
@@ -94,8 +95,8 @@ def _md_to_html(cursor, md: str) -> str:
 def _read_chapter_md(project_path: str, md_filename: Optional[str]) -> str:
     if not md_filename:
         return ""
-    md_path = os.path.join(project_path, "md", md_filename)
-    if os.path.exists(md_path):
+    md_path = safe_md_path(os.path.join(project_path, "md"), md_filename)
+    if md_path and os.path.exists(md_path):
         with open(md_path, "r", encoding="utf-8") as f:
             return f.read()
     return ""
@@ -214,7 +215,11 @@ def history_restore(req: SnapshotScoped):
     _create_snapshot(cur, req.project_path, chapter_id, "pre_restore")
 
     # Write the snapshot markdown back to disk.
-    md_path = os.path.join(req.project_path, "md", chap["md_filename"])
+    md_path = safe_md_path(os.path.join(req.project_path, "md"), chap["md_filename"])
+    if not md_path:
+        conn.close()
+        raise HTTPException(status_code=409,
+                            detail="Chapter has an unsafe filename; refusing to restore.")
     os.makedirs(os.path.dirname(md_path), exist_ok=True)
     with open(md_path, "w", encoding="utf-8") as f:
         f.write(md)

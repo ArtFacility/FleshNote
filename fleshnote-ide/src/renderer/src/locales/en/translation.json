@@ -442,6 +442,36 @@
     "paletteHint": "Drag to place"
   },
   "picker": {
+    "shelf": {
+      "viewShelf": "Shelf",
+      "viewList": "List",
+      "newShelf": "+ New shelf",
+      "newShelfName": "New shelf",
+      "unsorted": "Unsorted",
+      "renameHint": "Double-click to rename",
+      "moveUp": "Move shelf up",
+      "moveDown": "Move shelf down",
+      "deleteShelf": "Delete shelf",
+      "deleteShelfPrompt": "Remove the shelf \"{{name}}\"? Its books move back to Unsorted — no project is deleted.",
+      "emptyShelf": "Drag books here",
+      "bookCount": "Books: {{n}}",
+      "words": "{{n}} words",
+      "chapters": "{{done}}/{{total}} chapters final",
+      "finished": "Finished",
+      "bookActions": "Book actions",
+      "open": "Open",
+      "customize": "Customize book",
+      "moveTo": "Move to shelf",
+      "export": "Export .flnote",
+      "customizeTitle": "Customize Book",
+      "preview": "Preview",
+      "color": "Binding color",
+      "customColor": "Custom",
+      "rune": "Spine rune (Rovás / Old Hungarian)",
+      "noRune": "None",
+      "save": "Save",
+      "saveError": "Could not save the book's look: "
+    },
     "title": "FleshNote Projects",
     "subtitle": "Select a project or establish a new workspace.",
     "whatsNew": "What's New?",
@@ -730,6 +760,20 @@
     "reviewerPlaceholder": "e.g. beta reader name",
     "reviewExported": "Review package saved.",
     "reviewExportFailed": "Review export failed."
+  },
+  "exportChooser": {
+    "title": "Export project",
+    "manuscriptTitle": "Story manuscript",
+    "manuscriptDesc": "Export the manuscript itself — DOCX, PDF, EPUB and other book formats, with content and formatting options.",
+    "obsidianTitle": "Full project — Obsidian vault",
+    "obsidianDesc": "Folders with a Markdown file per chapter and entity (characters, locations, lore…), wiki-linked and with images. Ready to open in Obsidian.",
+    "txtTitle": "Full project — plain text",
+    "txtDesc": "The same folder structure, but as plain .txt files with no special formatting — maximum portability.",
+    "flnoteTitle": ".flnote file (share / backup)",
+    "flnoteDesc": "The whole project as one file you can reopen in FleshNote or hand to another writer.",
+    "working": "Exporting…",
+    "done": "Export complete",
+    "failed": "The export failed."
   },
   "mention": {
     "noResult": "No results found"
@@ -1667,6 +1711,17 @@
       "pacing": "Pacing & Rhythm",
       "five_senses": "Missing Senses",
       "readability": "Readability"
+    },
+    "sdtKinds": {
+      "emotion_label": "emotion label",
+      "filter_verb": "filter verb",
+      "realize_verb": "cognitive verb",
+      "adverb_emotion": "emotion adverb",
+      "emotion_noun_frame": "named emotion",
+      "detached_emotion": "emotion opener",
+      "emotion_verb": "emotion verb",
+      "emotion_manner": "emotion as manner",
+      "emotion_attribute": "emotion on a look or voice"
     }
   },
   "palette": {

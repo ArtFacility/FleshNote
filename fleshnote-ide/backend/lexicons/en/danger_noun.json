@@ -1,0 +1,1681 @@
+{
+ "lang": "en",
+ "kind": "danger_noun",
+ "version": 1,
+ "entries": [
+  {
+   "id": "en.danger.smoke",
+   "lemma": "smoke",
+   "pos": [
+    "NOUN"
+   ],
+   "kind": "danger_noun",
+   "strength": "weak",
+   "valence": -0.35,
+   "arousal": 0.3,
+   "emotions": {
+    "fear": 0.4
+   },
+   "source": "curated:gemini-2026-09",
+   "version": 1,
+   "note": "fireplace/tobacco smoke vs fire peril"
+  },
+  {
+   "id": "en.danger.shadow",
+   "lemma": "shadow",
+   "pos": [
+    "NOUN"
+   ],
+   "kind": "danger_noun",
+   "strength": "weak",
+   "valence": -0.3,
+   "arousal": 0.3,
+   "emotions": {
+    "fear": 0.3
+   },
+   "source": "curated:gemini-2026-09",
+   "version": 1,
+   "note": "shade from sun vs menacing presence"
+  },
+  {
+   "id": "en.danger.debris",
+   "lemma": "debris",
+   "pos": [
+    "NOUN"
+   ],
+   "kind": "danger_noun",
+   "strength": "weak",
+   "valence": -0.4,
+   "arousal": 0.35,
+   "emotions": {
+    "fear": 0.4
+   },
+   "source": "curated:gemini-2026-09",
+   "version": 1,
+   "note": "lawn debris vs post-blast debris"
+  },
+  {
+   "id": "en.danger.rubble",
+   "lemma": "rubble",
+   "pos": [
+    "NOUN"
+   ],
+   "kind": "danger_noun",
+   "strength": "weak",
+   "valence": -0.4,
+   "arousal": 0.35,
+   "emotions": {
+    "fear": 0.4
+   },
+   "source": "curated:gemini-2026-09",
+   "version": 1,
+   "note": "construction rubble vs earthquake rubble"
+  },
+  {
+   "id": "en.danger.pit",
+   "lemma": "pit",
+   "pos": [
+    "NOUN"
+   ],
+   "kind": "danger_noun",
+   "strength": "weak",
+   "valence": -0.45,
+   "arousal": 0.4,
+   "emotions": {
+    "fear": 0.5
+   },
+   "source": "curated:gemini-2026-09",
+   "version": 1,
+   "note": "fruit pit vs dangerous pit trap"
+  },
+  {
+   "id": "en.danger.ruin",
+   "lemma": "ruin",
+   "pos": [
+    "NOUN"
+   ],
+   "kind": "danger_noun",
+   "strength": "strong",
+   "valence": -0.45,
+   "arousal": 0.45,
+   "emotions": {
+    "sadness": 0.5,
+    "fear": 0.4
+   },
+   "source": "curated:gemini-2026-09",
+   "version": 1
+  },
+  {
+   "id": "en.danger.wreckage",
+   "lemma": "wreckage",
+   "pos": [
+    "NOUN"
+   ],
+   "kind": "danger_noun",
+   "strength": "strong",
+   "valence": -0.55,
+   "arousal": 0.5,
+   "emotions": {
+    "fear": 0.6,
+    "sadness": 0.5
+   },
+   "source": "curated:gemini-2026-09",
+   "version": 1
+  },
+  {
+   "id": "en.danger.chasm",
+   "lemma": "chasm",
+   "pos": [
+    "NOUN"
+   ],
+   "kind": "danger_noun",
+   "strength": "strong",
+   "valence": -0.55,
+   "arousal": 0.5,
+   "emotions": {
+    "fear": 0.6
+   },
+   "source": "curated:gemini-2026-09",
+   "version": 1
+  },
+  {
+   "id": "en.danger.cliff",
+   "lemma": "cliff",
+   "pos": [
+    "NOUN"
+   ],
+   "kind": "danger_noun",
+   "strength": "weak",
+   "valence": -0.45,
+   "arousal": 0.45,
+   "emotions": {
+    "fear": 0.5
+   },
+   "source": "curated:gemini-2026-09",
+   "version": 1,
+   "note": "scenic cliff view vs falling peril"
+  },
+  {
+   "id": "en.danger.precipice",
+   "lemma": "precipice",
+   "pos": [
+    "NOUN"
+   ],
+   "kind": "danger_noun",
+   "strength": "strong",
+   "valence": -0.6,
+   "arousal": 0.55,
+   "emotions": {
+    "fear": 0.65
+   },
+   "source": "curated:gemini-2026-09",
+   "version": 1
+  },
+  {
+   "id": "en.danger.abyss",
+   "lemma": "abyss",
+   "pos": [
+    "NOUN"
+   ],
+   "kind": "danger_noun",
+   "strength": "strong",
+   "valence": -0.65,
+   "arousal": 0.6,
+   "emotions": {
+    "fear": 0.7
+   },
+   "source": "curated:gemini-2026-09",
+   "version": 1
+  },
+  {
+   "id": "en.danger.quicksand",
+   "lemma": "quicksand",
+   "pos": [
+    "NOUN"
+   ],
+   "kind": "danger_noun",
+   "strength": "strong",
+   "valence": -0.65,
+   "arousal": 0.6,
+   "emotions": {
+    "fear": 0.7
+   },
+   "source": "curated:gemini-2026-09",
+   "version": 1
+  },
+  {
+   "id": "en.danger.whirlpool",
+   "lemma": "whirlpool",
+   "pos": [
+    "NOUN"
+   ],
+   "kind": "danger_noun",
+   "strength": "strong",
+   "valence": -0.65,
+   "arousal": 0.65,
+   "emotions": {
+    "fear": 0.7
+   },
+   "source": "curated:gemini-2026-09",
+   "version": 1
+  },
+  {
+   "id": "en.danger.temp",
+   "lemma": "temp",
+   "pos": [
+    "NOUN"
+   ],
+   "kind": "danger_noun",
+   "strength": "strong",
+   "valence": -0.6,
+   "arousal": 0.65,
+   "emotions": {
+    "fear": 0.65
+   },
+   "source": "curated:gemini-2026-09",
+   "version": 1
+  },
+  {
+   "id": "en.danger.hurricane",
+   "lemma": "hurricane",
+   "pos": [
+    "NOUN"
+   ],
+   "kind": "danger_noun",
+   "strength": "strong",
+   "valence": -0.7,
+   "arousal": 0.7,
+   "emotions": {
+    "fear": 0.75
+   },
+   "source": "curated:gemini-2026-09",
+   "version": 1
+  },
+  {
+   "id": "en.danger.typhoon",
+   "lemma": "typhoon",
+   "pos": [
+    "NOUN"
+   ],
+   "kind": "danger_noun",
+   "strength": "strong",
+   "valence": -0.7,
+   "arousal": 0.7,
+   "emotions": {
+    "fear": 0.75
+   },
+   "source": "curated:gemini-2026-09",
+   "version": 1
+  },
+  {
+   "id": "en.danger.avalanche",
+   "lemma": "avalanche",
+   "pos": [
+    "NOUN"
+   ],
+   "kind": "danger_noun",
+   "strength": "strong",
+   "valence": -0.75,
+   "arousal": 0.75,
+   "emotions": {
+    "fear": 0.8
+   },
+   "source": "curated:gemini-2026-09",
+   "version": 1
+  },
+  {
+   "id": "en.danger.earthquake",
+   "lemma": "earthquake",
+   "pos": [
+    "NOUN"
+   ],
+   "kind": "danger_noun",
+   "strength": "strong",
+   "valence": -0.75,
+   "arousal": 0.75,
+   "emotions": {
+    "fear": 0.8
+   },
+   "source": "curated:gemini-2026-09",
+   "version": 1
+  },
+  {
+   "id": "en.danger.volcano",
+   "lemma": "volcano",
+   "pos": [
+    "NOUN"
+   ],
+   "kind": "danger_noun",
+   "strength": "strong",
+   "valence": -0.7,
+   "arousal": 0.75,
+   "emotions": {
+    "fear": 0.75
+   },
+   "source": "curated:gemini-2026-09",
+   "version": 1
+  },
+  {
+   "id": "en.danger.conflagration",
+   "lemma": "conflagration",
+   "pos": [
+    "NOUN"
+   ],
+   "kind": "danger_noun",
+   "strength": "strong",
+   "valence": -0.8,
+   "arousal": 0.8,
+   "emotions": {
+    "fear": 0.85
+   },
+   "source": "curated:gemini-2026-09",
+   "version": 1
+  },
+  {
+   "id": "en.danger.inferno",
+   "lemma": "inferno",
+   "pos": [
+    "NOUN"
+   ],
+   "kind": "danger_noun",
+   "strength": "strong",
+   "valence": -0.85,
+   "arousal": 0.85,
+   "emotions": {
+    "fear": 0.85
+   },
+   "source": "curated:gemini-2026-09",
+   "version": 1
+  },
+  {
+   "id": "en.danger.blade",
+   "lemma": "blade",
+   "pos": [
+    "NOUN"
+   ],
+   "kind": "danger_noun",
+   "strength": "weak",
+   "valence": -0.65,
+   "arousal": 0.6,
+   "emotions": {
+    "fear": 0.6,
+    "anger": 0.5
+   },
+   "source": "curated:gemini-2026-09",
+   "version": 1,
+   "note": "grass blade / razor vs dangerous weapon"
+  },
+  {
+   "id": "en.danger.knife",
+   "lemma": "knife",
+   "pos": [
+    "NOUN"
+   ],
+   "kind": "danger_noun",
+   "strength": "weak",
+   "valence": -0.6,
+   "arousal": 0.55,
+   "emotions": {
+    "fear": 0.6
+   },
+   "source": "curated:gemini-2026-09",
+   "version": 1,
+   "note": "butter knife vs combat weapon"
+  },
+  {
+   "id": "en.danger.dagger",
+   "lemma": "dagger",
+   "pos": [
+    "NOUN"
+   ],
+   "kind": "danger_noun",
+   "strength": "strong",
+   "valence": -0.7,
+   "arousal": 0.65,
+   "emotions": {
+    "fear": 0.7,
+    "anger": 0.6
+   },
+   "source": "curated:gemini-2026-09",
+   "version": 1
+  },
+  {
+   "id": "en.danger.sword",
+   "lemma": "sword",
+   "pos": [
+    "NOUN"
+   ],
+   "kind": "danger_noun",
+   "strength": "strong",
+   "valence": -0.65,
+   "arousal": 0.65,
+   "emotions": {
+    "fear": 0.6,
+    "anger": 0.6
+   },
+   "source": "curated:gemini-2026-09",
+   "version": 1
+  },
+  {
+   "id": "en.danger.axe",
+   "lemma": "axe",
+   "pos": [
+    "NOUN"
+   ],
+   "kind": "danger_noun",
+   "strength": "weak",
+   "valence": -0.65,
+   "arousal": 0.65,
+   "emotions": {
+    "fear": 0.6
+   },
+   "source": "curated:gemini-2026-09",
+   "version": 1,
+   "note": "woodcutter axe vs battle axe"
+  },
+  {
+   "id": "en.danger.spear",
+   "lemma": "spear",
+   "pos": [
+    "NOUN"
+   ],
+   "kind": "danger_noun",
+   "strength": "strong",
+   "valence": -0.7,
+   "arousal": 0.7,
+   "emotions": {
+    "fear": 0.7
+   },
+   "source": "curated:gemini-2026-09",
+   "version": 1
+  },
+  {
+   "id": "en.danger.arrow",
+   "lemma": "arrow",
+   "pos": [
+    "NOUN"
+   ],
+   "kind": "danger_noun",
+   "strength": "weak",
+   "valence": -0.55,
+   "arousal": 0.6,
+   "emotions": {
+    "fear": 0.6
+   },
+   "source": "curated:gemini-2026-09",
+   "version": 1,
+   "note": "directional arrow vs deadly projectile"
+  },
+  {
+   "id": "en.danger.bullet",
+   "lemma": "bullet",
+   "pos": [
+    "NOUN"
+   ],
+   "kind": "danger_noun",
+   "strength": "strong",
+   "valence": -0.75,
+   "arousal": 0.7,
+   "emotions": {
+    "fear": 0.8
+   },
+   "source": "curated:gemini-2026-09",
+   "version": 1
+  },
+  {
+   "id": "en.danger.rifle",
+   "lemma": "rifle",
+   "pos": [
+    "NOUN"
+   ],
+   "kind": "danger_noun",
+   "strength": "strong",
+   "valence": -0.7,
+   "arousal": 0.65,
+   "emotions": {
+    "fear": 0.7
+   },
+   "source": "curated:gemini-2026-09",
+   "version": 1
+  },
+  {
+   "id": "en.danger.pistol",
+   "lemma": "pistol",
+   "pos": [
+    "NOUN"
+   ],
+   "kind": "danger_noun",
+   "strength": "strong",
+   "valence": -0.7,
+   "arousal": 0.65,
+   "emotions": {
+    "fear": 0.7
+   },
+   "source": "curated:gemini-2026-09",
+   "version": 1
+  },
+  {
+   "id": "en.danger.cannon",
+   "lemma": "cannon",
+   "pos": [
+    "NOUN"
+   ],
+   "kind": "danger_noun",
+   "strength": "strong",
+   "valence": -0.75,
+   "arousal": 0.75,
+   "emotions": {
+    "fear": 0.8
+   },
+   "source": "curated:gemini-2026-09",
+   "version": 1
+  },
+  {
+   "id": "en.danger.bayonet",
+   "lemma": "bayonet",
+   "pos": [
+    "NOUN"
+   ],
+   "kind": "danger_noun",
+   "strength": "strong",
+   "valence": -0.75,
+   "arousal": 0.75,
+   "emotions": {
+    "fear": 0.75
+   },
+   "source": "curated:gemini-2026-09",
+   "version": 1
+  },
+  {
+   "id": "en.danger.harpoon",
+   "lemma": "harpoon",
+   "pos": [
+    "NOUN"
+   ],
+   "kind": "danger_noun",
+   "strength": "strong",
+   "valence": -0.65,
+   "arousal": 0.7,
+   "emotions": {
+    "fear": 0.65
+   },
+   "source": "curated:gemini-2026-09",
+   "version": 1
+  },
+  {
+   "id": "en.danger.scythe",
+   "lemma": "scythe",
+   "pos": [
+    "NOUN"
+   ],
+   "kind": "danger_noun",
+   "strength": "weak",
+   "valence": -0.65,
+   "arousal": 0.65,
+   "emotions": {
+    "fear": 0.7
+   },
+   "source": "curated:gemini-2026-09",
+   "version": 1,
+   "note": "harvest tool vs grim reaper scythe"
+  },
+  {
+   "id": "en.danger.shackle",
+   "lemma": "shackle",
+   "pos": [
+    "NOUN"
+   ],
+   "kind": "danger_noun",
+   "strength": "strong",
+   "valence": -0.7,
+   "arousal": 0.65,
+   "emotions": {
+    "fear": 0.7
+   },
+   "source": "curated:gemini-2026-09",
+   "version": 1
+  },
+  {
+   "id": "en.danger.dungeon",
+   "lemma": "dungeon",
+   "pos": [
+    "NOUN"
+   ],
+   "kind": "danger_noun",
+   "strength": "strong",
+   "valence": -0.7,
+   "arousal": 0.6,
+   "emotions": {
+    "fear": 0.7
+   },
+   "source": "curated:gemini-2026-09",
+   "version": 1
+  },
+  {
+   "id": "en.danger.trap",
+   "lemma": "trap",
+   "pos": [
+    "NOUN"
+   ],
+   "kind": "danger_noun",
+   "strength": "strong",
+   "valence": -0.65,
+   "arousal": 0.65,
+   "emotions": {
+    "fear": 0.7
+   },
+   "source": "curated:gemini-2026-09",
+   "version": 1
+  },
+  {
+   "id": "en.danger.ambush",
+   "lemma": "ambush",
+   "pos": [
+    "NOUN"
+   ],
+   "kind": "danger_noun",
+   "strength": "strong",
+   "valence": -0.75,
+   "arousal": 0.75,
+   "emotions": {
+    "fear": 0.8
+   },
+   "source": "curated:gemini-2026-09",
+   "version": 1
+  },
+  {
+   "id": "en.danger.mine",
+   "lemma": "mine",
+   "pos": [
+    "NOUN"
+   ],
+   "kind": "danger_noun",
+   "strength": "weak",
+   "valence": -0.7,
+   "arousal": 0.7,
+   "emotions": {
+    "fear": 0.75
+   },
+   "source": "curated:gemini-2026-09",
+   "version": 1,
+   "note": "coal mine / possessive pronoun vs explosive landmine"
+  },
+  {
+   "id": "en.danger.fuse",
+   "lemma": "fuse",
+   "pos": [
+    "NOUN"
+   ],
+   "kind": "danger_noun",
+   "strength": "weak",
+   "valence": -0.4,
+   "arousal": 0.5,
+   "emotions": {
+    "fear": 0.5
+   },
+   "source": "curated:gemini-2026-09",
+   "version": 1,
+   "note": "electrical fuse vs bomb fuse"
+  },
+  {
+   "id": "en.danger.trigger",
+   "lemma": "trigger",
+   "pos": [
+    "NOUN"
+   ],
+   "kind": "danger_noun",
+   "strength": "weak",
+   "valence": -0.5,
+   "arousal": 0.55,
+   "emotions": {
+    "fear": 0.5
+   },
+   "source": "curated:gemini-2026-09",
+   "version": 1,
+   "note": "camera trigger vs gun trigger"
+  },
+  {
+   "id": "en.danger.poison",
+   "lemma": "poison",
+   "pos": [
+    "NOUN"
+   ],
+   "kind": "danger_noun",
+   "strength": "strong",
+   "valence": -0.8,
+   "arousal": 0.75,
+   "emotions": {
+    "fear": 0.8,
+    "disgust": 0.6
+   },
+   "source": "curated:gemini-2026-09",
+   "version": 1
+  },
+  {
+   "id": "en.danger.venom",
+   "lemma": "venom",
+   "pos": [
+    "NOUN"
+   ],
+   "kind": "danger_noun",
+   "strength": "strong",
+   "valence": -0.8,
+   "arousal": 0.75,
+   "emotions": {
+    "fear": 0.8
+   },
+   "source": "curated:gemini-2026-09",
+   "version": 1
+  },
+  {
+   "id": "en.danger.toxin",
+   "lemma": "toxin",
+   "pos": [
+    "NOUN"
+   ],
+   "kind": "danger_noun",
+   "strength": "strong",
+   "valence": -0.75,
+   "arousal": 0.7,
+   "emotions": {
+    "fear": 0.75
+   },
+   "source": "curated:gemini-2026-09",
+   "version": 1
+  },
+  {
+   "id": "en.danger.arsenic",
+   "lemma": "arsenic",
+   "pos": [
+    "NOUN"
+   ],
+   "kind": "danger_noun",
+   "strength": "strong",
+   "valence": -0.8,
+   "arousal": 0.75,
+   "emotions": {
+    "fear": 0.8
+   },
+   "source": "curated:gemini-2026-09",
+   "version": 1
+  },
+  {
+   "id": "en.danger.hemlock",
+   "lemma": "hemlock",
+   "pos": [
+    "NOUN"
+   ],
+   "kind": "danger_noun",
+   "strength": "strong",
+   "valence": -0.8,
+   "arousal": 0.75,
+   "emotions": {
+    "fear": 0.8
+   },
+   "source": "curated:gemini-2026-09",
+   "version": 1
+  },
+  {
+   "id": "en.danger.noose",
+   "lemma": "noose",
+   "pos": [
+    "NOUN"
+   ],
+   "kind": "danger_noun",
+   "strength": "strong",
+   "valence": -0.85,
+   "arousal": 0.8,
+   "emotions": {
+    "fear": 0.85
+   },
+   "source": "curated:gemini-2026-09",
+   "version": 1
+  },
+  {
+   "id": "en.danger.gallow",
+   "lemma": "gallows",
+   "pos": [
+    "NOUN"
+   ],
+   "kind": "danger_noun",
+   "strength": "strong",
+   "valence": -0.85,
+   "arousal": 0.85,
+   "emotions": {
+    "fear": 0.85
+   },
+   "source": "curated:gemini-2026-09",
+   "version": 1,
+   "alt_lemmas": [
+    "gallow"
+   ]
+  },
+  {
+   "id": "en.danger.guillotine",
+   "lemma": "guillotine",
+   "pos": [
+    "NOUN"
+   ],
+   "kind": "danger_noun",
+   "strength": "strong",
+   "valence": -0.9,
+   "arousal": 0.9,
+   "emotions": {
+    "fear": 0.9
+   },
+   "source": "curated:gemini-2026-09",
+   "version": 1
+  },
+  {
+   "id": "en.danger.executioner",
+   "lemma": "executioner",
+   "pos": [
+    "NOUN"
+   ],
+   "kind": "danger_noun",
+   "strength": "strong",
+   "valence": -0.85,
+   "arousal": 0.85,
+   "emotions": {
+    "fear": 0.85
+   },
+   "source": "curated:gemini-2026-09",
+   "version": 1
+  },
+  {
+   "id": "en.danger.corpse",
+   "lemma": "corpse",
+   "pos": [
+    "NOUN"
+   ],
+   "kind": "danger_noun",
+   "strength": "strong",
+   "valence": -0.85,
+   "arousal": 0.8,
+   "emotions": {
+    "fear": 0.75,
+    "disgust": 0.7
+   },
+   "source": "curated:gemini-2026-09",
+   "version": 1
+  },
+  {
+   "id": "en.danger.carcas",
+   "lemma": "carcass",
+   "pos": [
+    "NOUN"
+   ],
+   "kind": "danger_noun",
+   "strength": "strong",
+   "valence": -0.8,
+   "arousal": 0.75,
+   "emotions": {
+    "disgust": 0.8
+   },
+   "source": "curated:gemini-2026-09",
+   "version": 1
+  },
+  {
+   "id": "en.danger.skeleton",
+   "lemma": "skeleton",
+   "pos": [
+    "NOUN"
+   ],
+   "kind": "danger_noun",
+   "strength": "weak",
+   "valence": -0.65,
+   "arousal": 0.65,
+   "emotions": {
+    "fear": 0.65
+   },
+   "source": "curated:gemini-2026-09",
+   "version": 1,
+   "note": "anatomical skeleton vs terrifying remains"
+  },
+  {
+   "id": "en.danger.skull",
+   "lemma": "skull",
+   "pos": [
+    "NOUN"
+   ],
+   "kind": "danger_noun",
+   "strength": "weak",
+   "valence": -0.65,
+   "arousal": 0.65,
+   "emotions": {
+    "fear": 0.65
+   },
+   "source": "curated:gemini-2026-09",
+   "version": 1,
+   "note": "cranium bone vs poison emblem"
+  },
+  {
+   "id": "en.danger.coffin",
+   "lemma": "coffin",
+   "pos": [
+    "NOUN"
+   ],
+   "kind": "danger_noun",
+   "strength": "strong",
+   "valence": -0.75,
+   "arousal": 0.65,
+   "emotions": {
+    "sadness": 0.8,
+    "fear": 0.6
+   },
+   "source": "curated:gemini-2026-09",
+   "version": 1
+  },
+  {
+   "id": "en.danger.tomb",
+   "lemma": "tomb",
+   "pos": [
+    "NOUN"
+   ],
+   "kind": "danger_noun",
+   "strength": "weak",
+   "valence": -0.65,
+   "arousal": 0.6,
+   "emotions": {
+    "sadness": 0.7
+   },
+   "source": "curated:gemini-2026-09",
+   "version": 1,
+   "note": "ancient historical tomb vs mortal demise"
+  },
+  {
+   "id": "en.danger.sepulcher",
+   "lemma": "sepulcher",
+   "pos": [
+    "NOUN"
+   ],
+   "kind": "danger_noun",
+   "strength": "strong",
+   "valence": -0.7,
+   "arousal": 0.65,
+   "emotions": {
+    "fear": 0.7
+   },
+   "source": "curated:gemini-2026-09",
+   "version": 1
+  },
+  {
+   "id": "en.danger.grave",
+   "lemma": "grave",
+   "pos": [
+    "NOUN"
+   ],
+   "kind": "danger_noun",
+   "strength": "weak",
+   "valence": -0.75,
+   "arousal": 0.65,
+   "emotions": {
+    "sadness": 0.8
+   },
+   "source": "curated:gemini-2026-09",
+   "version": 1,
+   "note": "grave mistake vs cemetery burial ground"
+  },
+  {
+   "id": "en.danger.assassin",
+   "lemma": "assassin",
+   "pos": [
+    "NOUN"
+   ],
+   "kind": "danger_noun",
+   "strength": "strong",
+   "valence": -0.85,
+   "arousal": 0.85,
+   "emotions": {
+    "fear": 0.85
+   },
+   "source": "curated:gemini-2026-09",
+   "version": 1
+  },
+  {
+   "id": "en.danger.murderer",
+   "lemma": "murderer",
+   "pos": [
+    "NOUN"
+   ],
+   "kind": "danger_noun",
+   "strength": "strong",
+   "valence": -0.9,
+   "arousal": 0.85,
+   "emotions": {
+    "fear": 0.9,
+    "anger": 0.85
+   },
+   "source": "curated:gemini-2026-09",
+   "version": 1
+  },
+  {
+   "id": "en.danger.slayer",
+   "lemma": "slayer",
+   "pos": [
+    "NOUN"
+   ],
+   "kind": "danger_noun",
+   "strength": "strong",
+   "valence": -0.8,
+   "arousal": 0.8,
+   "emotions": {
+    "fear": 0.8
+   },
+   "source": "curated:gemini-2026-09",
+   "version": 1
+  },
+  {
+   "id": "en.danger.predator",
+   "lemma": "predator",
+   "pos": [
+    "NOUN"
+   ],
+   "kind": "danger_noun",
+   "strength": "weak",
+   "valence": -0.75,
+   "arousal": 0.75,
+   "emotions": {
+    "fear": 0.8
+   },
+   "source": "curated:gemini-2026-09",
+   "version": 1,
+   "note": "biological predator vs menacing stalker"
+  },
+  {
+   "id": "en.danger.monster",
+   "lemma": "monster",
+   "pos": [
+    "NOUN"
+   ],
+   "kind": "danger_noun",
+   "strength": "strong",
+   "valence": -0.8,
+   "arousal": 0.8,
+   "emotions": {
+    "fear": 0.85
+   },
+   "source": "curated:gemini-2026-09",
+   "version": 1
+  },
+  {
+   "id": "en.danger.demon",
+   "lemma": "demon",
+   "pos": [
+    "NOUN"
+   ],
+   "kind": "danger_noun",
+   "strength": "strong",
+   "valence": -0.85,
+   "arousal": 0.85,
+   "emotions": {
+    "fear": 0.85
+   },
+   "source": "curated:gemini-2026-09",
+   "version": 1
+  },
+  {
+   "id": "en.danger.fiend",
+   "lemma": "fiend",
+   "pos": [
+    "NOUN"
+   ],
+   "kind": "danger_noun",
+   "strength": "strong",
+   "valence": -0.8,
+   "arousal": 0.8,
+   "emotions": {
+    "fear": 0.8
+   },
+   "source": "curated:gemini-2026-09",
+   "version": 1
+  },
+  {
+   "id": "en.danger.devil",
+   "lemma": "devil",
+   "pos": [
+    "NOUN"
+   ],
+   "kind": "danger_noun",
+   "strength": "weak",
+   "valence": -0.75,
+   "arousal": 0.75,
+   "emotions": {
+    "fear": 0.75
+   },
+   "source": "curated:gemini-2026-09",
+   "version": 1,
+   "note": "playful little devil vs demonic threat"
+  },
+  {
+   "id": "en.danger.tyrant",
+   "lemma": "tyrant",
+   "pos": [
+    "NOUN"
+   ],
+   "kind": "danger_noun",
+   "strength": "strong",
+   "valence": -0.8,
+   "arousal": 0.75,
+   "emotions": {
+    "anger": 0.8,
+    "fear": 0.75
+   },
+   "source": "curated:gemini-2026-09",
+   "version": 1
+  },
+  {
+   "id": "en.danger.despot",
+   "lemma": "despot",
+   "pos": [
+    "NOUN"
+   ],
+   "kind": "danger_noun",
+   "strength": "strong",
+   "valence": -0.8,
+   "arousal": 0.75,
+   "emotions": {
+    "anger": 0.8
+   },
+   "source": "curated:gemini-2026-09",
+   "version": 1
+  },
+  {
+   "id": "en.danger.oppressor",
+   "lemma": "oppressor",
+   "pos": [
+    "NOUN"
+   ],
+   "kind": "danger_noun",
+   "strength": "strong",
+   "valence": -0.8,
+   "arousal": 0.75,
+   "emotions": {
+    "anger": 0.8
+   },
+   "source": "curated:gemini-2026-09",
+   "version": 1
+  },
+  {
+   "id": "en.danger.pestilence",
+   "lemma": "pestilence",
+   "pos": [
+    "NOUN"
+   ],
+   "kind": "danger_noun",
+   "strength": "strong",
+   "valence": -0.85,
+   "arousal": 0.85,
+   "emotions": {
+    "fear": 0.9
+   },
+   "source": "curated:gemini-2026-09",
+   "version": 1
+  },
+  {
+   "id": "en.danger.plague",
+   "lemma": "plague",
+   "pos": [
+    "NOUN"
+   ],
+   "kind": "danger_noun",
+   "strength": "strong",
+   "valence": -0.85,
+   "arousal": 0.85,
+   "emotions": {
+    "fear": 0.9
+   },
+   "source": "curated:gemini-2026-09",
+   "version": 1
+  },
+  {
+   "id": "en.danger.contagion",
+   "lemma": "contagion",
+   "pos": [
+    "NOUN"
+   ],
+   "kind": "danger_noun",
+   "strength": "strong",
+   "valence": -0.8,
+   "arousal": 0.8,
+   "emotions": {
+    "fear": 0.85
+   },
+   "source": "curated:gemini-2026-09",
+   "version": 1
+  },
+  {
+   "id": "en.danger.gangrene",
+   "lemma": "gangrene",
+   "pos": [
+    "NOUN"
+   ],
+   "kind": "danger_noun",
+   "strength": "strong",
+   "valence": -0.85,
+   "arousal": 0.75,
+   "emotions": {
+    "disgust": 0.85
+   },
+   "source": "curated:gemini-2026-09",
+   "version": 1
+  },
+  {
+   "id": "en.danger.famine",
+   "lemma": "famine",
+   "pos": [
+    "NOUN"
+   ],
+   "kind": "danger_noun",
+   "strength": "strong",
+   "valence": -0.85,
+   "arousal": 0.8,
+   "emotions": {
+    "sadness": 0.85,
+    "fear": 0.8
+   },
+   "source": "curated:gemini-2026-09",
+   "version": 1
+  },
+  {
+   "id": "en.danger.bomb",
+   "lemma": "bomb",
+   "pos": [
+    "NOUN"
+   ],
+   "kind": "danger_noun",
+   "strength": "strong",
+   "valence": -0.85,
+   "arousal": 0.85,
+   "emotions": {
+    "fear": 0.9
+   },
+   "source": "curated:gemini-2026-09",
+   "version": 1
+  },
+  {
+   "id": "en.danger.torpedo",
+   "lemma": "torpedo",
+   "pos": [
+    "NOUN"
+   ],
+   "kind": "danger_noun",
+   "strength": "strong",
+   "valence": -0.8,
+   "arousal": 0.8,
+   "emotions": {
+    "fear": 0.85
+   },
+   "source": "curated:gemini-2026-09",
+   "version": 1
+  },
+  {
+   "id": "en.danger.dynamite",
+   "lemma": "dynamite",
+   "pos": [
+    "NOUN"
+   ],
+   "kind": "danger_noun",
+   "strength": "strong",
+   "valence": -0.8,
+   "arousal": 0.8,
+   "emotions": {
+    "fear": 0.85
+   },
+   "source": "curated:gemini-2026-09",
+   "version": 1
+  },
+  {
+   "id": "en.danger.gunpowder",
+   "lemma": "gunpowder",
+   "pos": [
+    "NOUN"
+   ],
+   "kind": "danger_noun",
+   "strength": "strong",
+   "valence": -0.65,
+   "arousal": 0.65,
+   "emotions": {
+    "fear": 0.65
+   },
+   "source": "curated:gemini-2026-09",
+   "version": 1
+  },
+  {
+   "id": "en.danger.shrapnel",
+   "lemma": "shrapnel",
+   "pos": [
+    "NOUN"
+   ],
+   "kind": "danger_noun",
+   "strength": "strong",
+   "valence": -0.8,
+   "arousal": 0.8,
+   "emotions": {
+    "fear": 0.8
+   },
+   "source": "curated:gemini-2026-09",
+   "version": 1
+  },
+  {
+   "id": "en.danger.catastrophe",
+   "lemma": "catastrophe",
+   "pos": [
+    "NOUN"
+   ],
+   "kind": "danger_noun",
+   "strength": "strong",
+   "valence": -0.85,
+   "arousal": 0.85,
+   "emotions": {
+    "fear": 0.85
+   },
+   "source": "curated:gemini-2026-09",
+   "version": 1
+  },
+  {
+   "id": "en.danger.disaster",
+   "lemma": "disaster",
+   "pos": [
+    "NOUN"
+   ],
+   "kind": "danger_noun",
+   "strength": "strong",
+   "valence": -0.8,
+   "arousal": 0.8,
+   "emotions": {
+    "fear": 0.8
+   },
+   "source": "curated:gemini-2026-09",
+   "version": 1
+  },
+  {
+   "id": "en.danger.calamity",
+   "lemma": "calamity",
+   "pos": [
+    "NOUN"
+   ],
+   "kind": "danger_noun",
+   "strength": "strong",
+   "valence": -0.8,
+   "arousal": 0.8,
+   "emotions": {
+    "fear": 0.8
+   },
+   "source": "curated:gemini-2026-09",
+   "version": 1
+  },
+  {
+   "id": "en.danger.carnage",
+   "lemma": "carnage",
+   "pos": [
+    "NOUN"
+   ],
+   "kind": "danger_noun",
+   "strength": "strong",
+   "valence": -0.95,
+   "arousal": 0.95,
+   "emotions": {
+    "fear": 0.95,
+    "disgust": 0.8
+   },
+   "source": "curated:gemini-2026-09",
+   "version": 1
+  },
+  {
+   "id": "en.danger.bloodshe",
+   "lemma": "bloodshed",
+   "pos": [
+    "NOUN"
+   ],
+   "kind": "danger_noun",
+   "strength": "strong",
+   "valence": -0.9,
+   "arousal": 0.9,
+   "emotions": {
+    "fear": 0.9,
+    "anger": 0.85
+   },
+   "source": "curated:gemini-2026-09",
+   "version": 1
+  },
+  {
+   "id": "en.danger.slaughter",
+   "lemma": "slaughter",
+   "pos": [
+    "NOUN"
+   ],
+   "kind": "danger_noun",
+   "strength": "strong",
+   "valence": -0.95,
+   "arousal": 0.95,
+   "emotions": {
+    "fear": 0.95,
+    "anger": 0.9
+   },
+   "source": "curated:gemini-2026-09",
+   "version": 1
+  },
+  {
+   "id": "en.danger.massacre",
+   "lemma": "massacre",
+   "pos": [
+    "NOUN"
+   ],
+   "kind": "danger_noun",
+   "strength": "strong",
+   "valence": -0.95,
+   "arousal": 0.95,
+   "emotions": {
+    "fear": 0.95,
+    "anger": 0.9
+   },
+   "source": "curated:gemini-2026-09",
+   "version": 1
+  },
+  {
+   "id": "en.danger.hostage",
+   "lemma": "hostage",
+   "pos": [
+    "NOUN"
+   ],
+   "kind": "danger_noun",
+   "strength": "strong",
+   "valence": -0.75,
+   "arousal": 0.75,
+   "emotions": {
+    "fear": 0.8
+   },
+   "source": "curated:gemini-2026-09",
+   "version": 1
+  },
+  {
+   "id": "en.danger.captive",
+   "lemma": "captive",
+   "pos": [
+    "NOUN"
+   ],
+   "kind": "danger_noun",
+   "strength": "strong",
+   "valence": -0.7,
+   "arousal": 0.7,
+   "emotions": {
+    "fear": 0.7,
+    "sadness": 0.7
+   },
+   "source": "curated:gemini-2026-09",
+   "version": 1
+  },
+  {
+   "id": "en.danger.traitor",
+   "lemma": "traitor",
+   "pos": [
+    "NOUN"
+   ],
+   "kind": "danger_noun",
+   "strength": "strong",
+   "valence": -0.8,
+   "arousal": 0.75,
+   "emotions": {
+    "anger": 0.85,
+    "disgust": 0.8
+   },
+   "source": "curated:gemini-2026-09",
+   "version": 1
+  },
+  {
+   "id": "en.danger.enemy",
+   "lemma": "enemy",
+   "pos": [
+    "NOUN"
+   ],
+   "kind": "danger_noun",
+   "strength": "strong",
+   "valence": -0.75,
+   "arousal": 0.7,
+   "emotions": {
+    "anger": 0.8,
+    "fear": 0.7
+   },
+   "source": "curated:gemini-2026-09",
+   "version": 1
+  },
+  {
+   "id": "en.danger.foe",
+   "lemma": "foe",
+   "pos": [
+    "NOUN"
+   ],
+   "kind": "danger_noun",
+   "strength": "strong",
+   "valence": -0.7,
+   "arousal": 0.7,
+   "emotions": {
+    "anger": 0.75
+   },
+   "source": "curated:gemini-2026-09",
+   "version": 1
+  },
+  {
+   "id": "en.danger.nemesis",
+   "lemma": "nemesis",
+   "pos": [
+    "NOUN"
+   ],
+   "kind": "danger_noun",
+   "strength": "strong",
+   "valence": -0.75,
+   "arousal": 0.75,
+   "emotions": {
+    "anger": 0.8
+   },
+   "source": "curated:gemini-2026-09",
+   "version": 1
+  },
+  {
+   "id": "en.danger.bandit",
+   "lemma": "bandit",
+   "pos": [
+    "NOUN"
+   ],
+   "kind": "danger_noun",
+   "strength": "strong",
+   "valence": -0.65,
+   "arousal": 0.65,
+   "emotions": {
+    "fear": 0.65
+   },
+   "source": "curated:gemini-2026-09",
+   "version": 1
+  },
+  {
+   "id": "en.danger.pirate",
+   "lemma": "pirate",
+   "pos": [
+    "NOUN"
+   ],
+   "kind": "danger_noun",
+   "strength": "strong",
+   "valence": -0.65,
+   "arousal": 0.65,
+   "emotions": {
+    "fear": 0.65
+   },
+   "source": "curated:gemini-2026-09",
+   "version": 1
+  },
+  {
+   "id": "en.danger.brigand",
+   "lemma": "brigand",
+   "pos": [
+    "NOUN"
+   ],
+   "kind": "danger_noun",
+   "strength": "strong",
+   "valence": -0.65,
+   "arousal": 0.65,
+   "emotions": {
+    "fear": 0.65
+   },
+   "source": "curated:gemini-2026-09",
+   "version": 1
+  },
+  {
+   "id": "en.danger.outlaw",
+   "lemma": "outlaw",
+   "pos": [
+    "NOUN"
+   ],
+   "kind": "danger_noun",
+   "strength": "strong",
+   "valence": -0.62,
+   "arousal": 0.64,
+   "emotions": {
+    "fear": 0.6
+   },
+   "source": "curated:gemini-2026-09",
+   "version": 1
+  },
+  {
+   "id": "en.danger.sniper",
+   "lemma": "sniper",
+   "pos": [
+    "NOUN"
+   ],
+   "kind": "danger_noun",
+   "strength": "strong",
+   "valence": -0.82,
+   "arousal": 0.84,
+   "emotions": {
+    "fear": 0.85
+   },
+   "source": "curated:gemini-2026-09",
+   "version": 1
+  },
+  {
+   "id": "en.danger.artillery",
+   "lemma": "artillery",
+   "pos": [
+    "NOUN"
+   ],
+   "kind": "danger_noun",
+   "strength": "strong",
+   "valence": -0.74,
+   "arousal": 0.79,
+   "emotions": {
+    "fear": 0.8
+   },
+   "source": "curated:gemini-2026-09",
+   "version": 1
+  },
+  {
+   "id": "en.danger.minefield",
+   "lemma": "minefield",
+   "pos": [
+    "NOUN"
+   ],
+   "kind": "danger_noun",
+   "strength": "strong",
+   "valence": -0.91,
+   "arousal": 0.89,
+   "emotions": {
+    "fear": 0.9
+   },
+   "source": "curated:gemini-2026-09",
+   "version": 1
+  },
+  {
+   "id": "en.danger.blizzard",
+   "lemma": "blizzard",
+   "pos": [
+    "NOUN"
+   ],
+   "kind": "danger_noun",
+   "strength": "weak",
+   "valence": -0.66,
+   "arousal": 0.76,
+   "emotions": {
+    "fear": 0.7
+   },
+   "source": "curated:gemini-2026-09",
+   "version": 1,
+   "note": "severe storm vs blizzard of paperwork"
+  },
+  {
+   "id": "en.danger.epidemic",
+   "lemma": "epidemic",
+   "pos": [
+    "NOUN"
+   ],
+   "kind": "danger_noun",
+   "strength": "strong",
+   "valence": -0.84,
+   "arousal": 0.79,
+   "emotions": {
+    "fear": 0.85
+   },
+   "source": "curated:gemini-2026-09",
+   "version": 1
+  }
+ ]
+}

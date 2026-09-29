@@ -1,0 +1,2147 @@
+{
+  "lang": "hu",
+  "kind": "emotion_noun",
+  "version": 1,
+  "entries": [
+    {
+      "id": "hu.emonoun.düh",
+      "lemma": "düh",
+      "pos": [
+        "NOUN"
+      ],
+      "kind": "emotion_noun",
+      "strength": "strong",
+      "valence": -0.9,
+      "arousal": 0.9,
+      "emotions": {
+        "anger": 0.8
+      },
+      "source": "curated:gemini-2026-09",
+      "version": 1,
+      "felt": "state"
+    },
+    {
+      "id": "hu.emonoun.harag",
+      "lemma": "harag",
+      "pos": [
+        "NOUN"
+      ],
+      "kind": "emotion_noun",
+      "strength": "strong",
+      "valence": -0.8,
+      "arousal": 0.8,
+      "emotions": {
+        "anger": 0.8
+      },
+      "source": "curated:gemini-2026-09",
+      "version": 1,
+      "felt": "state"
+    },
+    {
+      "id": "hu.emonoun.méreg",
+      "lemma": "méreg",
+      "pos": [
+        "NOUN"
+      ],
+      "kind": "emotion_noun",
+      "strength": "strong",
+      "valence": -0.7,
+      "arousal": 0.7,
+      "emotions": {
+        "anger": 0.8
+      },
+      "source": "curated:gemini-2026-09",
+      "version": 1,
+      "felt": "state"
+    },
+    {
+      "id": "hu.emonoun.bánat",
+      "lemma": "bánat",
+      "pos": [
+        "NOUN"
+      ],
+      "kind": "emotion_noun",
+      "strength": "strong",
+      "valence": -0.8,
+      "arousal": 0.4,
+      "emotions": {
+        "sadness": 0.8
+      },
+      "source": "curated:gemini-2026-09",
+      "version": 1,
+      "felt": "state"
+    },
+    {
+      "id": "hu.emonoun.szomorúság",
+      "lemma": "szomorúság",
+      "pos": [
+        "NOUN"
+      ],
+      "kind": "emotion_noun",
+      "strength": "strong",
+      "valence": -0.8,
+      "arousal": 0.3,
+      "emotions": {
+        "sadness": 0.8
+      },
+      "source": "curated:gemini-2026-09",
+      "version": 1,
+      "felt": "state"
+    },
+    {
+      "id": "hu.emonoun.gyász",
+      "lemma": "gyász",
+      "pos": [
+        "NOUN"
+      ],
+      "kind": "emotion_noun",
+      "strength": "strong",
+      "valence": -0.9,
+      "arousal": 0.5,
+      "emotions": {
+        "sadness": 0.8
+      },
+      "source": "curated:gemini-2026-09",
+      "version": 1,
+      "felt": "state"
+    },
+    {
+      "id": "hu.emonoun.öröm",
+      "lemma": "öröm",
+      "pos": [
+        "NOUN"
+      ],
+      "kind": "emotion_noun",
+      "strength": "strong",
+      "valence": 0.9,
+      "arousal": 0.7,
+      "emotions": {
+        "joy": 0.8
+      },
+      "source": "curated:gemini-2026-09",
+      "version": 1,
+      "felt": "state"
+    },
+    {
+      "id": "hu.emonoun.boldogság",
+      "lemma": "boldogság",
+      "pos": [
+        "NOUN"
+      ],
+      "kind": "emotion_noun",
+      "strength": "strong",
+      "valence": 0.9,
+      "arousal": 0.6,
+      "emotions": {
+        "joy": 0.8
+      },
+      "source": "curated:gemini-2026-09",
+      "version": 1,
+      "felt": "state"
+    },
+    {
+      "id": "hu.emonoun.vidámság",
+      "lemma": "vidámság",
+      "pos": [
+        "NOUN"
+      ],
+      "kind": "emotion_noun",
+      "strength": "strong",
+      "valence": 0.8,
+      "arousal": 0.6,
+      "emotions": {
+        "joy": 0.8
+      },
+      "source": "curated:gemini-2026-09",
+      "version": 1,
+      "felt": "state"
+    },
+    {
+      "id": "hu.emonoun.félelem",
+      "lemma": "félelem",
+      "pos": [
+        "NOUN"
+      ],
+      "kind": "emotion_noun",
+      "strength": "strong",
+      "valence": -0.8,
+      "arousal": 0.8,
+      "emotions": {
+        "fear": 0.8
+      },
+      "source": "curated:gemini-2026-09",
+      "version": 1,
+      "felt": "state"
+    },
+    {
+      "id": "hu.emonoun.rettegés",
+      "lemma": "rettegés",
+      "pos": [
+        "NOUN"
+      ],
+      "kind": "emotion_noun",
+      "strength": "strong",
+      "valence": -0.9,
+      "arousal": 0.9,
+      "emotions": {
+        "fear": 0.8
+      },
+      "source": "curated:gemini-2026-09",
+      "version": 1,
+      "felt": "state"
+    },
+    {
+      "id": "hu.emonoun.ijedség",
+      "lemma": "ijedség",
+      "pos": [
+        "NOUN"
+      ],
+      "kind": "emotion_noun",
+      "strength": "strong",
+      "valence": -0.7,
+      "arousal": 0.7,
+      "emotions": {
+        "fear": 0.8
+      },
+      "source": "curated:gemini-2026-09",
+      "version": 1,
+      "felt": "state"
+    },
+    {
+      "id": "hu.emonoun.pánik",
+      "lemma": "pánik",
+      "pos": [
+        "NOUN"
+      ],
+      "kind": "emotion_noun",
+      "strength": "strong",
+      "valence": -0.8,
+      "arousal": 0.9,
+      "emotions": {
+        "fear": 0.8
+      },
+      "source": "curated:gemini-2026-09",
+      "version": 1,
+      "felt": "state"
+    },
+    {
+      "id": "hu.emonoun.rémület",
+      "lemma": "rémület",
+      "pos": [
+        "NOUN"
+      ],
+      "kind": "emotion_noun",
+      "strength": "strong",
+      "valence": -0.9,
+      "arousal": 0.9,
+      "emotions": {
+        "fear": 0.8
+      },
+      "source": "curated:gemini-2026-09",
+      "version": 1,
+      "felt": "state"
+    },
+    {
+      "id": "hu.emonoun.iszony",
+      "lemma": "iszony",
+      "pos": [
+        "NOUN"
+      ],
+      "kind": "emotion_noun",
+      "strength": "strong",
+      "valence": -0.8,
+      "arousal": 0.8,
+      "emotions": {
+        "fear": 0.8
+      },
+      "source": "curated:gemini-2026-09",
+      "version": 1,
+      "felt": "state"
+    },
+    {
+      "id": "hu.emonoun.irtózat",
+      "lemma": "irtózat",
+      "pos": [
+        "NOUN"
+      ],
+      "kind": "emotion_noun",
+      "strength": "strong",
+      "valence": -0.8,
+      "arousal": 0.8,
+      "emotions": {
+        "fear": 0.8
+      },
+      "source": "curated:gemini-2026-09",
+      "version": 1,
+      "felt": "state"
+    },
+    {
+      "id": "hu.emonoun.undor",
+      "lemma": "undor",
+      "pos": [
+        "NOUN"
+      ],
+      "kind": "emotion_noun",
+      "strength": "strong",
+      "valence": -0.8,
+      "arousal": 0.6,
+      "emotions": {
+        "disgust": 0.8
+      },
+      "source": "curated:gemini-2026-09",
+      "version": 1,
+      "felt": "state"
+    },
+    {
+      "id": "hu.emonoun.utálat",
+      "lemma": "utálat",
+      "pos": [
+        "NOUN"
+      ],
+      "kind": "emotion_noun",
+      "strength": "strong",
+      "valence": -0.8,
+      "arousal": 0.7,
+      "emotions": {
+        "disgust": 0.8
+      },
+      "source": "curated:gemini-2026-09",
+      "version": 1,
+      "felt": "state"
+    },
+    {
+      "id": "hu.emonoun.gyűlölet",
+      "lemma": "gyűlölet",
+      "pos": [
+        "NOUN"
+      ],
+      "kind": "emotion_noun",
+      "strength": "strong",
+      "valence": -0.9,
+      "arousal": 0.8,
+      "emotions": {
+        "disgust": 0.8
+      },
+      "source": "curated:gemini-2026-09",
+      "version": 1,
+      "felt": "state"
+    },
+    {
+      "id": "hu.emonoun.megvetés",
+      "lemma": "megvetés",
+      "pos": [
+        "NOUN"
+      ],
+      "kind": "emotion_noun",
+      "strength": "strong",
+      "valence": -0.8,
+      "arousal": 0.6,
+      "emotions": {
+        "disgust": 0.8
+      },
+      "source": "curated:gemini-2026-09",
+      "version": 1,
+      "felt": "state"
+    },
+    {
+      "id": "hu.emonoun.lenézés",
+      "lemma": "lenézés",
+      "pos": [
+        "NOUN"
+      ],
+      "kind": "emotion_noun",
+      "strength": "strong",
+      "valence": -0.7,
+      "arousal": 0.5,
+      "emotions": {
+        "disgust": 0.8
+      },
+      "source": "curated:gemini-2026-09",
+      "version": 1,
+      "felt": "state"
+    },
+    {
+      "id": "hu.emonoun.gúny",
+      "lemma": "gúny",
+      "pos": [
+        "NOUN"
+      ],
+      "kind": "emotion_noun",
+      "strength": "strong",
+      "valence": -0.6,
+      "arousal": 0.6,
+      "emotions": {
+        "disgust": 0.8
+      },
+      "source": "curated:gemini-2026-09",
+      "version": 1,
+      "felt": "state"
+    },
+    {
+      "id": "hu.emonoun.szégyen",
+      "lemma": "szégyen",
+      "pos": [
+        "NOUN"
+      ],
+      "kind": "emotion_noun",
+      "strength": "strong",
+      "valence": -0.7,
+      "arousal": 0.5,
+      "emotions": {
+        "sadness": 0.8
+      },
+      "source": "curated:gemini-2026-09",
+      "version": 1,
+      "felt": "state"
+    },
+    {
+      "id": "hu.emonoun.gyalázat",
+      "lemma": "gyalázat",
+      "pos": [
+        "NOUN"
+      ],
+      "kind": "emotion_noun",
+      "strength": "strong",
+      "valence": -0.8,
+      "arousal": 0.6,
+      "emotions": {
+        "sadness": 0.8
+      },
+      "source": "curated:gemini-2026-09",
+      "version": 1,
+      "felt": "evaluative"
+    },
+    {
+      "id": "hu.emonoun.bűntudat",
+      "lemma": "bűntudat",
+      "pos": [
+        "NOUN"
+      ],
+      "kind": "emotion_noun",
+      "strength": "strong",
+      "valence": -0.7,
+      "arousal": 0.5,
+      "emotions": {
+        "sadness": 0.8
+      },
+      "source": "curated:gemini-2026-09",
+      "version": 1,
+      "felt": "state"
+    },
+    {
+      "id": "hu.emonoun.lelkifurdalás",
+      "lemma": "lelkifurdalás",
+      "pos": [
+        "NOUN"
+      ],
+      "kind": "emotion_noun",
+      "strength": "strong",
+      "valence": -0.7,
+      "arousal": 0.5,
+      "emotions": {
+        "sadness": 0.8
+      },
+      "source": "curated:gemini-2026-09",
+      "version": 1,
+      "felt": "state"
+    },
+    {
+      "id": "hu.emonoun.megbánás",
+      "lemma": "megbánás",
+      "pos": [
+        "NOUN"
+      ],
+      "kind": "emotion_noun",
+      "strength": "strong",
+      "valence": -0.6,
+      "arousal": 0.4,
+      "emotions": {
+        "sadness": 0.8
+      },
+      "source": "curated:gemini-2026-09",
+      "version": 1,
+      "felt": "state"
+    },
+    {
+      "id": "hu.emonoun.kétségbeesés",
+      "lemma": "kétségbeesés",
+      "pos": [
+        "NOUN"
+      ],
+      "kind": "emotion_noun",
+      "strength": "strong",
+      "valence": -0.9,
+      "arousal": 0.8,
+      "emotions": {
+        "sadness": 0.8
+      },
+      "source": "curated:gemini-2026-09",
+      "version": 1,
+      "felt": "state"
+    },
+    {
+      "id": "hu.emonoun.csalódás",
+      "lemma": "csalódás",
+      "pos": [
+        "NOUN"
+      ],
+      "kind": "emotion_noun",
+      "strength": "strong",
+      "valence": -0.7,
+      "arousal": 0.4,
+      "emotions": {
+        "sadness": 0.8
+      },
+      "source": "curated:gemini-2026-09",
+      "version": 1,
+      "felt": "state"
+    },
+    {
+      "id": "hu.emonoun.kiábrándulás",
+      "lemma": "kiábrándulás",
+      "pos": [
+        "NOUN"
+      ],
+      "kind": "emotion_noun",
+      "strength": "strong",
+      "valence": -0.7,
+      "arousal": 0.3,
+      "emotions": {
+        "sadness": 0.8
+      },
+      "source": "curated:gemini-2026-09",
+      "version": 1,
+      "felt": "state"
+    },
+    {
+      "id": "hu.emonoun.keserűség",
+      "lemma": "keserűség",
+      "pos": [
+        "NOUN"
+      ],
+      "kind": "emotion_noun",
+      "strength": "strong",
+      "valence": -0.6,
+      "arousal": 0.5,
+      "emotions": {
+        "anger": 0.8
+      },
+      "source": "curated:gemini-2026-09",
+      "version": 1,
+      "felt": "state"
+    },
+    {
+      "id": "hu.emonoun.bosszúság",
+      "lemma": "bosszúság",
+      "pos": [
+        "NOUN"
+      ],
+      "kind": "emotion_noun",
+      "strength": "strong",
+      "valence": -0.6,
+      "arousal": 0.6,
+      "emotions": {
+        "anger": 0.8
+      },
+      "source": "curated:gemini-2026-09",
+      "version": 1,
+      "felt": "state"
+    },
+    {
+      "id": "hu.emonoun.ingerültség",
+      "lemma": "ingerültség",
+      "pos": [
+        "NOUN"
+      ],
+      "kind": "emotion_noun",
+      "strength": "strong",
+      "valence": -0.6,
+      "arousal": 0.6,
+      "emotions": {
+        "anger": 0.8
+      },
+      "source": "curated:gemini-2026-09",
+      "version": 1,
+      "felt": "state"
+    },
+    {
+      "id": "hu.emonoun.felháborodás",
+      "lemma": "felháborodás",
+      "pos": [
+        "NOUN"
+      ],
+      "kind": "emotion_noun",
+      "strength": "strong",
+      "valence": -0.8,
+      "arousal": 0.7,
+      "emotions": {
+        "anger": 0.8
+      },
+      "source": "curated:gemini-2026-09",
+      "version": 1,
+      "felt": "state"
+    },
+    {
+      "id": "hu.emonoun.lázongás",
+      "lemma": "lázongás",
+      "pos": [
+        "NOUN"
+      ],
+      "kind": "emotion_noun",
+      "strength": "strong",
+      "valence": -0.6,
+      "arousal": 0.7,
+      "emotions": {
+        "anger": 0.8
+      },
+      "source": "curated:gemini-2026-09",
+      "version": 1,
+      "felt": "state"
+    },
+    {
+      "id": "hu.emonoun.irigység",
+      "lemma": "irigység",
+      "pos": [
+        "NOUN"
+      ],
+      "kind": "emotion_noun",
+      "strength": "strong",
+      "valence": -0.7,
+      "arousal": 0.6,
+      "emotions": {
+        "disgust": 0.8
+      },
+      "source": "curated:gemini-2026-09",
+      "version": 1,
+      "felt": "state"
+    },
+    {
+      "id": "hu.emonoun.féltékenység",
+      "lemma": "féltékenység",
+      "pos": [
+        "NOUN"
+      ],
+      "kind": "emotion_noun",
+      "strength": "strong",
+      "valence": -0.7,
+      "arousal": 0.7,
+      "emotions": {
+        "disgust": 0.8
+      },
+      "source": "curated:gemini-2026-09",
+      "version": 1,
+      "felt": "state"
+    },
+    {
+      "id": "hu.emonoun.magány",
+      "lemma": "magány",
+      "pos": [
+        "NOUN"
+      ],
+      "kind": "emotion_noun",
+      "strength": "strong",
+      "valence": -0.7,
+      "arousal": 0.3,
+      "emotions": {
+        "sadness": 0.8
+      },
+      "source": "curated:gemini-2026-09",
+      "version": 1,
+      "felt": "state"
+    },
+    {
+      "id": "hu.emonoun.elhagyatottság",
+      "lemma": "elhagyatottság",
+      "pos": [
+        "NOUN"
+      ],
+      "kind": "emotion_noun",
+      "strength": "strong",
+      "valence": -0.8,
+      "arousal": 0.3,
+      "emotions": {
+        "sadness": 0.8
+      },
+      "source": "curated:gemini-2026-09",
+      "version": 1,
+      "felt": "state"
+    },
+    {
+      "id": "hu.emonoun.árvaság",
+      "lemma": "árvaság",
+      "pos": [
+        "NOUN"
+      ],
+      "kind": "emotion_noun",
+      "strength": "strong",
+      "valence": -0.7,
+      "arousal": 0.3,
+      "emotions": {
+        "sadness": 0.8
+      },
+      "source": "curated:gemini-2026-09",
+      "version": 1,
+      "felt": "state"
+    },
+    {
+      "id": "hu.emonoun.szorongás",
+      "lemma": "szorongás",
+      "pos": [
+        "NOUN"
+      ],
+      "kind": "emotion_noun",
+      "strength": "strong",
+      "valence": -0.7,
+      "arousal": 0.7,
+      "emotions": {
+        "fear": 0.8
+      },
+      "source": "curated:gemini-2026-09",
+      "version": 1,
+      "felt": "state"
+    },
+    {
+      "id": "hu.emonoun.nyugtalanság",
+      "lemma": "nyugtalanság",
+      "pos": [
+        "NOUN"
+      ],
+      "kind": "emotion_noun",
+      "strength": "strong",
+      "valence": -0.6,
+      "arousal": 0.6,
+      "emotions": {
+        "fear": 0.8
+      },
+      "source": "curated:gemini-2026-09",
+      "version": 1,
+      "felt": "state"
+    },
+    {
+      "id": "hu.emonoun.idegesség",
+      "lemma": "idegesség",
+      "pos": [
+        "NOUN"
+      ],
+      "kind": "emotion_noun",
+      "strength": "strong",
+      "valence": -0.5,
+      "arousal": 0.6,
+      "emotions": {
+        "fear": 0.8
+      },
+      "source": "curated:gemini-2026-09",
+      "version": 1,
+      "felt": "state"
+    },
+    {
+      "id": "hu.emonoun.aggodalom",
+      "lemma": "aggodalom",
+      "pos": [
+        "NOUN"
+      ],
+      "kind": "emotion_noun",
+      "strength": "strong",
+      "valence": -0.6,
+      "arousal": 0.6,
+      "emotions": {
+        "fear": 0.8
+      },
+      "source": "curated:gemini-2026-09",
+      "version": 1,
+      "felt": "state"
+    },
+    {
+      "id": "hu.emonoun.aggály",
+      "lemma": "aggály",
+      "pos": [
+        "NOUN"
+      ],
+      "kind": "emotion_noun",
+      "strength": "strong",
+      "valence": -0.4,
+      "arousal": 0.4,
+      "emotions": {
+        "fear": 0.8
+      },
+      "source": "curated:gemini-2026-09",
+      "version": 1,
+      "felt": "state"
+    },
+    {
+      "id": "hu.emonoun.remény",
+      "lemma": "remény",
+      "pos": [
+        "NOUN"
+      ],
+      "kind": "emotion_noun",
+      "strength": "strong",
+      "valence": 0.8,
+      "arousal": 0.5,
+      "emotions": {
+        "anticipation": 0.8
+      },
+      "source": "curated:gemini-2026-09",
+      "version": 1,
+      "felt": "state"
+    },
+    {
+      "id": "hu.emonoun.reménykedés",
+      "lemma": "reménykedés",
+      "pos": [
+        "NOUN"
+      ],
+      "kind": "emotion_noun",
+      "strength": "strong",
+      "valence": 0.7,
+      "arousal": 0.5,
+      "emotions": {
+        "anticipation": 0.8
+      },
+      "source": "curated:gemini-2026-09",
+      "version": 1,
+      "felt": "state"
+    },
+    {
+      "id": "hu.emonoun.bizalom",
+      "lemma": "bizalom",
+      "pos": [
+        "NOUN"
+      ],
+      "kind": "emotion_noun",
+      "strength": "strong",
+      "valence": 0.8,
+      "arousal": 0.4,
+      "emotions": {
+        "trust": 0.8
+      },
+      "source": "curated:gemini-2026-09",
+      "version": 1,
+      "felt": "state"
+    },
+    {
+      "id": "hu.emonoun.hit",
+      "lemma": "hit",
+      "pos": [
+        "NOUN"
+      ],
+      "kind": "emotion_noun",
+      "strength": "strong",
+      "valence": 0.8,
+      "arousal": 0.4,
+      "emotions": {
+        "trust": 0.8
+      },
+      "source": "curated:gemini-2026-09",
+      "version": 1,
+      "felt": "state"
+    },
+    {
+      "id": "hu.emonoun.lelkesedés",
+      "lemma": "lelkesedés",
+      "pos": [
+        "NOUN"
+      ],
+      "kind": "emotion_noun",
+      "strength": "strong",
+      "valence": 0.8,
+      "arousal": 0.7,
+      "emotions": {
+        "anticipation": 0.8
+      },
+      "source": "curated:gemini-2026-09",
+      "version": 1,
+      "felt": "state"
+    },
+    {
+      "id": "hu.emonoun.rajongás",
+      "lemma": "rajongás",
+      "pos": [
+        "NOUN"
+      ],
+      "kind": "emotion_noun",
+      "strength": "strong",
+      "valence": 0.8,
+      "arousal": 0.7,
+      "emotions": {
+        "joy": 0.8
+      },
+      "source": "curated:gemini-2026-09",
+      "version": 1,
+      "felt": "state"
+    },
+    {
+      "id": "hu.emonoun.szeretet",
+      "lemma": "szeretet",
+      "pos": [
+        "NOUN"
+      ],
+      "kind": "emotion_noun",
+      "strength": "strong",
+      "valence": 0.9,
+      "arousal": 0.4,
+      "emotions": {
+        "joy": 0.8
+      },
+      "source": "curated:gemini-2026-09",
+      "version": 1,
+      "felt": "state"
+    },
+    {
+      "id": "hu.emonoun.szerelem",
+      "lemma": "szerelem",
+      "pos": [
+        "NOUN"
+      ],
+      "kind": "emotion_noun",
+      "strength": "strong",
+      "valence": 0.9,
+      "arousal": 0.8,
+      "emotions": {
+        "joy": 0.8
+      },
+      "source": "curated:gemini-2026-09",
+      "version": 1,
+      "felt": "state"
+    },
+    {
+      "id": "hu.emonoun.gyengédség",
+      "lemma": "gyengédség",
+      "pos": [
+        "NOUN"
+      ],
+      "kind": "emotion_noun",
+      "strength": "strong",
+      "valence": 0.8,
+      "arousal": 0.3,
+      "emotions": {
+        "joy": 0.8
+      },
+      "source": "curated:gemini-2026-09",
+      "version": 1,
+      "felt": "state"
+    },
+    {
+      "id": "hu.emonoun.hála",
+      "lemma": "hála",
+      "pos": [
+        "NOUN"
+      ],
+      "kind": "emotion_noun",
+      "strength": "strong",
+      "valence": 0.8,
+      "arousal": 0.4,
+      "emotions": {
+        "trust": 0.8
+      },
+      "source": "curated:gemini-2026-09",
+      "version": 1,
+      "felt": "state"
+    },
+    {
+      "id": "hu.emonoun.elismerés",
+      "lemma": "elismerés",
+      "pos": [
+        "NOUN"
+      ],
+      "kind": "emotion_noun",
+      "strength": "strong",
+      "valence": 0.7,
+      "arousal": 0.4,
+      "emotions": {
+        "trust": 0.8
+      },
+      "source": "curated:gemini-2026-09",
+      "version": 1,
+      "felt": "state"
+    },
+    {
+      "id": "hu.emonoun.tisztelet",
+      "lemma": "tisztelet",
+      "pos": [
+        "NOUN"
+      ],
+      "kind": "emotion_noun",
+      "strength": "strong",
+      "valence": 0.8,
+      "arousal": 0.4,
+      "emotions": {
+        "trust": 0.8
+      },
+      "source": "curated:gemini-2026-09",
+      "version": 1,
+      "felt": "state"
+    },
+    {
+      "id": "hu.emonoun.csodálat",
+      "lemma": "csodálat",
+      "pos": [
+        "NOUN"
+      ],
+      "kind": "emotion_noun",
+      "strength": "strong",
+      "valence": 0.7,
+      "arousal": 0.6,
+      "emotions": {
+        "surprise": 0.8
+      },
+      "source": "curated:gemini-2026-09",
+      "version": 1,
+      "felt": "state"
+    },
+    {
+      "id": "hu.emonoun.ámulat",
+      "lemma": "ámulat",
+      "pos": [
+        "NOUN"
+      ],
+      "kind": "emotion_noun",
+      "strength": "strong",
+      "valence": 0.7,
+      "arousal": 0.7,
+      "emotions": {
+        "surprise": 0.8
+      },
+      "source": "curated:gemini-2026-09",
+      "version": 1,
+      "felt": "state"
+    },
+    {
+      "id": "hu.emonoun.döbbenet",
+      "lemma": "döbbenet",
+      "pos": [
+        "NOUN"
+      ],
+      "kind": "emotion_noun",
+      "strength": "strong",
+      "valence": -0.3,
+      "arousal": 0.7,
+      "emotions": {
+        "surprise": 0.8
+      },
+      "source": "curated:gemini-2026-09",
+      "version": 1,
+      "felt": "state"
+    },
+    {
+      "id": "hu.emonoun.meglepetés",
+      "lemma": "meglepetés",
+      "pos": [
+        "NOUN"
+      ],
+      "kind": "emotion_noun",
+      "strength": "strong",
+      "valence": 0.3,
+      "arousal": 0.6,
+      "emotions": {
+        "surprise": 0.8
+      },
+      "source": "curated:gemini-2026-09",
+      "version": 1,
+      "felt": "state"
+    },
+    {
+      "id": "hu.emonoun.bámulat",
+      "lemma": "bámulat",
+      "pos": [
+        "NOUN"
+      ],
+      "kind": "emotion_noun",
+      "strength": "strong",
+      "valence": 0.5,
+      "arousal": 0.5,
+      "emotions": {
+        "surprise": 0.8
+      },
+      "source": "curated:gemini-2026-09",
+      "version": 1,
+      "felt": "state"
+    },
+    {
+      "id": "hu.emonoun.kíváncsiság",
+      "lemma": "kíváncsiság",
+      "pos": [
+        "NOUN"
+      ],
+      "kind": "emotion_noun",
+      "strength": "strong",
+      "valence": 0.5,
+      "arousal": 0.5,
+      "emotions": {
+        "anticipation": 0.8
+      },
+      "source": "curated:gemini-2026-09",
+      "version": 1,
+      "felt": "state"
+    },
+    {
+      "id": "hu.emonoun.türelmetlenség",
+      "lemma": "türelmetlenség",
+      "pos": [
+        "NOUN"
+      ],
+      "kind": "emotion_noun",
+      "strength": "strong",
+      "valence": -0.3,
+      "arousal": 0.7,
+      "emotions": {
+        "anticipation": 0.8
+      },
+      "source": "curated:gemini-2026-09",
+      "version": 1,
+      "felt": "state"
+    },
+    {
+      "id": "hu.emonoun.vágy",
+      "lemma": "vágy",
+      "pos": [
+        "NOUN"
+      ],
+      "kind": "emotion_noun",
+      "strength": "strong",
+      "valence": 0.6,
+      "arousal": 0.7,
+      "emotions": {
+        "anticipation": 0.8
+      },
+      "source": "curated:gemini-2026-09",
+      "version": 1,
+      "felt": "state"
+    },
+    {
+      "id": "hu.emonoun.sóvárgás",
+      "lemma": "sóvárgás",
+      "pos": [
+        "NOUN"
+      ],
+      "kind": "emotion_noun",
+      "strength": "strong",
+      "valence": 0.3,
+      "arousal": 0.6,
+      "emotions": {
+        "anticipation": 0.8
+      },
+      "source": "curated:gemini-2026-09",
+      "version": 1,
+      "felt": "state"
+    },
+    {
+      "id": "hu.emonoun.áhít",
+      "lemma": "áhít",
+      "pos": [
+        "NOUN"
+      ],
+      "kind": "emotion_noun",
+      "strength": "strong",
+      "valence": 0.8,
+      "arousal": 0.4,
+      "emotions": {
+        "trust": 0.8
+      },
+      "source": "curated:gemini-2026-09",
+      "version": 1,
+      "felt": "state"
+    },
+    {
+      "id": "hu.emonoun.nyugalom",
+      "lemma": "nyugalom",
+      "pos": [
+        "NOUN"
+      ],
+      "kind": "emotion_noun",
+      "strength": "strong",
+      "valence": 0.8,
+      "arousal": 0.2,
+      "emotions": {
+        "trust": 0.8
+      },
+      "source": "curated:gemini-2026-09",
+      "version": 1,
+      "felt": "state"
+    },
+    {
+      "id": "hu.emonoun.békesség",
+      "lemma": "békesség",
+      "pos": [
+        "NOUN"
+      ],
+      "kind": "emotion_noun",
+      "strength": "strong",
+      "valence": 0.8,
+      "arousal": 0.2,
+      "emotions": {
+        "trust": 0.8
+      },
+      "source": "curated:gemini-2026-09",
+      "version": 1,
+      "felt": "state"
+    },
+    {
+      "id": "hu.emonoun.megkönnyebbülés",
+      "lemma": "megkönnyebbülés",
+      "pos": [
+        "NOUN"
+      ],
+      "kind": "emotion_noun",
+      "strength": "strong",
+      "valence": 0.8,
+      "arousal": 0.3,
+      "emotions": {
+        "joy": 0.8
+      },
+      "source": "curated:gemini-2026-09",
+      "version": 1,
+      "felt": "state"
+    },
+    {
+      "id": "hu.emonoun.elégedettség",
+      "lemma": "elégedettség",
+      "pos": [
+        "NOUN"
+      ],
+      "kind": "emotion_noun",
+      "strength": "strong",
+      "valence": 0.7,
+      "arousal": 0.3,
+      "emotions": {
+        "joy": 0.8
+      },
+      "source": "curated:gemini-2026-09",
+      "version": 1,
+      "felt": "state"
+    },
+    {
+      "id": "hu.emonoun.büszkeség",
+      "lemma": "büszkeség",
+      "pos": [
+        "NOUN"
+      ],
+      "kind": "emotion_noun",
+      "strength": "strong",
+      "valence": 0.7,
+      "arousal": 0.6,
+      "emotions": {
+        "joy": 0.8
+      },
+      "source": "curated:gemini-2026-09",
+      "version": 1,
+      "felt": "state",
+      "note": "also trait reading"
+    },
+    {
+      "id": "hu.emonoun.gőg",
+      "lemma": "gőg",
+      "pos": [
+        "NOUN"
+      ],
+      "kind": "emotion_noun",
+      "strength": "strong",
+      "valence": -0.6,
+      "arousal": 0.5,
+      "emotions": {
+        "disgust": 0.8
+      },
+      "source": "curated:gemini-2026-09",
+      "version": 1,
+      "felt": "trait"
+    },
+    {
+      "id": "hu.emonoun.kevélység",
+      "lemma": "kevélység",
+      "pos": [
+        "NOUN"
+      ],
+      "kind": "emotion_noun",
+      "strength": "strong",
+      "valence": -0.6,
+      "arousal": 0.5,
+      "emotions": {
+        "disgust": 0.8
+      },
+      "source": "curated:gemini-2026-09",
+      "version": 1,
+      "felt": "trait"
+    },
+    {
+      "id": "hu.emonoun.önhittség",
+      "lemma": "önhittség",
+      "pos": [
+        "NOUN"
+      ],
+      "kind": "emotion_noun",
+      "strength": "strong",
+      "valence": -0.6,
+      "arousal": 0.5,
+      "emotions": {
+        "disgust": 0.8
+      },
+      "source": "curated:gemini-2026-09",
+      "version": 1,
+      "felt": "trait"
+    },
+    {
+      "id": "hu.emonoun.közöny",
+      "lemma": "közöny",
+      "pos": [
+        "NOUN"
+      ],
+      "kind": "emotion_noun",
+      "strength": "strong",
+      "valence": 0.0,
+      "arousal": 0.1,
+      "emotions": null,
+      "source": "curated:gemini-2026-09",
+      "version": 1,
+      "felt": "state"
+    },
+    {
+      "id": "hu.emonoun.fásultság",
+      "lemma": "fásultság",
+      "pos": [
+        "NOUN"
+      ],
+      "kind": "emotion_noun",
+      "strength": "strong",
+      "valence": -0.4,
+      "arousal": 0.2,
+      "emotions": null,
+      "source": "curated:gemini-2026-09",
+      "version": 1,
+      "felt": "state"
+    },
+    {
+      "id": "hu.emonoun.unalom",
+      "lemma": "unalom",
+      "pos": [
+        "NOUN"
+      ],
+      "kind": "emotion_noun",
+      "strength": "strong",
+      "valence": -0.4,
+      "arousal": 0.1,
+      "emotions": {
+        "sadness": 0.8
+      },
+      "source": "curated:gemini-2026-09",
+      "version": 1,
+      "felt": "state"
+    },
+    {
+      "id": "hu.emonoun.együttérzés",
+      "lemma": "együttérzés",
+      "pos": [
+        "NOUN"
+      ],
+      "kind": "emotion_noun",
+      "strength": "strong",
+      "valence": 0.7,
+      "arousal": 0.3,
+      "emotions": {
+        "trust": 0.8
+      },
+      "source": "curated:gemini-2026-09",
+      "version": 1,
+      "felt": "state"
+    },
+    {
+      "id": "hu.emonoun.szánalom",
+      "lemma": "szánalom",
+      "pos": [
+        "NOUN"
+      ],
+      "kind": "emotion_noun",
+      "strength": "strong",
+      "valence": -0.4,
+      "arousal": 0.3,
+      "emotions": {
+        "sadness": 0.8
+      },
+      "source": "curated:gemini-2026-09",
+      "version": 1,
+      "felt": "state"
+    },
+    {
+      "id": "hu.emonoun.részvét",
+      "lemma": "részvét",
+      "pos": [
+        "NOUN"
+      ],
+      "kind": "emotion_noun",
+      "strength": "strong",
+      "valence": 0.6,
+      "arousal": 0.3,
+      "emotions": {
+        "trust": 0.8
+      },
+      "source": "curated:gemini-2026-09",
+      "version": 1,
+      "felt": "state"
+    },
+    {
+      "id": "hu.emonoun.könyörület",
+      "lemma": "könyörület",
+      "pos": [
+        "NOUN"
+      ],
+      "kind": "emotion_noun",
+      "strength": "strong",
+      "valence": 0.7,
+      "arousal": 0.3,
+      "emotions": {
+        "trust": 0.8
+      },
+      "source": "curated:gemini-2026-09",
+      "version": 1,
+      "felt": "trait"
+    },
+    {
+      "id": "hu.emonoun.irgalom",
+      "lemma": "irgalom",
+      "pos": [
+        "NOUN"
+      ],
+      "kind": "emotion_noun",
+      "strength": "strong",
+      "valence": 0.8,
+      "arousal": 0.3,
+      "emotions": {
+        "trust": 0.8
+      },
+      "source": "curated:gemini-2026-09",
+      "version": 1,
+      "felt": "trait"
+    },
+    {
+      "id": "hu.emonoun.megbocsátás",
+      "lemma": "megbocsátás",
+      "pos": [
+        "NOUN"
+      ],
+      "kind": "emotion_noun",
+      "strength": "strong",
+      "valence": 0.8,
+      "arousal": 0.3,
+      "emotions": {
+        "trust": 0.8
+      },
+      "source": "curated:gemini-2026-09",
+      "version": 1,
+      "felt": "state"
+    },
+    {
+      "id": "hu.emonoun.megindultság",
+      "lemma": "megindultság",
+      "pos": [
+        "NOUN"
+      ],
+      "kind": "emotion_noun",
+      "strength": "strong",
+      "valence": 0.7,
+      "arousal": 0.5,
+      "emotions": {
+        "joy": 0.8
+      },
+      "source": "curated:gemini-2026-09",
+      "version": 1,
+      "felt": "state"
+    },
+    {
+      "id": "hu.emonoun.meghatottság",
+      "lemma": "meghatottság",
+      "pos": [
+        "NOUN"
+      ],
+      "kind": "emotion_noun",
+      "strength": "strong",
+      "valence": 0.7,
+      "arousal": 0.5,
+      "emotions": {
+        "joy": 0.8
+      },
+      "source": "curated:gemini-2026-09",
+      "version": 1,
+      "felt": "state"
+    },
+    {
+      "id": "hu.emonoun.zaklatottság",
+      "lemma": "zaklatottság",
+      "pos": [
+        "NOUN"
+      ],
+      "kind": "emotion_noun",
+      "strength": "strong",
+      "valence": -0.6,
+      "arousal": 0.7,
+      "emotions": {
+        "fear": 0.8
+      },
+      "source": "curated:gemini-2026-09",
+      "version": 1,
+      "felt": "state"
+    },
+    {
+      "id": "hu.emonoun.bátorság",
+      "lemma": "bátorság",
+      "pos": [
+        "NOUN"
+      ],
+      "kind": "emotion_noun",
+      "strength": "strong",
+      "valence": 0.8,
+      "arousal": 0.7,
+      "emotions": {
+        "trust": 0.8
+      },
+      "source": "curated:gemini-2026-09",
+      "version": 1,
+      "felt": "trait"
+    },
+    {
+      "id": "hu.emonoun.vakmerőség",
+      "lemma": "vakmerőség",
+      "pos": [
+        "NOUN"
+      ],
+      "kind": "emotion_noun",
+      "strength": "strong",
+      "valence": 0.4,
+      "arousal": 0.8,
+      "emotions": {
+        "anticipation": 0.8
+      },
+      "source": "curated:gemini-2026-09",
+      "version": 1,
+      "felt": "trait"
+    },
+    {
+      "id": "hu.emonoun.elbizakodottság",
+      "lemma": "elbizakodottság",
+      "pos": [
+        "NOUN"
+      ],
+      "kind": "emotion_noun",
+      "strength": "strong",
+      "valence": -0.4,
+      "arousal": 0.5,
+      "emotions": {
+        "disgust": 0.8
+      },
+      "source": "curated:gemini-2026-09",
+      "version": 1,
+      "felt": "trait"
+    },
+    {
+      "id": "hu.emonoun.félszegség",
+      "lemma": "félszegség",
+      "pos": [
+        "NOUN"
+      ],
+      "kind": "emotion_noun",
+      "strength": "strong",
+      "valence": -0.3,
+      "arousal": 0.3,
+      "emotions": {
+        "fear": 0.8
+      },
+      "source": "curated:gemini-2026-09",
+      "version": 1,
+      "felt": "trait"
+    },
+    {
+      "id": "hu.emonoun.zavarodottság",
+      "lemma": "zavarodottság",
+      "pos": [
+        "NOUN"
+      ],
+      "kind": "emotion_noun",
+      "strength": "strong",
+      "valence": -0.3,
+      "arousal": 0.5,
+      "emotions": {
+        "surprise": 0.8
+      },
+      "source": "curated:gemini-2026-09",
+      "version": 1,
+      "felt": "state"
+    },
+    {
+      "id": "hu.emonoun.tanácstalanság",
+      "lemma": "tanácstalanság",
+      "pos": [
+        "NOUN"
+      ],
+      "kind": "emotion_noun",
+      "strength": "strong",
+      "valence": -0.4,
+      "arousal": 0.4,
+      "emotions": {
+        "fear": 0.8
+      },
+      "source": "curated:gemini-2026-09",
+      "version": 1,
+      "felt": "state"
+    },
+    {
+      "id": "hu.emonoun.megalázottság",
+      "lemma": "megalázottság",
+      "pos": [
+        "NOUN"
+      ],
+      "kind": "emotion_noun",
+      "strength": "strong",
+      "valence": -0.8,
+      "arousal": 0.6,
+      "emotions": {
+        "sadness": 0.8
+      },
+      "source": "curated:gemini-2026-09",
+      "version": 1,
+      "felt": "state"
+    },
+    {
+      "id": "hu.emonoun.kiszolgáltatottság",
+      "lemma": "kiszolgáltatottság",
+      "pos": [
+        "NOUN"
+      ],
+      "kind": "emotion_noun",
+      "strength": "strong",
+      "valence": -0.7,
+      "arousal": 0.6,
+      "emotions": {
+        "fear": 0.8
+      },
+      "source": "curated:gemini-2026-09",
+      "version": 1,
+      "felt": "state"
+    },
+    {
+      "id": "hu.emonoun.megtörtség",
+      "lemma": "megtörtség",
+      "pos": [
+        "NOUN"
+      ],
+      "kind": "emotion_noun",
+      "strength": "strong",
+      "valence": -0.8,
+      "arousal": 0.3,
+      "emotions": {
+        "sadness": 0.8
+      },
+      "source": "curated:gemini-2026-09",
+      "version": 1,
+      "felt": "state"
+    },
+    {
+      "id": "hu.emonoun.kétség",
+      "lemma": "kétség",
+      "pos": [
+        "NOUN"
+      ],
+      "kind": "emotion_noun",
+      "strength": "strong",
+      "valence": -0.5,
+      "arousal": 0.5,
+      "emotions": {
+        "fear": 0.8
+      },
+      "source": "curated:gemini-2026-09",
+      "version": 1,
+      "felt": "state"
+    },
+    {
+      "id": "hu.emonoun.gyötrelem",
+      "lemma": "gyötrelem",
+      "pos": [
+        "NOUN"
+      ],
+      "kind": "emotion_noun",
+      "strength": "strong",
+      "valence": -0.8,
+      "arousal": 0.7,
+      "emotions": {
+        "sadness": 0.8
+      },
+      "source": "curated:gemini-2026-09",
+      "version": 1,
+      "felt": "state"
+    },
+    {
+      "id": "hu.emonoun.szenvedés",
+      "lemma": "szenvedés",
+      "pos": [
+        "NOUN"
+      ],
+      "kind": "emotion_noun",
+      "strength": "strong",
+      "valence": -0.8,
+      "arousal": 0.6,
+      "emotions": {
+        "sadness": 0.8
+      },
+      "source": "curated:gemini-2026-09",
+      "version": 1,
+      "felt": "state"
+    },
+    {
+      "id": "hu.emonoun.kín",
+      "lemma": "kín",
+      "pos": [
+        "NOUN"
+      ],
+      "kind": "emotion_noun",
+      "strength": "strong",
+      "valence": -0.9,
+      "arousal": 0.7,
+      "emotions": {
+        "sadness": 0.8
+      },
+      "source": "curated:gemini-2026-09",
+      "version": 1,
+      "felt": "state"
+    },
+    {
+      "id": "hu.emonoun.fájdalom",
+      "lemma": "fájdalom",
+      "pos": [
+        "NOUN"
+      ],
+      "kind": "emotion_noun",
+      "strength": "strong",
+      "valence": -0.7,
+      "arousal": 0.5,
+      "emotions": {
+        "sadness": 0.8
+      },
+      "source": "curated:gemini-2026-09",
+      "version": 1,
+      "felt": "state"
+    },
+    {
+      "id": "hu.emonoun.sérelem",
+      "lemma": "sérelem",
+      "pos": [
+        "NOUN"
+      ],
+      "kind": "emotion_noun",
+      "strength": "strong",
+      "valence": -0.6,
+      "arousal": 0.5,
+      "emotions": {
+        "anger": 0.8
+      },
+      "source": "curated:gemini-2026-09",
+      "version": 1,
+      "felt": "state"
+    },
+    {
+      "id": "hu.emonoun.ellenszenv",
+      "lemma": "ellenszenv",
+      "pos": [
+        "NOUN"
+      ],
+      "kind": "emotion_noun",
+      "strength": "strong",
+      "valence": -0.6,
+      "arousal": 0.4,
+      "emotions": {
+        "disgust": 0.8
+      },
+      "source": "curated:gemini-2026-09",
+      "version": 1,
+      "felt": "state"
+    },
+    {
+      "id": "hu.emonoun.rokonszenv",
+      "lemma": "rokonszenv",
+      "pos": [
+        "NOUN"
+      ],
+      "kind": "emotion_noun",
+      "strength": "strong",
+      "valence": 0.7,
+      "arousal": 0.4,
+      "emotions": {
+        "joy": 0.8
+      },
+      "source": "curated:gemini-2026-09",
+      "version": 1,
+      "felt": "state"
+    },
+    {
+      "id": "hu.emonoun.vonzalom",
+      "lemma": "vonzalom",
+      "pos": [
+        "NOUN"
+      ],
+      "kind": "emotion_noun",
+      "strength": "strong",
+      "valence": 0.7,
+      "arousal": 0.5,
+      "emotions": {
+        "joy": 0.8
+      },
+      "source": "curated:gemini-2026-09",
+      "version": 1,
+      "felt": "state"
+    },
+    {
+      "id": "hu.emonoun.ellenségeskedés",
+      "lemma": "ellenségeskedés",
+      "pos": [
+        "NOUN"
+      ],
+      "kind": "emotion_noun",
+      "strength": "strong",
+      "valence": -0.7,
+      "arousal": 0.7,
+      "emotions": {
+        "anger": 0.8
+      },
+      "source": "curated:gemini-2026-09",
+      "version": 1,
+      "felt": "state"
+    },
+    {
+      "id": "hu.emonoun.haragtartás",
+      "lemma": "haragtartás",
+      "pos": [
+        "NOUN"
+      ],
+      "kind": "emotion_noun",
+      "strength": "strong",
+      "valence": -0.6,
+      "arousal": 0.4,
+      "emotions": {
+        "anger": 0.8
+      },
+      "source": "curated:gemini-2026-09",
+      "version": 1,
+      "felt": "trait"
+    },
+    {
+      "id": "hu.emonoun.bosszúvágy",
+      "lemma": "bosszúvágy",
+      "pos": [
+        "NOUN"
+      ],
+      "kind": "emotion_noun",
+      "strength": "strong",
+      "valence": -0.8,
+      "arousal": 0.8,
+      "emotions": {
+        "anger": 0.8
+      },
+      "source": "curated:gemini-2026-09",
+      "version": 1,
+      "felt": "state"
+    },
+    {
+      "id": "hu.emonoun.derű",
+      "lemma": "derű",
+      "pos": [
+        "NOUN"
+      ],
+      "kind": "emotion_noun",
+      "strength": "strong",
+      "valence": 0.8,
+      "arousal": 0.4,
+      "emotions": {
+        "joy": 0.8
+      },
+      "source": "curated:gemini-2026-09",
+      "version": 1,
+      "felt": "state"
+    },
+    {
+      "id": "hu.emonoun.jókedv",
+      "lemma": "jókedv",
+      "pos": [
+        "NOUN"
+      ],
+      "kind": "emotion_noun",
+      "strength": "strong",
+      "valence": 0.7,
+      "arousal": 0.5,
+      "emotions": {
+        "joy": 0.8
+      },
+      "source": "curated:gemini-2026-09",
+      "version": 1,
+      "felt": "state"
+    },
+    {
+      "id": "hu.emonoun.izgalom",
+      "lemma": "izgalom",
+      "pos": [
+        "NOUN"
+      ],
+      "kind": "emotion_noun",
+      "strength": "strong",
+      "valence": 0.2,
+      "arousal": 0.8,
+      "emotions": {
+        "anticipation": 0.8
+      },
+      "source": "curated:gemini-2026-09",
+      "version": 1,
+      "felt": "state"
+    },
+    {
+      "id": "hu.emonoun.gyanakvás",
+      "lemma": "gyanakvás",
+      "pos": [
+        "NOUN"
+      ],
+      "kind": "emotion_noun",
+      "strength": "strong",
+      "valence": -0.5,
+      "arousal": 0.5,
+      "emotions": {
+        "fear": 0.8
+      },
+      "source": "curated:gemini-2026-09",
+      "version": 1,
+      "felt": "state"
+    },
+    {
+      "id": "hu.emonoun.bizalmatlanság",
+      "lemma": "bizalmatlanság",
+      "pos": [
+        "NOUN"
+      ],
+      "kind": "emotion_noun",
+      "strength": "strong",
+      "valence": -0.6,
+      "arousal": 0.5,
+      "emotions": {
+        "fear": 0.8
+      },
+      "source": "curated:gemini-2026-09",
+      "version": 1,
+      "felt": "state"
+    },
+    {
+      "id": "hu.emonoun.meghökkenés",
+      "lemma": "meghökkenés",
+      "pos": [
+        "NOUN"
+      ],
+      "kind": "emotion_noun",
+      "strength": "strong",
+      "valence": -0.2,
+      "arousal": 0.6,
+      "emotions": {
+        "surprise": 0.8
+      },
+      "source": "curated:gemini-2026-09",
+      "version": 1,
+      "felt": "state"
+    },
+    {
+      "id": "hu.emonoun.csodálkozás",
+      "lemma": "csodálkozás",
+      "pos": [
+        "NOUN"
+      ],
+      "kind": "emotion_noun",
+      "strength": "strong",
+      "valence": 0.5,
+      "arousal": 0.5,
+      "emotions": {
+        "surprise": 0.8
+      },
+      "source": "curated:gemini-2026-09",
+      "version": 1,
+      "felt": "state"
+    },
+    {
+      "id": "hu.emonoun.iszonyat",
+      "lemma": "iszonyat",
+      "pos": [
+        "NOUN"
+      ],
+      "kind": "emotion_noun",
+      "strength": "strong",
+      "valence": -0.9,
+      "arousal": 0.85,
+      "emotions": {
+        "fear": 0.8
+      },
+      "source": "curated:gemini-2026-09",
+      "version": 1,
+      "felt": "state"
+    },
+    {
+      "id": "hu.emonoun.borzadály",
+      "lemma": "borzadály",
+      "pos": [
+        "NOUN"
+      ],
+      "kind": "emotion_noun",
+      "strength": "strong",
+      "valence": -0.85,
+      "arousal": 0.8,
+      "emotions": {
+        "fear": 0.8
+      },
+      "source": "curated:gemini-2026-09",
+      "version": 1,
+      "felt": "evaluative"
+    },
+    {
+      "id": "hu.emonoun.utálkozás",
+      "lemma": "utálkozás",
+      "pos": [
+        "NOUN"
+      ],
+      "kind": "emotion_noun",
+      "strength": "strong",
+      "valence": -0.8,
+      "arousal": 0.6,
+      "emotions": {
+        "disgust": 0.8
+      },
+      "source": "curated:gemini-2026-09",
+      "version": 1,
+      "felt": "state"
+    },
+    {
+      "id": "hu.emonoun.dühöngés",
+      "lemma": "dühöngés",
+      "pos": [
+        "NOUN"
+      ],
+      "kind": "emotion_noun",
+      "strength": "strong",
+      "valence": -0.9,
+      "arousal": 0.9,
+      "emotions": {
+        "anger": 0.8
+      },
+      "source": "curated:gemini-2026-09",
+      "version": 1,
+      "felt": "state"
+    },
+    {
+      "id": "hu.emonoun.tombolás",
+      "lemma": "tombolás",
+      "pos": [
+        "NOUN"
+      ],
+      "kind": "emotion_noun",
+      "strength": "strong",
+      "valence": -0.9,
+      "arousal": 0.9,
+      "emotions": {
+        "anger": 0.8
+      },
+      "source": "curated:gemini-2026-09",
+      "version": 1,
+      "felt": "state"
+    },
+    {
+      "id": "hu.emonoun.bőszültség",
+      "lemma": "bőszültség",
+      "pos": [
+        "NOUN"
+      ],
+      "kind": "emotion_noun",
+      "strength": "strong",
+      "valence": -0.85,
+      "arousal": 0.85,
+      "emotions": {
+        "anger": 0.8
+      },
+      "source": "curated:gemini-2026-09",
+      "version": 1,
+      "felt": "state"
+    },
+    {
+      "id": "hu.emonoun.haragvás",
+      "lemma": "haragvás",
+      "pos": [
+        "NOUN"
+      ],
+      "kind": "emotion_noun",
+      "strength": "strong",
+      "valence": -0.75,
+      "arousal": 0.7,
+      "emotions": {
+        "anger": 0.8
+      },
+      "source": "curated:gemini-2026-09",
+      "version": 1,
+      "felt": "state"
+    },
+    {
+      "id": "hu.emonoun.bosszankodás",
+      "lemma": "bosszankodás",
+      "pos": [
+        "NOUN"
+      ],
+      "kind": "emotion_noun",
+      "strength": "strong",
+      "valence": -0.6,
+      "arousal": 0.55,
+      "emotions": {
+        "anger": 0.8
+      },
+      "source": "curated:gemini-2026-09",
+      "version": 1,
+      "felt": "state"
+    },
+    {
+      "id": "hu.emonoun.kesergés",
+      "lemma": "kesergés",
+      "pos": [
+        "NOUN"
+      ],
+      "kind": "emotion_noun",
+      "strength": "strong",
+      "valence": -0.7,
+      "arousal": 0.4,
+      "emotions": {
+        "sadness": 0.8
+      },
+      "source": "curated:gemini-2026-09",
+      "version": 1,
+      "felt": "state"
+    },
+    {
+      "id": "hu.emonoun.bánkódás",
+      "lemma": "bánkódás",
+      "pos": [
+        "NOUN"
+      ],
+      "kind": "emotion_noun",
+      "strength": "strong",
+      "valence": -0.7,
+      "arousal": 0.4,
+      "emotions": {
+        "sadness": 0.8
+      },
+      "source": "curated:gemini-2026-09",
+      "version": 1,
+      "felt": "state"
+    },
+    {
+      "id": "hu.emonoun.megdöbbenés",
+      "lemma": "megdöbbenés",
+      "pos": [
+        "NOUN"
+      ],
+      "kind": "emotion_noun",
+      "strength": "strong",
+      "valence": -0.4,
+      "arousal": 0.7,
+      "emotions": {
+        "surprise": 0.8,
+        "fear": 0.5
+      },
+      "source": "curated:gemini-2026-09",
+      "version": 1,
+      "felt": "state"
+    }
+  ]
+}

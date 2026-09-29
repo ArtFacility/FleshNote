@@ -1,0 +1,4448 @@
+{
+ "lang": "hu",
+ "kind": "emotion_label",
+ "version": 1,
+ "entries": [
+  {
+   "id": "hu.emo.dühös",
+   "lemma": "dühös",
+   "pos": [
+    "ADJ"
+   ],
+   "kind": "emotion_label",
+   "strength": "strong",
+   "valence": -0.8,
+   "arousal": 0.8,
+   "emotions": {
+    "anger": 0.9
+   },
+   "source": "migrated:hun_janitor.py",
+   "version": 1,
+   "felt": "state"
+  },
+  {
+   "id": "hu.emo.mérges",
+   "lemma": "mérges",
+   "pos": [
+    "ADJ"
+   ],
+   "kind": "emotion_label",
+   "strength": "strong",
+   "valence": -0.75,
+   "arousal": 0.75,
+   "emotions": {
+    "anger": 0.85
+   },
+   "source": "migrated:hun_janitor.py",
+   "version": 1,
+   "felt": "state"
+  },
+  {
+   "id": "hu.emo.szomorú",
+   "lemma": "szomorú",
+   "pos": [
+    "ADJ"
+   ],
+   "kind": "emotion_label",
+   "strength": "strong",
+   "valence": -0.8,
+   "arousal": 0.35,
+   "emotions": {
+    "sadness": 0.85
+   },
+   "source": "migrated:hun_janitor.py",
+   "version": 1,
+   "felt": "state"
+  },
+  {
+   "id": "hu.emo.boldog",
+   "lemma": "boldog",
+   "pos": [
+    "ADJ"
+   ],
+   "kind": "emotion_label",
+   "strength": "strong",
+   "valence": 0.85,
+   "arousal": 0.65,
+   "emotions": {
+    "joy": 0.9
+   },
+   "source": "migrated:hun_janitor.py",
+   "version": 1,
+   "felt": "state"
+  },
+  {
+   "id": "hu.emo.félős",
+   "lemma": "félős",
+   "pos": [
+    "ADJ"
+   ],
+   "kind": "emotion_label",
+   "strength": "strong",
+   "valence": -0.65,
+   "arousal": 0.55,
+   "emotions": {
+    "fear": 0.8
+   },
+   "source": "migrated:hun_janitor.py",
+   "version": 1,
+   "felt": "trait"
+  },
+  {
+   "id": "hu.emo.ijedt",
+   "lemma": "ijedt",
+   "pos": [
+    "ADJ"
+   ],
+   "kind": "emotion_label",
+   "strength": "strong",
+   "valence": -0.75,
+   "arousal": 0.8,
+   "emotions": {
+    "fear": 0.85
+   },
+   "source": "migrated:hun_janitor.py",
+   "version": 1,
+   "felt": "state"
+  },
+  {
+   "id": "hu.emo.aggódó",
+   "lemma": "aggódó",
+   "pos": [
+    "ADJ"
+   ],
+   "kind": "emotion_label",
+   "strength": "strong",
+   "valence": -0.55,
+   "arousal": 0.6,
+   "emotions": {
+    "fear": 0.75
+   },
+   "source": "migrated:hun_janitor.py",
+   "version": 1,
+   "felt": "state"
+  },
+  {
+   "id": "hu.emo.ideges",
+   "lemma": "ideges",
+   "pos": [
+    "ADJ"
+   ],
+   "kind": "emotion_label",
+   "strength": "strong",
+   "valence": -0.6,
+   "arousal": 0.7,
+   "emotions": {
+    "fear": 0.6,
+    "anger": 0.6
+   },
+   "source": "migrated:hun_janitor.py",
+   "version": 1,
+   "felt": "state"
+  },
+  {
+   "id": "hu.emo.féltékeny",
+   "lemma": "féltékeny",
+   "pos": [
+    "ADJ"
+   ],
+   "kind": "emotion_label",
+   "strength": "strong",
+   "valence": -0.7,
+   "arousal": 0.65,
+   "emotions": {
+    "disgust": 0.7,
+    "anger": 0.6
+   },
+   "source": "migrated:hun_janitor.py",
+   "version": 1,
+   "felt": "state"
+  },
+  {
+   "id": "hu.emo.izgatott",
+   "lemma": "izgatott",
+   "pos": [
+    "ADJ"
+   ],
+   "kind": "emotion_label",
+   "strength": "strong",
+   "valence": 0.7,
+   "arousal": 0.85,
+   "emotions": {
+    "anticipation": 0.8,
+    "joy": 0.7
+   },
+   "source": "migrated:hun_janitor.py",
+   "version": 1,
+   "felt": "state"
+  },
+  {
+   "id": "hu.emo.lehangolt",
+   "lemma": "lehangolt",
+   "pos": [
+    "ADJ"
+   ],
+   "kind": "emotion_label",
+   "strength": "strong",
+   "valence": -0.75,
+   "arousal": 0.3,
+   "emotions": {
+    "sadness": 0.85
+   },
+   "source": "migrated:hun_janitor.py",
+   "version": 1,
+   "felt": "state"
+  },
+  {
+   "id": "hu.emo.magányos",
+   "lemma": "magányos",
+   "pos": [
+    "ADJ"
+   ],
+   "kind": "emotion_label",
+   "strength": "strong",
+   "valence": -0.75,
+   "arousal": 0.3,
+   "emotions": {
+    "sadness": 0.85
+   },
+   "source": "migrated:hun_janitor.py",
+   "version": 1,
+   "felt": "state"
+  },
+  {
+   "id": "hu.emo.kétségbeesett",
+   "lemma": "kétségbeesett",
+   "pos": [
+    "ADJ"
+   ],
+   "kind": "emotion_label",
+   "strength": "strong",
+   "valence": -0.9,
+   "arousal": 0.85,
+   "emotions": {
+    "fear": 0.85,
+    "sadness": 0.85
+   },
+   "source": "migrated:hun_janitor.py",
+   "version": 1,
+   "felt": "state"
+  },
+  {
+   "id": "hu.emo.reménykedő",
+   "lemma": "reménykedő",
+   "pos": [
+    "ADJ"
+   ],
+   "kind": "emotion_label",
+   "strength": "strong",
+   "valence": 0.7,
+   "arousal": 0.55,
+   "emotions": {
+    "anticipation": 0.8,
+    "joy": 0.6
+   },
+   "source": "migrated:hun_janitor.py",
+   "version": 1,
+   "felt": "state"
+  },
+  {
+   "id": "hu.emo.büszke",
+   "lemma": "büszke",
+   "pos": [
+    "ADJ"
+   ],
+   "kind": "emotion_label",
+   "strength": "strong",
+   "valence": 0.7,
+   "arousal": 0.6,
+   "emotions": {
+    "joy": 0.7,
+    "trust": 0.6
+   },
+   "source": "migrated:hun_janitor.py",
+   "version": 1,
+   "felt": "state",
+   "note": "also trait reading"
+  },
+  {
+   "id": "hu.emo.csalódott",
+   "lemma": "csalódott",
+   "pos": [
+    "ADJ"
+   ],
+   "kind": "emotion_label",
+   "strength": "strong",
+   "valence": -0.7,
+   "arousal": 0.4,
+   "emotions": {
+    "sadness": 0.8
+   },
+   "source": "migrated:hun_janitor.py",
+   "version": 1,
+   "felt": "state"
+  },
+  {
+   "id": "hu.emo.zavart",
+   "lemma": "zavart",
+   "pos": [
+    "ADJ"
+   ],
+   "kind": "emotion_label",
+   "strength": "weak",
+   "valence": -0.4,
+   "arousal": 0.5,
+   "emotions": {
+    "surprise": 0.6,
+    "fear": 0.5
+   },
+   "source": "migrated:hun_janitor.py",
+   "version": 1,
+   "note": "fizikai zavarosság vs lelki zavarodottság",
+   "felt": "state"
+  },
+  {
+   "id": "hu.emo.szégyenlős",
+   "lemma": "szégyenlős",
+   "pos": [
+    "ADJ"
+   ],
+   "kind": "emotion_label",
+   "strength": "strong",
+   "valence": -0.5,
+   "arousal": 0.45,
+   "emotions": {
+    "fear": 0.6,
+    "sadness": 0.5
+   },
+   "source": "migrated:hun_janitor.py",
+   "version": 1,
+   "felt": "trait"
+  },
+  {
+   "id": "hu.emo.undorodó",
+   "lemma": "undorodó",
+   "pos": [
+    "ADJ"
+   ],
+   "kind": "emotion_label",
+   "strength": "strong",
+   "valence": -0.8,
+   "arousal": 0.7,
+   "emotions": {
+    "disgust": 0.85
+   },
+   "source": "migrated:hun_janitor.py",
+   "version": 1,
+   "felt": "state"
+  },
+  {
+   "id": "hu.emo.elkeseredett",
+   "lemma": "elkeseredett",
+   "pos": [
+    "ADJ"
+   ],
+   "kind": "emotion_label",
+   "strength": "strong",
+   "valence": -0.8,
+   "arousal": 0.6,
+   "emotions": {
+    "sadness": 0.85
+   },
+   "source": "migrated:hun_janitor.py",
+   "version": 1,
+   "alt_lemmas": [
+    "elkeseredik"
+   ],
+   "lemma_evidence": "carrier",
+   "felt": "state"
+  },
+  {
+   "id": "hu.emo.szorongó",
+   "lemma": "szorongó",
+   "pos": [
+    "ADJ"
+   ],
+   "kind": "emotion_label",
+   "strength": "strong",
+   "valence": -0.75,
+   "arousal": 0.75,
+   "emotions": {
+    "fear": 0.85
+   },
+   "source": "migrated:hun_janitor.py",
+   "version": 1,
+   "felt": "state"
+  },
+  {
+   "id": "hu.emo.rettegő",
+   "lemma": "rettegő",
+   "pos": [
+    "ADJ"
+   ],
+   "kind": "emotion_label",
+   "strength": "strong",
+   "valence": -0.95,
+   "arousal": 0.95,
+   "emotions": {
+    "fear": 0.95
+   },
+   "source": "migrated:hun_janitor.py",
+   "version": 1,
+   "felt": "state"
+  },
+  {
+   "id": "hu.emo.bosszús",
+   "lemma": "bosszús",
+   "pos": [
+    "ADJ"
+   ],
+   "kind": "emotion_label",
+   "strength": "strong",
+   "valence": -0.65,
+   "arousal": 0.65,
+   "emotions": {
+    "anger": 0.75
+   },
+   "source": "migrated:hun_janitor.py",
+   "version": 1,
+   "felt": "state"
+  },
+  {
+   "id": "hu.emo.elégedett",
+   "lemma": "elégedett",
+   "pos": [
+    "ADJ"
+   ],
+   "kind": "emotion_label",
+   "strength": "strong",
+   "valence": 0.7,
+   "arousal": 0.3,
+   "emotions": {
+    "joy": 0.7
+   },
+   "source": "migrated:hun_janitor.py",
+   "version": 1,
+   "felt": "state"
+  },
+  {
+   "id": "hu.emo.bűntudatos",
+   "lemma": "bűntudatos",
+   "pos": [
+    "ADJ"
+   ],
+   "kind": "emotion_label",
+   "strength": "strong",
+   "valence": -0.7,
+   "arousal": 0.5,
+   "emotions": {
+    "sadness": 0.8
+   },
+   "source": "migrated:hun_janitor.py",
+   "version": 1,
+   "felt": "state"
+  },
+  {
+   "id": "hu.emo.borús",
+   "lemma": "borús",
+   "pos": [
+    "ADJ"
+   ],
+   "kind": "emotion_label",
+   "strength": "weak",
+   "valence": -0.55,
+   "arousal": 0.3,
+   "emotions": {
+    "sadness": 0.7
+   },
+   "source": "migrated:hun_janitor.py",
+   "version": 1,
+   "note": "időjárás / égbolt vs borús hangulat",
+   "felt": "state"
+  },
+  {
+   "id": "hu.emo.boldogtalan",
+   "lemma": "boldogtalan",
+   "pos": [
+    "ADJ"
+   ],
+   "kind": "emotion_label",
+   "strength": "strong",
+   "valence": -0.85,
+   "arousal": 0.4,
+   "emotions": {
+    "sadness": 0.9
+   },
+   "source": "migrated:hun_janitor.py",
+   "version": 1,
+   "felt": "state"
+  },
+  {
+   "id": "hu.emo.nyugtalan",
+   "lemma": "nyugtalan",
+   "pos": [
+    "ADJ"
+   ],
+   "kind": "emotion_label",
+   "strength": "strong",
+   "valence": -0.65,
+   "arousal": 0.7,
+   "emotions": {
+    "fear": 0.75
+   },
+   "source": "migrated:hun_janitor.py",
+   "version": 1,
+   "felt": "state"
+  },
+  {
+   "id": "hu.emo.reménytelen",
+   "lemma": "reménytelen",
+   "pos": [
+    "ADJ"
+   ],
+   "kind": "emotion_label",
+   "strength": "strong",
+   "valence": -0.95,
+   "arousal": 0.35,
+   "emotions": {
+    "sadness": 0.95
+   },
+   "source": "migrated:hun_janitor.py",
+   "version": 1,
+   "felt": "state"
+  },
+  {
+   "id": "hu.emo.megtört",
+   "lemma": "megtört",
+   "pos": [
+    "ADJ"
+   ],
+   "kind": "emotion_label",
+   "strength": "weak",
+   "valence": -0.8,
+   "arousal": 0.4,
+   "emotions": {
+    "sadness": 0.85
+   },
+   "source": "migrated:hun_janitor.py",
+   "version": 1,
+   "note": "fizikai törés vs megtört lélek",
+   "felt": "state"
+  },
+  {
+   "id": "hu.emo.haragos",
+   "lemma": "haragos",
+   "pos": [
+    "ADJ"
+   ],
+   "kind": "emotion_label",
+   "strength": "strong",
+   "valence": -0.8,
+   "arousal": 0.8,
+   "emotions": {
+    "anger": 0.9
+   },
+   "source": "curated:gemini-2026-09",
+   "version": 1,
+   "felt": "state"
+  },
+  {
+   "id": "hu.emo.dühöngő",
+   "lemma": "dühöngő",
+   "pos": [
+    "ADJ"
+   ],
+   "kind": "emotion_label",
+   "strength": "strong",
+   "valence": -0.9,
+   "arousal": 0.9,
+   "emotions": {
+    "anger": 0.9
+   },
+   "source": "curated:gemini-2026-09",
+   "version": 1,
+   "felt": "state"
+  },
+  {
+   "id": "hu.emo.tajtékzó",
+   "lemma": "tajtékzó",
+   "pos": [
+    "ADJ"
+   ],
+   "kind": "emotion_label",
+   "strength": "weak",
+   "valence": -0.9,
+   "arousal": 0.9,
+   "emotions": {
+    "anger": 0.9
+   },
+   "source": "curated:gemini-2026-09",
+   "version": 1,
+   "note": "tajtékzó hullámok vs dühöngő ember",
+   "felt": "state"
+  },
+  {
+   "id": "hu.emo.bőszült",
+   "lemma": "bőszült",
+   "pos": [
+    "ADJ"
+   ],
+   "kind": "emotion_label",
+   "strength": "strong",
+   "valence": -0.8,
+   "arousal": 0.8,
+   "emotions": {
+    "anger": 0.9
+   },
+   "source": "curated:gemini-2026-09",
+   "version": 1,
+   "felt": "state"
+  },
+  {
+   "id": "hu.emo.felbőszült",
+   "lemma": "felbőszült",
+   "pos": [
+    "ADJ"
+   ],
+   "kind": "emotion_label",
+   "strength": "strong",
+   "valence": -0.8,
+   "arousal": 0.8,
+   "emotions": {
+    "anger": 0.9
+   },
+   "source": "curated:gemini-2026-09",
+   "version": 1,
+   "felt": "state"
+  },
+  {
+   "id": "hu.emo.ingerült",
+   "lemma": "ingerült",
+   "pos": [
+    "ADJ"
+   ],
+   "kind": "emotion_label",
+   "strength": "strong",
+   "valence": -0.6,
+   "arousal": 0.7,
+   "emotions": {
+    "anger": 0.9
+   },
+   "source": "curated:gemini-2026-09",
+   "version": 1,
+   "felt": "state"
+  },
+  {
+   "id": "hu.emo.ingerlékeny",
+   "lemma": "ingerlékeny",
+   "pos": [
+    "ADJ"
+   ],
+   "kind": "emotion_label",
+   "strength": "strong",
+   "valence": -0.5,
+   "arousal": 0.6,
+   "emotions": {
+    "anger": 0.9
+   },
+   "source": "curated:gemini-2026-09",
+   "version": 1,
+   "felt": "trait"
+  },
+  {
+   "id": "hu.emo.feszült",
+   "lemma": "feszült",
+   "pos": [
+    "ADJ"
+   ],
+   "kind": "emotion_label",
+   "strength": "weak",
+   "valence": -0.5,
+   "arousal": 0.7,
+   "emotions": {
+    "fear": 0.9
+   },
+   "source": "curated:gemini-2026-09",
+   "version": 1,
+   "note": "feszült húr vs idegi feszültség",
+   "felt": "state"
+  },
+  {
+   "id": "hu.emo.frusztrált",
+   "lemma": "frusztrált",
+   "pos": [
+    "ADJ"
+   ],
+   "kind": "emotion_label",
+   "strength": "strong",
+   "valence": -0.6,
+   "arousal": 0.6,
+   "emotions": {
+    "anger": 0.9
+   },
+   "source": "curated:gemini-2026-09",
+   "version": 1,
+   "felt": "state"
+  },
+  {
+   "id": "hu.emo.keserű",
+   "lemma": "keserű",
+   "pos": [
+    "ADJ"
+   ],
+   "kind": "emotion_label",
+   "strength": "weak",
+   "valence": -0.6,
+   "arousal": 0.5,
+   "emotions": {
+    "anger": 0.9
+   },
+   "source": "curated:gemini-2026-09",
+   "version": 1,
+   "note": "keserű íz vs keserű csalódottság",
+   "felt": "state"
+  },
+  {
+   "id": "hu.emo.epés",
+   "lemma": "epés",
+   "pos": [
+    "ADJ"
+   ],
+   "kind": "emotion_label",
+   "strength": "strong",
+   "valence": -0.6,
+   "arousal": 0.5,
+   "emotions": {
+    "disgust": 0.9
+   },
+   "source": "curated:gemini-2026-09",
+   "version": 1,
+   "felt": "trait"
+  },
+  {
+   "id": "hu.emo.maró",
+   "lemma": "maró",
+   "pos": [
+    "ADJ"
+   ],
+   "kind": "emotion_label",
+   "strength": "weak",
+   "valence": -0.5,
+   "arousal": 0.5,
+   "emotions": {
+    "disgust": 0.9
+   },
+   "source": "curated:gemini-2026-09",
+   "version": 1,
+   "note": "maró vegyszer vs maró gúny",
+   "felt": "evaluative"
+  },
+  {
+   "id": "hu.emo.gúnyos",
+   "lemma": "gúnyos",
+   "pos": [
+    "ADJ"
+   ],
+   "kind": "emotion_label",
+   "strength": "strong",
+   "valence": -0.6,
+   "arousal": 0.6,
+   "emotions": {
+    "disgust": 0.9
+   },
+   "source": "curated:gemini-2026-09",
+   "version": 1,
+   "felt": "state"
+  },
+  {
+   "id": "hu.emo.gőgös",
+   "lemma": "gőgös",
+   "pos": [
+    "ADJ"
+   ],
+   "kind": "emotion_label",
+   "strength": "strong",
+   "valence": -0.6,
+   "arousal": 0.5,
+   "emotions": {
+    "disgust": 0.9
+   },
+   "source": "curated:gemini-2026-09",
+   "version": 1,
+   "felt": "trait"
+  },
+  {
+   "id": "hu.emo.kevély",
+   "lemma": "kevély",
+   "pos": [
+    "ADJ"
+   ],
+   "kind": "emotion_label",
+   "strength": "strong",
+   "valence": -0.6,
+   "arousal": 0.5,
+   "emotions": {
+    "disgust": 0.9
+   },
+   "source": "curated:gemini-2026-09",
+   "version": 1,
+   "felt": "trait"
+  },
+  {
+   "id": "hu.emo.rátarti",
+   "lemma": "rátarti",
+   "pos": [
+    "ADJ"
+   ],
+   "kind": "emotion_label",
+   "strength": "strong",
+   "valence": -0.5,
+   "arousal": 0.4,
+   "emotions": {
+    "disgust": 0.9
+   },
+   "source": "curated:gemini-2026-09",
+   "version": 1,
+   "felt": "trait"
+  },
+  {
+   "id": "hu.emo.önhitt",
+   "lemma": "önhitt",
+   "pos": [
+    "ADJ"
+   ],
+   "kind": "emotion_label",
+   "strength": "strong",
+   "valence": -0.6,
+   "arousal": 0.5,
+   "emotions": {
+    "disgust": 0.9
+   },
+   "source": "curated:gemini-2026-09",
+   "version": 1,
+   "felt": "trait"
+  },
+  {
+   "id": "hu.emo.felfuvalkodik",
+   "lemma": "felfuvalkodik",
+   "pos": [
+    "ADJ"
+   ],
+   "kind": "emotion_label",
+   "strength": "strong",
+   "valence": -0.6,
+   "arousal": 0.5,
+   "emotions": {
+    "disgust": 0.9
+   },
+   "source": "curated:gemini-2026-09",
+   "version": 1,
+   "felt": "trait"
+  },
+  {
+   "id": "hu.emo.öntelt",
+   "lemma": "öntelt",
+   "pos": [
+    "ADJ"
+   ],
+   "kind": "emotion_label",
+   "strength": "strong",
+   "valence": -0.5,
+   "arousal": 0.4,
+   "emotions": {
+    "disgust": 0.9
+   },
+   "source": "curated:gemini-2026-09",
+   "version": 1,
+   "felt": "trait"
+  },
+  {
+   "id": "hu.emo.megvető",
+   "lemma": "megvető",
+   "pos": [
+    "ADJ"
+   ],
+   "kind": "emotion_label",
+   "strength": "strong",
+   "valence": -0.7,
+   "arousal": 0.6,
+   "emotions": {
+    "disgust": 0.9
+   },
+   "source": "curated:gemini-2026-09",
+   "version": 1,
+   "felt": "state"
+  },
+  {
+   "id": "hu.emo.lekicsinylő",
+   "lemma": "lekicsinylő",
+   "pos": [
+    "ADJ"
+   ],
+   "kind": "emotion_label",
+   "strength": "strong",
+   "valence": -0.6,
+   "arousal": 0.5,
+   "emotions": {
+    "disgust": 0.9
+   },
+   "source": "curated:gemini-2026-09",
+   "version": 1,
+   "felt": "state"
+  },
+  {
+   "id": "hu.emo.ellenséges",
+   "lemma": "ellenséges",
+   "pos": [
+    "ADJ"
+   ],
+   "kind": "emotion_label",
+   "strength": "strong",
+   "valence": -0.7,
+   "arousal": 0.7,
+   "emotions": {
+    "anger": 0.9
+   },
+   "source": "curated:gemini-2026-09",
+   "version": 1,
+   "felt": "trait"
+  },
+  {
+   "id": "hu.emo.rosszindulatú",
+   "lemma": "rosszindulatú",
+   "pos": [
+    "ADJ"
+   ],
+   "kind": "emotion_label",
+   "strength": "weak",
+   "valence": -0.8,
+   "arousal": 0.6,
+   "emotions": {
+    "disgust": 0.9
+   },
+   "source": "curated:gemini-2026-09",
+   "version": 1,
+   "note": "rosszindulatú daganat vs rosszindulatú ember",
+   "felt": "trait"
+  },
+  {
+   "id": "hu.emo.gonosz",
+   "lemma": "gonosz",
+   "pos": [
+    "ADJ"
+   ],
+   "kind": "emotion_label",
+   "strength": "strong",
+   "valence": -0.8,
+   "arousal": 0.7,
+   "emotions": {
+    "disgust": 0.9
+   },
+   "source": "curated:gemini-2026-09",
+   "version": 1,
+   "felt": "trait"
+  },
+  {
+   "id": "hu.emo.kegyetlen",
+   "lemma": "kegyetlen",
+   "pos": [
+    "ADJ"
+   ],
+   "kind": "emotion_label",
+   "strength": "strong",
+   "valence": -0.8,
+   "arousal": 0.7,
+   "emotions": {
+    "disgust": 0.9
+   },
+   "source": "curated:gemini-2026-09",
+   "version": 1,
+   "felt": "trait"
+  },
+  {
+   "id": "hu.emo.irigy",
+   "lemma": "irigy",
+   "pos": [
+    "ADJ"
+   ],
+   "kind": "emotion_label",
+   "strength": "strong",
+   "valence": -0.7,
+   "arousal": 0.6,
+   "emotions": {
+    "disgust": 0.9
+   },
+   "source": "curated:gemini-2026-09",
+   "version": 1,
+   "felt": "trait"
+  },
+  {
+   "id": "hu.emo.gyűlölködő",
+   "lemma": "gyűlölködő",
+   "pos": [
+    "ADJ"
+   ],
+   "kind": "emotion_label",
+   "strength": "strong",
+   "valence": -0.9,
+   "arousal": 0.8,
+   "emotions": {
+    "disgust": 0.9
+   },
+   "source": "curated:gemini-2026-09",
+   "version": 1,
+   "felt": "trait"
+  },
+  {
+   "id": "hu.emo.bosszúszomjas",
+   "lemma": "bosszúszomjas",
+   "pos": [
+    "ADJ"
+   ],
+   "kind": "emotion_label",
+   "strength": "strong",
+   "valence": -0.8,
+   "arousal": 0.8,
+   "emotions": {
+    "anger": 0.9
+   },
+   "source": "curated:gemini-2026-09",
+   "version": 1,
+   "felt": "trait"
+  },
+  {
+   "id": "hu.emo.engeszteletlen",
+   "lemma": "engeszteletlen",
+   "pos": [
+    "ADJ"
+   ],
+   "kind": "emotion_label",
+   "strength": "strong",
+   "valence": -0.7,
+   "arousal": 0.6,
+   "emotions": {
+    "anger": 0.9
+   },
+   "source": "curated:gemini-2026-09",
+   "version": 1,
+   "felt": "trait"
+  },
+  {
+   "id": "hu.emo.megbántott",
+   "lemma": "megbántott",
+   "pos": [
+    "ADJ"
+   ],
+   "kind": "emotion_label",
+   "strength": "strong",
+   "valence": -0.6,
+   "arousal": 0.5,
+   "emotions": {
+    "sadness": 0.9
+   },
+   "source": "curated:gemini-2026-09",
+   "version": 1,
+   "felt": "state"
+  },
+  {
+   "id": "hu.emo.sért",
+   "lemma": "sért",
+   "pos": [
+    "ADJ"
+   ],
+   "kind": "emotion_label",
+   "strength": "weak",
+   "valence": -0.6,
+   "arousal": 0.5,
+   "emotions": {
+    "anger": 0.9
+   },
+   "source": "curated:gemini-2026-09",
+   "version": 1,
+   "note": "sértett jogi fél vs sértett büszkeség",
+   "felt": "state"
+  },
+  {
+   "id": "hu.emo.sértődik",
+   "lemma": "sértődik",
+   "pos": [
+    "ADJ"
+   ],
+   "kind": "emotion_label",
+   "strength": "strong",
+   "valence": -0.5,
+   "arousal": 0.5,
+   "emotions": {
+    "anger": 0.9
+   },
+   "source": "curated:gemini-2026-09",
+   "version": 1,
+   "felt": "state"
+  },
+  {
+   "id": "hu.emo.megalázott",
+   "lemma": "megalázott",
+   "pos": [
+    "ADJ"
+   ],
+   "kind": "emotion_label",
+   "strength": "strong",
+   "valence": -0.8,
+   "arousal": 0.6,
+   "emotions": {
+    "sadness": 0.9
+   },
+   "source": "curated:gemini-2026-09",
+   "version": 1,
+   "felt": "state"
+  },
+  {
+   "id": "hu.emo.megszégyenült",
+   "lemma": "megszégyenült",
+   "pos": [
+    "ADJ"
+   ],
+   "kind": "emotion_label",
+   "strength": "strong",
+   "valence": -0.8,
+   "arousal": 0.6,
+   "emotions": {
+    "sadness": 0.9
+   },
+   "source": "curated:gemini-2026-09",
+   "version": 1,
+   "felt": "state"
+  },
+  {
+   "id": "hu.emo.szégyenkező",
+   "lemma": "szégyenkező",
+   "pos": [
+    "ADJ"
+   ],
+   "kind": "emotion_label",
+   "strength": "strong",
+   "valence": -0.6,
+   "arousal": 0.4,
+   "emotions": {
+    "sadness": 0.9
+   },
+   "source": "curated:gemini-2026-09",
+   "version": 1,
+   "felt": "state"
+  },
+  {
+   "id": "hu.emo.feszengő",
+   "lemma": "feszengő",
+   "pos": [
+    "ADJ"
+   ],
+   "kind": "emotion_label",
+   "strength": "strong",
+   "valence": -0.4,
+   "arousal": 0.5,
+   "emotions": {
+    "fear": 0.9
+   },
+   "source": "curated:gemini-2026-09",
+   "version": 1,
+   "felt": "state"
+  },
+  {
+   "id": "hu.emo.félénk",
+   "lemma": "félénk",
+   "pos": [
+    "ADJ"
+   ],
+   "kind": "emotion_label",
+   "strength": "strong",
+   "valence": -0.4,
+   "arousal": 0.4,
+   "emotions": {
+    "fear": 0.9
+   },
+   "source": "curated:gemini-2026-09",
+   "version": 1,
+   "felt": "trait"
+  },
+  {
+   "id": "hu.emo.megilletődik",
+   "lemma": "megilletődik",
+   "pos": [
+    "ADJ"
+   ],
+   "kind": "emotion_label",
+   "strength": "strong",
+   "valence": 0.1,
+   "arousal": 0.4,
+   "emotions": {
+    "surprise": 0.9
+   },
+   "source": "curated:gemini-2026-09",
+   "version": 1,
+   "felt": "state"
+  },
+  {
+   "id": "hu.emo.bizonytalan",
+   "lemma": "bizonytalan",
+   "pos": [
+    "ADJ"
+   ],
+   "kind": "emotion_label",
+   "strength": "weak",
+   "valence": -0.3,
+   "arousal": 0.4,
+   "emotions": {
+    "fear": 0.9
+   },
+   "source": "curated:gemini-2026-09",
+   "version": 1,
+   "note": "bizonytalan kimenetel vs bizonytalan személyiség",
+   "felt": "state"
+  },
+  {
+   "id": "hu.emo.gyáva",
+   "lemma": "gyáva",
+   "pos": [
+    "ADJ"
+   ],
+   "kind": "emotion_label",
+   "strength": "strong",
+   "valence": -0.6,
+   "arousal": 0.4,
+   "emotions": {
+    "fear": 0.9
+   },
+   "source": "curated:gemini-2026-09",
+   "version": 1,
+   "felt": "trait"
+  },
+  {
+   "id": "hu.emo.kishitű",
+   "lemma": "kishitű",
+   "pos": [
+    "ADJ"
+   ],
+   "kind": "emotion_label",
+   "strength": "strong",
+   "valence": -0.5,
+   "arousal": 0.3,
+   "emotions": {
+    "sadness": 0.9
+   },
+   "source": "curated:gemini-2026-09",
+   "version": 1,
+   "felt": "trait"
+  },
+  {
+   "id": "hu.emo.ijedős",
+   "lemma": "ijedős",
+   "pos": [
+    "ADJ"
+   ],
+   "kind": "emotion_label",
+   "strength": "strong",
+   "valence": -0.5,
+   "arousal": 0.5,
+   "emotions": {
+    "fear": 0.9
+   },
+   "source": "curated:gemini-2026-09",
+   "version": 1,
+   "felt": "trait"
+  },
+  {
+   "id": "hu.emo.rémült",
+   "lemma": "rémült",
+   "pos": [
+    "ADJ"
+   ],
+   "kind": "emotion_label",
+   "strength": "strong",
+   "valence": -0.8,
+   "arousal": 0.8,
+   "emotions": {
+    "fear": 0.9
+   },
+   "source": "curated:gemini-2026-09",
+   "version": 1,
+   "felt": "state"
+  },
+  {
+   "id": "hu.emo.megrémült",
+   "lemma": "megrémült",
+   "pos": [
+    "ADJ"
+   ],
+   "kind": "emotion_label",
+   "strength": "strong",
+   "valence": -0.8,
+   "arousal": 0.8,
+   "emotions": {
+    "fear": 0.9
+   },
+   "source": "curated:gemini-2026-09",
+   "version": 1,
+   "felt": "state"
+  },
+  {
+   "id": "hu.emo.megdermed",
+   "lemma": "megdermed",
+   "pos": [
+    "ADJ"
+   ],
+   "kind": "emotion_label",
+   "strength": "weak",
+   "valence": -0.7,
+   "arousal": 0.7,
+   "emotions": {
+    "fear": 0.9
+   },
+   "source": "curated:gemini-2026-09",
+   "version": 1,
+   "note": "megdermedt zsír vs megdermedt félelem",
+   "felt": "state"
+  },
+  {
+   "id": "hu.emo.vigasztalhatatlan",
+   "lemma": "vigasztalhatatlan",
+   "pos": [
+    "ADJ"
+   ],
+   "kind": "emotion_label",
+   "strength": "strong",
+   "valence": -0.9,
+   "arousal": 0.6,
+   "emotions": {
+    "sadness": 0.9
+   },
+   "source": "curated:gemini-2026-09",
+   "version": 1,
+   "felt": "state"
+  },
+  {
+   "id": "hu.emo.bánatos",
+   "lemma": "bánatos",
+   "pos": [
+    "ADJ"
+   ],
+   "kind": "emotion_label",
+   "strength": "strong",
+   "valence": -0.8,
+   "arousal": 0.4,
+   "emotions": {
+    "sadness": 0.9
+   },
+   "source": "curated:gemini-2026-09",
+   "version": 1,
+   "felt": "state"
+  },
+  {
+   "id": "hu.emo.bús",
+   "lemma": "bús",
+   "pos": [
+    "ADJ"
+   ],
+   "kind": "emotion_label",
+   "strength": "strong",
+   "valence": -0.7,
+   "arousal": 0.3,
+   "emotions": {
+    "sadness": 0.9
+   },
+   "source": "curated:gemini-2026-09",
+   "version": 1,
+   "felt": "state"
+  },
+  {
+   "id": "hu.emo.búskomor",
+   "lemma": "búskomor",
+   "pos": [
+    "ADJ"
+   ],
+   "kind": "emotion_label",
+   "strength": "strong",
+   "valence": -0.7,
+   "arousal": 0.3,
+   "emotions": {
+    "sadness": 0.9
+   },
+   "source": "curated:gemini-2026-09",
+   "version": 1,
+   "felt": "trait"
+  },
+  {
+   "id": "hu.emo.melankolikus",
+   "lemma": "melankolikus",
+   "pos": [
+    "ADJ"
+   ],
+   "kind": "emotion_label",
+   "strength": "strong",
+   "valence": -0.6,
+   "arousal": 0.3,
+   "emotions": {
+    "sadness": 0.9
+   },
+   "source": "curated:gemini-2026-09",
+   "version": 1,
+   "felt": "trait"
+  },
+  {
+   "id": "hu.emo.kedvetlen",
+   "lemma": "kedvetlen",
+   "pos": [
+    "ADJ"
+   ],
+   "kind": "emotion_label",
+   "strength": "strong",
+   "valence": -0.5,
+   "arousal": 0.3,
+   "emotions": {
+    "sadness": 0.9
+   },
+   "source": "curated:gemini-2026-09",
+   "version": 1,
+   "felt": "state"
+  },
+  {
+   "id": "hu.emo.levert",
+   "lemma": "levert",
+   "pos": [
+    "ADJ"
+   ],
+   "kind": "emotion_label",
+   "strength": "weak",
+   "valence": -0.6,
+   "arousal": 0.3,
+   "emotions": {
+    "sadness": 0.9
+   },
+   "source": "curated:gemini-2026-09",
+   "version": 1,
+   "note": "levert vakolat vs levert hangulat",
+   "felt": "state"
+  },
+  {
+   "id": "hu.emo.csüggedt",
+   "lemma": "csüggedt",
+   "pos": [
+    "ADJ"
+   ],
+   "kind": "emotion_label",
+   "strength": "strong",
+   "valence": -0.7,
+   "arousal": 0.3,
+   "emotions": {
+    "sadness": 0.9
+   },
+   "source": "curated:gemini-2026-09",
+   "version": 1,
+   "felt": "state"
+  },
+  {
+   "id": "hu.emo.elcsüggedt",
+   "lemma": "elcsüggedt",
+   "pos": [
+    "ADJ"
+   ],
+   "kind": "emotion_label",
+   "strength": "strong",
+   "valence": -0.7,
+   "arousal": 0.3,
+   "emotions": {
+    "sadness": 0.9
+   },
+   "source": "curated:gemini-2026-09",
+   "version": 1,
+   "felt": "state"
+  },
+  {
+   "id": "hu.emo.fásult",
+   "lemma": "fásult",
+   "pos": [
+    "ADJ"
+   ],
+   "kind": "emotion_label",
+   "strength": "strong",
+   "valence": -0.4,
+   "arousal": 0.2,
+   "emotions": null,
+   "source": "curated:gemini-2026-09",
+   "version": 1,
+   "felt": "state"
+  },
+  {
+   "id": "hu.emo.közömbös",
+   "lemma": "közömbös",
+   "pos": [
+    "ADJ"
+   ],
+   "kind": "emotion_label",
+   "strength": "strong",
+   "valence": 0.0,
+   "arousal": 0.1,
+   "emotions": null,
+   "source": "curated:gemini-2026-09",
+   "version": 1,
+   "felt": "trait"
+  },
+  {
+   "id": "hu.emo.érzéketlen",
+   "lemma": "érzéketlen",
+   "pos": [
+    "ADJ"
+   ],
+   "kind": "emotion_label",
+   "strength": "weak",
+   "valence": -0.5,
+   "arousal": 0.3,
+   "emotions": {
+    "disgust": 0.9
+   },
+   "source": "curated:gemini-2026-09",
+   "version": 1,
+   "note": "érzéketlen végtag vs érzéketlen szív",
+   "felt": "trait"
+  },
+  {
+   "id": "hu.emo.rideg",
+   "lemma": "rideg",
+   "pos": [
+    "ADJ"
+   ],
+   "kind": "emotion_label",
+   "strength": "weak",
+   "valence": -0.4,
+   "arousal": 0.3,
+   "emotions": {
+    "disgust": 0.9
+   },
+   "source": "curated:gemini-2026-09",
+   "version": 1,
+   "note": "rideg marhatartás / hideg fal vs rideg fogadtatás",
+   "felt": "trait"
+  },
+  {
+   "id": "hu.emo.hűvös",
+   "lemma": "hűvös",
+   "pos": [
+    "ADJ"
+   ],
+   "kind": "emotion_label",
+   "strength": "weak",
+   "valence": -0.2,
+   "arousal": 0.2,
+   "emotions": null,
+   "source": "curated:gemini-2026-09",
+   "version": 1,
+   "note": "hűvös időjárás vs hűvös modor",
+   "felt": "trait"
+  },
+  {
+   "id": "hu.emo.fagyos",
+   "lemma": "fagyos",
+   "pos": [
+    "ADJ"
+   ],
+   "kind": "emotion_label",
+   "strength": "weak",
+   "valence": -0.4,
+   "arousal": 0.3,
+   "emotions": {
+    "disgust": 0.9
+   },
+   "source": "curated:gemini-2026-09",
+   "version": 1,
+   "note": "fagyos szél vs fagyos tekintet",
+   "felt": "trait"
+  },
+  {
+   "id": "hu.emo.zárkózik",
+   "lemma": "zárkózik",
+   "pos": [
+    "ADJ"
+   ],
+   "kind": "emotion_label",
+   "strength": "strong",
+   "valence": -0.2,
+   "arousal": 0.2,
+   "emotions": null,
+   "source": "curated:gemini-2026-09",
+   "version": 1,
+   "felt": "trait"
+  },
+  {
+   "id": "hu.emo.gátlásos",
+   "lemma": "gátlásos",
+   "pos": [
+    "ADJ"
+   ],
+   "kind": "emotion_label",
+   "strength": "strong",
+   "valence": -0.4,
+   "arousal": 0.4,
+   "emotions": {
+    "fear": 0.9
+   },
+   "source": "curated:gemini-2026-09",
+   "version": 1,
+   "felt": "trait"
+  },
+  {
+   "id": "hu.emo.vidám",
+   "lemma": "vidám",
+   "pos": [
+    "ADJ"
+   ],
+   "kind": "emotion_label",
+   "strength": "strong",
+   "valence": 0.8,
+   "arousal": 0.6,
+   "emotions": {
+    "joy": 0.9
+   },
+   "source": "curated:gemini-2026-09",
+   "version": 1,
+   "felt": "state"
+  },
+  {
+   "id": "hu.emo.jókedvű",
+   "lemma": "jókedvű",
+   "pos": [
+    "ADJ"
+   ],
+   "kind": "emotion_label",
+   "strength": "strong",
+   "valence": 0.8,
+   "arousal": 0.6,
+   "emotions": {
+    "joy": 0.9
+   },
+   "source": "curated:gemini-2026-09",
+   "version": 1,
+   "felt": "state"
+  },
+  {
+   "id": "hu.emo.derűs",
+   "lemma": "derűs",
+   "pos": [
+    "ADJ"
+   ],
+   "kind": "emotion_label",
+   "strength": "weak",
+   "valence": 0.7,
+   "arousal": 0.5,
+   "emotions": {
+    "joy": 0.9
+   },
+   "source": "curated:gemini-2026-09",
+   "version": 1,
+   "note": "derűs égbolt vs derűs kedély",
+   "felt": "state"
+  },
+  {
+   "id": "hu.emo.ujjongó",
+   "lemma": "ujjongó",
+   "pos": [
+    "ADJ"
+   ],
+   "kind": "emotion_label",
+   "strength": "strong",
+   "valence": 0.9,
+   "arousal": 0.8,
+   "emotions": {
+    "joy": 0.9
+   },
+   "source": "curated:gemini-2026-09",
+   "version": 1,
+   "felt": "state"
+  },
+  {
+   "id": "hu.emo.mámoros",
+   "lemma": "mámoros",
+   "pos": [
+    "ADJ"
+   ],
+   "kind": "emotion_label",
+   "strength": "weak",
+   "valence": 0.8,
+   "arousal": 0.8,
+   "emotions": {
+    "joy": 0.9
+   },
+   "source": "curated:gemini-2026-09",
+   "version": 1,
+   "note": "alkoholtól mámoros vs mámoros boldogság",
+   "felt": "state"
+  },
+  {
+   "id": "hu.emo.elragadtatott",
+   "lemma": "elragadtatott",
+   "pos": [
+    "ADJ"
+   ],
+   "kind": "emotion_label",
+   "strength": "strong",
+   "valence": 0.8,
+   "arousal": 0.7,
+   "emotions": {
+    "joy": 0.9
+   },
+   "source": "curated:gemini-2026-09",
+   "version": 1,
+   "felt": "state"
+  },
+  {
+   "id": "hu.emo.lelkes",
+   "lemma": "lelkes",
+   "pos": [
+    "ADJ"
+   ],
+   "kind": "emotion_label",
+   "strength": "strong",
+   "valence": 0.8,
+   "arousal": 0.7,
+   "emotions": {
+    "anticipation": 0.9
+   },
+   "source": "curated:gemini-2026-09",
+   "version": 1,
+   "felt": "state"
+  },
+  {
+   "id": "hu.emo.lelkesült",
+   "lemma": "lelkesült",
+   "pos": [
+    "ADJ"
+   ],
+   "kind": "emotion_label",
+   "strength": "strong",
+   "valence": 0.8,
+   "arousal": 0.7,
+   "emotions": {
+    "anticipation": 0.9
+   },
+   "source": "curated:gemini-2026-09",
+   "version": 1,
+   "felt": "state"
+  },
+  {
+   "id": "hu.emo.buzgó",
+   "lemma": "buzgó",
+   "pos": [
+    "ADJ"
+   ],
+   "kind": "emotion_label",
+   "strength": "strong",
+   "valence": 0.6,
+   "arousal": 0.6,
+   "emotions": {
+    "anticipation": 0.9
+   },
+   "source": "curated:gemini-2026-09",
+   "version": 1,
+   "felt": "trait"
+  },
+  {
+   "id": "hu.emo.elszánt",
+   "lemma": "elszánt",
+   "pos": [
+    "ADJ"
+   ],
+   "kind": "emotion_label",
+   "strength": "strong",
+   "valence": 0.6,
+   "arousal": 0.7,
+   "emotions": {
+    "anticipation": 0.9
+   },
+   "source": "curated:gemini-2026-09",
+   "version": 1,
+   "felt": "trait"
+  },
+  {
+   "id": "hu.emo.magabiztos",
+   "lemma": "magabiztos",
+   "pos": [
+    "ADJ"
+   ],
+   "kind": "emotion_label",
+   "strength": "strong",
+   "valence": 0.8,
+   "arousal": 0.6,
+   "emotions": {
+    "trust": 0.9
+   },
+   "source": "curated:gemini-2026-09",
+   "version": 1,
+   "felt": "trait"
+  },
+  {
+   "id": "hu.emo.hálás",
+   "lemma": "hálás",
+   "pos": [
+    "ADJ"
+   ],
+   "kind": "emotion_label",
+   "strength": "strong",
+   "valence": 0.8,
+   "arousal": 0.4,
+   "emotions": {
+    "trust": 0.9
+   },
+   "source": "curated:gemini-2026-09",
+   "version": 1,
+   "felt": "state"
+  },
+  {
+   "id": "hu.emo.bizakodó",
+   "lemma": "bizakodó",
+   "pos": [
+    "ADJ"
+   ],
+   "kind": "emotion_label",
+   "strength": "strong",
+   "valence": 0.7,
+   "arousal": 0.5,
+   "emotions": {
+    "anticipation": 0.9
+   },
+   "source": "curated:gemini-2026-09",
+   "version": 1,
+   "felt": "state"
+  },
+  {
+   "id": "hu.emo.reményteli",
+   "lemma": "reményteli",
+   "pos": [
+    "ADJ"
+   ],
+   "kind": "emotion_label",
+   "strength": "strong",
+   "valence": 0.7,
+   "arousal": 0.5,
+   "emotions": {
+    "anticipation": 0.9
+   },
+   "source": "curated:gemini-2026-09",
+   "version": 1,
+   "felt": "state"
+  },
+  {
+   "id": "hu.emo.nyugodt",
+   "lemma": "nyugodt",
+   "pos": [
+    "ADJ"
+   ],
+   "kind": "emotion_label",
+   "strength": "strong",
+   "valence": 0.7,
+   "arousal": 0.2,
+   "emotions": {
+    "trust": 0.9
+   },
+   "source": "curated:gemini-2026-09",
+   "version": 1,
+   "felt": "state"
+  },
+  {
+   "id": "hu.emo.békés",
+   "lemma": "békés",
+   "pos": [
+    "ADJ"
+   ],
+   "kind": "emotion_label",
+   "strength": "strong",
+   "valence": 0.7,
+   "arousal": 0.2,
+   "emotions": {
+    "trust": 0.9
+   },
+   "source": "curated:gemini-2026-09",
+   "version": 1,
+   "felt": "evaluative",
+   "note": "peaceful as in without conflict (békésen elvonult); rarely a felt state"
+  },
+  {
+   "id": "hu.emo.megbékél",
+   "lemma": "megbékél",
+   "pos": [
+    "ADJ"
+   ],
+   "kind": "emotion_label",
+   "strength": "strong",
+   "valence": 0.6,
+   "arousal": 0.2,
+   "emotions": {
+    "trust": 0.9
+   },
+   "source": "curated:gemini-2026-09",
+   "version": 1,
+   "felt": "state"
+  },
+  {
+   "id": "hu.emo.kiegyensúlyozott",
+   "lemma": "kiegyensúlyozott",
+   "pos": [
+    "ADJ"
+   ],
+   "kind": "emotion_label",
+   "strength": "weak",
+   "valence": 0.7,
+   "arousal": 0.3,
+   "emotions": {
+    "trust": 0.9
+   },
+   "source": "curated:gemini-2026-09",
+   "version": 1,
+   "note": "kiegyensúlyozott költségvetés vs lelki egyensúly",
+   "felt": "trait"
+  },
+  {
+   "id": "hu.emo.szelíd",
+   "lemma": "szelíd",
+   "pos": [
+    "ADJ"
+   ],
+   "kind": "emotion_label",
+   "strength": "strong",
+   "valence": 0.7,
+   "arousal": 0.3,
+   "emotions": {
+    "trust": 0.9
+   },
+   "source": "curated:gemini-2026-09",
+   "version": 1,
+   "felt": "trait"
+  },
+  {
+   "id": "hu.emo.jámbor",
+   "lemma": "jámbor",
+   "pos": [
+    "ADJ"
+   ],
+   "kind": "emotion_label",
+   "strength": "strong",
+   "valence": 0.6,
+   "arousal": 0.2,
+   "emotions": {
+    "trust": 0.9
+   },
+   "source": "curated:gemini-2026-09",
+   "version": 1,
+   "felt": "trait"
+  },
+  {
+   "id": "hu.emo.meghatott",
+   "lemma": "meghatott",
+   "pos": [
+    "ADJ"
+   ],
+   "kind": "emotion_label",
+   "strength": "strong",
+   "valence": 0.7,
+   "arousal": 0.5,
+   "emotions": {
+    "joy": 0.9
+   },
+   "source": "curated:gemini-2026-09",
+   "version": 1,
+   "felt": "state"
+  },
+  {
+   "id": "hu.emo.érzelmes",
+   "lemma": "érzelmes",
+   "pos": [
+    "ADJ"
+   ],
+   "kind": "emotion_label",
+   "strength": "strong",
+   "valence": 0.5,
+   "arousal": 0.4,
+   "emotions": {
+    "joy": 0.9
+   },
+   "source": "curated:gemini-2026-09",
+   "version": 1,
+   "felt": "trait"
+  },
+  {
+   "id": "hu.emo.gyengéd",
+   "lemma": "gyengéd",
+   "pos": [
+    "ADJ"
+   ],
+   "kind": "emotion_label",
+   "strength": "strong",
+   "valence": 0.8,
+   "arousal": 0.3,
+   "emotions": {
+    "joy": 0.9
+   },
+   "source": "curated:gemini-2026-09",
+   "version": 1,
+   "felt": "state"
+  },
+  {
+   "id": "hu.emo.szerető",
+   "lemma": "szerető",
+   "pos": [
+    "ADJ"
+   ],
+   "kind": "emotion_label",
+   "strength": "weak",
+   "valence": 0.9,
+   "arousal": 0.5,
+   "emotions": {
+    "joy": 0.9
+   },
+   "source": "curated:gemini-2026-09",
+   "version": 1,
+   "note": "szerető partner vs szerető gondoskodás",
+   "felt": "state"
+  },
+  {
+   "id": "hu.emo.rajongó",
+   "lemma": "rajongó",
+   "pos": [
+    "ADJ"
+   ],
+   "kind": "emotion_label",
+   "strength": "strong",
+   "valence": 0.8,
+   "arousal": 0.7,
+   "emotions": {
+    "joy": 0.9
+   },
+   "source": "curated:gemini-2026-09",
+   "version": 1,
+   "felt": "state"
+  },
+  {
+   "id": "hu.emo.hűséges",
+   "lemma": "hűséges",
+   "pos": [
+    "ADJ"
+   ],
+   "kind": "emotion_label",
+   "strength": "strong",
+   "valence": 0.8,
+   "arousal": 0.4,
+   "emotions": {
+    "trust": 0.9
+   },
+   "source": "curated:gemini-2026-09",
+   "version": 1,
+   "felt": "trait"
+  },
+  {
+   "id": "hu.emo.odaadó",
+   "lemma": "odaadó",
+   "pos": [
+    "ADJ"
+   ],
+   "kind": "emotion_label",
+   "strength": "strong",
+   "valence": 0.8,
+   "arousal": 0.5,
+   "emotions": {
+    "trust": 0.9
+   },
+   "source": "curated:gemini-2026-09",
+   "version": 1,
+   "felt": "trait"
+  },
+  {
+   "id": "hu.emo.csodálkozó",
+   "lemma": "csodálkozó",
+   "pos": [
+    "ADJ"
+   ],
+   "kind": "emotion_label",
+   "strength": "strong",
+   "valence": 0.4,
+   "arousal": 0.6,
+   "emotions": {
+    "surprise": 0.9
+   },
+   "source": "curated:gemini-2026-09",
+   "version": 1,
+   "felt": "state"
+  },
+  {
+   "id": "hu.emo.ámuló",
+   "lemma": "ámuló",
+   "pos": [
+    "ADJ"
+   ],
+   "kind": "emotion_label",
+   "strength": "strong",
+   "valence": 0.6,
+   "arousal": 0.7,
+   "emotions": {
+    "surprise": 0.9
+   },
+   "source": "curated:gemini-2026-09",
+   "version": 1,
+   "felt": "state"
+  },
+  {
+   "id": "hu.emo.bámuló",
+   "lemma": "bámuló",
+   "pos": [
+    "ADJ"
+   ],
+   "kind": "emotion_label",
+   "strength": "strong",
+   "valence": 0.3,
+   "arousal": 0.5,
+   "emotions": {
+    "surprise": 0.9
+   },
+   "source": "curated:gemini-2026-09",
+   "version": 1,
+   "felt": "state"
+  },
+  {
+   "id": "hu.emo.döbben",
+   "lemma": "döbben",
+   "pos": [
+    "ADJ"
+   ],
+   "kind": "emotion_label",
+   "strength": "strong",
+   "valence": -0.3,
+   "arousal": 0.7,
+   "emotions": {
+    "surprise": 0.9
+   },
+   "source": "curated:gemini-2026-09",
+   "version": 1,
+   "alt_lemmas": [
+    "döb"
+   ],
+   "lemma_evidence": "carrier",
+   "felt": "state"
+  },
+  {
+   "id": "hu.emo.megdöbben",
+   "lemma": "megdöbben",
+   "pos": [
+    "ADJ"
+   ],
+   "kind": "emotion_label",
+   "strength": "strong",
+   "valence": -0.4,
+   "arousal": 0.7,
+   "emotions": {
+    "surprise": 0.9
+   },
+   "source": "curated:gemini-2026-09",
+   "version": 1,
+   "felt": "state"
+  },
+  {
+   "id": "hu.emo.meghökken",
+   "lemma": "meghökken",
+   "pos": [
+    "ADJ"
+   ],
+   "kind": "emotion_label",
+   "strength": "strong",
+   "valence": -0.2,
+   "arousal": 0.6,
+   "emotions": {
+    "surprise": 0.9
+   },
+   "source": "curated:gemini-2026-09",
+   "version": 1,
+   "felt": "state"
+  },
+  {
+   "id": "hu.emo.elképedt",
+   "lemma": "elképedt",
+   "pos": [
+    "ADJ"
+   ],
+   "kind": "emotion_label",
+   "strength": "strong",
+   "valence": -0.2,
+   "arousal": 0.6,
+   "emotions": {
+    "surprise": 0.9
+   },
+   "source": "curated:gemini-2026-09",
+   "version": 1,
+   "felt": "state"
+  },
+  {
+   "id": "hu.emo.megbotránkozik",
+   "lemma": "megbotránkozik",
+   "pos": [
+    "ADJ"
+   ],
+   "kind": "emotion_label",
+   "strength": "strong",
+   "valence": -0.7,
+   "arousal": 0.7,
+   "emotions": {
+    "disgust": 0.9
+   },
+   "source": "curated:gemini-2026-09",
+   "version": 1,
+   "felt": "state"
+  },
+  {
+   "id": "hu.emo.megrökönyödik",
+   "lemma": "megrökönyödik",
+   "pos": [
+    "ADJ"
+   ],
+   "kind": "emotion_label",
+   "strength": "strong",
+   "valence": -0.3,
+   "arousal": 0.6,
+   "emotions": {
+    "surprise": 0.9
+   },
+   "source": "curated:gemini-2026-09",
+   "version": 1,
+   "felt": "state"
+  },
+  {
+   "id": "hu.emo.tanácstalan",
+   "lemma": "tanácstalan",
+   "pos": [
+    "ADJ"
+   ],
+   "kind": "emotion_label",
+   "strength": "strong",
+   "valence": -0.4,
+   "arousal": 0.4,
+   "emotions": {
+    "fear": 0.9
+   },
+   "source": "curated:gemini-2026-09",
+   "version": 1,
+   "felt": "state"
+  },
+  {
+   "id": "hu.emo.elbizonytalanodik",
+   "lemma": "elbizonytalanodik",
+   "pos": [
+    "ADJ"
+   ],
+   "kind": "emotion_label",
+   "strength": "strong",
+   "valence": -0.4,
+   "arousal": 0.4,
+   "emotions": {
+    "fear": 0.9
+   },
+   "source": "curated:gemini-2026-09",
+   "version": 1,
+   "felt": "state"
+  },
+  {
+   "id": "hu.emo.meghasonlott",
+   "lemma": "meghasonlott",
+   "pos": [
+    "ADJ"
+   ],
+   "kind": "emotion_label",
+   "strength": "strong",
+   "valence": -0.7,
+   "arousal": 0.5,
+   "emotions": {
+    "sadness": 0.9
+   },
+   "source": "curated:gemini-2026-09",
+   "version": 1,
+   "felt": "state"
+  },
+  {
+   "id": "hu.emo.kétség_teli",
+   "phrase": [
+    "kétség",
+    "teli"
+   ],
+   "kind": "emotion_label",
+   "strength": "strong",
+   "valence": -0.5,
+   "arousal": 0.5,
+   "emotions": {
+    "fear": 0.9
+   },
+   "source": "curated:gemini-2026-09",
+   "version": 1,
+   "example": "Az arcán kétség teli várakozás tükröződött.",
+   "felt": "state"
+  },
+  {
+   "id": "hu.emo.rettegett",
+   "lemma": "rettegett",
+   "pos": [
+    "ADJ"
+   ],
+   "kind": "emotion_label",
+   "strength": "strong",
+   "valence": -0.8,
+   "arousal": 0.8,
+   "emotions": {
+    "fear": 0.9
+   },
+   "source": "curated:gemini-2026-09",
+   "version": 1,
+   "felt": "evaluative"
+  },
+  {
+   "id": "hu.emo.pánik_esik",
+   "phrase": [
+    "pánik",
+    "esik"
+   ],
+   "kind": "emotion_label",
+   "strength": "strong",
+   "valence": -0.8,
+   "arousal": 0.9,
+   "emotions": {
+    "fear": 0.9
+   },
+   "source": "curated:gemini-2026-09",
+   "version": 1,
+   "example": "A tömeg kezdett pánik esni a füst láttán.",
+   "felt": "state"
+  },
+  {
+   "id": "hu.emo.halál_rémült",
+   "phrase": [
+    "halál",
+    "rémült"
+   ],
+   "kind": "emotion_label",
+   "strength": "strong",
+   "valence": -0.9,
+   "arousal": 0.9,
+   "emotions": {
+    "fear": 0.9
+   },
+   "source": "curated:gemini-2026-09",
+   "version": 1,
+   "example": "A sarokban egy halál rémült kisfiú kuporgott.",
+   "felt": "state"
+  },
+  {
+   "id": "hu.emo.dermedt",
+   "lemma": "dermedt",
+   "pos": [
+    "ADJ"
+   ],
+   "kind": "emotion_label",
+   "strength": "weak",
+   "valence": -0.7,
+   "arousal": 0.7,
+   "emotions": {
+    "fear": 0.9
+   },
+   "source": "curated:gemini-2026-09",
+   "version": 1,
+   "note": "hidegtől megdermedt vs félelemtől dermedt",
+   "felt": "state"
+  },
+  {
+   "id": "hu.emo.reszkető",
+   "lemma": "reszkető",
+   "pos": [
+    "ADJ"
+   ],
+   "kind": "emotion_label",
+   "strength": "weak",
+   "valence": -0.6,
+   "arousal": 0.7,
+   "emotions": {
+    "fear": 0.9
+   },
+   "source": "curated:gemini-2026-09",
+   "version": 1,
+   "note": "hidegtől reszkető vs félelemtől reszkető",
+   "felt": "state"
+  },
+  {
+   "id": "hu.emo.remegő",
+   "lemma": "remegő",
+   "pos": [
+    "ADJ"
+   ],
+   "kind": "emotion_label",
+   "strength": "weak",
+   "valence": -0.6,
+   "arousal": 0.7,
+   "emotions": {
+    "fear": 0.9
+   },
+   "source": "curated:gemini-2026-09",
+   "version": 1,
+   "note": "mechanikai rezgés vs izgalomtól remegő",
+   "felt": "state"
+  },
+  {
+   "id": "hu.emo.vacogó",
+   "lemma": "vacogó",
+   "pos": [
+    "ADJ"
+   ],
+   "kind": "emotion_label",
+   "strength": "weak",
+   "valence": -0.5,
+   "arousal": 0.6,
+   "emotions": {
+    "fear": 0.9
+   },
+   "source": "curated:gemini-2026-09",
+   "version": 1,
+   "note": "hidegtől vacogó vs félelemtől vacogó",
+   "felt": "state"
+  },
+  {
+   "id": "hu.emo.sápadt",
+   "lemma": "sápadt",
+   "pos": [
+    "ADJ"
+   ],
+   "kind": "emotion_label",
+   "strength": "weak",
+   "valence": -0.5,
+   "arousal": 0.5,
+   "emotions": {
+    "fear": 0.9
+   },
+   "source": "curated:gemini-2026-09",
+   "version": 1,
+   "note": "bőrszín vs ijedtségtől sápadt",
+   "felt": "state"
+  },
+  {
+   "id": "hu.emo.fellelkesül",
+   "lemma": "fellelkesül",
+   "pos": [
+    "ADJ"
+   ],
+   "kind": "emotion_label",
+   "strength": "strong",
+   "valence": 0.8,
+   "arousal": 0.8,
+   "emotions": {
+    "anticipation": 0.9
+   },
+   "source": "curated:gemini-2026-09",
+   "version": 1,
+   "felt": "state"
+  },
+  {
+   "id": "hu.emo.lázas",
+   "lemma": "lázas",
+   "pos": [
+    "ADJ"
+   ],
+   "kind": "emotion_label",
+   "strength": "weak",
+   "valence": 0.3,
+   "arousal": 0.8,
+   "emotions": {
+    "anticipation": 0.9
+   },
+   "source": "curated:gemini-2026-09",
+   "version": 1,
+   "note": "orvosi láz vs lázas izgalom",
+   "felt": "state"
+  },
+  {
+   "id": "hu.emo.türelmetlen",
+   "lemma": "türelmetlen",
+   "pos": [
+    "ADJ"
+   ],
+   "kind": "emotion_label",
+   "strength": "strong",
+   "valence": -0.3,
+   "arousal": 0.7,
+   "emotions": {
+    "anticipation": 0.9
+   },
+   "source": "curated:gemini-2026-09",
+   "version": 1,
+   "felt": "state"
+  },
+  {
+   "id": "hu.emo.nyugtalanító",
+   "lemma": "nyugtalanító",
+   "pos": [
+    "ADJ"
+   ],
+   "kind": "emotion_label",
+   "strength": "strong",
+   "valence": -0.6,
+   "arousal": 0.6,
+   "emotions": {
+    "fear": 0.9
+   },
+   "source": "curated:gemini-2026-09",
+   "version": 1,
+   "felt": "evaluative"
+  },
+  {
+   "id": "hu.emo.aggasztó",
+   "lemma": "aggasztó",
+   "pos": [
+    "ADJ"
+   ],
+   "kind": "emotion_label",
+   "strength": "strong",
+   "valence": -0.6,
+   "arousal": 0.6,
+   "emotions": {
+    "fear": 0.9
+   },
+   "source": "curated:gemini-2026-09",
+   "version": 1,
+   "felt": "evaluative"
+  },
+  {
+   "id": "hu.emo.ijesztő",
+   "lemma": "ijesztő",
+   "pos": [
+    "ADJ"
+   ],
+   "kind": "emotion_label",
+   "strength": "strong",
+   "valence": -0.7,
+   "arousal": 0.7,
+   "emotions": {
+    "fear": 0.9
+   },
+   "source": "curated:gemini-2026-09",
+   "version": 1,
+   "felt": "evaluative"
+  },
+  {
+   "id": "hu.emo.félelmetes",
+   "lemma": "félelmetes",
+   "pos": [
+    "ADJ"
+   ],
+   "kind": "emotion_label",
+   "strength": "strong",
+   "valence": -0.8,
+   "arousal": 0.8,
+   "emotions": {
+    "fear": 0.9
+   },
+   "source": "curated:gemini-2026-09",
+   "version": 1,
+   "felt": "evaluative"
+  },
+  {
+   "id": "hu.emo.szörnyű",
+   "lemma": "szörnyű",
+   "pos": [
+    "ADJ"
+   ],
+   "kind": "emotion_label",
+   "strength": "strong",
+   "valence": -0.8,
+   "arousal": 0.8,
+   "emotions": {
+    "fear": 0.9
+   },
+   "source": "curated:gemini-2026-09",
+   "version": 1,
+   "felt": "evaluative"
+  },
+  {
+   "id": "hu.emo.rettenetes",
+   "lemma": "rettenetes",
+   "pos": [
+    "ADJ"
+   ],
+   "kind": "emotion_label",
+   "strength": "strong",
+   "valence": -0.9,
+   "arousal": 0.8,
+   "emotions": {
+    "fear": 0.9
+   },
+   "source": "curated:gemini-2026-09",
+   "version": 1,
+   "felt": "evaluative"
+  },
+  {
+   "id": "hu.emo.irtózatos",
+   "lemma": "irtózatos",
+   "pos": [
+    "ADJ"
+   ],
+   "kind": "emotion_label",
+   "strength": "strong",
+   "valence": -0.9,
+   "arousal": 0.8,
+   "emotions": {
+    "fear": 0.9
+   },
+   "source": "curated:gemini-2026-09",
+   "version": 1,
+   "felt": "evaluative"
+  },
+  {
+   "id": "hu.emo.iszonyatos",
+   "lemma": "iszonyatos",
+   "pos": [
+    "ADJ"
+   ],
+   "kind": "emotion_label",
+   "strength": "strong",
+   "valence": -0.9,
+   "arousal": 0.8,
+   "emotions": {
+    "fear": 0.9
+   },
+   "source": "curated:gemini-2026-09",
+   "version": 1,
+   "felt": "evaluative"
+  },
+  {
+   "id": "hu.emo.gyászos",
+   "lemma": "gyászos",
+   "pos": [
+    "ADJ"
+   ],
+   "kind": "emotion_label",
+   "strength": "weak",
+   "valence": -0.8,
+   "arousal": 0.3,
+   "emotions": {
+    "sadness": 0.9
+   },
+   "source": "curated:gemini-2026-09",
+   "version": 1,
+   "note": "gyászszertartás vs gyászos hangulat",
+   "felt": "evaluative"
+  },
+  {
+   "id": "hu.emo.gyötrelmes",
+   "lemma": "gyötrelmes",
+   "pos": [
+    "ADJ"
+   ],
+   "kind": "emotion_label",
+   "strength": "strong",
+   "valence": -0.8,
+   "arousal": 0.7,
+   "emotions": {
+    "sadness": 0.9
+   },
+   "source": "curated:gemini-2026-09",
+   "version": 1,
+   "felt": "evaluative"
+  },
+  {
+   "id": "hu.emo.sanyarú",
+   "lemma": "sanyarú",
+   "pos": [
+    "ADJ"
+   ],
+   "kind": "emotion_label",
+   "strength": "strong",
+   "valence": -0.7,
+   "arousal": 0.3,
+   "emotions": {
+    "sadness": 0.9
+   },
+   "source": "curated:gemini-2026-09",
+   "version": 1,
+   "felt": "evaluative"
+  },
+  {
+   "id": "hu.emo.nyomorult",
+   "lemma": "nyomorult",
+   "pos": [
+    "ADJ"
+   ],
+   "kind": "emotion_label",
+   "strength": "strong",
+   "valence": -0.8,
+   "arousal": 0.3,
+   "emotions": {
+    "sadness": 0.9
+   },
+   "source": "curated:gemini-2026-09",
+   "version": 1,
+   "felt": "state"
+  },
+  {
+   "id": "hu.emo.szánandó",
+   "lemma": "szánandó",
+   "pos": [
+    "ADJ"
+   ],
+   "kind": "emotion_label",
+   "strength": "strong",
+   "valence": -0.5,
+   "arousal": 0.3,
+   "emotions": {
+    "sadness": 0.9
+   },
+   "source": "curated:gemini-2026-09",
+   "version": 1,
+   "felt": "evaluative"
+  },
+  {
+   "id": "hu.emo.szánalmas",
+   "lemma": "szánalmas",
+   "pos": [
+    "ADJ"
+   ],
+   "kind": "emotion_label",
+   "strength": "strong",
+   "valence": -0.6,
+   "arousal": 0.4,
+   "emotions": {
+    "disgust": 0.9
+   },
+   "source": "curated:gemini-2026-09",
+   "version": 1,
+   "felt": "evaluative"
+  },
+  {
+   "id": "hu.emo.megvetendő",
+   "lemma": "megvetendő",
+   "pos": [
+    "ADJ"
+   ],
+   "kind": "emotion_label",
+   "strength": "strong",
+   "valence": -0.8,
+   "arousal": 0.6,
+   "emotions": {
+    "disgust": 0.9
+   },
+   "source": "curated:gemini-2026-09",
+   "version": 1,
+   "felt": "evaluative"
+  },
+  {
+   "id": "hu.emo.alantas",
+   "lemma": "alantas",
+   "pos": [
+    "ADJ"
+   ],
+   "kind": "emotion_label",
+   "strength": "strong",
+   "valence": -0.7,
+   "arousal": 0.5,
+   "emotions": {
+    "disgust": 0.9
+   },
+   "source": "curated:gemini-2026-09",
+   "version": 1,
+   "felt": "trait"
+  },
+  {
+   "id": "hu.emo.aljas",
+   "lemma": "aljas",
+   "pos": [
+    "ADJ"
+   ],
+   "kind": "emotion_label",
+   "strength": "strong",
+   "valence": -0.8,
+   "arousal": 0.7,
+   "emotions": {
+    "disgust": 0.9
+   },
+   "source": "curated:gemini-2026-09",
+   "version": 1,
+   "felt": "trait"
+  },
+  {
+   "id": "hu.emo.hitvány",
+   "lemma": "hitvány",
+   "pos": [
+    "ADJ"
+   ],
+   "kind": "emotion_label",
+   "strength": "strong",
+   "valence": -0.7,
+   "arousal": 0.5,
+   "emotions": {
+    "disgust": 0.9
+   },
+   "source": "curated:gemini-2026-09",
+   "version": 1,
+   "felt": "trait"
+  },
+  {
+   "id": "hu.emo.gyalázatos",
+   "lemma": "gyalázatos",
+   "pos": [
+    "ADJ"
+   ],
+   "kind": "emotion_label",
+   "strength": "strong",
+   "valence": -0.8,
+   "arousal": 0.7,
+   "emotions": {
+    "disgust": 0.9
+   },
+   "source": "curated:gemini-2026-09",
+   "version": 1,
+   "felt": "evaluative"
+  },
+  {
+   "id": "hu.emo.szégyenteljes",
+   "lemma": "szégyenteljes",
+   "pos": [
+    "ADJ"
+   ],
+   "kind": "emotion_label",
+   "strength": "strong",
+   "valence": -0.7,
+   "arousal": 0.5,
+   "emotions": {
+    "sadness": 0.9
+   },
+   "source": "curated:gemini-2026-09",
+   "version": 1,
+   "felt": "evaluative"
+  },
+  {
+   "id": "hu.emo.szégyenletes",
+   "lemma": "szégyenletes",
+   "pos": [
+    "ADJ"
+   ],
+   "kind": "emotion_label",
+   "strength": "strong",
+   "valence": -0.7,
+   "arousal": 0.5,
+   "emotions": {
+    "sadness": 0.9
+   },
+   "source": "curated:gemini-2026-09",
+   "version": 1,
+   "felt": "evaluative"
+  },
+  {
+   "id": "hu.emo.égő",
+   "lemma": "égő",
+   "pos": [
+    "ADJ"
+   ],
+   "kind": "emotion_label",
+   "strength": "weak",
+   "valence": -0.5,
+   "arousal": 0.6,
+   "emotions": {
+    "sadness": 0.9
+   },
+   "source": "curated:gemini-2026-09",
+   "version": 1,
+   "note": "égő tűz vs égő szégyen",
+   "felt": "state"
+  },
+  {
+   "id": "hu.emo.forró",
+   "lemma": "forró",
+   "pos": [
+    "ADJ"
+   ],
+   "kind": "emotion_label",
+   "strength": "weak",
+   "valence": 0.6,
+   "arousal": 0.7,
+   "emotions": {
+    "joy": 0.9
+   },
+   "source": "curated:gemini-2026-09",
+   "version": 1,
+   "note": "forró tea vs forró szeretet / szenvedély",
+   "felt": "state"
+  },
+  {
+   "id": "hu.emo.hideg",
+   "lemma": "hideg",
+   "pos": [
+    "ADJ"
+   ],
+   "kind": "emotion_label",
+   "strength": "weak",
+   "valence": -0.4,
+   "arousal": 0.2,
+   "emotions": {
+    "disgust": 0.9
+   },
+   "source": "curated:gemini-2026-09",
+   "version": 1,
+   "note": "hideg idő vs hideg közöny",
+   "felt": "trait"
+  },
+  {
+   "id": "hu.emo.örömteli",
+   "lemma": "örömteli",
+   "pos": [
+    "ADJ"
+   ],
+   "kind": "emotion_label",
+   "strength": "strong",
+   "valence": 0.8,
+   "arousal": 0.6,
+   "emotions": {
+    "joy": 0.9
+   },
+   "source": "curated:gemini-2026-09",
+   "version": 1,
+   "felt": "evaluative"
+  },
+  {
+   "id": "hu.emo.örömtelen",
+   "lemma": "örömtelen",
+   "pos": [
+    "ADJ"
+   ],
+   "kind": "emotion_label",
+   "strength": "strong",
+   "valence": -0.7,
+   "arousal": 0.3,
+   "emotions": {
+    "sadness": 0.9
+   },
+   "source": "curated:gemini-2026-09",
+   "version": 1,
+   "felt": "evaluative"
+  },
+  {
+   "id": "hu.emo.mosolygós",
+   "lemma": "mosolygós",
+   "pos": [
+    "ADJ"
+   ],
+   "kind": "emotion_label",
+   "strength": "strong",
+   "valence": 0.7,
+   "arousal": 0.5,
+   "emotions": {
+    "joy": 0.9
+   },
+   "source": "curated:gemini-2026-09",
+   "version": 1,
+   "felt": "trait"
+  },
+  {
+   "id": "hu.emo.kacagó",
+   "lemma": "kacagó",
+   "pos": [
+    "ADJ"
+   ],
+   "kind": "emotion_label",
+   "strength": "strong",
+   "valence": 0.8,
+   "arousal": 0.7,
+   "emotions": {
+    "joy": 0.9
+   },
+   "source": "curated:gemini-2026-09",
+   "version": 1,
+   "felt": "state"
+  },
+  {
+   "id": "hu.emo.lelkendező",
+   "lemma": "lelkendező",
+   "pos": [
+    "ADJ"
+   ],
+   "kind": "emotion_label",
+   "strength": "strong",
+   "valence": 0.85,
+   "arousal": 0.8,
+   "emotions": {
+    "joy": 0.9
+   },
+   "source": "curated:gemini-2026-09",
+   "version": 1,
+   "felt": "state"
+  },
+  {
+   "id": "hu.emo.diadalmas",
+   "lemma": "diadalmas",
+   "pos": [
+    "ADJ"
+   ],
+   "kind": "emotion_label",
+   "strength": "strong",
+   "valence": 0.85,
+   "arousal": 0.75,
+   "emotions": {
+    "joy": 0.9
+   },
+   "source": "curated:gemini-2026-09",
+   "version": 1,
+   "felt": "state"
+  },
+  {
+   "id": "hu.emo.győzedelmes",
+   "lemma": "győzedelmes",
+   "pos": [
+    "ADJ"
+   ],
+   "kind": "emotion_label",
+   "strength": "strong",
+   "valence": 0.85,
+   "arousal": 0.75,
+   "emotions": {
+    "joy": 0.9
+   },
+   "source": "curated:gemini-2026-09",
+   "version": 1,
+   "felt": "state"
+  },
+  {
+   "id": "hu.emo.gőgösködő",
+   "lemma": "gőgösködő",
+   "pos": [
+    "ADJ"
+   ],
+   "kind": "emotion_label",
+   "strength": "strong",
+   "valence": -0.6,
+   "arousal": 0.55,
+   "emotions": {
+    "disgust": 0.9
+   },
+   "source": "curated:gemini-2026-09",
+   "version": 1,
+   "felt": "trait"
+  },
+  {
+   "id": "hu.emo.elbizakodik",
+   "lemma": "elbizakodik",
+   "pos": [
+    "ADJ"
+   ],
+   "kind": "emotion_label",
+   "strength": "strong",
+   "valence": -0.5,
+   "arousal": 0.5,
+   "emotions": {
+    "disgust": 0.9
+   },
+   "source": "curated:gemini-2026-09",
+   "version": 1,
+   "felt": "trait"
+  },
+  {
+   "id": "hu.emo.öntetszelgő",
+   "lemma": "öntetszelgő",
+   "pos": [
+    "ADJ"
+   ],
+   "kind": "emotion_label",
+   "strength": "strong",
+   "valence": -0.6,
+   "arousal": 0.5,
+   "emotions": {
+    "disgust": 0.9
+   },
+   "source": "curated:gemini-2026-09",
+   "version": 1,
+   "felt": "trait"
+  },
+  {
+   "id": "hu.emo.szerény",
+   "lemma": "szerény",
+   "pos": [
+    "ADJ"
+   ],
+   "kind": "emotion_label",
+   "strength": "strong",
+   "valence": 0.6,
+   "arousal": 0.25,
+   "emotions": {
+    "trust": 0.9
+   },
+   "source": "curated:gemini-2026-09",
+   "version": 1,
+   "felt": "trait"
+  },
+  {
+   "id": "hu.emo.alázatos",
+   "lemma": "alázatos",
+   "pos": [
+    "ADJ"
+   ],
+   "kind": "emotion_label",
+   "strength": "strong",
+   "valence": 0.65,
+   "arousal": 0.3,
+   "emotions": {
+    "trust": 0.9
+   },
+   "source": "curated:gemini-2026-09",
+   "version": 1,
+   "felt": "trait"
+  },
+  {
+   "id": "hu.emo.meghunyászkodó",
+   "lemma": "meghunyászkodó",
+   "pos": [
+    "ADJ"
+   ],
+   "kind": "emotion_label",
+   "strength": "strong",
+   "valence": -0.5,
+   "arousal": 0.4,
+   "emotions": {
+    "fear": 0.9
+   },
+   "source": "curated:gemini-2026-09",
+   "version": 1,
+   "felt": "trait"
+  },
+  {
+   "id": "hu.emo.higgadt",
+   "lemma": "higgadt",
+   "pos": [
+    "ADJ"
+   ],
+   "kind": "emotion_label",
+   "strength": "strong",
+   "valence": 0.65,
+   "arousal": 0.2,
+   "emotions": {
+    "trust": 0.9
+   },
+   "source": "curated:gemini-2026-09",
+   "version": 1,
+   "felt": "trait"
+  },
+  {
+   "id": "hu.emo.méltóságteljes",
+   "lemma": "méltóságteljes",
+   "pos": [
+    "ADJ"
+   ],
+   "kind": "emotion_label",
+   "strength": "strong",
+   "valence": 0.75,
+   "arousal": 0.4,
+   "emotions": {
+    "trust": 0.9
+   },
+   "source": "curated:gemini-2026-09",
+   "version": 1,
+   "felt": "trait"
+  },
+  {
+   "id": "hu.emo.tiszteletteljes",
+   "lemma": "tiszteletteljes",
+   "pos": [
+    "ADJ"
+   ],
+   "kind": "emotion_label",
+   "strength": "strong",
+   "valence": 0.75,
+   "arousal": 0.35,
+   "emotions": {
+    "trust": 0.9
+   },
+   "source": "curated:gemini-2026-09",
+   "version": 1,
+   "felt": "trait"
+  },
+  {
+   "id": "hu.emo.figyelmes",
+   "lemma": "figyelmes",
+   "pos": [
+    "ADJ"
+   ],
+   "kind": "emotion_label",
+   "strength": "strong",
+   "valence": 0.7,
+   "arousal": 0.35,
+   "emotions": {
+    "trust": 0.9
+   },
+   "source": "curated:gemini-2026-09",
+   "version": 1,
+   "felt": "trait"
+  },
+  {
+   "id": "hu.emo.jóságos",
+   "lemma": "jóságos",
+   "pos": [
+    "ADJ"
+   ],
+   "kind": "emotion_label",
+   "strength": "strong",
+   "valence": 0.8,
+   "arousal": 0.3,
+   "emotions": {
+    "trust": 0.9
+   },
+   "source": "curated:gemini-2026-09",
+   "version": 1,
+   "felt": "trait"
+  },
+  {
+   "id": "hu.emo.kegyes",
+   "lemma": "kegyes",
+   "pos": [
+    "ADJ"
+   ],
+   "kind": "emotion_label",
+   "strength": "strong",
+   "valence": 0.75,
+   "arousal": 0.35,
+   "emotions": {
+    "trust": 0.9
+   },
+   "source": "curated:gemini-2026-09",
+   "version": 1,
+   "felt": "trait"
+  },
+  {
+   "id": "hu.emo.irgalmas",
+   "lemma": "irgalmas",
+   "pos": [
+    "ADJ"
+   ],
+   "kind": "emotion_label",
+   "strength": "strong",
+   "valence": 0.8,
+   "arousal": 0.35,
+   "emotions": {
+    "trust": 0.9
+   },
+   "source": "curated:gemini-2026-09",
+   "version": 1,
+   "felt": "trait"
+  },
+  {
+   "id": "hu.emo.könyörületes",
+   "lemma": "könyörületes",
+   "pos": [
+    "ADJ"
+   ],
+   "kind": "emotion_label",
+   "strength": "strong",
+   "valence": 0.75,
+   "arousal": 0.35,
+   "emotions": {
+    "trust": 0.9
+   },
+   "source": "curated:gemini-2026-09",
+   "version": 1,
+   "felt": "trait"
+  },
+  {
+   "id": "hu.emo.szánakozó",
+   "lemma": "szánakozó",
+   "pos": [
+    "ADJ"
+   ],
+   "kind": "emotion_label",
+   "strength": "strong",
+   "valence": -0.4,
+   "arousal": 0.35,
+   "emotions": {
+    "sadness": 0.9
+   },
+   "source": "curated:gemini-2026-09",
+   "version": 1,
+   "felt": "state"
+  },
+  {
+   "id": "hu.emo.részvétteljes",
+   "lemma": "részvétteljes",
+   "pos": [
+    "ADJ"
+   ],
+   "kind": "emotion_label",
+   "strength": "strong",
+   "valence": 0.65,
+   "arousal": 0.35,
+   "emotions": {
+    "trust": 0.9
+   },
+   "source": "curated:gemini-2026-09",
+   "version": 1,
+   "felt": "state"
+  },
+  {
+   "id": "hu.emo.együttérző",
+   "lemma": "együttérző",
+   "pos": [
+    "ADJ"
+   ],
+   "kind": "emotion_label",
+   "strength": "strong",
+   "valence": 0.75,
+   "arousal": 0.35,
+   "emotions": {
+    "trust": 0.9
+   },
+   "source": "curated:gemini-2026-09",
+   "version": 1,
+   "felt": "trait"
+  },
+  {
+   "id": "hu.emo.segítőkész",
+   "lemma": "segítőkész",
+   "pos": [
+    "ADJ"
+   ],
+   "kind": "emotion_label",
+   "strength": "strong",
+   "valence": 0.7,
+   "arousal": 0.4,
+   "emotions": {
+    "trust": 0.9
+   },
+   "source": "curated:gemini-2026-09",
+   "version": 1,
+   "felt": "trait"
+  },
+  {
+   "id": "hu.emo.reményvesztett",
+   "lemma": "reményvesztett",
+   "pos": [
+    "ADJ"
+   ],
+   "kind": "emotion_label",
+   "strength": "strong",
+   "valence": -0.85,
+   "arousal": 0.4,
+   "emotions": {
+    "sadness": 0.9
+   },
+   "source": "curated:gemini-2026-09",
+   "version": 1,
+   "felt": "state"
+  },
+  {
+   "id": "hu.emo.kiábrándult",
+   "lemma": "kiábrándult",
+   "pos": [
+    "ADJ"
+   ],
+   "kind": "emotion_label",
+   "strength": "strong",
+   "valence": -0.7,
+   "arousal": 0.35,
+   "emotions": {
+    "sadness": 0.9
+   },
+   "source": "curated:gemini-2026-09",
+   "version": 1,
+   "felt": "state"
+  },
+  {
+   "id": "hu.emo.elhagyatott",
+   "lemma": "elhagyatott",
+   "pos": [
+    "ADJ"
+   ],
+   "kind": "emotion_label",
+   "strength": "weak",
+   "valence": -0.8,
+   "arousal": 0.3,
+   "emotions": {
+    "sadness": 0.9
+   },
+   "source": "curated:gemini-2026-09",
+   "version": 1,
+   "note": "elhagyatott ház vs elhagyatott ember",
+   "felt": "state"
+  },
+  {
+   "id": "hu.emo.elhagyott",
+   "lemma": "elhagyott",
+   "pos": [
+    "ADJ"
+   ],
+   "kind": "emotion_label",
+   "strength": "weak",
+   "valence": -0.75,
+   "arousal": 0.35,
+   "emotions": {
+    "sadness": 0.9
+   },
+   "source": "curated:gemini-2026-09",
+   "version": 1,
+   "note": "elhagyott tárgy vs elhagyott kedves",
+   "felt": "state"
+  },
+  {
+   "id": "hu.emo.siralmas",
+   "lemma": "siralmas",
+   "pos": [
+    "ADJ"
+   ],
+   "kind": "emotion_label",
+   "strength": "strong",
+   "valence": -0.7,
+   "arousal": 0.4,
+   "emotions": {
+    "sadness": 0.9
+   },
+   "source": "curated:gemini-2026-09",
+   "version": 1,
+   "felt": "evaluative"
+  },
+  {
+   "id": "hu.emo.könnyes",
+   "lemma": "könnyes",
+   "pos": [
+    "ADJ"
+   ],
+   "kind": "emotion_label",
+   "strength": "weak",
+   "valence": -0.65,
+   "arousal": 0.45,
+   "emotions": {
+    "sadness": 0.9
+   },
+   "source": "curated:gemini-2026-09",
+   "version": 1,
+   "note": "könnyes szem vs szomorúság",
+   "felt": "state"
+  },
+  {
+   "id": "hu.emo.zokogó",
+   "lemma": "zokogó",
+   "pos": [
+    "ADJ"
+   ],
+   "kind": "emotion_label",
+   "strength": "strong",
+   "valence": -0.85,
+   "arousal": 0.75,
+   "emotions": {
+    "sadness": 0.9
+   },
+   "source": "curated:gemini-2026-09",
+   "version": 1,
+   "felt": "state"
+  },
+  {
+   "id": "hu.emo.kesergő",
+   "lemma": "kesergő",
+   "pos": [
+    "ADJ"
+   ],
+   "kind": "emotion_label",
+   "strength": "strong",
+   "valence": -0.7,
+   "arousal": 0.4,
+   "emotions": {
+    "sadness": 0.9
+   },
+   "source": "curated:gemini-2026-09",
+   "version": 1,
+   "felt": "state"
+  },
+  {
+   "id": "hu.emo.bánkódó",
+   "lemma": "bánkódó",
+   "pos": [
+    "ADJ"
+   ],
+   "kind": "emotion_label",
+   "strength": "strong",
+   "valence": -0.7,
+   "arousal": 0.4,
+   "emotions": {
+    "sadness": 0.9
+   },
+   "source": "curated:gemini-2026-09",
+   "version": 1,
+   "felt": "state"
+  },
+  {
+   "id": "hu.emo.búbánatos",
+   "lemma": "búbánatos",
+   "pos": [
+    "ADJ"
+   ],
+   "kind": "emotion_label",
+   "strength": "strong",
+   "valence": -0.8,
+   "arousal": 0.35,
+   "emotions": {
+    "sadness": 0.9
+   },
+   "source": "curated:gemini-2026-09",
+   "version": 1,
+   "felt": "state"
+  },
+  {
+   "id": "hu.emo.töprengő",
+   "lemma": "töprengő",
+   "pos": [
+    "ADJ"
+   ],
+   "kind": "emotion_label",
+   "strength": "strong",
+   "valence": 0.0,
+   "arousal": 0.3,
+   "emotions": {
+    "anticipation": 0.9
+   },
+   "source": "curated:gemini-2026-09",
+   "version": 1,
+   "felt": "state"
+  },
+  {
+   "id": "hu.emo.gondterhelt",
+   "lemma": "gondterhelt",
+   "pos": [
+    "ADJ"
+   ],
+   "kind": "emotion_label",
+   "strength": "strong",
+   "valence": -0.55,
+   "arousal": 0.45,
+   "emotions": {
+    "fear": 0.9
+   },
+   "source": "curated:gemini-2026-09",
+   "version": 1,
+   "felt": "state"
+  },
+  {
+   "id": "hu.emo.kíváncsi",
+   "lemma": "kíváncsi",
+   "pos": [
+    "ADJ"
+   ],
+   "kind": "emotion_label",
+   "strength": "strong",
+   "valence": 0.45,
+   "arousal": 0.5,
+   "emotions": {
+    "anticipation": 0.9
+   },
+   "source": "curated:gemini-2026-09",
+   "version": 1,
+   "felt": "state"
+  },
+  {
+   "id": "hu.emo.tudásszomjas",
+   "lemma": "tudásszomjas",
+   "pos": [
+    "ADJ"
+   ],
+   "kind": "emotion_label",
+   "strength": "strong",
+   "valence": 0.6,
+   "arousal": 0.6,
+   "emotions": {
+    "anticipation": 0.9
+   },
+   "source": "curated:gemini-2026-09",
+   "version": 1,
+   "felt": "trait"
+  },
+  {
+   "id": "hu.emo.érdeklődő",
+   "lemma": "érdeklődő",
+   "pos": [
+    "ADJ"
+   ],
+   "kind": "emotion_label",
+   "strength": "strong",
+   "valence": 0.5,
+   "arousal": 0.45,
+   "emotions": {
+    "anticipation": 0.9
+   },
+   "source": "curated:gemini-2026-09",
+   "version": 1,
+   "felt": "state"
+  },
+  {
+   "id": "hu.emo.meglepett",
+   "lemma": "meglepett",
+   "pos": [
+    "ADJ"
+   ],
+   "kind": "emotion_label",
+   "strength": "strong",
+   "valence": 0.2,
+   "arousal": 0.6,
+   "emotions": {
+    "surprise": 0.9
+   },
+   "source": "curated:gemini-2026-09",
+   "version": 1,
+   "felt": "state"
+  },
+  {
+   "id": "hu.emo.leforrázott",
+   "lemma": "leforrázott",
+   "pos": [
+    "ADJ"
+   ],
+   "kind": "emotion_label",
+   "strength": "weak",
+   "valence": -0.5,
+   "arousal": 0.6,
+   "emotions": {
+    "surprise": 0.9
+   },
+   "source": "curated:gemini-2026-09",
+   "version": 1,
+   "note": "forró vízzel leforrázott vs megszégyenült döbbenet",
+   "felt": "state"
+  },
+  {
+   "id": "hu.emo.megijed",
+   "lemma": "megijed",
+   "pos": [
+    "ADJ"
+   ],
+   "kind": "emotion_label",
+   "strength": "strong",
+   "valence": -0.65,
+   "arousal": 0.7,
+   "emotions": {
+    "fear": 0.9
+   },
+   "source": "curated:gemini-2026-09",
+   "version": 1,
+   "felt": "state"
+  },
+  {
+   "id": "hu.emo.rémüldöző",
+   "lemma": "rémüldöző",
+   "pos": [
+    "ADJ"
+   ],
+   "kind": "emotion_label",
+   "strength": "strong",
+   "valence": -0.8,
+   "arousal": 0.8,
+   "emotions": {
+    "fear": 0.9
+   },
+   "source": "curated:gemini-2026-09",
+   "version": 1,
+   "felt": "state"
+  },
+  {
+   "id": "hu.emo.borzongó",
+   "lemma": "borzongó",
+   "pos": [
+    "ADJ"
+   ],
+   "kind": "emotion_label",
+   "strength": "weak",
+   "valence": -0.5,
+   "arousal": 0.6,
+   "emotions": {
+    "fear": 0.9
+   },
+   "source": "curated:gemini-2026-09",
+   "version": 1,
+   "note": "hidegtől borzongó vs félelemtől borzongó",
+   "felt": "state"
+  },
+  {
+   "id": "hu.emo.reszketeg",
+   "lemma": "reszketeg",
+   "pos": [
+    "ADJ"
+   ],
+   "kind": "emotion_label",
+   "strength": "weak",
+   "valence": -0.6,
+   "arousal": 0.65,
+   "emotions": {
+    "fear": 0.9
+   },
+   "source": "curated:gemini-2026-09",
+   "version": 1,
+   "note": "reszketeg láb vs reszketeg félelem",
+   "felt": "state"
+  },
+  {
+   "id": "hu.emo.felháborodik",
+   "lemma": "felháborodik",
+   "pos": [
+    "ADJ"
+   ],
+   "kind": "emotion_label",
+   "strength": "strong",
+   "valence": -0.75,
+   "arousal": 0.8,
+   "emotions": {
+    "anger": 0.9
+   },
+   "source": "curated:gemini-2026-09",
+   "version": 1,
+   "felt": "state"
+  },
+  {
+   "id": "hu.emo.zsémbes",
+   "lemma": "zsémbes",
+   "pos": [
+    "ADJ"
+   ],
+   "kind": "emotion_label",
+   "strength": "strong",
+   "valence": -0.5,
+   "arousal": 0.5,
+   "emotions": {
+    "anger": 0.9
+   },
+   "source": "curated:gemini-2026-09",
+   "version": 1,
+   "felt": "trait"
+  },
+  {
+   "id": "hu.emo.mogorva",
+   "lemma": "mogorva",
+   "pos": [
+    "ADJ"
+   ],
+   "kind": "emotion_label",
+   "strength": "strong",
+   "valence": -0.55,
+   "arousal": 0.45,
+   "emotions": {
+    "anger": 0.9
+   },
+   "source": "curated:gemini-2026-09",
+   "version": 1,
+   "felt": "trait"
+  },
+  {
+   "id": "hu.emo.morcos",
+   "lemma": "morcos",
+   "pos": [
+    "ADJ"
+   ],
+   "kind": "emotion_label",
+   "strength": "strong",
+   "valence": -0.5,
+   "arousal": 0.5,
+   "emotions": {
+    "anger": 0.9
+   },
+   "source": "curated:gemini-2026-09",
+   "version": 1,
+   "felt": "state"
+  },
+  {
+   "id": "hu.emo.durcás",
+   "lemma": "durcás",
+   "pos": [
+    "ADJ"
+   ],
+   "kind": "emotion_label",
+   "strength": "strong",
+   "valence": -0.45,
+   "arousal": 0.5,
+   "emotions": {
+    "anger": 0.9
+   },
+   "source": "curated:gemini-2026-09",
+   "version": 1,
+   "felt": "state"
+  },
+  {
+   "id": "hu.emo.dacos",
+   "lemma": "dacos",
+   "pos": [
+    "ADJ"
+   ],
+   "kind": "emotion_label",
+   "strength": "strong",
+   "valence": -0.4,
+   "arousal": 0.65,
+   "emotions": {
+    "anger": 0.9
+   },
+   "source": "curated:gemini-2026-09",
+   "version": 1,
+   "felt": "trait"
+  },
+  {
+   "id": "hu.emo.ellenszenves",
+   "lemma": "ellenszenves",
+   "pos": [
+    "ADJ"
+   ],
+   "kind": "emotion_label",
+   "strength": "strong",
+   "valence": -0.65,
+   "arousal": 0.5,
+   "emotions": {
+    "disgust": 0.9
+   },
+   "source": "curated:gemini-2026-09",
+   "version": 1,
+   "felt": "evaluative"
+  },
+  {
+   "id": "hu.emo.undorító",
+   "lemma": "undorító",
+   "pos": [
+    "ADJ"
+   ],
+   "kind": "emotion_label",
+   "strength": "strong",
+   "valence": -0.85,
+   "arousal": 0.7,
+   "emotions": {
+    "disgust": 0.9
+   },
+   "source": "curated:gemini-2026-09",
+   "version": 1,
+   "felt": "evaluative"
+  },
+  {
+   "id": "hu.emo.visszataszító",
+   "lemma": "visszataszító",
+   "pos": [
+    "ADJ"
+   ],
+   "kind": "emotion_label",
+   "strength": "strong",
+   "valence": -0.8,
+   "arousal": 0.65,
+   "emotions": {
+    "disgust": 0.9
+   },
+   "source": "curated:gemini-2026-09",
+   "version": 1,
+   "felt": "evaluative"
+  },
+  {
+   "id": "hu.emo.gyomorforgató",
+   "lemma": "gyomorforgató",
+   "pos": [
+    "ADJ"
+   ],
+   "kind": "emotion_label",
+   "strength": "strong",
+   "valence": -0.9,
+   "arousal": 0.75,
+   "emotions": {
+    "disgust": 0.9
+   },
+   "source": "curated:gemini-2026-09",
+   "version": 1,
+   "felt": "evaluative"
+  },
+  {
+   "id": "hu.emo.bámész",
+   "lemma": "bámész",
+   "pos": [
+    "ADJ"
+   ],
+   "kind": "emotion_label",
+   "strength": "strong",
+   "valence": 0.1,
+   "arousal": 0.4,
+   "emotions": {
+    "surprise": 0.9
+   },
+   "source": "curated:gemini-2026-09",
+   "version": 1,
+   "felt": "trait"
+  },
+  {
+   "id": "hu.emo.ittas",
+   "lemma": "ittas",
+   "pos": [
+    "ADJ"
+   ],
+   "kind": "emotion_label",
+   "strength": "weak",
+   "valence": 0.5,
+   "arousal": 0.5,
+   "emotions": {
+    "joy": 0.9
+   },
+   "source": "curated:gemini-2026-09",
+   "version": 1,
+   "note": "alkoholtól ittas vs örömmámor",
+   "felt": "state"
+  },
+  {
+   "id": "hu.emo.részeg",
+   "lemma": "részeg",
+   "pos": [
+    "ADJ"
+   ],
+   "kind": "emotion_label",
+   "strength": "weak",
+   "valence": 0.5,
+   "arousal": 0.6,
+   "emotions": {
+    "joy": 0.9
+   },
+   "source": "curated:gemini-2026-09",
+   "version": 1,
+   "note": "részeg ember vs mámorosan részeg",
+   "felt": "state"
+  },
+  {
+   "id": "hu.emo.bódult",
+   "lemma": "bódult",
+   "pos": [
+    "ADJ"
+   ],
+   "kind": "emotion_label",
+   "strength": "weak",
+   "valence": -0.4,
+   "arousal": 0.3,
+   "emotions": {
+    "sadness": 0.9
+   },
+   "source": "curated:gemini-2026-09",
+   "version": 1,
+   "note": "bódult állapot vs szomorúan bódult",
+   "felt": "state"
+  },
+  {
+   "id": "hu.emo.kábult",
+   "lemma": "kábult",
+   "pos": [
+    "ADJ"
+   ],
+   "kind": "emotion_label",
+   "strength": "strong",
+   "valence": -0.4,
+   "arousal": 0.3,
+   "emotions": {
+    "sadness": 0.9
+   },
+   "source": "curated:gemini-2026-09",
+   "version": 1,
+   "felt": "state"
+  },
+  {
+   "id": "hu.emo.tántorgó",
+   "lemma": "tántorgó",
+   "pos": [
+    "ADJ"
+   ],
+   "kind": "emotion_label",
+   "strength": "weak",
+   "valence": -0.5,
+   "arousal": 0.5,
+   "emotions": {
+    "fear": 0.9
+   },
+   "source": "curated:gemini-2026-09",
+   "version": 1,
+   "note": "tántorgó léptek vs megrendült lélek",
+   "felt": "state"
+  },
+  {
+   "id": "hu.emo.tétovázó",
+   "lemma": "tétovázó",
+   "pos": [
+    "ADJ"
+   ],
+   "kind": "emotion_label",
+   "strength": "strong",
+   "valence": -0.4,
+   "arousal": 0.4,
+   "emotions": {
+    "fear": 0.9
+   },
+   "source": "curated:gemini-2026-09",
+   "version": 1,
+   "felt": "state"
+  },
+  {
+   "id": "hu.emo.habozó",
+   "lemma": "habozó",
+   "pos": [
+    "ADJ"
+   ],
+   "kind": "emotion_label",
+   "strength": "strong",
+   "valence": -0.3,
+   "arousal": 0.4,
+   "emotions": {
+    "fear": 0.9
+   },
+   "source": "curated:gemini-2026-09",
+   "version": 1,
+   "felt": "state"
+  },
+  {
+   "id": "hu.emo.bizonytalankodó",
+   "lemma": "bizonytalankodó",
+   "pos": [
+    "ADJ"
+   ],
+   "kind": "emotion_label",
+   "strength": "strong",
+   "valence": -0.4,
+   "arousal": 0.4,
+   "emotions": {
+    "fear": 0.9
+   },
+   "source": "curated:gemini-2026-09",
+   "version": 1,
+   "felt": "state"
+  },
+  {
+   "id": "hu.emo.kedveszegett",
+   "lemma": "kedveszegett",
+   "pos": [
+    "ADJ"
+   ],
+   "kind": "emotion_label",
+   "strength": "strong",
+   "valence": -0.7,
+   "arousal": 0.35,
+   "emotions": {
+    "sadness": 0.9
+   },
+   "source": "curated:gemini-2026-09",
+   "version": 1,
+   "felt": "state"
+  },
+  {
+   "id": "hu.emo.rosszkedvű",
+   "lemma": "rosszkedvű",
+   "pos": [
+    "ADJ"
+   ],
+   "kind": "emotion_label",
+   "strength": "strong",
+   "valence": -0.65,
+   "arousal": 0.4,
+   "emotions": {
+    "sadness": 0.9
+   },
+   "source": "curated:gemini-2026-09",
+   "version": 1,
+   "felt": "state"
+  },
+  {
+   "id": "hu.emo.morózus",
+   "lemma": "morózus",
+   "pos": [
+    "ADJ"
+   ],
+   "kind": "emotion_label",
+   "strength": "strong",
+   "valence": -0.6,
+   "arousal": 0.45,
+   "emotions": {
+    "anger": 0.9
+   },
+   "source": "curated:gemini-2026-09",
+   "version": 1,
+   "felt": "trait"
+  },
+  {
+   "id": "hu.emo.pokróc",
+   "lemma": "pokróc",
+   "pos": [
+    "ADJ"
+   ],
+   "kind": "emotion_label",
+   "strength": "weak",
+   "valence": -0.5,
+   "arousal": 0.4,
+   "emotions": {
+    "disgust": 0.9
+   },
+   "source": "curated:gemini-2026-09",
+   "version": 1,
+   "note": "gyapjú pokróc vs pokróc modor",
+   "felt": "trait"
+  },
+  {
+   "id": "hu.emo.barátságtalan",
+   "lemma": "barátságtalan",
+   "pos": [
+    "ADJ"
+   ],
+   "kind": "emotion_label",
+   "strength": "strong",
+   "valence": -0.55,
+   "arousal": 0.4,
+   "emotions": {
+    "disgust": 0.9
+   },
+   "source": "curated:gemini-2026-09",
+   "version": 1,
+   "felt": "trait"
+  },
+  {
+   "id": "hu.emo.hidegfejű",
+   "lemma": "hidegfejű",
+   "pos": [
+    "ADJ"
+   ],
+   "kind": "emotion_label",
+   "strength": "strong",
+   "valence": 0.5,
+   "arousal": 0.2,
+   "emotions": {
+    "trust": 0.9
+   },
+   "source": "curated:gemini-2026-09",
+   "version": 1,
+   "felt": "trait"
+  },
+  {
+   "id": "hu.emo.szívtelen",
+   "lemma": "szívtelen",
+   "pos": [
+    "ADJ"
+   ],
+   "kind": "emotion_label",
+   "strength": "strong",
+   "valence": -0.8,
+   "arousal": 0.5,
+   "emotions": {
+    "disgust": 0.9
+   },
+   "source": "curated:gemini-2026-09",
+   "version": 1,
+   "felt": "trait"
+  },
+  {
+   "id": "hu.emo.kőszívű",
+   "lemma": "kőszívű",
+   "pos": [
+    "ADJ"
+   ],
+   "kind": "emotion_label",
+   "strength": "strong",
+   "valence": -0.85,
+   "arousal": 0.5,
+   "emotions": {
+    "disgust": 0.9
+   },
+   "source": "curated:gemini-2026-09",
+   "version": 1,
+   "felt": "trait"
+  },
+  {
+   "id": "hu.emo.irgalmatlan",
+   "lemma": "irgalmatlan",
+   "pos": [
+    "ADJ"
+   ],
+   "kind": "emotion_label",
+   "strength": "strong",
+   "valence": -0.85,
+   "arousal": 0.7,
+   "emotions": {
+    "disgust": 0.9
+   },
+   "source": "curated:gemini-2026-09",
+   "version": 1,
+   "felt": "trait"
+  },
+  {
+   "id": "hu.emo.kegyetlenkedő",
+   "lemma": "kegyetlenkedő",
+   "pos": [
+    "ADJ"
+   ],
+   "kind": "emotion_label",
+   "strength": "strong",
+   "valence": -0.9,
+   "arousal": 0.75,
+   "emotions": {
+    "disgust": 0.9
+   },
+   "source": "curated:gemini-2026-09",
+   "version": 1,
+   "felt": "trait"
+  },
+  {
+   "id": "hu.emo.vérszomjas",
+   "lemma": "vérszomjas",
+   "pos": [
+    "ADJ"
+   ],
+   "kind": "emotion_label",
+   "strength": "strong",
+   "valence": -0.85,
+   "arousal": 0.85,
+   "emotions": {
+    "anger": 0.9
+   },
+   "source": "curated:gemini-2026-09",
+   "version": 1,
+   "felt": "trait"
+  },
+  {
+   "id": "hu.emo.vérengző",
+   "lemma": "vérengző",
+   "pos": [
+    "ADJ"
+   ],
+   "kind": "emotion_label",
+   "strength": "strong",
+   "valence": -0.9,
+   "arousal": 0.9,
+   "emotions": {
+    "anger": 0.9
+   },
+   "source": "curated:gemini-2026-09",
+   "version": 1,
+   "felt": "trait"
+  },
+  {
+   "id": "hu.emo.harcias",
+   "lemma": "harcias",
+   "pos": [
+    "ADJ"
+   ],
+   "kind": "emotion_label",
+   "strength": "strong",
+   "valence": -0.4,
+   "arousal": 0.75,
+   "emotions": {
+    "anger": 0.9
+   },
+   "source": "curated:gemini-2026-09",
+   "version": 1,
+   "felt": "trait"
+  },
+  {
+   "id": "hu.emo.vakmerő",
+   "lemma": "vakmerő",
+   "pos": [
+    "ADJ"
+   ],
+   "kind": "emotion_label",
+   "strength": "strong",
+   "valence": 0.4,
+   "arousal": 0.8,
+   "emotions": {
+    "anticipation": 0.9
+   },
+   "source": "curated:gemini-2026-09",
+   "version": 1,
+   "felt": "trait"
+  },
+  {
+   "id": "hu.emo.merész",
+   "lemma": "merész",
+   "pos": [
+    "ADJ"
+   ],
+   "kind": "emotion_label",
+   "strength": "strong",
+   "valence": 0.7,
+   "arousal": 0.7,
+   "emotions": {
+    "trust": 0.9
+   },
+   "source": "curated:gemini-2026-09",
+   "version": 1,
+   "felt": "trait"
+  },
+  {
+   "id": "hu.emo.bátor",
+   "lemma": "bátor",
+   "pos": [
+    "ADJ"
+   ],
+   "kind": "emotion_label",
+   "strength": "strong",
+   "valence": 0.8,
+   "arousal": 0.65,
+   "emotions": {
+    "trust": 0.9
+   },
+   "source": "curated:gemini-2026-09",
+   "version": 1,
+   "felt": "trait"
+  },
+  {
+   "id": "hu.emo.hősies",
+   "lemma": "hősies",
+   "pos": [
+    "ADJ"
+   ],
+   "kind": "emotion_label",
+   "strength": "strong",
+   "valence": 0.9,
+   "arousal": 0.75,
+   "emotions": {
+    "trust": 0.9
+   },
+   "source": "curated:gemini-2026-09",
+   "version": 1,
+   "felt": "trait"
+  },
+  {
+   "id": "hu.emo.lovagias",
+   "lemma": "lovagias",
+   "pos": [
+    "ADJ"
+   ],
+   "kind": "emotion_label",
+   "strength": "strong",
+   "valence": 0.85,
+   "arousal": 0.5,
+   "emotions": {
+    "trust": 0.9
+   },
+   "source": "curated:gemini-2026-09",
+   "version": 1,
+   "felt": "trait"
+  },
+  {
+   "id": "hu.emo.nemeslelkű",
+   "lemma": "nemeslelkű",
+   "pos": [
+    "ADJ"
+   ],
+   "kind": "emotion_label",
+   "strength": "strong",
+   "valence": 0.9,
+   "arousal": 0.4,
+   "emotions": {
+    "trust": 0.9
+   },
+   "source": "curated:gemini-2026-09",
+   "version": 1,
+   "spell_ok": "standard Hungarian compound adjective meaning noble-hearted",
+   "felt": "trait"
+  },
+  {
+   "id": "hu.emo.nagylelkű",
+   "lemma": "nagylelkű",
+   "pos": [
+    "ADJ"
+   ],
+   "kind": "emotion_label",
+   "strength": "strong",
+   "valence": 0.85,
+   "arousal": 0.4,
+   "emotions": {
+    "trust": 0.9
+   },
+   "source": "curated:gemini-2026-09",
+   "version": 1,
+   "felt": "trait"
+  },
+  {
+   "id": "hu.emo.önfeláldozó",
+   "lemma": "önfeláldozó",
+   "pos": [
+    "ADJ"
+   ],
+   "kind": "emotion_label",
+   "strength": "strong",
+   "valence": 0.85,
+   "arousal": 0.5,
+   "emotions": {
+    "trust": 0.9
+   },
+   "source": "curated:gemini-2026-09",
+   "version": 1,
+   "felt": "trait"
+  },
+  {
+   "id": "hu.emo.megbízható",
+   "lemma": "megbízható",
+   "pos": [
+    "ADJ"
+   ],
+   "kind": "emotion_label",
+   "strength": "strong",
+   "valence": 0.85,
+   "arousal": 0.3,
+   "emotions": {
+    "trust": 0.9
+   },
+   "source": "curated:gemini-2026-09",
+   "version": 1,
+   "felt": "trait"
+  },
+  {
+   "id": "hu.emo.őszinte",
+   "lemma": "őszinte",
+   "pos": [
+    "ADJ"
+   ],
+   "kind": "emotion_label",
+   "strength": "strong",
+   "valence": 0.85,
+   "arousal": 0.35,
+   "emotions": {
+    "trust": 0.9
+   },
+   "source": "curated:gemini-2026-09",
+   "version": 1,
+   "felt": "trait"
+  },
+  {
+   "id": "hu.emo.igazmondó",
+   "lemma": "igazmondó",
+   "pos": [
+    "ADJ"
+   ],
+   "kind": "emotion_label",
+   "strength": "strong",
+   "valence": 0.8,
+   "arousal": 0.3,
+   "emotions": {
+    "trust": 0.9
+   },
+   "source": "curated:gemini-2026-09",
+   "version": 1,
+   "felt": "trait"
+  },
+  {
+   "id": "hu.emo.lelkiismeretes",
+   "lemma": "lelkiismeretes",
+   "pos": [
+    "ADJ"
+   ],
+   "kind": "emotion_label",
+   "strength": "strong",
+   "valence": 0.8,
+   "arousal": 0.35,
+   "emotions": {
+    "trust": 0.9
+   },
+   "source": "curated:gemini-2026-09",
+   "version": 1,
+   "felt": "trait"
+  },
+  {
+   "id": "hu.emo.kötelességtudó",
+   "lemma": "kötelességtudó",
+   "pos": [
+    "ADJ"
+   ],
+   "kind": "emotion_label",
+   "strength": "strong",
+   "valence": 0.75,
+   "arousal": 0.4,
+   "emotions": {
+    "trust": 0.9
+   },
+   "source": "curated:gemini-2026-09",
+   "version": 1,
+   "felt": "trait"
+  }
+ ]
+}

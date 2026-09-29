@@ -17,6 +17,7 @@ const api = {
   migrateProject: (projectPath) => ipcRenderer.invoke('api:migrateProject', projectPath),
   modernizeProjects: (workspacePath) => ipcRenderer.invoke('api:modernizeProjects', workspacePath),
   exportFlnote: (payload) => ipcRenderer.invoke('api:exportFlnote', payload),
+  exportVault: (payload) => ipcRenderer.invoke('api:exportVault', payload),
   importFlnote: (payload) => ipcRenderer.invoke('api:importFlnote', payload),
   exportReviewPackage: (payload) => ipcRenderer.invoke('api:exportReviewPackage', payload),
   openReviewPackage: (payload) => ipcRenderer.invoke('api:openReviewPackage', payload),

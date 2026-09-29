@@ -1,0 +1,146 @@
+{
+  "lang": "pl",
+  "kind": "diminisher",
+  "version": 1,
+  "entries": [
+    {
+      "id": "pl.dimin.trochę",
+      "lemma": "trochę",
+      "kind": "diminisher",
+      "strength": "weak",
+      "factor": 0.6,
+      "source": "migrated:pol_janitor.py",
+      "version": 1
+    },
+    {
+      "id": "pl.dimin.nieco",
+      "lemma": "nieco",
+      "kind": "diminisher",
+      "strength": "weak",
+      "factor": 0.6,
+      "source": "curated:gemini-2026-09",
+      "version": 1
+    },
+    {
+      "id": "pl.dimin.odrobina",
+      "lemma": "odrobina",
+      "kind": "diminisher",
+      "strength": "weak",
+      "factor": 0.6,
+      "source": "curated:gemini-2026-09",
+      "version": 1
+    },
+    {
+      "id": "pl.dimin.kapka",
+      "lemma": "kapka",
+      "kind": "diminisher",
+      "strength": "weak",
+      "factor": 0.6,
+      "source": "curated:gemini-2026-09",
+      "version": 1
+    },
+    {
+      "id": "pl.dimin.z_lekki",
+      "phrase": [
+        "z",
+        "lekki"
+      ],
+      "kind": "diminisher",
+      "strength": "weak",
+      "factor": 0.6,
+      "source": "curated:gemini-2026-09",
+      "version": 1,
+      "example": "Starzec uśmiechnął się z lekka do biegnących dzieci."
+    },
+    {
+      "id": "pl.dimin.ledwie",
+      "lemma": "ledwie",
+      "kind": "diminisher",
+      "strength": "weak",
+      "factor": 0.6,
+      "source": "curated:gemini-2026-09",
+      "version": 1
+    },
+    {
+      "id": "pl.dimin.ledwo",
+      "lemma": "ledwo",
+      "kind": "diminisher",
+      "strength": "weak",
+      "factor": 0.6,
+      "source": "curated:gemini-2026-09",
+      "version": 1
+    },
+    {
+      "id": "pl.dimin.zaledwie",
+      "lemma": "zaledwie",
+      "kind": "diminisher",
+      "strength": "weak",
+      "factor": 0.6,
+      "source": "curated:gemini-2026-09",
+      "version": 1
+    },
+    {
+      "id": "pl.dimin.częściowo",
+      "lemma": "częściowo",
+      "kind": "diminisher",
+      "strength": "weak",
+      "factor": 0.6,
+      "source": "curated:gemini-2026-09",
+      "version": 1
+    },
+    {
+      "id": "pl.dimin.poniekąd",
+      "lemma": "poniekąd",
+      "kind": "diminisher",
+      "strength": "weak",
+      "factor": 0.6,
+      "source": "curated:gemini-2026-09",
+      "version": 1
+    },
+    {
+      "id": "pl.dimin.raczej",
+      "lemma": "raczej",
+      "kind": "diminisher",
+      "strength": "weak",
+      "factor": 0.6,
+      "source": "migrated:pol_janitor.py",
+      "version": 1
+    },
+    {
+      "id": "pl.dimin.dość",
+      "lemma": "dość",
+      "kind": "diminisher",
+      "strength": "weak",
+      "factor": 0.6,
+      "source": "curated:gemini-2026-09",
+      "version": 1
+    },
+    {
+      "id": "pl.dimin.względnie",
+      "lemma": "względnie",
+      "kind": "diminisher",
+      "strength": "weak",
+      "factor": 0.6,
+      "source": "curated:gemini-2026-09",
+      "version": 1
+    },
+    {
+      "id": "pl.dimin.umiarkować",
+      "lemma": "umiarkować",
+      "kind": "diminisher",
+      "strength": "weak",
+      "factor": 0.6,
+      "source": "curated:gemini-2026-09",
+      "version": 1
+    },
+    {
+      "id": "pl.dimin.nieznacznie",
+      "lemma": "nieznacznie",
+      "kind": "diminisher",
+      "strength": "weak",
+      "factor": 0.6,
+      "source": "curated:gemini-2026-09",
+      "version": 1
+    }
+  ]
+}

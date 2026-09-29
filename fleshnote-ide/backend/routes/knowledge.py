@@ -13,8 +13,8 @@ import json
 import sqlite3
 from fastapi import APIRouter, HTTPException
 from pydantic import BaseModel
-
 from world_calendar import load_calendar_config, world_time_to_linear_day, effective_world_time
+from project_io import safe_md_path
 
 router = APIRouter()
 
@@ -124,7 +124,9 @@ def _row_to_dict(row):
 def _chapter_md_content(project_path: str, md_filename: str | None) -> str:
     if not md_filename:
         return ""
-    path = os.path.join(project_path, "md", md_filename)
+    path = safe_md_path(os.path.join(project_path, "md"), md_filename)
+    if not path:
+        return ""
     try:
         with open(path, "r", encoding="utf-8") as f:
             return f.read()

@@ -190,8 +190,13 @@ export default function JanitorPanel({
       filter_verb: 'filter verb',
       realize_verb: 'cognitive verb',
       adverb_emotion: 'emotion adverb',
+      emotion_noun_frame: 'named emotion',
+      detached_emotion: 'emotion opener',
+      emotion_verb: 'emotion verb',
+      emotion_manner: 'emotion as manner',
+      emotion_attribute: 'emotion on a look or voice',
     }
-    return map[entityType] || entityType
+    return t(`janitor.sdtKinds.${entityType}`, map[entityType] || entityType)
   }
 
   return (

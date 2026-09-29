@@ -1,0 +1,1969 @@
+{
+ "lang": "en",
+ "kind": "emotion_verb",
+ "version": 1,
+ "entries": [
+  {
+   "id": "en.emoverb.envy",
+   "lemma": "envy",
+   "pos": [
+    "VERB"
+   ],
+   "kind": "emotion_verb",
+   "strength": "strong",
+   "valence": -0.7,
+   "arousal": 0.6,
+   "emotions": {
+    "disgust": 0.8
+   },
+   "source": "curated:gemini-2026-09",
+   "version": 1,
+   "role": "experiencer"
+  },
+  {
+   "id": "en.emoverb.dread",
+   "lemma": "dread",
+   "pos": [
+    "VERB"
+   ],
+   "kind": "emotion_verb",
+   "strength": "strong",
+   "valence": -0.9,
+   "arousal": 0.8,
+   "emotions": {
+    "fear": 0.8
+   },
+   "source": "curated:gemini-2026-09",
+   "version": 1,
+   "role": "experiencer"
+  },
+  {
+   "id": "en.emoverb.fear",
+   "lemma": "fear",
+   "pos": [
+    "VERB"
+   ],
+   "kind": "emotion_verb",
+   "strength": "strong",
+   "valence": -0.8,
+   "arousal": 0.8,
+   "emotions": {
+    "fear": 0.8
+   },
+   "source": "curated:gemini-2026-09",
+   "version": 1,
+   "role": "experiencer"
+  },
+  {
+   "id": "en.emoverb.pity",
+   "lemma": "pity",
+   "pos": [
+    "VERB"
+   ],
+   "kind": "emotion_verb",
+   "strength": "strong",
+   "valence": -0.4,
+   "arousal": 0.4,
+   "emotions": {
+    "sadness": 0.8
+   },
+   "source": "curated:gemini-2026-09",
+   "version": 1,
+   "role": "experiencer"
+  },
+  {
+   "id": "en.emoverb.loathe",
+   "lemma": "loathe",
+   "pos": [
+    "VERB"
+   ],
+   "kind": "emotion_verb",
+   "strength": "strong",
+   "valence": -0.9,
+   "arousal": 0.8,
+   "emotions": {
+    "disgust": 0.8
+   },
+   "source": "curated:gemini-2026-09",
+   "version": 1,
+   "role": "experiencer"
+  },
+  {
+   "id": "en.emoverb.mourn",
+   "lemma": "mourn",
+   "pos": [
+    "VERB"
+   ],
+   "kind": "emotion_verb",
+   "strength": "strong",
+   "valence": -0.8,
+   "arousal": 0.5,
+   "emotions": {
+    "sadness": 0.8
+   },
+   "source": "curated:gemini-2026-09",
+   "version": 1,
+   "role": "experiencer"
+  },
+  {
+   "id": "en.emoverb.grieve",
+   "lemma": "grieve",
+   "pos": [
+    "VERB"
+   ],
+   "kind": "emotion_verb",
+   "strength": "strong",
+   "valence": -0.8,
+   "arousal": 0.5,
+   "emotions": {
+    "sadness": 0.8
+   },
+   "source": "curated:gemini-2026-09",
+   "version": 1,
+   "role": "experiencer"
+  },
+  {
+   "id": "en.emoverb.rejoice",
+   "lemma": "rejoice",
+   "pos": [
+    "VERB"
+   ],
+   "kind": "emotion_verb",
+   "strength": "strong",
+   "valence": 0.9,
+   "arousal": 0.8,
+   "emotions": {
+    "joy": 0.8
+   },
+   "source": "curated:gemini-2026-09",
+   "version": 1,
+   "role": "experiencer"
+  },
+  {
+   "id": "en.emoverb.exult",
+   "lemma": "exult",
+   "pos": [
+    "VERB"
+   ],
+   "kind": "emotion_verb",
+   "strength": "strong",
+   "valence": 0.8,
+   "arousal": 0.8,
+   "emotions": {
+    "joy": 0.8
+   },
+   "source": "curated:gemini-2026-09",
+   "version": 1,
+   "role": "experiencer"
+  },
+  {
+   "id": "en.emoverb.despair",
+   "lemma": "despair",
+   "pos": [
+    "VERB"
+   ],
+   "kind": "emotion_verb",
+   "strength": "strong",
+   "valence": -0.9,
+   "arousal": 0.6,
+   "emotions": {
+    "sadness": 0.8
+   },
+   "source": "curated:gemini-2026-09",
+   "version": 1,
+   "role": "experiencer"
+  },
+  {
+   "id": "en.emoverb.lament",
+   "lemma": "lament",
+   "pos": [
+    "VERB"
+   ],
+   "kind": "emotion_verb",
+   "strength": "strong",
+   "valence": -0.7,
+   "arousal": 0.5,
+   "emotions": {
+    "sadness": 0.8
+   },
+   "source": "curated:gemini-2026-09",
+   "version": 1,
+   "role": "experiencer"
+  },
+  {
+   "id": "en.emoverb.weep",
+   "lemma": "weep",
+   "pos": [
+    "VERB"
+   ],
+   "kind": "emotion_verb",
+   "strength": "strong",
+   "valence": -0.7,
+   "arousal": 0.6,
+   "emotions": {
+    "sadness": 0.8
+   },
+   "source": "curated:gemini-2026-09",
+   "version": 1,
+   "role": "expression"
+  },
+  {
+   "id": "en.emoverb.sob",
+   "lemma": "sob",
+   "pos": [
+    "VERB"
+   ],
+   "kind": "emotion_verb",
+   "strength": "strong",
+   "valence": -0.8,
+   "arousal": 0.7,
+   "emotions": {
+    "sadness": 0.8
+   },
+   "source": "curated:gemini-2026-09",
+   "version": 1,
+   "role": "expression"
+  },
+  {
+   "id": "en.emoverb.fret",
+   "lemma": "fret",
+   "pos": [
+    "VERB"
+   ],
+   "kind": "emotion_verb",
+   "strength": "weak",
+   "valence": -0.5,
+   "arousal": 0.6,
+   "emotions": {
+    "fear": 0.8
+   },
+   "source": "curated:gemini-2026-09",
+   "version": 1,
+   "note": "guitar fret vs worrying",
+   "role": "experiencer"
+  },
+  {
+   "id": "en.emoverb.worry",
+   "lemma": "worry",
+   "pos": [
+    "VERB"
+   ],
+   "kind": "emotion_verb",
+   "strength": "weak",
+   "valence": -0.6,
+   "arousal": 0.6,
+   "emotions": {
+    "fear": 0.8
+   },
+   "source": "curated:gemini-2026-09",
+   "version": 1,
+   "note": "dog worrying a bone vs mental anxiety",
+   "role": "experiencer"
+  },
+  {
+   "id": "en.emoverb.despise",
+   "lemma": "despise",
+   "pos": [
+    "VERB"
+   ],
+   "kind": "emotion_verb",
+   "strength": "strong",
+   "valence": -0.8,
+   "arousal": 0.7,
+   "emotions": {
+    "disgust": 0.8
+   },
+   "source": "curated:gemini-2026-09",
+   "version": 1,
+   "role": "experiencer"
+  },
+  {
+   "id": "en.emoverb.detest",
+   "lemma": "detest",
+   "pos": [
+    "VERB"
+   ],
+   "kind": "emotion_verb",
+   "strength": "strong",
+   "valence": -0.8,
+   "arousal": 0.7,
+   "emotions": {
+    "disgust": 0.8
+   },
+   "source": "curated:gemini-2026-09",
+   "version": 1,
+   "role": "experiencer"
+  },
+  {
+   "id": "en.emoverb.abhor",
+   "lemma": "abhor",
+   "pos": [
+    "VERB"
+   ],
+   "kind": "emotion_verb",
+   "strength": "strong",
+   "valence": -0.9,
+   "arousal": 0.8,
+   "emotions": {
+    "disgust": 0.8
+   },
+   "source": "curated:gemini-2026-09",
+   "version": 1,
+   "role": "experiencer"
+  },
+  {
+   "id": "en.emoverb.adore",
+   "lemma": "adore",
+   "pos": [
+    "VERB"
+   ],
+   "kind": "emotion_verb",
+   "strength": "strong",
+   "valence": 0.9,
+   "arousal": 0.7,
+   "emotions": {
+    "joy": 0.8
+   },
+   "source": "curated:gemini-2026-09",
+   "version": 1,
+   "role": "experiencer"
+  },
+  {
+   "id": "en.emoverb.cherish",
+   "lemma": "cherish",
+   "pos": [
+    "VERB"
+   ],
+   "kind": "emotion_verb",
+   "strength": "strong",
+   "valence": 0.8,
+   "arousal": 0.5,
+   "emotions": {
+    "joy": 0.8
+   },
+   "source": "curated:gemini-2026-09",
+   "version": 1,
+   "role": "experiencer"
+  },
+  {
+   "id": "en.emoverb.treasure",
+   "lemma": "treasure",
+   "pos": [
+    "VERB"
+   ],
+   "kind": "emotion_verb",
+   "strength": "weak",
+   "valence": 0.8,
+   "arousal": 0.5,
+   "emotions": {
+    "joy": 0.8
+   },
+   "source": "curated:gemini-2026-09",
+   "version": 1,
+   "note": "buried treasure vs cherish feeling; value, attitude",
+   "role": "other"
+  },
+  {
+   "id": "en.emoverb.idolize",
+   "lemma": "idolize",
+   "pos": [
+    "VERB"
+   ],
+   "kind": "emotion_verb",
+   "strength": "strong",
+   "valence": 0.8,
+   "arousal": 0.7,
+   "emotions": {
+    "joy": 0.8
+   },
+   "source": "curated:gemini-2026-09",
+   "version": 1,
+   "role": "experiencer"
+  },
+  {
+   "id": "en.emoverb.worship",
+   "lemma": "worship",
+   "pos": [
+    "VERB"
+   ],
+   "kind": "emotion_verb",
+   "strength": "weak",
+   "valence": 0.8,
+   "arousal": 0.6,
+   "emotions": {
+    "trust": 0.8
+   },
+   "source": "curated:gemini-2026-09",
+   "version": 1,
+   "note": "church ritual vs emotional reverence",
+   "role": "experiencer"
+  },
+  {
+   "id": "en.emoverb.resent",
+   "lemma": "resent",
+   "pos": [
+    "VERB"
+   ],
+   "kind": "emotion_verb",
+   "strength": "strong",
+   "valence": -0.7,
+   "arousal": 0.6,
+   "emotions": {
+    "anger": 0.8
+   },
+   "source": "curated:gemini-2026-09",
+   "version": 1,
+   "role": "experiencer"
+  },
+  {
+   "id": "en.emoverb.begrudge",
+   "lemma": "begrudge",
+   "pos": [
+    "VERB"
+   ],
+   "kind": "emotion_verb",
+   "strength": "strong",
+   "valence": -0.6,
+   "arousal": 0.5,
+   "emotions": {
+    "anger": 0.8
+   },
+   "source": "curated:gemini-2026-09",
+   "version": 1,
+   "role": "experiencer"
+  },
+  {
+   "id": "en.emoverb.seethe",
+   "lemma": "seethe",
+   "pos": [
+    "VERB"
+   ],
+   "kind": "emotion_verb",
+   "strength": "weak",
+   "valence": -0.8,
+   "arousal": 0.8,
+   "emotions": {
+    "anger": 0.8
+   },
+   "source": "curated:gemini-2026-09",
+   "version": 1,
+   "note": "boiling liquid vs rage",
+   "role": "experiencer"
+  },
+  {
+   "id": "en.emoverb.fume",
+   "lemma": "fume",
+   "pos": [
+    "VERB"
+   ],
+   "kind": "emotion_verb",
+   "strength": "weak",
+   "valence": -0.8,
+   "arousal": 0.8,
+   "emotions": {
+    "anger": 0.8
+   },
+   "source": "curated:gemini-2026-09",
+   "version": 1,
+   "note": "emitting chemical fumes vs fuming anger",
+   "role": "experiencer"
+  },
+  {
+   "id": "en.emoverb.rage",
+   "lemma": "rage",
+   "pos": [
+    "VERB"
+   ],
+   "kind": "emotion_verb",
+   "strength": "weak",
+   "valence": -0.9,
+   "arousal": 0.9,
+   "emotions": {
+    "anger": 0.8
+   },
+   "source": "curated:gemini-2026-09",
+   "version": 1,
+   "note": "storm raging vs character raging",
+   "role": "experiencer"
+  },
+  {
+   "id": "en.emoverb.yearn",
+   "lemma": "yearn",
+   "pos": [
+    "VERB"
+   ],
+   "kind": "emotion_verb",
+   "strength": "strong",
+   "valence": 0.4,
+   "arousal": 0.6,
+   "emotions": {
+    "anticipation": 0.8
+   },
+   "source": "curated:gemini-2026-09",
+   "version": 1,
+   "role": "experiencer"
+  },
+  {
+   "id": "en.emoverb.crave",
+   "lemma": "crave",
+   "pos": [
+    "VERB"
+   ],
+   "kind": "emotion_verb",
+   "strength": "strong",
+   "valence": 0.3,
+   "arousal": 0.6,
+   "emotions": {
+    "anticipation": 0.8
+   },
+   "source": "curated:gemini-2026-09",
+   "version": 1,
+   "role": "experiencer"
+  },
+  {
+   "id": "en.emoverb.long",
+   "lemma": "long",
+   "pos": [
+    "VERB"
+   ],
+   "kind": "emotion_verb",
+   "strength": "weak",
+   "valence": 0.4,
+   "arousal": 0.5,
+   "emotions": {
+    "anticipation": 0.8
+   },
+   "source": "curated:gemini-2026-09",
+   "version": 1,
+   "note": "spatial length vs emotional longing",
+   "role": "experiencer"
+  },
+  {
+   "id": "en.emoverb.pine",
+   "lemma": "pine",
+   "pos": [
+    "VERB"
+   ],
+   "kind": "emotion_verb",
+   "strength": "weak",
+   "valence": -0.6,
+   "arousal": 0.4,
+   "emotions": {
+    "sadness": 0.8
+   },
+   "source": "curated:gemini-2026-09",
+   "version": 1,
+   "note": "pine tree vs pining away",
+   "role": "experiencer"
+  },
+  {
+   "id": "en.emoverb.revere",
+   "lemma": "revere",
+   "pos": [
+    "VERB"
+   ],
+   "kind": "emotion_verb",
+   "strength": "strong",
+   "valence": 0.8,
+   "arousal": 0.5,
+   "emotions": {
+    "trust": 0.8
+   },
+   "source": "curated:gemini-2026-09",
+   "version": 1,
+   "role": "experiencer"
+  },
+  {
+   "id": "en.emoverb.venerate",
+   "lemma": "venerate",
+   "pos": [
+    "VERB"
+   ],
+   "kind": "emotion_verb",
+   "strength": "strong",
+   "valence": 0.8,
+   "arousal": 0.5,
+   "emotions": {
+    "trust": 0.8
+   },
+   "source": "curated:gemini-2026-09",
+   "version": 1,
+   "role": "experiencer"
+  },
+  {
+   "id": "en.emoverb.distrust",
+   "lemma": "distrust",
+   "pos": [
+    "VERB"
+   ],
+   "kind": "emotion_verb",
+   "strength": "strong",
+   "valence": -0.6,
+   "arousal": 0.5,
+   "emotions": {
+    "fear": 0.8
+   },
+   "source": "curated:gemini-2026-09",
+   "version": 1,
+   "role": "experiencer"
+  },
+  {
+   "id": "en.emoverb.suspect",
+   "lemma": "suspect",
+   "pos": [
+    "VERB"
+   ],
+   "kind": "emotion_verb",
+   "strength": "weak",
+   "valence": -0.4,
+   "arousal": 0.5,
+   "emotions": {
+    "fear": 0.8
+   },
+   "source": "curated:gemini-2026-09",
+   "version": 1,
+   "note": "police suspect vs suspecting ill",
+   "role": "other"
+  },
+  {
+   "id": "en.emoverb.shudder",
+   "lemma": "shudder",
+   "pos": [
+    "VERB"
+   ],
+   "kind": "emotion_verb",
+   "strength": "weak",
+   "valence": -0.7,
+   "arousal": 0.7,
+   "emotions": {
+    "fear": 0.8
+   },
+   "source": "curated:gemini-2026-09",
+   "version": 1,
+   "note": "mechanical shudder vs horror shudder",
+   "role": "expression"
+  },
+  {
+   "id": "en.emoverb.quiver",
+   "lemma": "quiver",
+   "pos": [
+    "VERB"
+   ],
+   "kind": "emotion_verb",
+   "strength": "weak",
+   "valence": -0.5,
+   "arousal": 0.6,
+   "emotions": {
+    "fear": 0.8
+   },
+   "source": "curated:gemini-2026-09",
+   "version": 1,
+   "note": "arrow quiver vs quivering lip",
+   "role": "expression"
+  },
+  {
+   "id": "en.emoverb.tremble",
+   "lemma": "tremble",
+   "pos": [
+    "VERB"
+   ],
+   "kind": "emotion_verb",
+   "strength": "weak",
+   "valence": -0.6,
+   "arousal": 0.7,
+   "emotions": {
+    "fear": 0.8
+   },
+   "source": "curated:gemini-2026-09",
+   "version": 1,
+   "note": "physical vibration vs emotional trembling",
+   "role": "expression"
+  },
+  {
+   "id": "en.emoverb.cower",
+   "lemma": "cower",
+   "pos": [
+    "VERB"
+   ],
+   "kind": "emotion_verb",
+   "strength": "strong",
+   "valence": -0.7,
+   "arousal": 0.6,
+   "emotions": {
+    "fear": 0.8
+   },
+   "source": "curated:gemini-2026-09",
+   "version": 1,
+   "role": "expression"
+  },
+  {
+   "id": "en.emoverb.flinch",
+   "lemma": "flinch",
+   "pos": [
+    "VERB"
+   ],
+   "kind": "emotion_verb",
+   "strength": "weak",
+   "valence": -0.5,
+   "arousal": 0.6,
+   "emotions": {
+    "fear": 0.8
+   },
+   "source": "curated:gemini-2026-09",
+   "version": 1,
+   "note": "physical dodge vs emotional flinch",
+   "role": "expression"
+  },
+  {
+   "id": "en.emoverb.cringe",
+   "lemma": "cringe",
+   "pos": [
+    "VERB"
+   ],
+   "kind": "emotion_verb",
+   "strength": "strong",
+   "valence": -0.6,
+   "arousal": 0.6,
+   "emotions": {
+    "fear": 0.8
+   },
+   "source": "curated:gemini-2026-09",
+   "version": 1,
+   "role": "expression"
+  },
+  {
+   "id": "en.emoverb.wince",
+   "lemma": "wince",
+   "pos": [
+    "VERB"
+   ],
+   "kind": "emotion_verb",
+   "strength": "weak",
+   "valence": -0.5,
+   "arousal": 0.5,
+   "emotions": {
+    "sadness": 0.8
+   },
+   "source": "curated:gemini-2026-09",
+   "version": 1,
+   "note": "physical pain wince vs emotional wince",
+   "role": "expression"
+  },
+  {
+   "id": "en.emoverb.blush",
+   "lemma": "blush",
+   "pos": [
+    "VERB"
+   ],
+   "kind": "emotion_verb",
+   "strength": "weak",
+   "valence": -0.3,
+   "arousal": 0.6,
+   "emotions": {
+    "fear": 0.8
+   },
+   "source": "curated:gemini-2026-09",
+   "version": 1,
+   "note": "physical blood flush vs embarrassed blush",
+   "role": "expression"
+  },
+  {
+   "id": "en.emoverb.chuckle",
+   "lemma": "chuckle",
+   "pos": [
+    "VERB"
+   ],
+   "kind": "emotion_verb",
+   "strength": "strong",
+   "valence": 0.7,
+   "arousal": 0.5,
+   "emotions": {
+    "joy": 0.8
+   },
+   "source": "curated:gemini-2026-09",
+   "version": 1,
+   "role": "expression"
+  },
+  {
+   "id": "en.emoverb.giggle",
+   "lemma": "giggle",
+   "pos": [
+    "VERB"
+   ],
+   "kind": "emotion_verb",
+   "strength": "strong",
+   "valence": 0.7,
+   "arousal": 0.6,
+   "emotions": {
+    "joy": 0.8
+   },
+   "source": "curated:gemini-2026-09",
+   "version": 1,
+   "role": "expression"
+  },
+  {
+   "id": "en.emoverb.beam",
+   "lemma": "beam",
+   "pos": [
+    "VERB"
+   ],
+   "kind": "emotion_verb",
+   "strength": "weak",
+   "valence": 0.8,
+   "arousal": 0.6,
+   "emotions": {
+    "joy": 0.8
+   },
+   "source": "curated:gemini-2026-09",
+   "version": 1,
+   "note": "wooden beam / light beam vs smiling beamingly",
+   "role": "expression"
+  },
+  {
+   "id": "en.emoverb.glow",
+   "lemma": "glow",
+   "pos": [
+    "VERB"
+   ],
+   "kind": "emotion_verb",
+   "strength": "weak",
+   "valence": 0.7,
+   "arousal": 0.4,
+   "emotions": {
+    "joy": 0.8
+   },
+   "source": "curated:gemini-2026-09",
+   "version": 1,
+   "note": "incandescent lamp vs warm inner glow",
+   "role": "expression"
+  },
+  {
+   "id": "en.emoverb.marvel",
+   "lemma": "marvel",
+   "pos": [
+    "VERB"
+   ],
+   "kind": "emotion_verb",
+   "strength": "strong",
+   "valence": 0.7,
+   "arousal": 0.7,
+   "emotions": {
+    "surprise": 0.8
+   },
+   "source": "curated:gemini-2026-09",
+   "version": 1,
+   "role": "experiencer"
+  },
+  {
+   "id": "en.emoverb.wonder",
+   "lemma": "wonder",
+   "pos": [
+    "VERB"
+   ],
+   "kind": "emotion_verb",
+   "strength": "strong",
+   "valence": 0.5,
+   "arousal": 0.5,
+   "emotions": {
+    "surprise": 0.8
+   },
+   "source": "curated:gemini-2026-09",
+   "version": 1,
+   "role": "other",
+   "note": "mostly 'wonder whether' = thinking; 'wonder at' is marvel"
+  },
+  {
+   "id": "en.emoverb.bask",
+   "lemma": "bask",
+   "pos": [
+    "VERB"
+   ],
+   "kind": "emotion_verb",
+   "strength": "weak",
+   "valence": 0.8,
+   "arousal": 0.3,
+   "emotions": {
+    "joy": 0.8
+   },
+   "source": "curated:gemini-2026-09",
+   "version": 1,
+   "note": "basking in sun vs basking in approval",
+   "role": "experiencer"
+  },
+  {
+   "id": "en.emoverb.relish",
+   "lemma": "relish",
+   "pos": [
+    "VERB"
+   ],
+   "kind": "emotion_verb",
+   "strength": "weak",
+   "valence": 0.8,
+   "arousal": 0.5,
+   "emotions": {
+    "joy": 0.8
+   },
+   "source": "curated:gemini-2026-09",
+   "version": 1,
+   "note": "pickle relish vs relishing a moment",
+   "role": "experiencer"
+  },
+  {
+   "id": "en.emoverb.savor",
+   "lemma": "savor",
+   "pos": [
+    "VERB"
+   ],
+   "kind": "emotion_verb",
+   "strength": "weak",
+   "valence": 0.8,
+   "arousal": 0.4,
+   "emotions": {
+    "joy": 0.8
+   },
+   "source": "curated:gemini-2026-09",
+   "version": 1,
+   "note": "tasting food vs savoring joy; enjoy a taste, mostly sensory",
+   "role": "other"
+  },
+  {
+   "id": "en.emoverb.brood",
+   "lemma": "brood",
+   "pos": [
+    "VERB"
+   ],
+   "kind": "emotion_verb",
+   "strength": "weak",
+   "valence": -0.6,
+   "arousal": 0.4,
+   "emotions": {
+    "sadness": 0.8
+   },
+   "source": "curated:gemini-2026-09",
+   "version": 1,
+   "note": "brood of chicks vs brooding gloomily",
+   "role": "experiencer"
+  },
+  {
+   "id": "en.emoverb.mull",
+   "lemma": "mull",
+   "pos": [
+    "VERB"
+   ],
+   "kind": "emotion_verb",
+   "strength": "weak",
+   "valence": 0.0,
+   "arousal": 0.3,
+   "emotions": {
+    "anticipation": 0.8
+   },
+   "source": "curated:gemini-2026-09",
+   "version": 1,
+   "note": "mulled wine vs mulling over",
+   "role": "other"
+  },
+  {
+   "id": "en.emoverb.agonize",
+   "lemma": "agonize",
+   "pos": [
+    "VERB"
+   ],
+   "kind": "emotion_verb",
+   "strength": "strong",
+   "valence": -0.8,
+   "arousal": 0.7,
+   "emotions": {
+    "sadness": 0.8
+   },
+   "source": "curated:gemini-2026-09",
+   "version": 1,
+   "role": "experiencer"
+  },
+  {
+   "id": "en.emoverb.suffer",
+   "lemma": "suffer",
+   "pos": [
+    "VERB"
+   ],
+   "kind": "emotion_verb",
+   "strength": "weak",
+   "valence": -0.8,
+   "arousal": 0.6,
+   "emotions": {
+    "sadness": 0.8
+   },
+   "source": "curated:gemini-2026-09",
+   "version": 1,
+   "note": "suffer injury vs suffer grief; pain or loss, not a named emotion",
+   "role": "other"
+  },
+  {
+   "id": "en.emoverb.endure",
+   "lemma": "endure",
+   "pos": [
+    "VERB"
+   ],
+   "kind": "emotion_verb",
+   "strength": "strong",
+   "valence": 0.1,
+   "arousal": 0.5,
+   "emotions": {
+    "trust": 0.8
+   },
+   "source": "curated:gemini-2026-09",
+   "version": 1,
+   "role": "other"
+  },
+  {
+   "id": "en.emoverb.persevere",
+   "lemma": "persevere",
+   "pos": [
+    "VERB"
+   ],
+   "kind": "emotion_verb",
+   "strength": "strong",
+   "valence": 0.6,
+   "arousal": 0.6,
+   "emotions": {
+    "trust": 0.8
+   },
+   "source": "curated:gemini-2026-09",
+   "version": 1,
+   "role": "other"
+  },
+  {
+   "id": "en.emoverb.delight",
+   "lemma": "delight",
+   "pos": [
+    "VERB"
+   ],
+   "kind": "emotion_verb",
+   "strength": "strong",
+   "valence": 0.8,
+   "arousal": 0.7,
+   "emotions": {
+    "joy": 0.8
+   },
+   "source": "curated:gemini-2026-09",
+   "version": 1,
+   "role": "experiencer"
+  },
+  {
+   "id": "en.emoverb.disdain",
+   "lemma": "disdain",
+   "pos": [
+    "VERB"
+   ],
+   "kind": "emotion_verb",
+   "strength": "strong",
+   "valence": -0.7,
+   "arousal": 0.5,
+   "emotions": {
+    "disgust": 0.8
+   },
+   "source": "curated:gemini-2026-09",
+   "version": 1,
+   "role": "other",
+   "note": "refuse/look down on ('disdained no ignominy'), attitude"
+  },
+  {
+   "id": "en.emoverb.scorn",
+   "lemma": "scorn",
+   "pos": [
+    "VERB"
+   ],
+   "kind": "emotion_verb",
+   "strength": "strong",
+   "valence": -0.7,
+   "arousal": 0.6,
+   "emotions": {
+    "disgust": 0.8
+   },
+   "source": "curated:gemini-2026-09",
+   "version": 1,
+   "role": "speech_act"
+  },
+  {
+   "id": "en.emoverb.mock",
+   "lemma": "mock",
+   "pos": [
+    "VERB"
+   ],
+   "kind": "emotion_verb",
+   "strength": "strong",
+   "valence": -0.6,
+   "arousal": 0.6,
+   "emotions": {
+    "disgust": 0.8
+   },
+   "source": "curated:gemini-2026-09",
+   "version": 1,
+   "role": "speech_act"
+  },
+  {
+   "id": "en.emoverb.deride",
+   "lemma": "deride",
+   "pos": [
+    "VERB"
+   ],
+   "kind": "emotion_verb",
+   "strength": "strong",
+   "valence": -0.7,
+   "arousal": 0.6,
+   "emotions": {
+    "disgust": 0.8
+   },
+   "source": "curated:gemini-2026-09",
+   "version": 1,
+   "role": "speech_act"
+  },
+  {
+   "id": "en.emoverb.taunt",
+   "lemma": "taunt",
+   "pos": [
+    "VERB"
+   ],
+   "kind": "emotion_verb",
+   "strength": "strong",
+   "valence": -0.6,
+   "arousal": 0.7,
+   "emotions": {
+    "anger": 0.8
+   },
+   "source": "curated:gemini-2026-09",
+   "version": 1,
+   "role": "speech_act"
+  },
+  {
+   "id": "en.emoverb.chide",
+   "lemma": "chide",
+   "pos": [
+    "VERB"
+   ],
+   "kind": "emotion_verb",
+   "strength": "strong",
+   "valence": -0.4,
+   "arousal": 0.4,
+   "emotions": {
+    "anger": 0.8
+   },
+   "source": "curated:gemini-2026-09",
+   "version": 1,
+   "role": "speech_act"
+  },
+  {
+   "id": "en.emoverb.reproach",
+   "lemma": "reproach",
+   "pos": [
+    "VERB"
+   ],
+   "kind": "emotion_verb",
+   "strength": "strong",
+   "valence": -0.5,
+   "arousal": 0.5,
+   "emotions": {
+    "anger": 0.8
+   },
+   "source": "curated:gemini-2026-09",
+   "version": 1,
+   "role": "speech_act"
+  },
+  {
+   "id": "en.emoverb.berate",
+   "lemma": "berate",
+   "pos": [
+    "VERB"
+   ],
+   "kind": "emotion_verb",
+   "strength": "strong",
+   "valence": -0.7,
+   "arousal": 0.7,
+   "emotions": {
+    "anger": 0.8
+   },
+   "source": "curated:gemini-2026-09",
+   "version": 1,
+   "role": "speech_act"
+  },
+  {
+   "id": "en.emoverb.scold",
+   "lemma": "scold",
+   "pos": [
+    "VERB"
+   ],
+   "kind": "emotion_verb",
+   "strength": "strong",
+   "valence": -0.5,
+   "arousal": 0.6,
+   "emotions": {
+    "anger": 0.8
+   },
+   "source": "curated:gemini-2026-09",
+   "version": 1,
+   "role": "speech_act"
+  },
+  {
+   "id": "en.emoverb.chafe",
+   "lemma": "chafe",
+   "pos": [
+    "VERB"
+   ],
+   "kind": "emotion_verb",
+   "strength": "weak",
+   "valence": -0.5,
+   "arousal": 0.6,
+   "emotions": {
+    "anger": 0.8
+   },
+   "source": "curated:gemini-2026-09",
+   "version": 1,
+   "note": "skin chafing vs chafing at rules",
+   "role": "experiencer"
+  },
+  {
+   "id": "en.emoverb.bridle",
+   "lemma": "bridle",
+   "pos": [
+    "VERB"
+   ],
+   "kind": "emotion_verb",
+   "strength": "weak",
+   "valence": -0.5,
+   "arousal": 0.6,
+   "emotions": {
+    "anger": 0.8
+   },
+   "source": "curated:gemini-2026-09",
+   "version": 1,
+   "note": "horse bridle vs bridling at insult",
+   "role": "expression"
+  },
+  {
+   "id": "en.emoverb.bristle",
+   "lemma": "bristle",
+   "pos": [
+    "VERB"
+   ],
+   "kind": "emotion_verb",
+   "strength": "weak",
+   "valence": -0.6,
+   "arousal": 0.7,
+   "emotions": {
+    "anger": 0.8
+   },
+   "source": "curated:gemini-2026-09",
+   "version": 1,
+   "note": "brush bristles vs bristling with anger",
+   "role": "expression"
+  },
+  {
+   "id": "en.emoverb.fluster",
+   "lemma": "fluster",
+   "pos": [
+    "VERB"
+   ],
+   "kind": "emotion_verb",
+   "strength": "strong",
+   "valence": -0.4,
+   "arousal": 0.6,
+   "emotions": {
+    "fear": 0.8
+   },
+   "source": "curated:gemini-2026-09",
+   "version": 1,
+   "role": "stimulus"
+  },
+  {
+   "id": "en.emoverb.rattle",
+   "lemma": "rattle",
+   "pos": [
+    "VERB"
+   ],
+   "kind": "emotion_verb",
+   "strength": "weak",
+   "valence": -0.5,
+   "arousal": 0.6,
+   "emotions": {
+    "fear": 0.8
+   },
+   "source": "curated:gemini-2026-09",
+   "version": 1,
+   "note": "toy rattle vs rattling someone's nerves",
+   "role": "stimulus"
+  },
+  {
+   "id": "en.emoverb.disconcert",
+   "lemma": "disconcert",
+   "pos": [
+    "VERB"
+   ],
+   "kind": "emotion_verb",
+   "strength": "strong",
+   "valence": -0.4,
+   "arousal": 0.5,
+   "emotions": {
+    "surprise": 0.8
+   },
+   "source": "curated:gemini-2026-09",
+   "version": 1,
+   "role": "stimulus"
+  },
+  {
+   "id": "en.emoverb.unnerve",
+   "lemma": "unnerve",
+   "pos": [
+    "VERB"
+   ],
+   "kind": "emotion_verb",
+   "strength": "strong",
+   "valence": -0.6,
+   "arousal": 0.6,
+   "emotions": {
+    "fear": 0.8
+   },
+   "source": "curated:gemini-2026-09",
+   "version": 1,
+   "role": "stimulus"
+  },
+  {
+   "id": "en.emoverb.startle",
+   "lemma": "startle",
+   "pos": [
+    "VERB"
+   ],
+   "kind": "emotion_verb",
+   "strength": "strong",
+   "valence": -0.1,
+   "arousal": 0.7,
+   "emotions": {
+    "surprise": 0.8
+   },
+   "source": "curated:gemini-2026-09",
+   "version": 1,
+   "role": "stimulus"
+  },
+  {
+   "id": "en.emoverb.alarm",
+   "lemma": "alarm",
+   "pos": [
+    "VERB"
+   ],
+   "kind": "emotion_verb",
+   "strength": "weak",
+   "valence": -0.6,
+   "arousal": 0.7,
+   "emotions": {
+    "fear": 0.8
+   },
+   "source": "curated:gemini-2026-09",
+   "version": 1,
+   "note": "sounding alarm vs feeling alarmed",
+   "role": "stimulus"
+  },
+  {
+   "id": "en.emoverb.panic",
+   "lemma": "panic",
+   "pos": [
+    "VERB"
+   ],
+   "kind": "emotion_verb",
+   "strength": "strong",
+   "valence": -0.8,
+   "arousal": 0.9,
+   "emotions": {
+    "fear": 0.8
+   },
+   "source": "curated:gemini-2026-09",
+   "version": 1,
+   "role": "experiencer"
+  },
+  {
+   "id": "en.emoverb.appall",
+   "lemma": "appall",
+   "pos": [
+    "VERB"
+   ],
+   "kind": "emotion_verb",
+   "strength": "strong",
+   "valence": -0.8,
+   "arousal": 0.8,
+   "emotions": {
+    "disgust": 0.8
+   },
+   "source": "curated:gemini-2026-09",
+   "version": 1,
+   "role": "stimulus"
+  },
+  {
+   "id": "en.emoverb.dismay",
+   "lemma": "dismay",
+   "pos": [
+    "VERB"
+   ],
+   "kind": "emotion_verb",
+   "strength": "strong",
+   "valence": -0.6,
+   "arousal": 0.6,
+   "emotions": {
+    "fear": 0.8
+   },
+   "source": "curated:gemini-2026-09",
+   "version": 1,
+   "role": "stimulus"
+  },
+  {
+   "id": "en.emoverb.afflict",
+   "lemma": "afflict",
+   "pos": [
+    "VERB"
+   ],
+   "kind": "emotion_verb",
+   "strength": "strong",
+   "valence": -0.7,
+   "arousal": 0.5,
+   "emotions": {
+    "sadness": 0.8
+   },
+   "source": "curated:gemini-2026-09",
+   "version": 1,
+   "role": "other"
+  },
+  {
+   "id": "en.emoverb.torment",
+   "lemma": "torment",
+   "pos": [
+    "VERB"
+   ],
+   "kind": "emotion_verb",
+   "strength": "strong",
+   "valence": -0.8,
+   "arousal": 0.8,
+   "emotions": {
+    "sadness": 0.8
+   },
+   "source": "curated:gemini-2026-09",
+   "version": 1,
+   "role": "other"
+  },
+  {
+   "id": "en.emoverb.plague",
+   "lemma": "plague",
+   "pos": [
+    "VERB"
+   ],
+   "kind": "emotion_verb",
+   "strength": "weak",
+   "valence": -0.7,
+   "arousal": 0.6,
+   "emotions": {
+    "fear": 0.8
+   },
+   "source": "curated:gemini-2026-09",
+   "version": 1,
+   "note": "bubonic plague vs plaguing someone with doubts",
+   "role": "other"
+  },
+  {
+   "id": "en.emoverb.haunt",
+   "lemma": "haunt",
+   "pos": [
+    "VERB"
+   ],
+   "kind": "emotion_verb",
+   "strength": "weak",
+   "valence": -0.6,
+   "arousal": 0.5,
+   "emotions": {
+    "fear": 0.8
+   },
+   "source": "curated:gemini-2026-09",
+   "version": 1,
+   "note": "ghost haunting house vs memories haunting mind",
+   "role": "stimulus"
+  },
+  {
+   "id": "en.emoverb.intimidate",
+   "lemma": "intimidate",
+   "pos": [
+    "VERB"
+   ],
+   "kind": "emotion_verb",
+   "strength": "strong",
+   "valence": -0.7,
+   "arousal": 0.7,
+   "emotions": {
+    "fear": 0.8
+   },
+   "source": "curated:gemini-2026-09",
+   "version": 1,
+   "role": "speech_act"
+  },
+  {
+   "id": "en.emoverb.terrorize",
+   "lemma": "terrorize",
+   "pos": [
+    "VERB"
+   ],
+   "kind": "emotion_verb",
+   "strength": "strong",
+   "valence": -0.9,
+   "arousal": 0.9,
+   "emotions": {
+    "fear": 0.8
+   },
+   "source": "curated:gemini-2026-09",
+   "version": 1,
+   "role": "speech_act"
+  },
+  {
+   "id": "en.emoverb.enrage",
+   "lemma": "enrage",
+   "pos": [
+    "VERB"
+   ],
+   "kind": "emotion_verb",
+   "strength": "strong",
+   "valence": -0.9,
+   "arousal": 0.9,
+   "emotions": {
+    "anger": 0.8
+   },
+   "source": "curated:gemini-2026-09",
+   "version": 1,
+   "role": "stimulus"
+  },
+  {
+   "id": "en.emoverb.infuriate",
+   "lemma": "infuriate",
+   "pos": [
+    "VERB"
+   ],
+   "kind": "emotion_verb",
+   "strength": "strong",
+   "valence": -0.9,
+   "arousal": 0.9,
+   "emotions": {
+    "anger": 0.8
+   },
+   "source": "curated:gemini-2026-09",
+   "version": 1,
+   "role": "stimulus"
+  },
+  {
+   "id": "en.emoverb.incense",
+   "lemma": "incense",
+   "pos": [
+    "VERB"
+   ],
+   "kind": "emotion_verb",
+   "strength": "weak",
+   "valence": -0.8,
+   "arousal": 0.8,
+   "emotions": {
+    "anger": 0.8
+   },
+   "source": "curated:gemini-2026-09",
+   "version": 1,
+   "note": "burning incense vs incensed with rage",
+   "role": "stimulus"
+  },
+  {
+   "id": "en.emoverb.provoke",
+   "lemma": "provoke",
+   "pos": [
+    "VERB"
+   ],
+   "kind": "emotion_verb",
+   "strength": "strong",
+   "valence": -0.5,
+   "arousal": 0.7,
+   "emotions": {
+    "anger": 0.8
+   },
+   "source": "curated:gemini-2026-09",
+   "version": 1,
+   "role": "other"
+  },
+  {
+   "id": "en.emoverb.regret",
+   "lemma": "regret",
+   "pos": [
+    "VERB"
+   ],
+   "kind": "emotion_verb",
+   "role": "experiencer",
+   "strength": "strong",
+   "valence": -0.65,
+   "arousal": 0.55,
+   "emotions": {
+    "sadness": 0.8
+   },
+   "source": "curated:gemini-2026-09",
+   "version": 1
+  },
+  {
+   "id": "en.emoverb.hate",
+   "lemma": "hate",
+   "pos": [
+    "VERB"
+   ],
+   "kind": "emotion_verb",
+   "role": "experiencer",
+   "strength": "strong",
+   "valence": -0.85,
+   "arousal": 0.85,
+   "emotions": {
+    "anger": 0.9,
+    "disgust": 0.7
+   },
+   "source": "curated:gemini-2026-09",
+   "version": 1
+  },
+  {
+   "id": "en.emoverb.love",
+   "lemma": "love",
+   "pos": [
+    "VERB"
+   ],
+   "kind": "emotion_verb",
+   "role": "experiencer",
+   "strength": "weak",
+   "note": "weak: common casual hyperbole / polysemy",
+   "valence": 0.88,
+   "arousal": 0.75,
+   "emotions": {
+    "joy": 0.9,
+    "trust": 0.8
+   },
+   "source": "curated:gemini-2026-09",
+   "version": 1
+  },
+  {
+   "id": "en.emoverb.astonish",
+   "lemma": "astonish",
+   "pos": [
+    "VERB"
+   ],
+   "kind": "emotion_verb",
+   "strength": "strong",
+   "valence": 0.2,
+   "arousal": 0.75,
+   "emotions": {
+    "surprise": 0.9
+   },
+   "role": "stimulus",
+   "source": "curated:claude-2026-09",
+   "version": 1
+  },
+  {
+   "id": "en.emoverb.amaze",
+   "lemma": "amaze",
+   "pos": [
+    "VERB"
+   ],
+   "kind": "emotion_verb",
+   "strength": "strong",
+   "valence": 0.4,
+   "arousal": 0.7,
+   "emotions": {
+    "surprise": 0.85
+   },
+   "role": "stimulus",
+   "source": "curated:claude-2026-09",
+   "version": 1
+  },
+  {
+   "id": "en.emoverb.astound",
+   "lemma": "astound",
+   "pos": [
+    "VERB"
+   ],
+   "kind": "emotion_verb",
+   "strength": "strong",
+   "valence": 0.2,
+   "arousal": 0.8,
+   "emotions": {
+    "surprise": 0.9
+   },
+   "role": "stimulus",
+   "source": "curated:claude-2026-09",
+   "version": 1
+  },
+  {
+   "id": "en.emoverb.surprise",
+   "lemma": "surprise",
+   "pos": [
+    "VERB"
+   ],
+   "kind": "emotion_verb",
+   "strength": "strong",
+   "valence": 0.1,
+   "arousal": 0.65,
+   "emotions": {
+    "surprise": 0.85
+   },
+   "role": "stimulus",
+   "source": "curated:claude-2026-09",
+   "version": 1
+  },
+  {
+   "id": "en.emoverb.frighten",
+   "lemma": "frighten",
+   "pos": [
+    "VERB"
+   ],
+   "kind": "emotion_verb",
+   "strength": "strong",
+   "valence": -0.75,
+   "arousal": 0.8,
+   "emotions": {
+    "fear": 0.9
+   },
+   "role": "stimulus",
+   "source": "curated:claude-2026-09",
+   "version": 1
+  },
+  {
+   "id": "en.emoverb.terrify",
+   "lemma": "terrify",
+   "pos": [
+    "VERB"
+   ],
+   "kind": "emotion_verb",
+   "strength": "strong",
+   "valence": -0.9,
+   "arousal": 0.95,
+   "emotions": {
+    "fear": 0.95
+   },
+   "role": "stimulus",
+   "source": "curated:claude-2026-09",
+   "version": 1
+  },
+  {
+   "id": "en.emoverb.horrify",
+   "lemma": "horrify",
+   "pos": [
+    "VERB"
+   ],
+   "kind": "emotion_verb",
+   "strength": "strong",
+   "valence": -0.9,
+   "arousal": 0.9,
+   "emotions": {
+    "fear": 0.8,
+    "disgust": 0.7
+   },
+   "role": "stimulus",
+   "source": "curated:claude-2026-09",
+   "version": 1
+  },
+  {
+   "id": "en.emoverb.annoy",
+   "lemma": "annoy",
+   "pos": [
+    "VERB"
+   ],
+   "kind": "emotion_verb",
+   "strength": "strong",
+   "valence": -0.5,
+   "arousal": 0.5,
+   "emotions": {
+    "anger": 0.6
+   },
+   "role": "stimulus",
+   "source": "curated:claude-2026-09",
+   "version": 1
+  },
+  {
+   "id": "en.emoverb.irritate",
+   "lemma": "irritate",
+   "pos": [
+    "VERB"
+   ],
+   "kind": "emotion_verb",
+   "strength": "strong",
+   "valence": -0.55,
+   "arousal": 0.55,
+   "emotions": {
+    "anger": 0.65
+   },
+   "role": "stimulus",
+   "source": "curated:claude-2026-09",
+   "version": 1
+  },
+  {
+   "id": "en.emoverb.disgust",
+   "lemma": "disgust",
+   "pos": [
+    "VERB"
+   ],
+   "kind": "emotion_verb",
+   "strength": "strong",
+   "valence": -0.8,
+   "arousal": 0.6,
+   "emotions": {
+    "disgust": 0.9
+   },
+   "role": "stimulus",
+   "source": "curated:claude-2026-09",
+   "version": 1
+  },
+  {
+   "id": "en.emoverb.exasperate",
+   "lemma": "exasperate",
+   "pos": [
+    "VERB"
+   ],
+   "kind": "emotion_verb",
+   "strength": "strong",
+   "valence": -0.6,
+   "arousal": 0.65,
+   "emotions": {
+    "anger": 0.7
+   },
+   "role": "stimulus",
+   "source": "curated:claude-2026-09",
+   "version": 1
+  },
+  {
+   "id": "en.emoverb.humiliate",
+   "lemma": "humiliate",
+   "pos": [
+    "VERB"
+   ],
+   "kind": "emotion_verb",
+   "strength": "strong",
+   "valence": -0.8,
+   "arousal": 0.7,
+   "emotions": {
+    "sadness": 0.6,
+    "anger": 0.5
+   },
+   "role": "stimulus",
+   "source": "curated:claude-2026-09",
+   "version": 1
+  },
+  {
+   "id": "en.emoverb.sadden",
+   "lemma": "sadden",
+   "pos": [
+    "VERB"
+   ],
+   "kind": "emotion_verb",
+   "strength": "strong",
+   "valence": -0.7,
+   "arousal": 0.35,
+   "emotions": {
+    "sadness": 0.85
+   },
+   "role": "stimulus",
+   "source": "curated:claude-2026-09",
+   "version": 1
+  },
+  {
+   "id": "en.emoverb.thrill",
+   "lemma": "thrill",
+   "pos": [
+    "VERB"
+   ],
+   "kind": "emotion_verb",
+   "strength": "strong",
+   "valence": 0.8,
+   "arousal": 0.85,
+   "emotions": {
+    "joy": 0.8,
+    "anticipation": 0.6
+   },
+   "role": "stimulus",
+   "source": "curated:claude-2026-09",
+   "version": 1
+  },
+  {
+   "id": "en.emoverb.gladden",
+   "lemma": "gladden",
+   "pos": [
+    "VERB"
+   ],
+   "kind": "emotion_verb",
+   "strength": "strong",
+   "valence": 0.75,
+   "arousal": 0.5,
+   "emotions": {
+    "joy": 0.8
+   },
+   "role": "stimulus",
+   "source": "curated:claude-2026-09",
+   "version": 1
+  },
+  {
+   "id": "en.emoverb.dishearten",
+   "lemma": "dishearten",
+   "pos": [
+    "VERB"
+   ],
+   "kind": "emotion_verb",
+   "strength": "strong",
+   "valence": -0.6,
+   "arousal": 0.4,
+   "emotions": {
+    "sadness": 0.75
+   },
+   "role": "stimulus",
+   "source": "curated:claude-2026-09",
+   "version": 1
+  },
+  {
+   "id": "en.emoverb.embarrass",
+   "lemma": "embarrass",
+   "pos": [
+    "VERB"
+   ],
+   "kind": "emotion_verb",
+   "strength": "strong",
+   "valence": -0.5,
+   "arousal": 0.6,
+   "emotions": {
+    "sadness": 0.4
+   },
+   "role": "stimulus",
+   "source": "curated:claude-2026-09",
+   "version": 1
+  },
+  {
+   "id": "en.emoverb.shame",
+   "lemma": "shame",
+   "pos": [
+    "VERB"
+   ],
+   "kind": "emotion_verb",
+   "strength": "strong",
+   "valence": -0.6,
+   "arousal": 0.55,
+   "emotions": {
+    "sadness": 0.5
+   },
+   "role": "stimulus",
+   "source": "curated:claude-2026-09",
+   "version": 1
+  },
+  {
+   "id": "en.emoverb.appal",
+   "lemma": "appal",
+   "pos": [
+    "VERB"
+   ],
+   "kind": "emotion_verb",
+   "strength": "strong",
+   "valence": -0.8,
+   "arousal": 0.8,
+   "emotions": {
+    "disgust": 0.7,
+    "fear": 0.6
+   },
+   "role": "stimulus",
+   "source": "curated:claude-2026-09",
+   "version": 1
+  }
+ ]
+}

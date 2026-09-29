@@ -1,0 +1,1581 @@
+{
+  "lang": "pl",
+  "kind": "calm_word",
+  "version": 1,
+  "entries": [
+    {
+      "id": "pl.calm.spokój",
+      "lemma": "spokój",
+      "kind": "calm_word",
+      "strength": "strong",
+      "valence": 0.86,
+      "arousal": 0.05,
+      "emotions": {
+        "trust": 0.7,
+        "joy": 0.4
+      },
+      "source": "curated:gemini-2026-09",
+      "version": 1
+    },
+    {
+      "id": "pl.calm.cisza",
+      "lemma": "cisza",
+      "kind": "calm_word",
+      "strength": "strong",
+      "valence": 0.72,
+      "arousal": 0.05,
+      "emotions": {
+        "trust": 0.7,
+        "joy": 0.4
+      },
+      "source": "curated:gemini-2026-09",
+      "version": 1
+    },
+    {
+      "id": "pl.calm.pokój",
+      "lemma": "pokój",
+      "kind": "calm_word",
+      "strength": "weak",
+      "valence": 0.84,
+      "arousal": 0.06,
+      "emotions": {
+        "trust": 0.7,
+        "joy": 0.4
+      },
+      "source": "curated:gemini-2026-09",
+      "version": 1,
+      "note": "pomieszczenie/pokój vs stan pokoju"
+    },
+    {
+      "id": "pl.calm.błogość",
+      "lemma": "błogość",
+      "kind": "calm_word",
+      "strength": "strong",
+      "valence": 0.88,
+      "arousal": 0.08,
+      "emotions": {
+        "trust": 0.7,
+        "joy": 0.4
+      },
+      "source": "curated:gemini-2026-09",
+      "version": 1
+    },
+    {
+      "id": "pl.calm.milczenie",
+      "lemma": "milczenie",
+      "kind": "calm_word",
+      "strength": "strong",
+      "valence": 0.54,
+      "arousal": 0.06,
+      "emotions": {
+        "trust": 0.7,
+        "joy": 0.4
+      },
+      "source": "curated:gemini-2026-09",
+      "version": 1
+    },
+    {
+      "id": "pl.calm.bezruch",
+      "lemma": "bezruch",
+      "kind": "calm_word",
+      "strength": "strong",
+      "valence": 0.52,
+      "arousal": 0.04,
+      "emotions": {
+        "trust": 0.7,
+        "joy": 0.4
+      },
+      "source": "curated:gemini-2026-09",
+      "version": 1
+    },
+    {
+      "id": "pl.calm.odpoczynek",
+      "lemma": "odpoczynek",
+      "kind": "calm_word",
+      "strength": "strong",
+      "valence": 0.76,
+      "arousal": 0.06,
+      "emotions": {
+        "trust": 0.7,
+        "joy": 0.4
+      },
+      "source": "curated:gemini-2026-09",
+      "version": 1
+    },
+    {
+      "id": "pl.calm.wytchnienie",
+      "lemma": "wytchnienie",
+      "kind": "calm_word",
+      "strength": "strong",
+      "valence": 0.8,
+      "arousal": 0.08,
+      "emotions": {
+        "trust": 0.7,
+        "joy": 0.4
+      },
+      "source": "curated:gemini-2026-09",
+      "version": 1
+    },
+    {
+      "id": "pl.calm.odprężć",
+      "lemma": "odprężenie",
+      "kind": "calm_word",
+      "strength": "strong",
+      "valence": 0.78,
+      "arousal": 0.06,
+      "emotions": {
+        "trust": 0.7,
+        "joy": 0.4
+      },
+      "source": "curated:gemini-2026-09",
+      "version": 1
+    },
+    {
+      "id": "pl.calm.ukojeć",
+      "lemma": "ukojenie",
+      "kind": "calm_word",
+      "strength": "strong",
+      "valence": 0.84,
+      "arousal": 0.08,
+      "emotions": {
+        "trust": 0.7,
+        "joy": 0.4
+      },
+      "source": "curated:gemini-2026-09",
+      "version": 1,
+      "lemma_evidence": "carrier"
+    },
+    {
+      "id": "pl.calm.łagodność",
+      "lemma": "łagodność",
+      "kind": "calm_word",
+      "strength": "strong",
+      "valence": 0.78,
+      "arousal": 0.08,
+      "emotions": {
+        "trust": 0.7,
+        "joy": 0.4
+      },
+      "source": "curated:gemini-2026-09",
+      "version": 1
+    },
+    {
+      "id": "pl.calm.cichość",
+      "lemma": "cichość",
+      "kind": "calm_word",
+      "strength": "strong",
+      "valence": 0.68,
+      "arousal": 0.06,
+      "emotions": {
+        "trust": 0.7,
+        "joy": 0.4
+      },
+      "source": "curated:gemini-2026-09",
+      "version": 1
+    },
+    {
+      "id": "pl.calm.spokojność",
+      "lemma": "spokojność",
+      "kind": "calm_word",
+      "strength": "strong",
+      "valence": 0.8,
+      "arousal": 0.06,
+      "emotions": {
+        "trust": 0.7,
+        "joy": 0.4
+      },
+      "source": "curated:gemini-2026-09",
+      "version": 1
+    },
+    {
+      "id": "pl.calm.wyciszeć",
+      "lemma": "wyciszenie",
+      "kind": "calm_word",
+      "strength": "strong",
+      "valence": 0.76,
+      "arousal": 0.06,
+      "emotions": {
+        "trust": 0.7,
+        "joy": 0.4
+      },
+      "source": "curated:gemini-2026-09",
+      "version": 1
+    },
+    {
+      "id": "pl.calm.harmonie",
+      "lemma": "harmonie",
+      "kind": "calm_word",
+      "strength": "strong",
+      "valence": 0.82,
+      "arousal": 0.08,
+      "emotions": {
+        "trust": 0.7,
+        "joy": 0.4
+      },
+      "source": "curated:gemini-2026-09",
+      "version": 1,
+      "alt_lemmas": [
+        "harmon"
+      ],
+      "lemma_evidence": "carrier"
+    },
+    {
+      "id": "pl.calm.równowagać",
+      "lemma": "równowaga",
+      "kind": "calm_word",
+      "strength": "strong",
+      "valence": 0.8,
+      "arousal": 0.08,
+      "emotions": {
+        "trust": 0.7,
+        "joy": 0.4
+      },
+      "source": "curated:gemini-2026-09",
+      "version": 1
+    },
+    {
+      "id": "pl.calm.błogostan",
+      "lemma": "błogostan",
+      "kind": "calm_word",
+      "strength": "strong",
+      "valence": 0.88,
+      "arousal": 0.08,
+      "emotions": {
+        "trust": 0.7,
+        "joy": 0.4
+      },
+      "source": "curated:gemini-2026-09",
+      "version": 1
+    },
+    {
+      "id": "pl.calm.beztrosko",
+      "lemma": "beztrosko",
+      "kind": "calm_word",
+      "strength": "strong",
+      "valence": 0.82,
+      "arousal": 0.12,
+      "emotions": {
+        "trust": 0.7,
+        "joy": 0.4
+      },
+      "source": "curated:gemini-2026-09",
+      "version": 1
+    },
+    {
+      "id": "pl.calm.sielanka",
+      "lemma": "sielanka",
+      "kind": "calm_word",
+      "strength": "strong",
+      "valence": 0.78,
+      "arousal": 0.14,
+      "emotions": {
+        "trust": 0.7,
+        "joy": 0.4
+      },
+      "source": "curated:gemini-2026-09",
+      "version": 1
+    },
+    {
+      "id": "pl.calm.idylla",
+      "lemma": "idylla",
+      "kind": "calm_word",
+      "strength": "strong",
+      "valence": 0.8,
+      "arousal": 0.14,
+      "emotions": {
+        "trust": 0.7,
+        "joy": 0.4
+      },
+      "source": "curated:gemini-2026-09",
+      "version": 1
+    },
+    {
+      "id": "pl.calm.sen",
+      "lemma": "sen",
+      "kind": "calm_word",
+      "strength": "strong",
+      "valence": 0.64,
+      "arousal": 0.05,
+      "emotions": {
+        "trust": 0.7,
+        "joy": 0.4
+      },
+      "source": "curated:gemini-2026-09",
+      "version": 1
+    },
+    {
+      "id": "pl.calm.drzemek",
+      "lemma": "drzemek",
+      "kind": "calm_word",
+      "strength": "strong",
+      "valence": 0.6,
+      "arousal": 0.06,
+      "emotions": {
+        "trust": 0.7,
+        "joy": 0.4
+      },
+      "source": "curated:gemini-2026-09",
+      "version": 1
+    },
+    {
+      "id": "pl.calm.łóżko",
+      "lemma": "łóżko",
+      "kind": "calm_word",
+      "strength": "weak",
+      "valence": 0.55,
+      "arousal": 0.06,
+      "emotions": {
+        "trust": 0.7,
+        "joy": 0.4
+      },
+      "source": "curated:gemini-2026-09",
+      "version": 1,
+      "note": "mebel domowy"
+    },
+    {
+      "id": "pl.calm.pościel",
+      "lemma": "pościel",
+      "kind": "calm_word",
+      "strength": "strong",
+      "valence": 0.6,
+      "arousal": 0.06,
+      "emotions": {
+        "trust": 0.7,
+        "joy": 0.4
+      },
+      "source": "curated:gemini-2026-09",
+      "version": 1
+    },
+    {
+      "id": "pl.calm.poduszka",
+      "lemma": "poduszka",
+      "kind": "calm_word",
+      "strength": "strong",
+      "valence": 0.6,
+      "arousal": 0.06,
+      "emotions": {
+        "trust": 0.7,
+        "joy": 0.4
+      },
+      "source": "curated:gemini-2026-09",
+      "version": 1
+    },
+    {
+      "id": "pl.calm.kołder",
+      "lemma": "kołder",
+      "kind": "calm_word",
+      "strength": "strong",
+      "valence": 0.62,
+      "arousal": 0.06,
+      "emotions": {
+        "trust": 0.7,
+        "joy": 0.4
+      },
+      "source": "curated:gemini-2026-09",
+      "version": 1
+    },
+    {
+      "id": "pl.calm.kąt",
+      "lemma": "kąt",
+      "kind": "calm_word",
+      "strength": "weak",
+      "valence": 0.45,
+      "arousal": 0.08,
+      "emotions": {
+        "trust": 0.7,
+        "joy": 0.4
+      },
+      "source": "curated:gemini-2026-09",
+      "version": 1,
+      "note": "geometria vs cichy kącik"
+    },
+    {
+      "id": "pl.calm.kołysanka",
+      "lemma": "kołysanka",
+      "kind": "calm_word",
+      "strength": "strong",
+      "valence": 0.74,
+      "arousal": 0.1,
+      "emotions": {
+        "trust": 0.7,
+        "joy": 0.4
+      },
+      "source": "curated:gemini-2026-09",
+      "version": 1
+    },
+    {
+      "id": "pl.calm.melodia",
+      "lemma": "melodia",
+      "kind": "calm_word",
+      "strength": "strong",
+      "valence": 0.68,
+      "arousal": 0.15,
+      "emotions": {
+        "trust": 0.7,
+        "joy": 0.4
+      },
+      "source": "curated:gemini-2026-09",
+      "version": 1
+    },
+    {
+      "id": "pl.calm.muzyka",
+      "lemma": "muzyka",
+      "kind": "calm_word",
+      "strength": "strong",
+      "valence": 0.66,
+      "arousal": 0.16,
+      "emotions": {
+        "trust": 0.7,
+        "joy": 0.4
+      },
+      "source": "curated:gemini-2026-09",
+      "version": 1
+    },
+    {
+      "id": "pl.calm.oddech",
+      "lemma": "oddech",
+      "kind": "calm_word",
+      "strength": "strong",
+      "valence": 0.58,
+      "arousal": 0.08,
+      "emotions": {
+        "trust": 0.7,
+        "joy": 0.4
+      },
+      "source": "curated:gemini-2026-09",
+      "version": 1
+    },
+    {
+      "id": "pl.calm.rozmarzenie",
+      "lemma": "rozmarzenie",
+      "kind": "calm_word",
+      "strength": "strong",
+      "valence": 0.64,
+      "arousal": 0.12,
+      "emotions": {
+        "trust": 0.7,
+        "joy": 0.4
+      },
+      "source": "curated:gemini-2026-09",
+      "version": 1
+    },
+    {
+      "id": "pl.calm.zadumać",
+      "lemma": "zadumać",
+      "kind": "calm_word",
+      "strength": "strong",
+      "valence": 0.56,
+      "arousal": 0.1,
+      "emotions": {
+        "trust": 0.7,
+        "joy": 0.4
+      },
+      "source": "curated:gemini-2026-09",
+      "version": 1
+    },
+    {
+      "id": "pl.calm.kontemplacja",
+      "lemma": "kontemplacja",
+      "kind": "calm_word",
+      "strength": "strong",
+      "valence": 0.62,
+      "arousal": 0.08,
+      "emotions": {
+        "trust": 0.7,
+        "joy": 0.4
+      },
+      "source": "curated:gemini-2026-09",
+      "version": 1
+    },
+    {
+      "id": "pl.calm.medytacja",
+      "lemma": "medytacja",
+      "kind": "calm_word",
+      "strength": "strong",
+      "valence": 0.68,
+      "arousal": 0.06,
+      "emotions": {
+        "trust": 0.7,
+        "joy": 0.4
+      },
+      "source": "curated:gemini-2026-09",
+      "version": 1
+    },
+    {
+      "id": "pl.calm.schronienie",
+      "lemma": "schronienie",
+      "kind": "calm_word",
+      "strength": "strong",
+      "valence": 0.78,
+      "arousal": 0.16,
+      "emotions": {
+        "trust": 0.7,
+        "joy": 0.4
+      },
+      "source": "curated:gemini-2026-09",
+      "version": 1
+    },
+    {
+      "id": "pl.calm.azyl",
+      "lemma": "azyl",
+      "kind": "calm_word",
+      "strength": "strong",
+      "valence": 0.8,
+      "arousal": 0.18,
+      "emotions": {
+        "trust": 0.7,
+        "joy": 0.4
+      },
+      "source": "curated:gemini-2026-09",
+      "version": 1
+    },
+    {
+      "id": "pl.calm.przystań",
+      "lemma": "przystań",
+      "kind": "calm_word",
+      "strength": "strong",
+      "valence": 0.76,
+      "arousal": 0.15,
+      "emotions": {
+        "trust": 0.7,
+        "joy": 0.4
+      },
+      "source": "curated:gemini-2026-09",
+      "version": 1
+    },
+    {
+      "id": "pl.calm.zacisze",
+      "lemma": "zacisze",
+      "kind": "calm_word",
+      "strength": "strong",
+      "valence": 0.78,
+      "arousal": 0.12,
+      "emotions": {
+        "trust": 0.7,
+        "joy": 0.4
+      },
+      "source": "curated:gemini-2026-09",
+      "version": 1
+    },
+    {
+      "id": "pl.calm.dom",
+      "lemma": "dom",
+      "kind": "calm_word",
+      "strength": "weak",
+      "valence": 0.8,
+      "arousal": 0.14,
+      "emotions": {
+        "trust": 0.7,
+        "joy": 0.4
+      },
+      "source": "curated:gemini-2026-09",
+      "version": 1,
+      "note": "budynek vs ognisko domowe"
+    },
+    {
+      "id": "pl.calm.ognisko_domowy",
+      "phrase": [
+        "ognisko",
+        "domowy"
+      ],
+      "kind": "calm_word",
+      "strength": "strong",
+      "valence": 0.84,
+      "arousal": 0.15,
+      "emotions": {
+        "trust": 0.7,
+        "joy": 0.4
+      },
+      "source": "curated:gemini-2026-09",
+      "version": 1,
+      "example": "Ciepło ogniska domowego dawało im poczucie bezpieczeństwa."
+    },
+    {
+      "id": "pl.calm.kominek",
+      "lemma": "kominek",
+      "kind": "calm_word",
+      "strength": "strong",
+      "valence": 0.72,
+      "arousal": 0.14,
+      "emotions": {
+        "trust": 0.7,
+        "joy": 0.4
+      },
+      "source": "curated:gemini-2026-09",
+      "version": 1
+    },
+    {
+      "id": "pl.calm.piec",
+      "lemma": "piec",
+      "kind": "calm_word",
+      "strength": "weak",
+      "valence": 0.55,
+      "arousal": 0.12,
+      "emotions": {
+        "trust": 0.7,
+        "joy": 0.4
+      },
+      "source": "curated:gemini-2026-09",
+      "version": 1,
+      "note": "urządzenie grzewcze"
+    },
+    {
+      "id": "pl.calm.bezpieczeństwo",
+      "lemma": "bezpieczeństwo",
+      "kind": "calm_word",
+      "strength": "strong",
+      "valence": 0.84,
+      "arousal": 0.1,
+      "emotions": {
+        "trust": 0.7,
+        "joy": 0.4
+      },
+      "source": "curated:gemini-2026-09",
+      "version": 1
+    },
+    {
+      "id": "pl.calm.niewinność",
+      "lemma": "niewinność",
+      "kind": "calm_word",
+      "strength": "strong",
+      "valence": 0.76,
+      "arousal": 0.1,
+      "emotions": {
+        "trust": 0.7,
+        "joy": 0.4
+      },
+      "source": "curated:gemini-2026-09",
+      "version": 1
+    },
+    {
+      "id": "pl.calm.czystość",
+      "lemma": "czystość",
+      "kind": "calm_word",
+      "strength": "strong",
+      "valence": 0.72,
+      "arousal": 0.08,
+      "emotions": {
+        "trust": 0.7,
+        "joy": 0.4
+      },
+      "source": "curated:gemini-2026-09",
+      "version": 1
+    },
+    {
+      "id": "pl.calm.odluda",
+      "lemma": "odludzie",
+      "kind": "calm_word",
+      "strength": "strong",
+      "valence": 0.52,
+      "arousal": 0.1,
+      "emotions": {
+        "trust": 0.7,
+        "joy": 0.4
+      },
+      "source": "curated:gemini-2026-09",
+      "version": 1
+    },
+    {
+      "id": "pl.calm.łąka",
+      "lemma": "łąka",
+      "kind": "calm_word",
+      "strength": "strong",
+      "valence": 0.66,
+      "arousal": 0.14,
+      "emotions": {
+        "trust": 0.7,
+        "joy": 0.4
+      },
+      "source": "curated:gemini-2026-09",
+      "version": 1
+    },
+    {
+      "id": "pl.calm.polać",
+      "lemma": "polać",
+      "kind": "calm_word",
+      "strength": "strong",
+      "valence": 0.66,
+      "arousal": 0.14,
+      "emotions": {
+        "trust": 0.7,
+        "joy": 0.4
+      },
+      "source": "curated:gemini-2026-09",
+      "version": 1
+    },
+    {
+      "id": "pl.calm.las",
+      "lemma": "las",
+      "kind": "calm_word",
+      "strength": "weak",
+      "valence": 0.6,
+      "arousal": 0.16,
+      "emotions": {
+        "trust": 0.7,
+        "joy": 0.4
+      },
+      "source": "curated:gemini-2026-09",
+      "version": 1,
+      "note": "ekosystem leśny"
+    },
+    {
+      "id": "pl.calm.gaj",
+      "lemma": "gaj",
+      "kind": "calm_word",
+      "strength": "strong",
+      "valence": 0.68,
+      "arousal": 0.12,
+      "emotions": {
+        "trust": 0.7,
+        "joy": 0.4
+      },
+      "source": "curated:gemini-2026-09",
+      "version": 1
+    },
+    {
+      "id": "pl.calm.ogród",
+      "lemma": "ogród",
+      "kind": "calm_word",
+      "strength": "strong",
+      "valence": 0.72,
+      "arousal": 0.14,
+      "emotions": {
+        "trust": 0.7,
+        "joy": 0.4
+      },
+      "source": "curated:gemini-2026-09",
+      "version": 1
+    },
+    {
+      "id": "pl.calm.sad",
+      "lemma": "sad",
+      "kind": "calm_word",
+      "strength": "strong",
+      "valence": 0.68,
+      "arousal": 0.14,
+      "emotions": {
+        "trust": 0.7,
+        "joy": 0.4
+      },
+      "source": "curated:gemini-2026-09",
+      "version": 1
+    },
+    {
+      "id": "pl.calm.kwiat",
+      "lemma": "kwiat",
+      "kind": "calm_word",
+      "strength": "strong",
+      "valence": 0.74,
+      "arousal": 0.16,
+      "emotions": {
+        "trust": 0.7,
+        "joy": 0.4
+      },
+      "source": "curated:gemini-2026-09",
+      "version": 1
+    },
+    {
+      "id": "pl.calm.rosa",
+      "lemma": "rosa",
+      "kind": "calm_word",
+      "strength": "strong",
+      "valence": 0.62,
+      "arousal": 0.1,
+      "emotions": {
+        "trust": 0.7,
+        "joy": 0.4
+      },
+      "source": "curated:gemini-2026-09",
+      "version": 1
+    },
+    {
+      "id": "pl.calm.strumień",
+      "lemma": "strumień",
+      "kind": "calm_word",
+      "strength": "strong",
+      "valence": 0.68,
+      "arousal": 0.14,
+      "emotions": {
+        "trust": 0.7,
+        "joy": 0.4
+      },
+      "source": "curated:gemini-2026-09",
+      "version": 1
+    },
+    {
+      "id": "pl.calm.szmer",
+      "lemma": "szmer",
+      "kind": "calm_word",
+      "strength": "strong",
+      "valence": 0.56,
+      "arousal": 0.12,
+      "emotions": {
+        "trust": 0.7,
+        "joy": 0.4
+      },
+      "source": "curated:gemini-2026-09",
+      "version": 1
+    },
+    {
+      "id": "pl.calm.plusk",
+      "lemma": "plusk",
+      "kind": "calm_word",
+      "strength": "strong",
+      "valence": 0.54,
+      "arousal": 0.14,
+      "emotions": {
+        "trust": 0.7,
+        "joy": 0.4
+      },
+      "source": "curated:gemini-2026-09",
+      "version": 1
+    },
+    {
+      "id": "pl.calm.szum",
+      "lemma": "szum",
+      "kind": "calm_word",
+      "strength": "strong",
+      "valence": 0.52,
+      "arousal": 0.14,
+      "emotions": {
+        "trust": 0.7,
+        "joy": 0.4
+      },
+      "source": "curated:gemini-2026-09",
+      "version": 1
+    },
+    {
+      "id": "pl.calm.śpiew_ptak",
+      "phrase": [
+        "śpiew",
+        "ptak"
+      ],
+      "kind": "calm_word",
+      "strength": "strong",
+      "valence": 0.78,
+      "arousal": 0.16,
+      "emotions": {
+        "trust": 0.7,
+        "joy": 0.4
+      },
+      "source": "curated:gemini-2026-09",
+      "version": 1,
+      "example": "O poranku w ogrodzie rozbrzmiewał radosny śpiew ptaków."
+    },
+    {
+      "id": "pl.calm.gruchanie",
+      "lemma": "gruchanie",
+      "kind": "calm_word",
+      "strength": "strong",
+      "valence": 0.62,
+      "arousal": 0.12,
+      "emotions": {
+        "trust": 0.7,
+        "joy": 0.4
+      },
+      "source": "curated:gemini-2026-09",
+      "version": 1
+    },
+    {
+      "id": "pl.calm.ćwierkanie",
+      "lemma": "ćwierkanie",
+      "kind": "calm_word",
+      "strength": "strong",
+      "valence": 0.64,
+      "arousal": 0.15,
+      "emotions": {
+        "trust": 0.7,
+        "joy": 0.4
+      },
+      "source": "curated:gemini-2026-09",
+      "version": 1
+    },
+    {
+      "id": "pl.calm.brzęczenia_pszczoła",
+      "phrase": [
+        "brzęczeć",
+        "pszczoła"
+      ],
+      "kind": "calm_word",
+      "strength": "strong",
+      "valence": 0.62,
+      "arousal": 0.14,
+      "emotions": {
+        "trust": 0.7,
+        "joy": 0.4
+      },
+      "source": "curated:gemini-2026-09",
+      "version": 1,
+      "alt_lemmas": [
+        "brzęczeć"
+      ],
+      "lemma_evidence": "carrier",
+      "example": "W letnim sadzie słychać było ciche brzęczenie pszczół."
+    },
+    {
+      "id": "pl.calm.cykada",
+      "lemma": "cykada",
+      "kind": "calm_word",
+      "strength": "strong",
+      "valence": 0.58,
+      "arousal": 0.14,
+      "emotions": {
+        "trust": 0.7,
+        "joy": 0.4
+      },
+      "source": "curated:gemini-2026-09",
+      "version": 1,
+      "alt_lemmas": [
+        "cykadać"
+      ],
+      "lemma_evidence": "carrier"
+    },
+    {
+      "id": "pl.calm.powiew",
+      "lemma": "powiew",
+      "kind": "calm_word",
+      "strength": "strong",
+      "valence": 0.62,
+      "arousal": 0.12,
+      "emotions": {
+        "trust": 0.7,
+        "joy": 0.4
+      },
+      "source": "curated:gemini-2026-09",
+      "version": 1
+    },
+    {
+      "id": "pl.calm.zefir",
+      "lemma": "zefir",
+      "kind": "calm_word",
+      "strength": "strong",
+      "valence": 0.66,
+      "arousal": 0.12,
+      "emotions": {
+        "trust": 0.7,
+        "joy": 0.4
+      },
+      "source": "curated:gemini-2026-09",
+      "version": 1
+    },
+    {
+      "id": "pl.calm.wietrzyk",
+      "lemma": "wietrzyk",
+      "kind": "calm_word",
+      "strength": "strong",
+      "valence": 0.64,
+      "arousal": 0.12,
+      "emotions": {
+        "trust": 0.7,
+        "joy": 0.4
+      },
+      "source": "curated:gemini-2026-09",
+      "version": 1
+    },
+    {
+      "id": "pl.calm.bezwietrznie",
+      "lemma": "bezwietrznie",
+      "kind": "calm_word",
+      "strength": "strong",
+      "valence": 0.58,
+      "arousal": 0.06,
+      "emotions": {
+        "trust": 0.7,
+        "joy": 0.4
+      },
+      "source": "curated:gemini-2026-09",
+      "version": 1
+    },
+    {
+      "id": "pl.calm.zmierzch",
+      "lemma": "zmierzch",
+      "kind": "calm_word",
+      "strength": "strong",
+      "valence": 0.56,
+      "arousal": 0.12,
+      "emotions": {
+        "trust": 0.7,
+        "joy": 0.4
+      },
+      "source": "curated:gemini-2026-09",
+      "version": 1
+    },
+    {
+      "id": "pl.calm.szarówka",
+      "lemma": "szarówka",
+      "kind": "calm_word",
+      "strength": "strong",
+      "valence": 0.5,
+      "arousal": 0.12,
+      "emotions": {
+        "trust": 0.7,
+        "joy": 0.4
+      },
+      "source": "curated:gemini-2026-09",
+      "version": 1
+    },
+    {
+      "id": "pl.calm.wieczór",
+      "lemma": "wieczór",
+      "kind": "calm_word",
+      "strength": "weak",
+      "valence": 0.58,
+      "arousal": 0.12,
+      "emotions": {
+        "trust": 0.7,
+        "joy": 0.4
+      },
+      "source": "curated:gemini-2026-09",
+      "version": 1,
+      "note": "pora dnia"
+    },
+    {
+      "id": "pl.calm.noc",
+      "lemma": "noc",
+      "kind": "calm_word",
+      "strength": "weak",
+      "valence": 0.52,
+      "arousal": 0.1,
+      "emotions": {
+        "trust": 0.7,
+        "joy": 0.4
+      },
+      "source": "curated:gemini-2026-09",
+      "version": 1,
+      "note": "pora doby"
+    },
+    {
+      "id": "pl.calm.świtć",
+      "lemma": "świt",
+      "kind": "calm_word",
+      "strength": "strong",
+      "valence": 0.72,
+      "arousal": 0.18,
+      "emotions": {
+        "trust": 0.7,
+        "joy": 0.4
+      },
+      "source": "curated:gemini-2026-09",
+      "version": 1
+    },
+    {
+      "id": "pl.calm.brzask",
+      "lemma": "brzask",
+      "kind": "calm_word",
+      "strength": "strong",
+      "valence": 0.7,
+      "arousal": 0.16,
+      "emotions": {
+        "trust": 0.7,
+        "joy": 0.4
+      },
+      "source": "curated:gemini-2026-09",
+      "version": 1
+    },
+    {
+      "id": "pl.calm.poranka",
+      "lemma": "poranka",
+      "kind": "calm_word",
+      "strength": "strong",
+      "valence": 0.68,
+      "arousal": 0.16,
+      "emotions": {
+        "trust": 0.7,
+        "joy": 0.4
+      },
+      "source": "curated:gemini-2026-09",
+      "version": 1
+    },
+    {
+      "id": "pl.calm.gwiazda",
+      "lemma": "gwiazda",
+      "kind": "calm_word",
+      "strength": "strong",
+      "valence": 0.72,
+      "arousal": 0.16,
+      "emotions": {
+        "trust": 0.7,
+        "joy": 0.4
+      },
+      "source": "curated:gemini-2026-09",
+      "version": 1
+    },
+    {
+      "id": "pl.calm.księżyc",
+      "lemma": "księżyc",
+      "kind": "calm_word",
+      "strength": "strong",
+      "valence": 0.66,
+      "arousal": 0.14,
+      "emotions": {
+        "trust": 0.7,
+        "joy": 0.4
+      },
+      "source": "curated:gemini-2026-09",
+      "version": 1
+    },
+    {
+      "id": "pl.calm.blask_księżyc",
+      "phrase": [
+        "blask",
+        "księżyc"
+      ],
+      "kind": "calm_word",
+      "strength": "strong",
+      "valence": 0.72,
+      "arousal": 0.14,
+      "emotions": {
+        "trust": 0.7,
+        "joy": 0.4
+      },
+      "source": "curated:gemini-2026-09",
+      "version": 1,
+      "example": "Srebrny blask księżyca oświetlał spokojną taflę jeziora."
+    },
+    {
+      "id": "pl.calm.cień",
+      "lemma": "cień",
+      "kind": "calm_word",
+      "strength": "weak",
+      "valence": 0.48,
+      "arousal": 0.1,
+      "emotions": {
+        "trust": 0.7,
+        "joy": 0.4
+      },
+      "source": "curated:gemini-2026-09",
+      "version": 1,
+      "note": "brak światła"
+    },
+    {
+      "id": "pl.calm.chłód",
+      "lemma": "chłód",
+      "kind": "calm_word",
+      "strength": "weak",
+      "valence": 0.48,
+      "arousal": 0.12,
+      "emotions": {
+        "trust": 0.7,
+        "joy": 0.4
+      },
+      "source": "curated:gemini-2026-09",
+      "version": 1,
+      "note": "temperatura fizyczna"
+    },
+    {
+      "id": "pl.calm.zachód_słońce",
+      "phrase": [
+        "zachód",
+        "słońce"
+      ],
+      "kind": "calm_word",
+      "strength": "strong",
+      "valence": 0.76,
+      "arousal": 0.14,
+      "emotions": {
+        "trust": 0.7,
+        "joy": 0.4
+      },
+      "source": "curated:gemini-2026-09",
+      "version": 1,
+      "example": "Wspólnie podziwiali malowniczy zachód słońca nad spokojnym morzem."
+    },
+    {
+      "id": "pl.calm.wschód_słońce",
+      "phrase": [
+        "wschód",
+        "słońce"
+      ],
+      "kind": "calm_word",
+      "strength": "strong",
+      "valence": 0.78,
+      "arousal": 0.18,
+      "emotions": {
+        "trust": 0.7,
+        "joy": 0.4
+      },
+      "source": "curated:gemini-2026-09",
+      "version": 1,
+      "example": "Ciepły wschód słońca zwiastował pogodny i spokojny dzień."
+    },
+    {
+      "id": "pl.calm.pogoda",
+      "lemma": "pogoda",
+      "kind": "calm_word",
+      "strength": "weak",
+      "valence": 0.6,
+      "arousal": 0.15,
+      "emotions": {
+        "trust": 0.7,
+        "joy": 0.4
+      },
+      "source": "curated:gemini-2026-09",
+      "version": 1,
+      "note": "zjawiska atmosferyczne"
+    },
+    {
+      "id": "pl.calm.spokojny",
+      "lemma": "spokojny",
+      "kind": "calm_word",
+      "strength": "strong",
+      "valence": 0.84,
+      "arousal": 0.06,
+      "emotions": {
+        "trust": 0.7,
+        "joy": 0.4
+      },
+      "source": "curated:gemini-2026-09",
+      "version": 1
+    },
+    {
+      "id": "pl.calm.cichy",
+      "lemma": "cichy",
+      "kind": "calm_word",
+      "strength": "strong",
+      "valence": 0.7,
+      "arousal": 0.05,
+      "emotions": {
+        "trust": 0.7,
+        "joy": 0.4
+      },
+      "source": "curated:gemini-2026-09",
+      "version": 1
+    },
+    {
+      "id": "pl.calm.błoga",
+      "lemma": "błoga",
+      "kind": "calm_word",
+      "strength": "strong",
+      "valence": 0.86,
+      "arousal": 0.08,
+      "emotions": {
+        "trust": 0.7,
+        "joy": 0.4
+      },
+      "source": "curated:gemini-2026-09",
+      "version": 1,
+      "alt_lemmas": [
+        "błoga",
+        "błóg"
+      ],
+      "lemma_evidence": "carrier"
+    },
+    {
+      "id": "pl.calm.łagodny",
+      "lemma": "łagodny",
+      "kind": "calm_word",
+      "strength": "strong",
+      "valence": 0.78,
+      "arousal": 0.08,
+      "emotions": {
+        "trust": 0.7,
+        "joy": 0.4
+      },
+      "source": "curated:gemini-2026-09",
+      "version": 1
+    },
+    {
+      "id": "pl.calm.miękki",
+      "lemma": "miękki",
+      "kind": "calm_word",
+      "strength": "weak",
+      "valence": 0.64,
+      "arousal": 0.08,
+      "emotions": {
+        "trust": 0.7,
+        "joy": 0.4
+      },
+      "source": "curated:gemini-2026-09",
+      "version": 1,
+      "note": "cecha fizyczna"
+    },
+    {
+      "id": "pl.calm.letni",
+      "lemma": "letni",
+      "kind": "calm_word",
+      "strength": "weak",
+      "valence": 0.58,
+      "arousal": 0.12,
+      "emotions": {
+        "trust": 0.7,
+        "joy": 0.4
+      },
+      "source": "curated:gemini-2026-09",
+      "version": 1,
+      "note": "pora roku / temperatura"
+    },
+    {
+      "id": "pl.calm.delikatny",
+      "lemma": "delikatny",
+      "kind": "calm_word",
+      "strength": "weak",
+      "valence": 0.72,
+      "arousal": 0.1,
+      "emotions": {
+        "trust": 0.7,
+        "joy": 0.4
+      },
+      "source": "curated:gemini-2026-09",
+      "version": 1,
+      "note": "kruchy vs łagodny"
+    },
+    {
+      "id": "pl.calm.jedwabista",
+      "lemma": "jedwabista",
+      "kind": "calm_word",
+      "strength": "weak",
+      "valence": 0.68,
+      "arousal": 0.1,
+      "emotions": {
+        "trust": 0.7,
+        "joy": 0.4
+      },
+      "source": "curated:gemini-2026-09",
+      "version": 1,
+      "note": "tekstura materiału"
+    },
+    {
+      "id": "pl.calm.powolny",
+      "lemma": "powolny",
+      "kind": "calm_word",
+      "strength": "strong",
+      "valence": 0.5,
+      "arousal": 0.06,
+      "emotions": {
+        "trust": 0.7,
+        "joy": 0.4
+      },
+      "source": "curated:gemini-2026-09",
+      "version": 1
+    },
+    {
+      "id": "pl.calm.lekki",
+      "lemma": "lekki",
+      "kind": "calm_word",
+      "strength": "weak",
+      "valence": 0.55,
+      "arousal": 0.08,
+      "emotions": {
+        "trust": 0.7,
+        "joy": 0.4
+      },
+      "source": "curated:gemini-2026-09",
+      "version": 1,
+      "note": "ciężar fizyczny"
+    },
+    {
+      "id": "pl.calm.kojący",
+      "lemma": "kojący",
+      "kind": "calm_word",
+      "strength": "strong",
+      "valence": 0.82,
+      "arousal": 0.08,
+      "emotions": {
+        "trust": 0.7,
+        "joy": 0.4
+      },
+      "source": "curated:gemini-2026-09",
+      "version": 1
+    },
+    {
+      "id": "pl.calm.uspokajający",
+      "lemma": "uspokajający",
+      "kind": "calm_word",
+      "strength": "strong",
+      "valence": 0.8,
+      "arousal": 0.08,
+      "emotions": {
+        "trust": 0.7,
+        "joy": 0.4
+      },
+      "source": "curated:gemini-2026-09",
+      "version": 1
+    },
+    {
+      "id": "pl.calm.usypiać",
+      "lemma": "usypiać",
+      "kind": "calm_word",
+      "strength": "strong",
+      "valence": 0.7,
+      "arousal": 0.06,
+      "emotions": {
+        "trust": 0.7,
+        "joy": 0.4
+      },
+      "source": "curated:gemini-2026-09",
+      "version": 1
+    },
+    {
+      "id": "pl.calm.bezpieczny",
+      "lemma": "bezpieczny",
+      "kind": "calm_word",
+      "strength": "strong",
+      "valence": 0.82,
+      "arousal": 0.1,
+      "emotions": {
+        "trust": 0.7,
+        "joy": 0.4
+      },
+      "source": "curated:gemini-2026-09",
+      "version": 1
+    },
+    {
+      "id": "pl.calm.przytulny",
+      "lemma": "przytulny",
+      "kind": "calm_word",
+      "strength": "strong",
+      "valence": 0.78,
+      "arousal": 0.12,
+      "emotions": {
+        "trust": 0.7,
+        "joy": 0.4
+      },
+      "source": "curated:gemini-2026-09",
+      "version": 1
+    },
+    {
+      "id": "pl.calm.zaciszny",
+      "lemma": "zaciszny",
+      "kind": "calm_word",
+      "strength": "strong",
+      "valence": 0.76,
+      "arousal": 0.1,
+      "emotions": {
+        "trust": 0.7,
+        "joy": 0.4
+      },
+      "source": "curated:gemini-2026-09",
+      "version": 1
+    },
+    {
+      "id": "pl.calm.ukojć",
+      "lemma": "ukojony",
+      "kind": "calm_word",
+      "strength": "strong",
+      "valence": 0.82,
+      "arousal": 0.08,
+      "emotions": {
+        "trust": 0.7,
+        "joy": 0.4
+      },
+      "source": "curated:gemini-2026-09",
+      "version": 1
+    },
+    {
+      "id": "pl.calm.wyciszić",
+      "lemma": "wyciszony",
+      "kind": "calm_word",
+      "strength": "strong",
+      "valence": 0.76,
+      "arousal": 0.06,
+      "emotions": {
+        "trust": 0.7,
+        "joy": 0.4
+      },
+      "source": "curated:gemini-2026-09",
+      "version": 1,
+      "alt_lemmas": [
+        "wyciszyć"
+      ],
+      "lemma_evidence": "carrier"
+    },
+    {
+      "id": "pl.calm.udobruchać",
+      "lemma": "udobruchać",
+      "kind": "calm_word",
+      "strength": "strong",
+      "valence": 0.68,
+      "arousal": 0.12,
+      "emotions": {
+        "trust": 0.7,
+        "joy": 0.4
+      },
+      "source": "curated:gemini-2026-09",
+      "version": 1
+    },
+    {
+      "id": "pl.calm.cichutko",
+      "lemma": "cichutko",
+      "kind": "calm_word",
+      "strength": "strong",
+      "valence": 0.68,
+      "arousal": 0.05,
+      "emotions": {
+        "trust": 0.7,
+        "joy": 0.4
+      },
+      "source": "curated:gemini-2026-09",
+      "version": 1
+    },
+    {
+      "id": "pl.calm.spokojnie",
+      "lemma": "spokojnie",
+      "kind": "calm_word",
+      "strength": "strong",
+      "valence": 0.84,
+      "arousal": 0.06,
+      "emotions": {
+        "trust": 0.7,
+        "joy": 0.4
+      },
+      "source": "curated:gemini-2026-09",
+      "version": 1
+    },
+    {
+      "id": "pl.calm.łagodnie",
+      "lemma": "łagodnie",
+      "kind": "calm_word",
+      "strength": "strong",
+      "valence": 0.78,
+      "arousal": 0.08,
+      "emotions": {
+        "trust": 0.7,
+        "joy": 0.4
+      },
+      "source": "curated:gemini-2026-09",
+      "version": 1
+    },
+    {
+      "id": "pl.calm.błogo",
+      "lemma": "błogo",
+      "kind": "calm_word",
+      "strength": "strong",
+      "valence": 0.86,
+      "arousal": 0.08,
+      "emotions": {
+        "trust": 0.7,
+        "joy": 0.4
+      },
+      "source": "curated:gemini-2026-09",
+      "version": 1
+    },
+    {
+      "id": "pl.calm.delikatnie",
+      "lemma": "delikatnie",
+      "kind": "calm_word",
+      "strength": "strong",
+      "valence": 0.72,
+      "arousal": 0.1,
+      "emotions": {
+        "trust": 0.7,
+        "joy": 0.4
+      },
+      "source": "curated:gemini-2026-09",
+      "version": 1
+    },
+    {
+      "id": "pl.calm.powoli",
+      "lemma": "powoli",
+      "kind": "calm_word",
+      "strength": "strong",
+      "valence": 0.5,
+      "arousal": 0.06,
+      "emotions": {
+        "trust": 0.7,
+        "joy": 0.4
+      },
+      "source": "curated:gemini-2026-09",
+      "version": 1
+    }
+  ]
+}

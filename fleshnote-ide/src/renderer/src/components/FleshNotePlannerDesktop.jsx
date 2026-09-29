@@ -16,7 +16,8 @@ const TWIST_COLORS = [
 const LANE_Y = [RAIL_Y - 72, RAIL_Y - 136, RAIL_Y - 200];
 
 // Arc area BELOW rail
-const ARC_TOP = RAIL_Y + 30;
+// First arc's title sits 34px above its bar — keep it below the rail's % labels (RAIL_Y + ~32)
+const ARC_TOP = RAIL_Y + 58;
 
 const PRESET_COLORS = [
     "#d4a052", "#c45c5c", "#5c8ec4", "#5c9e6e", "#8b6ec4", "#e11d48",
@@ -519,21 +520,15 @@ export default function FleshNotePlannerDesktop({ projectPath, chapters, activeC
             center: railGeom.left + (b.pct / 100) * railGeom.width
         }));
 
+        // Greedy left-to-right: a block keeps its full card unless it would
+        // collide with the last thing already placed in its lane. (Compressing
+        // both neighbours left pairs of blocks as two anonymous slivers.)
         lanes.forEach(lane => {
             const laneBlocks = xs.filter(b => b.lane === lane).sort((a, b) => a.pct - b.pct);
-            for (let i = 0; i < laneBlocks.length; i++) {
-                const current = laneBlocks[i];
-                let isCompressed = false;
-
-                if (i > 0) {
-                    const prev = laneBlocks[i - 1];
-                    if (current.center - prev.center < BLOCK_W + 12) isCompressed = true;
-                }
-                if (i < laneBlocks.length - 1) {
-                    const next = laneBlocks[i + 1];
-                    if (next.center - current.center < BLOCK_W + 12) isCompressed = true;
-                }
-
+            let lastRight = -Infinity;
+            for (const current of laneBlocks) {
+                const isCompressed = current.center - BLOCK_W / 2 < lastRight + 12;
+                lastRight = current.center + (isCompressed ? COMPRESSED_W : BLOCK_W) / 2;
                 geom[current.id] = {
                     center: current.center,
                     isCompressed
@@ -1152,12 +1147,31 @@ export default function FleshNotePlannerDesktop({ projectPath, chapters, activeC
                                         display: "flex",
                                         flexDirection: "column",
                                         padding: isCompressed ? "0" : "6px 8px",
-                                        zIndex: isDragging ? 20 : 10,
+                                        zIndex: isDragging ? 20 : (isCompressed ? 11 : 10),
                                         opacity: isInactive ? 0.3 : 1,
                                         overflow: "hidden", // Hide contents if squished
                                         transition: isDragging ? "none" : "width 0.2s ease, left 0.2s ease", // Smooth compression
                                     }}
                                 >
+                                    {isCompressed && (
+                                        <span
+                                            style={{
+                                                writingMode: "vertical-rl",
+                                                alignSelf: "center",
+                                                marginTop: "3px",
+                                                maxHeight: BLOCK_H - 8,
+                                                overflow: "hidden",
+                                                textOverflow: "ellipsis",
+                                                whiteSpace: "nowrap",
+                                                fontFamily: "var(--font-mono)",
+                                                fontSize: "9px",
+                                                color: "var(--text-secondary)",
+                                                pointerEvents: "none",
+                                            }}
+                                        >
+                                            {b.label}
+                                        </span>
+                                    )}
                                     {!isCompressed && (
                                         <>
                                             <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
@@ -1203,6 +1217,7 @@ export default function FleshNotePlannerDesktop({ projectPath, chapters, activeC
                                                 onChange={(e) => updateBlockProps(b.id, { label: e.target.value })}
                                                 disabled={isInactive}
                                                 onMouseDown={(e) => e.stopPropagation()}
+                                                title={b.label}
                                                 style={{
                                                     background: "none",
                                                     border: "none",
@@ -1212,6 +1227,9 @@ export default function FleshNotePlannerDesktop({ projectPath, chapters, activeC
                                                     fontSize: "12px",
                                                     marginTop: "6px",
                                                     outline: "none",
+                                                    width: "100%",
+                                                    minWidth: 0,
+                                                    textOverflow: "ellipsis",
                                                 }}
                                             />
                                         </>

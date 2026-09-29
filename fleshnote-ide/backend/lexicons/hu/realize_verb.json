@@ -1,0 +1,188 @@
+{
+ "lang": "hu",
+ "kind": "realize_verb",
+ "version": 1,
+ "entries": [
+  {
+   "id": "hu.realize.r\u00e1j\u00f6n",
+   "lemma": "r\u00e1j\u00f6n",
+   "pos": [
+    "VERB"
+   ],
+   "kind": "realize_verb",
+   "strength": "weak",
+   "valence": 0.1,
+   "arousal": 0.4,
+   "emotions": {
+    "anticipation": 0.4
+   },
+   "source": "migrated:hun_janitor.py",
+   "version": 1
+  },
+  {
+   "id": "hu.realize.meg\u00e9rt",
+   "lemma": "meg\u00e9rt",
+   "pos": [
+    "VERB"
+   ],
+   "kind": "realize_verb",
+   "strength": "weak",
+   "valence": 0.2,
+   "arousal": 0.3,
+   "emotions": {
+    "trust": 0.4
+   },
+   "source": "migrated:hun_janitor.py",
+   "version": 1,
+   "alt_lemmas": [
+    "meg\u00e9r",
+    "meg\u00e9rteni"
+   ],
+   "lemma_evidence": "carrier"
+  },
+  {
+   "id": "hu.realize.felismer",
+   "lemma": "felismer",
+   "pos": [
+    "VERB"
+   ],
+   "kind": "realize_verb",
+   "strength": "weak",
+   "valence": 0.1,
+   "arousal": 0.35,
+   "emotions": {
+    "anticipation": 0.4
+   },
+   "source": "migrated:hun_janitor.py",
+   "version": 1
+  },
+  {
+   "id": "hu.realize.bel\u00e1t",
+   "lemma": "bel\u00e1t",
+   "pos": [
+    "VERB"
+   ],
+   "kind": "realize_verb",
+   "strength": "weak",
+   "valence": 0.1,
+   "arousal": 0.25,
+   "emotions": {
+    "trust": 0.4
+   },
+   "source": "migrated:hun_janitor.py",
+   "version": 1
+  },
+  {
+   "id": "hu.realize.\u00e9szrevesz",
+   "lemma": "\u00e9szrevesz",
+   "pos": [
+    "VERB"
+   ],
+   "kind": "realize_verb",
+   "strength": "weak",
+   "valence": 0.1,
+   "arousal": 0.35,
+   "emotions": {
+    "anticipation": 0.3
+   },
+   "source": "curated:gemini-2026-09",
+   "version": 1
+  },
+  {
+   "id": "hu.realize.megsejt",
+   "lemma": "megsejt",
+   "pos": [
+    "VERB"
+   ],
+   "kind": "realize_verb",
+   "strength": "weak",
+   "valence": 0.05,
+   "arousal": 0.3,
+   "emotions": {
+    "anticipation": 0.3
+   },
+   "source": "curated:gemini-2026-09",
+   "version": 1
+  },
+  {
+   "id": "hu.realize.r\u00e1eszm\u00e9l",
+   "lemma": "r\u00e1eszm\u00e9l",
+   "pos": [
+    "VERB"
+   ],
+   "kind": "realize_verb",
+   "strength": "weak",
+   "valence": 0.15,
+   "arousal": 0.4,
+   "emotions": {
+    "anticipation": 0.3
+   },
+   "source": "curated:gemini-2026-09",
+   "version": 1
+  },
+  {
+   "id": "hu.realize.felfog",
+   "lemma": "felfog",
+   "pos": [
+    "VERB"
+   ],
+   "kind": "realize_verb",
+   "strength": "weak",
+   "valence": 0.1,
+   "arousal": 0.3,
+   "emotions": {
+    "anticipation": 0.3
+   },
+   "source": "curated:gemini-2026-09",
+   "version": 1
+  },
+  {
+   "id": "hu.realize.megtud",
+   "lemma": "megtud",
+   "pos": [
+    "VERB"
+   ],
+   "kind": "realize_verb",
+   "strength": "weak",
+   "valence": 0.15,
+   "arousal": 0.35,
+   "emotions": {
+    "anticipation": 0.3
+   },
+   "source": "curated:gemini-2026-09",
+   "version": 1
+  },
+  {
+   "id": "hu.realize.kitot\u00f3z",
+   "lemma": "kitot\u00f3z",
+   "pos": [
+    "VERB"
+   ],
+   "kind": "realize_verb",
+   "strength": "weak",
+   "valence": 0.1,
+   "arousal": 0.25,
+   "emotions": {
+    "anticipation": 0.3
+   },
+   "source": "curated:gemini-2026-09",
+   "version": 1
+  },
+  {
+   "id": "hu.realize.felfedez",
+   "lemma": "felfedez",
+   "pos": [
+    "VERB"
+   ],
+   "kind": "realize_verb",
+   "strength": "weak",
+   "valence": 0.2,
+   "arousal": 0.45,
+   "emotions": {
+    "anticipation": 0.3
+   },
+   "source": "curated:gemini-2026-09",
+   "version": 1
+  }
+ ]
+}

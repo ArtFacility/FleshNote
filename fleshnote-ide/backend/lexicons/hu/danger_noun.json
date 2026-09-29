@@ -1,0 +1,1677 @@
+{
+ "lang": "hu",
+ "kind": "danger_noun",
+ "version": 1,
+ "entries": [
+  {
+   "id": "hu.danger.füst",
+   "lemma": "füst",
+   "pos": [
+    "NOUN"
+   ],
+   "kind": "danger_noun",
+   "strength": "weak",
+   "valence": -0.35,
+   "arousal": 0.3,
+   "emotions": {
+    "fear": 0.4
+   },
+   "source": "curated:gemini-2026-09",
+   "version": 1,
+   "note": "kéményfüst vs fojtogató tűzvész"
+  },
+  {
+   "id": "hu.danger.hamu",
+   "lemma": "hamu",
+   "pos": [
+    "NOUN"
+   ],
+   "kind": "danger_noun",
+   "strength": "weak",
+   "valence": -0.35,
+   "arousal": 0.3,
+   "emotions": {
+    "sadness": 0.4
+   },
+   "source": "curated:gemini-2026-09",
+   "version": 1,
+   "note": "kandallóhamu vs leégett falu hamva"
+  },
+  {
+   "id": "hu.danger.rom",
+   "lemma": "rom",
+   "pos": [
+    "NOUN"
+   ],
+   "kind": "danger_noun",
+   "strength": "weak",
+   "valence": -0.45,
+   "arousal": 0.4,
+   "emotions": {
+    "sadness": 0.5,
+    "fear": 0.4
+   },
+   "source": "curated:gemini-2026-09",
+   "version": 1,
+   "note": "történelmi várrom vs friss romhalmaz"
+  },
+  {
+   "id": "hu.danger.romhalmaz",
+   "lemma": "romhalmaz",
+   "pos": [
+    "NOUN"
+   ],
+   "kind": "danger_noun",
+   "strength": "strong",
+   "valence": -0.55,
+   "arousal": 0.5,
+   "emotions": {
+    "fear": 0.6,
+    "sadness": 0.5
+   },
+   "source": "curated:gemini-2026-09",
+   "version": 1
+  },
+  {
+   "id": "hu.danger.szikla",
+   "lemma": "szikla",
+   "pos": [
+    "NOUN"
+   ],
+   "kind": "danger_noun",
+   "strength": "weak",
+   "valence": -0.4,
+   "arousal": 0.35,
+   "emotions": {
+    "fear": 0.4
+   },
+   "source": "curated:gemini-2026-09",
+   "version": 1,
+   "note": "sziklás táj vs zuhanásveszély"
+  },
+  {
+   "id": "hu.danger.szakadék",
+   "lemma": "szakadék",
+   "pos": [
+    "NOUN"
+   ],
+   "kind": "danger_noun",
+   "strength": "strong",
+   "valence": -0.6,
+   "arousal": 0.55,
+   "emotions": {
+    "fear": 0.7
+   },
+   "source": "curated:gemini-2026-09",
+   "version": 1
+  },
+  {
+   "id": "hu.danger.örvény",
+   "lemma": "örvény",
+   "pos": [
+    "NOUN"
+   ],
+   "kind": "danger_noun",
+   "strength": "strong",
+   "valence": -0.65,
+   "arousal": 0.6,
+   "emotions": {
+    "fear": 0.7
+   },
+   "source": "curated:gemini-2026-09",
+   "version": 1
+  },
+  {
+   "id": "hu.danger.vihar",
+   "lemma": "vihar",
+   "pos": [
+    "NOUN"
+   ],
+   "kind": "danger_noun",
+   "strength": "strong",
+   "valence": -0.6,
+   "arousal": 0.65,
+   "emotions": {
+    "fear": 0.65
+   },
+   "source": "curated:gemini-2026-09",
+   "version": 1
+  },
+  {
+   "id": "hu.danger.fergeteg",
+   "lemma": "fergeteg",
+   "pos": [
+    "NOUN"
+   ],
+   "kind": "danger_noun",
+   "strength": "strong",
+   "valence": -0.65,
+   "arousal": 0.7,
+   "emotions": {
+    "fear": 0.7
+   },
+   "source": "curated:gemini-2026-09",
+   "version": 1
+  },
+  {
+   "id": "hu.danger.villám",
+   "lemma": "villám",
+   "pos": [
+    "NOUN"
+   ],
+   "kind": "danger_noun",
+   "strength": "strong",
+   "valence": -0.65,
+   "arousal": 0.75,
+   "emotions": {
+    "fear": 0.75
+   },
+   "source": "curated:gemini-2026-09",
+   "version": 1
+  },
+  {
+   "id": "hu.danger.mennydörgés",
+   "lemma": "mennydörgés",
+   "pos": [
+    "NOUN"
+   ],
+   "kind": "danger_noun",
+   "strength": "strong",
+   "valence": -0.55,
+   "arousal": 0.65,
+   "emotions": {
+    "fear": 0.65
+   },
+   "source": "curated:gemini-2026-09",
+   "version": 1
+  },
+  {
+   "id": "hu.danger.jégverés",
+   "lemma": "jégverés",
+   "pos": [
+    "NOUN"
+   ],
+   "kind": "danger_noun",
+   "strength": "strong",
+   "valence": -0.6,
+   "arousal": 0.6,
+   "emotions": {
+    "fear": 0.6
+   },
+   "source": "curated:gemini-2026-09",
+   "version": 1
+  },
+  {
+   "id": "hu.danger.árvíz",
+   "lemma": "árvíz",
+   "pos": [
+    "NOUN"
+   ],
+   "kind": "danger_noun",
+   "strength": "strong",
+   "valence": -0.7,
+   "arousal": 0.7,
+   "emotions": {
+    "fear": 0.75
+   },
+   "source": "curated:gemini-2026-09",
+   "version": 1
+  },
+  {
+   "id": "hu.danger.földrengés",
+   "lemma": "földrengés",
+   "pos": [
+    "NOUN"
+   ],
+   "kind": "danger_noun",
+   "strength": "strong",
+   "valence": -0.75,
+   "arousal": 0.75,
+   "emotions": {
+    "fear": 0.8
+   },
+   "source": "curated:gemini-2026-09",
+   "version": 1
+  },
+  {
+   "id": "hu.danger.tűz",
+   "lemma": "tűz",
+   "pos": [
+    "NOUN"
+   ],
+   "kind": "danger_noun",
+   "strength": "weak",
+   "valence": -0.65,
+   "arousal": 0.75,
+   "emotions": {
+    "fear": 0.8
+   },
+   "source": "curated:gemini-2026-09",
+   "version": 1,
+   "note": "tábortűz vs pusztító tűzvész"
+  },
+  {
+   "id": "hu.danger.láng",
+   "lemma": "láng",
+   "pos": [
+    "NOUN"
+   ],
+   "kind": "danger_noun",
+   "strength": "weak",
+   "valence": -0.6,
+   "arousal": 0.7,
+   "emotions": {
+    "fear": 0.7
+   },
+   "source": "curated:gemini-2026-09",
+   "version": 1,
+   "note": "gyertyaláng vs mindent emésztő lángok"
+  },
+  {
+   "id": "hu.danger.üsz",
+   "lemma": "üszök",
+   "pos": [
+    "NOUN"
+   ],
+   "kind": "danger_noun",
+   "strength": "strong",
+   "valence": -0.65,
+   "arousal": 0.6,
+   "emotions": {
+    "fear": 0.65
+   },
+   "source": "curated:gemini-2026-09",
+   "version": 1
+  },
+  {
+   "id": "hu.danger.kard",
+   "lemma": "kard",
+   "pos": [
+    "NOUN"
+   ],
+   "kind": "danger_noun",
+   "strength": "strong",
+   "valence": -0.65,
+   "arousal": 0.65,
+   "emotions": {
+    "fear": 0.6,
+    "anger": 0.6
+   },
+   "source": "curated:gemini-2026-09",
+   "version": 1
+  },
+  {
+   "id": "hu.danger.tőr",
+   "lemma": "tőr",
+   "pos": [
+    "NOUN"
+   ],
+   "kind": "danger_noun",
+   "strength": "strong",
+   "valence": -0.7,
+   "arousal": 0.65,
+   "emotions": {
+    "fear": 0.7,
+    "anger": 0.6
+   },
+   "source": "curated:gemini-2026-09",
+   "version": 1
+  },
+  {
+   "id": "hu.danger.kés",
+   "lemma": "kés",
+   "pos": [
+    "NOUN"
+   ],
+   "kind": "danger_noun",
+   "strength": "weak",
+   "valence": -0.6,
+   "arousal": 0.55,
+   "emotions": {
+    "fear": 0.6
+   },
+   "source": "curated:gemini-2026-09",
+   "version": 1,
+   "note": "konyhakés vs gyilkos fegyver"
+  },
+  {
+   "id": "hu.danger.dárda",
+   "lemma": "dárda",
+   "pos": [
+    "NOUN"
+   ],
+   "kind": "danger_noun",
+   "strength": "strong",
+   "valence": -0.65,
+   "arousal": 0.65,
+   "emotions": {
+    "fear": 0.65
+   },
+   "source": "curated:gemini-2026-09",
+   "version": 1
+  },
+  {
+   "id": "hu.danger.lándzsa",
+   "lemma": "lándzsa",
+   "pos": [
+    "NOUN"
+   ],
+   "kind": "danger_noun",
+   "strength": "strong",
+   "valence": -0.65,
+   "arousal": 0.65,
+   "emotions": {
+    "fear": 0.65
+   },
+   "source": "curated:gemini-2026-09",
+   "version": 1
+  },
+  {
+   "id": "hu.danger.nyíl",
+   "lemma": "nyíl",
+   "pos": [
+    "NOUN"
+   ],
+   "kind": "danger_noun",
+   "strength": "weak",
+   "valence": -0.55,
+   "arousal": 0.6,
+   "emotions": {
+    "fear": 0.6
+   },
+   "source": "curated:gemini-2026-09",
+   "version": 1,
+   "note": "irányjelző nyíl vs mérgezett harci nyíl"
+  },
+  {
+   "id": "hu.danger.íj",
+   "lemma": "íj",
+   "pos": [
+    "NOUN"
+   ],
+   "kind": "danger_noun",
+   "strength": "strong",
+   "valence": -0.55,
+   "arousal": 0.6,
+   "emotions": {
+    "fear": 0.6
+   },
+   "source": "curated:gemini-2026-09",
+   "version": 1
+  },
+  {
+   "id": "hu.danger.puska",
+   "lemma": "puska",
+   "pos": [
+    "NOUN"
+   ],
+   "kind": "danger_noun",
+   "strength": "strong",
+   "valence": -0.7,
+   "arousal": 0.65,
+   "emotions": {
+    "fear": 0.7
+   },
+   "source": "curated:gemini-2026-09",
+   "version": 1
+  },
+  {
+   "id": "hu.danger.pisztoly",
+   "lemma": "pisztoly",
+   "pos": [
+    "NOUN"
+   ],
+   "kind": "danger_noun",
+   "strength": "strong",
+   "valence": -0.7,
+   "arousal": 0.65,
+   "emotions": {
+    "fear": 0.7
+   },
+   "source": "curated:gemini-2026-09",
+   "version": 1
+  },
+  {
+   "id": "hu.danger.ágyú",
+   "lemma": "ágyú",
+   "pos": [
+    "NOUN"
+   ],
+   "kind": "danger_noun",
+   "strength": "strong",
+   "valence": -0.75,
+   "arousal": 0.75,
+   "emotions": {
+    "fear": 0.8
+   },
+   "source": "curated:gemini-2026-09",
+   "version": 1
+  },
+  {
+   "id": "hu.danger.golyó",
+   "lemma": "golyó",
+   "pos": [
+    "NOUN"
+   ],
+   "kind": "danger_noun",
+   "strength": "weak",
+   "valence": -0.7,
+   "arousal": 0.7,
+   "emotions": {
+    "fear": 0.75
+   },
+   "source": "curated:gemini-2026-09",
+   "version": 1,
+   "note": "üveggolyó vs puska golyó"
+  },
+  {
+   "id": "hu.danger.fegyver",
+   "lemma": "fegyver",
+   "pos": [
+    "NOUN"
+   ],
+   "kind": "danger_noun",
+   "strength": "strong",
+   "valence": -0.65,
+   "arousal": 0.65,
+   "emotions": {
+    "fear": 0.7
+   },
+   "source": "curated:gemini-2026-09",
+   "version": 1
+  },
+  {
+   "id": "hu.danger.lőszer",
+   "lemma": "lőszer",
+   "pos": [
+    "NOUN"
+   ],
+   "kind": "danger_noun",
+   "strength": "strong",
+   "valence": -0.6,
+   "arousal": 0.65,
+   "emotions": {
+    "fear": 0.65
+   },
+   "source": "curated:gemini-2026-09",
+   "version": 1
+  },
+  {
+   "id": "hu.danger.puskapor",
+   "lemma": "puskapor",
+   "pos": [
+    "NOUN"
+   ],
+   "kind": "danger_noun",
+   "strength": "strong",
+   "valence": -0.65,
+   "arousal": 0.65,
+   "emotions": {
+    "fear": 0.65
+   },
+   "source": "curated:gemini-2026-09",
+   "version": 1
+  },
+  {
+   "id": "hu.danger.akna",
+   "lemma": "akna",
+   "pos": [
+    "NOUN"
+   ],
+   "kind": "danger_noun",
+   "strength": "strong",
+   "valence": -0.75,
+   "arousal": 0.75,
+   "emotions": {
+    "fear": 0.8
+   },
+   "source": "curated:gemini-2026-09",
+   "version": 1
+  },
+  {
+   "id": "hu.danger.bomba",
+   "lemma": "bomba",
+   "pos": [
+    "NOUN"
+   ],
+   "kind": "danger_noun",
+   "strength": "strong",
+   "valence": -0.85,
+   "arousal": 0.85,
+   "emotions": {
+    "fear": 0.9
+   },
+   "source": "curated:gemini-2026-09",
+   "version": 1
+  },
+  {
+   "id": "hu.danger.bilincs",
+   "lemma": "bilincs",
+   "pos": [
+    "NOUN"
+   ],
+   "kind": "danger_noun",
+   "strength": "strong",
+   "valence": -0.7,
+   "arousal": 0.65,
+   "emotions": {
+    "fear": 0.7
+   },
+   "source": "curated:gemini-2026-09",
+   "version": 1
+  },
+  {
+   "id": "hu.danger.béklyó",
+   "lemma": "béklyó",
+   "pos": [
+    "NOUN"
+   ],
+   "kind": "danger_noun",
+   "strength": "strong",
+   "valence": -0.7,
+   "arousal": 0.65,
+   "emotions": {
+    "fear": 0.7
+   },
+   "source": "curated:gemini-2026-09",
+   "version": 1
+  },
+  {
+   "id": "hu.danger.börtön",
+   "lemma": "börtön",
+   "pos": [
+    "NOUN"
+   ],
+   "kind": "danger_noun",
+   "strength": "strong",
+   "valence": -0.75,
+   "arousal": 0.65,
+   "emotions": {
+    "fear": 0.75,
+    "sadness": 0.7
+   },
+   "source": "curated:gemini-2026-09",
+   "version": 1
+  },
+  {
+   "id": "hu.danger.tömlöc",
+   "lemma": "tömlöc",
+   "pos": [
+    "NOUN"
+   ],
+   "kind": "danger_noun",
+   "strength": "strong",
+   "valence": -0.75,
+   "arousal": 0.65,
+   "emotions": {
+    "fear": 0.75,
+    "sadness": 0.7
+   },
+   "source": "curated:gemini-2026-09",
+   "version": 1
+  },
+  {
+   "id": "hu.danger.méreg",
+   "lemma": "méreg",
+   "pos": [
+    "NOUN"
+   ],
+   "kind": "danger_noun",
+   "strength": "strong",
+   "valence": -0.8,
+   "arousal": 0.75,
+   "emotions": {
+    "fear": 0.8,
+    "disgust": 0.7
+   },
+   "source": "curated:gemini-2026-09",
+   "version": 1
+  },
+  {
+   "id": "hu.danger.csapda",
+   "lemma": "csapda",
+   "pos": [
+    "NOUN"
+   ],
+   "kind": "danger_noun",
+   "strength": "strong",
+   "valence": -0.65,
+   "arousal": 0.65,
+   "emotions": {
+    "fear": 0.7
+   },
+   "source": "curated:gemini-2026-09",
+   "version": 1
+  },
+  {
+   "id": "hu.danger.rajtaütés",
+   "lemma": "rajtaütés",
+   "pos": [
+    "NOUN"
+   ],
+   "kind": "danger_noun",
+   "strength": "strong",
+   "valence": -0.75,
+   "arousal": 0.8,
+   "emotions": {
+    "fear": 0.8
+   },
+   "source": "curated:gemini-2026-09",
+   "version": 1
+  },
+  {
+   "id": "hu.danger.támadás",
+   "lemma": "támadás",
+   "pos": [
+    "NOUN"
+   ],
+   "kind": "danger_noun",
+   "strength": "strong",
+   "valence": -0.75,
+   "arousal": 0.8,
+   "emotions": {
+    "anger": 0.8,
+    "fear": 0.75
+   },
+   "source": "curated:gemini-2026-09",
+   "version": 1
+  },
+  {
+   "id": "hu.danger.hóhér",
+   "lemma": "hóhér",
+   "pos": [
+    "NOUN"
+   ],
+   "kind": "danger_noun",
+   "strength": "strong",
+   "valence": -0.85,
+   "arousal": 0.85,
+   "emotions": {
+    "fear": 0.9
+   },
+   "source": "curated:gemini-2026-09",
+   "version": 1
+  },
+  {
+   "id": "hu.danger.akasztófa",
+   "lemma": "akasztófa",
+   "pos": [
+    "NOUN"
+   ],
+   "kind": "danger_noun",
+   "strength": "strong",
+   "valence": -0.85,
+   "arousal": 0.85,
+   "emotions": {
+    "fear": 0.85
+   },
+   "source": "curated:gemini-2026-09",
+   "version": 1
+  },
+  {
+   "id": "hu.danger.bitófa",
+   "lemma": "bitófa",
+   "pos": [
+    "NOUN"
+   ],
+   "kind": "danger_noun",
+   "strength": "strong",
+   "valence": -0.85,
+   "arousal": 0.85,
+   "emotions": {
+    "fear": 0.85
+   },
+   "source": "curated:gemini-2026-09",
+   "version": 1
+  },
+  {
+   "id": "hu.danger.halál",
+   "lemma": "halál",
+   "pos": [
+    "NOUN"
+   ],
+   "kind": "danger_noun",
+   "strength": "strong",
+   "valence": -0.85,
+   "arousal": 0.85,
+   "emotions": {
+    "fear": 0.85,
+    "sadness": 0.85
+   },
+   "source": "curated:gemini-2026-09",
+   "version": 1
+  },
+  {
+   "id": "hu.danger.seb",
+   "lemma": "seb",
+   "pos": [
+    "NOUN"
+   ],
+   "kind": "danger_noun",
+   "strength": "strong",
+   "valence": -0.7,
+   "arousal": 0.65,
+   "emotions": {
+    "fear": 0.7
+   },
+   "source": "curated:gemini-2026-09",
+   "version": 1
+  },
+  {
+   "id": "hu.danger.tetem",
+   "lemma": "tetem",
+   "pos": [
+    "NOUN"
+   ],
+   "kind": "danger_noun",
+   "strength": "strong",
+   "valence": -0.8,
+   "arousal": 0.75,
+   "emotions": {
+    "disgust": 0.8,
+    "fear": 0.7
+   },
+   "source": "curated:gemini-2026-09",
+   "version": 1
+  },
+  {
+   "id": "hu.danger.hulla",
+   "lemma": "hulla",
+   "pos": [
+    "NOUN"
+   ],
+   "kind": "danger_noun",
+   "strength": "strong",
+   "valence": -0.85,
+   "arousal": 0.8,
+   "emotions": {
+    "disgust": 0.8,
+    "fear": 0.75
+   },
+   "source": "curated:gemini-2026-09",
+   "version": 1
+  },
+  {
+   "id": "hu.danger.holttest",
+   "lemma": "holttest",
+   "pos": [
+    "NOUN"
+   ],
+   "kind": "danger_noun",
+   "strength": "strong",
+   "valence": -0.8,
+   "arousal": 0.75,
+   "emotions": {
+    "sadness": 0.8,
+    "fear": 0.7
+   },
+   "source": "curated:gemini-2026-09",
+   "version": 1
+  },
+  {
+   "id": "hu.danger.koporsó",
+   "lemma": "koporsó",
+   "pos": [
+    "NOUN"
+   ],
+   "kind": "danger_noun",
+   "strength": "strong",
+   "valence": -0.75,
+   "arousal": 0.65,
+   "emotions": {
+    "sadness": 0.8
+   },
+   "source": "curated:gemini-2026-09",
+   "version": 1
+  },
+  {
+   "id": "hu.danger.csontváz",
+   "lemma": "csontváz",
+   "pos": [
+    "NOUN"
+   ],
+   "kind": "danger_noun",
+   "strength": "strong",
+   "valence": -0.7,
+   "arousal": 0.65,
+   "emotions": {
+    "fear": 0.7
+   },
+   "source": "curated:gemini-2026-09",
+   "version": 1
+  },
+  {
+   "id": "hu.danger.koponya",
+   "lemma": "koponya",
+   "pos": [
+    "NOUN"
+   ],
+   "kind": "danger_noun",
+   "strength": "strong",
+   "valence": -0.7,
+   "arousal": 0.65,
+   "emotions": {
+    "fear": 0.7
+   },
+   "source": "curated:gemini-2026-09",
+   "version": 1
+  },
+  {
+   "id": "hu.danger.dögvész",
+   "lemma": "dögvész",
+   "pos": [
+    "NOUN"
+   ],
+   "kind": "danger_noun",
+   "strength": "strong",
+   "valence": -0.9,
+   "arousal": 0.9,
+   "emotions": {
+    "fear": 0.9,
+    "disgust": 0.85
+   },
+   "source": "curated:gemini-2026-09",
+   "version": 1
+  },
+  {
+   "id": "hu.danger.pestis",
+   "lemma": "pestis",
+   "pos": [
+    "NOUN"
+   ],
+   "kind": "danger_noun",
+   "strength": "strong",
+   "valence": -0.9,
+   "arousal": 0.9,
+   "emotions": {
+    "fear": 0.9
+   },
+   "source": "curated:gemini-2026-09",
+   "version": 1
+  },
+  {
+   "id": "hu.danger.járvány",
+   "lemma": "járvány",
+   "pos": [
+    "NOUN"
+   ],
+   "kind": "danger_noun",
+   "strength": "strong",
+   "valence": -0.8,
+   "arousal": 0.8,
+   "emotions": {
+    "fear": 0.85
+   },
+   "source": "curated:gemini-2026-09",
+   "version": 1
+  },
+  {
+   "id": "hu.danger.vérfürdő",
+   "lemma": "vérfürdő",
+   "pos": [
+    "NOUN"
+   ],
+   "kind": "danger_noun",
+   "strength": "strong",
+   "valence": -0.95,
+   "arousal": 0.95,
+   "emotions": {
+    "fear": 0.95,
+    "anger": 0.9
+   },
+   "source": "curated:gemini-2026-09",
+   "version": 1
+  },
+  {
+   "id": "hu.danger.mészárlás",
+   "lemma": "mészárlás",
+   "pos": [
+    "NOUN"
+   ],
+   "kind": "danger_noun",
+   "strength": "strong",
+   "valence": -0.95,
+   "arousal": 0.95,
+   "emotions": {
+    "fear": 0.95,
+    "anger": 0.9
+   },
+   "source": "curated:gemini-2026-09",
+   "version": 1
+  },
+  {
+   "id": "hu.danger.vérontás",
+   "lemma": "vérontás",
+   "pos": [
+    "NOUN"
+   ],
+   "kind": "danger_noun",
+   "strength": "strong",
+   "valence": -0.9,
+   "arousal": 0.9,
+   "emotions": {
+    "fear": 0.9,
+    "anger": 0.85
+   },
+   "source": "curated:gemini-2026-09",
+   "version": 1
+  },
+  {
+   "id": "hu.danger.gyilkos",
+   "lemma": "gyilkos",
+   "pos": [
+    "NOUN"
+   ],
+   "kind": "danger_noun",
+   "strength": "strong",
+   "valence": -0.9,
+   "arousal": 0.85,
+   "emotions": {
+    "fear": 0.9,
+    "anger": 0.85
+   },
+   "source": "curated:gemini-2026-09",
+   "version": 1
+  },
+  {
+   "id": "hu.danger.orgyilkos",
+   "lemma": "orgyilkos",
+   "pos": [
+    "NOUN"
+   ],
+   "kind": "danger_noun",
+   "strength": "strong",
+   "valence": -0.85,
+   "arousal": 0.85,
+   "emotions": {
+    "fear": 0.85
+   },
+   "source": "curated:gemini-2026-09",
+   "version": 1
+  },
+  {
+   "id": "hu.danger.áruló",
+   "lemma": "áruló",
+   "pos": [
+    "NOUN"
+   ],
+   "kind": "danger_noun",
+   "strength": "strong",
+   "valence": -0.8,
+   "arousal": 0.75,
+   "emotions": {
+    "anger": 0.85,
+    "disgust": 0.8
+   },
+   "source": "curated:gemini-2026-09",
+   "version": 1
+  },
+  {
+   "id": "hu.danger.ellenség",
+   "lemma": "ellenség",
+   "pos": [
+    "NOUN"
+   ],
+   "kind": "danger_noun",
+   "strength": "strong",
+   "valence": -0.75,
+   "arousal": 0.7,
+   "emotions": {
+    "anger": 0.8,
+    "fear": 0.7
+   },
+   "source": "curated:gemini-2026-09",
+   "version": 1
+  },
+  {
+   "id": "hu.danger.rabló",
+   "lemma": "rabló",
+   "pos": [
+    "NOUN"
+   ],
+   "kind": "danger_noun",
+   "strength": "strong",
+   "valence": -0.7,
+   "arousal": 0.7,
+   "emotions": {
+    "fear": 0.7
+   },
+   "source": "curated:gemini-2026-09",
+   "version": 1
+  },
+  {
+   "id": "hu.danger.martalóc",
+   "lemma": "martalóc",
+   "pos": [
+    "NOUN"
+   ],
+   "kind": "danger_noun",
+   "strength": "strong",
+   "valence": -0.75,
+   "arousal": 0.75,
+   "emotions": {
+    "fear": 0.75
+   },
+   "source": "curated:gemini-2026-09",
+   "version": 1
+  },
+  {
+   "id": "hu.danger.haramia",
+   "lemma": "haramia",
+   "pos": [
+    "NOUN"
+   ],
+   "kind": "danger_noun",
+   "strength": "strong",
+   "valence": -0.7,
+   "arousal": 0.7,
+   "emotions": {
+    "fear": 0.7
+   },
+   "source": "curated:gemini-2026-09",
+   "version": 1
+  },
+  {
+   "id": "hu.danger.szörny",
+   "lemma": "szörny",
+   "pos": [
+    "NOUN"
+   ],
+   "kind": "danger_noun",
+   "strength": "strong",
+   "valence": -0.8,
+   "arousal": 0.8,
+   "emotions": {
+    "fear": 0.85
+   },
+   "source": "curated:gemini-2026-09",
+   "version": 1
+  },
+  {
+   "id": "hu.danger.fenevad",
+   "lemma": "fenevad",
+   "pos": [
+    "NOUN"
+   ],
+   "kind": "danger_noun",
+   "strength": "strong",
+   "valence": -0.8,
+   "arousal": 0.8,
+   "emotions": {
+    "fear": 0.85
+   },
+   "source": "curated:gemini-2026-09",
+   "version": 1
+  },
+  {
+   "id": "hu.danger.ragadozó",
+   "lemma": "ragadozó",
+   "pos": [
+    "NOUN"
+   ],
+   "kind": "danger_noun",
+   "strength": "strong",
+   "valence": -0.75,
+   "arousal": 0.75,
+   "emotions": {
+    "fear": 0.8
+   },
+   "source": "curated:gemini-2026-09",
+   "version": 1
+  },
+  {
+   "id": "hu.danger.vipera",
+   "lemma": "vipera",
+   "pos": [
+    "NOUN"
+   ],
+   "kind": "danger_noun",
+   "strength": "strong",
+   "valence": -0.75,
+   "arousal": 0.75,
+   "emotions": {
+    "fear": 0.8
+   },
+   "source": "curated:gemini-2026-09",
+   "version": 1
+  },
+  {
+   "id": "hu.danger.ostrom",
+   "lemma": "ostrom",
+   "pos": [
+    "NOUN"
+   ],
+   "kind": "danger_noun",
+   "strength": "strong",
+   "valence": -0.75,
+   "arousal": 0.8,
+   "emotions": {
+    "fear": 0.8
+   },
+   "source": "curated:gemini-2026-09",
+   "version": 1
+  },
+  {
+   "id": "hu.danger.csata",
+   "lemma": "csata",
+   "pos": [
+    "NOUN"
+   ],
+   "kind": "danger_noun",
+   "strength": "strong",
+   "valence": -0.75,
+   "arousal": 0.8,
+   "emotions": {
+    "fear": 0.8,
+    "anger": 0.75
+   },
+   "source": "curated:gemini-2026-09",
+   "version": 1
+  },
+  {
+   "id": "hu.danger.ütközet",
+   "lemma": "ütközet",
+   "pos": [
+    "NOUN"
+   ],
+   "kind": "danger_noun",
+   "strength": "strong",
+   "valence": -0.7,
+   "arousal": 0.75,
+   "emotions": {
+    "fear": 0.75
+   },
+   "source": "curated:gemini-2026-09",
+   "version": 1
+  },
+  {
+   "id": "hu.danger.pusztulás",
+   "lemma": "pusztulás",
+   "pos": [
+    "NOUN"
+   ],
+   "kind": "danger_noun",
+   "strength": "strong",
+   "valence": -0.85,
+   "arousal": 0.85,
+   "emotions": {
+    "sadness": 0.85,
+    "fear": 0.85
+   },
+   "source": "curated:gemini-2026-09",
+   "version": 1
+  },
+  {
+   "id": "hu.danger.veszedelem",
+   "lemma": "veszedelem",
+   "pos": [
+    "NOUN"
+   ],
+   "kind": "danger_noun",
+   "strength": "strong",
+   "valence": -0.75,
+   "arousal": 0.75,
+   "emotions": {
+    "fear": 0.8
+   },
+   "source": "curated:gemini-2026-09",
+   "version": 1
+  },
+  {
+   "id": "hu.danger.fogoly",
+   "lemma": "fogoly",
+   "pos": [
+    "NOUN"
+   ],
+   "kind": "danger_noun",
+   "strength": "strong",
+   "valence": -0.7,
+   "arousal": 0.65,
+   "emotions": {
+    "sadness": 0.7,
+    "fear": 0.7
+   },
+   "source": "curated:gemini-2026-09",
+   "version": 1
+  },
+  {
+   "id": "hu.danger.rab",
+   "lemma": "rab",
+   "pos": [
+    "NOUN"
+   ],
+   "kind": "danger_noun",
+   "strength": "strong",
+   "valence": -0.7,
+   "arousal": 0.65,
+   "emotions": {
+    "sadness": 0.7,
+    "fear": 0.7
+   },
+   "source": "curated:gemini-2026-09",
+   "version": 1
+  },
+  {
+   "id": "hu.danger.túsz",
+   "lemma": "túsz",
+   "pos": [
+    "NOUN"
+   ],
+   "kind": "danger_noun",
+   "strength": "strong",
+   "valence": -0.75,
+   "arousal": 0.75,
+   "emotions": {
+    "fear": 0.8
+   },
+   "source": "curated:gemini-2026-09",
+   "version": 1
+  },
+  {
+   "id": "hu.danger.rabszolga",
+   "lemma": "rabszolga",
+   "pos": [
+    "NOUN"
+   ],
+   "kind": "danger_noun",
+   "strength": "strong",
+   "valence": -0.85,
+   "arousal": 0.75,
+   "emotions": {
+    "sadness": 0.85,
+    "fear": 0.8
+   },
+   "source": "curated:gemini-2026-09",
+   "version": 1
+  },
+  {
+   "id": "hu.danger.bérgyilkos",
+   "lemma": "bérgyilkos",
+   "pos": [
+    "NOUN"
+   ],
+   "kind": "danger_noun",
+   "strength": "strong",
+   "valence": -0.91,
+   "arousal": 0.86,
+   "emotions": {
+    "fear": 0.9
+   },
+   "source": "curated:gemini-2026-09",
+   "version": 1
+  },
+  {
+   "id": "hu.danger.orvlövész",
+   "lemma": "orvlövész",
+   "pos": [
+    "NOUN"
+   ],
+   "kind": "danger_noun",
+   "strength": "strong",
+   "valence": -0.86,
+   "arousal": 0.81,
+   "emotions": {
+    "fear": 0.85
+   },
+   "source": "curated:gemini-2026-09",
+   "version": 1
+  },
+  {
+   "id": "hu.danger.vérpad",
+   "lemma": "vérpad",
+   "pos": [
+    "NOUN"
+   ],
+   "kind": "danger_noun",
+   "strength": "strong",
+   "valence": -0.96,
+   "arousal": 0.86,
+   "emotions": {
+    "fear": 0.95
+   },
+   "source": "curated:gemini-2026-09",
+   "version": 1
+  },
+  {
+   "id": "hu.danger.kínzókamra",
+   "lemma": "kínzókamra",
+   "pos": [
+    "NOUN"
+   ],
+   "kind": "danger_noun",
+   "strength": "strong",
+   "valence": -0.96,
+   "arousal": 0.91,
+   "emotions": {
+    "fear": 0.95
+   },
+   "source": "curated:gemini-2026-09",
+   "version": 1
+  },
+  {
+   "id": "hu.danger.vész",
+   "lemma": "vész",
+   "pos": [
+    "NOUN"
+   ],
+   "kind": "danger_noun",
+   "strength": "strong",
+   "valence": -0.81,
+   "arousal": 0.76,
+   "emotions": {
+    "fear": 0.8
+   },
+   "source": "curated:gemini-2026-09",
+   "version": 1
+  },
+  {
+   "id": "hu.danger.csapás",
+   "lemma": "csapás",
+   "pos": [
+    "NOUN"
+   ],
+   "kind": "danger_noun",
+   "strength": "weak",
+   "valence": -0.76,
+   "arousal": 0.76,
+   "emotions": {
+    "sadness": 0.75,
+    "fear": 0.7
+   },
+   "source": "curated:gemini-2026-09",
+   "version": 1,
+   "note": "fizikai ütés vs sorscsapás"
+  },
+  {
+   "id": "hu.danger.ínség",
+   "lemma": "ínség",
+   "pos": [
+    "NOUN"
+   ],
+   "kind": "danger_noun",
+   "strength": "strong",
+   "valence": -0.81,
+   "arousal": 0.66,
+   "emotions": {
+    "sadness": 0.8
+   },
+   "source": "curated:gemini-2026-09",
+   "version": 1
+  },
+  {
+   "id": "hu.danger.éhínség",
+   "lemma": "éhínség",
+   "pos": [
+    "NOUN"
+   ],
+   "kind": "danger_noun",
+   "strength": "strong",
+   "valence": -0.91,
+   "arousal": 0.76,
+   "emotions": {
+    "sadness": 0.85,
+    "fear": 0.8
+   },
+   "source": "curated:gemini-2026-09",
+   "version": 1
+  },
+  {
+   "id": "hu.danger.villámcsapás",
+   "lemma": "villámcsapás",
+   "pos": [
+    "NOUN"
+   ],
+   "kind": "danger_noun",
+   "strength": "strong",
+   "valence": -0.81,
+   "arousal": 0.86,
+   "emotions": {
+    "fear": 0.85
+   },
+   "source": "curated:gemini-2026-09",
+   "version": 1
+  },
+  {
+   "id": "hu.danger.áradás",
+   "lemma": "áradás",
+   "pos": [
+    "NOUN"
+   ],
+   "kind": "danger_noun",
+   "strength": "weak",
+   "valence": -0.71,
+   "arousal": 0.76,
+   "emotions": {
+    "fear": 0.75
+   },
+   "source": "curated:gemini-2026-09",
+   "version": 1,
+   "note": "folyó áradása vs levéláradat"
+  },
+  {
+   "id": "hu.danger.tűzvész",
+   "lemma": "tűzvész",
+   "pos": [
+    "NOUN"
+   ],
+   "kind": "danger_noun",
+   "strength": "strong",
+   "valence": -0.86,
+   "arousal": 0.86,
+   "emotions": {
+    "fear": 0.9
+   },
+   "source": "curated:gemini-2026-09",
+   "version": 1
+  },
+  {
+   "id": "hu.danger.lángtenger",
+   "lemma": "lángtenger",
+   "pos": [
+    "NOUN"
+   ],
+   "kind": "danger_noun",
+   "strength": "strong",
+   "valence": -0.81,
+   "arousal": 0.86,
+   "emotions": {
+    "fear": 0.85
+   },
+   "source": "curated:gemini-2026-09",
+   "version": 1
+  },
+  {
+   "id": "hu.danger.lőpor",
+   "lemma": "lőpor",
+   "pos": [
+    "NOUN"
+   ],
+   "kind": "danger_noun",
+   "strength": "strong",
+   "valence": -0.66,
+   "arousal": 0.66,
+   "emotions": {
+    "fear": 0.65
+   },
+   "source": "curated:gemini-2026-09",
+   "version": 1
+  },
+  {
+   "id": "hu.danger.ágyúgolyó",
+   "lemma": "ágyúgolyó",
+   "pos": [
+    "NOUN"
+   ],
+   "kind": "danger_noun",
+   "strength": "strong",
+   "valence": -0.76,
+   "arousal": 0.81,
+   "emotions": {
+    "fear": 0.8
+   },
+   "source": "curated:gemini-2026-09",
+   "version": 1
+  },
+  {
+   "id": "hu.danger.pallos",
+   "lemma": "pallos",
+   "pos": [
+    "NOUN"
+   ],
+   "kind": "danger_noun",
+   "strength": "strong",
+   "valence": -0.86,
+   "arousal": 0.81,
+   "emotions": {
+    "fear": 0.85
+   },
+   "source": "curated:gemini-2026-09",
+   "version": 1
+  },
+  {
+   "id": "hu.danger.szurony",
+   "lemma": "szurony",
+   "pos": [
+    "NOUN"
+   ],
+   "kind": "danger_noun",
+   "strength": "strong",
+   "valence": -0.8,
+   "arousal": 0.8,
+   "emotions": {
+    "fear": 0.8
+   },
+   "source": "curated:gemini-2026-09",
+   "version": 1
+  },
+  {
+   "id": "hu.danger.parittya",
+   "lemma": "parittya",
+   "pos": [
+    "NOUN"
+   ],
+   "kind": "danger_noun",
+   "strength": "strong",
+   "valence": -0.65,
+   "arousal": 0.7,
+   "emotions": {
+    "fear": 0.65
+   },
+   "source": "curated:gemini-2026-09",
+   "version": 1
+  },
+  {
+   "id": "hu.danger.gránát",
+   "lemma": "gránát",
+   "pos": [
+    "NOUN"
+   ],
+   "kind": "danger_noun",
+   "strength": "strong",
+   "valence": -0.85,
+   "arousal": 0.85,
+   "emotions": {
+    "fear": 0.85
+   },
+   "source": "curated:gemini-2026-09",
+   "version": 1
+  },
+  {
+   "id": "hu.danger.puskatűz",
+   "lemma": "puskatűz",
+   "pos": [
+    "NOUN"
+   ],
+   "kind": "danger_noun",
+   "strength": "strong",
+   "valence": -0.8,
+   "arousal": 0.85,
+   "emotions": {
+    "fear": 0.85
+   },
+   "source": "curated:gemini-2026-09",
+   "version": 1
+  },
+  {
+   "id": "hu.danger.golyózápor",
+   "lemma": "golyózápor",
+   "pos": [
+    "NOUN"
+   ],
+   "kind": "danger_noun",
+   "strength": "strong",
+   "valence": -0.85,
+   "arousal": 0.9,
+   "emotions": {
+    "fear": 0.9
+   },
+   "source": "curated:gemini-2026-09",
+   "version": 1
+  },
+  {
+   "id": "hu.danger.nyílzápor",
+   "lemma": "nyílzápor",
+   "pos": [
+    "NOUN"
+   ],
+   "kind": "danger_noun",
+   "strength": "strong",
+   "valence": -0.8,
+   "arousal": 0.85,
+   "emotions": {
+    "fear": 0.85
+   },
+   "source": "curated:gemini-2026-09",
+   "version": 1
+  },
+  {
+   "id": "hu.danger.fokos",
+   "lemma": "fokos",
+   "pos": [
+    "NOUN"
+   ],
+   "kind": "danger_noun",
+   "strength": "strong",
+   "valence": -0.7,
+   "arousal": 0.7,
+   "emotions": {
+    "fear": 0.7
+   },
+   "source": "curated:gemini-2026-09",
+   "version": 1
+  },
+  {
+   "id": "hu.danger.szekerc",
+   "lemma": "szekerce",
+   "pos": [
+    "NOUN"
+   ],
+   "kind": "danger_noun",
+   "strength": "strong",
+   "valence": -0.7,
+   "arousal": 0.7,
+   "emotions": {
+    "fear": 0.7
+   },
+   "source": "curated:gemini-2026-09",
+   "version": 1
+  },
+  {
+   "id": "hu.danger.bunkó",
+   "lemma": "bunkó",
+   "pos": [
+    "NOUN"
+   ],
+   "kind": "danger_noun",
+   "strength": "weak",
+   "valence": -0.7,
+   "arousal": 0.7,
+   "emotions": {
+    "anger": 0.75
+   },
+   "source": "curated:gemini-2026-09",
+   "version": 1,
+   "note": "buta ember vs fa fegyver"
+  }
+ ]
+}

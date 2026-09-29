@@ -529,6 +529,29 @@ app.whenReady().then(async () => {
     }
   })
 
+  // Export the project as a folder tree (Obsidian markdown / plain text).
+  ipcMain.handle('api:exportVault', async (event, payload) => {
+    try {
+      const win = BrowserWindow.fromWebContents(event.sender)
+      if (!win) return { status: 'error', message: 'No window' }
+      const { canceled, filePaths } = await dialog.showOpenDialog(win, {
+        title: payload?.fmt === 'txt' ? 'Export Project (Plain Text)' : 'Export Project (Obsidian Vault)',
+        defaultPath: payload?.defaultName || undefined,
+        properties: ['openDirectory', 'createDirectory'],
+        buttonLabel: 'Export Here'
+      })
+      if (canceled || !filePaths[0]) return { status: 'cancelled' }
+      return await backendPost('/api/project/export-vault', {
+        project_path: payload.project_path,
+        dest_dir: filePaths[0],
+        fmt: payload.fmt || 'obsidian'
+      })
+    } catch (err: any) {
+      console.error('Export vault failed:', err)
+      return { status: 'error', message: err.message }
+    }
+  })
+
   // Import a shared .flnote ZIP (open dialog -> backend validates + extracts).
   ipcMain.handle('api:importFlnote', async (_event, payload) => {
     try {

@@ -1,0 +1,2617 @@
+{
+ "lang": "en",
+ "kind": "action_violent",
+ "version": 1,
+ "entries": [
+  {
+   "id": "en.act.shove",
+   "lemma": "shove",
+   "pos": [
+    "VERB"
+   ],
+   "kind": "action_violent",
+   "strength": "strong",
+   "valence": -0.4,
+   "arousal": 0.45,
+   "emotions": {
+    "anger": 0.5
+   },
+   "source": "curated:gemini-2026-09",
+   "version": 1
+  },
+  {
+   "id": "en.act.push",
+   "lemma": "push",
+   "pos": [
+    "VERB"
+   ],
+   "kind": "action_violent",
+   "strength": "weak",
+   "valence": -0.35,
+   "arousal": 0.4,
+   "emotions": {
+    "anger": 0.4
+   },
+   "source": "curated:gemini-2026-09",
+   "version": 1,
+   "note": "push door vs push person"
+  },
+  {
+   "id": "en.act.jostle",
+   "lemma": "jostle",
+   "pos": [
+    "VERB"
+   ],
+   "kind": "action_violent",
+   "strength": "strong",
+   "valence": -0.35,
+   "arousal": 0.4,
+   "emotions": {
+    "anger": 0.4
+   },
+   "source": "curated:gemini-2026-09",
+   "version": 1
+  },
+  {
+   "id": "en.act.trip",
+   "lemma": "trip",
+   "pos": [
+    "VERB"
+   ],
+   "kind": "action_violent",
+   "strength": "weak",
+   "valence": -0.4,
+   "arousal": 0.45,
+   "emotions": {
+    "anger": 0.5
+   },
+   "source": "curated:gemini-2026-09",
+   "version": 1,
+   "note": "vacation trip vs tripping someone"
+  },
+  {
+   "id": "en.act.grapple",
+   "lemma": "grapple",
+   "pos": [
+    "VERB"
+   ],
+   "kind": "action_violent",
+   "strength": "strong",
+   "valence": -0.5,
+   "arousal": 0.55,
+   "emotions": {
+    "anger": 0.6
+   },
+   "source": "curated:gemini-2026-09",
+   "version": 1
+  },
+  {
+   "id": "en.act.wrestle",
+   "lemma": "wrestle",
+   "pos": [
+    "VERB"
+   ],
+   "kind": "action_violent",
+   "strength": "strong",
+   "valence": -0.45,
+   "arousal": 0.55,
+   "emotions": {
+    "anger": 0.5
+   },
+   "source": "curated:gemini-2026-09",
+   "version": 1
+  },
+  {
+   "id": "en.act.slap",
+   "lemma": "slap",
+   "pos": [
+    "VERB"
+   ],
+   "kind": "action_violent",
+   "strength": "strong",
+   "valence": -0.5,
+   "arousal": 0.55,
+   "emotions": {
+    "anger": 0.6
+   },
+   "source": "curated:gemini-2026-09",
+   "version": 1
+  },
+  {
+   "id": "en.act.clobber",
+   "lemma": "clobber",
+   "pos": [
+    "VERB"
+   ],
+   "kind": "action_violent",
+   "strength": "strong",
+   "valence": -0.6,
+   "arousal": 0.65,
+   "emotions": {
+    "anger": 0.7
+   },
+   "source": "curated:gemini-2026-09",
+   "version": 1
+  },
+  {
+   "id": "en.act.wallop",
+   "lemma": "wallop",
+   "pos": [
+    "VERB"
+   ],
+   "kind": "action_violent",
+   "strength": "strong",
+   "valence": -0.6,
+   "arousal": 0.65,
+   "emotions": {
+    "anger": 0.7
+   },
+   "source": "curated:gemini-2026-09",
+   "version": 1
+  },
+  {
+   "id": "en.act.tackle",
+   "lemma": "tackle",
+   "pos": [
+    "VERB"
+   ],
+   "kind": "action_violent",
+   "strength": "weak",
+   "valence": -0.5,
+   "arousal": 0.6,
+   "emotions": {
+    "anger": 0.5
+   },
+   "source": "curated:gemini-2026-09",
+   "version": 1,
+   "note": "tackle a problem vs tackle opponent"
+  },
+  {
+   "id": "en.act.brawl",
+   "lemma": "brawl",
+   "pos": [
+    "VERB"
+   ],
+   "kind": "action_violent",
+   "strength": "strong",
+   "valence": -0.6,
+   "arousal": 0.65,
+   "emotions": {
+    "anger": 0.7
+   },
+   "source": "curated:gemini-2026-09",
+   "version": 1
+  },
+  {
+   "id": "en.act.skirmish",
+   "lemma": "skirmish",
+   "pos": [
+    "VERB"
+   ],
+   "kind": "action_violent",
+   "strength": "strong",
+   "valence": -0.55,
+   "arousal": 0.6,
+   "emotions": {
+    "anger": 0.6,
+    "fear": 0.5
+   },
+   "source": "curated:gemini-2026-09",
+   "version": 1
+  },
+  {
+   "id": "en.act.duel",
+   "lemma": "duel",
+   "pos": [
+    "VERB"
+   ],
+   "kind": "action_violent",
+   "strength": "strong",
+   "valence": -0.55,
+   "arousal": 0.65,
+   "emotions": {
+    "anger": 0.6
+   },
+   "source": "curated:gemini-2026-09",
+   "version": 1
+  },
+  {
+   "id": "en.act.strike",
+   "lemma": "strike",
+   "pos": [
+    "VERB"
+   ],
+   "kind": "action_violent",
+   "strength": "weak",
+   "valence": -0.65,
+   "arousal": 0.7,
+   "emotions": {
+    "anger": 0.7
+   },
+   "source": "curated:gemini-2026-09",
+   "version": 1,
+   "note": "clock striking / labor strike vs physical blow"
+  },
+  {
+   "id": "en.act.hit",
+   "lemma": "hit",
+   "pos": [
+    "VERB"
+   ],
+   "kind": "action_violent",
+   "strength": "strong",
+   "valence": -0.6,
+   "arousal": 0.65,
+   "emotions": {
+    "anger": 0.7
+   },
+   "source": "curated:gemini-2026-09",
+   "version": 1
+  },
+  {
+   "id": "en.act.punch",
+   "lemma": "punch",
+   "pos": [
+    "VERB"
+   ],
+   "kind": "action_violent",
+   "strength": "strong",
+   "valence": -0.65,
+   "arousal": 0.7,
+   "emotions": {
+    "anger": 0.7
+   },
+   "source": "curated:gemini-2026-09",
+   "version": 1
+  },
+  {
+   "id": "en.act.kick",
+   "lemma": "kick",
+   "pos": [
+    "VERB"
+   ],
+   "kind": "action_violent",
+   "strength": "strong",
+   "valence": -0.6,
+   "arousal": 0.65,
+   "emotions": {
+    "anger": 0.7
+   },
+   "source": "curated:gemini-2026-09",
+   "version": 1
+  },
+  {
+   "id": "en.act.beat",
+   "lemma": "beat",
+   "pos": [
+    "VERB"
+   ],
+   "kind": "action_violent",
+   "strength": "weak",
+   "valence": -0.7,
+   "arousal": 0.75,
+   "emotions": {
+    "anger": 0.8
+   },
+   "source": "curated:gemini-2026-09",
+   "version": 1,
+   "note": "heart beat / beat music vs beating someone"
+  },
+  {
+   "id": "en.act.batter",
+   "lemma": "batter",
+   "pos": [
+    "VERB"
+   ],
+   "kind": "action_violent",
+   "strength": "weak",
+   "valence": -0.75,
+   "arousal": 0.75,
+   "emotions": {
+    "anger": 0.8
+   },
+   "source": "curated:gemini-2026-09",
+   "version": 1,
+   "note": "pancake batter vs battering someone"
+  },
+  {
+   "id": "en.act.smash",
+   "lemma": "smash",
+   "pos": [
+    "VERB"
+   ],
+   "kind": "action_violent",
+   "strength": "strong",
+   "valence": -0.75,
+   "arousal": 0.8,
+   "emotions": {
+    "anger": 0.8
+   },
+   "source": "curated:gemini-2026-09",
+   "version": 1
+  },
+  {
+   "id": "en.act.whip",
+   "lemma": "whip",
+   "pos": [
+    "VERB"
+   ],
+   "kind": "action_violent",
+   "strength": "weak",
+   "valence": -0.75,
+   "arousal": 0.8,
+   "emotions": {
+    "anger": 0.8
+   },
+   "source": "curated:gemini-2026-09",
+   "version": 1,
+   "note": "whipped cream vs whipping person"
+  },
+  {
+   "id": "en.act.slash",
+   "lemma": "slash",
+   "pos": [
+    "VERB"
+   ],
+   "kind": "action_violent",
+   "strength": "strong",
+   "valence": -0.8,
+   "arousal": 0.8,
+   "emotions": {
+    "anger": 0.8,
+    "fear": 0.7
+   },
+   "source": "curated:gemini-2026-09",
+   "version": 1
+  },
+  {
+   "id": "en.act.bludgeon",
+   "lemma": "bludgeon",
+   "pos": [
+    "VERB"
+   ],
+   "kind": "action_violent",
+   "strength": "strong",
+   "valence": -0.8,
+   "arousal": 0.8,
+   "emotions": {
+    "anger": 0.85
+   },
+   "source": "curated:gemini-2026-09",
+   "version": 1
+  },
+  {
+   "id": "en.act.thrash",
+   "lemma": "thrash",
+   "pos": [
+    "VERB"
+   ],
+   "kind": "action_violent",
+   "strength": "strong",
+   "valence": -0.7,
+   "arousal": 0.75,
+   "emotions": {
+    "anger": 0.75
+   },
+   "source": "curated:gemini-2026-09",
+   "version": 1
+  },
+  {
+   "id": "en.act.flog",
+   "lemma": "flog",
+   "pos": [
+    "VERB"
+   ],
+   "kind": "action_violent",
+   "strength": "strong",
+   "valence": -0.75,
+   "arousal": 0.8,
+   "emotions": {
+    "anger": 0.8
+   },
+   "source": "curated:gemini-2026-09",
+   "version": 1
+  },
+  {
+   "id": "en.act.scourge",
+   "lemma": "scourge",
+   "pos": [
+    "VERB"
+   ],
+   "kind": "action_violent",
+   "strength": "strong",
+   "valence": -0.8,
+   "arousal": 0.8,
+   "emotions": {
+    "anger": 0.8
+   },
+   "source": "curated:gemini-2026-09",
+   "version": 1
+  },
+  {
+   "id": "en.act.bite",
+   "lemma": "bite",
+   "pos": [
+    "VERB"
+   ],
+   "kind": "action_violent",
+   "strength": "weak",
+   "valence": -0.6,
+   "arousal": 0.65,
+   "emotions": {
+    "anger": 0.6
+   },
+   "source": "curated:gemini-2026-09",
+   "version": 1,
+   "note": "bite food vs bite an enemy"
+  },
+  {
+   "id": "en.act.claw",
+   "lemma": "claw",
+   "pos": [
+    "VERB"
+   ],
+   "kind": "action_violent",
+   "strength": "strong",
+   "valence": -0.65,
+   "arousal": 0.7,
+   "emotions": {
+    "anger": 0.7
+   },
+   "source": "curated:gemini-2026-09",
+   "version": 1
+  },
+  {
+   "id": "en.act.maul",
+   "lemma": "maul",
+   "pos": [
+    "VERB"
+   ],
+   "kind": "action_violent",
+   "strength": "strong",
+   "valence": -0.8,
+   "arousal": 0.8,
+   "emotions": {
+    "anger": 0.85,
+    "fear": 0.8
+   },
+   "source": "curated:gemini-2026-09",
+   "version": 1
+  },
+  {
+   "id": "en.act.smite",
+   "lemma": "smite",
+   "pos": [
+    "VERB"
+   ],
+   "kind": "action_violent",
+   "strength": "strong",
+   "valence": -0.75,
+   "arousal": 0.75,
+   "emotions": {
+    "anger": 0.8
+   },
+   "source": "curated:gemini-2026-09",
+   "version": 1
+  },
+  {
+   "id": "en.act.cudgel",
+   "lemma": "cudgel",
+   "pos": [
+    "VERB"
+   ],
+   "kind": "action_violent",
+   "strength": "strong",
+   "valence": -0.7,
+   "arousal": 0.75,
+   "emotions": {
+    "anger": 0.75
+   },
+   "source": "curated:gemini-2026-09",
+   "version": 1
+  },
+  {
+   "id": "en.act.crush",
+   "lemma": "crush",
+   "pos": [
+    "VERB"
+   ],
+   "kind": "action_violent",
+   "strength": "weak",
+   "valence": -0.75,
+   "arousal": 0.8,
+   "emotions": {
+    "anger": 0.8
+   },
+   "source": "curated:gemini-2026-09",
+   "version": 1,
+   "note": "crush ice vs crush enemy"
+  },
+  {
+   "id": "en.act.fracture",
+   "lemma": "fracture",
+   "pos": [
+    "VERB"
+   ],
+   "kind": "action_violent",
+   "strength": "weak",
+   "valence": -0.7,
+   "arousal": 0.65,
+   "emotions": {
+    "fear": 0.7
+   },
+   "source": "curated:gemini-2026-09",
+   "version": 1,
+   "note": "rock fracture vs bone fracture"
+  },
+  {
+   "id": "en.act.snap",
+   "lemma": "snap",
+   "pos": [
+    "VERB"
+   ],
+   "kind": "action_violent",
+   "strength": "weak",
+   "valence": -0.6,
+   "arousal": 0.65,
+   "emotions": {
+    "anger": 0.6
+   },
+   "source": "curated:gemini-2026-09",
+   "version": 1,
+   "note": "snap fingers vs snap a bone"
+  },
+  {
+   "id": "en.act.splinter",
+   "lemma": "splinter",
+   "pos": [
+    "VERB"
+   ],
+   "kind": "action_violent",
+   "strength": "weak",
+   "valence": -0.6,
+   "arousal": 0.6,
+   "emotions": {
+    "fear": 0.5
+   },
+   "source": "curated:gemini-2026-09",
+   "version": 1,
+   "note": "wood splinter vs bone splinter"
+  },
+  {
+   "id": "en.act.dislocate",
+   "lemma": "dislocate",
+   "pos": [
+    "VERB"
+   ],
+   "kind": "action_violent",
+   "strength": "strong",
+   "valence": -0.7,
+   "arousal": 0.65,
+   "emotions": {
+    "fear": 0.7
+   },
+   "source": "curated:gemini-2026-09",
+   "version": 1
+  },
+  {
+   "id": "en.act.pulverize",
+   "lemma": "pulverize",
+   "pos": [
+    "VERB"
+   ],
+   "kind": "action_violent",
+   "strength": "strong",
+   "valence": -0.8,
+   "arousal": 0.8,
+   "emotions": {
+    "anger": 0.8
+   },
+   "source": "curated:gemini-2026-09",
+   "version": 1
+  },
+  {
+   "id": "en.act.flatten",
+   "lemma": "flatten",
+   "pos": [
+    "VERB"
+   ],
+   "kind": "action_violent",
+   "strength": "weak",
+   "valence": -0.6,
+   "arousal": 0.65,
+   "emotions": {
+    "anger": 0.6
+   },
+   "source": "curated:gemini-2026-09",
+   "version": 1,
+   "note": "flatten dough vs flatten foe"
+  },
+  {
+   "id": "en.act.squash",
+   "lemma": "squash",
+   "pos": [
+    "VERB"
+   ],
+   "kind": "action_violent",
+   "strength": "weak",
+   "valence": -0.6,
+   "arousal": 0.65,
+   "emotions": {
+    "anger": 0.6
+   },
+   "source": "curated:gemini-2026-09",
+   "version": 1,
+   "note": "vegetable squash vs squash rebellion"
+  },
+  {
+   "id": "en.act.shre",
+   "lemma": "shred",
+   "pos": [
+    "VERB"
+   ],
+   "kind": "action_violent",
+   "strength": "weak",
+   "valence": -0.7,
+   "arousal": 0.7,
+   "emotions": {
+    "anger": 0.7
+   },
+   "source": "curated:gemini-2026-09",
+   "version": 1,
+   "note": "paper shred vs shredding flesh"
+  },
+  {
+   "id": "en.act.stab",
+   "lemma": "stab",
+   "pos": [
+    "VERB"
+   ],
+   "kind": "action_violent",
+   "strength": "strong",
+   "valence": -0.85,
+   "arousal": 0.85,
+   "emotions": {
+    "anger": 0.8,
+    "fear": 0.8
+   },
+   "source": "curated:gemini-2026-09",
+   "version": 1
+  },
+  {
+   "id": "en.act.pierce",
+   "lemma": "pierce",
+   "pos": [
+    "VERB"
+   ],
+   "kind": "action_violent",
+   "strength": "weak",
+   "valence": -0.75,
+   "arousal": 0.75,
+   "emotions": {
+    "anger": 0.7,
+    "fear": 0.7
+   },
+   "source": "curated:gemini-2026-09",
+   "version": 1,
+   "note": "ear piercing vs body piercing weapon"
+  },
+  {
+   "id": "en.act.cleave",
+   "lemma": "cleave",
+   "pos": [
+    "VERB"
+   ],
+   "kind": "action_violent",
+   "strength": "strong",
+   "valence": -0.85,
+   "arousal": 0.85,
+   "emotions": {
+    "anger": 0.8
+   },
+   "source": "curated:gemini-2026-09",
+   "version": 1
+  },
+  {
+   "id": "en.act.hack",
+   "lemma": "hack",
+   "pos": [
+    "VERB"
+   ],
+   "kind": "action_violent",
+   "strength": "weak",
+   "valence": -0.8,
+   "arousal": 0.8,
+   "emotions": {
+    "anger": 0.8
+   },
+   "source": "curated:gemini-2026-09",
+   "version": 1,
+   "note": "hack computer / cough vs hack with blade"
+  },
+  {
+   "id": "en.act.hew",
+   "lemma": "hew",
+   "pos": [
+    "VERB"
+   ],
+   "kind": "action_violent",
+   "strength": "weak",
+   "valence": -0.75,
+   "arousal": 0.75,
+   "emotions": {
+    "anger": 0.7
+   },
+   "source": "curated:gemini-2026-09",
+   "version": 1,
+   "note": "hew wood vs hew enemy"
+  },
+  {
+   "id": "en.act.sever",
+   "lemma": "sever",
+   "pos": [
+    "VERB"
+   ],
+   "kind": "action_violent",
+   "strength": "weak",
+   "valence": -0.85,
+   "arousal": 0.85,
+   "emotions": {
+    "anger": 0.8
+   },
+   "source": "curated:gemini-2026-09",
+   "version": 1,
+   "note": "sever ties vs sever limb"
+  },
+  {
+   "id": "en.act.gash",
+   "lemma": "gash",
+   "pos": [
+    "VERB"
+   ],
+   "kind": "action_violent",
+   "strength": "strong",
+   "valence": -0.75,
+   "arousal": 0.75,
+   "emotions": {
+    "fear": 0.7
+   },
+   "source": "curated:gemini-2026-09",
+   "version": 1
+  },
+  {
+   "id": "en.act.lacerate",
+   "lemma": "lacerate",
+   "pos": [
+    "VERB"
+   ],
+   "kind": "action_violent",
+   "strength": "strong",
+   "valence": -0.8,
+   "arousal": 0.75,
+   "emotions": {
+    "fear": 0.75
+   },
+   "source": "curated:gemini-2026-09",
+   "version": 1
+  },
+  {
+   "id": "en.act.gouge",
+   "lemma": "gouge",
+   "pos": [
+    "VERB"
+   ],
+   "kind": "action_violent",
+   "strength": "weak",
+   "valence": -0.85,
+   "arousal": 0.85,
+   "emotions": {
+    "anger": 0.85,
+    "fear": 0.8
+   },
+   "source": "curated:gemini-2026-09",
+   "version": 1,
+   "note": "price gouging vs gouge eyes"
+  },
+  {
+   "id": "en.act.wound",
+   "lemma": "wound",
+   "pos": [
+    "VERB"
+   ],
+   "kind": "action_violent",
+   "strength": "strong",
+   "valence": -0.7,
+   "arousal": 0.65,
+   "emotions": {
+    "fear": 0.7,
+    "sadness": 0.6
+   },
+   "source": "curated:gemini-2026-09",
+   "version": 1
+  },
+  {
+   "id": "en.act.injure",
+   "lemma": "injure",
+   "pos": [
+    "VERB"
+   ],
+   "kind": "action_violent",
+   "strength": "strong",
+   "valence": -0.65,
+   "arousal": 0.6,
+   "emotions": {
+    "fear": 0.6
+   },
+   "source": "curated:gemini-2026-09",
+   "version": 1
+  },
+  {
+   "id": "en.act.rend",
+   "lemma": "rend",
+   "pos": [
+    "VERB"
+   ],
+   "kind": "action_violent",
+   "strength": "strong",
+   "valence": -0.8,
+   "arousal": 0.8,
+   "emotions": {
+    "anger": 0.8
+   },
+   "source": "curated:gemini-2026-09",
+   "version": 1
+  },
+  {
+   "id": "en.act.rip",
+   "lemma": "rip",
+   "pos": [
+    "VERB"
+   ],
+   "kind": "action_violent",
+   "strength": "weak",
+   "valence": -0.75,
+   "arousal": 0.75,
+   "emotions": {
+    "anger": 0.75
+   },
+   "source": "curated:gemini-2026-09",
+   "version": 1,
+   "note": "rip paper vs rip flesh"
+  },
+  {
+   "id": "en.act.tear",
+   "lemma": "tear",
+   "pos": [
+    "VERB"
+   ],
+   "kind": "action_violent",
+   "strength": "weak",
+   "valence": -0.75,
+   "arousal": 0.75,
+   "emotions": {
+    "anger": 0.75
+   },
+   "source": "curated:gemini-2026-09",
+   "version": 1,
+   "note": "crying tear vs tear apart"
+  },
+  {
+   "id": "en.act.choke",
+   "lemma": "choke",
+   "pos": [
+    "VERB"
+   ],
+   "kind": "action_violent",
+   "strength": "weak",
+   "valence": -0.85,
+   "arousal": 0.85,
+   "emotions": {
+    "fear": 0.9,
+    "anger": 0.8
+   },
+   "source": "curated:gemini-2026-09",
+   "version": 1,
+   "note": "choke on food vs choke a person"
+  },
+  {
+   "id": "en.act.throttle",
+   "lemma": "throttle",
+   "pos": [
+    "VERB"
+   ],
+   "kind": "action_violent",
+   "strength": "strong",
+   "valence": -0.85,
+   "arousal": 0.85,
+   "emotions": {
+    "anger": 0.85,
+    "fear": 0.85
+   },
+   "source": "curated:gemini-2026-09",
+   "version": 1
+  },
+  {
+   "id": "en.act.strangle",
+   "lemma": "strangle",
+   "pos": [
+    "VERB"
+   ],
+   "kind": "action_violent",
+   "strength": "strong",
+   "valence": -0.9,
+   "arousal": 0.9,
+   "emotions": {
+    "anger": 0.9,
+    "fear": 0.9
+   },
+   "source": "curated:gemini-2026-09",
+   "version": 1
+  },
+  {
+   "id": "en.act.suffocate",
+   "lemma": "suffocate",
+   "pos": [
+    "VERB"
+   ],
+   "kind": "action_violent",
+   "strength": "strong",
+   "valence": -0.85,
+   "arousal": 0.85,
+   "emotions": {
+    "fear": 0.9
+   },
+   "source": "curated:gemini-2026-09",
+   "version": 1
+  },
+  {
+   "id": "en.act.smother",
+   "lemma": "smother",
+   "pos": [
+    "VERB"
+   ],
+   "kind": "action_violent",
+   "strength": "weak",
+   "valence": -0.8,
+   "arousal": 0.8,
+   "emotions": {
+    "fear": 0.85
+   },
+   "source": "curated:gemini-2026-09",
+   "version": 1,
+   "note": "smother in sauce vs smother a victim"
+  },
+  {
+   "id": "en.act.drown",
+   "lemma": "drown",
+   "pos": [
+    "VERB"
+   ],
+   "kind": "action_violent",
+   "strength": "weak",
+   "valence": -0.85,
+   "arousal": 0.85,
+   "emotions": {
+    "fear": 0.9
+   },
+   "source": "curated:gemini-2026-09",
+   "version": 1,
+   "note": "drown in work vs drown in water"
+  },
+  {
+   "id": "en.act.hang",
+   "lemma": "hang",
+   "pos": [
+    "VERB"
+   ],
+   "kind": "action_violent",
+   "strength": "weak",
+   "valence": -0.85,
+   "arousal": 0.85,
+   "emotions": {
+    "fear": 0.85
+   },
+   "source": "curated:gemini-2026-09",
+   "version": 1,
+   "note": "hang picture vs hang a criminal"
+  },
+  {
+   "id": "en.act.garrote",
+   "lemma": "garrote",
+   "pos": [
+    "VERB"
+   ],
+   "kind": "action_violent",
+   "strength": "strong",
+   "valence": -0.9,
+   "arousal": 0.9,
+   "emotions": {
+    "fear": 0.9,
+    "anger": 0.85
+   },
+   "source": "curated:gemini-2026-09",
+   "version": 1
+  },
+  {
+   "id": "en.act.garrotte",
+   "lemma": "garrotte",
+   "pos": [
+    "VERB"
+   ],
+   "kind": "action_violent",
+   "strength": "strong",
+   "valence": -0.9,
+   "arousal": 0.9,
+   "emotions": {
+    "fear": 0.9,
+    "anger": 0.85
+   },
+   "source": "curated:gemini-2026-09",
+   "version": 1
+  },
+  {
+   "id": "en.act.skewer",
+   "lemma": "skewer",
+   "pos": [
+    "VERB"
+   ],
+   "kind": "action_violent",
+   "strength": "weak",
+   "valence": -0.8,
+   "arousal": 0.8,
+   "emotions": {
+    "anger": 0.8
+   },
+   "source": "curated:gemini-2026-09",
+   "version": 1,
+   "note": "skewer meat vs skewer enemy"
+  },
+  {
+   "id": "en.act.impale",
+   "lemma": "impale",
+   "pos": [
+    "VERB"
+   ],
+   "kind": "action_violent",
+   "strength": "strong",
+   "valence": -0.9,
+   "arousal": 0.9,
+   "emotions": {
+    "fear": 0.9,
+    "anger": 0.85
+   },
+   "source": "curated:gemini-2026-09",
+   "version": 1
+  },
+  {
+   "id": "en.act.spear",
+   "lemma": "spear",
+   "pos": [
+    "VERB"
+   ],
+   "kind": "action_violent",
+   "strength": "strong",
+   "valence": -0.8,
+   "arousal": 0.8,
+   "emotions": {
+    "anger": 0.8
+   },
+   "source": "curated:gemini-2026-09",
+   "version": 1
+  },
+  {
+   "id": "en.act.bayonet",
+   "lemma": "bayonet",
+   "pos": [
+    "VERB"
+   ],
+   "kind": "action_violent",
+   "strength": "strong",
+   "valence": -0.85,
+   "arousal": 0.85,
+   "emotions": {
+    "anger": 0.85,
+    "fear": 0.85
+   },
+   "source": "curated:gemini-2026-09",
+   "version": 1
+  },
+  {
+   "id": "en.act.bleed",
+   "lemma": "bleed",
+   "pos": [
+    "VERB"
+   ],
+   "kind": "action_violent",
+   "strength": "weak",
+   "valence": -0.65,
+   "arousal": 0.6,
+   "emotions": {
+    "fear": 0.7
+   },
+   "source": "curated:gemini-2026-09",
+   "version": 1,
+   "note": "medical bleeding vs violent infliction"
+  },
+  {
+   "id": "en.act.burn",
+   "lemma": "burn",
+   "pos": [
+    "VERB"
+   ],
+   "kind": "action_violent",
+   "strength": "weak",
+   "valence": -0.7,
+   "arousal": 0.75,
+   "emotions": {
+    "fear": 0.8
+   },
+   "source": "curated:gemini-2026-09",
+   "version": 1,
+   "note": "combustion vs violent arson or bodily burning"
+  },
+  {
+   "id": "en.act.scorch",
+   "lemma": "scorch",
+   "pos": [
+    "VERB"
+   ],
+   "kind": "action_violent",
+   "strength": "weak",
+   "valence": -0.65,
+   "arousal": 0.7,
+   "emotions": {
+    "fear": 0.6
+   },
+   "source": "curated:gemini-2026-09",
+   "version": 1,
+   "note": "scorch cloth vs scorch earth"
+  },
+  {
+   "id": "en.act.sear",
+   "lemma": "sear",
+   "pos": [
+    "VERB"
+   ],
+   "kind": "action_violent",
+   "strength": "weak",
+   "valence": -0.65,
+   "arousal": 0.7,
+   "emotions": {
+    "fear": 0.6
+   },
+   "source": "curated:gemini-2026-09",
+   "version": 1,
+   "note": "sear steak vs searing pain"
+  },
+  {
+   "id": "en.act.scald",
+   "lemma": "scald",
+   "pos": [
+    "VERB"
+   ],
+   "kind": "action_violent",
+   "strength": "weak",
+   "valence": -0.7,
+   "arousal": 0.7,
+   "emotions": {
+    "fear": 0.7
+   },
+   "source": "curated:gemini-2026-09",
+   "version": 1,
+   "note": "scald milk vs scalding water attack"
+  },
+  {
+   "id": "en.act.char",
+   "lemma": "char",
+   "pos": [
+    "VERB"
+   ],
+   "kind": "action_violent",
+   "strength": "weak",
+   "valence": -0.65,
+   "arousal": 0.65,
+   "emotions": {
+    "fear": 0.6
+   },
+   "source": "curated:gemini-2026-09",
+   "version": 1,
+   "note": "char wood vs char bodies"
+  },
+  {
+   "id": "en.act.singe",
+   "lemma": "singe",
+   "pos": [
+    "VERB"
+   ],
+   "kind": "action_violent",
+   "strength": "weak",
+   "valence": -0.5,
+   "arousal": 0.5,
+   "emotions": {
+    "fear": 0.5
+   },
+   "source": "curated:gemini-2026-09",
+   "version": 1,
+   "note": "singe hair vs violent fire"
+  },
+  {
+   "id": "en.act.ignite",
+   "lemma": "ignite",
+   "pos": [
+    "VERB"
+   ],
+   "kind": "action_violent",
+   "strength": "weak",
+   "valence": -0.6,
+   "arousal": 0.7,
+   "emotions": {
+    "fear": 0.6
+   },
+   "source": "curated:gemini-2026-09",
+   "version": 1,
+   "note": "ignite engine vs ignite firebomb"
+  },
+  {
+   "id": "en.act.poison",
+   "lemma": "poison",
+   "pos": [
+    "VERB"
+   ],
+   "kind": "action_violent",
+   "strength": "weak",
+   "valence": -0.85,
+   "arousal": 0.8,
+   "emotions": {
+    "fear": 0.85,
+    "disgust": 0.7
+   },
+   "source": "curated:gemini-2026-09",
+   "version": 1,
+   "note": "poisonous substance vs poisoning a victim"
+  },
+  {
+   "id": "en.act.asphyxiate",
+   "lemma": "asphyxiate",
+   "pos": [
+    "VERB"
+   ],
+   "kind": "action_violent",
+   "strength": "strong",
+   "valence": -0.85,
+   "arousal": 0.85,
+   "emotions": {
+    "fear": 0.9
+   },
+   "source": "curated:gemini-2026-09",
+   "version": 1
+  },
+  {
+   "id": "en.act.paralyze",
+   "lemma": "paralyze",
+   "pos": [
+    "VERB"
+   ],
+   "kind": "action_violent",
+   "strength": "weak",
+   "valence": -0.8,
+   "arousal": 0.8,
+   "emotions": {
+    "fear": 0.85
+   },
+   "source": "curated:gemini-2026-09",
+   "version": 1,
+   "note": "medical paralysis vs paralyzing toxin"
+  },
+  {
+   "id": "en.act.blind",
+   "lemma": "blind",
+   "pos": [
+    "VERB"
+   ],
+   "kind": "action_violent",
+   "strength": "weak",
+   "valence": -0.8,
+   "arousal": 0.8,
+   "emotions": {
+    "fear": 0.85
+   },
+   "source": "curated:gemini-2026-09",
+   "version": 1,
+   "note": "window blind vs blinding someone"
+  },
+  {
+   "id": "en.act.deafen",
+   "lemma": "deafen",
+   "pos": [
+    "VERB"
+   ],
+   "kind": "action_violent",
+   "strength": "strong",
+   "valence": -0.7,
+   "arousal": 0.7,
+   "emotions": {
+    "fear": 0.7
+   },
+   "source": "curated:gemini-2026-09",
+   "version": 1
+  },
+  {
+   "id": "en.act.massacre",
+   "lemma": "massacre",
+   "pos": [
+    "VERB"
+   ],
+   "kind": "action_violent",
+   "strength": "strong",
+   "valence": -0.95,
+   "arousal": 0.95,
+   "emotions": {
+    "fear": 0.95,
+    "anger": 0.9
+   },
+   "source": "curated:gemini-2026-09",
+   "version": 1
+  },
+  {
+   "id": "en.act.slaughter",
+   "lemma": "slaughter",
+   "pos": [
+    "VERB"
+   ],
+   "kind": "action_violent",
+   "strength": "strong",
+   "valence": -0.95,
+   "arousal": 0.95,
+   "emotions": {
+    "fear": 0.95,
+    "anger": 0.9
+   },
+   "source": "curated:gemini-2026-09",
+   "version": 1
+  },
+  {
+   "id": "en.act.butcher",
+   "lemma": "butcher",
+   "pos": [
+    "VERB"
+   ],
+   "kind": "action_violent",
+   "strength": "weak",
+   "valence": -0.95,
+   "arousal": 0.95,
+   "emotions": {
+    "disgust": 0.9,
+    "anger": 0.9
+   },
+   "source": "curated:gemini-2026-09",
+   "version": 1,
+   "note": "meat butcher profession vs butchering people"
+  },
+  {
+   "id": "en.act.slay",
+   "lemma": "slay",
+   "pos": [
+    "VERB"
+   ],
+   "kind": "action_violent",
+   "strength": "strong",
+   "valence": -0.9,
+   "arousal": 0.9,
+   "emotions": {
+    "fear": 0.9,
+    "anger": 0.85
+   },
+   "source": "curated:gemini-2026-09",
+   "version": 1
+  },
+  {
+   "id": "en.act.execute",
+   "lemma": "execute",
+   "pos": [
+    "VERB"
+   ],
+   "kind": "action_violent",
+   "strength": "weak",
+   "valence": -0.85,
+   "arousal": 0.85,
+   "emotions": {
+    "fear": 0.85
+   },
+   "source": "curated:gemini-2026-09",
+   "version": 1,
+   "note": "execute program vs execute prisoner"
+  },
+  {
+   "id": "en.act.assassinate",
+   "lemma": "assassinate",
+   "pos": [
+    "VERB"
+   ],
+   "kind": "action_violent",
+   "strength": "strong",
+   "valence": -0.9,
+   "arousal": 0.9,
+   "emotions": {
+    "fear": 0.9,
+    "anger": 0.85
+   },
+   "source": "curated:gemini-2026-09",
+   "version": 1
+  },
+  {
+   "id": "en.act.behead",
+   "lemma": "behead",
+   "pos": [
+    "VERB"
+   ],
+   "kind": "action_violent",
+   "strength": "strong",
+   "valence": -0.95,
+   "arousal": 0.95,
+   "emotions": {
+    "fear": 0.95,
+    "anger": 0.9
+   },
+   "source": "curated:gemini-2026-09",
+   "version": 1
+  },
+  {
+   "id": "en.act.decapitate",
+   "lemma": "decapitate",
+   "pos": [
+    "VERB"
+   ],
+   "kind": "action_violent",
+   "strength": "strong",
+   "valence": -0.95,
+   "arousal": 0.95,
+   "emotions": {
+    "fear": 0.95,
+    "anger": 0.9
+   },
+   "source": "curated:gemini-2026-09",
+   "version": 1
+  },
+  {
+   "id": "en.act.mutilate",
+   "lemma": "mutilate",
+   "pos": [
+    "VERB"
+   ],
+   "kind": "action_violent",
+   "strength": "strong",
+   "valence": -0.95,
+   "arousal": 0.95,
+   "emotions": {
+    "disgust": 0.95,
+    "fear": 0.9
+   },
+   "source": "curated:gemini-2026-09",
+   "version": 1
+  },
+  {
+   "id": "en.act.maim",
+   "lemma": "maim",
+   "pos": [
+    "VERB"
+   ],
+   "kind": "action_violent",
+   "strength": "strong",
+   "valence": -0.9,
+   "arousal": 0.85,
+   "emotions": {
+    "fear": 0.9
+   },
+   "source": "curated:gemini-2026-09",
+   "version": 1
+  },
+  {
+   "id": "en.act.disembowel",
+   "lemma": "disembowel",
+   "pos": [
+    "VERB"
+   ],
+   "kind": "action_violent",
+   "strength": "strong",
+   "valence": -0.95,
+   "arousal": 0.95,
+   "emotions": {
+    "disgust": 0.95,
+    "fear": 0.95
+   },
+   "source": "curated:gemini-2026-09",
+   "version": 1
+  },
+  {
+   "id": "en.act.eviscerate",
+   "lemma": "eviscerate",
+   "pos": [
+    "VERB"
+   ],
+   "kind": "action_violent",
+   "strength": "strong",
+   "valence": -0.95,
+   "arousal": 0.95,
+   "emotions": {
+    "disgust": 0.95,
+    "fear": 0.95
+   },
+   "source": "curated:gemini-2026-09",
+   "version": 1
+  },
+  {
+   "id": "en.act.gut",
+   "lemma": "gut",
+   "pos": [
+    "VERB"
+   ],
+   "kind": "action_violent",
+   "strength": "weak",
+   "valence": -0.9,
+   "arousal": 0.9,
+   "emotions": {
+    "disgust": 0.9
+   },
+   "source": "curated:gemini-2026-09",
+   "version": 1,
+   "note": "gut feeling / fish gutting vs gutting enemy"
+  },
+  {
+   "id": "en.act.flay",
+   "lemma": "flay",
+   "pos": [
+    "VERB"
+   ],
+   "kind": "action_violent",
+   "strength": "strong",
+   "valence": -0.95,
+   "arousal": 0.95,
+   "emotions": {
+    "disgust": 0.95,
+    "fear": 0.95
+   },
+   "source": "curated:gemini-2026-09",
+   "version": 1
+  },
+  {
+   "id": "en.act.skin",
+   "lemma": "skin",
+   "pos": [
+    "VERB"
+   ],
+   "kind": "action_violent",
+   "strength": "weak",
+   "valence": -0.85,
+   "arousal": 0.85,
+   "emotions": {
+    "disgust": 0.85
+   },
+   "source": "curated:gemini-2026-09",
+   "version": 1,
+   "note": "human skin vs skinning alive"
+  },
+  {
+   "id": "en.act.scalp",
+   "lemma": "scalp",
+   "pos": [
+    "VERB"
+   ],
+   "kind": "action_violent",
+   "strength": "weak",
+   "valence": -0.9,
+   "arousal": 0.9,
+   "emotions": {
+    "fear": 0.9,
+    "disgust": 0.9
+   },
+   "source": "curated:gemini-2026-09",
+   "version": 1,
+   "note": "head scalp vs scalping enemy"
+  },
+  {
+   "id": "en.act.annihilate",
+   "lemma": "annihilate",
+   "pos": [
+    "VERB"
+   ],
+   "kind": "action_violent",
+   "strength": "strong",
+   "valence": -0.95,
+   "arousal": 0.95,
+   "emotions": {
+    "fear": 0.95,
+    "anger": 0.95
+   },
+   "source": "curated:gemini-2026-09",
+   "version": 1
+  },
+  {
+   "id": "en.act.exterminate",
+   "lemma": "exterminate",
+   "pos": [
+    "VERB"
+   ],
+   "kind": "action_violent",
+   "strength": "strong",
+   "valence": -0.95,
+   "arousal": 0.95,
+   "emotions": {
+    "fear": 0.95,
+    "anger": 0.9
+   },
+   "source": "curated:gemini-2026-09",
+   "version": 1
+  },
+  {
+   "id": "en.act.eradicate",
+   "lemma": "eradicate",
+   "pos": [
+    "VERB"
+   ],
+   "kind": "action_violent",
+   "strength": "strong",
+   "valence": -0.9,
+   "arousal": 0.9,
+   "emotions": {
+    "anger": 0.9
+   },
+   "source": "curated:gemini-2026-09",
+   "version": 1
+  },
+  {
+   "id": "en.act.decimate",
+   "lemma": "decimate",
+   "pos": [
+    "VERB"
+   ],
+   "kind": "action_violent",
+   "strength": "strong",
+   "valence": -0.9,
+   "arousal": 0.9,
+   "emotions": {
+    "fear": 0.9
+   },
+   "source": "curated:gemini-2026-09",
+   "version": 1
+  },
+  {
+   "id": "en.act.lynch",
+   "lemma": "lynch",
+   "pos": [
+    "VERB"
+   ],
+   "kind": "action_violent",
+   "strength": "strong",
+   "valence": -0.95,
+   "arousal": 0.95,
+   "emotions": {
+    "fear": 0.95,
+    "anger": 0.95
+   },
+   "source": "curated:gemini-2026-09",
+   "version": 1
+  },
+  {
+   "id": "en.act.crucify",
+   "lemma": "crucify",
+   "pos": [
+    "VERB"
+   ],
+   "kind": "action_violent",
+   "strength": "strong",
+   "valence": -0.95,
+   "arousal": 0.95,
+   "emotions": {
+    "fear": 0.95,
+    "anger": 0.9
+   },
+   "source": "curated:gemini-2026-09",
+   "version": 1
+  },
+  {
+   "id": "en.act.immolate",
+   "lemma": "immolate",
+   "pos": [
+    "VERB"
+   ],
+   "kind": "action_violent",
+   "strength": "strong",
+   "valence": -0.95,
+   "arousal": 0.95,
+   "emotions": {
+    "fear": 0.95
+   },
+   "source": "curated:gemini-2026-09",
+   "version": 1
+  },
+  {
+   "id": "en.act.incinerate",
+   "lemma": "incinerate",
+   "pos": [
+    "VERB"
+   ],
+   "kind": "action_violent",
+   "strength": "strong",
+   "valence": -0.9,
+   "arousal": 0.9,
+   "emotions": {
+    "fear": 0.9
+   },
+   "source": "curated:gemini-2026-09",
+   "version": 1
+  },
+  {
+   "id": "en.act.cremate",
+   "lemma": "cremate",
+   "pos": [
+    "VERB"
+   ],
+   "kind": "action_violent",
+   "strength": "weak",
+   "valence": -0.75,
+   "arousal": 0.65,
+   "emotions": {
+    "sadness": 0.8
+   },
+   "source": "curated:gemini-2026-09",
+   "version": 1,
+   "note": "peaceful funeral cremation vs fiery death"
+  },
+  {
+   "id": "en.act.devour",
+   "lemma": "devour",
+   "pos": [
+    "VERB"
+   ],
+   "kind": "action_violent",
+   "strength": "weak",
+   "valence": -0.75,
+   "arousal": 0.75,
+   "emotions": {
+    "fear": 0.75
+   },
+   "source": "curated:gemini-2026-09",
+   "version": 1,
+   "note": "devour a meal vs beast devouring person"
+  },
+  {
+   "id": "en.act.ravage",
+   "lemma": "ravage",
+   "pos": [
+    "VERB"
+   ],
+   "kind": "action_violent",
+   "strength": "strong",
+   "valence": -0.85,
+   "arousal": 0.85,
+   "emotions": {
+    "fear": 0.85,
+    "anger": 0.8
+   },
+   "source": "curated:gemini-2026-09",
+   "version": 1
+  },
+  {
+   "id": "en.act.pillage",
+   "lemma": "pillage",
+   "pos": [
+    "VERB"
+   ],
+   "kind": "action_violent",
+   "strength": "strong",
+   "valence": -0.85,
+   "arousal": 0.85,
+   "emotions": {
+    "anger": 0.85,
+    "fear": 0.85
+   },
+   "source": "curated:gemini-2026-09",
+   "version": 1
+  },
+  {
+   "id": "en.act.plunder",
+   "lemma": "plunder",
+   "pos": [
+    "VERB"
+   ],
+   "kind": "action_violent",
+   "strength": "strong",
+   "valence": -0.8,
+   "arousal": 0.8,
+   "emotions": {
+    "anger": 0.8
+   },
+   "source": "curated:gemini-2026-09",
+   "version": 1
+  },
+  {
+   "id": "en.act.sack",
+   "lemma": "sack",
+   "pos": [
+    "VERB"
+   ],
+   "kind": "action_violent",
+   "strength": "weak",
+   "valence": -0.8,
+   "arousal": 0.8,
+   "emotions": {
+    "anger": 0.8
+   },
+   "source": "curated:gemini-2026-09",
+   "version": 1,
+   "note": "burlap sack vs sacking a city"
+  },
+  {
+   "id": "en.act.destroy",
+   "lemma": "destroy",
+   "pos": [
+    "VERB"
+   ],
+   "kind": "action_violent",
+   "strength": "strong",
+   "valence": -0.85,
+   "arousal": 0.85,
+   "emotions": {
+    "anger": 0.85
+   },
+   "source": "curated:gemini-2026-09",
+   "version": 1
+  },
+  {
+   "id": "en.act.demolish",
+   "lemma": "demolish",
+   "pos": [
+    "VERB"
+   ],
+   "kind": "action_violent",
+   "strength": "strong",
+   "valence": -0.8,
+   "arousal": 0.8,
+   "emotions": {
+    "anger": 0.8
+   },
+   "source": "curated:gemini-2026-09",
+   "version": 1
+  },
+  {
+   "id": "en.act.wreck",
+   "lemma": "wreck",
+   "pos": [
+    "VERB"
+   ],
+   "kind": "action_violent",
+   "strength": "strong",
+   "valence": -0.75,
+   "arousal": 0.75,
+   "emotions": {
+    "anger": 0.7
+   },
+   "source": "curated:gemini-2026-09",
+   "version": 1
+  },
+  {
+   "id": "en.act.ruin",
+   "lemma": "ruin",
+   "pos": [
+    "VERB"
+   ],
+   "kind": "action_violent",
+   "strength": "weak",
+   "valence": -0.75,
+   "arousal": 0.7,
+   "emotions": {
+    "sadness": 0.8
+   },
+   "source": "curated:gemini-2026-09",
+   "version": 1,
+   "note": "ancient ruins vs ruining someone"
+  },
+  {
+   "id": "en.act.raze",
+   "lemma": "raze",
+   "pos": [
+    "VERB"
+   ],
+   "kind": "action_violent",
+   "strength": "strong",
+   "valence": -0.85,
+   "arousal": 0.85,
+   "emotions": {
+    "anger": 0.85
+   },
+   "source": "curated:gemini-2026-09",
+   "version": 1
+  },
+  {
+   "id": "en.act.bomb",
+   "lemma": "bomb",
+   "pos": [
+    "VERB"
+   ],
+   "kind": "action_violent",
+   "strength": "strong",
+   "valence": -0.85,
+   "arousal": 0.9,
+   "emotions": {
+    "fear": 0.9
+   },
+   "source": "curated:gemini-2026-09",
+   "version": 1
+  },
+  {
+   "id": "en.act.blast",
+   "lemma": "blast",
+   "pos": [
+    "VERB"
+   ],
+   "kind": "action_violent",
+   "strength": "weak",
+   "valence": -0.8,
+   "arousal": 0.85,
+   "emotions": {
+    "fear": 0.85
+   },
+   "source": "curated:gemini-2026-09",
+   "version": 1,
+   "note": "having a blast vs explosive blast"
+  },
+  {
+   "id": "en.act.detonate",
+   "lemma": "detonate",
+   "pos": [
+    "VERB"
+   ],
+   "kind": "action_violent",
+   "strength": "strong",
+   "valence": -0.85,
+   "arousal": 0.9,
+   "emotions": {
+    "fear": 0.9
+   },
+   "source": "curated:gemini-2026-09",
+   "version": 1
+  },
+  {
+   "id": "en.act.explode",
+   "lemma": "explode",
+   "pos": [
+    "VERB"
+   ],
+   "kind": "action_violent",
+   "strength": "weak",
+   "valence": -0.8,
+   "arousal": 0.85,
+   "emotions": {
+    "fear": 0.85
+   },
+   "source": "curated:gemini-2026-09",
+   "version": 1,
+   "note": "temper exploding vs bomb exploding"
+  },
+  {
+   "id": "en.act.shatter",
+   "lemma": "shatter",
+   "pos": [
+    "VERB"
+   ],
+   "kind": "action_violent",
+   "strength": "weak",
+   "valence": -0.75,
+   "arousal": 0.8,
+   "emotions": {
+    "fear": 0.8
+   },
+   "source": "curated:gemini-2026-09",
+   "version": 1,
+   "note": "shattering glass vs shattering morale"
+  },
+  {
+   "id": "en.act.torpedo",
+   "lemma": "torpedo",
+   "pos": [
+    "VERB"
+   ],
+   "kind": "action_violent",
+   "strength": "strong",
+   "valence": -0.85,
+   "arousal": 0.85,
+   "emotions": {
+    "fear": 0.85
+   },
+   "source": "curated:gemini-2026-09",
+   "version": 1
+  },
+  {
+   "id": "en.act.cannonade",
+   "lemma": "cannonade",
+   "pos": [
+    "VERB"
+   ],
+   "kind": "action_violent",
+   "strength": "strong",
+   "valence": -0.8,
+   "arousal": 0.85,
+   "emotions": {
+    "fear": 0.85
+   },
+   "source": "curated:gemini-2026-09",
+   "version": 1
+  },
+  {
+   "id": "en.act.bombard",
+   "lemma": "bombard",
+   "pos": [
+    "VERB"
+   ],
+   "kind": "action_violent",
+   "strength": "weak",
+   "valence": -0.8,
+   "arousal": 0.85,
+   "emotions": {
+    "fear": 0.85
+   },
+   "source": "curated:gemini-2026-09",
+   "version": 1,
+   "note": "bombard with questions vs artillery bombardment"
+  },
+  {
+   "id": "en.act.besiege",
+   "lemma": "besiege",
+   "pos": [
+    "VERB"
+   ],
+   "kind": "action_violent",
+   "strength": "strong",
+   "valence": -0.75,
+   "arousal": 0.75,
+   "emotions": {
+    "fear": 0.75
+   },
+   "source": "curated:gemini-2026-09",
+   "version": 1
+  },
+  {
+   "id": "en.act.ambush",
+   "lemma": "ambush",
+   "pos": [
+    "VERB"
+   ],
+   "kind": "action_violent",
+   "strength": "strong",
+   "valence": -0.8,
+   "arousal": 0.85,
+   "emotions": {
+    "fear": 0.85
+   },
+   "source": "curated:gemini-2026-09",
+   "version": 1
+  },
+  {
+   "id": "en.act.charge",
+   "lemma": "charge",
+   "pos": [
+    "VERB"
+   ],
+   "kind": "action_violent",
+   "strength": "weak",
+   "valence": -0.55,
+   "arousal": 0.75,
+   "emotions": {
+    "anger": 0.7
+   },
+   "source": "curated:gemini-2026-09",
+   "version": 1,
+   "note": "battery charge / legal charge vs cavalry charge"
+  },
+  {
+   "id": "en.act.assault",
+   "lemma": "assault",
+   "pos": [
+    "VERB"
+   ],
+   "kind": "action_violent",
+   "strength": "strong",
+   "valence": -0.85,
+   "arousal": 0.85,
+   "emotions": {
+    "anger": 0.85,
+    "fear": 0.85
+   },
+   "source": "curated:gemini-2026-09",
+   "version": 1
+  },
+  {
+   "id": "en.act.storm",
+   "lemma": "storm",
+   "pos": [
+    "VERB"
+   ],
+   "kind": "action_violent",
+   "strength": "weak",
+   "valence": -0.65,
+   "arousal": 0.75,
+   "emotions": {
+    "anger": 0.7
+   },
+   "source": "curated:gemini-2026-09",
+   "version": 1,
+   "note": "weather storm vs storming a fortress"
+  },
+  {
+   "id": "en.act.invade",
+   "lemma": "invade",
+   "pos": [
+    "VERB"
+   ],
+   "kind": "action_violent",
+   "strength": "strong",
+   "valence": -0.8,
+   "arousal": 0.8,
+   "emotions": {
+    "fear": 0.8,
+    "anger": 0.8
+   },
+   "source": "curated:gemini-2026-09",
+   "version": 1
+  },
+  {
+   "id": "en.act.overrun",
+   "lemma": "overrun",
+   "pos": [
+    "VERB"
+   ],
+   "kind": "action_violent",
+   "strength": "strong",
+   "valence": -0.75,
+   "arousal": 0.75,
+   "emotions": {
+    "fear": 0.8
+   },
+   "source": "curated:gemini-2026-09",
+   "version": 1
+  },
+  {
+   "id": "en.act.subdue",
+   "lemma": "subdue",
+   "pos": [
+    "VERB"
+   ],
+   "kind": "action_violent",
+   "strength": "strong",
+   "valence": -0.6,
+   "arousal": 0.65,
+   "emotions": {
+    "anger": 0.6
+   },
+   "source": "curated:gemini-2026-09",
+   "version": 1
+  },
+  {
+   "id": "en.act.conquer",
+   "lemma": "conquer",
+   "pos": [
+    "VERB"
+   ],
+   "kind": "action_violent",
+   "strength": "weak",
+   "valence": -0.5,
+   "arousal": 0.7,
+   "emotions": {
+    "anger": 0.7
+   },
+   "source": "curated:gemini-2026-09",
+   "version": 1,
+   "note": "conquer fears vs violent conquest"
+  },
+  {
+   "id": "en.act.vanquish",
+   "lemma": "vanquish",
+   "pos": [
+    "VERB"
+   ],
+   "kind": "action_violent",
+   "strength": "strong",
+   "valence": -0.65,
+   "arousal": 0.75,
+   "emotions": {
+    "anger": 0.8
+   },
+   "source": "curated:gemini-2026-09",
+   "version": 1
+  },
+  {
+   "id": "en.act.overpower",
+   "lemma": "overpower",
+   "pos": [
+    "VERB"
+   ],
+   "kind": "action_violent",
+   "strength": "strong",
+   "valence": -0.7,
+   "arousal": 0.75,
+   "emotions": {
+    "fear": 0.7
+   },
+   "source": "curated:gemini-2026-09",
+   "version": 1
+  },
+  {
+   "id": "en.act.trample",
+   "lemma": "trample",
+   "pos": [
+    "VERB"
+   ],
+   "kind": "action_violent",
+   "strength": "strong",
+   "valence": -0.75,
+   "arousal": 0.75,
+   "emotions": {
+    "anger": 0.75,
+    "fear": 0.75
+   },
+   "source": "curated:gemini-2026-09",
+   "version": 1
+  },
+  {
+   "id": "en.act.subjugate",
+   "lemma": "subjugate",
+   "pos": [
+    "VERB"
+   ],
+   "kind": "action_violent",
+   "strength": "strong",
+   "valence": -0.8,
+   "arousal": 0.75,
+   "emotions": {
+    "anger": 0.8
+   },
+   "source": "curated:gemini-2026-09",
+   "version": 1
+  },
+  {
+   "id": "en.act.clash",
+   "lemma": "clash",
+   "pos": [
+    "VERB"
+   ],
+   "kind": "action_violent",
+   "strength": "weak",
+   "valence": -0.6,
+   "arousal": 0.7,
+   "emotions": {
+    "anger": 0.65
+   },
+   "source": "curated:gemini-2026-09",
+   "version": 1,
+   "note": "color clash vs clashing swords"
+  },
+  {
+   "id": "en.act.mangle",
+   "lemma": "mangle",
+   "pos": [
+    "VERB"
+   ],
+   "kind": "action_violent",
+   "strength": "strong",
+   "valence": -0.85,
+   "arousal": 0.85,
+   "emotions": {
+    "disgust": 0.85,
+    "fear": 0.8
+   },
+   "source": "curated:gemini-2026-09",
+   "version": 1
+  },
+  {
+   "id": "en.act.torture",
+   "lemma": "torture",
+   "pos": [
+    "VERB"
+   ],
+   "kind": "action_violent",
+   "strength": "strong",
+   "valence": -0.95,
+   "arousal": 0.95,
+   "emotions": {
+    "fear": 0.95,
+    "sadness": 0.9
+   },
+   "source": "curated:gemini-2026-09",
+   "version": 1
+  },
+  {
+   "id": "en.act.torment",
+   "lemma": "torment",
+   "pos": [
+    "VERB"
+   ],
+   "kind": "action_violent",
+   "strength": "strong",
+   "valence": -0.85,
+   "arousal": 0.85,
+   "emotions": {
+    "sadness": 0.85
+   },
+   "source": "curated:gemini-2026-09",
+   "version": 1
+  },
+  {
+   "id": "en.act.martyr",
+   "lemma": "martyr",
+   "pos": [
+    "VERB"
+   ],
+   "kind": "action_violent",
+   "strength": "strong",
+   "valence": -0.8,
+   "arousal": 0.8,
+   "emotions": {
+    "sadness": 0.85
+   },
+   "source": "curated:gemini-2026-09",
+   "version": 1
+  },
+  {
+   "id": "en.act.pummel",
+   "lemma": "pummel",
+   "pos": [
+    "VERB"
+   ],
+   "kind": "action_violent",
+   "strength": "strong",
+   "valence": -0.76,
+   "arousal": 0.81,
+   "emotions": {
+    "anger": 0.8
+   },
+   "source": "curated:gemini-2026-09",
+   "version": 1
+  },
+  {
+   "id": "en.act.truncheon",
+   "lemma": "truncheon",
+   "pos": [
+    "VERB"
+   ],
+   "kind": "action_violent",
+   "strength": "strong",
+   "valence": -0.77,
+   "arousal": 0.76,
+   "emotions": {
+    "fear": 0.75
+   },
+   "source": "curated:gemini-2026-09",
+   "version": 1
+  },
+  {
+   "id": "en.act.cosh",
+   "lemma": "cosh",
+   "pos": [
+    "VERB"
+   ],
+   "kind": "action_violent",
+   "strength": "strong",
+   "valence": -0.78,
+   "arousal": 0.77,
+   "emotions": {
+    "anger": 0.8
+   },
+   "source": "curated:gemini-2026-09",
+   "version": 1
+  },
+  {
+   "id": "en.act.disfigure",
+   "lemma": "disfigure",
+   "pos": [
+    "VERB"
+   ],
+   "kind": "action_violent",
+   "strength": "strong",
+   "valence": -0.88,
+   "arousal": 0.82,
+   "emotions": {
+    "disgust": 0.85,
+    "fear": 0.8
+   },
+   "source": "curated:gemini-2026-09",
+   "version": 1
+  },
+  {
+   "id": "en.act.electrocute",
+   "lemma": "electrocute",
+   "pos": [
+    "VERB"
+   ],
+   "kind": "action_violent",
+   "strength": "strong",
+   "valence": -0.92,
+   "arousal": 0.89,
+   "emotions": {
+    "fear": 0.95
+   },
+   "source": "curated:gemini-2026-09",
+   "version": 1
+  },
+  {
+   "id": "en.act.strafe",
+   "lemma": "strafe",
+   "pos": [
+    "VERB"
+   ],
+   "kind": "action_violent",
+   "strength": "strong",
+   "valence": -0.83,
+   "arousal": 0.87,
+   "emotions": {
+    "fear": 0.85
+   },
+   "source": "curated:gemini-2026-09",
+   "version": 1
+  },
+  {
+   "id": "en.act.vaporize",
+   "lemma": "vaporize",
+   "pos": [
+    "VERB"
+   ],
+   "kind": "action_violent",
+   "strength": "strong",
+   "valence": -0.93,
+   "arousal": 0.91,
+   "emotions": {
+    "fear": 0.9
+   },
+   "source": "curated:gemini-2026-09",
+   "version": 1
+  },
+  {
+   "id": "en.act.defenestrate",
+   "lemma": "defenestrate",
+   "pos": [
+    "VERB"
+   ],
+   "kind": "action_violent",
+   "strength": "strong",
+   "valence": -0.86,
+   "arousal": 0.88,
+   "emotions": {
+    "fear": 0.85
+   },
+   "source": "curated:gemini-2026-09",
+   "version": 1
+  },
+  {
+   "id": "en.act.sandbag",
+   "lemma": "sandbag",
+   "pos": [
+    "VERB"
+   ],
+   "kind": "action_violent",
+   "strength": "weak",
+   "valence": -0.72,
+   "arousal": 0.74,
+   "emotions": {
+    "anger": 0.75
+   },
+   "source": "curated:gemini-2026-09",
+   "version": 1,
+   "note": "flood sandbag vs blunt strike"
+  },
+  {
+   "id": "en.act.manhandle",
+   "lemma": "manhandle",
+   "pos": [
+    "VERB"
+   ],
+   "kind": "action_violent",
+   "strength": "strong",
+   "valence": -0.68,
+   "arousal": 0.73,
+   "emotions": {
+    "anger": 0.75
+   },
+   "source": "curated:gemini-2026-09",
+   "version": 1
+  },
+  {
+   "id": "en.act.waylay",
+   "lemma": "waylay",
+   "pos": [
+    "VERB"
+   ],
+   "kind": "action_violent",
+   "strength": "strong",
+   "valence": -0.73,
+   "arousal": 0.78,
+   "emotions": {
+    "fear": 0.75
+   },
+   "source": "curated:gemini-2026-09",
+   "version": 1
+  },
+  {
+   "id": "en.act.bushwhack",
+   "lemma": "bushwhack",
+   "pos": [
+    "VERB"
+   ],
+   "kind": "action_violent",
+   "strength": "strong",
+   "valence": -0.76,
+   "arousal": 0.81,
+   "emotions": {
+    "fear": 0.8
+   },
+   "source": "curated:gemini-2026-09",
+   "version": 1
+  },
+  {
+   "id": "en.act.hogtie",
+   "lemma": "hogtie",
+   "pos": [
+    "VERB"
+   ],
+   "kind": "action_violent",
+   "strength": "strong",
+   "valence": -0.79,
+   "arousal": 0.76,
+   "emotions": {
+    "fear": 0.75
+   },
+   "source": "curated:gemini-2026-09",
+   "version": 1
+  },
+  {
+   "id": "en.act.fetter",
+   "lemma": "fetter",
+   "pos": [
+    "VERB"
+   ],
+   "kind": "action_violent",
+   "strength": "strong",
+   "valence": -0.71,
+   "arousal": 0.69,
+   "emotions": {
+    "fear": 0.7
+   },
+   "source": "curated:gemini-2026-09",
+   "version": 1
+  },
+  {
+   "id": "en.act.cauterize",
+   "lemma": "cauterize",
+   "pos": [
+    "VERB"
+   ],
+   "kind": "action_violent",
+   "strength": "weak",
+   "valence": -0.77,
+   "arousal": 0.78,
+   "emotions": {
+    "fear": 0.8
+   },
+   "source": "curated:gemini-2026-09",
+   "version": 1,
+   "note": "medical procedure vs painful burning wound"
+  },
+  {
+   "id": "en.act.amputate",
+   "lemma": "amputate",
+   "pos": [
+    "VERB"
+   ],
+   "kind": "action_violent",
+   "strength": "weak",
+   "valence": -0.82,
+   "arousal": 0.79,
+   "emotions": {
+    "fear": 0.85,
+    "disgust": 0.8
+   },
+   "source": "curated:gemini-2026-09",
+   "version": 1,
+   "note": "surgical operation vs forced amputation"
+  }
+ ]
+}

@@ -272,7 +272,7 @@ export default function FrameworkSwitcherModal({
                             color: isSelected ? 'var(--accent-amber, #d97706)' : 'var(--text-tertiary, #888)'
                           }}
                         >
-                          {fw.beats?.length || 0} beats
+                          {fw.blocks?.length || 0} beats
                         </span>
                       </div>
                       <div
@@ -430,7 +430,8 @@ export default function FrameworkSwitcherModal({
                       border: '1px solid var(--border-subtle, rgba(255, 255, 255, 0.1))',
                       borderRadius: 0,
                       overflow: 'hidden',
-                      backgroundColor: 'rgba(0, 0, 0, 0.3)'
+                      backgroundColor: 'rgba(0, 0, 0, 0.3)',
+                      flexShrink: 0 // flex-column parent scrolls; don't let the curve collapse
                     }}
                   >
                     <div
@@ -465,7 +466,7 @@ export default function FrameworkSwitcherModal({
                   </div>
 
                   {/* Beat Progression Overview */}
-                  <div>
+                  <div style={{ flexShrink: 0 }}>
                     <div
                       style={{
                         fontFamily: 'var(--font-mono, monospace)',
@@ -476,7 +477,7 @@ export default function FrameworkSwitcherModal({
                         marginBottom: '8px'
                       }}
                     >
-                      {t('frameworkSwitcher.beatProgression', 'Beat Progression')} ({selectedFramework.beats?.length || 0})
+                      {t('frameworkSwitcher.beatProgression', 'Beat Progression')} ({selectedFramework.blocks?.length || 0})
                     </div>
                     <div
                       style={{
@@ -488,7 +489,7 @@ export default function FrameworkSwitcherModal({
                         paddingRight: '6px'
                       }}
                     >
-                      {selectedFramework.beats?.map((beat, idx) => (
+                      {selectedFramework.blocks?.map((beat, idx) => (
                         <div
                           key={idx}
                           style={{
@@ -522,17 +523,20 @@ export default function FrameworkSwitcherModal({
                                 color: 'var(--accent-amber, #d97706)'
                               }}
                             >
-                              {Math.round(beat.pct * 100)}%
+                              {Math.round(beat.pct)}%
                             </span>
                           </div>
                           <div
                             style={{
                               fontSize: '11px',
                               color: 'var(--text-tertiary, #888)',
-                              lineHeight: '1.3'
+                              lineHeight: '1.3',
+                              fontFamily: 'var(--font-mono, monospace)',
+                              textTransform: 'uppercase',
+                              letterSpacing: '0.5px'
                             }}
                           >
-                            {beat.description}
+                            {t(`ide.blockType_${beat.block_type}`, beat.block_type)}
                           </div>
                         </div>
                       ))}

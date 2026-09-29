@@ -9,6 +9,7 @@ import json
 import sqlite3
 from fastapi import APIRouter, HTTPException
 from pydantic import BaseModel
+from project_io import safe_md_path
 
 router = APIRouter()
 
@@ -383,8 +384,8 @@ def delete_twist(req: TwistDelete):
         md_filename = ch["md_filename"]
         if not md_filename:
             continue
-        md_path = os.path.join(req.project_path, "md", md_filename)
-        if not os.path.exists(md_path):
+        md_path = safe_md_path(os.path.join(req.project_path, "md"), md_filename)
+        if not md_path or not os.path.exists(md_path):
             continue
         with open(md_path, "r", encoding="utf-8") as f:
             content = f.read()

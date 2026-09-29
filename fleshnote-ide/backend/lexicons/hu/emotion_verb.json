@@ -1,0 +1,1665 @@
+{
+ "lang": "hu",
+ "kind": "emotion_verb",
+ "version": 1,
+ "entries": [
+  {
+   "id": "hu.emoverb.dühöng",
+   "lemma": "dühöng",
+   "pos": [
+    "VERB"
+   ],
+   "kind": "emotion_verb",
+   "strength": "strong",
+   "valence": -0.9,
+   "arousal": 0.9,
+   "emotions": {
+    "anger": 0.8
+   },
+   "source": "curated:gemini-2026-09",
+   "version": 1,
+   "role": "expression"
+  },
+  {
+   "id": "hu.emoverb.haragszik",
+   "lemma": "haragszik",
+   "pos": [
+    "VERB"
+   ],
+   "kind": "emotion_verb",
+   "strength": "strong",
+   "valence": -0.8,
+   "arousal": 0.7,
+   "emotions": {
+    "anger": 0.8
+   },
+   "source": "curated:gemini-2026-09",
+   "version": 1,
+   "role": "experiencer"
+  },
+  {
+   "id": "hu.emoverb.mérgelődik",
+   "lemma": "mérgelődik",
+   "pos": [
+    "VERB"
+   ],
+   "kind": "emotion_verb",
+   "strength": "strong",
+   "valence": -0.6,
+   "arousal": 0.6,
+   "emotions": {
+    "anger": 0.8
+   },
+   "source": "curated:gemini-2026-09",
+   "version": 1,
+   "role": "experiencer"
+  },
+  {
+   "id": "hu.emoverb.bosszankodik",
+   "lemma": "bosszankodik",
+   "pos": [
+    "VERB"
+   ],
+   "kind": "emotion_verb",
+   "strength": "strong",
+   "valence": -0.5,
+   "arousal": 0.5,
+   "emotions": {
+    "anger": 0.8
+   },
+   "source": "curated:gemini-2026-09",
+   "version": 1,
+   "role": "experiencer"
+  },
+  {
+   "id": "hu.emoverb.búsul",
+   "lemma": "búsul",
+   "pos": [
+    "VERB"
+   ],
+   "kind": "emotion_verb",
+   "strength": "strong",
+   "valence": -0.7,
+   "arousal": 0.3,
+   "emotions": {
+    "sadness": 0.8
+   },
+   "source": "curated:gemini-2026-09",
+   "version": 1,
+   "role": "experiencer"
+  },
+  {
+   "id": "hu.emoverb.szomorkodik",
+   "lemma": "szomorkodik",
+   "pos": [
+    "VERB"
+   ],
+   "kind": "emotion_verb",
+   "strength": "strong",
+   "valence": -0.7,
+   "arousal": 0.3,
+   "emotions": {
+    "sadness": 0.8
+   },
+   "source": "curated:gemini-2026-09",
+   "version": 1,
+   "role": "experiencer"
+  },
+  {
+   "id": "hu.emoverb.bánkódik",
+   "lemma": "bánkódik",
+   "pos": [
+    "VERB"
+   ],
+   "kind": "emotion_verb",
+   "strength": "strong",
+   "valence": -0.7,
+   "arousal": 0.3,
+   "emotions": {
+    "sadness": 0.8
+   },
+   "source": "curated:gemini-2026-09",
+   "version": 1,
+   "role": "experiencer"
+  },
+  {
+   "id": "hu.emoverb.kesereg",
+   "lemma": "kesereg",
+   "pos": [
+    "VERB"
+   ],
+   "kind": "emotion_verb",
+   "strength": "strong",
+   "valence": -0.7,
+   "arousal": 0.4,
+   "emotions": {
+    "sadness": 0.8
+   },
+   "source": "curated:gemini-2026-09",
+   "version": 1,
+   "role": "experiencer"
+  },
+  {
+   "id": "hu.emoverb.siránkozik",
+   "lemma": "siránkozik",
+   "pos": [
+    "VERB"
+   ],
+   "kind": "emotion_verb",
+   "strength": "strong",
+   "valence": -0.6,
+   "arousal": 0.4,
+   "emotions": {
+    "sadness": 0.8
+   },
+   "source": "curated:gemini-2026-09",
+   "version": 1,
+   "role": "expression"
+  },
+  {
+   "id": "hu.emoverb.zokog",
+   "lemma": "zokog",
+   "pos": [
+    "VERB"
+   ],
+   "kind": "emotion_verb",
+   "strength": "strong",
+   "valence": -0.8,
+   "arousal": 0.7,
+   "emotions": {
+    "sadness": 0.8
+   },
+   "source": "curated:gemini-2026-09",
+   "version": 1,
+   "role": "expression"
+  },
+  {
+   "id": "hu.emoverb.könnyez",
+   "lemma": "könnyez",
+   "pos": [
+    "VERB"
+   ],
+   "kind": "emotion_verb",
+   "strength": "strong",
+   "valence": -0.6,
+   "arousal": 0.4,
+   "emotions": {
+    "sadness": 0.8
+   },
+   "source": "curated:gemini-2026-09",
+   "version": 1,
+   "role": "expression"
+  },
+  {
+   "id": "hu.emoverb.gyászol",
+   "lemma": "gyászol",
+   "pos": [
+    "VERB"
+   ],
+   "kind": "emotion_verb",
+   "strength": "strong",
+   "valence": -0.9,
+   "arousal": 0.5,
+   "emotions": {
+    "sadness": 0.8
+   },
+   "source": "curated:gemini-2026-09",
+   "version": 1,
+   "role": "experiencer"
+  },
+  {
+   "id": "hu.emoverb.retteg",
+   "lemma": "retteg",
+   "pos": [
+    "VERB"
+   ],
+   "kind": "emotion_verb",
+   "strength": "strong",
+   "valence": -0.9,
+   "arousal": 0.9,
+   "emotions": {
+    "fear": 0.8
+   },
+   "source": "curated:gemini-2026-09",
+   "version": 1,
+   "role": "experiencer"
+  },
+  {
+   "id": "hu.emoverb.fél",
+   "lemma": "fél",
+   "pos": [
+    "VERB"
+   ],
+   "kind": "emotion_verb",
+   "strength": "strong",
+   "valence": -0.8,
+   "arousal": 0.7,
+   "emotions": {
+    "fear": 0.8
+   },
+   "source": "curated:gemini-2026-09",
+   "version": 1,
+   "role": "experiencer"
+  },
+  {
+   "id": "hu.emoverb.ijedez",
+   "lemma": "ijedez",
+   "pos": [
+    "VERB"
+   ],
+   "kind": "emotion_verb",
+   "strength": "strong",
+   "valence": -0.6,
+   "arousal": 0.6,
+   "emotions": {
+    "fear": 0.8
+   },
+   "source": "curated:gemini-2026-09",
+   "version": 1,
+   "role": "experiencer"
+  },
+  {
+   "id": "hu.emoverb.reszket",
+   "lemma": "reszket",
+   "pos": [
+    "VERB"
+   ],
+   "kind": "emotion_verb",
+   "strength": "strong",
+   "valence": -0.6,
+   "arousal": 0.7,
+   "emotions": {
+    "fear": 0.8
+   },
+   "source": "curated:gemini-2026-09",
+   "version": 1,
+   "role": "expression"
+  },
+  {
+   "id": "hu.emoverb.borzong",
+   "lemma": "borzong",
+   "pos": [
+    "VERB"
+   ],
+   "kind": "emotion_verb",
+   "strength": "strong",
+   "valence": -0.5,
+   "arousal": 0.6,
+   "emotions": {
+    "fear": 0.8
+   },
+   "source": "curated:gemini-2026-09",
+   "version": 1,
+   "role": "expression"
+  },
+  {
+   "id": "hu.emoverb.iszonyodik",
+   "lemma": "iszonyodik",
+   "pos": [
+    "VERB"
+   ],
+   "kind": "emotion_verb",
+   "strength": "strong",
+   "valence": -0.8,
+   "arousal": 0.7,
+   "emotions": {
+    "fear": 0.8
+   },
+   "source": "curated:gemini-2026-09",
+   "version": 1,
+   "role": "experiencer"
+  },
+  {
+   "id": "hu.emoverb.undorodik",
+   "lemma": "undorodik",
+   "pos": [
+    "VERB"
+   ],
+   "kind": "emotion_verb",
+   "strength": "strong",
+   "valence": -0.8,
+   "arousal": 0.6,
+   "emotions": {
+    "disgust": 0.8
+   },
+   "source": "curated:gemini-2026-09",
+   "version": 1,
+   "role": "experiencer"
+  },
+  {
+   "id": "hu.emoverb.utál",
+   "lemma": "utál",
+   "pos": [
+    "VERB"
+   ],
+   "kind": "emotion_verb",
+   "strength": "strong",
+   "valence": -0.8,
+   "arousal": 0.7,
+   "emotions": {
+    "disgust": 0.8
+   },
+   "source": "curated:gemini-2026-09",
+   "version": 1,
+   "role": "experiencer"
+  },
+  {
+   "id": "hu.emoverb.gyűlöl",
+   "lemma": "gyűlöl",
+   "pos": [
+    "VERB"
+   ],
+   "kind": "emotion_verb",
+   "strength": "strong",
+   "valence": -0.9,
+   "arousal": 0.8,
+   "emotions": {
+    "disgust": 0.8
+   },
+   "source": "curated:gemini-2026-09",
+   "version": 1,
+   "role": "experiencer"
+  },
+  {
+   "id": "hu.emoverb.megvet",
+   "lemma": "megvet",
+   "pos": [
+    "VERB"
+   ],
+   "kind": "emotion_verb",
+   "strength": "strong",
+   "valence": -0.8,
+   "arousal": 0.6,
+   "emotions": {
+    "disgust": 0.8
+   },
+   "source": "curated:gemini-2026-09",
+   "version": 1,
+   "role": "experiencer"
+  },
+  {
+   "id": "hu.emoverb.lenéz",
+   "lemma": "lenéz",
+   "pos": [
+    "VERB"
+   ],
+   "kind": "emotion_verb",
+   "strength": "strong",
+   "valence": -0.7,
+   "arousal": 0.5,
+   "emotions": {
+    "disgust": 0.8
+   },
+   "source": "curated:gemini-2026-09",
+   "version": 1,
+   "role": "other",
+   "note": "look down on, attitude"
+  },
+  {
+   "id": "hu.emoverb.gúnyol",
+   "lemma": "gúnyol",
+   "pos": [
+    "VERB"
+   ],
+   "kind": "emotion_verb",
+   "strength": "strong",
+   "valence": -0.6,
+   "arousal": 0.6,
+   "emotions": {
+    "disgust": 0.8
+   },
+   "source": "curated:gemini-2026-09",
+   "version": 1,
+   "role": "speech_act"
+  },
+  {
+   "id": "hu.emoverb.gúnyolódik",
+   "lemma": "gúnyolódik",
+   "pos": [
+    "VERB"
+   ],
+   "kind": "emotion_verb",
+   "strength": "strong",
+   "valence": -0.6,
+   "arousal": 0.6,
+   "emotions": {
+    "disgust": 0.8
+   },
+   "source": "curated:gemini-2026-09",
+   "version": 1,
+   "role": "speech_act"
+  },
+  {
+   "id": "hu.emoverb.csúfol",
+   "lemma": "csúfol",
+   "pos": [
+    "VERB"
+   ],
+   "kind": "emotion_verb",
+   "strength": "strong",
+   "valence": -0.6,
+   "arousal": 0.5,
+   "emotions": {
+    "disgust": 0.8
+   },
+   "source": "curated:gemini-2026-09",
+   "version": 1,
+   "role": "speech_act"
+  },
+  {
+   "id": "hu.emoverb.szégyenkezik",
+   "lemma": "szégyenkezik",
+   "pos": [
+    "VERB"
+   ],
+   "kind": "emotion_verb",
+   "strength": "strong",
+   "valence": -0.6,
+   "arousal": 0.4,
+   "emotions": {
+    "sadness": 0.8
+   },
+   "source": "curated:gemini-2026-09",
+   "version": 1,
+   "role": "experiencer"
+  },
+  {
+   "id": "hu.emoverb.pirul",
+   "lemma": "pirul",
+   "pos": [
+    "VERB"
+   ],
+   "kind": "emotion_verb",
+   "strength": "strong",
+   "valence": -0.3,
+   "arousal": 0.5,
+   "emotions": {
+    "fear": 0.8
+   },
+   "source": "curated:gemini-2026-09",
+   "version": 1,
+   "role": "expression"
+  },
+  {
+   "id": "hu.emoverb.szorong",
+   "lemma": "szorong",
+   "pos": [
+    "VERB"
+   ],
+   "kind": "emotion_verb",
+   "strength": "strong",
+   "valence": -0.7,
+   "arousal": 0.7,
+   "emotions": {
+    "fear": 0.8
+   },
+   "source": "curated:gemini-2026-09",
+   "version": 1,
+   "role": "experiencer"
+  },
+  {
+   "id": "hu.emoverb.aggódik",
+   "lemma": "aggódik",
+   "pos": [
+    "VERB"
+   ],
+   "kind": "emotion_verb",
+   "strength": "strong",
+   "valence": -0.6,
+   "arousal": 0.6,
+   "emotions": {
+    "fear": 0.8
+   },
+   "source": "curated:gemini-2026-09",
+   "version": 1,
+   "role": "experiencer"
+  },
+  {
+   "id": "hu.emoverb.nyugtalankodik",
+   "lemma": "nyugtalankodik",
+   "pos": [
+    "VERB"
+   ],
+   "kind": "emotion_verb",
+   "strength": "strong",
+   "valence": -0.5,
+   "arousal": 0.6,
+   "emotions": {
+    "fear": 0.8
+   },
+   "source": "curated:gemini-2026-09",
+   "version": 1,
+   "role": "experiencer"
+  },
+  {
+   "id": "hu.emoverb.kétségbeesik",
+   "lemma": "kétségbeesik",
+   "pos": [
+    "VERB"
+   ],
+   "kind": "emotion_verb",
+   "strength": "strong",
+   "valence": -0.9,
+   "arousal": 0.8,
+   "emotions": {
+    "sadness": 0.8
+   },
+   "source": "curated:gemini-2026-09",
+   "version": 1,
+   "role": "experiencer"
+  },
+  {
+   "id": "hu.emoverb.csügged",
+   "lemma": "csügged",
+   "pos": [
+    "VERB"
+   ],
+   "kind": "emotion_verb",
+   "strength": "strong",
+   "valence": -0.7,
+   "arousal": 0.3,
+   "emotions": {
+    "sadness": 0.8
+   },
+   "source": "curated:gemini-2026-09",
+   "version": 1,
+   "role": "experiencer"
+  },
+  {
+   "id": "hu.emoverb.örül",
+   "lemma": "örül",
+   "pos": [
+    "VERB"
+   ],
+   "kind": "emotion_verb",
+   "strength": "strong",
+   "valence": 0.8,
+   "arousal": 0.6,
+   "emotions": {
+    "joy": 0.8
+   },
+   "source": "curated:gemini-2026-09",
+   "version": 1,
+   "role": "experiencer"
+  },
+  {
+   "id": "hu.emoverb.örvendez",
+   "lemma": "örvendez",
+   "pos": [
+    "VERB"
+   ],
+   "kind": "emotion_verb",
+   "strength": "strong",
+   "valence": 0.9,
+   "arousal": 0.7,
+   "emotions": {
+    "joy": 0.8
+   },
+   "source": "curated:gemini-2026-09",
+   "version": 1,
+   "role": "experiencer"
+  },
+  {
+   "id": "hu.emoverb.ujjong",
+   "lemma": "ujjong",
+   "pos": [
+    "VERB"
+   ],
+   "kind": "emotion_verb",
+   "strength": "strong",
+   "valence": 0.9,
+   "arousal": 0.8,
+   "emotions": {
+    "joy": 0.8
+   },
+   "source": "curated:gemini-2026-09",
+   "version": 1,
+   "role": "expression"
+  },
+  {
+   "id": "hu.emoverb.vigad",
+   "lemma": "vigad",
+   "pos": [
+    "VERB"
+   ],
+   "kind": "emotion_verb",
+   "strength": "strong",
+   "valence": 0.8,
+   "arousal": 0.7,
+   "emotions": {
+    "joy": 0.8
+   },
+   "source": "curated:gemini-2026-09",
+   "version": 1,
+   "role": "expression"
+  },
+  {
+   "id": "hu.emoverb.kacag",
+   "lemma": "kacag",
+   "pos": [
+    "VERB"
+   ],
+   "kind": "emotion_verb",
+   "strength": "strong",
+   "valence": 0.8,
+   "arousal": 0.6,
+   "emotions": {
+    "joy": 0.8
+   },
+   "source": "curated:gemini-2026-09",
+   "version": 1,
+   "role": "expression"
+  },
+  {
+   "id": "hu.emoverb.nevetgél",
+   "lemma": "nevetgél",
+   "pos": [
+    "VERB"
+   ],
+   "kind": "emotion_verb",
+   "strength": "strong",
+   "valence": 0.7,
+   "arousal": 0.5,
+   "emotions": {
+    "joy": 0.8
+   },
+   "source": "curated:gemini-2026-09",
+   "version": 1,
+   "role": "expression"
+  },
+  {
+   "id": "hu.emoverb.mosolyog",
+   "lemma": "mosolyog",
+   "pos": [
+    "VERB"
+   ],
+   "kind": "emotion_verb",
+   "strength": "strong",
+   "valence": 0.7,
+   "arousal": 0.4,
+   "emotions": {
+    "joy": 0.8
+   },
+   "source": "curated:gemini-2026-09",
+   "version": 1,
+   "role": "expression"
+  },
+  {
+   "id": "hu.emoverb.mosolygás",
+   "lemma": "mosolygás",
+   "pos": [
+    "VERB"
+   ],
+   "kind": "emotion_verb",
+   "strength": "strong",
+   "valence": 0.7,
+   "arousal": 0.4,
+   "emotions": {
+    "joy": 0.8
+   },
+   "source": "curated:gemini-2026-09",
+   "version": 1,
+   "role": "expression"
+  },
+  {
+   "id": "hu.emoverb.lelkesedik",
+   "lemma": "lelkesedik",
+   "pos": [
+    "VERB"
+   ],
+   "kind": "emotion_verb",
+   "strength": "strong",
+   "valence": 0.8,
+   "arousal": 0.7,
+   "emotions": {
+    "anticipation": 0.8
+   },
+   "source": "curated:gemini-2026-09",
+   "version": 1,
+   "role": "experiencer"
+  },
+  {
+   "id": "hu.emoverb.rajong",
+   "lemma": "rajong",
+   "pos": [
+    "VERB"
+   ],
+   "kind": "emotion_verb",
+   "strength": "strong",
+   "valence": 0.8,
+   "arousal": 0.7,
+   "emotions": {
+    "joy": 0.8
+   },
+   "source": "curated:gemini-2026-09",
+   "version": 1,
+   "role": "experiencer"
+  },
+  {
+   "id": "hu.emoverb.szeret",
+   "lemma": "szeret",
+   "pos": [
+    "VERB"
+   ],
+   "kind": "emotion_verb",
+   "strength": "strong",
+   "valence": 0.9,
+   "arousal": 0.4,
+   "emotions": {
+    "joy": 0.8
+   },
+   "source": "curated:gemini-2026-09",
+   "version": 1,
+   "role": "other",
+   "note": "mostly like/love as preference; 'szeretne' = would like"
+  },
+  {
+   "id": "hu.emoverb.imád",
+   "lemma": "imád",
+   "pos": [
+    "VERB"
+   ],
+   "kind": "emotion_verb",
+   "strength": "strong",
+   "valence": 0.9,
+   "arousal": 0.7,
+   "emotions": {
+    "joy": 0.8
+   },
+   "source": "curated:gemini-2026-09",
+   "version": 1,
+   "role": "experiencer"
+  },
+  {
+   "id": "hu.emoverb.áhítozik",
+   "lemma": "áhítozik",
+   "pos": [
+    "VERB"
+   ],
+   "kind": "emotion_verb",
+   "strength": "strong",
+   "valence": 0.6,
+   "arousal": 0.6,
+   "emotions": {
+    "anticipation": 0.8
+   },
+   "source": "curated:gemini-2026-09",
+   "version": 1,
+   "role": "experiencer"
+  },
+  {
+   "id": "hu.emoverb.vágyakozik",
+   "lemma": "vágyakozik",
+   "pos": [
+    "VERB"
+   ],
+   "kind": "emotion_verb",
+   "strength": "strong",
+   "valence": 0.5,
+   "arousal": 0.6,
+   "emotions": {
+    "anticipation": 0.8
+   },
+   "source": "curated:gemini-2026-09",
+   "version": 1,
+   "role": "experiencer"
+  },
+  {
+   "id": "hu.emoverb.sóvárog",
+   "lemma": "sóvárog",
+   "pos": [
+    "VERB"
+   ],
+   "kind": "emotion_verb",
+   "strength": "strong",
+   "valence": 0.4,
+   "arousal": 0.6,
+   "emotions": {
+    "anticipation": 0.8
+   },
+   "source": "curated:gemini-2026-09",
+   "version": 1,
+   "role": "experiencer"
+  },
+  {
+   "id": "hu.emoverb.remél",
+   "lemma": "remél",
+   "pos": [
+    "VERB"
+   ],
+   "kind": "emotion_verb",
+   "strength": "strong",
+   "valence": 0.7,
+   "arousal": 0.5,
+   "emotions": {
+    "anticipation": 0.8
+   },
+   "source": "curated:gemini-2026-09",
+   "version": 1,
+   "role": "experiencer"
+  },
+  {
+   "id": "hu.emoverb.bízik",
+   "lemma": "bízik",
+   "pos": [
+    "VERB"
+   ],
+   "kind": "emotion_verb",
+   "strength": "strong",
+   "valence": 0.8,
+   "arousal": 0.4,
+   "emotions": {
+    "trust": 0.8
+   },
+   "source": "curated:gemini-2026-09",
+   "version": 1,
+   "role": "other"
+  },
+  {
+   "id": "hu.emoverb.megnyugszik",
+   "lemma": "megnyugszik",
+   "pos": [
+    "VERB"
+   ],
+   "kind": "emotion_verb",
+   "strength": "strong",
+   "valence": 0.7,
+   "arousal": 0.2,
+   "emotions": {
+    "trust": 0.8
+   },
+   "source": "curated:gemini-2026-09",
+   "version": 1,
+   "role": "experiencer"
+  },
+  {
+   "id": "hu.emoverb.csodál",
+   "lemma": "csodál",
+   "pos": [
+    "VERB"
+   ],
+   "kind": "emotion_verb",
+   "strength": "strong",
+   "valence": 0.7,
+   "arousal": 0.6,
+   "emotions": {
+    "surprise": 0.8
+   },
+   "source": "curated:gemini-2026-09",
+   "version": 1,
+   "role": "experiencer"
+  },
+  {
+   "id": "hu.emoverb.ámul",
+   "lemma": "ámul",
+   "pos": [
+    "VERB"
+   ],
+   "kind": "emotion_verb",
+   "strength": "strong",
+   "valence": 0.7,
+   "arousal": 0.7,
+   "emotions": {
+    "surprise": 0.8
+   },
+   "source": "curated:gemini-2026-09",
+   "version": 1,
+   "role": "experiencer"
+  },
+  {
+   "id": "hu.emoverb.bámul",
+   "lemma": "bámul",
+   "pos": [
+    "VERB"
+   ],
+   "kind": "emotion_verb",
+   "strength": "strong",
+   "valence": 0.4,
+   "arousal": 0.5,
+   "emotions": {
+    "surprise": 0.8
+   },
+   "source": "curated:gemini-2026-09",
+   "version": 1,
+   "role": "expression"
+  },
+  {
+   "id": "hu.emoverb.elképed",
+   "lemma": "elképed",
+   "pos": [
+    "VERB"
+   ],
+   "kind": "emotion_verb",
+   "strength": "strong",
+   "valence": -0.2,
+   "arousal": 0.6,
+   "emotions": {
+    "surprise": 0.8
+   },
+   "source": "curated:gemini-2026-09",
+   "version": 1,
+   "role": "experiencer"
+  },
+  {
+   "id": "hu.emoverb.megdöbben",
+   "lemma": "megdöbben",
+   "pos": [
+    "VERB"
+   ],
+   "kind": "emotion_verb",
+   "strength": "strong",
+   "valence": -0.3,
+   "arousal": 0.7,
+   "emotions": {
+    "surprise": 0.8
+   },
+   "source": "curated:gemini-2026-09",
+   "version": 1,
+   "role": "experiencer"
+  },
+  {
+   "id": "hu.emoverb.döb",
+   "lemma": "döbben",
+   "pos": [
+    "VERB"
+   ],
+   "kind": "emotion_verb",
+   "strength": "strong",
+   "valence": -0.3,
+   "arousal": 0.7,
+   "emotions": {
+    "surprise": 0.8
+   },
+   "source": "curated:gemini-2026-09",
+   "version": 1,
+   "role": "experiencer"
+  },
+  {
+   "id": "hu.emoverb.meghökken",
+   "lemma": "meghökken",
+   "pos": [
+    "VERB"
+   ],
+   "kind": "emotion_verb",
+   "strength": "strong",
+   "valence": -0.2,
+   "arousal": 0.6,
+   "emotions": {
+    "surprise": 0.8
+   },
+   "source": "curated:gemini-2026-09",
+   "version": 1,
+   "role": "experiencer"
+  },
+  {
+   "id": "hu.emoverb.hőköl",
+   "lemma": "hőköl",
+   "pos": [
+    "VERB"
+   ],
+   "kind": "emotion_verb",
+   "strength": "strong",
+   "valence": -0.4,
+   "arousal": 0.6,
+   "emotions": {
+    "fear": 0.8
+   },
+   "source": "curated:gemini-2026-09",
+   "version": 1,
+   "role": "expression"
+  },
+  {
+   "id": "hu.emoverb.visszahőköl",
+   "lemma": "visszahőköl",
+   "pos": [
+    "VERB"
+   ],
+   "kind": "emotion_verb",
+   "strength": "strong",
+   "valence": -0.5,
+   "arousal": 0.6,
+   "emotions": {
+    "fear": 0.8
+   },
+   "source": "curated:gemini-2026-09",
+   "version": 1,
+   "role": "expression"
+  },
+  {
+   "id": "hu.emoverb.riad",
+   "lemma": "riad",
+   "pos": [
+    "VERB"
+   ],
+   "kind": "emotion_verb",
+   "strength": "strong",
+   "valence": -0.6,
+   "arousal": 0.7,
+   "emotions": {
+    "fear": 0.8
+   },
+   "source": "curated:gemini-2026-09",
+   "version": 1,
+   "role": "experiencer"
+  },
+  {
+   "id": "hu.emoverb.megriad",
+   "lemma": "megriad",
+   "pos": [
+    "VERB"
+   ],
+   "kind": "emotion_verb",
+   "strength": "strong",
+   "valence": -0.7,
+   "arousal": 0.7,
+   "emotions": {
+    "fear": 0.8
+   },
+   "source": "curated:gemini-2026-09",
+   "version": 1,
+   "role": "experiencer"
+  },
+  {
+   "id": "hu.emoverb.összerez",
+   "lemma": "összerezzen",
+   "pos": [
+    "VERB"
+   ],
+   "kind": "emotion_verb",
+   "strength": "strong",
+   "valence": -0.5,
+   "arousal": 0.6,
+   "emotions": {
+    "fear": 0.8
+   },
+   "source": "curated:gemini-2026-09",
+   "version": 1,
+   "role": "expression"
+  },
+  {
+   "id": "hu.emoverb.fájlal",
+   "lemma": "fájlal",
+   "pos": [
+    "VERB"
+   ],
+   "kind": "emotion_verb",
+   "strength": "strong",
+   "valence": -0.6,
+   "arousal": 0.4,
+   "emotions": {
+    "sadness": 0.8
+   },
+   "source": "curated:gemini-2026-09",
+   "version": 1,
+   "role": "experiencer"
+  },
+  {
+   "id": "hu.emoverb.saj",
+   "lemma": "sajog",
+   "pos": [
+    "VERB"
+   ],
+   "kind": "emotion_verb",
+   "strength": "strong",
+   "valence": -0.5,
+   "arousal": 0.3,
+   "emotions": {
+    "sadness": 0.8
+   },
+   "source": "curated:gemini-2026-09",
+   "version": 1,
+   "role": "experiencer"
+  },
+  {
+   "id": "hu.emoverb.szán",
+   "lemma": "szán",
+   "pos": [
+    "VERB"
+   ],
+   "kind": "emotion_verb",
+   "strength": "strong",
+   "valence": -0.5,
+   "arousal": 0.3,
+   "emotions": {
+    "sadness": 0.8
+   },
+   "source": "curated:gemini-2026-09",
+   "version": 1,
+   "role": "experiencer"
+  },
+  {
+   "id": "hu.emoverb.könyörül",
+   "lemma": "könyörül",
+   "pos": [
+    "VERB"
+   ],
+   "kind": "emotion_verb",
+   "strength": "strong",
+   "valence": 0.7,
+   "arousal": 0.3,
+   "emotions": {
+    "trust": 0.8
+   },
+   "source": "curated:gemini-2026-09",
+   "version": 1,
+   "role": "other"
+  },
+  {
+   "id": "hu.emoverb.megbocsát",
+   "lemma": "megbocsát",
+   "pos": [
+    "VERB"
+   ],
+   "kind": "emotion_verb",
+   "strength": "strong",
+   "valence": 0.8,
+   "arousal": 0.3,
+   "emotions": {
+    "trust": 0.8
+   },
+   "source": "curated:gemini-2026-09",
+   "version": 1,
+   "role": "speech_act"
+  },
+  {
+   "id": "hu.emoverb.engesztel",
+   "lemma": "engesztel",
+   "pos": [
+    "VERB"
+   ],
+   "kind": "emotion_verb",
+   "strength": "strong",
+   "valence": 0.6,
+   "arousal": 0.4,
+   "emotions": {
+    "trust": 0.8
+   },
+   "source": "curated:gemini-2026-09",
+   "version": 1,
+   "role": "speech_act"
+  },
+  {
+   "id": "hu.emoverb.engesztelődik",
+   "lemma": "engesztelődik",
+   "pos": [
+    "VERB"
+   ],
+   "kind": "emotion_verb",
+   "strength": "strong",
+   "valence": 0.6,
+   "arousal": 0.3,
+   "emotions": {
+    "trust": 0.8
+   },
+   "source": "curated:gemini-2026-09",
+   "version": 1,
+   "role": "experiencer"
+  },
+  {
+   "id": "hu.emoverb.enyhül",
+   "lemma": "enyhül",
+   "pos": [
+    "VERB"
+   ],
+   "kind": "emotion_verb",
+   "strength": "strong",
+   "valence": 0.5,
+   "arousal": 0.2,
+   "emotions": {
+    "trust": 0.8
+   },
+   "source": "curated:gemini-2026-09",
+   "version": 1,
+   "role": "experiencer"
+  },
+  {
+   "id": "hu.emoverb.megbékél",
+   "lemma": "megbékél",
+   "pos": [
+    "VERB"
+   ],
+   "kind": "emotion_verb",
+   "strength": "strong",
+   "valence": 0.7,
+   "arousal": 0.2,
+   "emotions": {
+    "trust": 0.8
+   },
+   "source": "curated:gemini-2026-09",
+   "version": 1,
+   "role": "experiencer"
+  },
+  {
+   "id": "hu.emoverb.irigyel",
+   "lemma": "irigyel",
+   "pos": [
+    "VERB"
+   ],
+   "kind": "emotion_verb",
+   "strength": "strong",
+   "valence": -0.7,
+   "arousal": 0.6,
+   "emotions": {
+    "disgust": 0.8
+   },
+   "source": "curated:gemini-2026-09",
+   "version": 1,
+   "role": "experiencer"
+  },
+  {
+   "id": "hu.emoverb.féltékenykedik",
+   "lemma": "féltékenykedik",
+   "pos": [
+    "VERB"
+   ],
+   "kind": "emotion_verb",
+   "strength": "strong",
+   "valence": -0.7,
+   "arousal": 0.7,
+   "emotions": {
+    "disgust": 0.8
+   },
+   "source": "curated:gemini-2026-09",
+   "version": 1,
+   "role": "experiencer"
+  },
+  {
+   "id": "hu.emoverb.felfuvalkodik",
+   "lemma": "felfuvalkodik",
+   "pos": [
+    "VERB"
+   ],
+   "kind": "emotion_verb",
+   "strength": "strong",
+   "valence": -0.6,
+   "arousal": 0.5,
+   "emotions": {
+    "disgust": 0.8
+   },
+   "source": "curated:gemini-2026-09",
+   "version": 1,
+   "role": "experiencer"
+  },
+  {
+   "id": "hu.emoverb.henceg",
+   "lemma": "henceg",
+   "pos": [
+    "VERB"
+   ],
+   "kind": "emotion_verb",
+   "strength": "strong",
+   "valence": -0.5,
+   "arousal": 0.5,
+   "emotions": {
+    "disgust": 0.8
+   },
+   "source": "curated:gemini-2026-09",
+   "version": 1,
+   "role": "speech_act"
+  },
+  {
+   "id": "hu.emoverb.kérkedik",
+   "lemma": "kérkedik",
+   "pos": [
+    "VERB"
+   ],
+   "kind": "emotion_verb",
+   "strength": "strong",
+   "valence": -0.5,
+   "arousal": 0.5,
+   "emotions": {
+    "disgust": 0.8
+   },
+   "source": "curated:gemini-2026-09",
+   "version": 1,
+   "role": "speech_act"
+  },
+  {
+   "id": "hu.emoverb.dicsekszik",
+   "lemma": "dicsekszik",
+   "pos": [
+    "VERB"
+   ],
+   "kind": "emotion_verb",
+   "strength": "strong",
+   "valence": -0.4,
+   "arousal": 0.5,
+   "emotions": {
+    "disgust": 0.8
+   },
+   "source": "curated:gemini-2026-09",
+   "version": 1,
+   "role": "speech_act"
+  },
+  {
+   "id": "hu.emoverb.megvetés_érez",
+   "phrase": [
+    "megvetés",
+    "érez"
+   ],
+   "kind": "emotion_verb",
+   "strength": "strong",
+   "valence": -0.8,
+   "arousal": 0.6,
+   "emotions": {
+    "disgust": 0.8
+   },
+   "source": "curated:gemini-2026-09",
+   "version": 1,
+   "example": "Minden hazug ember iránt mély megvetés érez.",
+   "role": "experiencer"
+  },
+  {
+   "id": "hu.emoverb.ellenszenev_táplál",
+   "phrase": [
+    "ellenszenv",
+    "táplál"
+   ],
+   "kind": "emotion_verb",
+   "strength": "strong",
+   "valence": -0.7,
+   "arousal": 0.5,
+   "emotions": {
+    "disgust": 0.8
+   },
+   "source": "curated:gemini-2026-09",
+   "version": 1,
+   "example": "A két szomszéd régóta nyílt ellenszenv táplál egymás iránt.",
+   "role": "experiencer"
+  },
+  {
+   "id": "hu.emoverb.felháborodik",
+   "lemma": "felháborodik",
+   "pos": [
+    "VERB"
+   ],
+   "kind": "emotion_verb",
+   "strength": "strong",
+   "valence": -0.8,
+   "arousal": 0.7,
+   "emotions": {
+    "anger": 0.8
+   },
+   "source": "curated:gemini-2026-09",
+   "version": 1,
+   "role": "experiencer"
+  },
+  {
+   "id": "hu.emoverb.lázadozik",
+   "lemma": "lázadozik",
+   "pos": [
+    "VERB"
+   ],
+   "kind": "emotion_verb",
+   "strength": "strong",
+   "valence": -0.6,
+   "arousal": 0.6,
+   "emotions": {
+    "anger": 0.8
+   },
+   "source": "curated:gemini-2026-09",
+   "version": 1,
+   "role": "expression"
+  },
+  {
+   "id": "hu.emoverb.duzzog",
+   "lemma": "duzzog",
+   "pos": [
+    "VERB"
+   ],
+   "kind": "emotion_verb",
+   "strength": "strong",
+   "valence": -0.5,
+   "arousal": 0.4,
+   "emotions": {
+    "anger": 0.8
+   },
+   "source": "curated:gemini-2026-09",
+   "version": 1,
+   "role": "expression"
+  },
+  {
+   "id": "hu.emoverb.megijed",
+   "lemma": "megijed",
+   "pos": [
+    "VERB"
+   ],
+   "kind": "emotion_verb",
+   "role": "experiencer",
+   "strength": "strong",
+   "valence": -0.75,
+   "arousal": 0.8,
+   "emotions": {
+    "fear": 0.9
+   },
+   "source": "curated:gemini-2026-09",
+   "version": 1
+  },
+  {
+   "id": "hu.emoverb.megrémül",
+   "lemma": "megrémül",
+   "pos": [
+    "VERB"
+   ],
+   "kind": "emotion_verb",
+   "role": "experiencer",
+   "strength": "strong",
+   "valence": -0.85,
+   "arousal": 0.88,
+   "emotions": {
+    "fear": 0.95
+   },
+   "source": "curated:gemini-2026-09",
+   "version": 1
+  },
+  {
+   "id": "hu.emoverb.csodálkozik",
+   "lemma": "csodálkozik",
+   "pos": [
+    "VERB"
+   ],
+   "kind": "emotion_verb",
+   "role": "experiencer",
+   "strength": "strong",
+   "valence": 0.3,
+   "arousal": 0.65,
+   "emotions": {
+    "surprise": 0.85
+   },
+   "source": "curated:gemini-2026-09",
+   "version": 1
+  },
+  {
+   "id": "hu.emoverb.elcsodálkozik",
+   "lemma": "elcsodálkozik",
+   "pos": [
+    "VERB"
+   ],
+   "kind": "emotion_verb",
+   "role": "experiencer",
+   "strength": "strong",
+   "valence": 0.3,
+   "arousal": 0.7,
+   "emotions": {
+    "surprise": 0.9
+   },
+   "source": "curated:gemini-2026-09",
+   "version": 1
+  },
+  {
+   "id": "hu.emoverb.megharagszik",
+   "lemma": "megharagszik",
+   "pos": [
+    "VERB"
+   ],
+   "kind": "emotion_verb",
+   "role": "experiencer",
+   "strength": "strong",
+   "valence": -0.8,
+   "arousal": 0.85,
+   "emotions": {
+    "anger": 0.9
+   },
+   "source": "curated:gemini-2026-09",
+   "version": 1
+  },
+  {
+   "id": "hu.emoverb.megörül",
+   "lemma": "megörül",
+   "pos": [
+    "VERB"
+   ],
+   "kind": "emotion_verb",
+   "role": "experiencer",
+   "strength": "strong",
+   "valence": 0.85,
+   "arousal": 0.8,
+   "emotions": {
+    "joy": 0.9
+   },
+   "source": "curated:gemini-2026-09",
+   "version": 1
+  },
+  {
+   "id": "hu.emoverb.elszörnyed",
+   "lemma": "elszörnyed",
+   "pos": [
+    "VERB"
+   ],
+   "kind": "emotion_verb",
+   "role": "experiencer",
+   "strength": "strong",
+   "valence": -0.88,
+   "arousal": 0.85,
+   "emotions": {
+    "disgust": 0.8,
+    "fear": 0.8
+   },
+   "source": "curated:gemini-2026-09",
+   "version": 1
+  },
+  {
+   "id": "hu.emoverb.megretten",
+   "lemma": "megretten",
+   "pos": [
+    "VERB"
+   ],
+   "kind": "emotion_verb",
+   "role": "experiencer",
+   "strength": "strong",
+   "valence": -0.82,
+   "arousal": 0.85,
+   "emotions": {
+    "fear": 0.9
+   },
+   "source": "curated:gemini-2026-09",
+   "version": 1
+  },
+  {
+   "id": "hu.emoverb.elkeseredik",
+   "lemma": "elkeseredik",
+   "pos": [
+    "VERB"
+   ],
+   "kind": "emotion_verb",
+   "role": "experiencer",
+   "strength": "strong",
+   "valence": -0.75,
+   "arousal": 0.55,
+   "emotions": {
+    "sadness": 0.85
+   },
+   "source": "curated:gemini-2026-09",
+   "version": 1
+  },
+  {
+   "id": "hu.emoverb.szégyell",
+   "lemma": "szégyell",
+   "pos": [
+    "VERB"
+   ],
+   "kind": "emotion_verb",
+   "role": "experiencer",
+   "strength": "strong",
+   "valence": -0.7,
+   "arousal": 0.6,
+   "emotions": {
+    "sadness": 0.7,
+    "fear": 0.4
+   },
+   "source": "curated:gemini-2026-09",
+   "version": 1
+  },
+  {
+   "id": "hu.emoverb.elámul",
+   "lemma": "elámul",
+   "pos": [
+    "VERB"
+   ],
+   "kind": "emotion_verb",
+   "strength": "strong",
+   "valence": 0.3,
+   "arousal": 0.6,
+   "emotions": {
+    "surprise": 0.85
+   },
+   "role": "experiencer",
+   "source": "curated:claude-2026-09",
+   "version": 1
+  },
+  {
+   "id": "hu.emoverb.elszörnyülködik",
+   "lemma": "elszörnyülködik",
+   "pos": [
+    "VERB"
+   ],
+   "kind": "emotion_verb",
+   "strength": "strong",
+   "valence": -0.8,
+   "arousal": 0.8,
+   "emotions": {
+    "fear": 0.7,
+    "disgust": 0.6
+   },
+   "role": "experiencer",
+   "source": "curated:claude-2026-09",
+   "version": 1
+  },
+  {
+   "id": "hu.emoverb.elszörnyüködik",
+   "lemma": "elszörnyüködik",
+   "pos": [
+    "VERB"
+   ],
+   "kind": "emotion_verb",
+   "strength": "strong",
+   "valence": -0.8,
+   "arousal": 0.8,
+   "emotions": {
+    "fear": 0.7,
+    "disgust": 0.6
+   },
+   "role": "experiencer",
+   "source": "curated:claude-2026-09",
+   "version": 1,
+   "note": "archaic spelling of elszörnyülködik (Gárdonyi)"
+  },
+  {
+   "id": "hu.emoverb.felbosszankodik",
+   "lemma": "felbosszankodik",
+   "pos": [
+    "VERB"
+   ],
+   "kind": "emotion_verb",
+   "strength": "strong",
+   "valence": -0.5,
+   "arousal": 0.55,
+   "emotions": {
+    "anger": 0.65
+   },
+   "role": "experiencer",
+   "source": "curated:claude-2026-09",
+   "version": 1
+  }
+ ]
+}

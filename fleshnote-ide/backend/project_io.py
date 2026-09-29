@@ -99,6 +99,75 @@ def is_legacy_folder(dir_path: str) -> bool:
     return is_fleshnote_project(dir_path) and not os.path.basename(dir_path).lower().endswith(PROJECT_EXT)
 
 
+# ── chapter md_filename safety (path-traversal guard) ───────────────────────
+#
+# `chapters.md_filename` is untrusted data: it can arrive from a synced
+# change_log row or inside a hostile project's SQLite file. Local generation
+# always produces safe flat names (ch_NNN_slug_uuid.md), so anything else is
+# hostile. Every file sink must go through safe_md_path(), which validates the
+# name AND canonicalize-contains the resolved path inside the project's md/.
+
+# Windows device names, blocked regardless of extension on the Win32 namespace.
+RESERVED_WINDOWS_NAMES = (
+    {"CON", "PRN", "AUX", "NUL"}
+    | {f"COM{i}" for i in range(1, 10)}
+    | {f"LPT{i}" for i in range(1, 10)}
+)
+MAX_MD_FILENAME_LEN = 200
+
+# Single component, no separators / drive-stream colons / Win-illegal chars,
+# ending in .md (case-insensitive — Windows filesystems are case-insensitive).
+_MD_NAME_RE = re.compile(r'^[^/\\:*?"<>|]+\.md$', re.IGNORECASE)
+
+
+def md_filename_ok(md_filename) -> bool:
+    """True if md_filename is a safe flat chapter-file basename: one path
+    component ending in .md, no '..' escape, no separators, colons, control
+    chars, trailing dots/spaces, empty/reserved stems, overlong names."""
+    if not md_filename or not isinstance(md_filename, str):
+        return False
+    name = unicodedata.normalize("NFC", md_filename)
+    if len(name) > MAX_MD_FILENAME_LEN or "\x00" in name:
+        return False
+    if len(name.encode("utf-8")) > 255:   # CJK chars count as characters, not bytes
+        return False
+    if any(ord(c) < 0x20 for c in name):
+        return False
+    if not _MD_NAME_RE.match(name):
+        return False  # separators, ':', Win-illegal chars, bad/absent suffix
+    stem = name[:-3]  # strip the '.md' suffix (regex guarantees it is present)
+    if stem != stem.rstrip(" ."):
+        return False  # Win32 strips trailing dots/spaces: 'CON .md' is the CON device
+    if not stem.strip(" ."):
+        return False
+    # device-name parsing applies to the segment before the FIRST dot, so
+    # 'con.x.md' is as dangerous as 'CON.md'
+    if name.split(".")[0].upper().rstrip(" .") in RESERVED_WINDOWS_NAMES:
+        return False
+    return True
+
+
+def safe_md_path(base_md_dir, md_filename):
+    """Validate a chapters.md_filename value and return the absolute path it
+    may be read/written at — guaranteed (via realpath containment) to stay
+    inside base_md_dir even if a same-named symlink is planted. Returns None
+    for any unsafe or non-basename value; callers must fail closed."""
+    if not md_filename_ok(md_filename):
+        return None
+    name = unicodedata.normalize("NFC", md_filename)
+    real_md = os.path.realpath(base_md_dir)
+    real_target = os.path.realpath(os.path.join(real_md, name))
+    try:
+        # normcase makes the containment check case-insensitive on Windows
+        # (commonpath preserves the input case) and is a no-op elsewhere.
+        common = os.path.commonpath([real_md, real_target])
+        if os.path.normcase(common) != os.path.normcase(real_md):
+            return None
+    except ValueError:
+        return None
+    return real_target
+
+
 # ── consistent SQLite snapshots (the WAL fix) ────────────────────────────────
 
 def snapshot_db(project_path: str) -> str:
@@ -157,7 +226,9 @@ def restore_db_file(project_path: str, backup_path: str) -> None:
 
 def _zip_walk_files(project_path: str):
     """Yield (abs_path, rel_archive_name) for every file that travels in a
-    .flnote archive: descriptor, snapshot-safe db, md/, assets/. Skips junk."""
+    .flnote archive: descriptor, snapshot-safe db, md/, assets/. Skips junk
+    and symlinks — a file symlink would leak external target content into
+    a shareable archive."""
     yield os.path.join(project_path, "fleshnote_project.json"), "fleshnote_project.json"
     for sub in ("md", "assets"):
         sub_dir = os.path.join(project_path, sub)
@@ -168,6 +239,8 @@ def _zip_walk_files(project_path: str):
                 if fname.lower() in JUNK_NAMES or fname.lower().endswith(".bak"):
                     continue
                 full = os.path.join(root, fname)
+                if os.path.islink(full):
+                    continue
                 yield full, os.path.relpath(full, project_path).replace(os.sep, "/")
 
 

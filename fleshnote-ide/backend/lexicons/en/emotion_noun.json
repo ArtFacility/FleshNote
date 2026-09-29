@@ -1,0 +1,2853 @@
+{
+  "lang": "en",
+  "kind": "emotion_noun",
+  "version": 1,
+  "entries": [
+    {
+      "id": "en.emonoun.scorn",
+      "lemma": "scorn",
+      "pos": [
+        "NOUN"
+      ],
+      "kind": "emotion_noun",
+      "strength": "strong",
+      "valence": -0.8,
+      "arousal": 0.6,
+      "emotions": {
+        "disgust": 0.8
+      },
+      "source": "curated:gemini-2026-09",
+      "version": 1,
+      "felt": "state"
+    },
+    {
+      "id": "en.emonoun.dread",
+      "lemma": "dread",
+      "pos": [
+        "NOUN"
+      ],
+      "kind": "emotion_noun",
+      "strength": "strong",
+      "valence": -0.9,
+      "arousal": 0.8,
+      "emotions": {
+        "fear": 0.8
+      },
+      "source": "curated:gemini-2026-09",
+      "version": 1,
+      "felt": "state"
+    },
+    {
+      "id": "en.emonoun.pity",
+      "lemma": "pity",
+      "pos": [
+        "NOUN"
+      ],
+      "kind": "emotion_noun",
+      "strength": "strong",
+      "valence": -0.4,
+      "arousal": 0.4,
+      "emotions": {
+        "sadness": 0.8
+      },
+      "source": "curated:gemini-2026-09",
+      "version": 1,
+      "felt": "state"
+    },
+    {
+      "id": "en.emonoun.indignation",
+      "lemma": "indignation",
+      "pos": [
+        "NOUN"
+      ],
+      "kind": "emotion_noun",
+      "strength": "strong",
+      "valence": -0.8,
+      "arousal": 0.7,
+      "emotions": {
+        "anger": 0.8
+      },
+      "source": "curated:gemini-2026-09",
+      "version": 1,
+      "felt": "state"
+    },
+    {
+      "id": "en.emonoun.envy",
+      "lemma": "envy",
+      "pos": [
+        "NOUN"
+      ],
+      "kind": "emotion_noun",
+      "strength": "strong",
+      "valence": -0.7,
+      "arousal": 0.6,
+      "emotions": {
+        "disgust": 0.8
+      },
+      "source": "curated:gemini-2026-09",
+      "version": 1,
+      "felt": "state"
+    },
+    {
+      "id": "en.emonoun.wrath",
+      "lemma": "wrath",
+      "pos": [
+        "NOUN"
+      ],
+      "kind": "emotion_noun",
+      "strength": "strong",
+      "valence": -0.9,
+      "arousal": 0.9,
+      "emotions": {
+        "anger": 0.8
+      },
+      "source": "curated:gemini-2026-09",
+      "version": 1,
+      "felt": "state"
+    },
+    {
+      "id": "en.emonoun.fury",
+      "lemma": "fury",
+      "pos": [
+        "NOUN"
+      ],
+      "kind": "emotion_noun",
+      "strength": "strong",
+      "valence": -0.9,
+      "arousal": 0.9,
+      "emotions": {
+        "anger": 0.8
+      },
+      "source": "curated:gemini-2026-09",
+      "version": 1,
+      "felt": "state"
+    },
+    {
+      "id": "en.emonoun.rage",
+      "lemma": "rage",
+      "pos": [
+        "NOUN"
+      ],
+      "kind": "emotion_noun",
+      "strength": "strong",
+      "valence": -0.9,
+      "arousal": 0.9,
+      "emotions": {
+        "anger": 0.8
+      },
+      "source": "curated:gemini-2026-09",
+      "version": 1,
+      "felt": "state"
+    },
+    {
+      "id": "en.emonoun.gloom",
+      "lemma": "gloom",
+      "pos": [
+        "NOUN"
+      ],
+      "kind": "emotion_noun",
+      "strength": "weak",
+      "valence": -0.7,
+      "arousal": 0.3,
+      "emotions": {
+        "sadness": 0.8
+      },
+      "source": "curated:gemini-2026-09",
+      "version": 1,
+      "note": "dark lighting vs emotional gloom",
+      "felt": "state"
+    },
+    {
+      "id": "en.emonoun.terror",
+      "lemma": "terror",
+      "pos": [
+        "NOUN"
+      ],
+      "kind": "emotion_noun",
+      "strength": "strong",
+      "valence": -0.9,
+      "arousal": 0.9,
+      "emotions": {
+        "fear": 0.8
+      },
+      "source": "curated:gemini-2026-09",
+      "version": 1,
+      "felt": "state"
+    },
+    {
+      "id": "en.emonoun.horror",
+      "lemma": "horror",
+      "pos": [
+        "NOUN"
+      ],
+      "kind": "emotion_noun",
+      "strength": "strong",
+      "valence": -0.9,
+      "arousal": 0.9,
+      "emotions": {
+        "fear": 0.8
+      },
+      "source": "curated:gemini-2026-09",
+      "version": 1,
+      "felt": "state"
+    },
+    {
+      "id": "en.emonoun.agony",
+      "lemma": "agony",
+      "pos": [
+        "NOUN"
+      ],
+      "kind": "emotion_noun",
+      "strength": "weak",
+      "valence": -0.9,
+      "arousal": 0.8,
+      "emotions": {
+        "sadness": 0.8
+      },
+      "source": "curated:gemini-2026-09",
+      "version": 1,
+      "note": "physical pain vs mental agony",
+      "felt": "state"
+    },
+    {
+      "id": "en.emonoun.ecstasy",
+      "lemma": "ecstasy",
+      "pos": [
+        "NOUN"
+      ],
+      "kind": "emotion_noun",
+      "strength": "strong",
+      "valence": 0.9,
+      "arousal": 0.9,
+      "emotions": {
+        "joy": 0.8
+      },
+      "source": "curated:gemini-2026-09",
+      "version": 1,
+      "felt": "state"
+    },
+    {
+      "id": "en.emonoun.bliss",
+      "lemma": "bliss",
+      "pos": [
+        "NOUN"
+      ],
+      "kind": "emotion_noun",
+      "strength": "strong",
+      "valence": 0.9,
+      "arousal": 0.6,
+      "emotions": {
+        "joy": 0.8
+      },
+      "source": "curated:gemini-2026-09",
+      "version": 1,
+      "felt": "state"
+    },
+    {
+      "id": "en.emonoun.delight",
+      "lemma": "delight",
+      "pos": [
+        "NOUN"
+      ],
+      "kind": "emotion_noun",
+      "strength": "strong",
+      "valence": 0.8,
+      "arousal": 0.7,
+      "emotions": {
+        "joy": 0.8
+      },
+      "source": "curated:gemini-2026-09",
+      "version": 1,
+      "felt": "state"
+    },
+    {
+      "id": "en.emonoun.sorrow",
+      "lemma": "sorrow",
+      "pos": [
+        "NOUN"
+      ],
+      "kind": "emotion_noun",
+      "strength": "strong",
+      "valence": -0.8,
+      "arousal": 0.4,
+      "emotions": {
+        "sadness": 0.8
+      },
+      "source": "curated:gemini-2026-09",
+      "version": 1,
+      "felt": "state"
+    },
+    {
+      "id": "en.emonoun.grief",
+      "lemma": "grief",
+      "pos": [
+        "NOUN"
+      ],
+      "kind": "emotion_noun",
+      "strength": "strong",
+      "valence": -0.9,
+      "arousal": 0.6,
+      "emotions": {
+        "sadness": 0.8
+      },
+      "source": "curated:gemini-2026-09",
+      "version": 1,
+      "felt": "state"
+    },
+    {
+      "id": "en.emonoun.anguish",
+      "lemma": "anguish",
+      "pos": [
+        "NOUN"
+      ],
+      "kind": "emotion_noun",
+      "strength": "strong",
+      "valence": -0.9,
+      "arousal": 0.8,
+      "emotions": {
+        "sadness": 0.8
+      },
+      "source": "curated:gemini-2026-09",
+      "version": 1,
+      "felt": "state"
+    },
+    {
+      "id": "en.emonoun.remorse",
+      "lemma": "remorse",
+      "pos": [
+        "NOUN"
+      ],
+      "kind": "emotion_noun",
+      "strength": "strong",
+      "valence": -0.7,
+      "arousal": 0.5,
+      "emotions": {
+        "sadness": 0.8
+      },
+      "source": "curated:gemini-2026-09",
+      "version": 1,
+      "felt": "state"
+    },
+    {
+      "id": "en.emonoun.shame",
+      "lemma": "shame",
+      "pos": [
+        "NOUN"
+      ],
+      "kind": "emotion_noun",
+      "strength": "strong",
+      "valence": -0.7,
+      "arousal": 0.5,
+      "emotions": {
+        "sadness": 0.8
+      },
+      "source": "curated:gemini-2026-09",
+      "version": 1,
+      "felt": "state"
+    },
+    {
+      "id": "en.emonoun.guilt",
+      "lemma": "guilt",
+      "pos": [
+        "NOUN"
+      ],
+      "kind": "emotion_noun",
+      "strength": "strong",
+      "valence": -0.7,
+      "arousal": 0.5,
+      "emotions": {
+        "sadness": 0.8
+      },
+      "source": "curated:gemini-2026-09",
+      "version": 1,
+      "felt": "state"
+    },
+    {
+      "id": "en.emonoun.jealousy",
+      "lemma": "jealousy",
+      "pos": [
+        "NOUN"
+      ],
+      "kind": "emotion_noun",
+      "strength": "strong",
+      "valence": -0.7,
+      "arousal": 0.7,
+      "emotions": {
+        "disgust": 0.8
+      },
+      "source": "curated:gemini-2026-09",
+      "version": 1,
+      "felt": "state"
+    },
+    {
+      "id": "en.emonoun.disdain",
+      "lemma": "disdain",
+      "pos": [
+        "NOUN"
+      ],
+      "kind": "emotion_noun",
+      "strength": "strong",
+      "valence": -0.7,
+      "arousal": 0.5,
+      "emotions": {
+        "disgust": 0.8
+      },
+      "source": "curated:gemini-2026-09",
+      "version": 1,
+      "felt": "state"
+    },
+    {
+      "id": "en.emonoun.contempt",
+      "lemma": "contempt",
+      "pos": [
+        "NOUN"
+      ],
+      "kind": "emotion_noun",
+      "strength": "strong",
+      "valence": -0.8,
+      "arousal": 0.6,
+      "emotions": {
+        "disgust": 0.8
+      },
+      "source": "curated:gemini-2026-09",
+      "version": 1,
+      "felt": "state"
+    },
+    {
+      "id": "en.emonoun.hatred",
+      "lemma": "hatred",
+      "pos": [
+        "NOUN"
+      ],
+      "kind": "emotion_noun",
+      "strength": "strong",
+      "valence": -0.9,
+      "arousal": 0.8,
+      "emotions": {
+        "disgust": 0.8
+      },
+      "source": "curated:gemini-2026-09",
+      "version": 1,
+      "alt_lemmas": [
+        "hatre"
+      ],
+      "lemma_evidence": "carrier",
+      "felt": "state"
+    },
+    {
+      "id": "en.emonoun.loathing",
+      "lemma": "loathing",
+      "pos": [
+        "NOUN"
+      ],
+      "kind": "emotion_noun",
+      "strength": "strong",
+      "valence": -0.9,
+      "arousal": 0.8,
+      "emotions": {
+        "disgust": 0.8
+      },
+      "source": "curated:gemini-2026-09",
+      "version": 1,
+      "alt_lemmas": [
+        "loathe"
+      ],
+      "lemma_evidence": "carrier",
+      "felt": "state"
+    },
+    {
+      "id": "en.emonoun.abhorrence",
+      "lemma": "abhorrence",
+      "pos": [
+        "NOUN"
+      ],
+      "kind": "emotion_noun",
+      "strength": "strong",
+      "valence": -0.9,
+      "arousal": 0.8,
+      "emotions": {
+        "disgust": 0.8
+      },
+      "source": "curated:gemini-2026-09",
+      "version": 1,
+      "felt": "state"
+    },
+    {
+      "id": "en.emonoun.disgust",
+      "lemma": "disgust",
+      "pos": [
+        "NOUN"
+      ],
+      "kind": "emotion_noun",
+      "strength": "strong",
+      "valence": -0.8,
+      "arousal": 0.6,
+      "emotions": {
+        "disgust": 0.8
+      },
+      "source": "curated:gemini-2026-09",
+      "version": 1,
+      "felt": "state"
+    },
+    {
+      "id": "en.emonoun.revulsion",
+      "lemma": "revulsion",
+      "pos": [
+        "NOUN"
+      ],
+      "kind": "emotion_noun",
+      "strength": "strong",
+      "valence": -0.8,
+      "arousal": 0.7,
+      "emotions": {
+        "disgust": 0.8
+      },
+      "source": "curated:gemini-2026-09",
+      "version": 1,
+      "felt": "state"
+    },
+    {
+      "id": "en.emonoun.trepidation",
+      "lemma": "trepidation",
+      "pos": [
+        "NOUN"
+      ],
+      "kind": "emotion_noun",
+      "strength": "strong",
+      "valence": -0.6,
+      "arousal": 0.6,
+      "emotions": {
+        "fear": 0.8
+      },
+      "source": "curated:gemini-2026-09",
+      "version": 1,
+      "felt": "state"
+    },
+    {
+      "id": "en.emonoun.anxiety",
+      "lemma": "anxiety",
+      "pos": [
+        "NOUN"
+      ],
+      "kind": "emotion_noun",
+      "strength": "strong",
+      "valence": -0.6,
+      "arousal": 0.7,
+      "emotions": {
+        "fear": 0.8
+      },
+      "source": "curated:gemini-2026-09",
+      "version": 1,
+      "felt": "state"
+    },
+    {
+      "id": "en.emonoun.panic",
+      "lemma": "panic",
+      "pos": [
+        "NOUN"
+      ],
+      "kind": "emotion_noun",
+      "strength": "strong",
+      "valence": -0.8,
+      "arousal": 0.9,
+      "emotions": {
+        "fear": 0.8
+      },
+      "source": "curated:gemini-2026-09",
+      "version": 1,
+      "felt": "state"
+    },
+    {
+      "id": "en.emonoun.alarm",
+      "lemma": "alarm",
+      "pos": [
+        "NOUN"
+      ],
+      "kind": "emotion_noun",
+      "strength": "weak",
+      "valence": -0.6,
+      "arousal": 0.7,
+      "emotions": {
+        "fear": 0.8
+      },
+      "source": "curated:gemini-2026-09",
+      "version": 1,
+      "note": "clock alarm / warning siren vs emotional alarm",
+      "felt": "state"
+    },
+    {
+      "id": "en.emonoun.consternation",
+      "lemma": "consternation",
+      "pos": [
+        "NOUN"
+      ],
+      "kind": "emotion_noun",
+      "strength": "strong",
+      "valence": -0.6,
+      "arousal": 0.6,
+      "emotions": {
+        "fear": 0.8
+      },
+      "source": "curated:gemini-2026-09",
+      "version": 1,
+      "felt": "state"
+    },
+    {
+      "id": "en.emonoun.wonderment",
+      "lemma": "wonderment",
+      "pos": [
+        "NOUN"
+      ],
+      "kind": "emotion_noun",
+      "strength": "strong",
+      "valence": 0.7,
+      "arousal": 0.7,
+      "emotions": {
+        "surprise": 0.8
+      },
+      "source": "curated:gemini-2026-09",
+      "version": 1,
+      "felt": "state"
+    },
+    {
+      "id": "en.emonoun.astonishment",
+      "lemma": "astonishment",
+      "pos": [
+        "NOUN"
+      ],
+      "kind": "emotion_noun",
+      "strength": "strong",
+      "valence": 0.5,
+      "arousal": 0.8,
+      "emotions": {
+        "surprise": 0.8
+      },
+      "source": "curated:gemini-2026-09",
+      "version": 1,
+      "felt": "state"
+    },
+    {
+      "id": "en.emonoun.amazement",
+      "lemma": "amazement",
+      "pos": [
+        "NOUN"
+      ],
+      "kind": "emotion_noun",
+      "strength": "strong",
+      "valence": 0.6,
+      "arousal": 0.7,
+      "emotions": {
+        "surprise": 0.8
+      },
+      "source": "curated:gemini-2026-09",
+      "version": 1,
+      "felt": "state"
+    },
+    {
+      "id": "en.emonoun.stupefaction",
+      "lemma": "stupefaction",
+      "pos": [
+        "NOUN"
+      ],
+      "kind": "emotion_noun",
+      "strength": "strong",
+      "valence": -0.2,
+      "arousal": 0.6,
+      "emotions": {
+        "surprise": 0.8
+      },
+      "source": "curated:gemini-2026-09",
+      "version": 1,
+      "felt": "state"
+    },
+    {
+      "id": "en.emonoun.admiration",
+      "lemma": "admiration",
+      "pos": [
+        "NOUN"
+      ],
+      "kind": "emotion_noun",
+      "strength": "strong",
+      "valence": 0.8,
+      "arousal": 0.5,
+      "emotions": {
+        "trust": 0.8
+      },
+      "source": "curated:gemini-2026-09",
+      "version": 1,
+      "felt": "state"
+    },
+    {
+      "id": "en.emonoun.reverence",
+      "lemma": "reverence",
+      "pos": [
+        "NOUN"
+      ],
+      "kind": "emotion_noun",
+      "strength": "strong",
+      "valence": 0.8,
+      "arousal": 0.5,
+      "emotions": {
+        "trust": 0.8
+      },
+      "source": "curated:gemini-2026-09",
+      "version": 1,
+      "felt": "state"
+    },
+    {
+      "id": "en.emonoun.awe",
+      "lemma": "awe",
+      "pos": [
+        "NOUN"
+      ],
+      "kind": "emotion_noun",
+      "strength": "strong",
+      "valence": 0.6,
+      "arousal": 0.7,
+      "emotions": {
+        "surprise": 0.8
+      },
+      "source": "curated:gemini-2026-09",
+      "version": 1,
+      "felt": "state"
+    },
+    {
+      "id": "en.emonoun.gratitude",
+      "lemma": "gratitude",
+      "pos": [
+        "NOUN"
+      ],
+      "kind": "emotion_noun",
+      "strength": "strong",
+      "valence": 0.8,
+      "arousal": 0.4,
+      "emotions": {
+        "trust": 0.8
+      },
+      "source": "curated:gemini-2026-09",
+      "version": 1,
+      "felt": "state"
+    },
+    {
+      "id": "en.emonoun.tenderness",
+      "lemma": "tenderness",
+      "pos": [
+        "NOUN"
+      ],
+      "kind": "emotion_noun",
+      "strength": "weak",
+      "valence": 0.8,
+      "arousal": 0.3,
+      "emotions": {
+        "joy": 0.8
+      },
+      "source": "curated:gemini-2026-09",
+      "version": 1,
+      "note": "physical tenderness to touch vs tender affection",
+      "felt": "state"
+    },
+    {
+      "id": "en.emonoun.affection",
+      "lemma": "affection",
+      "pos": [
+        "NOUN"
+      ],
+      "kind": "emotion_noun",
+      "strength": "strong",
+      "valence": 0.8,
+      "arousal": 0.4,
+      "emotions": {
+        "joy": 0.8
+      },
+      "source": "curated:gemini-2026-09",
+      "version": 1,
+      "felt": "state"
+    },
+    {
+      "id": "en.emonoun.compassion",
+      "lemma": "compassion",
+      "pos": [
+        "NOUN"
+      ],
+      "kind": "emotion_noun",
+      "strength": "strong",
+      "valence": 0.8,
+      "arousal": 0.4,
+      "emotions": {
+        "trust": 0.8
+      },
+      "source": "curated:gemini-2026-09",
+      "version": 1,
+      "felt": "state"
+    },
+    {
+      "id": "en.emonoun.sympathy",
+      "lemma": "sympathy",
+      "pos": [
+        "NOUN"
+      ],
+      "kind": "emotion_noun",
+      "strength": "strong",
+      "valence": 0.6,
+      "arousal": 0.3,
+      "emotions": {
+        "trust": 0.8
+      },
+      "source": "curated:gemini-2026-09",
+      "version": 1,
+      "felt": "state"
+    },
+    {
+      "id": "en.emonoun.mercy",
+      "lemma": "mercy",
+      "pos": [
+        "NOUN"
+      ],
+      "kind": "emotion_noun",
+      "strength": "strong",
+      "valence": 0.7,
+      "arousal": 0.4,
+      "emotions": {
+        "trust": 0.8
+      },
+      "source": "curated:gemini-2026-09",
+      "version": 1,
+      "felt": "trait"
+    },
+    {
+      "id": "en.emonoun.pride",
+      "lemma": "pride",
+      "pos": [
+        "NOUN"
+      ],
+      "kind": "emotion_noun",
+      "strength": "weak",
+      "valence": 0.6,
+      "arousal": 0.6,
+      "emotions": {
+        "joy": 0.8
+      },
+      "source": "curated:gemini-2026-09",
+      "version": 1,
+      "note": "also trait reading",
+      "felt": "state"
+    },
+    {
+      "id": "en.emonoun.vanity",
+      "lemma": "vanity",
+      "pos": [
+        "NOUN"
+      ],
+      "kind": "emotion_noun",
+      "strength": "weak",
+      "valence": -0.4,
+      "arousal": 0.4,
+      "emotions": {
+        "disgust": 0.8
+      },
+      "source": "curated:gemini-2026-09",
+      "version": 1,
+      "note": "vanity table vs conceited attitude",
+      "felt": "trait"
+    },
+    {
+      "id": "en.emonoun.hubris",
+      "lemma": "hubris",
+      "pos": [
+        "NOUN"
+      ],
+      "kind": "emotion_noun",
+      "strength": "strong",
+      "valence": -0.6,
+      "arousal": 0.6,
+      "emotions": {
+        "anger": 0.8
+      },
+      "source": "curated:gemini-2026-09",
+      "version": 1,
+      "felt": "trait"
+    },
+    {
+      "id": "en.emonoun.spite",
+      "lemma": "spite",
+      "pos": [
+        "NOUN"
+      ],
+      "kind": "emotion_noun",
+      "strength": "strong",
+      "valence": -0.7,
+      "arousal": 0.6,
+      "emotions": {
+        "anger": 0.8
+      },
+      "source": "curated:gemini-2026-09",
+      "version": 1,
+      "felt": "trait"
+    },
+    {
+      "id": "en.emonoun.malice",
+      "lemma": "malice",
+      "pos": [
+        "NOUN"
+      ],
+      "kind": "emotion_noun",
+      "strength": "strong",
+      "valence": -0.8,
+      "arousal": 0.7,
+      "emotions": {
+        "anger": 0.8
+      },
+      "source": "curated:gemini-2026-09",
+      "version": 1,
+      "felt": "trait"
+    },
+    {
+      "id": "en.emonoun.resentment",
+      "lemma": "resentment",
+      "pos": [
+        "NOUN"
+      ],
+      "kind": "emotion_noun",
+      "strength": "strong",
+      "valence": -0.7,
+      "arousal": 0.6,
+      "emotions": {
+        "anger": 0.8
+      },
+      "source": "curated:gemini-2026-09",
+      "version": 1,
+      "felt": "state"
+    },
+    {
+      "id": "en.emonoun.bitterness",
+      "lemma": "bitterness",
+      "pos": [
+        "NOUN"
+      ],
+      "kind": "emotion_noun",
+      "strength": "weak",
+      "valence": -0.7,
+      "arousal": 0.6,
+      "emotions": {
+        "anger": 0.8
+      },
+      "source": "curated:gemini-2026-09",
+      "version": 1,
+      "note": "taste quality vs bitter attitude",
+      "felt": "state"
+    },
+    {
+      "id": "en.emonoun.rancor",
+      "lemma": "rancor",
+      "pos": [
+        "NOUN"
+      ],
+      "kind": "emotion_noun",
+      "strength": "strong",
+      "valence": -0.8,
+      "arousal": 0.7,
+      "emotions": {
+        "anger": 0.8
+      },
+      "source": "curated:gemini-2026-09",
+      "version": 1,
+      "felt": "state"
+    },
+    {
+      "id": "en.emonoun.animosity",
+      "lemma": "animosity",
+      "pos": [
+        "NOUN"
+      ],
+      "kind": "emotion_noun",
+      "strength": "strong",
+      "valence": -0.7,
+      "arousal": 0.7,
+      "emotions": {
+        "anger": 0.8
+      },
+      "source": "curated:gemini-2026-09",
+      "version": 1,
+      "felt": "state"
+    },
+    {
+      "id": "en.emonoun.hostility",
+      "lemma": "hostility",
+      "pos": [
+        "NOUN"
+      ],
+      "kind": "emotion_noun",
+      "strength": "strong",
+      "valence": -0.7,
+      "arousal": 0.7,
+      "emotions": {
+        "anger": 0.8
+      },
+      "source": "curated:gemini-2026-09",
+      "version": 1,
+      "felt": "state"
+    },
+    {
+      "id": "en.emonoun.enmity",
+      "lemma": "enmity",
+      "pos": [
+        "NOUN"
+      ],
+      "kind": "emotion_noun",
+      "strength": "strong",
+      "valence": -0.7,
+      "arousal": 0.7,
+      "emotions": {
+        "anger": 0.8
+      },
+      "source": "curated:gemini-2026-09",
+      "version": 1,
+      "felt": "state"
+    },
+    {
+      "id": "en.emonoun.irritation",
+      "lemma": "irritation",
+      "pos": [
+        "NOUN"
+      ],
+      "kind": "emotion_noun",
+      "strength": "weak",
+      "valence": -0.5,
+      "arousal": 0.5,
+      "emotions": {
+        "anger": 0.8
+      },
+      "source": "curated:gemini-2026-09",
+      "version": 1,
+      "note": "skin irritation vs mental annoyance",
+      "felt": "state"
+    },
+    {
+      "id": "en.emonoun.vexation",
+      "lemma": "vexation",
+      "pos": [
+        "NOUN"
+      ],
+      "kind": "emotion_noun",
+      "strength": "strong",
+      "valence": -0.5,
+      "arousal": 0.5,
+      "emotions": {
+        "anger": 0.8
+      },
+      "source": "curated:gemini-2026-09",
+      "version": 1,
+      "felt": "state"
+    },
+    {
+      "id": "en.emonoun.frustration",
+      "lemma": "frustration",
+      "pos": [
+        "NOUN"
+      ],
+      "kind": "emotion_noun",
+      "strength": "strong",
+      "valence": -0.6,
+      "arousal": 0.6,
+      "emotions": {
+        "anger": 0.8
+      },
+      "source": "curated:gemini-2026-09",
+      "version": 1,
+      "felt": "state"
+    },
+    {
+      "id": "en.emonoun.impatience",
+      "lemma": "impatience",
+      "pos": [
+        "NOUN"
+      ],
+      "kind": "emotion_noun",
+      "strength": "strong",
+      "valence": -0.4,
+      "arousal": 0.6,
+      "emotions": {
+        "anticipation": 0.8
+      },
+      "source": "curated:gemini-2026-09",
+      "version": 1,
+      "felt": "state"
+    },
+    {
+      "id": "en.emonoun.eagerness",
+      "lemma": "eagerness",
+      "pos": [
+        "NOUN"
+      ],
+      "kind": "emotion_noun",
+      "strength": "strong",
+      "valence": 0.7,
+      "arousal": 0.7,
+      "emotions": {
+        "anticipation": 0.8
+      },
+      "source": "curated:gemini-2026-09",
+      "version": 1,
+      "felt": "state"
+    },
+    {
+      "id": "en.emonoun.yearning",
+      "lemma": "yearning",
+      "pos": [
+        "NOUN"
+      ],
+      "kind": "emotion_noun",
+      "strength": "strong",
+      "valence": 0.4,
+      "arousal": 0.6,
+      "emotions": {
+        "anticipation": 0.8
+      },
+      "source": "curated:gemini-2026-09",
+      "version": 1,
+      "alt_lemmas": [
+        "yearn"
+      ],
+      "lemma_evidence": "carrier",
+      "felt": "state"
+    },
+    {
+      "id": "en.emonoun.longing",
+      "lemma": "longing",
+      "pos": [
+        "NOUN"
+      ],
+      "kind": "emotion_noun",
+      "strength": "strong",
+      "valence": 0.3,
+      "arousal": 0.5,
+      "emotions": {
+        "anticipation": 0.8
+      },
+      "source": "curated:gemini-2026-09",
+      "version": 1,
+      "felt": "state"
+    },
+    {
+      "id": "en.emonoun.craving",
+      "lemma": "craving",
+      "pos": [
+        "NOUN"
+      ],
+      "kind": "emotion_noun",
+      "strength": "weak",
+      "valence": 0.2,
+      "arousal": 0.6,
+      "emotions": {
+        "anticipation": 0.8
+      },
+      "source": "curated:gemini-2026-09",
+      "version": 1,
+      "note": "craving food vs emotional desire",
+      "alt_lemmas": [
+        "crave"
+      ],
+      "lemma_evidence": "carrier",
+      "felt": "state"
+    },
+    {
+      "id": "en.emonoun.melancholia",
+      "lemma": "melancholia",
+      "pos": [
+        "NOUN"
+      ],
+      "kind": "emotion_noun",
+      "strength": "strong",
+      "valence": -0.7,
+      "arousal": 0.3,
+      "emotions": {
+        "sadness": 0.8
+      },
+      "source": "curated:gemini-2026-09",
+      "version": 1,
+      "felt": "state"
+    },
+    {
+      "id": "en.emonoun.despondency",
+      "lemma": "despondency",
+      "pos": [
+        "NOUN"
+      ],
+      "kind": "emotion_noun",
+      "strength": "strong",
+      "valence": -0.8,
+      "arousal": 0.3,
+      "emotions": {
+        "sadness": 0.8
+      },
+      "source": "curated:gemini-2026-09",
+      "version": 1,
+      "felt": "state"
+    },
+    {
+      "id": "en.emonoun.dejection",
+      "lemma": "dejection",
+      "pos": [
+        "NOUN"
+      ],
+      "kind": "emotion_noun",
+      "strength": "strong",
+      "valence": -0.7,
+      "arousal": 0.3,
+      "emotions": {
+        "sadness": 0.8
+      },
+      "source": "curated:gemini-2026-09",
+      "version": 1,
+      "felt": "state"
+    },
+    {
+      "id": "en.emonoun.despair",
+      "lemma": "despair",
+      "pos": [
+        "NOUN"
+      ],
+      "kind": "emotion_noun",
+      "strength": "strong",
+      "valence": -0.9,
+      "arousal": 0.5,
+      "emotions": {
+        "sadness": 0.8
+      },
+      "source": "curated:gemini-2026-09",
+      "version": 1,
+      "felt": "state"
+    },
+    {
+      "id": "en.emonoun.hopelessness",
+      "lemma": "hopelessness",
+      "pos": [
+        "NOUN"
+      ],
+      "kind": "emotion_noun",
+      "strength": "strong",
+      "valence": -0.9,
+      "arousal": 0.3,
+      "emotions": {
+        "sadness": 0.8
+      },
+      "source": "curated:gemini-2026-09",
+      "version": 1,
+      "felt": "state"
+    },
+    {
+      "id": "en.emonoun.misery",
+      "lemma": "misery",
+      "pos": [
+        "NOUN"
+      ],
+      "kind": "emotion_noun",
+      "strength": "strong",
+      "valence": -0.8,
+      "arousal": 0.5,
+      "emotions": {
+        "sadness": 0.8
+      },
+      "source": "curated:gemini-2026-09",
+      "version": 1,
+      "felt": "state"
+    },
+    {
+      "id": "en.emonoun.wretchedness",
+      "lemma": "wretchedness",
+      "pos": [
+        "NOUN"
+      ],
+      "kind": "emotion_noun",
+      "strength": "strong",
+      "valence": -0.8,
+      "arousal": 0.4,
+      "emotions": {
+        "sadness": 0.8
+      },
+      "source": "curated:gemini-2026-09",
+      "version": 1,
+      "felt": "state"
+    },
+    {
+      "id": "en.emonoun.humiliation",
+      "lemma": "humiliation",
+      "pos": [
+        "NOUN"
+      ],
+      "kind": "emotion_noun",
+      "strength": "strong",
+      "valence": -0.8,
+      "arousal": 0.7,
+      "emotions": {
+        "sadness": 0.8
+      },
+      "source": "curated:gemini-2026-09",
+      "version": 1,
+      "felt": "state"
+    },
+    {
+      "id": "en.emonoun.mortification",
+      "lemma": "mortification",
+      "pos": [
+        "NOUN"
+      ],
+      "kind": "emotion_noun",
+      "strength": "strong",
+      "valence": -0.8,
+      "arousal": 0.7,
+      "emotions": {
+        "fear": 0.8
+      },
+      "source": "curated:gemini-2026-09",
+      "version": 1,
+      "felt": "state"
+    },
+    {
+      "id": "en.emonoun.chagrin",
+      "lemma": "chagrin",
+      "pos": [
+        "NOUN"
+      ],
+      "kind": "emotion_noun",
+      "strength": "strong",
+      "valence": -0.5,
+      "arousal": 0.5,
+      "emotions": {
+        "anger": 0.8
+      },
+      "source": "curated:gemini-2026-09",
+      "version": 1,
+      "felt": "state"
+    },
+    {
+      "id": "en.emonoun.embarrassment",
+      "lemma": "embarrassment",
+      "pos": [
+        "NOUN"
+      ],
+      "kind": "emotion_noun",
+      "strength": "strong",
+      "valence": -0.5,
+      "arousal": 0.5,
+      "emotions": {
+        "fear": 0.8
+      },
+      "source": "curated:gemini-2026-09",
+      "version": 1,
+      "felt": "state"
+    },
+    {
+      "id": "en.emonoun.jubilation",
+      "lemma": "jubilation",
+      "pos": [
+        "NOUN"
+      ],
+      "kind": "emotion_noun",
+      "strength": "strong",
+      "valence": 0.9,
+      "arousal": 0.8,
+      "emotions": {
+        "joy": 0.8
+      },
+      "source": "curated:gemini-2026-09",
+      "version": 1,
+      "felt": "state"
+    },
+    {
+      "id": "en.emonoun.exultation",
+      "lemma": "exultation",
+      "pos": [
+        "NOUN"
+      ],
+      "kind": "emotion_noun",
+      "strength": "strong",
+      "valence": 0.9,
+      "arousal": 0.8,
+      "emotions": {
+        "joy": 0.8
+      },
+      "source": "curated:gemini-2026-09",
+      "version": 1,
+      "felt": "state"
+    },
+    {
+      "id": "en.emonoun.triumph",
+      "lemma": "triumph",
+      "pos": [
+        "NOUN"
+      ],
+      "kind": "emotion_noun",
+      "strength": "strong",
+      "valence": 0.8,
+      "arousal": 0.8,
+      "emotions": {
+        "joy": 0.8
+      },
+      "source": "curated:gemini-2026-09",
+      "version": 1,
+      "felt": "state"
+    },
+    {
+      "id": "en.emonoun.glee",
+      "lemma": "glee",
+      "pos": [
+        "NOUN"
+      ],
+      "kind": "emotion_noun",
+      "strength": "strong",
+      "valence": 0.8,
+      "arousal": 0.7,
+      "emotions": {
+        "joy": 0.8
+      },
+      "source": "curated:gemini-2026-09",
+      "version": 1,
+      "felt": "state"
+    },
+    {
+      "id": "en.emonoun.mirth",
+      "lemma": "mirth",
+      "pos": [
+        "NOUN"
+      ],
+      "kind": "emotion_noun",
+      "strength": "strong",
+      "valence": 0.7,
+      "arousal": 0.6,
+      "emotions": {
+        "joy": 0.8
+      },
+      "source": "curated:gemini-2026-09",
+      "version": 1,
+      "felt": "state"
+    },
+    {
+      "id": "en.emonoun.hilarity",
+      "lemma": "hilarity",
+      "pos": [
+        "NOUN"
+      ],
+      "kind": "emotion_noun",
+      "strength": "strong",
+      "valence": 0.8,
+      "arousal": 0.7,
+      "emotions": {
+        "joy": 0.8
+      },
+      "source": "curated:gemini-2026-09",
+      "version": 1,
+      "felt": "state"
+    },
+    {
+      "id": "en.emonoun.cheer",
+      "lemma": "cheer",
+      "pos": [
+        "NOUN"
+      ],
+      "kind": "emotion_noun",
+      "strength": "strong",
+      "valence": 0.7,
+      "arousal": 0.5,
+      "emotions": {
+        "joy": 0.8
+      },
+      "source": "curated:gemini-2026-09",
+      "version": 1,
+      "felt": "state"
+    },
+    {
+      "id": "en.emonoun.serenity",
+      "lemma": "serenity",
+      "pos": [
+        "NOUN"
+      ],
+      "kind": "emotion_noun",
+      "strength": "strong",
+      "valence": 0.8,
+      "arousal": 0.2,
+      "emotions": {
+        "trust": 0.8
+      },
+      "source": "curated:gemini-2026-09",
+      "version": 1,
+      "felt": "state"
+    },
+    {
+      "id": "en.emonoun.tranquility",
+      "lemma": "tranquility",
+      "pos": [
+        "NOUN"
+      ],
+      "kind": "emotion_noun",
+      "strength": "strong",
+      "valence": 0.8,
+      "arousal": 0.2,
+      "emotions": {
+        "trust": 0.8
+      },
+      "source": "curated:gemini-2026-09",
+      "version": 1,
+      "felt": "state"
+    },
+    {
+      "id": "en.emonoun.peace",
+      "lemma": "peace",
+      "pos": [
+        "NOUN"
+      ],
+      "kind": "emotion_noun",
+      "strength": "weak",
+      "valence": 0.8,
+      "arousal": 0.2,
+      "emotions": {
+        "trust": 0.8
+      },
+      "source": "curated:gemini-2026-09",
+      "version": 1,
+      "note": "peace treaty vs inner peacefulness",
+      "felt": "state"
+    },
+    {
+      "id": "en.emonoun.contentment",
+      "lemma": "contentment",
+      "pos": [
+        "NOUN"
+      ],
+      "kind": "emotion_noun",
+      "strength": "strong",
+      "valence": 0.7,
+      "arousal": 0.3,
+      "emotions": {
+        "joy": 0.8
+      },
+      "source": "curated:gemini-2026-09",
+      "version": 1,
+      "felt": "state"
+    },
+    {
+      "id": "en.emonoun.satisfaction",
+      "lemma": "satisfaction",
+      "pos": [
+        "NOUN"
+      ],
+      "kind": "emotion_noun",
+      "strength": "strong",
+      "valence": 0.7,
+      "arousal": 0.4,
+      "emotions": {
+        "joy": 0.8
+      },
+      "source": "curated:gemini-2026-09",
+      "version": 1,
+      "felt": "state"
+    },
+    {
+      "id": "en.emonoun.relief",
+      "lemma": "relief",
+      "pos": [
+        "NOUN"
+      ],
+      "kind": "emotion_noun",
+      "strength": "weak",
+      "valence": 0.8,
+      "arousal": 0.4,
+      "emotions": {
+        "joy": 0.8
+      },
+      "source": "curated:gemini-2026-09",
+      "version": 1,
+      "note": "geographic relief / aid relief vs emotional relief",
+      "felt": "state"
+    },
+    {
+      "id": "en.emonoun.solace",
+      "lemma": "solace",
+      "pos": [
+        "NOUN"
+      ],
+      "kind": "emotion_noun",
+      "strength": "strong",
+      "valence": 0.7,
+      "arousal": 0.3,
+      "emotions": {
+        "trust": 0.8
+      },
+      "source": "curated:gemini-2026-09",
+      "version": 1,
+      "felt": "state"
+    },
+    {
+      "id": "en.emonoun.comfort",
+      "lemma": "comfort",
+      "pos": [
+        "NOUN"
+      ],
+      "kind": "emotion_noun",
+      "strength": "weak",
+      "valence": 0.7,
+      "arousal": 0.3,
+      "emotions": {
+        "trust": 0.8
+      },
+      "source": "curated:gemini-2026-09",
+      "version": 1,
+      "note": "physical bed comfort vs emotional comfort",
+      "felt": "state"
+    },
+    {
+      "id": "en.emonoun.enthusiasm",
+      "lemma": "enthusiasm",
+      "pos": [
+        "NOUN"
+      ],
+      "kind": "emotion_noun",
+      "strength": "strong",
+      "valence": 0.8,
+      "arousal": 0.7,
+      "emotions": {
+        "anticipation": 0.8
+      },
+      "source": "curated:gemini-2026-09",
+      "version": 1,
+      "felt": "state"
+    },
+    {
+      "id": "en.emonoun.zeal",
+      "lemma": "zeal",
+      "pos": [
+        "NOUN"
+      ],
+      "kind": "emotion_noun",
+      "strength": "strong",
+      "valence": 0.6,
+      "arousal": 0.7,
+      "emotions": {
+        "anticipation": 0.8
+      },
+      "source": "curated:gemini-2026-09",
+      "version": 1,
+      "felt": "trait"
+    },
+    {
+      "id": "en.emonoun.ardor",
+      "lemma": "ardor",
+      "pos": [
+        "NOUN"
+      ],
+      "kind": "emotion_noun",
+      "strength": "strong",
+      "valence": 0.7,
+      "arousal": 0.7,
+      "emotions": {
+        "anticipation": 0.8
+      },
+      "source": "curated:gemini-2026-09",
+      "version": 1,
+      "felt": "state"
+    },
+    {
+      "id": "en.emonoun.passion",
+      "lemma": "passion",
+      "pos": [
+        "NOUN"
+      ],
+      "kind": "emotion_noun",
+      "strength": "weak",
+      "valence": 0.7,
+      "arousal": 0.8,
+      "emotions": {
+        "anticipation": 0.8
+      },
+      "source": "curated:gemini-2026-09",
+      "version": 1,
+      "note": "the Passion of Christ vs emotional passion",
+      "felt": "state"
+    },
+    {
+      "id": "en.emonoun.infatuation",
+      "lemma": "infatuation",
+      "pos": [
+        "NOUN"
+      ],
+      "kind": "emotion_noun",
+      "strength": "strong",
+      "valence": 0.6,
+      "arousal": 0.7,
+      "emotions": {
+        "joy": 0.8
+      },
+      "source": "curated:gemini-2026-09",
+      "version": 1,
+      "felt": "state"
+    },
+    {
+      "id": "en.emonoun.fervor",
+      "lemma": "fervor",
+      "pos": [
+        "NOUN"
+      ],
+      "kind": "emotion_noun",
+      "strength": "strong",
+      "valence": 0.6,
+      "arousal": 0.7,
+      "emotions": {
+        "anticipation": 0.8
+      },
+      "source": "curated:gemini-2026-09",
+      "version": 1,
+      "felt": "state"
+    },
+    {
+      "id": "en.emonoun.frenzy",
+      "lemma": "frenzy",
+      "pos": [
+        "NOUN"
+      ],
+      "kind": "emotion_noun",
+      "strength": "strong",
+      "valence": -0.6,
+      "arousal": 0.9,
+      "emotions": {
+        "anger": 0.8
+      },
+      "source": "curated:gemini-2026-09",
+      "version": 1,
+      "felt": "state"
+    },
+    {
+      "id": "en.emonoun.hysteria",
+      "lemma": "hysteria",
+      "pos": [
+        "NOUN"
+      ],
+      "kind": "emotion_noun",
+      "strength": "strong",
+      "valence": -0.8,
+      "arousal": 0.9,
+      "emotions": {
+        "fear": 0.8
+      },
+      "source": "curated:gemini-2026-09",
+      "version": 1,
+      "felt": "state"
+    },
+    {
+      "id": "en.emonoun.delirium",
+      "lemma": "delirium",
+      "pos": [
+        "NOUN"
+      ],
+      "kind": "emotion_noun",
+      "strength": "weak",
+      "valence": 0.0,
+      "arousal": 0.8,
+      "emotions": {
+        "surprise": 0.8
+      },
+      "source": "curated:gemini-2026-09",
+      "version": 1,
+      "note": "fever delirium vs wild emotional state",
+      "felt": "state"
+    },
+    {
+      "id": "en.emonoun.cravenness",
+      "lemma": "cravenness",
+      "pos": [
+        "NOUN"
+      ],
+      "kind": "emotion_noun",
+      "strength": "strong",
+      "valence": -0.7,
+      "arousal": 0.4,
+      "emotions": {
+        "fear": 0.8
+      },
+      "source": "curated:gemini-2026-09",
+      "version": 1,
+      "felt": "trait"
+    },
+    {
+      "id": "en.emonoun.cowardice",
+      "lemma": "cowardice",
+      "pos": [
+        "NOUN"
+      ],
+      "kind": "emotion_noun",
+      "strength": "strong",
+      "valence": -0.7,
+      "arousal": 0.4,
+      "emotions": {
+        "fear": 0.8
+      },
+      "source": "curated:gemini-2026-09",
+      "version": 1,
+      "felt": "trait"
+    },
+    {
+      "id": "en.emonoun.bravery",
+      "lemma": "bravery",
+      "pos": [
+        "NOUN"
+      ],
+      "kind": "emotion_noun",
+      "strength": "strong",
+      "valence": 0.8,
+      "arousal": 0.7,
+      "emotions": {
+        "trust": 0.8
+      },
+      "source": "curated:gemini-2026-09",
+      "version": 1,
+      "felt": "trait"
+    },
+    {
+      "id": "en.emonoun.courage",
+      "lemma": "courage",
+      "pos": [
+        "NOUN"
+      ],
+      "kind": "emotion_noun",
+      "strength": "strong",
+      "valence": 0.8,
+      "arousal": 0.7,
+      "emotions": {
+        "trust": 0.8
+      },
+      "source": "curated:gemini-2026-09",
+      "version": 1,
+      "felt": "trait"
+    },
+    {
+      "id": "en.emonoun.valor",
+      "lemma": "valor",
+      "pos": [
+        "NOUN"
+      ],
+      "kind": "emotion_noun",
+      "strength": "strong",
+      "valence": 0.8,
+      "arousal": 0.7,
+      "emotions": {
+        "trust": 0.8
+      },
+      "source": "curated:gemini-2026-09",
+      "version": 1,
+      "felt": "trait"
+    },
+    {
+      "id": "en.emonoun.dauntlessness",
+      "lemma": "dauntlessness",
+      "pos": [
+        "NOUN"
+      ],
+      "kind": "emotion_noun",
+      "strength": "strong",
+      "valence": 0.8,
+      "arousal": 0.7,
+      "emotions": {
+        "trust": 0.8
+      },
+      "source": "curated:gemini-2026-09",
+      "version": 1,
+      "felt": "trait"
+    },
+    {
+      "id": "en.emonoun.intrepidity",
+      "lemma": "intrepidity",
+      "pos": [
+        "NOUN"
+      ],
+      "kind": "emotion_noun",
+      "strength": "strong",
+      "valence": 0.8,
+      "arousal": 0.7,
+      "emotions": {
+        "trust": 0.8
+      },
+      "source": "curated:gemini-2026-09",
+      "version": 1,
+      "felt": "trait"
+    },
+    {
+      "id": "en.emonoun.fearlessness",
+      "lemma": "fearlessness",
+      "pos": [
+        "NOUN"
+      ],
+      "kind": "emotion_noun",
+      "strength": "strong",
+      "valence": 0.8,
+      "arousal": 0.6,
+      "emotions": {
+        "trust": 0.8
+      },
+      "source": "curated:gemini-2026-09",
+      "version": 1,
+      "felt": "trait"
+    },
+    {
+      "id": "en.emonoun.indifference",
+      "lemma": "indifference",
+      "pos": [
+        "NOUN"
+      ],
+      "kind": "emotion_noun",
+      "strength": "strong",
+      "valence": 0.0,
+      "arousal": 0.1,
+      "emotions": null,
+      "source": "curated:gemini-2026-09",
+      "version": 1,
+      "felt": "state"
+    },
+    {
+      "id": "en.emonoun.apathy",
+      "lemma": "apathy",
+      "pos": [
+        "NOUN"
+      ],
+      "kind": "emotion_noun",
+      "strength": "strong",
+      "valence": -0.3,
+      "arousal": 0.1,
+      "emotions": null,
+      "source": "curated:gemini-2026-09",
+      "version": 1,
+      "felt": "state"
+    },
+    {
+      "id": "en.emonoun.resignation",
+      "lemma": "resignation",
+      "pos": [
+        "NOUN"
+      ],
+      "kind": "emotion_noun",
+      "strength": "weak",
+      "valence": -0.4,
+      "arousal": 0.2,
+      "emotions": {
+        "sadness": 0.8
+      },
+      "source": "curated:gemini-2026-09",
+      "version": 1,
+      "note": "letter of resignation vs resigned emotion",
+      "felt": "state"
+    },
+    {
+      "id": "en.emonoun.distrust",
+      "lemma": "distrust",
+      "pos": [
+        "NOUN"
+      ],
+      "kind": "emotion_noun",
+      "strength": "strong",
+      "valence": -0.6,
+      "arousal": 0.5,
+      "emotions": {
+        "fear": 0.8
+      },
+      "source": "curated:gemini-2026-09",
+      "version": 1,
+      "felt": "state"
+    },
+    {
+      "id": "en.emonoun.suspicion",
+      "lemma": "suspicion",
+      "pos": [
+        "NOUN"
+      ],
+      "kind": "emotion_noun",
+      "strength": "strong",
+      "valence": -0.5,
+      "arousal": 0.6,
+      "emotions": {
+        "fear": 0.8
+      },
+      "source": "curated:gemini-2026-09",
+      "version": 1,
+      "felt": "state"
+    },
+    {
+      "id": "en.emonoun.wariness",
+      "lemma": "wariness",
+      "pos": [
+        "NOUN"
+      ],
+      "kind": "emotion_noun",
+      "strength": "strong",
+      "valence": -0.3,
+      "arousal": 0.5,
+      "emotions": {
+        "anticipation": 0.8
+      },
+      "source": "curated:gemini-2026-09",
+      "version": 1,
+      "felt": "state"
+    },
+    {
+      "id": "en.emonoun.caution",
+      "lemma": "caution",
+      "pos": [
+        "NOUN"
+      ],
+      "kind": "emotion_noun",
+      "strength": "strong",
+      "valence": 0.2,
+      "arousal": 0.4,
+      "emotions": {
+        "anticipation": 0.8
+      },
+      "source": "curated:gemini-2026-09",
+      "version": 1,
+      "felt": "trait"
+    },
+    {
+      "id": "en.emonoun.skepticism",
+      "lemma": "skepticism",
+      "pos": [
+        "NOUN"
+      ],
+      "kind": "emotion_noun",
+      "strength": "strong",
+      "valence": -0.2,
+      "arousal": 0.4,
+      "emotions": {
+        "disgust": 0.8
+      },
+      "source": "curated:gemini-2026-09",
+      "version": 1,
+      "felt": "trait"
+    },
+    {
+      "id": "en.emonoun.bewilderment",
+      "lemma": "bewilderment",
+      "pos": [
+        "NOUN"
+      ],
+      "kind": "emotion_noun",
+      "strength": "strong",
+      "valence": -0.2,
+      "arousal": 0.6,
+      "emotions": {
+        "surprise": 0.8
+      },
+      "source": "curated:gemini-2026-09",
+      "version": 1,
+      "felt": "state"
+    },
+    {
+      "id": "en.emonoun.perplexity",
+      "lemma": "perplexity",
+      "pos": [
+        "NOUN"
+      ],
+      "kind": "emotion_noun",
+      "strength": "strong",
+      "valence": -0.2,
+      "arousal": 0.5,
+      "emotions": {
+        "surprise": 0.8
+      },
+      "source": "curated:gemini-2026-09",
+      "version": 1,
+      "felt": "state"
+    },
+    {
+      "id": "en.emonoun.confusion",
+      "lemma": "confusion",
+      "pos": [
+        "NOUN"
+      ],
+      "kind": "emotion_noun",
+      "strength": "strong",
+      "valence": -0.3,
+      "arousal": 0.5,
+      "emotions": {
+        "surprise": 0.8
+      },
+      "source": "curated:gemini-2026-09",
+      "version": 1,
+      "felt": "state"
+    },
+    {
+      "id": "en.emonoun.disarray",
+      "lemma": "disarray",
+      "pos": [
+        "NOUN"
+      ],
+      "kind": "emotion_noun",
+      "strength": "weak",
+      "valence": -0.4,
+      "arousal": 0.6,
+      "emotions": {
+        "fear": 0.8
+      },
+      "source": "curated:gemini-2026-09",
+      "version": 1,
+      "note": "messy clothes vs confused mind",
+      "felt": "state"
+    },
+    {
+      "id": "en.emonoun.turmoil",
+      "lemma": "turmoil",
+      "pos": [
+        "NOUN"
+      ],
+      "kind": "emotion_noun",
+      "strength": "strong",
+      "valence": -0.6,
+      "arousal": 0.7,
+      "emotions": {
+        "fear": 0.8
+      },
+      "source": "curated:gemini-2026-09",
+      "version": 1,
+      "felt": "state"
+    },
+    {
+      "id": "en.emonoun.agitation",
+      "lemma": "agitation",
+      "pos": [
+        "NOUN"
+      ],
+      "kind": "emotion_noun",
+      "strength": "weak",
+      "valence": -0.6,
+      "arousal": 0.7,
+      "emotions": {
+        "fear": 0.8
+      },
+      "source": "curated:gemini-2026-09",
+      "version": 1,
+      "note": "fluid agitation vs emotional agitation",
+      "felt": "state"
+    },
+    {
+      "id": "en.emonoun.perturbation",
+      "lemma": "perturbation",
+      "pos": [
+        "NOUN"
+      ],
+      "kind": "emotion_noun",
+      "strength": "weak",
+      "valence": -0.5,
+      "arousal": 0.6,
+      "emotions": {
+        "fear": 0.8
+      },
+      "source": "curated:gemini-2026-09",
+      "version": 1,
+      "note": "orbital perturbation vs emotional distress",
+      "felt": "state"
+    },
+    {
+      "id": "en.emonoun.restlessness",
+      "lemma": "restlessness",
+      "pos": [
+        "NOUN"
+      ],
+      "kind": "emotion_noun",
+      "strength": "strong",
+      "valence": -0.3,
+      "arousal": 0.6,
+      "emotions": {
+        "anticipation": 0.8
+      },
+      "source": "curated:gemini-2026-09",
+      "version": 1,
+      "felt": "state"
+    },
+    {
+      "id": "en.emonoun.boredom",
+      "lemma": "boredom",
+      "pos": [
+        "NOUN"
+      ],
+      "kind": "emotion_noun",
+      "strength": "strong",
+      "valence": -0.4,
+      "arousal": 0.1,
+      "emotions": {
+        "sadness": 0.8
+      },
+      "source": "curated:gemini-2026-09",
+      "version": 1,
+      "felt": "state"
+    },
+    {
+      "id": "en.emonoun.tedium",
+      "lemma": "tedium",
+      "pos": [
+        "NOUN"
+      ],
+      "kind": "emotion_noun",
+      "strength": "strong",
+      "valence": -0.4,
+      "arousal": 0.1,
+      "emotions": {
+        "sadness": 0.8
+      },
+      "source": "curated:gemini-2026-09",
+      "version": 1,
+      "felt": "state"
+    },
+    {
+      "id": "en.emonoun.ennui",
+      "lemma": "ennui",
+      "pos": [
+        "NOUN"
+      ],
+      "kind": "emotion_noun",
+      "strength": "strong",
+      "valence": -0.5,
+      "arousal": 0.1,
+      "emotions": {
+        "sadness": 0.8
+      },
+      "source": "curated:gemini-2026-09",
+      "version": 1,
+      "felt": "state"
+    },
+    {
+      "id": "en.emonoun.loneliness",
+      "lemma": "loneliness",
+      "pos": [
+        "NOUN"
+      ],
+      "kind": "emotion_noun",
+      "strength": "strong",
+      "valence": -0.7,
+      "arousal": 0.3,
+      "emotions": {
+        "sadness": 0.8
+      },
+      "source": "curated:gemini-2026-09",
+      "version": 1,
+      "felt": "state"
+    },
+    {
+      "id": "en.emonoun.isolation",
+      "lemma": "isolation",
+      "pos": [
+        "NOUN"
+      ],
+      "kind": "emotion_noun",
+      "strength": "weak",
+      "valence": -0.5,
+      "arousal": 0.3,
+      "emotions": {
+        "sadness": 0.8
+      },
+      "source": "curated:gemini-2026-09",
+      "version": 1,
+      "note": "electrical isolation vs loneliness",
+      "felt": "state"
+    },
+    {
+      "id": "en.emonoun.alienation",
+      "lemma": "alienation",
+      "pos": [
+        "NOUN"
+      ],
+      "kind": "emotion_noun",
+      "strength": "strong",
+      "valence": -0.6,
+      "arousal": 0.4,
+      "emotions": {
+        "sadness": 0.8
+      },
+      "source": "curated:gemini-2026-09",
+      "version": 1,
+      "felt": "state"
+    },
+    {
+      "id": "en.emonoun.heartache",
+      "lemma": "heartache",
+      "pos": [
+        "NOUN"
+      ],
+      "kind": "emotion_noun",
+      "strength": "strong",
+      "valence": -0.8,
+      "arousal": 0.5,
+      "emotions": {
+        "sadness": 0.8
+      },
+      "source": "curated:gemini-2026-09",
+      "version": 1,
+      "felt": "state"
+    },
+    {
+      "id": "en.emonoun.woe",
+      "lemma": "woe",
+      "pos": [
+        "NOUN"
+      ],
+      "kind": "emotion_noun",
+      "strength": "strong",
+      "valence": -0.8,
+      "arousal": 0.4,
+      "emotions": {
+        "sadness": 0.8
+      },
+      "source": "curated:gemini-2026-09",
+      "version": 1,
+      "felt": "state"
+    },
+    {
+      "id": "en.emonoun.mourning",
+      "lemma": "mourning",
+      "pos": [
+        "NOUN"
+      ],
+      "kind": "emotion_noun",
+      "strength": "weak",
+      "valence": -0.8,
+      "arousal": 0.4,
+      "emotions": {
+        "sadness": 0.8
+      },
+      "source": "curated:gemini-2026-09",
+      "version": 1,
+      "note": "black clothes vs feeling of grief",
+      "alt_lemmas": [
+        "mourn"
+      ],
+      "lemma_evidence": "carrier",
+      "felt": "state"
+    },
+    {
+      "id": "en.emonoun.lamentation",
+      "lemma": "lamentation",
+      "pos": [
+        "NOUN"
+      ],
+      "kind": "emotion_noun",
+      "strength": "strong",
+      "valence": -0.8,
+      "arousal": 0.5,
+      "emotions": {
+        "sadness": 0.8
+      },
+      "source": "curated:gemini-2026-09",
+      "version": 1,
+      "felt": "state"
+    },
+    {
+      "id": "en.emonoun.anger",
+      "lemma": "anger",
+      "pos": [
+        "NOUN"
+      ],
+      "kind": "emotion_noun",
+      "strength": "strong",
+      "valence": -0.8,
+      "arousal": 0.8,
+      "emotions": {
+        "anger": 0.9
+      },
+      "source": "curated:claude-2026-09",
+      "version": 1,
+      "felt": "state"
+    },
+    {
+      "id": "en.emonoun.joy",
+      "lemma": "joy",
+      "pos": [
+        "NOUN"
+      ],
+      "kind": "emotion_noun",
+      "strength": "strong",
+      "valence": 0.9,
+      "arousal": 0.7,
+      "emotions": {
+        "joy": 0.95
+      },
+      "source": "curated:claude-2026-09",
+      "version": 1,
+      "felt": "state"
+    },
+    {
+      "id": "en.emonoun.fear",
+      "lemma": "fear",
+      "pos": [
+        "NOUN"
+      ],
+      "kind": "emotion_noun",
+      "strength": "strong",
+      "valence": -0.8,
+      "arousal": 0.8,
+      "emotions": {
+        "fear": 0.95
+      },
+      "source": "curated:claude-2026-09",
+      "version": 1,
+      "felt": "state"
+    },
+    {
+      "id": "en.emonoun.surprise",
+      "lemma": "surprise",
+      "pos": [
+        "NOUN"
+      ],
+      "kind": "emotion_noun",
+      "strength": "weak",
+      "valence": 0.1,
+      "arousal": 0.7,
+      "emotions": {
+        "surprise": 0.9
+      },
+      "source": "curated:claude-2026-09",
+      "version": 1,
+      "note": "also an unexpected event or gift ('a surprise party'); telling in frames like 'to my surprise', 'in surprise'",
+      "felt": "state"
+    },
+    {
+      "id": "en.emonoun.hope",
+      "lemma": "hope",
+      "pos": [
+        "NOUN"
+      ],
+      "kind": "emotion_noun",
+      "strength": "weak",
+      "valence": 0.6,
+      "arousal": 0.5,
+      "emotions": {
+        "anticipation": 0.8,
+        "joy": 0.4
+      },
+      "source": "curated:claude-2026-09",
+      "version": 1,
+      "note": "also 'no hope of rescue' (a chance), which is plot, not a stated feeling",
+      "felt": "state"
+    },
+    {
+      "id": "en.emonoun.love",
+      "lemma": "love",
+      "pos": [
+        "NOUN"
+      ],
+      "kind": "emotion_noun",
+      "strength": "weak",
+      "valence": 0.85,
+      "arousal": 0.6,
+      "emotions": {
+        "joy": 0.7,
+        "trust": 0.8
+      },
+      "source": "curated:claude-2026-09",
+      "version": 1,
+      "note": "also a form of address ('my love') or a person ('his first love')",
+      "felt": "state"
+    },
+    {
+      "id": "en.emonoun.happiness",
+      "lemma": "happiness",
+      "pos": [
+        "NOUN"
+      ],
+      "kind": "emotion_noun",
+      "strength": "strong",
+      "valence": 0.9,
+      "arousal": 0.55,
+      "emotions": {
+        "joy": 0.9
+      },
+      "source": "curated:claude-2026-09",
+      "version": 1,
+      "felt": "state"
+    },
+    {
+      "id": "en.emonoun.sadness",
+      "lemma": "sadness",
+      "pos": [
+        "NOUN"
+      ],
+      "kind": "emotion_noun",
+      "strength": "strong",
+      "valence": -0.8,
+      "arousal": 0.3,
+      "emotions": {
+        "sadness": 0.9
+      },
+      "source": "curated:claude-2026-09",
+      "version": 1,
+      "felt": "state"
+    },
+    {
+      "id": "en.emonoun.excitement",
+      "lemma": "excitement",
+      "pos": [
+        "NOUN"
+      ],
+      "kind": "emotion_noun",
+      "strength": "strong",
+      "valence": 0.6,
+      "arousal": 0.85,
+      "emotions": {
+        "anticipation": 0.7,
+        "joy": 0.6
+      },
+      "source": "curated:claude-2026-09",
+      "version": 1,
+      "felt": "state"
+    },
+    {
+      "id": "en.emonoun.annoyance",
+      "lemma": "annoyance",
+      "pos": [
+        "NOUN"
+      ],
+      "kind": "emotion_noun",
+      "strength": "strong",
+      "valence": -0.5,
+      "arousal": 0.5,
+      "emotions": {
+        "anger": 0.6
+      },
+      "source": "curated:claude-2026-09",
+      "version": 1,
+      "felt": "state"
+    },
+    {
+      "id": "en.emonoun.wonder",
+      "lemma": "wonder",
+      "pos": [
+        "NOUN"
+      ],
+      "kind": "emotion_noun",
+      "strength": "weak",
+      "valence": 0.5,
+      "arousal": 0.55,
+      "emotions": {
+        "surprise": 0.7,
+        "joy": 0.3
+      },
+      "source": "curated:claude-2026-09",
+      "version": 1,
+      "note": "also 'a wonder of the world'; 'no wonder' is an idiom",
+      "felt": "state"
+    },
+    {
+      "id": "en.emonoun.shock",
+      "lemma": "shock",
+      "pos": [
+        "NOUN"
+      ],
+      "kind": "emotion_noun",
+      "strength": "weak",
+      "valence": -0.5,
+      "arousal": 0.85,
+      "emotions": {
+        "surprise": 0.8,
+        "fear": 0.5
+      },
+      "source": "curated:claude-2026-09",
+      "version": 1,
+      "note": "also electric shock, shock wave, a shock of hair",
+      "felt": "state"
+    },
+    {
+      "id": "en.emonoun.worry",
+      "lemma": "worry",
+      "pos": [
+        "NOUN"
+      ],
+      "kind": "emotion_noun",
+      "strength": "strong",
+      "valence": -0.6,
+      "arousal": 0.55,
+      "emotions": {
+        "fear": 0.7
+      },
+      "source": "curated:claude-2026-09",
+      "version": 1,
+      "felt": "state"
+    },
+    {
+      "id": "en.emonoun.dismay",
+      "lemma": "dismay",
+      "pos": [
+        "NOUN"
+      ],
+      "kind": "emotion_noun",
+      "strength": "strong",
+      "valence": -0.65,
+      "arousal": 0.6,
+      "emotions": {
+        "sadness": 0.6,
+        "surprise": 0.5
+      },
+      "source": "curated:claude-2026-09",
+      "version": 1,
+      "felt": "state"
+    },
+    {
+      "id": "en.emonoun.disappointment",
+      "lemma": "disappointment",
+      "pos": [
+        "NOUN"
+      ],
+      "kind": "emotion_noun",
+      "strength": "strong",
+      "valence": -0.6,
+      "arousal": 0.35,
+      "emotions": {
+        "sadness": 0.75
+      },
+      "source": "curated:claude-2026-09",
+      "version": 1,
+      "felt": "state"
+    },
+    {
+      "id": "en.emonoun.nervousness",
+      "lemma": "nervousness",
+      "pos": [
+        "NOUN"
+      ],
+      "kind": "emotion_noun",
+      "strength": "strong",
+      "valence": -0.5,
+      "arousal": 0.65,
+      "emotions": {
+        "fear": 0.7
+      },
+      "source": "curated:claude-2026-09",
+      "version": 1,
+      "felt": "state"
+    },
+    {
+      "id": "en.emonoun.fright",
+      "lemma": "fright",
+      "pos": [
+        "NOUN"
+      ],
+      "kind": "emotion_noun",
+      "strength": "strong",
+      "valence": -0.8,
+      "arousal": 0.85,
+      "emotions": {
+        "fear": 0.9
+      },
+      "source": "curated:claude-2026-09",
+      "version": 1,
+      "felt": "state"
+    },
+    {
+      "id": "en.emonoun.exasperation",
+      "lemma": "exasperation",
+      "pos": [
+        "NOUN"
+      ],
+      "kind": "emotion_noun",
+      "strength": "strong",
+      "valence": -0.6,
+      "arousal": 0.65,
+      "emotions": {
+        "anger": 0.7
+      },
+      "source": "curated:claude-2026-09",
+      "version": 1,
+      "felt": "state"
+    },
+    {
+      "id": "en.emonoun.regret",
+      "lemma": "regret",
+      "pos": [
+        "NOUN"
+      ],
+      "kind": "emotion_noun",
+      "strength": "strong",
+      "valence": -0.6,
+      "arousal": 0.35,
+      "emotions": {
+        "sadness": 0.8
+      },
+      "source": "curated:claude-2026-09",
+      "version": 1,
+      "felt": "state"
+    },
+    {
+      "id": "en.emonoun.hate",
+      "lemma": "hate",
+      "pos": [
+        "NOUN"
+      ],
+      "kind": "emotion_noun",
+      "strength": "strong",
+      "valence": -0.9,
+      "arousal": 0.8,
+      "emotions": {
+        "anger": 0.8,
+        "disgust": 0.7
+      },
+      "source": "curated:claude-2026-09",
+      "version": 1,
+      "felt": "state"
+    },
+    {
+      "id": "en.emonoun.amusement",
+      "lemma": "amusement",
+      "pos": [
+        "NOUN"
+      ],
+      "kind": "emotion_noun",
+      "strength": "weak",
+      "valence": 0.6,
+      "arousal": 0.5,
+      "emotions": {
+        "joy": 0.75
+      },
+      "source": "curated:claude-2026-09",
+      "version": 1,
+      "note": "also 'amusement park', 'amusements' (entertainments)",
+      "felt": "state"
+    },
+    {
+      "id": "en.emonoun.curiosity",
+      "lemma": "curiosity",
+      "pos": [
+        "NOUN"
+      ],
+      "kind": "emotion_noun",
+      "strength": "weak",
+      "valence": 0.3,
+      "arousal": 0.55,
+      "emotions": {
+        "anticipation": 0.7,
+        "surprise": 0.3
+      },
+      "source": "curated:claude-2026-09",
+      "version": 1,
+      "note": "also an odd object ('a curiosity shop')",
+      "felt": "state"
+    },
+    {
+      "id": "en.emonoun.pleasure",
+      "lemma": "pleasure",
+      "pos": [
+        "NOUN"
+      ],
+      "kind": "emotion_noun",
+      "strength": "weak",
+      "valence": 0.8,
+      "arousal": 0.5,
+      "emotions": {
+        "joy": 0.8
+      },
+      "source": "curated:claude-2026-09",
+      "version": 1,
+      "note": "also 'business or pleasure', 'it's a pleasure' (politeness)",
+      "felt": "state"
+    },
+    {
+      "id": "en.emonoun.unease",
+      "lemma": "unease",
+      "pos": [
+        "NOUN"
+      ],
+      "kind": "emotion_noun",
+      "strength": "strong",
+      "valence": -0.5,
+      "arousal": 0.5,
+      "emotions": {
+        "fear": 0.6
+      },
+      "source": "curated:claude-2026-09",
+      "version": 1,
+      "felt": "state"
+    },
+    {
+      "id": "en.emonoun.apprehension",
+      "lemma": "apprehension",
+      "pos": [
+        "NOUN"
+      ],
+      "kind": "emotion_noun",
+      "strength": "weak",
+      "valence": -0.5,
+      "arousal": 0.6,
+      "emotions": {
+        "fear": 0.7,
+        "anticipation": 0.4
+      },
+      "source": "curated:claude-2026-09",
+      "version": 1,
+      "note": "also arrest ('apprehension of the thief')",
+      "felt": "state"
+    },
+    {
+      "id": "en.emonoun.outrage",
+      "lemma": "outrage",
+      "pos": [
+        "NOUN"
+      ],
+      "kind": "emotion_noun",
+      "strength": "weak",
+      "valence": -0.8,
+      "arousal": 0.85,
+      "emotions": {
+        "anger": 0.9
+      },
+      "source": "curated:claude-2026-09",
+      "version": 1,
+      "note": "also the outrageous act itself ('an outrage against decency')",
+      "felt": "state"
+    },
+    {
+      "id": "en.emonoun.elation",
+      "lemma": "elation",
+      "pos": [
+        "NOUN"
+      ],
+      "kind": "emotion_noun",
+      "strength": "strong",
+      "valence": 0.9,
+      "arousal": 0.8,
+      "emotions": {
+        "joy": 0.9
+      },
+      "source": "curated:claude-2026-09",
+      "version": 1,
+      "felt": "state"
+    },
+    {
+      "id": "en.emonoun.distress",
+      "lemma": "distress",
+      "pos": [
+        "NOUN"
+      ],
+      "kind": "emotion_noun",
+      "strength": "weak",
+      "valence": -0.7,
+      "arousal": 0.7,
+      "emotions": {
+        "fear": 0.6,
+        "sadness": 0.6
+      },
+      "source": "curated:claude-2026-09",
+      "version": 1,
+      "note": "also physical/mechanical ('a ship in distress')",
+      "felt": "state"
+    },
+    {
+      "id": "en.emonoun.affront",
+      "lemma": "affront",
+      "pos": [
+        "NOUN"
+      ],
+      "kind": "emotion_noun",
+      "strength": "weak",
+      "valence": -0.6,
+      "arousal": 0.6,
+      "emotions": {
+        "anger": 0.7
+      },
+      "source": "curated:claude-2026-09",
+      "version": 1,
+      "note": "usually the insulting act, not the feeling",
+      "felt": "evaluative"
+    }
+  ]
+}

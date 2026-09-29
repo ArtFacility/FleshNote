@@ -1,0 +1,199 @@
+{
+ "lang": "hu",
+ "kind": "filter_verb",
+ "version": 1,
+ "entries": [
+  {
+   "id": "hu.filter.l\u00e1t",
+   "lemma": "l\u00e1t",
+   "pos": [
+    "VERB"
+   ],
+   "kind": "filter_verb",
+   "strength": "weak",
+   "valence": 0.0,
+   "arousal": 0.15,
+   "emotions": {
+    "anticipation": 0.3
+   },
+   "source": "migrated:hun_janitor.py",
+   "version": 1
+  },
+  {
+   "id": "hu.filter.hall",
+   "lemma": "hall",
+   "pos": [
+    "VERB"
+   ],
+   "kind": "filter_verb",
+   "strength": "weak",
+   "valence": 0.0,
+   "arousal": 0.15,
+   "emotions": {
+    "anticipation": 0.3
+   },
+   "source": "migrated:hun_janitor.py",
+   "version": 1
+  },
+  {
+   "id": "hu.filter.\u00e9rez",
+   "lemma": "\u00e9rez",
+   "pos": [
+    "VERB"
+   ],
+   "kind": "filter_verb",
+   "strength": "weak",
+   "valence": 0.0,
+   "arousal": 0.25,
+   "emotions": {
+    "anticipation": 0.3
+   },
+   "source": "migrated:hun_janitor.py",
+   "version": 1
+  },
+  {
+   "id": "hu.filter.\u00e9szrevesz",
+   "lemma": "\u00e9szrevesz",
+   "pos": [
+    "VERB"
+   ],
+   "kind": "filter_verb",
+   "strength": "weak",
+   "valence": 0.05,
+   "arousal": 0.35,
+   "emotions": {
+    "anticipation": 0.3
+   },
+   "source": "migrated:hun_janitor.py",
+   "version": 1
+  },
+  {
+   "id": "hu.filter.figyel",
+   "lemma": "figyel",
+   "pos": [
+    "VERB"
+   ],
+   "kind": "filter_verb",
+   "strength": "weak",
+   "valence": 0.0,
+   "arousal": 0.3,
+   "emotions": {
+    "anticipation": 0.3
+   },
+   "source": "migrated:hun_janitor.py",
+   "version": 1
+  },
+  {
+   "id": "hu.filter.megfigyel",
+   "lemma": "megfigyel",
+   "pos": [
+    "VERB"
+   ],
+   "kind": "filter_verb",
+   "strength": "weak",
+   "valence": 0.0,
+   "arousal": 0.2,
+   "emotions": {
+    "anticipation": 0.3
+   },
+   "source": "migrated:hun_janitor.py",
+   "version": 1
+  },
+  {
+   "id": "hu.filter.szagol",
+   "lemma": "szagol",
+   "pos": [
+    "VERB"
+   ],
+   "kind": "filter_verb",
+   "strength": "weak",
+   "valence": 0.0,
+   "arousal": 0.15,
+   "emotions": {
+    "anticipation": 0.3
+   },
+   "source": "migrated:hun_janitor.py",
+   "version": 1
+  },
+  {
+   "id": "hu.filter.megpillant",
+   "lemma": "megpillant",
+   "pos": [
+    "VERB"
+   ],
+   "kind": "filter_verb",
+   "strength": "weak",
+   "valence": 0.05,
+   "arousal": 0.35,
+   "emotions": {
+    "anticipation": 0.3
+   },
+   "source": "curated:gemini-2026-09",
+   "version": 1
+  },
+  {
+   "id": "hu.filter.szeml\u00e9l",
+   "lemma": "szeml\u00e9l",
+   "pos": [
+    "VERB"
+   ],
+   "kind": "filter_verb",
+   "strength": "weak",
+   "valence": 0.0,
+   "arousal": 0.25,
+   "emotions": {
+    "anticipation": 0.3
+   },
+   "source": "curated:gemini-2026-09",
+   "version": 1
+  },
+  {
+   "id": "hu.filter.k\u00e9mlel",
+   "lemma": "k\u00e9mlel",
+   "pos": [
+    "VERB"
+   ],
+   "kind": "filter_verb",
+   "strength": "weak",
+   "valence": 0.0,
+   "arousal": 0.3,
+   "emotions": {
+    "anticipation": 0.3
+   },
+   "source": "curated:gemini-2026-09",
+   "version": 1
+  },
+  {
+   "id": "hu.filter.hallgat\u00f3zik",
+   "lemma": "hallgat\u00f3zik",
+   "pos": [
+    "VERB"
+   ],
+   "kind": "filter_verb",
+   "strength": "weak",
+   "valence": 0.0,
+   "arousal": 0.35,
+   "emotions": {
+    "anticipation": 0.3
+   },
+   "source": "curated:gemini-2026-09",
+   "version": 1
+  },
+  {
+   "id": "hu.filter.les",
+   "lemma": "les",
+   "pos": [
+    "VERB"
+   ],
+   "kind": "filter_verb",
+   "strength": "weak",
+   "valence": 0.0,
+   "arousal": 0.3,
+   "emotions": {
+    "anticipation": 0.3
+   },
+   "source": "curated:gemini-2026-09",
+   "version": 1
+  }
+ ]
+}
