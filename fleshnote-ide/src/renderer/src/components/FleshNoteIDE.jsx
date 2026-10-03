@@ -318,6 +318,7 @@ export default function FleshNoteIDE({ projectConfig, projectPath, onCloseProjec
   const [inspectedTwistId, setInspectedTwistId] = useState(null)
   const [inspectorInitialTab, setInspectorInitialTab] = useState(null)
   const [scrollToWordOffset, setScrollToWordOffset] = useState(null)
+  const [scrollToCharTarget, setScrollToCharTarget] = useState(null)
   const [cursorWorldTime, setCursorWorldTime] = useState('')
 
   const [hoveredChapterId, setHoveredChapterId] = useState(null)
@@ -359,6 +360,9 @@ export default function FleshNoteIDE({ projectConfig, projectPath, onCloseProjec
   )
   const [janitorSuggestions, setJanitorSuggestions] = useState([])
   const [janitorLoading, setJanitorLoading] = useState(false)
+  // Counts finished Janitor runs; each one has just filled the paragraph cache,
+  // so the editor's Story Pulse gutter refetches its scores then (never per keystroke)
+  const [janitorRuns, setJanitorRuns] = useState(0)
   const [janitorFocusSignal, setJanitorFocusSignal] = useState(0)
   const janitorActionsRef = useRef(null)
   const lastAnalyzedHtmlRef = useRef('')
@@ -716,6 +720,23 @@ export default function FleshNoteIDE({ projectConfig, projectPath, onCloseProjec
     [chapters, activeChapter]
   )
 
+  // ── Open a paragraph from the planner's Story Pulse lane ──
+  // charOffset is the editor text coordinate the Janitor uses; the Editor
+  // applies the target once the chapter's content has loaded.
+  const handleOpenParagraph = useCallback(
+    async (chapterId, charOffset, snippet) => {
+      const targetChapter = chapters.find(ch => String(ch.id) === String(chapterId))
+      if (!targetChapter) return
+      setMainView('editor')
+      if (!activeChapter || String(activeChapter.id) !== String(chapterId)) {
+        await loadChapter(targetChapter)
+      }
+      setScrollToCharTarget({ chapterId, charOffset, snippet, showPulse: true, timestamp: Date.now() })
+    },
+    [chapters, activeChapter]
+  )
+  const clearCharTarget = useCallback(() => setScrollToCharTarget(null), [])
+
   // ── Refresh entities (after creating new ones) ─────
   const handleEntitiesChanged = useCallback(async () => {
     if (!projectPath) return
@@ -740,24 +761,38 @@ export default function FleshNoteIDE({ projectConfig, projectPath, onCloseProjec
 
   const handleImportDataChanged = useCallback(async () => {
     await Promise.all([reloadChaptersList(), handleEntitiesChanged()])
-  }, [handleEntitiesChanged])
+    // A sync can change the open chapter's prose on disk. Reload it, or the
+    // editor keeps the old text and its next autosave writes it back.
+    if (!activeChapter || !projectPath) return
+    try {
+      const data = await window.api.loadChapterContent(projectPath, activeChapter.id)
+      const fresh = data?.content ?? ''
+      setChapterContent(prev => (prev && prev.id === activeChapter.id && prev.content !== fresh)
+        ? { ...prev, content: fresh, _rev: Date.now() }
+        : prev)
+    } catch (err) {
+      console.error('Failed to reload the open chapter after sync:', err)
+    }
+  }, [handleEntitiesChanged, activeChapter, projectPath])
 
   // ── Janitor Analysis ──────────────────────────────
-  const triggerJanitorAnalysis = useCallback(async () => {
+  // `latestHtml` is the editor's current HTML; chapterContent lags it by the
+  // save debounce, so without it the Janitor analyzed the previous version.
+  const triggerJanitorAnalysis = useCallback(async (latestHtml) => {
     if (focusMode) return
     if (!activeChapter || !projectPath) return
     if (mainView !== 'editor') return
-    if (!chapterContent?.content) return
+    const htmlToAnalyze = typeof latestHtml === 'string' ? latestHtml : chapterContent?.content
+    if (!htmlToAnalyze) return
     // Skip if content hasn't changed since last analysis (prevents 10s timer re-analyzing same text)
-    if (chapterContent.content === lastAnalyzedHtmlRef.current) return
+    if (htmlToAnalyze === lastAnalyzedHtmlRef.current) return
     // Don't refresh while user is actively browsing the panel — defer until they're done
     if (Date.now() - janitorPanelActivityRef.current < 8000) {
       if (janitorPendingRetryRef.current) clearTimeout(janitorPendingRetryRef.current)
-      janitorPendingRetryRef.current = setTimeout(() => triggerJanitorAnalysis(), 8000)
+      janitorPendingRetryRef.current = setTimeout(() => triggerJanitorAnalysis(htmlToAnalyze), 8000)
       return
     }
 
-    const htmlToAnalyze = chapterContent.content
     setJanitorLoading(true)
     try {
       const result = await window.api.janitorAnalyze({
@@ -775,6 +810,7 @@ export default function FleshNoteIDE({ projectConfig, projectPath, onCloseProjec
           JSON.parse(localStorage.getItem(dismissKey) || '[]').map(i => i.id)
         )
         setJanitorSuggestions((result.suggestions || []).filter(s => !dismissed.has(s.id)))
+        setJanitorRuns(n => n + 1)
       }
     } catch (err) {
       console.error('Janitor analysis failed:', err)
@@ -1229,6 +1265,8 @@ export default function FleshNoteIDE({ projectConfig, projectPath, onCloseProjec
             chapters={chapters}
             activeChapter={activeChapter}
             projectConfig={projectConfig}
+            onOpenParagraph={handleOpenParagraph}
+            onConfigUpdate={onConfigUpdate}
           />
         ) : (
           <>
@@ -1629,8 +1667,11 @@ export default function FleshNoteIDE({ projectConfig, projectPath, onCloseProjec
                   onEntitiesChanged={handleEntitiesChanged}
                   onConfigUpdate={onConfigUpdate}
                   scrollToWordOffset={scrollToWordOffset}
+                  scrollToCharTarget={scrollToCharTarget}
+                  onCharTargetConsumed={clearCharTarget}
                   janitorActionsRef={janitorActionsRef}
                   onJanitorTrigger={focusMode ? null : triggerJanitorAnalysis}
+                  pulseRefreshKey={janitorRuns}
                   onEffectiveTimeChange={setCursorWorldTime}
                 />
                 {!focusMode && (

@@ -1,2904 +1,3024 @@
 {
-  "lang": "pl",
-  "kind": "action_violent",
-  "version": 1,
-  "entries": [
-    {
-      "id": "pl.act.zabić",
-      "lemma": "zabić",
-      "pos": [
-        "VERB"
-      ],
-      "kind": "action_violent",
-      "strength": "strong",
-      "note": null,
-      "valence": -0.92,
-      "arousal": 0.94,
-      "emotions": {
-        "anger": 0.85,
-        "fear": 0.8
-      },
-      "source": "curated:gemini-2026-09",
-      "version": 1
-    },
-    {
-      "id": "pl.act.zamordować",
-      "lemma": "zamordować",
-      "pos": [
-        "VERB"
-      ],
-      "kind": "action_violent",
-      "strength": "strong",
-      "note": null,
-      "valence": -0.95,
-      "arousal": 0.96,
-      "emotions": {
-        "anger": 0.85,
-        "fear": 0.8
-      },
-      "source": "curated:gemini-2026-09",
-      "version": 1
-    },
-    {
-      "id": "pl.act.zgładzić",
-      "lemma": "zgładzić",
-      "pos": [
-        "VERB"
-      ],
-      "kind": "action_violent",
-      "strength": "strong",
-      "note": null,
-      "valence": -0.92,
-      "arousal": 0.92,
-      "emotions": {
-        "anger": 0.85,
-        "fear": 0.8
-      },
-      "source": "curated:gemini-2026-09",
-      "version": 1
-    },
-    {
-      "id": "pl.act.zmasakrować",
-      "lemma": "zmasakrować",
-      "pos": [
-        "VERB"
-      ],
-      "kind": "action_violent",
-      "strength": "strong",
-      "note": null,
-      "valence": -0.95,
-      "arousal": 0.96,
-      "emotions": {
-        "anger": 0.85,
-        "fear": 0.8
-      },
-      "source": "curated:gemini-2026-09",
-      "version": 1
-    },
-    {
-      "id": "pl.act.zarżnąć",
-      "lemma": "zarżnąć",
-      "pos": [
-        "VERB"
-      ],
-      "kind": "action_violent",
-      "strength": "strong",
-      "note": null,
-      "valence": -0.94,
-      "arousal": 0.94,
-      "emotions": {
-        "anger": 0.85,
-        "fear": 0.8
-      },
-      "source": "curated:gemini-2026-09",
-      "version": 1
-    },
-    {
-      "id": "pl.act.rzezać",
-      "lemma": "rzezać",
-      "pos": [
-        "VERB"
-      ],
-      "kind": "action_violent",
-      "strength": "strong",
-      "note": null,
-      "valence": -0.92,
-      "arousal": 0.92,
-      "emotions": {
-        "anger": 0.85,
-        "fear": 0.8
-      },
-      "source": "curated:gemini-2026-09",
-      "version": 1
-    },
-    {
-      "id": "pl.act.rżnąć",
-      "lemma": "rżnąć",
-      "pos": [
-        "VERB"
-      ],
-      "kind": "action_violent",
-      "strength": "strong",
-      "note": null,
-      "valence": -0.88,
-      "arousal": 0.88,
-      "emotions": {
-        "anger": 0.85,
-        "fear": 0.8
-      },
-      "source": "curated:gemini-2026-09",
-      "version": 1
-    },
-    {
-      "id": "pl.act.ukatrupić",
-      "lemma": "ukatrupić",
-      "pos": [
-        "VERB"
-      ],
-      "kind": "action_violent",
-      "strength": "strong",
-      "note": null,
-      "valence": -0.9,
-      "arousal": 0.9,
-      "emotions": {
-        "anger": 0.85,
-        "fear": 0.8
-      },
-      "source": "curated:gemini-2026-09",
-      "version": 1
-    },
-    {
-      "id": "pl.act.powalić_trup",
-      "phrase": [
-        "powalić",
-        "trup"
-      ],
-      "kind": "action_violent",
-      "strength": "strong",
-      "valence": -0.9,
-      "arousal": 0.9,
-      "emotions": {
-        "anger": 0.85,
-        "fear": 0.8
-      },
-      "source": "curated:gemini-2026-09",
-      "version": 1,
-      "alt_lemmas": [
-        "trupa"
-      ],
-      "lemma_evidence": "carrier",
-      "example": "Rycerz zdołał powalić trupem groźnego przeciwnika."
-    },
-    {
-      "id": "pl.act.położyć_trup",
-      "phrase": [
-        "położyć",
-        "trup"
-      ],
-      "kind": "action_violent",
-      "strength": "strong",
-      "valence": -0.9,
-      "arousal": 0.9,
-      "emotions": {
-        "anger": 0.85,
-        "fear": 0.8
-      },
-      "source": "curated:gemini-2026-09",
-      "version": 1,
-      "alt_lemmas": [
-        "trupa"
-      ],
-      "lemma_evidence": "carrier",
-      "example": "Jednym potężnym ciosem zdołał położyć trupem potwora."
-    },
-    {
-      "id": "pl.act.powiesić",
-      "lemma": "powiesić",
-      "pos": [
-        "VERB"
-      ],
-      "kind": "action_violent",
-      "strength": "strong",
-      "note": null,
-      "valence": -0.92,
-      "arousal": 0.9,
-      "emotions": {
-        "anger": 0.85,
-        "fear": 0.8
-      },
-      "source": "curated:gemini-2026-09",
-      "version": 1
-    },
-    {
-      "id": "pl.act.utopić",
-      "lemma": "utopić",
-      "pos": [
-        "VERB"
-      ],
-      "kind": "action_violent",
-      "strength": "strong",
-      "note": null,
-      "valence": -0.9,
-      "arousal": 0.88,
-      "emotions": {
-        "anger": 0.85,
-        "fear": 0.8
-      },
-      "source": "curated:gemini-2026-09",
-      "version": 1
-    },
-    {
-      "id": "pl.act.udusić",
-      "lemma": "udusić",
-      "pos": [
-        "VERB"
-      ],
-      "kind": "action_violent",
-      "strength": "strong",
-      "note": null,
-      "valence": -0.92,
-      "arousal": 0.92,
-      "emotions": {
-        "anger": 0.85,
-        "fear": 0.8
-      },
-      "source": "curated:gemini-2026-09",
-      "version": 1
-    },
-    {
-      "id": "pl.act.zadusić",
-      "lemma": "zadusić",
-      "pos": [
-        "VERB"
-      ],
-      "kind": "action_violent",
-      "strength": "strong",
-      "note": null,
-      "valence": -0.92,
-      "arousal": 0.92,
-      "emotions": {
-        "anger": 0.85,
-        "fear": 0.8
-      },
-      "source": "curated:gemini-2026-09",
-      "version": 1
-    },
-    {
-      "id": "pl.act.dusić",
-      "lemma": "dusić",
-      "pos": [
-        "VERB"
-      ],
-      "kind": "action_violent",
-      "strength": "strong",
-      "note": null,
-      "valence": -0.86,
-      "arousal": 0.88,
-      "emotions": {
-        "anger": 0.85,
-        "fear": 0.8
-      },
-      "source": "curated:gemini-2026-09",
-      "version": 1
-    },
-    {
-      "id": "pl.act.rozstrzelać",
-      "lemma": "rozstrzelać",
-      "pos": [
-        "VERB"
-      ],
-      "kind": "action_violent",
-      "strength": "strong",
-      "note": null,
-      "valence": -0.92,
-      "arousal": 0.92,
-      "emotions": {
-        "anger": 0.85,
-        "fear": 0.8
-      },
-      "source": "curated:gemini-2026-09",
-      "version": 1
-    },
-    {
-      "id": "pl.act.zastrzelić",
-      "lemma": "zastrzelić",
-      "pos": [
-        "VERB"
-      ],
-      "kind": "action_violent",
-      "strength": "strong",
-      "note": null,
-      "valence": -0.9,
-      "arousal": 0.9,
-      "emotions": {
-        "anger": 0.85,
-        "fear": 0.8
-      },
-      "source": "curated:gemini-2026-09",
-      "version": 1
-    },
-    {
-      "id": "pl.act.ściąć_głowa",
-      "phrase": [
-        "ściąć",
-        "głowa"
-      ],
-      "kind": "action_violent",
-      "strength": "strong",
-      "valence": -0.94,
-      "arousal": 0.92,
-      "emotions": {
-        "anger": 0.85,
-        "fear": 0.8
-      },
-      "source": "curated:gemini-2026-09",
-      "version": 1,
-      "example": "Kat miał ściąć głowę zdrajcy o świcie na rynku."
-    },
-    {
-      "id": "pl.act.ściąć",
-      "lemma": "ściąć",
-      "pos": [
-        "VERB"
-      ],
-      "kind": "action_violent",
-      "strength": "strong",
-      "note": null,
-      "valence": -0.86,
-      "arousal": 0.86,
-      "emotions": {
-        "anger": 0.85,
-        "fear": 0.8
-      },
-      "source": "curated:gemini-2026-09",
-      "version": 1
-    },
-    {
-      "id": "pl.act.otruć",
-      "lemma": "otruć",
-      "pos": [
-        "VERB"
-      ],
-      "kind": "action_violent",
-      "strength": "strong",
-      "note": null,
-      "valence": -0.92,
-      "arousal": 0.88,
-      "emotions": {
-        "anger": 0.85,
-        "fear": 0.8
-      },
-      "source": "curated:gemini-2026-09",
-      "version": 1
-    },
-    {
-      "id": "pl.act.zatruć",
-      "lemma": "zatruć",
-      "pos": [
-        "VERB"
-      ],
-      "kind": "action_violent",
-      "strength": "strong",
-      "note": null,
-      "valence": -0.88,
-      "arousal": 0.86,
-      "emotions": {
-        "anger": 0.85,
-        "fear": 0.8
-      },
-      "source": "curated:gemini-2026-09",
-      "version": 1
-    },
-    {
-      "id": "pl.act.zamęczyć_na_śmierć",
-      "phrase": [
-        "zamęczyć",
-        "na",
-        "śmierć"
-      ],
-      "kind": "action_violent",
-      "strength": "strong",
-      "valence": -0.96,
-      "arousal": 0.96,
-      "emotions": {
-        "anger": 0.85,
-        "fear": 0.8
-      },
-      "source": "curated:gemini-2026-09",
-      "version": 1,
-      "example": "Okrutny strażnik chciał zamęczyć na śmierć bezbronnego uciekiniera."
-    },
-    {
-      "id": "pl.act.wyniszczyć",
-      "lemma": "wyniszczyć",
-      "pos": [
-        "VERB"
-      ],
-      "kind": "action_violent",
-      "strength": "strong",
-      "note": null,
-      "valence": -0.9,
-      "arousal": 0.9,
-      "emotions": {
-        "anger": 0.85,
-        "fear": 0.8
-      },
-      "source": "curated:gemini-2026-09",
-      "version": 1
-    },
-    {
-      "id": "pl.act.pozbawić_życie",
-      "phrase": [
-        "pozbawić",
-        "życie"
-      ],
-      "kind": "action_violent",
-      "strength": "strong",
-      "valence": -0.9,
-      "arousal": 0.88,
-      "emotions": {
-        "anger": 0.85,
-        "fear": 0.8
-      },
-      "source": "curated:gemini-2026-09",
-      "version": 1,
-      "example": "Cios miecza mógł pozbawić życie każdego nieostrożnego śmiałka."
-    },
-    {
-      "id": "pl.act.wykrwawić",
-      "lemma": "wykrwawić",
-      "pos": [
-        "VERB"
-      ],
-      "kind": "action_violent",
-      "strength": "strong",
-      "note": null,
-      "valence": -0.9,
-      "arousal": 0.88,
-      "emotions": {
-        "anger": 0.85,
-        "fear": 0.8
-      },
-      "source": "curated:gemini-2026-09",
-      "version": 1
-    },
-    {
-      "id": "pl.act.posłać_na_tamten_świat",
-      "phrase": [
-        "posłać",
-        "na",
-        "tamten",
-        "świat"
-      ],
-      "kind": "action_violent",
-      "strength": "strong",
-      "valence": -0.9,
-      "arousal": 0.88,
-      "emotions": {
-        "anger": 0.85,
-        "fear": 0.8
-      },
-      "source": "curated:gemini-2026-09",
-      "version": 1,
-      "example": "Zbójca zagroził, że może posłać na tamten świat każdego świadka zbrodni."
-    },
-    {
-      "id": "pl.act.dobić",
-      "lemma": "dobić",
-      "pos": [
-        "VERB"
-      ],
-      "kind": "action_violent",
-      "strength": "strong",
-      "note": null,
-      "valence": -0.88,
-      "arousal": 0.86,
-      "emotions": {
-        "anger": 0.85,
-        "fear": 0.8
-      },
-      "source": "curated:gemini-2026-09",
-      "version": 1
-    },
-    {
-      "id": "pl.act.wyrżnąć",
-      "lemma": "wyrżnąć",
-      "pos": [
-        "VERB"
-      ],
-      "kind": "action_violent",
-      "strength": "strong",
-      "note": null,
-      "valence": -0.92,
-      "arousal": 0.92,
-      "emotions": {
-        "anger": 0.85,
-        "fear": 0.8
-      },
-      "source": "curated:gemini-2026-09",
-      "version": 1
-    },
-    {
-      "id": "pl.act.wybić",
-      "lemma": "wybić",
-      "pos": [
-        "VERB"
-      ],
-      "kind": "action_violent",
-      "strength": "strong",
-      "note": null,
-      "valence": -0.86,
-      "arousal": 0.86,
-      "emotions": {
-        "anger": 0.85,
-        "fear": 0.8
-      },
-      "source": "curated:gemini-2026-09",
-      "version": 1
-    },
-    {
-      "id": "pl.act.zmiażdżyć",
-      "lemma": "zmiażdżyć",
-      "pos": [
-        "VERB"
-      ],
-      "kind": "action_violent",
-      "strength": "strong",
-      "note": null,
-      "valence": -0.86,
-      "arousal": 0.88,
-      "emotions": {
-        "anger": 0.85,
-        "fear": 0.8
-      },
-      "source": "curated:gemini-2026-09",
-      "version": 1
-    },
-    {
-      "id": "pl.act.strzaskać",
-      "lemma": "strzaskać",
-      "pos": [
-        "VERB"
-      ],
-      "kind": "action_violent",
-      "strength": "strong",
-      "note": null,
-      "valence": -0.86,
-      "arousal": 0.88,
-      "emotions": {
-        "anger": 0.85,
-        "fear": 0.8
-      },
-      "source": "curated:gemini-2026-09",
-      "version": 1
-    },
-    {
-      "id": "pl.act.roztrzaskać",
-      "lemma": "roztrzaskać",
-      "pos": [
-        "VERB"
-      ],
-      "kind": "action_violent",
-      "strength": "strong",
-      "note": null,
-      "valence": -0.86,
-      "arousal": 0.88,
-      "emotions": {
-        "anger": 0.85,
-        "fear": 0.8
-      },
-      "source": "curated:gemini-2026-09",
-      "version": 1
-    },
-    {
-      "id": "pl.act.gruchotać",
-      "lemma": "gruchotać",
-      "pos": [
-        "VERB"
-      ],
-      "kind": "action_violent",
-      "strength": "strong",
-      "note": null,
-      "valence": -0.84,
-      "arousal": 0.86,
-      "emotions": {
-        "anger": 0.85,
-        "fear": 0.8
-      },
-      "source": "curated:gemini-2026-09",
-      "version": 1
-    },
-    {
-      "id": "pl.act.rozpłatać",
-      "lemma": "rozpłatać",
-      "pos": [
-        "VERB"
-      ],
-      "kind": "action_violent",
-      "strength": "strong",
-      "note": null,
-      "valence": -0.88,
-      "arousal": 0.9,
-      "emotions": {
-        "anger": 0.85,
-        "fear": 0.8
-      },
-      "source": "curated:gemini-2026-09",
-      "version": 1
-    },
-    {
-      "id": "pl.act.rozedrzeć",
-      "lemma": "rozedrzeć",
-      "pos": [
-        "VERB"
-      ],
-      "kind": "action_violent",
-      "strength": "strong",
-      "note": null,
-      "valence": -0.84,
-      "arousal": 0.86,
-      "emotions": {
-        "anger": 0.85,
-        "fear": 0.8
-      },
-      "source": "curated:gemini-2026-09",
-      "version": 1
-    },
-    {
-      "id": "pl.act.rozszarpać",
-      "lemma": "rozszarpać",
-      "pos": [
-        "VERB"
-      ],
-      "kind": "action_violent",
-      "strength": "strong",
-      "note": null,
-      "valence": -0.88,
-      "arousal": 0.9,
-      "emotions": {
-        "anger": 0.85,
-        "fear": 0.8
-      },
-      "source": "curated:gemini-2026-09",
-      "version": 1
-    },
-    {
-      "id": "pl.act.szarpać",
-      "lemma": "szarpać",
-      "pos": [
-        "VERB"
-      ],
-      "kind": "action_violent",
-      "strength": "strong",
-      "note": null,
-      "valence": -0.76,
-      "arousal": 0.8,
-      "emotions": {
-        "anger": 0.85,
-        "fear": 0.8
-      },
-      "source": "curated:gemini-2026-09",
-      "version": 1
-    },
-    {
-      "id": "pl.act.poszarpać",
-      "lemma": "poszarpać",
-      "pos": [
-        "VERB"
-      ],
-      "kind": "action_violent",
-      "strength": "strong",
-      "note": null,
-      "valence": -0.78,
-      "arousal": 0.82,
-      "emotions": {
-        "anger": 0.85,
-        "fear": 0.8
-      },
-      "source": "curated:gemini-2026-09",
-      "version": 1
-    },
-    {
-      "id": "pl.act.ćwiartować",
-      "lemma": "ćwiartować",
-      "pos": [
-        "VERB"
-      ],
-      "kind": "action_violent",
-      "strength": "strong",
-      "note": null,
-      "valence": -0.9,
-      "arousal": 0.9,
-      "emotions": {
-        "anger": 0.85,
-        "fear": 0.8
-      },
-      "source": "curated:gemini-2026-09",
-      "version": 1
-    },
-    {
-      "id": "pl.act.poćwiartować",
-      "lemma": "poćwiartować",
-      "pos": [
-        "VERB"
-      ],
-      "kind": "action_violent",
-      "strength": "strong",
-      "note": null,
-      "valence": -0.9,
-      "arousal": 0.9,
-      "emotions": {
-        "anger": 0.85,
-        "fear": 0.8
-      },
-      "source": "curated:gemini-2026-09",
-      "version": 1
-    },
-    {
-      "id": "pl.act.rozkroić",
-      "lemma": "rozkroić",
-      "pos": [
-        "VERB"
-      ],
-      "kind": "action_violent",
-      "strength": "strong",
-      "note": null,
-      "valence": -0.82,
-      "arousal": 0.84,
-      "emotions": {
-        "anger": 0.85,
-        "fear": 0.8
-      },
-      "source": "curated:gemini-2026-09",
-      "version": 1
-    },
-    {
-      "id": "pl.act.podrzynać",
-      "lemma": "podrzynać",
-      "pos": [
-        "VERB"
-      ],
-      "kind": "action_violent",
-      "strength": "strong",
-      "note": null,
-      "valence": -0.88,
-      "arousal": 0.88,
-      "emotions": {
-        "anger": 0.85,
-        "fear": 0.8
-      },
-      "source": "curated:gemini-2026-09",
-      "version": 1
-    },
-    {
-      "id": "pl.act.rozpruć",
-      "lemma": "rozpruć",
-      "pos": [
-        "VERB"
-      ],
-      "kind": "action_violent",
-      "strength": "strong",
-      "note": null,
-      "valence": -0.88,
-      "arousal": 0.9,
-      "emotions": {
-        "anger": 0.85,
-        "fear": 0.8
-      },
-      "source": "curated:gemini-2026-09",
-      "version": 1
-    },
-    {
-      "id": "pl.act.torturować",
-      "lemma": "torturować",
-      "pos": [
-        "VERB"
-      ],
-      "kind": "action_violent",
-      "strength": "strong",
-      "note": null,
-      "valence": -0.94,
-      "arousal": 0.92,
-      "emotions": {
-        "anger": 0.85,
-        "fear": 0.8
-      },
-      "source": "curated:gemini-2026-09",
-      "version": 1
-    },
-    {
-      "id": "pl.act.katować",
-      "lemma": "katować",
-      "pos": [
-        "VERB"
-      ],
-      "kind": "action_violent",
-      "strength": "strong",
-      "note": null,
-      "valence": -0.92,
-      "arousal": 0.9,
-      "emotions": {
-        "anger": 0.85,
-        "fear": 0.8
-      },
-      "source": "curated:gemini-2026-09",
-      "version": 1
-    },
-    {
-      "id": "pl.act.zamęczyć",
-      "lemma": "zamęczyć",
-      "pos": [
-        "VERB"
-      ],
-      "kind": "action_violent",
-      "strength": "strong",
-      "note": null,
-      "valence": -0.9,
-      "arousal": 0.88,
-      "emotions": {
-        "anger": 0.85,
-        "fear": 0.8
-      },
-      "source": "curated:gemini-2026-09",
-      "version": 1
-    },
-    {
-      "id": "pl.act.męczyć",
-      "lemma": "męczyć",
-      "pos": [
-        "VERB"
-      ],
-      "kind": "action_violent",
-      "strength": "strong",
-      "note": null,
-      "valence": -0.82,
-      "arousal": 0.82,
-      "emotions": {
-        "anger": 0.85,
-        "fear": 0.8
-      },
-      "source": "curated:gemini-2026-09",
-      "version": 1
-    },
-    {
-      "id": "pl.act.chłostać",
-      "lemma": "chłostać",
-      "pos": [
-        "VERB"
-      ],
-      "kind": "action_violent",
-      "strength": "strong",
-      "note": null,
-      "valence": -0.82,
-      "arousal": 0.84,
-      "emotions": {
-        "anger": 0.85,
-        "fear": 0.8
-      },
-      "source": "curated:gemini-2026-09",
-      "version": 1
-    },
-    {
-      "id": "pl.act.biczować",
-      "lemma": "biczować",
-      "pos": [
-        "VERB"
-      ],
-      "kind": "action_violent",
-      "strength": "strong",
-      "note": null,
-      "valence": -0.84,
-      "arousal": 0.86,
-      "emotions": {
-        "anger": 0.85,
-        "fear": 0.8
-      },
-      "source": "curated:gemini-2026-09",
-      "version": 1
-    },
-    {
-      "id": "pl.act.okaleczyć",
-      "lemma": "okaleczyć",
-      "pos": [
-        "VERB"
-      ],
-      "kind": "action_violent",
-      "strength": "strong",
-      "note": null,
-      "valence": -0.86,
-      "arousal": 0.86,
-      "emotions": {
-        "anger": 0.85,
-        "fear": 0.8
-      },
-      "source": "curated:gemini-2026-09",
-      "version": 1
-    },
-    {
-      "id": "pl.act.oślepić",
-      "lemma": "oślepić",
-      "pos": [
-        "VERB"
-      ],
-      "kind": "action_violent",
-      "strength": "strong",
-      "note": null,
-      "valence": -0.88,
-      "arousal": 0.86,
-      "emotions": {
-        "anger": 0.85,
-        "fear": 0.8
-      },
-      "source": "curated:gemini-2026-09",
-      "version": 1
-    },
-    {
-      "id": "pl.act.ogłuszyć",
-      "lemma": "ogłuszyć",
-      "pos": [
-        "VERB"
-      ],
-      "kind": "action_violent",
-      "strength": "strong",
-      "note": null,
-      "valence": -0.78,
-      "arousal": 0.8,
-      "emotions": {
-        "anger": 0.85,
-        "fear": 0.8
-      },
-      "source": "curated:gemini-2026-09",
-      "version": 1
-    },
-    {
-      "id": "pl.act.ogłuszać",
-      "lemma": "ogłuszać",
-      "pos": [
-        "VERB"
-      ],
-      "kind": "action_violent",
-      "strength": "strong",
-      "note": null,
-      "valence": -0.76,
-      "arousal": 0.78,
-      "emotions": {
-        "anger": 0.85,
-        "fear": 0.8
-      },
-      "source": "curated:gemini-2026-09",
-      "version": 1
-    },
-    {
-      "id": "pl.act.zranić",
-      "lemma": "zranić",
-      "pos": [
-        "VERB"
-      ],
-      "kind": "action_violent",
-      "strength": "strong",
-      "note": null,
-      "valence": -0.8,
-      "arousal": 0.82,
-      "emotions": {
-        "anger": 0.85,
-        "fear": 0.8
-      },
-      "source": "curated:gemini-2026-09",
-      "version": 1
-    },
-    {
-      "id": "pl.act.ranić",
-      "lemma": "ranić",
-      "pos": [
-        "VERB"
-      ],
-      "kind": "action_violent",
-      "strength": "strong",
-      "note": null,
-      "valence": -0.78,
-      "arousal": 0.8,
-      "emotions": {
-        "anger": 0.85,
-        "fear": 0.8
-      },
-      "source": "curated:gemini-2026-09",
-      "version": 1
-    },
-    {
-      "id": "pl.act.pokrwawić",
-      "lemma": "pokrwawić",
-      "pos": [
-        "VERB"
-      ],
-      "kind": "action_violent",
-      "strength": "strong",
-      "note": null,
-      "valence": -0.78,
-      "arousal": 0.8,
-      "emotions": {
-        "anger": 0.85,
-        "fear": 0.8
-      },
-      "source": "curated:gemini-2026-09",
-      "version": 1
-    },
-    {
-      "id": "pl.act.złamać_kość",
-      "phrase": [
-        "złamać",
-        "kość"
-      ],
-      "kind": "action_violent",
-      "strength": "strong",
-      "valence": -0.82,
-      "arousal": 0.82,
-      "emotions": {
-        "anger": 0.85,
-        "fear": 0.8
-      },
-      "source": "curated:gemini-2026-09",
-      "version": 1,
-      "example": "Ciężki upadek z konia potrafił złamać kość w prawej nodze."
-    },
-    {
-      "id": "pl.act.wybić_ząb",
-      "phrase": [
-        "wybić",
-        "ząb"
-      ],
-      "kind": "action_violent",
-      "strength": "strong",
-      "valence": -0.8,
-      "arousal": 0.8,
-      "emotions": {
-        "anger": 0.85,
-        "fear": 0.8
-      },
-      "source": "curated:gemini-2026-09",
-      "version": 1,
-      "example": "Brutalny cios pięścią zdołał wybić ząb napastnikowi."
-    },
-    {
-      "id": "pl.act.rozkwasić_nos",
-      "phrase": [
-        "rozkwasić",
-        "nos"
-      ],
-      "kind": "action_violent",
-      "strength": "strong",
-      "valence": -0.78,
-      "arousal": 0.78,
-      "emotions": {
-        "anger": 0.85,
-        "fear": 0.8
-      },
-      "source": "curated:gemini-2026-09",
-      "version": 1,
-      "example": "Mocne uderzenie potrafiło rozkwasić nos w mgnieniu oka."
-    },
-    {
-      "id": "pl.act.zedrzeć_skóra",
-      "phrase": [
-        "zedrzeć",
-        "skóra"
-      ],
-      "kind": "action_violent",
-      "strength": "strong",
-      "valence": -0.88,
-      "arousal": 0.88,
-      "emotions": {
-        "anger": 0.85,
-        "fear": 0.8
-      },
-      "source": "curated:gemini-2026-09",
-      "version": 1,
-      "example": "Ostry głaz potrafił zedrzeć skórę z ramienia wspinacza."
-    },
-    {
-      "id": "pl.act.stłuc_na_kwaśny_jabłko",
-      "phrase": [
-        "stłuc",
-        "na",
-        "kwaśny",
-        "jabłko"
-      ],
-      "kind": "action_violent",
-      "strength": "strong",
-      "valence": -0.8,
-      "arousal": 0.8,
-      "emotions": {
-        "anger": 0.85,
-        "fear": 0.8
-      },
-      "source": "curated:gemini-2026-09",
-      "version": 1,
-      "example": "Groził, że potrafi stłuc na kwaśne jabłko każdego łotra."
-    },
-    {
-      "id": "pl.act.uderzyć",
-      "lemma": "uderzyć",
-      "pos": [
-        "VERB"
-      ],
-      "kind": "action_violent",
-      "strength": "strong",
-      "note": null,
-      "valence": -0.72,
-      "arousal": 0.78,
-      "emotions": {
-        "anger": 0.85,
-        "fear": 0.8
-      },
-      "source": "curated:gemini-2026-09",
-      "version": 1
-    },
-    {
-      "id": "pl.act.uderzać",
-      "lemma": "uderzać",
-      "pos": [
-        "VERB"
-      ],
-      "kind": "action_violent",
-      "strength": "strong",
-      "note": null,
-      "valence": -0.7,
-      "arousal": 0.76,
-      "emotions": {
-        "anger": 0.85,
-        "fear": 0.8
-      },
-      "source": "curated:gemini-2026-09",
-      "version": 1
-    },
-    {
-      "id": "pl.act.bić",
-      "lemma": "bić",
-      "pos": [
-        "VERB"
-      ],
-      "kind": "action_violent",
-      "strength": "weak",
-      "note": "wieloznaczne fizyczne vs agresywne",
-      "valence": -0.72,
-      "arousal": 0.76,
-      "emotions": {
-        "anger": 0.85,
-        "fear": 0.8
-      },
-      "source": "curated:gemini-2026-09",
-      "version": 1
-    },
-    {
-      "id": "pl.act.zbić",
-      "lemma": "zbić",
-      "pos": [
-        "VERB"
-      ],
-      "kind": "action_violent",
-      "strength": "strong",
-      "note": null,
-      "valence": -0.72,
-      "arousal": 0.76,
-      "emotions": {
-        "anger": 0.85,
-        "fear": 0.8
-      },
-      "source": "curated:gemini-2026-09",
-      "version": 1
-    },
-    {
-      "id": "pl.act.okładać",
-      "lemma": "okładać",
-      "pos": [
-        "VERB"
-      ],
-      "kind": "action_violent",
-      "strength": "strong",
-      "note": null,
-      "valence": -0.74,
-      "arousal": 0.78,
-      "emotions": {
-        "anger": 0.85,
-        "fear": 0.8
-      },
-      "source": "curated:gemini-2026-09",
-      "version": 1
-    },
-    {
-      "id": "pl.act.ciąć",
-      "lemma": "ciąć",
-      "pos": [
-        "VERB"
-      ],
-      "kind": "action_violent",
-      "strength": "weak",
-      "note": "wieloznaczne fizyczne vs agresywne",
-      "valence": -0.74,
-      "arousal": 0.78,
-      "emotions": {
-        "anger": 0.85,
-        "fear": 0.8
-      },
-      "source": "curated:gemini-2026-09",
-      "version": 1
-    },
-    {
-      "id": "pl.act.siec",
-      "lemma": "siec",
-      "pos": [
-        "VERB"
-      ],
-      "kind": "action_violent",
-      "strength": "strong",
-      "note": null,
-      "valence": -0.76,
-      "arousal": 0.8,
-      "emotions": {
-        "anger": 0.85,
-        "fear": 0.8
-      },
-      "source": "curated:gemini-2026-09",
-      "version": 1
-    },
-    {
-      "id": "pl.act.rąbać",
-      "lemma": "rąbać",
-      "pos": [
-        "VERB"
-      ],
-      "kind": "action_violent",
-      "strength": "strong",
-      "note": null,
-      "valence": -0.78,
-      "arousal": 0.82,
-      "emotions": {
-        "anger": 0.85,
-        "fear": 0.8
-      },
-      "source": "curated:gemini-2026-09",
-      "version": 1
-    },
-    {
-      "id": "pl.act.pchnąć",
-      "lemma": "pchnąć",
-      "pos": [
-        "VERB"
-      ],
-      "kind": "action_violent",
-      "strength": "weak",
-      "note": "wieloznaczne fizyczne vs agresywne",
-      "valence": -0.72,
-      "arousal": 0.78,
-      "emotions": {
-        "anger": 0.85,
-        "fear": 0.8
-      },
-      "source": "curated:gemini-2026-09",
-      "version": 1
-    },
-    {
-      "id": "pl.act.kłuć",
-      "lemma": "kłuć",
-      "pos": [
-        "VERB"
-      ],
-      "kind": "action_violent",
-      "strength": "strong",
-      "note": null,
-      "valence": -0.74,
-      "arousal": 0.78,
-      "emotions": {
-        "anger": 0.85,
-        "fear": 0.8
-      },
-      "source": "curated:gemini-2026-09",
-      "version": 1
-    },
-    {
-      "id": "pl.act.dźgać",
-      "lemma": "dźgać",
-      "pos": [
-        "VERB"
-      ],
-      "kind": "action_violent",
-      "strength": "strong",
-      "note": null,
-      "valence": -0.8,
-      "arousal": 0.84,
-      "emotions": {
-        "anger": 0.85,
-        "fear": 0.8
-      },
-      "source": "curated:gemini-2026-09",
-      "version": 1
-    },
-    {
-      "id": "pl.act.przebić",
-      "lemma": "przebić",
-      "pos": [
-        "VERB"
-      ],
-      "kind": "action_violent",
-      "strength": "strong",
-      "note": null,
-      "valence": -0.8,
-      "arousal": 0.82,
-      "emotions": {
-        "anger": 0.85,
-        "fear": 0.8
-      },
-      "source": "curated:gemini-2026-09",
-      "version": 1
-    },
-    {
-      "id": "pl.act.przeszyć",
-      "lemma": "przeszyć",
-      "pos": [
-        "VERB"
-      ],
-      "kind": "action_violent",
-      "strength": "strong",
-      "note": null,
-      "valence": -0.82,
-      "arousal": 0.84,
-      "emotions": {
-        "anger": 0.85,
-        "fear": 0.8
-      },
-      "source": "curated:gemini-2026-09",
-      "version": 1
-    },
-    {
-      "id": "pl.act.rozciąć",
-      "lemma": "rozciąć",
-      "pos": [
-        "VERB"
-      ],
-      "kind": "action_violent",
-      "strength": "strong",
-      "note": null,
-      "valence": -0.78,
-      "arousal": 0.8,
-      "emotions": {
-        "anger": 0.85,
-        "fear": 0.8
-      },
-      "source": "curated:gemini-2026-09",
-      "version": 1
-    },
-    {
-      "id": "pl.act.rozłupać",
-      "lemma": "rozłupać",
-      "pos": [
-        "VERB"
-      ],
-      "kind": "action_violent",
-      "strength": "strong",
-      "note": null,
-      "valence": -0.8,
-      "arousal": 0.82,
-      "emotions": {
-        "anger": 0.85,
-        "fear": 0.8
-      },
-      "source": "curated:gemini-2026-09",
-      "version": 1
-    },
-    {
-      "id": "pl.act.rozbić",
-      "lemma": "rozbić",
-      "pos": [
-        "VERB"
-      ],
-      "kind": "action_violent",
-      "strength": "strong",
-      "note": null,
-      "valence": -0.74,
-      "arousal": 0.78,
-      "emotions": {
-        "anger": 0.85,
-        "fear": 0.8
-      },
-      "source": "curated:gemini-2026-09",
-      "version": 1
-    },
-    {
-      "id": "pl.act.połamać",
-      "lemma": "połamać",
-      "pos": [
-        "VERB"
-      ],
-      "kind": "action_violent",
-      "strength": "strong",
-      "note": null,
-      "valence": -0.76,
-      "arousal": 0.78,
-      "emotions": {
-        "anger": 0.85,
-        "fear": 0.8
-      },
-      "source": "curated:gemini-2026-09",
-      "version": 1
-    },
-    {
-      "id": "pl.act.łamać",
-      "lemma": "łamać",
-      "pos": [
-        "VERB"
-      ],
-      "kind": "action_violent",
-      "strength": "weak",
-      "note": "wieloznaczne fizyczne vs agresywne",
-      "valence": -0.74,
-      "arousal": 0.76,
-      "emotions": {
-        "anger": 0.85,
-        "fear": 0.8
-      },
-      "source": "curated:gemini-2026-09",
-      "version": 1
-    },
-    {
-      "id": "pl.act.tłuc",
-      "lemma": "tłuc",
-      "pos": [
-        "VERB"
-      ],
-      "kind": "action_violent",
-      "strength": "weak",
-      "note": "wieloznaczne fizyczne vs agresywne",
-      "valence": -0.74,
-      "arousal": 0.78,
-      "emotions": {
-        "anger": 0.85,
-        "fear": 0.8
-      },
-      "source": "curated:gemini-2026-09",
-      "version": 1
-    },
-    {
-      "id": "pl.act.zatłuc",
-      "lemma": "zatłuc",
-      "pos": [
-        "VERB"
-      ],
-      "kind": "action_violent",
-      "strength": "strong",
-      "note": null,
-      "valence": -0.84,
-      "arousal": 0.86,
-      "emotions": {
-        "anger": 0.85,
-        "fear": 0.8
-      },
-      "source": "curated:gemini-2026-09",
-      "version": 1
-    },
-    {
-      "id": "pl.act.kopnąć",
-      "lemma": "kopnąć",
-      "pos": [
-        "VERB"
-      ],
-      "kind": "action_violent",
-      "strength": "strong",
-      "note": null,
-      "valence": -0.72,
-      "arousal": 0.76,
-      "emotions": {
-        "anger": 0.85,
-        "fear": 0.8
-      },
-      "source": "curated:gemini-2026-09",
-      "version": 1
-    },
-    {
-      "id": "pl.act.kopać",
-      "lemma": "kopać",
-      "pos": [
-        "VERB"
-      ],
-      "kind": "action_violent",
-      "strength": "strong",
-      "note": null,
-      "valence": -0.72,
-      "arousal": 0.76,
-      "emotions": {
-        "anger": 0.85,
-        "fear": 0.8
-      },
-      "source": "curated:gemini-2026-09",
-      "version": 1
-    },
-    {
-      "id": "pl.act.skopać",
-      "lemma": "skopać",
-      "pos": [
-        "VERB"
-      ],
-      "kind": "action_violent",
-      "strength": "strong",
-      "note": null,
-      "valence": -0.76,
-      "arousal": 0.8,
-      "emotions": {
-        "anger": 0.85,
-        "fear": 0.8
-      },
-      "source": "curated:gemini-2026-09",
-      "version": 1
-    },
-    {
-      "id": "pl.act.spoliczkować",
-      "lemma": "spoliczkować",
-      "pos": [
-        "VERB"
-      ],
-      "kind": "action_violent",
-      "strength": "strong",
-      "note": null,
-      "valence": -0.68,
-      "arousal": 0.72,
-      "emotions": {
-        "anger": 0.85,
-        "fear": 0.8
-      },
-      "source": "curated:gemini-2026-09",
-      "version": 1
-    },
-    {
-      "id": "pl.act.wymierzyć_cios",
-      "phrase": [
-        "wymierzyć",
-        "cios"
-      ],
-      "kind": "action_violent",
-      "strength": "strong",
-      "valence": -0.7,
-      "arousal": 0.74,
-      "emotions": {
-        "anger": 0.85,
-        "fear": 0.8
-      },
-      "source": "curated:gemini-2026-09",
-      "version": 1,
-      "example": "Doświadczony bokser zdołał wymierzyć cios prosto w szczękę."
-    },
-    {
-      "id": "pl.act.powalić",
-      "lemma": "powalić",
-      "pos": [
-        "VERB"
-      ],
-      "kind": "action_violent",
-      "strength": "strong",
-      "note": null,
-      "valence": -0.72,
-      "arousal": 0.76,
-      "emotions": {
-        "anger": 0.85,
-        "fear": 0.8
-      },
-      "source": "curated:gemini-2026-09",
-      "version": 1
-    },
-    {
-      "id": "pl.act.obalić",
-      "lemma": "obalić",
-      "pos": [
-        "VERB"
-      ],
-      "kind": "action_violent",
-      "strength": "strong",
-      "note": null,
-      "valence": -0.68,
-      "arousal": 0.72,
-      "emotions": {
-        "anger": 0.85,
-        "fear": 0.8
-      },
-      "source": "curated:gemini-2026-09",
-      "version": 1
-    },
-    {
-      "id": "pl.act.przewrócić",
-      "lemma": "przewrócić",
-      "pos": [
-        "VERB"
-      ],
-      "kind": "action_violent",
-      "strength": "strong",
-      "note": null,
-      "valence": -0.62,
-      "arousal": 0.68,
-      "emotions": {
-        "anger": 0.85,
-        "fear": 0.8
-      },
-      "source": "curated:gemini-2026-09",
-      "version": 1
-    },
-    {
-      "id": "pl.act.rzucić_o_ziemia",
-      "phrase": [
-        "rzucić",
-        "o",
-        "ziemia"
-      ],
-      "kind": "action_violent",
-      "strength": "strong",
-      "valence": -0.74,
-      "arousal": 0.78,
-      "emotions": {
-        "anger": 0.85,
-        "fear": 0.8
-      },
-      "source": "curated:gemini-2026-09",
-      "version": 1,
-      "example": "W przypływie wściekłości postanowił rzucić o ziemię ciężki puchar."
-    },
-    {
-      "id": "pl.act.zgnieść",
-      "lemma": "zgnieść",
-      "pos": [
-        "VERB"
-      ],
-      "kind": "action_violent",
-      "strength": "strong",
-      "note": null,
-      "valence": -0.76,
-      "arousal": 0.78,
-      "emotions": {
-        "anger": 0.85,
-        "fear": 0.8
-      },
-      "source": "curated:gemini-2026-09",
-      "version": 1
-    },
-    {
-      "id": "pl.act.deptać",
-      "lemma": "deptać",
-      "pos": [
-        "VERB"
-      ],
-      "kind": "action_violent",
-      "strength": "strong",
-      "note": null,
-      "valence": -0.72,
-      "arousal": 0.74,
-      "emotions": {
-        "anger": 0.85,
-        "fear": 0.8
-      },
-      "source": "curated:gemini-2026-09",
-      "version": 1
-    },
-    {
-      "id": "pl.act.zdeptacć",
-      "lemma": "zdeptać",
-      "pos": [
-        "VERB"
-      ],
-      "kind": "action_violent",
-      "strength": "strong",
-      "note": null,
-      "valence": -0.74,
-      "arousal": 0.76,
-      "emotions": {
-        "anger": 0.85,
-        "fear": 0.8
-      },
-      "source": "curated:gemini-2026-09",
-      "version": 1
-    },
-    {
-      "id": "pl.act.strącić",
-      "lemma": "strącić",
-      "pos": [
-        "VERB"
-      ],
-      "kind": "action_violent",
-      "strength": "strong",
-      "note": null,
-      "valence": -0.66,
-      "arousal": 0.7,
-      "emotions": {
-        "anger": 0.85,
-        "fear": 0.8
-      },
-      "source": "curated:gemini-2026-09",
-      "version": 1
-    },
-    {
-      "id": "pl.act.zepchnąć",
-      "lemma": "zepchnąć",
-      "pos": [
-        "VERB"
-      ],
-      "kind": "action_violent",
-      "strength": "strong",
-      "note": null,
-      "valence": -0.7,
-      "arousal": 0.74,
-      "emotions": {
-        "anger": 0.85,
-        "fear": 0.8
-      },
-      "source": "curated:gemini-2026-09",
-      "version": 1
-    },
-    {
-      "id": "pl.act.zdławić",
-      "lemma": "zdławić",
-      "pos": [
-        "VERB"
-      ],
-      "kind": "action_violent",
-      "strength": "strong",
-      "note": null,
-      "valence": -0.78,
-      "arousal": 0.8,
-      "emotions": {
-        "anger": 0.85,
-        "fear": 0.8
-      },
-      "source": "curated:gemini-2026-09",
-      "version": 1
-    },
-    {
-      "id": "pl.act.przygnieść",
-      "lemma": "przygnieść",
-      "pos": [
-        "VERB"
-      ],
-      "kind": "action_violent",
-      "strength": "strong",
-      "note": null,
-      "valence": -0.72,
-      "arousal": 0.74,
-      "emotions": {
-        "anger": 0.85,
-        "fear": 0.8
-      },
-      "source": "curated:gemini-2026-09",
-      "version": 1
-    },
-    {
-      "id": "pl.act.wyszarpnąć",
-      "lemma": "wyszarpnąć",
-      "pos": [
-        "VERB"
-      ],
-      "kind": "action_violent",
-      "strength": "strong",
-      "note": null,
-      "valence": -0.68,
-      "arousal": 0.72,
-      "emotions": {
-        "anger": 0.85,
-        "fear": 0.8
-      },
-      "source": "curated:gemini-2026-09",
-      "version": 1
-    },
-    {
-      "id": "pl.act.zaatakować",
-      "lemma": "zaatakować",
-      "pos": [
-        "VERB"
-      ],
-      "kind": "action_violent",
-      "strength": "strong",
-      "note": null,
-      "valence": -0.68,
-      "arousal": 0.78,
-      "emotions": {
-        "anger": 0.85,
-        "fear": 0.8
-      },
-      "source": "curated:gemini-2026-09",
-      "version": 1
-    },
-    {
-      "id": "pl.act.napaść",
-      "lemma": "napaść",
-      "pos": [
-        "VERB"
-      ],
-      "kind": "action_violent",
-      "strength": "strong",
-      "note": null,
-      "valence": -0.76,
-      "arousal": 0.8,
-      "emotions": {
-        "anger": 0.85,
-        "fear": 0.8
-      },
-      "source": "curated:gemini-2026-09",
-      "version": 1
-    },
-    {
-      "id": "pl.act.szturmować",
-      "lemma": "szturmować",
-      "pos": [
-        "VERB"
-      ],
-      "kind": "action_violent",
-      "strength": "strong",
-      "note": null,
-      "valence": -0.7,
-      "arousal": 0.82,
-      "emotions": {
-        "anger": 0.85,
-        "fear": 0.8
-      },
-      "source": "curated:gemini-2026-09",
-      "version": 1
-    },
-    {
-      "id": "pl.act.oblegać",
-      "lemma": "oblegać",
-      "pos": [
-        "VERB"
-      ],
-      "kind": "action_violent",
-      "strength": "strong",
-      "note": null,
-      "valence": -0.62,
-      "arousal": 0.7,
-      "emotions": {
-        "anger": 0.85,
-        "fear": 0.8
-      },
-      "source": "curated:gemini-2026-09",
-      "version": 1
-    },
-    {
-      "id": "pl.act.zdobyć",
-      "lemma": "zdobyć",
-      "pos": [
-        "VERB"
-      ],
-      "kind": "action_violent",
-      "strength": "strong",
-      "note": null,
-      "valence": -0.45,
-      "arousal": 0.7,
-      "emotions": {
-        "anger": 0.85,
-        "fear": 0.8
-      },
-      "source": "curated:gemini-2026-09",
-      "version": 1
-    },
-    {
-      "id": "pl.act.bombardować",
-      "lemma": "bombardować",
-      "pos": [
-        "VERB"
-      ],
-      "kind": "action_violent",
-      "strength": "strong",
-      "note": null,
-      "valence": -0.86,
-      "arousal": 0.9,
-      "emotions": {
-        "anger": 0.85,
-        "fear": 0.8
-      },
-      "source": "curated:gemini-2026-09",
-      "version": 1
-    },
-    {
-      "id": "pl.act.wysadzić",
-      "lemma": "wysadzić",
-      "pos": [
-        "VERB"
-      ],
-      "kind": "action_violent",
-      "strength": "strong",
-      "note": null,
-      "valence": -0.84,
-      "arousal": 0.88,
-      "emotions": {
-        "anger": 0.85,
-        "fear": 0.8
-      },
-      "source": "curated:gemini-2026-09",
-      "version": 1
-    },
-    {
-      "id": "pl.act.spalić",
-      "lemma": "spalić",
-      "pos": [
-        "VERB"
-      ],
-      "kind": "action_violent",
-      "strength": "strong",
-      "note": null,
-      "valence": -0.82,
-      "arousal": 0.84,
-      "emotions": {
-        "anger": 0.85,
-        "fear": 0.8
-      },
-      "source": "curated:gemini-2026-09",
-      "version": 1
-    },
-    {
-      "id": "pl.act.podpalić",
-      "lemma": "podpalić",
-      "pos": [
-        "VERB"
-      ],
-      "kind": "action_violent",
-      "strength": "strong",
-      "note": null,
-      "valence": -0.82,
-      "arousal": 0.84,
-      "emotions": {
-        "anger": 0.85,
-        "fear": 0.8
-      },
-      "source": "curated:gemini-2026-09",
-      "version": 1
-    },
-    {
-      "id": "pl.act.palić",
-      "lemma": "palić",
-      "pos": [
-        "VERB"
-      ],
-      "kind": "action_violent",
-      "strength": "weak",
-      "note": "wieloznaczne fizyczne vs agresywne",
-      "valence": -0.68,
-      "arousal": 0.72,
-      "emotions": {
-        "anger": 0.85,
-        "fear": 0.8
-      },
-      "source": "curated:gemini-2026-09",
-      "version": 1
-    },
-    {
-      "id": "pl.act.zniszczyć",
-      "lemma": "zniszczyć",
-      "pos": [
-        "VERB"
-      ],
-      "kind": "action_violent",
-      "strength": "strong",
-      "note": null,
-      "valence": -0.8,
-      "arousal": 0.82,
-      "emotions": {
-        "anger": 0.85,
-        "fear": 0.8
-      },
-      "source": "curated:gemini-2026-09",
-      "version": 1
-    },
-    {
-      "id": "pl.act.zdemolować",
-      "lemma": "zdemolować",
-      "pos": [
-        "VERB"
-      ],
-      "kind": "action_violent",
-      "strength": "strong",
-      "note": null,
-      "valence": -0.78,
-      "arousal": 0.8,
-      "emotions": {
-        "anger": 0.85,
-        "fear": 0.8
-      },
-      "source": "curated:gemini-2026-09",
-      "version": 1
-    },
-    {
-      "id": "pl.act.spustoszyć",
-      "lemma": "spustoszyć",
-      "pos": [
-        "VERB"
-      ],
-      "kind": "action_violent",
-      "strength": "strong",
-      "note": null,
-      "valence": -0.82,
-      "arousal": 0.84,
-      "emotions": {
-        "anger": 0.85,
-        "fear": 0.8
-      },
-      "source": "curated:gemini-2026-09",
-      "version": 1
-    },
-    {
-      "id": "pl.act.pustoszyć",
-      "lemma": "pustoszyć",
-      "pos": [
-        "VERB"
-      ],
-      "kind": "action_violent",
-      "strength": "strong",
-      "note": null,
-      "valence": -0.8,
-      "arousal": 0.82,
-      "emotions": {
-        "anger": 0.85,
-        "fear": 0.8
-      },
-      "source": "curated:gemini-2026-09",
-      "version": 1
-    },
-    {
-      "id": "pl.act.zrównać_z_ziemia",
-      "phrase": [
-        "zrównać",
-        "z",
-        "ziemia"
-      ],
-      "kind": "action_violent",
-      "strength": "strong",
-      "valence": -0.88,
-      "arousal": 0.88,
-      "emotions": {
-        "anger": 0.85,
-        "fear": 0.8
-      },
-      "source": "curated:gemini-2026-09",
-      "version": 1,
-      "example": "Bezwzględni najeźdźcy obiecali zrównać z ziemią zbuntowaną osadę."
-    },
-    {
-      "id": "pl.act.splądrować",
-      "lemma": "splądrować",
-      "pos": [
-        "VERB"
-      ],
-      "kind": "action_violent",
-      "strength": "strong",
-      "note": null,
-      "valence": -0.82,
-      "arousal": 0.82,
-      "emotions": {
-        "anger": 0.85,
-        "fear": 0.8
-      },
-      "source": "curated:gemini-2026-09",
-      "version": 1
-    },
-    {
-      "id": "pl.act.złupić",
-      "lemma": "złupić",
-      "pos": [
-        "VERB"
-      ],
-      "kind": "action_violent",
-      "strength": "strong",
-      "note": null,
-      "valence": -0.8,
-      "arousal": 0.8,
-      "emotions": {
-        "anger": 0.85,
-        "fear": 0.8
-      },
-      "source": "curated:gemini-2026-09",
-      "version": 1
-    },
-    {
-      "id": "pl.act.obrabować",
-      "lemma": "obrabować",
-      "pos": [
-        "VERB"
-      ],
-      "kind": "action_violent",
-      "strength": "strong",
-      "note": null,
-      "valence": -0.76,
-      "arousal": 0.76,
-      "emotions": {
-        "anger": 0.85,
-        "fear": 0.8
-      },
-      "source": "curated:gemini-2026-09",
-      "version": 1
-    },
-    {
-      "id": "pl.act.ograbiać",
-      "lemma": "ograbiać",
-      "pos": [
-        "VERB"
-      ],
-      "kind": "action_violent",
-      "strength": "strong",
-      "note": null,
-      "valence": -0.74,
-      "arousal": 0.74,
-      "emotions": {
-        "anger": 0.85,
-        "fear": 0.8
-      },
-      "source": "curated:gemini-2026-09",
-      "version": 1
-    },
-    {
-      "id": "pl.act.zbezcześcić",
-      "lemma": "zbezcześcić",
-      "pos": [
-        "VERB"
-      ],
-      "kind": "action_violent",
-      "strength": "strong",
-      "note": null,
-      "valence": -0.86,
-      "arousal": 0.82,
-      "emotions": {
-        "anger": 0.85,
-        "fear": 0.8
-      },
-      "source": "curated:gemini-2026-09",
-      "version": 1
-    },
-    {
-      "id": "pl.act.rozgromić",
-      "lemma": "rozgromić",
-      "pos": [
-        "VERB"
-      ],
-      "kind": "action_violent",
-      "strength": "strong",
-      "note": null,
-      "valence": -0.74,
-      "arousal": 0.82,
-      "emotions": {
-        "anger": 0.85,
-        "fear": 0.8
-      },
-      "source": "curated:gemini-2026-09",
-      "version": 1
-    },
-    {
-      "id": "pl.act.pokonać",
-      "lemma": "pokonać",
-      "pos": [
-        "VERB"
-      ],
-      "kind": "action_violent",
-      "strength": "strong",
-      "note": null,
-      "valence": -0.5,
-      "arousal": 0.72,
-      "emotions": {
-        "anger": 0.85,
-        "fear": 0.8
-      },
-      "source": "curated:gemini-2026-09",
-      "version": 1
-    },
-    {
-      "id": "pl.act.ujarzmić",
-      "lemma": "ujarzmić",
-      "pos": [
-        "VERB"
-      ],
-      "kind": "action_violent",
-      "strength": "strong",
-      "note": null,
-      "valence": -0.72,
-      "arousal": 0.76,
-      "emotions": {
-        "anger": 0.85,
-        "fear": 0.8
-      },
-      "source": "curated:gemini-2026-09",
-      "version": 1
-    },
-    {
-      "id": "pl.act.zniewolić",
-      "lemma": "zniewolić",
-      "pos": [
-        "VERB"
-      ],
-      "kind": "action_violent",
-      "strength": "strong",
-      "note": null,
-      "valence": -0.84,
-      "arousal": 0.82,
-      "emotions": {
-        "anger": 0.85,
-        "fear": 0.8
-      },
-      "source": "curated:gemini-2026-09",
-      "version": 1
-    },
-    {
-      "id": "pl.act.podbić",
-      "lemma": "podbić",
-      "pos": [
-        "VERB"
-      ],
-      "kind": "action_violent",
-      "strength": "strong",
-      "note": null,
-      "valence": -0.66,
-      "arousal": 0.74,
-      "emotions": {
-        "anger": 0.85,
-        "fear": 0.8
-      },
-      "source": "curated:gemini-2026-09",
-      "version": 1
-    },
-    {
-      "id": "pl.act.rozpędzić",
-      "lemma": "rozpędzić",
-      "pos": [
-        "VERB"
-      ],
-      "kind": "action_violent",
-      "strength": "strong",
-      "note": null,
-      "valence": -0.58,
-      "arousal": 0.68,
-      "emotions": {
-        "anger": 0.85,
-        "fear": 0.8
-      },
-      "source": "curated:gemini-2026-09",
-      "version": 1
-    },
-    {
-      "id": "pl.act.roznieść",
-      "lemma": "roznieść",
-      "pos": [
-        "VERB"
-      ],
-      "kind": "action_violent",
-      "strength": "strong",
-      "note": null,
-      "valence": -0.74,
-      "arousal": 0.78,
-      "emotions": {
-        "anger": 0.85,
-        "fear": 0.8
-      },
-      "source": "curated:gemini-2026-09",
-      "version": 1
-    },
-    {
-      "id": "pl.act.zdziesiątkować",
-      "lemma": "zdziesiątkować",
-      "pos": [
-        "VERB"
-      ],
-      "kind": "action_violent",
-      "strength": "strong",
-      "note": null,
-      "valence": -0.86,
-      "arousal": 0.88,
-      "emotions": {
-        "anger": 0.85,
-        "fear": 0.8
-      },
-      "source": "curated:gemini-2026-09",
-      "version": 1
-    },
-    {
-      "id": "pl.act.zetrzeć_w_proch",
-      "phrase": [
-        "zetrzeć",
-        "w",
-        "proch"
-      ],
-      "kind": "action_violent",
-      "strength": "strong",
-      "valence": -0.88,
-      "arousal": 0.88,
-      "emotions": {
-        "anger": 0.85,
-        "fear": 0.8
-      },
-      "source": "curated:gemini-2026-09",
-      "version": 1,
-      "example": "Ślepy gniew monarchy mógł zetrzeć w proch całe dumne miasto."
-    },
-    {
-      "id": "pl.act.wykończyć",
-      "lemma": "wykończyć",
-      "pos": [
-        "VERB"
-      ],
-      "kind": "action_violent",
-      "strength": "strong",
-      "note": null,
-      "valence": -0.8,
-      "arousal": 0.8,
-      "emotions": {
-        "anger": 0.85,
-        "fear": 0.8
-      },
-      "source": "curated:gemini-2026-09",
-      "version": 1
-    },
-    {
-      "id": "pl.act.zalać_krew",
-      "phrase": [
-        "zalać",
-        "krew"
-      ],
-      "kind": "action_violent",
-      "strength": "strong",
-      "valence": -0.86,
-      "arousal": 0.88,
-      "emotions": {
-        "anger": 0.85,
-        "fear": 0.8
-      },
-      "source": "curated:gemini-2026-09",
-      "version": 1,
-      "example": "Głęboka rana mogła zalać krwią całą twarz rannego wojownika."
-    },
-    {
-      "id": "pl.act.dopaść",
-      "lemma": "dopaść",
-      "pos": [
-        "VERB"
-      ],
-      "kind": "action_violent",
-      "strength": "strong",
-      "note": null,
-      "valence": -0.58,
-      "arousal": 0.7,
-      "emotions": {
-        "anger": 0.85,
-        "fear": 0.8
-      },
-      "source": "curated:gemini-2026-09",
-      "version": 1
-    },
-    {
-      "id": "pl.act.pochwycić",
-      "lemma": "pochwycić",
-      "pos": [
-        "VERB"
-      ],
-      "kind": "action_violent",
-      "strength": "strong",
-      "note": null,
-      "valence": -0.52,
-      "arousal": 0.65,
-      "emotions": {
-        "anger": 0.85,
-        "fear": 0.8
-      },
-      "source": "curated:gemini-2026-09",
-      "version": 1
-    },
-    {
-      "id": "pl.act.chwycić_za_gardło",
-      "phrase": [
-        "chwycić",
-        "za",
-        "gardło"
-      ],
-      "kind": "action_violent",
-      "strength": "strong",
-      "valence": -0.78,
-      "arousal": 0.82,
-      "emotions": {
-        "anger": 0.85,
-        "fear": 0.8
-      },
-      "source": "curated:gemini-2026-09",
-      "version": 1,
-      "example": "Zasadził się w mroku, by chwycić za gardło niczego niepodejrzewającego kupca."
-    },
-    {
-      "id": "pl.act.ściskać_gardło",
-      "phrase": [
-        "ściskać",
-        "gardło"
-      ],
-      "kind": "action_violent",
-      "strength": "strong",
-      "valence": -0.8,
-      "arousal": 0.84,
-      "emotions": {
-        "anger": 0.85,
-        "fear": 0.8
-      },
-      "source": "curated:gemini-2026-09",
-      "version": 1,
-      "example": "Żelazny uścisk kata zaczął ściskać gardło skazańca."
-    },
-    {
-      "id": "pl.act.wbić_ostrze",
-      "phrase": [
-        "wbić",
-        "ostrze"
-      ],
-      "kind": "action_violent",
-      "strength": "strong",
-      "valence": -0.84,
-      "arousal": 0.86,
-      "emotions": {
-        "anger": 0.85,
-        "fear": 0.8
-      },
-      "source": "curated:gemini-2026-09",
-      "version": 1,
-      "example": "Skrytobójca zamierzał wbić ostrze w plecy nieczujnego strażnika."
-    },
-    {
-      "id": "pl.act.utoczyć_krew",
-      "phrase": [
-        "utoczyć",
-        "krew"
-      ],
-      "kind": "action_violent",
-      "strength": "strong",
-      "valence": -0.82,
-      "arousal": 0.84,
-      "emotions": {
-        "anger": 0.85,
-        "fear": 0.8
-      },
-      "source": "curated:gemini-2026-09",
-      "version": 1,
-      "example": "Szermierczy pojedynek miał utoczyć krew z ramienia przeciwnika."
-    },
-    {
-      "id": "pl.act.przelewać_krew",
-      "phrase": [
-        "przelewać",
-        "krew"
-      ],
-      "kind": "action_violent",
-      "strength": "strong",
-      "valence": -0.84,
-      "arousal": 0.86,
-      "emotions": {
-        "anger": 0.85,
-        "fear": 0.8
-      },
-      "source": "curated:gemini-2026-09",
-      "version": 1,
-      "example": "Mądry władca nigdy nie pragnął przelewać krew swoich poddanych."
-    },
-    {
-      "id": "pl.act.rozlewać_krew",
-      "phrase": [
-        "rozlewać",
-        "krew"
-      ],
-      "kind": "action_violent",
-      "strength": "strong",
-      "valence": -0.84,
-      "arousal": 0.86,
-      "emotions": {
-        "anger": 0.85,
-        "fear": 0.8
-      },
-      "source": "curated:gemini-2026-09",
-      "version": 1,
-      "example": "Okrutni korsarze uwielbiali rozlewać krew niewinnych marynarzy."
-    },
-    {
-      "id": "pl.act.zadawać_cios",
-      "phrase": [
-        "zadawać",
-        "cios"
-      ],
-      "kind": "action_violent",
-      "strength": "strong",
-      "valence": -0.72,
-      "arousal": 0.76,
-      "emotions": {
-        "anger": 0.85,
-        "fear": 0.8
-      },
-      "source": "curated:gemini-2026-09",
-      "version": 1,
-      "example": "Wojownik potrafił zadawać cios z niezwykłą siłą i determinacją."
-    },
-    {
-      "id": "pl.act.wymachiwać_oręż",
-      "phrase": [
-        "wymachiwać",
-        "oręż"
-      ],
-      "kind": "action_violent",
-      "strength": "strong",
-      "valence": -0.54,
-      "arousal": 0.68,
-      "emotions": {
-        "anger": 0.85,
-        "fear": 0.8
-      },
-      "source": "curated:gemini-2026-09",
-      "version": 1,
-      "example": "Pijany najemnik zaczął bezładnie wymachiwać orężem na zatłoczonym placu."
-    },
-    {
-      "id": "pl.act.dźwignąć_miecz",
-      "phrase": [
-        "dźwignąć",
-        "miecz"
-      ],
-      "kind": "action_violent",
-      "strength": "strong",
-      "valence": -0.5,
-      "arousal": 0.65,
-      "emotions": {
-        "anger": 0.85,
-        "fear": 0.8
-      },
-      "source": "curated:gemini-2026-09",
-      "version": 1,
-      "example": "Młody giermek ledwo mógł dźwignąć miecz swego potężnego pana."
-    },
-    {
-      "id": "pl.act.rzucić_się",
-      "phrase": [
-        "rzucić",
-        "się"
-      ],
-      "kind": "action_violent",
-      "strength": "strong",
-      "valence": -0.6,
-      "arousal": 0.74,
-      "emotions": {
-        "anger": 0.85,
-        "fear": 0.8
-      },
-      "source": "curated:gemini-2026-09",
-      "version": 1,
-      "example": "Zdesperowany obrońca postanowił rzucić się w wir decydującej bitwy."
-    },
-    {
-      "id": "pl.act.strzelać",
-      "lemma": "strzelać",
-      "pos": [
-        "VERB"
-      ],
-      "kind": "action_violent",
-      "strength": "weak",
-      "note": "wieloznaczne fizyczne vs agresywne",
-      "valence": -0.7,
-      "arousal": 0.78,
-      "emotions": {
-        "anger": 0.85,
-        "fear": 0.8
-      },
-      "source": "curated:gemini-2026-09",
-      "version": 1
-    },
-    {
-      "id": "pl.act.rozwalić",
-      "lemma": "rozwalić",
-      "pos": [
-        "VERB"
-      ],
-      "kind": "action_violent",
-      "strength": "strong",
-      "note": null,
-      "valence": -0.78,
-      "arousal": 0.82,
-      "emotions": {
-        "anger": 0.85,
-        "fear": 0.8
-      },
-      "source": "curated:gemini-2026-09",
-      "version": 1
-    },
-    {
-      "id": "pl.act.zaszlachtować",
-      "lemma": "zaszlachtować",
-      "pos": [
-        "VERB"
-      ],
-      "kind": "action_violent",
-      "strength": "strong",
-      "note": null,
-      "valence": -0.94,
-      "arousal": 0.94,
-      "emotions": {
-        "anger": 0.85,
-        "fear": 0.8
-      },
-      "source": "curated:gemini-2026-09",
-      "version": 1
-    },
-    {
-      "id": "pl.act.stratować",
-      "lemma": "stratować",
-      "pos": [
-        "VERB"
-      ],
-      "kind": "action_violent",
-      "strength": "strong",
-      "note": null,
-      "valence": -0.86,
-      "arousal": 0.86,
-      "emotions": {
-        "anger": 0.85,
-        "fear": 0.8
-      },
-      "source": "curated:gemini-2026-09",
-      "version": 1
-    },
-    {
-      "id": "pl.act.uśmiercić",
-      "lemma": "uśmiercić",
-      "pos": [
-        "VERB"
-      ],
-      "kind": "action_violent",
-      "strength": "strong",
-      "note": null,
-      "valence": -0.92,
-      "arousal": 0.9,
-      "emotions": {
-        "anger": 0.85,
-        "fear": 0.8
-      },
-      "source": "curated:gemini-2026-09",
-      "version": 1
-    },
-    {
-      "id": "pl.act.rozszarpywać",
-      "lemma": "rozszarpywać",
-      "pos": [
-        "VERB"
-      ],
-      "kind": "action_violent",
-      "strength": "strong",
-      "note": null,
-      "valence": -0.92,
-      "arousal": 0.92,
-      "emotions": {
-        "anger": 0.85,
-        "fear": 0.8
-      },
-      "source": "curated:gemini-2026-09",
-      "version": 1
-    },
-    {
-      "id": "pl.act.rozdeptać",
-      "lemma": "rozdeptać",
-      "pos": [
-        "VERB"
-      ],
-      "kind": "action_violent",
-      "strength": "strong",
-      "note": null,
-      "valence": -0.88,
-      "arousal": 0.88,
-      "emotions": {
-        "anger": 0.85,
-        "fear": 0.8
-      },
-      "source": "curated:gemini-2026-09",
-      "version": 1
-    },
-    {
-      "id": "pl.act.zlinczować",
-      "lemma": "zlinczować",
-      "pos": [
-        "VERB"
-      ],
-      "kind": "action_violent",
-      "strength": "strong",
-      "note": null,
-      "valence": -0.95,
-      "arousal": 0.92,
-      "emotions": {
-        "anger": 0.85,
-        "fear": 0.8
-      },
-      "source": "curated:gemini-2026-09",
-      "version": 1
-    },
-    {
-      "id": "pl.act.ukrzyżować",
-      "lemma": "ukrzyżować",
-      "pos": [
-        "VERB"
-      ],
-      "kind": "action_violent",
-      "strength": "strong",
-      "note": null,
-      "valence": -0.95,
-      "arousal": 0.92,
-      "emotions": {
-        "anger": 0.85,
-        "fear": 0.8
-      },
-      "source": "curated:gemini-2026-09",
-      "version": 1
-    },
-    {
-      "id": "pl.act.pokiereszować",
-      "lemma": "pokiereszować",
-      "pos": [
-        "VERB"
-      ],
-      "kind": "action_violent",
-      "strength": "strong",
-      "note": null,
-      "valence": -0.82,
-      "arousal": 0.82,
-      "emotions": {
-        "anger": 0.85,
-        "fear": 0.8
-      },
-      "source": "curated:gemini-2026-09",
-      "version": 1
-    },
-    {
-      "id": "pl.act.poranić",
-      "lemma": "poranić",
-      "pos": [
-        "VERB"
-      ],
-      "kind": "action_violent",
-      "strength": "strong",
-      "note": null,
-      "valence": -0.8,
-      "arousal": 0.78,
-      "emotions": {
-        "anger": 0.85,
-        "fear": 0.8
-      },
-      "source": "curated:gemini-2026-09",
-      "version": 1
-    },
-    {
-      "id": "pl.act.pociąć",
-      "lemma": "pociąć",
-      "pos": [
-        "VERB"
-      ],
-      "kind": "action_violent",
-      "strength": "strong",
-      "note": null,
-      "valence": -0.84,
-      "arousal": 0.84,
-      "emotions": {
-        "anger": 0.85,
-        "fear": 0.8
-      },
-      "source": "curated:gemini-2026-09",
-      "version": 1
-    },
-    {
-      "id": "pl.act.zadręczyć",
-      "lemma": "zadręczyć",
-      "pos": [
-        "VERB"
-      ],
-      "kind": "action_violent",
-      "strength": "strong",
-      "note": null,
-      "valence": -0.9,
-      "arousal": 0.88,
-      "emotions": {
-        "anger": 0.85,
-        "fear": 0.8
-      },
-      "source": "curated:gemini-2026-09",
-      "version": 1
-    },
-    {
-      "id": "pl.act.zakłuć",
-      "lemma": "zakłuć",
-      "pos": [
-        "VERB"
-      ],
-      "kind": "action_violent",
-      "strength": "strong",
-      "note": null,
-      "valence": -0.92,
-      "arousal": 0.9,
-      "emotions": {
-        "anger": 0.85,
-        "fear": 0.8
-      },
-      "source": "curated:gemini-2026-09",
-      "version": 1
-    },
-    {
-      "id": "pl.act.zarąbać",
-      "lemma": "zarąbać",
-      "pos": [
-        "VERB"
-      ],
-      "kind": "action_violent",
-      "strength": "strong",
-      "note": null,
-      "valence": -0.94,
-      "arousal": 0.94,
-      "emotions": {
-        "anger": 0.85,
-        "fear": 0.8
-      },
-      "source": "curated:gemini-2026-09",
-      "version": 1
-    },
-    {
-      "id": "pl.act.usiec",
-      "lemma": "usiec",
-      "pos": [
-        "VERB"
-      ],
-      "kind": "action_violent",
-      "strength": "strong",
-      "note": null,
-      "valence": -0.9,
-      "arousal": 0.9,
-      "emotions": {
-        "anger": 0.85,
-        "fear": 0.8
-      },
-      "source": "curated:gemini-2026-09",
-      "version": 1
-    },
-    {
-      "id": "pl.act.zadźgać",
-      "lemma": "zadźgać",
-      "pos": [
-        "VERB"
-      ],
-      "kind": "action_violent",
-      "strength": "strong",
-      "note": null,
-      "valence": -0.94,
-      "arousal": 0.94,
-      "emotions": {
-        "anger": 0.85,
-        "fear": 0.8
-      },
-      "source": "curated:gemini-2026-09",
-      "version": 1
-    },
-    {
-      "id": "pl.act.wystrzelić",
-      "lemma": "wystrzelić",
-      "pos": [
-        "VERB"
-      ],
-      "kind": "action_violent",
-      "strength": "strong",
-      "note": null,
-      "valence": -0.7,
-      "arousal": 0.75,
-      "emotions": {
-        "anger": 0.85,
-        "fear": 0.8
-      },
-      "source": "curated:gemini-2026-09",
-      "version": 1
-    },
-    {
-      "id": "pl.act.okaleczać",
-      "lemma": "okaleczać",
-      "pos": [
-        "VERB"
-      ],
-      "kind": "action_violent",
-      "strength": "strong",
-      "note": null,
-      "valence": -0.86,
-      "arousal": 0.84,
-      "emotions": {
-        "anger": 0.85,
-        "fear": 0.8
-      },
-      "source": "curated:gemini-2026-09",
-      "version": 1
-    }
-  ]
+ "lang": "pl",
+ "kind": "action_violent",
+ "version": 1,
+ "entries": [
+  {
+   "id": "pl.act.zabić",
+   "lemma": "zabić",
+   "pos": [
+    "VERB"
+   ],
+   "kind": "action_violent",
+   "strength": "strong",
+   "note": null,
+   "valence": -0.92,
+   "arousal": 0.94,
+   "emotions": {
+    "anger": 0.85,
+    "fear": 0.8
+   },
+   "source": "curated:gemini-2026-09",
+   "version": 1
+  },
+  {
+   "id": "pl.act.zamordować",
+   "lemma": "zamordować",
+   "pos": [
+    "VERB"
+   ],
+   "kind": "action_violent",
+   "strength": "strong",
+   "note": null,
+   "valence": -0.95,
+   "arousal": 0.96,
+   "emotions": {
+    "anger": 0.85,
+    "fear": 0.8
+   },
+   "source": "curated:gemini-2026-09",
+   "version": 1
+  },
+  {
+   "id": "pl.act.zgładzić",
+   "lemma": "zgładzić",
+   "pos": [
+    "VERB"
+   ],
+   "kind": "action_violent",
+   "strength": "strong",
+   "note": null,
+   "valence": -0.92,
+   "arousal": 0.92,
+   "emotions": {
+    "anger": 0.85,
+    "fear": 0.8
+   },
+   "source": "curated:gemini-2026-09",
+   "version": 1
+  },
+  {
+   "id": "pl.act.zmasakrować",
+   "lemma": "zmasakrować",
+   "pos": [
+    "VERB"
+   ],
+   "kind": "action_violent",
+   "strength": "strong",
+   "note": null,
+   "valence": -0.95,
+   "arousal": 0.96,
+   "emotions": {
+    "anger": 0.85,
+    "fear": 0.8
+   },
+   "source": "curated:gemini-2026-09",
+   "version": 1
+  },
+  {
+   "id": "pl.act.zarżnąć",
+   "lemma": "zarżnąć",
+   "pos": [
+    "VERB"
+   ],
+   "kind": "action_violent",
+   "strength": "strong",
+   "note": null,
+   "valence": -0.94,
+   "arousal": 0.94,
+   "emotions": {
+    "anger": 0.85,
+    "fear": 0.8
+   },
+   "source": "curated:gemini-2026-09",
+   "version": 1
+  },
+  {
+   "id": "pl.act.rzezać",
+   "lemma": "rzezać",
+   "pos": [
+    "VERB"
+   ],
+   "kind": "action_violent",
+   "strength": "strong",
+   "note": null,
+   "valence": -0.92,
+   "arousal": 0.92,
+   "emotions": {
+    "anger": 0.85,
+    "fear": 0.8
+   },
+   "source": "curated:gemini-2026-09",
+   "version": 1
+  },
+  {
+   "id": "pl.act.rżnąć",
+   "lemma": "rżnąć",
+   "pos": [
+    "VERB"
+   ],
+   "kind": "action_violent",
+   "strength": "strong",
+   "note": null,
+   "valence": -0.88,
+   "arousal": 0.88,
+   "emotions": {
+    "anger": 0.85,
+    "fear": 0.8
+   },
+   "source": "curated:gemini-2026-09",
+   "version": 1
+  },
+  {
+   "id": "pl.act.ukatrupić",
+   "lemma": "ukatrupić",
+   "pos": [
+    "VERB"
+   ],
+   "kind": "action_violent",
+   "strength": "strong",
+   "note": null,
+   "valence": -0.9,
+   "arousal": 0.9,
+   "emotions": {
+    "anger": 0.85,
+    "fear": 0.8
+   },
+   "source": "curated:gemini-2026-09",
+   "version": 1
+  },
+  {
+   "id": "pl.act.powalić_trup",
+   "phrase": [
+    "powalić",
+    "trup"
+   ],
+   "kind": "action_violent",
+   "strength": "strong",
+   "valence": -0.9,
+   "arousal": 0.9,
+   "emotions": {
+    "anger": 0.85,
+    "fear": 0.8
+   },
+   "source": "curated:gemini-2026-09",
+   "version": 1,
+   "alt_lemmas": [
+    "trupa"
+   ],
+   "lemma_evidence": "carrier",
+   "example": "Rycerz zdołał powalić trupem groźnego przeciwnika."
+  },
+  {
+   "id": "pl.act.położyć_trup",
+   "phrase": [
+    "położyć",
+    "trup"
+   ],
+   "kind": "action_violent",
+   "strength": "strong",
+   "valence": -0.9,
+   "arousal": 0.9,
+   "emotions": {
+    "anger": 0.85,
+    "fear": 0.8
+   },
+   "source": "curated:gemini-2026-09",
+   "version": 1,
+   "alt_lemmas": [
+    "trupa"
+   ],
+   "lemma_evidence": "carrier",
+   "example": "Jednym potężnym ciosem zdołał położyć trupem potwora."
+  },
+  {
+   "id": "pl.act.powiesić",
+   "lemma": "powiesić",
+   "pos": [
+    "VERB"
+   ],
+   "kind": "action_violent",
+   "strength": "strong",
+   "note": null,
+   "valence": -0.92,
+   "arousal": 0.9,
+   "emotions": {
+    "anger": 0.85,
+    "fear": 0.8
+   },
+   "source": "curated:gemini-2026-09",
+   "version": 1
+  },
+  {
+   "id": "pl.act.utopić",
+   "lemma": "utopić",
+   "pos": [
+    "VERB"
+   ],
+   "kind": "action_violent",
+   "strength": "strong",
+   "note": null,
+   "valence": -0.9,
+   "arousal": 0.88,
+   "emotions": {
+    "anger": 0.85,
+    "fear": 0.8
+   },
+   "source": "curated:gemini-2026-09",
+   "version": 1
+  },
+  {
+   "id": "pl.act.udusić",
+   "lemma": "udusić",
+   "pos": [
+    "VERB"
+   ],
+   "kind": "action_violent",
+   "strength": "strong",
+   "note": null,
+   "valence": -0.92,
+   "arousal": 0.92,
+   "emotions": {
+    "anger": 0.85,
+    "fear": 0.8
+   },
+   "source": "curated:gemini-2026-09",
+   "version": 1
+  },
+  {
+   "id": "pl.act.zadusić",
+   "lemma": "zadusić",
+   "pos": [
+    "VERB"
+   ],
+   "kind": "action_violent",
+   "strength": "strong",
+   "note": null,
+   "valence": -0.92,
+   "arousal": 0.92,
+   "emotions": {
+    "anger": 0.85,
+    "fear": 0.8
+   },
+   "source": "curated:gemini-2026-09",
+   "version": 1
+  },
+  {
+   "id": "pl.act.dusić",
+   "lemma": "dusić",
+   "pos": [
+    "VERB"
+   ],
+   "kind": "action_violent",
+   "strength": "strong",
+   "note": null,
+   "valence": -0.86,
+   "arousal": 0.88,
+   "emotions": {
+    "anger": 0.85,
+    "fear": 0.8
+   },
+   "source": "curated:gemini-2026-09",
+   "version": 1
+  },
+  {
+   "id": "pl.act.rozstrzelać",
+   "lemma": "rozstrzelać",
+   "pos": [
+    "VERB"
+   ],
+   "kind": "action_violent",
+   "strength": "strong",
+   "note": null,
+   "valence": -0.92,
+   "arousal": 0.92,
+   "emotions": {
+    "anger": 0.85,
+    "fear": 0.8
+   },
+   "source": "curated:gemini-2026-09",
+   "version": 1
+  },
+  {
+   "id": "pl.act.zastrzelić",
+   "lemma": "zastrzelić",
+   "pos": [
+    "VERB"
+   ],
+   "kind": "action_violent",
+   "strength": "strong",
+   "note": null,
+   "valence": -0.9,
+   "arousal": 0.9,
+   "emotions": {
+    "anger": 0.85,
+    "fear": 0.8
+   },
+   "source": "curated:gemini-2026-09",
+   "version": 1
+  },
+  {
+   "id": "pl.act.ściąć_głowa",
+   "phrase": [
+    "ściąć",
+    "głowa"
+   ],
+   "kind": "action_violent",
+   "strength": "strong",
+   "valence": -0.94,
+   "arousal": 0.92,
+   "emotions": {
+    "anger": 0.85,
+    "fear": 0.8
+   },
+   "source": "curated:gemini-2026-09",
+   "version": 1,
+   "example": "Kat miał ściąć głowę zdrajcy o świcie na rynku."
+  },
+  {
+   "id": "pl.act.ściąć",
+   "lemma": "ściąć",
+   "pos": [
+    "VERB"
+   ],
+   "kind": "action_violent",
+   "strength": "strong",
+   "note": null,
+   "valence": -0.86,
+   "arousal": 0.86,
+   "emotions": {
+    "anger": 0.85,
+    "fear": 0.8
+   },
+   "source": "curated:gemini-2026-09",
+   "version": 1
+  },
+  {
+   "id": "pl.act.otruć",
+   "lemma": "otruć",
+   "pos": [
+    "VERB"
+   ],
+   "kind": "action_violent",
+   "strength": "strong",
+   "note": null,
+   "valence": -0.92,
+   "arousal": 0.88,
+   "emotions": {
+    "anger": 0.85,
+    "fear": 0.8
+   },
+   "source": "curated:gemini-2026-09",
+   "version": 1
+  },
+  {
+   "id": "pl.act.zatruć",
+   "lemma": "zatruć",
+   "pos": [
+    "VERB"
+   ],
+   "kind": "action_violent",
+   "strength": "strong",
+   "note": null,
+   "valence": -0.88,
+   "arousal": 0.86,
+   "emotions": {
+    "anger": 0.85,
+    "fear": 0.8
+   },
+   "source": "curated:gemini-2026-09",
+   "version": 1
+  },
+  {
+   "id": "pl.act.zamęczyć_na_śmierć",
+   "phrase": [
+    "zamęczyć",
+    "na",
+    "śmierć"
+   ],
+   "kind": "action_violent",
+   "strength": "strong",
+   "valence": -0.96,
+   "arousal": 0.96,
+   "emotions": {
+    "anger": 0.85,
+    "fear": 0.8
+   },
+   "source": "curated:gemini-2026-09",
+   "version": 1,
+   "example": "Okrutny strażnik chciał zamęczyć na śmierć bezbronnego uciekiniera."
+  },
+  {
+   "id": "pl.act.wyniszczyć",
+   "lemma": "wyniszczyć",
+   "pos": [
+    "VERB"
+   ],
+   "kind": "action_violent",
+   "strength": "strong",
+   "note": null,
+   "valence": -0.9,
+   "arousal": 0.9,
+   "emotions": {
+    "anger": 0.85,
+    "fear": 0.8
+   },
+   "source": "curated:gemini-2026-09",
+   "version": 1
+  },
+  {
+   "id": "pl.act.pozbawić_życie",
+   "phrase": [
+    "pozbawić",
+    "życie"
+   ],
+   "kind": "action_violent",
+   "strength": "strong",
+   "valence": -0.9,
+   "arousal": 0.88,
+   "emotions": {
+    "anger": 0.85,
+    "fear": 0.8
+   },
+   "source": "curated:gemini-2026-09",
+   "version": 1,
+   "example": "Cios miecza mógł pozbawić życie każdego nieostrożnego śmiałka."
+  },
+  {
+   "id": "pl.act.wykrwawić",
+   "lemma": "wykrwawić",
+   "pos": [
+    "VERB"
+   ],
+   "kind": "action_violent",
+   "strength": "strong",
+   "note": null,
+   "valence": -0.9,
+   "arousal": 0.88,
+   "emotions": {
+    "anger": 0.85,
+    "fear": 0.8
+   },
+   "source": "curated:gemini-2026-09",
+   "version": 1
+  },
+  {
+   "id": "pl.act.posłać_na_tamten_świat",
+   "phrase": [
+    "posłać",
+    "na",
+    "tamten",
+    "świat"
+   ],
+   "kind": "action_violent",
+   "strength": "strong",
+   "valence": -0.9,
+   "arousal": 0.88,
+   "emotions": {
+    "anger": 0.85,
+    "fear": 0.8
+   },
+   "source": "curated:gemini-2026-09",
+   "version": 1,
+   "example": "Zbójca zagroził, że może posłać na tamten świat każdego świadka zbrodni."
+  },
+  {
+   "id": "pl.act.dobić",
+   "lemma": "dobić",
+   "pos": [
+    "VERB"
+   ],
+   "kind": "action_violent",
+   "strength": "strong",
+   "note": null,
+   "valence": -0.88,
+   "arousal": 0.86,
+   "emotions": {
+    "anger": 0.85,
+    "fear": 0.8
+   },
+   "source": "curated:gemini-2026-09",
+   "version": 1
+  },
+  {
+   "id": "pl.act.wyrżnąć",
+   "lemma": "wyrżnąć",
+   "pos": [
+    "VERB"
+   ],
+   "kind": "action_violent",
+   "strength": "strong",
+   "note": null,
+   "valence": -0.92,
+   "arousal": 0.92,
+   "emotions": {
+    "anger": 0.85,
+    "fear": 0.8
+   },
+   "source": "curated:gemini-2026-09",
+   "version": 1
+  },
+  {
+   "id": "pl.act.wybić",
+   "lemma": "wybić",
+   "pos": [
+    "VERB"
+   ],
+   "kind": "action_violent",
+   "strength": "strong",
+   "note": null,
+   "valence": -0.86,
+   "arousal": 0.86,
+   "emotions": {
+    "anger": 0.85,
+    "fear": 0.8
+   },
+   "source": "curated:gemini-2026-09",
+   "version": 1
+  },
+  {
+   "id": "pl.act.zmiażdżyć",
+   "lemma": "zmiażdżyć",
+   "pos": [
+    "VERB"
+   ],
+   "kind": "action_violent",
+   "strength": "strong",
+   "note": null,
+   "valence": -0.86,
+   "arousal": 0.88,
+   "emotions": {
+    "anger": 0.85,
+    "fear": 0.8
+   },
+   "source": "curated:gemini-2026-09",
+   "version": 1
+  },
+  {
+   "id": "pl.act.strzaskać",
+   "lemma": "strzaskać",
+   "pos": [
+    "VERB"
+   ],
+   "kind": "action_violent",
+   "strength": "strong",
+   "note": null,
+   "valence": -0.86,
+   "arousal": 0.88,
+   "emotions": {
+    "anger": 0.85,
+    "fear": 0.8
+   },
+   "source": "curated:gemini-2026-09",
+   "version": 1
+  },
+  {
+   "id": "pl.act.roztrzaskać",
+   "lemma": "roztrzaskać",
+   "pos": [
+    "VERB"
+   ],
+   "kind": "action_violent",
+   "strength": "strong",
+   "note": null,
+   "valence": -0.86,
+   "arousal": 0.88,
+   "emotions": {
+    "anger": 0.85,
+    "fear": 0.8
+   },
+   "source": "curated:gemini-2026-09",
+   "version": 1
+  },
+  {
+   "id": "pl.act.gruchotać",
+   "lemma": "gruchotać",
+   "pos": [
+    "VERB"
+   ],
+   "kind": "action_violent",
+   "strength": "strong",
+   "note": null,
+   "valence": -0.84,
+   "arousal": 0.86,
+   "emotions": {
+    "anger": 0.85,
+    "fear": 0.8
+   },
+   "source": "curated:gemini-2026-09",
+   "version": 1
+  },
+  {
+   "id": "pl.act.rozpłatać",
+   "lemma": "rozpłatać",
+   "pos": [
+    "VERB"
+   ],
+   "kind": "action_violent",
+   "strength": "strong",
+   "note": null,
+   "valence": -0.88,
+   "arousal": 0.9,
+   "emotions": {
+    "anger": 0.85,
+    "fear": 0.8
+   },
+   "source": "curated:gemini-2026-09",
+   "version": 1
+  },
+  {
+   "id": "pl.act.rozedrzeć",
+   "lemma": "rozedrzeć",
+   "pos": [
+    "VERB"
+   ],
+   "kind": "action_violent",
+   "strength": "strong",
+   "note": null,
+   "valence": -0.84,
+   "arousal": 0.86,
+   "emotions": {
+    "anger": 0.85,
+    "fear": 0.8
+   },
+   "source": "curated:gemini-2026-09",
+   "version": 1
+  },
+  {
+   "id": "pl.act.rozszarpać",
+   "lemma": "rozszarpać",
+   "pos": [
+    "VERB"
+   ],
+   "kind": "action_violent",
+   "strength": "strong",
+   "note": null,
+   "valence": -0.88,
+   "arousal": 0.9,
+   "emotions": {
+    "anger": 0.85,
+    "fear": 0.8
+   },
+   "source": "curated:gemini-2026-09",
+   "version": 1
+  },
+  {
+   "id": "pl.act.szarpać",
+   "lemma": "szarpać",
+   "pos": [
+    "VERB"
+   ],
+   "kind": "action_violent",
+   "strength": "strong",
+   "note": null,
+   "valence": -0.76,
+   "arousal": 0.8,
+   "emotions": {
+    "anger": 0.85,
+    "fear": 0.8
+   },
+   "source": "curated:gemini-2026-09",
+   "version": 1
+  },
+  {
+   "id": "pl.act.poszarpać",
+   "lemma": "poszarpać",
+   "pos": [
+    "VERB"
+   ],
+   "kind": "action_violent",
+   "strength": "strong",
+   "note": null,
+   "valence": -0.78,
+   "arousal": 0.82,
+   "emotions": {
+    "anger": 0.85,
+    "fear": 0.8
+   },
+   "source": "curated:gemini-2026-09",
+   "version": 1
+  },
+  {
+   "id": "pl.act.ćwiartować",
+   "lemma": "ćwiartować",
+   "pos": [
+    "VERB"
+   ],
+   "kind": "action_violent",
+   "strength": "strong",
+   "note": null,
+   "valence": -0.9,
+   "arousal": 0.9,
+   "emotions": {
+    "anger": 0.85,
+    "fear": 0.8
+   },
+   "source": "curated:gemini-2026-09",
+   "version": 1
+  },
+  {
+   "id": "pl.act.poćwiartować",
+   "lemma": "poćwiartować",
+   "pos": [
+    "VERB"
+   ],
+   "kind": "action_violent",
+   "strength": "strong",
+   "note": null,
+   "valence": -0.9,
+   "arousal": 0.9,
+   "emotions": {
+    "anger": 0.85,
+    "fear": 0.8
+   },
+   "source": "curated:gemini-2026-09",
+   "version": 1
+  },
+  {
+   "id": "pl.act.rozkroić",
+   "lemma": "rozkroić",
+   "pos": [
+    "VERB"
+   ],
+   "kind": "action_violent",
+   "strength": "strong",
+   "note": null,
+   "valence": -0.82,
+   "arousal": 0.84,
+   "emotions": {
+    "anger": 0.85,
+    "fear": 0.8
+   },
+   "source": "curated:gemini-2026-09",
+   "version": 1
+  },
+  {
+   "id": "pl.act.podrzynać",
+   "lemma": "podrzynać",
+   "pos": [
+    "VERB"
+   ],
+   "kind": "action_violent",
+   "strength": "strong",
+   "note": null,
+   "valence": -0.88,
+   "arousal": 0.88,
+   "emotions": {
+    "anger": 0.85,
+    "fear": 0.8
+   },
+   "source": "curated:gemini-2026-09",
+   "version": 1
+  },
+  {
+   "id": "pl.act.rozpruć",
+   "lemma": "rozpruć",
+   "pos": [
+    "VERB"
+   ],
+   "kind": "action_violent",
+   "strength": "strong",
+   "note": null,
+   "valence": -0.88,
+   "arousal": 0.9,
+   "emotions": {
+    "anger": 0.85,
+    "fear": 0.8
+   },
+   "source": "curated:gemini-2026-09",
+   "version": 1
+  },
+  {
+   "id": "pl.act.torturować",
+   "lemma": "torturować",
+   "pos": [
+    "VERB"
+   ],
+   "kind": "action_violent",
+   "strength": "strong",
+   "note": null,
+   "valence": -0.94,
+   "arousal": 0.92,
+   "emotions": {
+    "anger": 0.85,
+    "fear": 0.8
+   },
+   "source": "curated:gemini-2026-09",
+   "version": 1
+  },
+  {
+   "id": "pl.act.katować",
+   "lemma": "katować",
+   "pos": [
+    "VERB"
+   ],
+   "kind": "action_violent",
+   "strength": "strong",
+   "note": null,
+   "valence": -0.92,
+   "arousal": 0.9,
+   "emotions": {
+    "anger": 0.85,
+    "fear": 0.8
+   },
+   "source": "curated:gemini-2026-09",
+   "version": 1
+  },
+  {
+   "id": "pl.act.zamęczyć",
+   "lemma": "zamęczyć",
+   "pos": [
+    "VERB"
+   ],
+   "kind": "action_violent",
+   "strength": "strong",
+   "note": null,
+   "valence": -0.9,
+   "arousal": 0.88,
+   "emotions": {
+    "anger": 0.85,
+    "fear": 0.8
+   },
+   "source": "curated:gemini-2026-09",
+   "version": 1
+  },
+  {
+   "id": "pl.act.męczyć",
+   "lemma": "męczyć",
+   "pos": [
+    "VERB"
+   ],
+   "kind": "action_violent",
+   "strength": "strong",
+   "note": null,
+   "valence": -0.82,
+   "arousal": 0.82,
+   "emotions": {
+    "anger": 0.85,
+    "fear": 0.8
+   },
+   "source": "curated:gemini-2026-09",
+   "version": 1
+  },
+  {
+   "id": "pl.act.chłostać",
+   "lemma": "chłostać",
+   "pos": [
+    "VERB"
+   ],
+   "kind": "action_violent",
+   "strength": "strong",
+   "note": null,
+   "valence": -0.82,
+   "arousal": 0.84,
+   "emotions": {
+    "anger": 0.85,
+    "fear": 0.8
+   },
+   "source": "curated:gemini-2026-09",
+   "version": 1
+  },
+  {
+   "id": "pl.act.biczować",
+   "lemma": "biczować",
+   "pos": [
+    "VERB"
+   ],
+   "kind": "action_violent",
+   "strength": "strong",
+   "note": null,
+   "valence": -0.84,
+   "arousal": 0.86,
+   "emotions": {
+    "anger": 0.85,
+    "fear": 0.8
+   },
+   "source": "curated:gemini-2026-09",
+   "version": 1
+  },
+  {
+   "id": "pl.act.okaleczyć",
+   "lemma": "okaleczyć",
+   "pos": [
+    "VERB"
+   ],
+   "kind": "action_violent",
+   "strength": "strong",
+   "note": null,
+   "valence": -0.86,
+   "arousal": 0.86,
+   "emotions": {
+    "anger": 0.85,
+    "fear": 0.8
+   },
+   "source": "curated:gemini-2026-09",
+   "version": 1
+  },
+  {
+   "id": "pl.act.oślepić",
+   "lemma": "oślepić",
+   "pos": [
+    "VERB"
+   ],
+   "kind": "action_violent",
+   "strength": "strong",
+   "note": null,
+   "valence": -0.88,
+   "arousal": 0.86,
+   "emotions": {
+    "anger": 0.85,
+    "fear": 0.8
+   },
+   "source": "curated:gemini-2026-09",
+   "version": 1
+  },
+  {
+   "id": "pl.act.ogłuszyć",
+   "lemma": "ogłuszyć",
+   "pos": [
+    "VERB"
+   ],
+   "kind": "action_violent",
+   "strength": "strong",
+   "note": null,
+   "valence": -0.78,
+   "arousal": 0.8,
+   "emotions": {
+    "anger": 0.85,
+    "fear": 0.8
+   },
+   "source": "curated:gemini-2026-09",
+   "version": 1
+  },
+  {
+   "id": "pl.act.ogłuszać",
+   "lemma": "ogłuszać",
+   "pos": [
+    "VERB"
+   ],
+   "kind": "action_violent",
+   "strength": "strong",
+   "note": null,
+   "valence": -0.76,
+   "arousal": 0.78,
+   "emotions": {
+    "anger": 0.85,
+    "fear": 0.8
+   },
+   "source": "curated:gemini-2026-09",
+   "version": 1
+  },
+  {
+   "id": "pl.act.zranić",
+   "lemma": "zranić",
+   "pos": [
+    "VERB"
+   ],
+   "kind": "action_violent",
+   "strength": "strong",
+   "note": null,
+   "valence": -0.8,
+   "arousal": 0.82,
+   "emotions": {
+    "anger": 0.85,
+    "fear": 0.8
+   },
+   "source": "curated:gemini-2026-09",
+   "version": 1
+  },
+  {
+   "id": "pl.act.ranić",
+   "lemma": "ranić",
+   "pos": [
+    "VERB"
+   ],
+   "kind": "action_violent",
+   "strength": "strong",
+   "note": null,
+   "valence": -0.78,
+   "arousal": 0.8,
+   "emotions": {
+    "anger": 0.85,
+    "fear": 0.8
+   },
+   "source": "curated:gemini-2026-09",
+   "version": 1
+  },
+  {
+   "id": "pl.act.pokrwawić",
+   "lemma": "pokrwawić",
+   "pos": [
+    "VERB"
+   ],
+   "kind": "action_violent",
+   "strength": "strong",
+   "note": null,
+   "valence": -0.78,
+   "arousal": 0.8,
+   "emotions": {
+    "anger": 0.85,
+    "fear": 0.8
+   },
+   "source": "curated:gemini-2026-09",
+   "version": 1
+  },
+  {
+   "id": "pl.act.złamać_kość",
+   "phrase": [
+    "złamać",
+    "kość"
+   ],
+   "kind": "action_violent",
+   "strength": "strong",
+   "valence": -0.82,
+   "arousal": 0.82,
+   "emotions": {
+    "anger": 0.85,
+    "fear": 0.8
+   },
+   "source": "curated:gemini-2026-09",
+   "version": 1,
+   "example": "Ciężki upadek z konia potrafił złamać kość w prawej nodze."
+  },
+  {
+   "id": "pl.act.wybić_ząb",
+   "phrase": [
+    "wybić",
+    "ząb"
+   ],
+   "kind": "action_violent",
+   "strength": "strong",
+   "valence": -0.8,
+   "arousal": 0.8,
+   "emotions": {
+    "anger": 0.85,
+    "fear": 0.8
+   },
+   "source": "curated:gemini-2026-09",
+   "version": 1,
+   "example": "Brutalny cios pięścią zdołał wybić ząb napastnikowi."
+  },
+  {
+   "id": "pl.act.rozkwasić_nos",
+   "phrase": [
+    "rozkwasić",
+    "nos"
+   ],
+   "kind": "action_violent",
+   "strength": "strong",
+   "valence": -0.78,
+   "arousal": 0.78,
+   "emotions": {
+    "anger": 0.85,
+    "fear": 0.8
+   },
+   "source": "curated:gemini-2026-09",
+   "version": 1,
+   "example": "Mocne uderzenie potrafiło rozkwasić nos w mgnieniu oka."
+  },
+  {
+   "id": "pl.act.zedrzeć_skóra",
+   "phrase": [
+    "zedrzeć",
+    "skóra"
+   ],
+   "kind": "action_violent",
+   "strength": "strong",
+   "valence": -0.88,
+   "arousal": 0.88,
+   "emotions": {
+    "anger": 0.85,
+    "fear": 0.8
+   },
+   "source": "curated:gemini-2026-09",
+   "version": 1,
+   "example": "Ostry głaz potrafił zedrzeć skórę z ramienia wspinacza."
+  },
+  {
+   "id": "pl.act.stłuc_na_kwaśny_jabłko",
+   "phrase": [
+    "stłuc",
+    "na",
+    "kwaśny",
+    "jabłko"
+   ],
+   "kind": "action_violent",
+   "strength": "strong",
+   "valence": -0.8,
+   "arousal": 0.8,
+   "emotions": {
+    "anger": 0.85,
+    "fear": 0.8
+   },
+   "source": "curated:gemini-2026-09",
+   "version": 1,
+   "example": "Groził, że potrafi stłuc na kwaśne jabłko każdego łotra."
+  },
+  {
+   "id": "pl.act.uderzyć",
+   "lemma": "uderzyć",
+   "pos": [
+    "VERB"
+   ],
+   "kind": "action_violent",
+   "strength": "strong",
+   "note": null,
+   "valence": -0.72,
+   "arousal": 0.78,
+   "emotions": {
+    "anger": 0.85,
+    "fear": 0.8
+   },
+   "source": "curated:gemini-2026-09",
+   "version": 1
+  },
+  {
+   "id": "pl.act.uderzać",
+   "lemma": "uderzać",
+   "pos": [
+    "VERB"
+   ],
+   "kind": "action_violent",
+   "strength": "strong",
+   "note": null,
+   "valence": -0.7,
+   "arousal": 0.76,
+   "emotions": {
+    "anger": 0.85,
+    "fear": 0.8
+   },
+   "source": "curated:gemini-2026-09",
+   "version": 1
+  },
+  {
+   "id": "pl.act.bić",
+   "lemma": "bić",
+   "pos": [
+    "VERB"
+   ],
+   "kind": "action_violent",
+   "strength": "weak",
+   "note": "wieloznaczne fizyczne vs agresywne",
+   "valence": -0.72,
+   "arousal": 0.76,
+   "emotions": {
+    "anger": 0.85,
+    "fear": 0.8
+   },
+   "source": "curated:gemini-2026-09",
+   "version": 1
+  },
+  {
+   "id": "pl.act.zbić",
+   "lemma": "zbić",
+   "pos": [
+    "VERB"
+   ],
+   "kind": "action_violent",
+   "strength": "strong",
+   "note": null,
+   "valence": -0.72,
+   "arousal": 0.76,
+   "emotions": {
+    "anger": 0.85,
+    "fear": 0.8
+   },
+   "source": "curated:gemini-2026-09",
+   "version": 1
+  },
+  {
+   "id": "pl.act.okładać",
+   "lemma": "okładać",
+   "pos": [
+    "VERB"
+   ],
+   "kind": "action_violent",
+   "strength": "strong",
+   "note": null,
+   "valence": -0.74,
+   "arousal": 0.78,
+   "emotions": {
+    "anger": 0.85,
+    "fear": 0.8
+   },
+   "source": "curated:gemini-2026-09",
+   "version": 1
+  },
+  {
+   "id": "pl.act.ciąć",
+   "lemma": "ciąć",
+   "pos": [
+    "VERB"
+   ],
+   "kind": "action_violent",
+   "strength": "weak",
+   "note": "wieloznaczne fizyczne vs agresywne",
+   "valence": -0.74,
+   "arousal": 0.78,
+   "emotions": {
+    "anger": 0.85,
+    "fear": 0.8
+   },
+   "source": "curated:gemini-2026-09",
+   "version": 1
+  },
+  {
+   "id": "pl.act.siec",
+   "lemma": "siec",
+   "pos": [
+    "VERB"
+   ],
+   "kind": "action_violent",
+   "strength": "strong",
+   "note": null,
+   "valence": -0.76,
+   "arousal": 0.8,
+   "emotions": {
+    "anger": 0.85,
+    "fear": 0.8
+   },
+   "source": "curated:gemini-2026-09",
+   "version": 1
+  },
+  {
+   "id": "pl.act.rąbać",
+   "lemma": "rąbać",
+   "pos": [
+    "VERB"
+   ],
+   "kind": "action_violent",
+   "strength": "strong",
+   "note": null,
+   "valence": -0.78,
+   "arousal": 0.82,
+   "emotions": {
+    "anger": 0.85,
+    "fear": 0.8
+   },
+   "source": "curated:gemini-2026-09",
+   "version": 1
+  },
+  {
+   "id": "pl.act.pchnąć",
+   "lemma": "pchnąć",
+   "pos": [
+    "VERB"
+   ],
+   "kind": "action_violent",
+   "strength": "weak",
+   "note": "wieloznaczne fizyczne vs agresywne",
+   "valence": -0.72,
+   "arousal": 0.78,
+   "emotions": {
+    "anger": 0.85,
+    "fear": 0.8
+   },
+   "source": "curated:gemini-2026-09",
+   "version": 1
+  },
+  {
+   "id": "pl.act.kłuć",
+   "lemma": "kłuć",
+   "pos": [
+    "VERB"
+   ],
+   "kind": "action_violent",
+   "strength": "strong",
+   "note": null,
+   "valence": -0.74,
+   "arousal": 0.78,
+   "emotions": {
+    "anger": 0.85,
+    "fear": 0.8
+   },
+   "source": "curated:gemini-2026-09",
+   "version": 1
+  },
+  {
+   "id": "pl.act.dźgać",
+   "lemma": "dźgać",
+   "pos": [
+    "VERB"
+   ],
+   "kind": "action_violent",
+   "strength": "strong",
+   "note": null,
+   "valence": -0.8,
+   "arousal": 0.84,
+   "emotions": {
+    "anger": 0.85,
+    "fear": 0.8
+   },
+   "source": "curated:gemini-2026-09",
+   "version": 1
+  },
+  {
+   "id": "pl.act.przebić",
+   "lemma": "przebić",
+   "pos": [
+    "VERB"
+   ],
+   "kind": "action_violent",
+   "strength": "strong",
+   "note": null,
+   "valence": -0.8,
+   "arousal": 0.82,
+   "emotions": {
+    "anger": 0.85,
+    "fear": 0.8
+   },
+   "source": "curated:gemini-2026-09",
+   "version": 1
+  },
+  {
+   "id": "pl.act.przeszyć",
+   "lemma": "przeszyć",
+   "pos": [
+    "VERB"
+   ],
+   "kind": "action_violent",
+   "strength": "strong",
+   "note": null,
+   "valence": -0.82,
+   "arousal": 0.84,
+   "emotions": {
+    "anger": 0.85,
+    "fear": 0.8
+   },
+   "source": "curated:gemini-2026-09",
+   "version": 1
+  },
+  {
+   "id": "pl.act.rozciąć",
+   "lemma": "rozciąć",
+   "pos": [
+    "VERB"
+   ],
+   "kind": "action_violent",
+   "strength": "strong",
+   "note": null,
+   "valence": -0.78,
+   "arousal": 0.8,
+   "emotions": {
+    "anger": 0.85,
+    "fear": 0.8
+   },
+   "source": "curated:gemini-2026-09",
+   "version": 1
+  },
+  {
+   "id": "pl.act.rozłupać",
+   "lemma": "rozłupać",
+   "pos": [
+    "VERB"
+   ],
+   "kind": "action_violent",
+   "strength": "strong",
+   "note": null,
+   "valence": -0.8,
+   "arousal": 0.82,
+   "emotions": {
+    "anger": 0.85,
+    "fear": 0.8
+   },
+   "source": "curated:gemini-2026-09",
+   "version": 1
+  },
+  {
+   "id": "pl.act.rozbić",
+   "lemma": "rozbić",
+   "pos": [
+    "VERB"
+   ],
+   "kind": "action_violent",
+   "strength": "strong",
+   "note": null,
+   "valence": -0.74,
+   "arousal": 0.78,
+   "emotions": {
+    "anger": 0.85,
+    "fear": 0.8
+   },
+   "source": "curated:gemini-2026-09",
+   "version": 1
+  },
+  {
+   "id": "pl.act.połamać",
+   "lemma": "połamać",
+   "pos": [
+    "VERB"
+   ],
+   "kind": "action_violent",
+   "strength": "strong",
+   "note": null,
+   "valence": -0.76,
+   "arousal": 0.78,
+   "emotions": {
+    "anger": 0.85,
+    "fear": 0.8
+   },
+   "source": "curated:gemini-2026-09",
+   "version": 1
+  },
+  {
+   "id": "pl.act.łamać",
+   "lemma": "łamać",
+   "pos": [
+    "VERB"
+   ],
+   "kind": "action_violent",
+   "strength": "weak",
+   "note": "wieloznaczne fizyczne vs agresywne",
+   "valence": -0.74,
+   "arousal": 0.76,
+   "emotions": {
+    "anger": 0.85,
+    "fear": 0.8
+   },
+   "source": "curated:gemini-2026-09",
+   "version": 1
+  },
+  {
+   "id": "pl.act.tłuc",
+   "lemma": "tłuc",
+   "pos": [
+    "VERB"
+   ],
+   "kind": "action_violent",
+   "strength": "weak",
+   "note": "wieloznaczne fizyczne vs agresywne",
+   "valence": -0.74,
+   "arousal": 0.78,
+   "emotions": {
+    "anger": 0.85,
+    "fear": 0.8
+   },
+   "source": "curated:gemini-2026-09",
+   "version": 1
+  },
+  {
+   "id": "pl.act.zatłuc",
+   "lemma": "zatłuc",
+   "pos": [
+    "VERB"
+   ],
+   "kind": "action_violent",
+   "strength": "strong",
+   "note": null,
+   "valence": -0.84,
+   "arousal": 0.86,
+   "emotions": {
+    "anger": 0.85,
+    "fear": 0.8
+   },
+   "source": "curated:gemini-2026-09",
+   "version": 1
+  },
+  {
+   "id": "pl.act.kopnąć",
+   "lemma": "kopnąć",
+   "pos": [
+    "VERB"
+   ],
+   "kind": "action_violent",
+   "strength": "strong",
+   "note": null,
+   "valence": -0.72,
+   "arousal": 0.76,
+   "emotions": {
+    "anger": 0.85,
+    "fear": 0.8
+   },
+   "source": "curated:gemini-2026-09",
+   "version": 1
+  },
+  {
+   "id": "pl.act.kopać",
+   "lemma": "kopać",
+   "pos": [
+    "VERB"
+   ],
+   "kind": "action_violent",
+   "strength": "strong",
+   "note": null,
+   "valence": -0.72,
+   "arousal": 0.76,
+   "emotions": {
+    "anger": 0.85,
+    "fear": 0.8
+   },
+   "source": "curated:gemini-2026-09",
+   "version": 1
+  },
+  {
+   "id": "pl.act.skopać",
+   "lemma": "skopać",
+   "pos": [
+    "VERB"
+   ],
+   "kind": "action_violent",
+   "strength": "strong",
+   "note": null,
+   "valence": -0.76,
+   "arousal": 0.8,
+   "emotions": {
+    "anger": 0.85,
+    "fear": 0.8
+   },
+   "source": "curated:gemini-2026-09",
+   "version": 1
+  },
+  {
+   "id": "pl.act.spoliczkować",
+   "lemma": "spoliczkować",
+   "pos": [
+    "VERB"
+   ],
+   "kind": "action_violent",
+   "strength": "strong",
+   "note": null,
+   "valence": -0.68,
+   "arousal": 0.72,
+   "emotions": {
+    "anger": 0.85,
+    "fear": 0.8
+   },
+   "source": "curated:gemini-2026-09",
+   "version": 1
+  },
+  {
+   "id": "pl.act.wymierzyć_cios",
+   "phrase": [
+    "wymierzyć",
+    "cios"
+   ],
+   "kind": "action_violent",
+   "strength": "strong",
+   "valence": -0.7,
+   "arousal": 0.74,
+   "emotions": {
+    "anger": 0.85,
+    "fear": 0.8
+   },
+   "source": "curated:gemini-2026-09",
+   "version": 1,
+   "example": "Doświadczony bokser zdołał wymierzyć cios prosto w szczękę."
+  },
+  {
+   "id": "pl.act.powalić",
+   "lemma": "powalić",
+   "pos": [
+    "VERB"
+   ],
+   "kind": "action_violent",
+   "strength": "strong",
+   "note": null,
+   "valence": -0.72,
+   "arousal": 0.76,
+   "emotions": {
+    "anger": 0.85,
+    "fear": 0.8
+   },
+   "source": "curated:gemini-2026-09",
+   "version": 1
+  },
+  {
+   "id": "pl.act.obalić",
+   "lemma": "obalić",
+   "pos": [
+    "VERB"
+   ],
+   "kind": "action_violent",
+   "strength": "strong",
+   "note": null,
+   "valence": -0.68,
+   "arousal": 0.72,
+   "emotions": {
+    "anger": 0.85,
+    "fear": 0.8
+   },
+   "source": "curated:gemini-2026-09",
+   "version": 1
+  },
+  {
+   "id": "pl.act.przewrócić",
+   "lemma": "przewrócić",
+   "pos": [
+    "VERB"
+   ],
+   "kind": "action_violent",
+   "strength": "strong",
+   "note": null,
+   "valence": -0.62,
+   "arousal": 0.68,
+   "emotions": {
+    "anger": 0.85,
+    "fear": 0.8
+   },
+   "source": "curated:gemini-2026-09",
+   "version": 1
+  },
+  {
+   "id": "pl.act.rzucić_o_ziemia",
+   "phrase": [
+    "rzucić",
+    "o",
+    "ziemia"
+   ],
+   "kind": "action_violent",
+   "strength": "strong",
+   "valence": -0.74,
+   "arousal": 0.78,
+   "emotions": {
+    "anger": 0.85,
+    "fear": 0.8
+   },
+   "source": "curated:gemini-2026-09",
+   "version": 1,
+   "example": "W przypływie wściekłości postanowił rzucić o ziemię ciężki puchar."
+  },
+  {
+   "id": "pl.act.zgnieść",
+   "lemma": "zgnieść",
+   "pos": [
+    "VERB"
+   ],
+   "kind": "action_violent",
+   "strength": "strong",
+   "note": null,
+   "valence": -0.76,
+   "arousal": 0.78,
+   "emotions": {
+    "anger": 0.85,
+    "fear": 0.8
+   },
+   "source": "curated:gemini-2026-09",
+   "version": 1
+  },
+  {
+   "id": "pl.act.deptać",
+   "lemma": "deptać",
+   "pos": [
+    "VERB"
+   ],
+   "kind": "action_violent",
+   "strength": "strong",
+   "note": null,
+   "valence": -0.72,
+   "arousal": 0.74,
+   "emotions": {
+    "anger": 0.85,
+    "fear": 0.8
+   },
+   "source": "curated:gemini-2026-09",
+   "version": 1
+  },
+  {
+   "id": "pl.act.zdeptacć",
+   "lemma": "zdeptać",
+   "pos": [
+    "VERB"
+   ],
+   "kind": "action_violent",
+   "strength": "strong",
+   "note": null,
+   "valence": -0.74,
+   "arousal": 0.76,
+   "emotions": {
+    "anger": 0.85,
+    "fear": 0.8
+   },
+   "source": "curated:gemini-2026-09",
+   "version": 1
+  },
+  {
+   "id": "pl.act.strącić",
+   "lemma": "strącić",
+   "pos": [
+    "VERB"
+   ],
+   "kind": "action_violent",
+   "strength": "strong",
+   "note": null,
+   "valence": -0.66,
+   "arousal": 0.7,
+   "emotions": {
+    "anger": 0.85,
+    "fear": 0.8
+   },
+   "source": "curated:gemini-2026-09",
+   "version": 1
+  },
+  {
+   "id": "pl.act.zepchnąć",
+   "lemma": "zepchnąć",
+   "pos": [
+    "VERB"
+   ],
+   "kind": "action_violent",
+   "strength": "strong",
+   "note": null,
+   "valence": -0.7,
+   "arousal": 0.74,
+   "emotions": {
+    "anger": 0.85,
+    "fear": 0.8
+   },
+   "source": "curated:gemini-2026-09",
+   "version": 1
+  },
+  {
+   "id": "pl.act.zdławić",
+   "lemma": "zdławić",
+   "pos": [
+    "VERB"
+   ],
+   "kind": "action_violent",
+   "strength": "strong",
+   "note": null,
+   "valence": -0.78,
+   "arousal": 0.8,
+   "emotions": {
+    "anger": 0.85,
+    "fear": 0.8
+   },
+   "source": "curated:gemini-2026-09",
+   "version": 1
+  },
+  {
+   "id": "pl.act.przygnieść",
+   "lemma": "przygnieść",
+   "pos": [
+    "VERB"
+   ],
+   "kind": "action_violent",
+   "strength": "strong",
+   "note": null,
+   "valence": -0.72,
+   "arousal": 0.74,
+   "emotions": {
+    "anger": 0.85,
+    "fear": 0.8
+   },
+   "source": "curated:gemini-2026-09",
+   "version": 1
+  },
+  {
+   "id": "pl.act.wyszarpnąć",
+   "lemma": "wyszarpnąć",
+   "pos": [
+    "VERB"
+   ],
+   "kind": "action_violent",
+   "strength": "strong",
+   "note": null,
+   "valence": -0.68,
+   "arousal": 0.72,
+   "emotions": {
+    "anger": 0.85,
+    "fear": 0.8
+   },
+   "source": "curated:gemini-2026-09",
+   "version": 1
+  },
+  {
+   "id": "pl.act.zaatakować",
+   "lemma": "zaatakować",
+   "pos": [
+    "VERB"
+   ],
+   "kind": "action_violent",
+   "strength": "strong",
+   "note": null,
+   "valence": -0.68,
+   "arousal": 0.78,
+   "emotions": {
+    "anger": 0.85,
+    "fear": 0.8
+   },
+   "source": "curated:gemini-2026-09",
+   "version": 1
+  },
+  {
+   "id": "pl.act.napaść",
+   "lemma": "napaść",
+   "pos": [
+    "VERB"
+   ],
+   "kind": "action_violent",
+   "strength": "strong",
+   "note": null,
+   "valence": -0.76,
+   "arousal": 0.8,
+   "emotions": {
+    "anger": 0.85,
+    "fear": 0.8
+   },
+   "source": "curated:gemini-2026-09",
+   "version": 1
+  },
+  {
+   "id": "pl.act.szturmować",
+   "lemma": "szturmować",
+   "pos": [
+    "VERB"
+   ],
+   "kind": "action_violent",
+   "strength": "strong",
+   "note": null,
+   "valence": -0.7,
+   "arousal": 0.82,
+   "emotions": {
+    "anger": 0.85,
+    "fear": 0.8
+   },
+   "source": "curated:gemini-2026-09",
+   "version": 1
+  },
+  {
+   "id": "pl.act.oblegać",
+   "lemma": "oblegać",
+   "pos": [
+    "VERB"
+   ],
+   "kind": "action_violent",
+   "strength": "strong",
+   "note": null,
+   "valence": -0.62,
+   "arousal": 0.7,
+   "emotions": {
+    "anger": 0.85,
+    "fear": 0.8
+   },
+   "source": "curated:gemini-2026-09",
+   "version": 1
+  },
+  {
+   "id": "pl.act.zdobyć",
+   "lemma": "zdobyć",
+   "pos": [
+    "VERB"
+   ],
+   "kind": "action_violent",
+   "strength": "strong",
+   "note": null,
+   "valence": -0.45,
+   "arousal": 0.7,
+   "emotions": {
+    "anger": 0.85,
+    "fear": 0.8
+   },
+   "source": "curated:gemini-2026-09",
+   "version": 1
+  },
+  {
+   "id": "pl.act.bombardować",
+   "lemma": "bombardować",
+   "pos": [
+    "VERB"
+   ],
+   "kind": "action_violent",
+   "strength": "strong",
+   "note": null,
+   "valence": -0.86,
+   "arousal": 0.9,
+   "emotions": {
+    "anger": 0.85,
+    "fear": 0.8
+   },
+   "source": "curated:gemini-2026-09",
+   "version": 1
+  },
+  {
+   "id": "pl.act.wysadzić",
+   "lemma": "wysadzić",
+   "pos": [
+    "VERB"
+   ],
+   "kind": "action_violent",
+   "strength": "strong",
+   "note": null,
+   "valence": -0.84,
+   "arousal": 0.88,
+   "emotions": {
+    "anger": 0.85,
+    "fear": 0.8
+   },
+   "source": "curated:gemini-2026-09",
+   "version": 1
+  },
+  {
+   "id": "pl.act.spalić",
+   "lemma": "spalić",
+   "pos": [
+    "VERB"
+   ],
+   "kind": "action_violent",
+   "strength": "strong",
+   "note": null,
+   "valence": -0.82,
+   "arousal": 0.84,
+   "emotions": {
+    "anger": 0.85,
+    "fear": 0.8
+   },
+   "source": "curated:gemini-2026-09",
+   "version": 1
+  },
+  {
+   "id": "pl.act.podpalić",
+   "lemma": "podpalić",
+   "pos": [
+    "VERB"
+   ],
+   "kind": "action_violent",
+   "strength": "strong",
+   "note": null,
+   "valence": -0.82,
+   "arousal": 0.84,
+   "emotions": {
+    "anger": 0.85,
+    "fear": 0.8
+   },
+   "source": "curated:gemini-2026-09",
+   "version": 1
+  },
+  {
+   "id": "pl.act.palić",
+   "lemma": "palić",
+   "pos": [
+    "VERB"
+   ],
+   "kind": "action_violent",
+   "strength": "weak",
+   "note": "wieloznaczne fizyczne vs agresywne",
+   "valence": -0.68,
+   "arousal": 0.72,
+   "emotions": {
+    "anger": 0.85,
+    "fear": 0.8
+   },
+   "source": "curated:gemini-2026-09",
+   "version": 1
+  },
+  {
+   "id": "pl.act.zniszczyć",
+   "lemma": "zniszczyć",
+   "pos": [
+    "VERB"
+   ],
+   "kind": "action_violent",
+   "strength": "strong",
+   "note": null,
+   "valence": -0.8,
+   "arousal": 0.82,
+   "emotions": {
+    "anger": 0.85,
+    "fear": 0.8
+   },
+   "source": "curated:gemini-2026-09",
+   "version": 1
+  },
+  {
+   "id": "pl.act.zdemolować",
+   "lemma": "zdemolować",
+   "pos": [
+    "VERB"
+   ],
+   "kind": "action_violent",
+   "strength": "strong",
+   "note": null,
+   "valence": -0.78,
+   "arousal": 0.8,
+   "emotions": {
+    "anger": 0.85,
+    "fear": 0.8
+   },
+   "source": "curated:gemini-2026-09",
+   "version": 1
+  },
+  {
+   "id": "pl.act.spustoszyć",
+   "lemma": "spustoszyć",
+   "pos": [
+    "VERB"
+   ],
+   "kind": "action_violent",
+   "strength": "strong",
+   "note": null,
+   "valence": -0.82,
+   "arousal": 0.84,
+   "emotions": {
+    "anger": 0.85,
+    "fear": 0.8
+   },
+   "source": "curated:gemini-2026-09",
+   "version": 1
+  },
+  {
+   "id": "pl.act.pustoszyć",
+   "lemma": "pustoszyć",
+   "pos": [
+    "VERB"
+   ],
+   "kind": "action_violent",
+   "strength": "strong",
+   "note": null,
+   "valence": -0.8,
+   "arousal": 0.82,
+   "emotions": {
+    "anger": 0.85,
+    "fear": 0.8
+   },
+   "source": "curated:gemini-2026-09",
+   "version": 1
+  },
+  {
+   "id": "pl.act.zrównać_z_ziemia",
+   "phrase": [
+    "zrównać",
+    "z",
+    "ziemia"
+   ],
+   "kind": "action_violent",
+   "strength": "strong",
+   "valence": -0.88,
+   "arousal": 0.88,
+   "emotions": {
+    "anger": 0.85,
+    "fear": 0.8
+   },
+   "source": "curated:gemini-2026-09",
+   "version": 1,
+   "example": "Bezwzględni najeźdźcy obiecali zrównać z ziemią zbuntowaną osadę."
+  },
+  {
+   "id": "pl.act.splądrować",
+   "lemma": "splądrować",
+   "pos": [
+    "VERB"
+   ],
+   "kind": "action_violent",
+   "strength": "strong",
+   "note": null,
+   "valence": -0.82,
+   "arousal": 0.82,
+   "emotions": {
+    "anger": 0.85,
+    "fear": 0.8
+   },
+   "source": "curated:gemini-2026-09",
+   "version": 1
+  },
+  {
+   "id": "pl.act.złupić",
+   "lemma": "złupić",
+   "pos": [
+    "VERB"
+   ],
+   "kind": "action_violent",
+   "strength": "strong",
+   "note": null,
+   "valence": -0.8,
+   "arousal": 0.8,
+   "emotions": {
+    "anger": 0.85,
+    "fear": 0.8
+   },
+   "source": "curated:gemini-2026-09",
+   "version": 1
+  },
+  {
+   "id": "pl.act.obrabować",
+   "lemma": "obrabować",
+   "pos": [
+    "VERB"
+   ],
+   "kind": "action_violent",
+   "strength": "strong",
+   "note": null,
+   "valence": -0.76,
+   "arousal": 0.76,
+   "emotions": {
+    "anger": 0.85,
+    "fear": 0.8
+   },
+   "source": "curated:gemini-2026-09",
+   "version": 1
+  },
+  {
+   "id": "pl.act.ograbiać",
+   "lemma": "ograbiać",
+   "pos": [
+    "VERB"
+   ],
+   "kind": "action_violent",
+   "strength": "strong",
+   "note": null,
+   "valence": -0.74,
+   "arousal": 0.74,
+   "emotions": {
+    "anger": 0.85,
+    "fear": 0.8
+   },
+   "source": "curated:gemini-2026-09",
+   "version": 1
+  },
+  {
+   "id": "pl.act.zbezcześcić",
+   "lemma": "zbezcześcić",
+   "pos": [
+    "VERB"
+   ],
+   "kind": "action_violent",
+   "strength": "strong",
+   "note": null,
+   "valence": -0.86,
+   "arousal": 0.82,
+   "emotions": {
+    "anger": 0.85,
+    "fear": 0.8
+   },
+   "source": "curated:gemini-2026-09",
+   "version": 1
+  },
+  {
+   "id": "pl.act.rozgromić",
+   "lemma": "rozgromić",
+   "pos": [
+    "VERB"
+   ],
+   "kind": "action_violent",
+   "strength": "strong",
+   "note": null,
+   "valence": -0.74,
+   "arousal": 0.82,
+   "emotions": {
+    "anger": 0.85,
+    "fear": 0.8
+   },
+   "source": "curated:gemini-2026-09",
+   "version": 1
+  },
+  {
+   "id": "pl.act.pokonać",
+   "lemma": "pokonać",
+   "pos": [
+    "VERB"
+   ],
+   "kind": "action_violent",
+   "strength": "strong",
+   "note": null,
+   "valence": -0.5,
+   "arousal": 0.72,
+   "emotions": {
+    "anger": 0.85,
+    "fear": 0.8
+   },
+   "source": "curated:gemini-2026-09",
+   "version": 1
+  },
+  {
+   "id": "pl.act.ujarzmić",
+   "lemma": "ujarzmić",
+   "pos": [
+    "VERB"
+   ],
+   "kind": "action_violent",
+   "strength": "strong",
+   "note": null,
+   "valence": -0.72,
+   "arousal": 0.76,
+   "emotions": {
+    "anger": 0.85,
+    "fear": 0.8
+   },
+   "source": "curated:gemini-2026-09",
+   "version": 1
+  },
+  {
+   "id": "pl.act.zniewolić",
+   "lemma": "zniewolić",
+   "pos": [
+    "VERB"
+   ],
+   "kind": "action_violent",
+   "strength": "strong",
+   "note": null,
+   "valence": -0.84,
+   "arousal": 0.82,
+   "emotions": {
+    "anger": 0.85,
+    "fear": 0.8
+   },
+   "source": "curated:gemini-2026-09",
+   "version": 1
+  },
+  {
+   "id": "pl.act.podbić",
+   "lemma": "podbić",
+   "pos": [
+    "VERB"
+   ],
+   "kind": "action_violent",
+   "strength": "strong",
+   "note": null,
+   "valence": -0.66,
+   "arousal": 0.74,
+   "emotions": {
+    "anger": 0.85,
+    "fear": 0.8
+   },
+   "source": "curated:gemini-2026-09",
+   "version": 1
+  },
+  {
+   "id": "pl.act.rozpędzić",
+   "lemma": "rozpędzić",
+   "pos": [
+    "VERB"
+   ],
+   "kind": "action_violent",
+   "strength": "strong",
+   "note": null,
+   "valence": -0.58,
+   "arousal": 0.68,
+   "emotions": {
+    "anger": 0.85,
+    "fear": 0.8
+   },
+   "source": "curated:gemini-2026-09",
+   "version": 1
+  },
+  {
+   "id": "pl.act.roznieść",
+   "lemma": "roznieść",
+   "pos": [
+    "VERB"
+   ],
+   "kind": "action_violent",
+   "strength": "strong",
+   "note": null,
+   "valence": -0.74,
+   "arousal": 0.78,
+   "emotions": {
+    "anger": 0.85,
+    "fear": 0.8
+   },
+   "source": "curated:gemini-2026-09",
+   "version": 1
+  },
+  {
+   "id": "pl.act.zdziesiątkować",
+   "lemma": "zdziesiątkować",
+   "pos": [
+    "VERB"
+   ],
+   "kind": "action_violent",
+   "strength": "strong",
+   "note": null,
+   "valence": -0.86,
+   "arousal": 0.88,
+   "emotions": {
+    "anger": 0.85,
+    "fear": 0.8
+   },
+   "source": "curated:gemini-2026-09",
+   "version": 1
+  },
+  {
+   "id": "pl.act.zetrzeć_w_proch",
+   "phrase": [
+    "zetrzeć",
+    "w",
+    "proch"
+   ],
+   "kind": "action_violent",
+   "strength": "strong",
+   "valence": -0.88,
+   "arousal": 0.88,
+   "emotions": {
+    "anger": 0.85,
+    "fear": 0.8
+   },
+   "source": "curated:gemini-2026-09",
+   "version": 1,
+   "example": "Ślepy gniew monarchy mógł zetrzeć w proch całe dumne miasto."
+  },
+  {
+   "id": "pl.act.wykończyć",
+   "lemma": "wykończyć",
+   "pos": [
+    "VERB"
+   ],
+   "kind": "action_violent",
+   "strength": "strong",
+   "note": null,
+   "valence": -0.8,
+   "arousal": 0.8,
+   "emotions": {
+    "anger": 0.85,
+    "fear": 0.8
+   },
+   "source": "curated:gemini-2026-09",
+   "version": 1
+  },
+  {
+   "id": "pl.act.zalać_krew",
+   "phrase": [
+    "zalać",
+    "krew"
+   ],
+   "kind": "action_violent",
+   "strength": "strong",
+   "valence": -0.86,
+   "arousal": 0.88,
+   "emotions": {
+    "anger": 0.85,
+    "fear": 0.8
+   },
+   "source": "curated:gemini-2026-09",
+   "version": 1,
+   "example": "Głęboka rana mogła zalać krwią całą twarz rannego wojownika."
+  },
+  {
+   "id": "pl.act.dopaść",
+   "lemma": "dopaść",
+   "pos": [
+    "VERB"
+   ],
+   "kind": "action_violent",
+   "strength": "strong",
+   "note": null,
+   "valence": -0.58,
+   "arousal": 0.7,
+   "emotions": {
+    "anger": 0.85,
+    "fear": 0.8
+   },
+   "source": "curated:gemini-2026-09",
+   "version": 1
+  },
+  {
+   "id": "pl.act.pochwycić",
+   "lemma": "pochwycić",
+   "pos": [
+    "VERB"
+   ],
+   "kind": "action_violent",
+   "strength": "strong",
+   "note": null,
+   "valence": -0.52,
+   "arousal": 0.65,
+   "emotions": {
+    "anger": 0.85,
+    "fear": 0.8
+   },
+   "source": "curated:gemini-2026-09",
+   "version": 1
+  },
+  {
+   "id": "pl.act.chwycić_za_gardło",
+   "phrase": [
+    "chwycić",
+    "za",
+    "gardło"
+   ],
+   "kind": "action_violent",
+   "strength": "strong",
+   "valence": -0.78,
+   "arousal": 0.82,
+   "emotions": {
+    "anger": 0.85,
+    "fear": 0.8
+   },
+   "source": "curated:gemini-2026-09",
+   "version": 1,
+   "example": "Zasadził się w mroku, by chwycić za gardło niczego niepodejrzewającego kupca."
+  },
+  {
+   "id": "pl.act.ściskać_gardło",
+   "phrase": [
+    "ściskać",
+    "gardło"
+   ],
+   "kind": "action_violent",
+   "strength": "strong",
+   "valence": -0.8,
+   "arousal": 0.84,
+   "emotions": {
+    "anger": 0.85,
+    "fear": 0.8
+   },
+   "source": "curated:gemini-2026-09",
+   "version": 1,
+   "example": "Żelazny uścisk kata zaczął ściskać gardło skazańca."
+  },
+  {
+   "id": "pl.act.wbić_ostrze",
+   "phrase": [
+    "wbić",
+    "ostrze"
+   ],
+   "kind": "action_violent",
+   "strength": "strong",
+   "valence": -0.84,
+   "arousal": 0.86,
+   "emotions": {
+    "anger": 0.85,
+    "fear": 0.8
+   },
+   "source": "curated:gemini-2026-09",
+   "version": 1,
+   "example": "Skrytobójca zamierzał wbić ostrze w plecy nieczujnego strażnika."
+  },
+  {
+   "id": "pl.act.utoczyć_krew",
+   "phrase": [
+    "utoczyć",
+    "krew"
+   ],
+   "kind": "action_violent",
+   "strength": "strong",
+   "valence": -0.82,
+   "arousal": 0.84,
+   "emotions": {
+    "anger": 0.85,
+    "fear": 0.8
+   },
+   "source": "curated:gemini-2026-09",
+   "version": 1,
+   "example": "Szermierczy pojedynek miał utoczyć krew z ramienia przeciwnika."
+  },
+  {
+   "id": "pl.act.przelewać_krew",
+   "phrase": [
+    "przelewać",
+    "krew"
+   ],
+   "kind": "action_violent",
+   "strength": "strong",
+   "valence": -0.84,
+   "arousal": 0.86,
+   "emotions": {
+    "anger": 0.85,
+    "fear": 0.8
+   },
+   "source": "curated:gemini-2026-09",
+   "version": 1,
+   "example": "Mądry władca nigdy nie pragnął przelewać krew swoich poddanych."
+  },
+  {
+   "id": "pl.act.rozlewać_krew",
+   "phrase": [
+    "rozlewać",
+    "krew"
+   ],
+   "kind": "action_violent",
+   "strength": "strong",
+   "valence": -0.84,
+   "arousal": 0.86,
+   "emotions": {
+    "anger": 0.85,
+    "fear": 0.8
+   },
+   "source": "curated:gemini-2026-09",
+   "version": 1,
+   "example": "Okrutni korsarze uwielbiali rozlewać krew niewinnych marynarzy."
+  },
+  {
+   "id": "pl.act.zadawać_cios",
+   "phrase": [
+    "zadawać",
+    "cios"
+   ],
+   "kind": "action_violent",
+   "strength": "strong",
+   "valence": -0.72,
+   "arousal": 0.76,
+   "emotions": {
+    "anger": 0.85,
+    "fear": 0.8
+   },
+   "source": "curated:gemini-2026-09",
+   "version": 1,
+   "example": "Wojownik potrafił zadawać cios z niezwykłą siłą i determinacją."
+  },
+  {
+   "id": "pl.act.wymachiwać_oręż",
+   "phrase": [
+    "wymachiwać",
+    "oręż"
+   ],
+   "kind": "action_violent",
+   "strength": "strong",
+   "valence": -0.54,
+   "arousal": 0.68,
+   "emotions": {
+    "anger": 0.85,
+    "fear": 0.8
+   },
+   "source": "curated:gemini-2026-09",
+   "version": 1,
+   "example": "Pijany najemnik zaczął bezładnie wymachiwać orężem na zatłoczonym placu."
+  },
+  {
+   "id": "pl.act.dźwignąć_miecz",
+   "phrase": [
+    "dźwignąć",
+    "miecz"
+   ],
+   "kind": "action_violent",
+   "strength": "strong",
+   "valence": -0.5,
+   "arousal": 0.65,
+   "emotions": {
+    "anger": 0.85,
+    "fear": 0.8
+   },
+   "source": "curated:gemini-2026-09",
+   "version": 1,
+   "example": "Młody giermek ledwo mógł dźwignąć miecz swego potężnego pana."
+  },
+  {
+   "id": "pl.act.rzucić_się",
+   "phrase": [
+    "rzucić",
+    "się"
+   ],
+   "kind": "action_violent",
+   "strength": "strong",
+   "valence": -0.6,
+   "arousal": 0.74,
+   "emotions": {
+    "anger": 0.85,
+    "fear": 0.8
+   },
+   "source": "curated:gemini-2026-09",
+   "version": 1,
+   "example": "Zdesperowany obrońca postanowił rzucić się w wir decydującej bitwy."
+  },
+  {
+   "id": "pl.act.strzelać",
+   "lemma": "strzelać",
+   "pos": [
+    "VERB"
+   ],
+   "kind": "action_violent",
+   "strength": "weak",
+   "note": "wieloznaczne fizyczne vs agresywne",
+   "valence": -0.7,
+   "arousal": 0.78,
+   "emotions": {
+    "anger": 0.85,
+    "fear": 0.8
+   },
+   "source": "curated:gemini-2026-09",
+   "version": 1
+  },
+  {
+   "id": "pl.act.rozwalić",
+   "lemma": "rozwalić",
+   "pos": [
+    "VERB"
+   ],
+   "kind": "action_violent",
+   "strength": "strong",
+   "note": null,
+   "valence": -0.78,
+   "arousal": 0.82,
+   "emotions": {
+    "anger": 0.85,
+    "fear": 0.8
+   },
+   "source": "curated:gemini-2026-09",
+   "version": 1
+  },
+  {
+   "id": "pl.act.zaszlachtować",
+   "lemma": "zaszlachtować",
+   "pos": [
+    "VERB"
+   ],
+   "kind": "action_violent",
+   "strength": "strong",
+   "note": null,
+   "valence": -0.94,
+   "arousal": 0.94,
+   "emotions": {
+    "anger": 0.85,
+    "fear": 0.8
+   },
+   "source": "curated:gemini-2026-09",
+   "version": 1
+  },
+  {
+   "id": "pl.act.stratować",
+   "lemma": "stratować",
+   "pos": [
+    "VERB"
+   ],
+   "kind": "action_violent",
+   "strength": "strong",
+   "note": null,
+   "valence": -0.86,
+   "arousal": 0.86,
+   "emotions": {
+    "anger": 0.85,
+    "fear": 0.8
+   },
+   "source": "curated:gemini-2026-09",
+   "version": 1
+  },
+  {
+   "id": "pl.act.uśmiercić",
+   "lemma": "uśmiercić",
+   "pos": [
+    "VERB"
+   ],
+   "kind": "action_violent",
+   "strength": "strong",
+   "note": null,
+   "valence": -0.92,
+   "arousal": 0.9,
+   "emotions": {
+    "anger": 0.85,
+    "fear": 0.8
+   },
+   "source": "curated:gemini-2026-09",
+   "version": 1
+  },
+  {
+   "id": "pl.act.rozszarpywać",
+   "lemma": "rozszarpywać",
+   "pos": [
+    "VERB"
+   ],
+   "kind": "action_violent",
+   "strength": "strong",
+   "note": null,
+   "valence": -0.92,
+   "arousal": 0.92,
+   "emotions": {
+    "anger": 0.85,
+    "fear": 0.8
+   },
+   "source": "curated:gemini-2026-09",
+   "version": 1
+  },
+  {
+   "id": "pl.act.rozdeptać",
+   "lemma": "rozdeptać",
+   "pos": [
+    "VERB"
+   ],
+   "kind": "action_violent",
+   "strength": "strong",
+   "note": null,
+   "valence": -0.88,
+   "arousal": 0.88,
+   "emotions": {
+    "anger": 0.85,
+    "fear": 0.8
+   },
+   "source": "curated:gemini-2026-09",
+   "version": 1
+  },
+  {
+   "id": "pl.act.zlinczować",
+   "lemma": "zlinczować",
+   "pos": [
+    "VERB"
+   ],
+   "kind": "action_violent",
+   "strength": "strong",
+   "note": null,
+   "valence": -0.95,
+   "arousal": 0.92,
+   "emotions": {
+    "anger": 0.85,
+    "fear": 0.8
+   },
+   "source": "curated:gemini-2026-09",
+   "version": 1
+  },
+  {
+   "id": "pl.act.ukrzyżować",
+   "lemma": "ukrzyżować",
+   "pos": [
+    "VERB"
+   ],
+   "kind": "action_violent",
+   "strength": "strong",
+   "note": null,
+   "valence": -0.95,
+   "arousal": 0.92,
+   "emotions": {
+    "anger": 0.85,
+    "fear": 0.8
+   },
+   "source": "curated:gemini-2026-09",
+   "version": 1
+  },
+  {
+   "id": "pl.act.pokiereszować",
+   "lemma": "pokiereszować",
+   "pos": [
+    "VERB"
+   ],
+   "kind": "action_violent",
+   "strength": "strong",
+   "note": null,
+   "valence": -0.82,
+   "arousal": 0.82,
+   "emotions": {
+    "anger": 0.85,
+    "fear": 0.8
+   },
+   "source": "curated:gemini-2026-09",
+   "version": 1
+  },
+  {
+   "id": "pl.act.poranić",
+   "lemma": "poranić",
+   "pos": [
+    "VERB"
+   ],
+   "kind": "action_violent",
+   "strength": "strong",
+   "note": null,
+   "valence": -0.8,
+   "arousal": 0.78,
+   "emotions": {
+    "anger": 0.85,
+    "fear": 0.8
+   },
+   "source": "curated:gemini-2026-09",
+   "version": 1
+  },
+  {
+   "id": "pl.act.pociąć",
+   "lemma": "pociąć",
+   "pos": [
+    "VERB"
+   ],
+   "kind": "action_violent",
+   "strength": "strong",
+   "note": null,
+   "valence": -0.84,
+   "arousal": 0.84,
+   "emotions": {
+    "anger": 0.85,
+    "fear": 0.8
+   },
+   "source": "curated:gemini-2026-09",
+   "version": 1
+  },
+  {
+   "id": "pl.act.zadręczyć",
+   "lemma": "zadręczyć",
+   "pos": [
+    "VERB"
+   ],
+   "kind": "action_violent",
+   "strength": "strong",
+   "note": null,
+   "valence": -0.9,
+   "arousal": 0.88,
+   "emotions": {
+    "anger": 0.85,
+    "fear": 0.8
+   },
+   "source": "curated:gemini-2026-09",
+   "version": 1
+  },
+  {
+   "id": "pl.act.zakłuć",
+   "lemma": "zakłuć",
+   "pos": [
+    "VERB"
+   ],
+   "kind": "action_violent",
+   "strength": "strong",
+   "note": null,
+   "valence": -0.92,
+   "arousal": 0.9,
+   "emotions": {
+    "anger": 0.85,
+    "fear": 0.8
+   },
+   "source": "curated:gemini-2026-09",
+   "version": 1
+  },
+  {
+   "id": "pl.act.zarąbać",
+   "lemma": "zarąbać",
+   "pos": [
+    "VERB"
+   ],
+   "kind": "action_violent",
+   "strength": "strong",
+   "note": null,
+   "valence": -0.94,
+   "arousal": 0.94,
+   "emotions": {
+    "anger": 0.85,
+    "fear": 0.8
+   },
+   "source": "curated:gemini-2026-09",
+   "version": 1
+  },
+  {
+   "id": "pl.act.usiec",
+   "lemma": "usiec",
+   "pos": [
+    "VERB"
+   ],
+   "kind": "action_violent",
+   "strength": "strong",
+   "note": null,
+   "valence": -0.9,
+   "arousal": 0.9,
+   "emotions": {
+    "anger": 0.85,
+    "fear": 0.8
+   },
+   "source": "curated:gemini-2026-09",
+   "version": 1
+  },
+  {
+   "id": "pl.act.zadźgać",
+   "lemma": "zadźgać",
+   "pos": [
+    "VERB"
+   ],
+   "kind": "action_violent",
+   "strength": "strong",
+   "note": null,
+   "valence": -0.94,
+   "arousal": 0.94,
+   "emotions": {
+    "anger": 0.85,
+    "fear": 0.8
+   },
+   "source": "curated:gemini-2026-09",
+   "version": 1
+  },
+  {
+   "id": "pl.act.wystrzelić",
+   "lemma": "wystrzelić",
+   "pos": [
+    "VERB"
+   ],
+   "kind": "action_violent",
+   "strength": "strong",
+   "note": null,
+   "valence": -0.7,
+   "arousal": 0.75,
+   "emotions": {
+    "anger": 0.85,
+    "fear": 0.8
+   },
+   "source": "curated:gemini-2026-09",
+   "version": 1
+  },
+  {
+   "id": "pl.act.okaleczać",
+   "lemma": "okaleczać",
+   "pos": [
+    "VERB"
+   ],
+   "kind": "action_violent",
+   "strength": "strong",
+   "note": null,
+   "valence": -0.86,
+   "arousal": 0.84,
+   "emotions": {
+    "anger": 0.85,
+    "fear": 0.8
+   },
+   "source": "curated:gemini-2026-09",
+   "version": 1
+  },
+  {
+   "id": "pl.act.zabijać",
+   "lemma": "zabijać",
+   "pos": [
+    "VERB"
+   ],
+   "kind": "action_violent",
+   "strength": "strong",
+   "valence": -0.9,
+   "arousal": 0.85,
+   "emotions": {
+    "anger": 0.7,
+    "fear": 0.8
+   },
+   "source": "curated:gemini-2026-10",
+   "version": 1
+  },
+  {
+   "id": "pl.act.mordować",
+   "lemma": "mordować",
+   "pos": [
+    "VERB"
+   ],
+   "kind": "action_violent",
+   "strength": "strong",
+   "valence": -0.95,
+   "arousal": 0.9,
+   "emotions": {
+    "anger": 0.8,
+    "fear": 0.8
+   },
+   "source": "curated:gemini-2026-10",
+   "version": 1
+  },
+  {
+   "id": "pl.act.postrzelić",
+   "lemma": "postrzelić",
+   "pos": [
+    "VERB"
+   ],
+   "kind": "action_violent",
+   "strength": "strong",
+   "valence": -0.85,
+   "arousal": 0.85,
+   "emotions": {
+    "fear": 0.7,
+    "anger": 0.5
+   },
+   "source": "curated:gemini-2026-10",
+   "version": 1
+  },
+  {
+   "id": "pl.act.strzelić",
+   "lemma": "strzelić",
+   "pos": [
+    "VERB"
+   ],
+   "kind": "action_violent",
+   "strength": "weak",
+   "valence": -0.75,
+   "arousal": 0.8,
+   "emotions": {
+    "fear": 0.7,
+    "anger": 0.6
+   },
+   "source": "curated:gemini-2026-10",
+   "version": 1
+  },
+  {
+   "id": "pl.act.atakować",
+   "lemma": "atakować",
+   "pos": [
+    "VERB"
+   ],
+   "kind": "action_violent",
+   "strength": "strong",
+   "valence": -0.75,
+   "arousal": 0.8,
+   "emotions": {
+    "anger": 0.7,
+    "fear": 0.5
+   },
+   "source": "curated:gemini-2026-10",
+   "version": 1
+  },
+  {
+   "id": "pl.act.dźgnąć",
+   "lemma": "dźgnąć",
+   "pos": [
+    "VERB"
+   ],
+   "kind": "action_violent",
+   "strength": "strong",
+   "valence": -0.85,
+   "arousal": 0.85,
+   "emotions": {
+    "anger": 0.7,
+    "fear": 0.8
+   },
+   "source": "curated:gemini-2026-10",
+   "version": 1
+  },
+  {
+   "id": "pl.act.krwawić",
+   "lemma": "krwawić",
+   "pos": [
+    "VERB"
+   ],
+   "kind": "action_violent",
+   "strength": "weak",
+   "valence": -0.6,
+   "arousal": 0.7,
+   "emotions": {
+    "fear": 0.6,
+    "sadness": 0.4
+   },
+   "note": "intransitive bleed",
+   "source": "curated:gemini-2026-10",
+   "version": 1
+  }
+ ]
 }

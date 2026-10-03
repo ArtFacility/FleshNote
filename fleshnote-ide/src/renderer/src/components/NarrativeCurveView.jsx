@@ -4,7 +4,7 @@ import { useTranslation } from 'react-i18next'
 /**
  * Computes smooth cubic Bezier path string through an array of {x, y} points.
  */
-function getSmoothCurvePath(pts) {
+export function getSmoothCurvePath(pts) {
   if (!pts || pts.length === 0) return ''
   if (pts.length === 1) return `M ${pts[0].x} ${pts[0].y}`
   if (pts.length === 2) return `M ${pts[0].x} ${pts[0].y} L ${pts[1].x} ${pts[1].y}`

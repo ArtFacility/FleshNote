@@ -1,0 +1,811 @@
+{
+ "lang": "en",
+ "kind": "action_urgent",
+ "version": 1,
+ "entries": [
+  {
+   "id": "en.urgent.rush",
+   "lemma": "rush",
+   "pos": [
+    "VERB"
+   ],
+   "kind": "action_urgent",
+   "strength": "strong",
+   "valence": -0.1,
+   "arousal": 0.6,
+   "emotions": {
+    "anticipation": 0.5
+   },
+   "source": "curated:claude-2026-09",
+   "version": 1
+  },
+  {
+   "id": "en.urgent.dash",
+   "lemma": "dash",
+   "pos": [
+    "VERB"
+   ],
+   "kind": "action_urgent",
+   "strength": "weak",
+   "valence": -0.1,
+   "arousal": 0.6,
+   "emotions": {
+    "anticipation": 0.5
+   },
+   "source": "curated:claude-2026-09",
+   "version": 1,
+   "note": "also the punctuation mark / 'dash off a letter'"
+  },
+  {
+   "id": "en.urgent.flee",
+   "lemma": "flee",
+   "pos": [
+    "VERB"
+   ],
+   "kind": "action_urgent",
+   "strength": "strong",
+   "valence": -0.5,
+   "arousal": 0.75,
+   "emotions": {
+    "fear": 0.8
+   },
+   "source": "curated:claude-2026-09",
+   "version": 1
+  },
+  {
+   "id": "en.urgent.leap",
+   "lemma": "leap",
+   "pos": [
+    "VERB"
+   ],
+   "kind": "action_urgent",
+   "strength": "strong",
+   "valence": 0.0,
+   "arousal": 0.6,
+   "emotions": {
+    "surprise": 0.4
+   },
+   "source": "curated:claude-2026-09",
+   "version": 1
+  },
+  {
+   "id": "en.urgent.chase",
+   "lemma": "chase",
+   "pos": [
+    "VERB"
+   ],
+   "kind": "action_urgent",
+   "strength": "strong",
+   "valence": -0.3,
+   "arousal": 0.7,
+   "emotions": {
+    "fear": 0.4,
+    "anticipation": 0.4
+   },
+   "source": "curated:claude-2026-09",
+   "version": 1
+  },
+  {
+   "id": "en.urgent.scramble",
+   "lemma": "scramble",
+   "pos": [
+    "VERB"
+   ],
+   "kind": "action_urgent",
+   "strength": "strong",
+   "valence": -0.3,
+   "arousal": 0.6,
+   "emotions": {
+    "fear": 0.5
+   },
+   "source": "curated:claude-2026-09",
+   "version": 1
+  },
+  {
+   "id": "en.urgent.sprint",
+   "lemma": "sprint",
+   "pos": [
+    "VERB",
+    "NOUN"
+   ],
+   "kind": "action_urgent",
+   "strength": "strong",
+   "valence": 0.0,
+   "arousal": 0.7,
+   "emotions": {
+    "anticipation": 0.6
+   },
+   "source": "curated:gemini-2026-10",
+   "version": 1
+  },
+  {
+   "id": "en.urgent.lunge",
+   "lemma": "lunge",
+   "pos": [
+    "VERB",
+    "NOUN"
+   ],
+   "kind": "action_urgent",
+   "strength": "strong",
+   "valence": -0.1,
+   "arousal": 0.7,
+   "emotions": {
+    "anticipation": 0.5,
+    "anger": 0.3
+   },
+   "source": "curated:gemini-2026-10",
+   "version": 1
+  },
+  {
+   "id": "en.urgent.bolt",
+   "lemma": "bolt",
+   "pos": [
+    "VERB"
+   ],
+   "kind": "action_urgent",
+   "strength": "weak",
+   "valence": -0.2,
+   "arousal": 0.7,
+   "emotions": {
+    "fear": 0.5
+   },
+   "source": "curated:gemini-2026-10",
+   "version": 1,
+   "note": "also hardware bolt"
+  },
+  {
+   "id": "en.urgent.dive",
+   "lemma": "dive",
+   "pos": [
+    "VERB",
+    "NOUN"
+   ],
+   "kind": "action_urgent",
+   "strength": "weak",
+   "valence": -0.1,
+   "arousal": 0.65,
+   "emotions": {
+    "anticipation": 0.4
+   },
+   "source": "curated:gemini-2026-10",
+   "version": 1,
+   "note": "also swimming dive"
+  },
+  {
+   "id": "en.urgent.stagger",
+   "lemma": "stagger",
+   "pos": [
+    "VERB"
+   ],
+   "kind": "action_urgent",
+   "strength": "strong",
+   "valence": -0.4,
+   "arousal": 0.65,
+   "emotions": {
+    "fear": 0.5,
+    "sadness": 0.3
+   },
+   "source": "curated:gemini-2026-10",
+   "version": 1
+  },
+  {
+   "id": "en.urgent.tumble",
+   "lemma": "tumble",
+   "pos": [
+    "VERB"
+   ],
+   "kind": "action_urgent",
+   "strength": "weak",
+   "valence": -0.3,
+   "arousal": 0.6,
+   "emotions": {
+    "surprise": 0.5
+   },
+   "source": "curated:gemini-2026-10",
+   "version": 1,
+   "note": "also playful tumble"
+  },
+  {
+   "id": "en.urgent.race",
+   "lemma": "race",
+   "pos": [
+    "VERB",
+    "NOUN"
+   ],
+   "kind": "action_urgent",
+   "strength": "weak",
+   "valence": 0.0,
+   "arousal": 0.65,
+   "emotions": {
+    "anticipation": 0.5
+   },
+   "source": "curated:gemini-2026-10",
+   "version": 1,
+   "note": "also human race"
+  },
+  {
+   "id": "en.urgent.hurry",
+   "lemma": "hurry",
+   "pos": [
+    "VERB"
+   ],
+   "kind": "action_urgent",
+   "strength": "strong",
+   "valence": -0.1,
+   "arousal": 0.65,
+   "emotions": {
+    "anticipation": 0.6
+   },
+   "source": "curated:gemini-2026-10",
+   "version": 1
+  },
+  {
+   "id": "en.urgent.escape",
+   "lemma": "escape",
+   "pos": [
+    "VERB",
+    "NOUN"
+   ],
+   "kind": "action_urgent",
+   "strength": "strong",
+   "valence": -0.2,
+   "arousal": 0.75,
+   "emotions": {
+    "fear": 0.6,
+    "anticipation": 0.5
+   },
+   "source": "curated:gemini-2026-10",
+   "version": 1
+  },
+  {
+   "id": "en.urgent.pursue",
+   "lemma": "pursue",
+   "pos": [
+    "VERB"
+   ],
+   "kind": "action_urgent",
+   "strength": "strong",
+   "valence": -0.2,
+   "arousal": 0.7,
+   "emotions": {
+    "anticipation": 0.6,
+    "anger": 0.3
+   },
+   "source": "curated:gemini-2026-10",
+   "version": 1
+  },
+  {
+   "id": "en.urgent.charge",
+   "lemma": "charge",
+   "pos": [
+    "VERB"
+   ],
+   "kind": "action_urgent",
+   "strength": "weak",
+   "valence": -0.2,
+   "arousal": 0.75,
+   "emotions": {
+    "anger": 0.5,
+    "anticipation": 0.5
+   },
+   "source": "curated:gemini-2026-10",
+   "version": 1,
+   "note": "also electric charge / fee"
+  },
+  {
+   "id": "en.urgent.retreat",
+   "lemma": "retreat",
+   "pos": [
+    "VERB",
+    "NOUN"
+   ],
+   "kind": "action_urgent",
+   "strength": "strong",
+   "valence": -0.4,
+   "arousal": 0.65,
+   "emotions": {
+    "fear": 0.6
+   },
+   "source": "curated:gemini-2026-10",
+   "version": 1
+  },
+  {
+   "id": "en.urgent.dart",
+   "lemma": "dart",
+   "pos": [
+    "VERB"
+   ],
+   "kind": "action_urgent",
+   "strength": "weak",
+   "valence": 0.0,
+   "arousal": 0.6,
+   "emotions": {
+    "anticipation": 0.4
+   },
+   "source": "curated:gemini-2026-10",
+   "version": 1,
+   "note": "also projectile dart"
+  },
+  {
+   "id": "en.urgent.hasten",
+   "lemma": "hasten",
+   "pos": [
+    "VERB"
+   ],
+   "kind": "action_urgent",
+   "strength": "strong",
+   "valence": 0.0,
+   "arousal": 0.6,
+   "emotions": {
+    "anticipation": 0.5
+   },
+   "source": "curated:gemini-2026-10",
+   "version": 1
+  },
+  {
+   "id": "en.urgent.scurry",
+   "lemma": "scurry",
+   "pos": [
+    "VERB"
+   ],
+   "kind": "action_urgent",
+   "strength": "strong",
+   "valence": -0.1,
+   "arousal": 0.6,
+   "emotions": {
+    "fear": 0.4
+   },
+   "source": "curated:gemini-2026-10",
+   "version": 1
+  },
+  {
+   "id": "en.urgent.scuttle",
+   "lemma": "scuttle",
+   "pos": [
+    "VERB"
+   ],
+   "kind": "action_urgent",
+   "strength": "weak",
+   "valence": -0.1,
+   "arousal": 0.6,
+   "emotions": {
+    "fear": 0.4
+   },
+   "source": "curated:gemini-2026-10",
+   "version": 1,
+   "note": "also scuttle a ship"
+  },
+  {
+   "id": "en.urgent.gallop",
+   "lemma": "gallop",
+   "pos": [
+    "VERB",
+    "NOUN"
+   ],
+   "kind": "action_urgent",
+   "strength": "weak",
+   "valence": 0.0,
+   "arousal": 0.65,
+   "emotions": {
+    "anticipation": 0.5
+   },
+   "source": "curated:gemini-2026-10",
+   "version": 1,
+   "note": "horse gait"
+  },
+  {
+   "id": "en.urgent.trot",
+   "lemma": "trot",
+   "pos": [
+    "VERB"
+   ],
+   "kind": "action_urgent",
+   "strength": "weak",
+   "valence": 0.0,
+   "arousal": 0.5,
+   "emotions": {
+    "anticipation": 0.3
+   },
+   "source": "curated:gemini-2026-10",
+   "version": 1,
+   "note": "horse gait"
+  },
+  {
+   "id": "en.urgent.stampede",
+   "lemma": "stampede",
+   "pos": [
+    "VERB",
+    "NOUN"
+   ],
+   "kind": "action_urgent",
+   "strength": "strong",
+   "valence": -0.5,
+   "arousal": 0.85,
+   "emotions": {
+    "fear": 0.8
+   },
+   "source": "curated:gemini-2026-10",
+   "version": 1
+  },
+  {
+   "id": "en.urgent.plunge",
+   "lemma": "plunge",
+   "pos": [
+    "VERB",
+    "NOUN"
+   ],
+   "kind": "action_urgent",
+   "strength": "weak",
+   "valence": -0.3,
+   "arousal": 0.7,
+   "emotions": {
+    "fear": 0.5
+   },
+   "source": "curated:gemini-2026-10",
+   "version": 1,
+   "note": "also plunge a sink"
+  },
+  {
+   "id": "en.urgent.vault",
+   "lemma": "vault",
+   "pos": [
+    "VERB"
+   ],
+   "kind": "action_urgent",
+   "strength": "weak",
+   "valence": 0.0,
+   "arousal": 0.6,
+   "emotions": {
+    "anticipation": 0.4
+   },
+   "source": "curated:gemini-2026-10",
+   "version": 1,
+   "note": "also bank vault"
+  },
+  {
+   "id": "en.urgent.evade",
+   "lemma": "evade",
+   "pos": [
+    "VERB"
+   ],
+   "kind": "action_urgent",
+   "strength": "strong",
+   "valence": -0.3,
+   "arousal": 0.65,
+   "emotions": {
+    "fear": 0.5,
+    "anticipation": 0.4
+   },
+   "source": "curated:gemini-2026-10",
+   "version": 1
+  },
+  {
+   "id": "en.urgent.dodge",
+   "lemma": "dodge",
+   "pos": [
+    "VERB"
+   ],
+   "kind": "action_urgent",
+   "strength": "strong",
+   "valence": -0.1,
+   "arousal": 0.65,
+   "emotions": {
+    "anticipation": 0.5
+   },
+   "source": "curated:gemini-2026-10",
+   "version": 1
+  },
+  {
+   "id": "en.urgent.duck",
+   "lemma": "duck",
+   "pos": [
+    "VERB"
+   ],
+   "kind": "action_urgent",
+   "strength": "weak",
+   "valence": -0.1,
+   "arousal": 0.55,
+   "emotions": {
+    "fear": 0.4
+   },
+   "source": "curated:gemini-2026-10",
+   "version": 1,
+   "note": "also waterfowl"
+  },
+  {
+   "id": "en.urgent.falter",
+   "lemma": "falter",
+   "pos": [
+    "VERB"
+   ],
+   "kind": "action_urgent",
+   "strength": "strong",
+   "valence": -0.4,
+   "arousal": 0.55,
+   "emotions": {
+    "fear": 0.5
+   },
+   "source": "curated:gemini-2026-10",
+   "version": 1
+  },
+  {
+   "id": "en.urgent.reel",
+   "lemma": "reel",
+   "pos": [
+    "VERB"
+   ],
+   "kind": "action_urgent",
+   "strength": "weak",
+   "valence": -0.3,
+   "arousal": 0.6,
+   "emotions": {
+    "surprise": 0.5
+   },
+   "source": "curated:gemini-2026-10",
+   "version": 1,
+   "note": "also fishing reel"
+  },
+  {
+   "id": "en.urgent.trip",
+   "lemma": "trip",
+   "pos": [
+    "VERB"
+   ],
+   "kind": "action_urgent",
+   "strength": "weak",
+   "valence": -0.2,
+   "arousal": 0.55,
+   "emotions": {
+    "surprise": 0.5
+   },
+   "source": "curated:gemini-2026-10",
+   "version": 1,
+   "note": "also journey"
+  },
+  {
+   "id": "en.urgent.slip",
+   "lemma": "slip",
+   "pos": [
+    "VERB"
+   ],
+   "kind": "action_urgent",
+   "strength": "weak",
+   "valence": -0.2,
+   "arousal": 0.55,
+   "emotions": {
+    "surprise": 0.4
+   },
+   "source": "curated:gemini-2026-10",
+   "version": 1,
+   "note": "also slip of paper"
+  },
+  {
+   "id": "en.urgent.surge",
+   "lemma": "surge",
+   "pos": [
+    "VERB"
+   ],
+   "kind": "action_urgent",
+   "strength": "weak",
+   "valence": 0.0,
+   "arousal": 0.65,
+   "emotions": {
+    "anticipation": 0.5
+   },
+   "source": "curated:gemini-2026-10",
+   "version": 1,
+   "note": "also power surge"
+  },
+  {
+   "id": "en.urgent.clamber",
+   "lemma": "clamber",
+   "pos": [
+    "VERB"
+   ],
+   "kind": "action_urgent",
+   "strength": "strong",
+   "valence": -0.1,
+   "arousal": 0.6,
+   "emotions": {
+    "anticipation": 0.4
+   },
+   "source": "curated:gemini-2026-10",
+   "version": 1
+  },
+  {
+   "id": "en.urgent.hurtle",
+   "lemma": "hurtle",
+   "pos": [
+    "VERB"
+   ],
+   "kind": "action_urgent",
+   "strength": "strong",
+   "valence": -0.3,
+   "arousal": 0.75,
+   "emotions": {
+    "fear": 0.6
+   },
+   "source": "curated:gemini-2026-10",
+   "version": 1
+  },
+  {
+   "id": "en.urgent.careen",
+   "lemma": "careen",
+   "pos": [
+    "VERB"
+   ],
+   "kind": "action_urgent",
+   "strength": "strong",
+   "valence": -0.3,
+   "arousal": 0.7,
+   "emotions": {
+    "fear": 0.5
+   },
+   "source": "curated:gemini-2026-10",
+   "version": 1
+  },
+  {
+   "id": "en.urgent.pursuit",
+   "lemma": "pursuit",
+   "pos": [
+    "NOUN"
+   ],
+   "kind": "action_urgent",
+   "strength": "strong",
+   "valence": -0.2,
+   "arousal": 0.7,
+   "emotions": {
+    "anticipation": 0.6
+   },
+   "source": "curated:gemini-2026-10",
+   "version": 1
+  },
+  {
+   "id": "en.urgent.flight",
+   "lemma": "flight",
+   "pos": [
+    "NOUN"
+   ],
+   "kind": "action_urgent",
+   "strength": "weak",
+   "valence": -0.4,
+   "arousal": 0.7,
+   "emotions": {
+    "fear": 0.6
+   },
+   "source": "curated:gemini-2026-10",
+   "version": 1,
+   "note": "also airplane flight"
+  },
+  {
+   "id": "en.urgent.bind",
+   "lemma": "bound",
+   "pos": [
+    "VERB"
+   ],
+   "kind": "action_urgent",
+   "strength": "weak",
+   "valence": 0.0,
+   "arousal": 0.6,
+   "emotions": {
+    "anticipation": 0.4
+   },
+   "source": "curated:gemini-2026-10",
+   "version": 1,
+   "note": "leap forward ('bounded down the stairs'); spaCy's lemma is 'bound'"
+  },
+  {
+   "id": "en.urgent.speed",
+   "lemma": "speed",
+   "pos": [
+    "NOUN"
+   ],
+   "kind": "action_urgent",
+   "strength": "weak",
+   "valence": 0.0,
+   "arousal": 0.6,
+   "emotions": {
+    "anticipation": 0.4
+   },
+   "source": "curated:gemini-2026-10",
+   "version": 1,
+   "note": "also traffic speed"
+  },
+  {
+   "id": "en.urgent.haste",
+   "lemma": "haste",
+   "pos": [
+    "NOUN"
+   ],
+   "kind": "action_urgent",
+   "strength": "strong",
+   "valence": -0.1,
+   "arousal": 0.6,
+   "emotions": {
+    "anticipation": 0.5
+   },
+   "source": "curated:gemini-2026-10",
+   "version": 1
+  },
+  {
+   "id": "en.urgent.sidestep",
+   "lemma": "sidestep",
+   "pos": [
+    "VERB"
+   ],
+   "kind": "action_urgent",
+   "strength": "strong",
+   "valence": 0.0,
+   "arousal": 0.55,
+   "emotions": {
+    "anticipation": 0.4
+   },
+   "source": "curated:gemini-2026-10",
+   "version": 1
+  },
+  {
+   "id": "en.urgent.backpedal",
+   "lemma": "backpedal",
+   "pos": [
+    "VERB"
+   ],
+   "kind": "action_urgent",
+   "strength": "strong",
+   "valence": -0.3,
+   "arousal": 0.6,
+   "emotions": {
+    "fear": 0.4
+   },
+   "source": "curated:gemini-2026-10",
+   "version": 1
+  },
+  {
+   "id": "en.urgent.scoot",
+   "lemma": "scoot",
+   "pos": [
+    "VERB"
+   ],
+   "kind": "action_urgent",
+   "strength": "strong",
+   "valence": 0.0,
+   "arousal": 0.55,
+   "emotions": {
+    "anticipation": 0.4
+   },
+   "source": "curated:gemini-2026-10",
+   "version": 1
+  },
+  {
+   "id": "en.urgent.scram",
+   "lemma": "scram",
+   "pos": [
+    "VERB"
+   ],
+   "kind": "action_urgent",
+   "strength": "strong",
+   "valence": -0.3,
+   "arousal": 0.65,
+   "emotions": {
+    "anger": 0.4
+   },
+   "source": "curated:gemini-2026-10",
+   "version": 1
+  },
+  {
+   "id": "en.urgent.skedaddle",
+   "lemma": "skedaddle",
+   "pos": [
+    "VERB"
+   ],
+   "kind": "action_urgent",
+   "strength": "strong",
+   "valence": -0.2,
+   "arousal": 0.6,
+   "emotions": {
+    "anticipation": 0.4
+   },
+   "source": "curated:gemini-2026-10",
+   "version": 1
+  }
+ ]
+}

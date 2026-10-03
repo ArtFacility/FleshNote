@@ -819,6 +819,58 @@
    },
    "source": "curated:gemini-2026-09",
    "version": 1
+  },
+  {
+   "id": "en.speech.scream",
+   "lemma": "scream",
+   "pos": [
+    "VERB"
+   ],
+   "kind": "conflict_speech",
+   "strength": "strong",
+   "valence": -0.8,
+   "arousal": 0.9,
+   "emotions": {
+    "fear": 0.8,
+    "anger": 0.5
+   },
+   "source": "curated:gemini-2026-10",
+   "version": 1
+  },
+  {
+   "id": "en.speech.beg",
+   "lemma": "beg",
+   "pos": [
+    "VERB"
+   ],
+   "kind": "conflict_speech",
+   "strength": "strong",
+   "valence": -0.65,
+   "arousal": 0.75,
+   "emotions": {
+    "fear": 0.7,
+    "sadness": 0.6
+   },
+   "source": "curated:gemini-2026-10",
+   "version": 1
+  },
+  {
+   "id": "en.speech.wail",
+   "lemma": "wail",
+   "pos": [
+    "VERB",
+    "NOUN"
+   ],
+   "kind": "conflict_speech",
+   "strength": "strong",
+   "valence": -0.7,
+   "arousal": 0.75,
+   "emotions": {
+    "sadness": 0.8,
+    "fear": 0.5
+   },
+   "source": "curated:gemini-2026-10",
+   "version": 1
   }
  ]
 }

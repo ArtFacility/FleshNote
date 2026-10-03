@@ -4,8 +4,8 @@
  "version": 1,
  "entries": [
   {
-   "id": "hu.stakes.esk\u00fc",
-   "lemma": "esk\u00fc",
+   "id": "hu.stakes.eskü",
+   "lemma": "eskü",
    "kind": "stakes_word",
    "strength": "strong",
    "valence": 0.2,
@@ -30,8 +30,8 @@
    "version": 1
   },
   {
-   "id": "hu.stakes.\u00edg\u00e9ret",
-   "lemma": "\u00edg\u00e9ret",
+   "id": "hu.stakes.ígéret",
+   "lemma": "ígéret",
    "kind": "stakes_word",
    "strength": "strong",
    "valence": 0.2,
@@ -43,8 +43,8 @@
    "version": 1
   },
   {
-   "id": "hu.stakes.becs\u00fclet",
-   "lemma": "becs\u00fclet",
+   "id": "hu.stakes.becsület",
+   "lemma": "becsület",
    "kind": "stakes_word",
    "strength": "strong",
    "valence": 0.3,
@@ -56,8 +56,8 @@
    "version": 1
   },
   {
-   "id": "hu.stakes.h\u00edrn\u00e9v",
-   "lemma": "h\u00edrn\u00e9v",
+   "id": "hu.stakes.hírnév",
+   "lemma": "hírnév",
    "kind": "stakes_word",
    "strength": "strong",
    "valence": 0.1,
@@ -69,8 +69,8 @@
    "version": 1
   },
   {
-   "id": "hu.stakes.\u00edt\u00e9let",
-   "lemma": "\u00edt\u00e9let",
+   "id": "hu.stakes.ítélet",
+   "lemma": "ítélet",
    "kind": "stakes_word",
    "strength": "strong",
    "valence": -0.3,
@@ -82,8 +82,8 @@
    "version": 1
   },
   {
-   "id": "hu.stakes.v\u00e9gz\u00e9s",
-   "lemma": "v\u00e9gz\u00e9s",
+   "id": "hu.stakes.végzés",
+   "lemma": "végzés",
    "kind": "stakes_word",
    "strength": "strong",
    "valence": -0.2,
@@ -95,8 +95,8 @@
    "version": 1
   },
   {
-   "id": "hu.stakes.j\u00f3slat",
-   "lemma": "j\u00f3slat",
+   "id": "hu.stakes.jóslat",
+   "lemma": "jóslat",
    "kind": "stakes_word",
    "strength": "strong",
    "valence": 0.0,
@@ -108,8 +108,8 @@
    "version": 1
   },
   {
-   "id": "hu.stakes.\u00f6r\u00f6ks\u00e9g",
-   "lemma": "\u00f6r\u00f6ks\u00e9g",
+   "id": "hu.stakes.örökség",
+   "lemma": "örökség",
    "kind": "stakes_word",
    "strength": "strong",
    "valence": 0.15,
@@ -121,8 +121,8 @@
    "version": 1
   },
   {
-   "id": "hu.stakes.szabads\u00e1g",
-   "lemma": "szabads\u00e1g",
+   "id": "hu.stakes.szabadság",
+   "lemma": "szabadság",
    "kind": "stakes_word",
    "strength": "strong",
    "valence": 0.5,
@@ -134,8 +134,8 @@
    "version": 1
   },
   {
-   "id": "hu.stakes.f\u00fcggetlens\u00e9g",
-   "lemma": "f\u00fcggetlens\u00e9g",
+   "id": "hu.stakes.függetlenség",
+   "lemma": "függetlenség",
    "kind": "stakes_word",
    "strength": "strong",
    "valence": 0.4,
@@ -160,8 +160,8 @@
    "version": 1
   },
   {
-   "id": "hu.stakes.kir\u00e1lys\u00e1g",
-   "lemma": "kir\u00e1lys\u00e1g",
+   "id": "hu.stakes.királyság",
+   "lemma": "királyság",
    "kind": "stakes_word",
    "strength": "strong",
    "valence": 0.1,
@@ -173,8 +173,8 @@
    "version": 1
   },
   {
-   "id": "hu.stakes.tr\u00f3n",
-   "lemma": "tr\u00f3n",
+   "id": "hu.stakes.trón",
+   "lemma": "trón",
    "kind": "stakes_word",
    "strength": "strong",
    "valence": 0.0,
@@ -225,8 +225,8 @@
    "version": 1
   },
   {
-   "id": "hu.stakes.t\u00fal\u00e9l\u00e9s",
-   "lemma": "t\u00fal\u00e9l\u00e9s",
+   "id": "hu.stakes.túlélés",
+   "lemma": "túlélés",
    "kind": "stakes_word",
    "strength": "strong",
    "valence": -0.4,
@@ -251,8 +251,8 @@
    "version": 1
   },
   {
-   "id": "hu.stakes.v\u00e9gzet",
-   "lemma": "v\u00e9gzet",
+   "id": "hu.stakes.végzet",
+   "lemma": "végzet",
    "kind": "stakes_word",
    "strength": "strong",
    "valence": -0.4,
@@ -264,8 +264,8 @@
    "version": 1
   },
   {
-   "id": "hu.stakes.elhivatotts\u00e1g",
-   "lemma": "elhivatotts\u00e1g",
+   "id": "hu.stakes.elhivatottság",
+   "lemma": "elhivatottság",
    "kind": "stakes_word",
    "strength": "strong",
    "valence": 0.3,
@@ -277,8 +277,8 @@
    "version": 1
   },
   {
-   "id": "hu.stakes.megv\u00e1lt\u00e1s",
-   "lemma": "megv\u00e1lt\u00e1s",
+   "id": "hu.stakes.megváltás",
+   "lemma": "megváltás",
    "kind": "stakes_word",
    "strength": "strong",
    "valence": 0.6,
@@ -290,8 +290,8 @@
    "version": 1
   },
   {
-   "id": "hu.stakes.szabadul\u00e1s",
-   "lemma": "szabadul\u00e1s",
+   "id": "hu.stakes.szabadulás",
+   "lemma": "szabadulás",
    "kind": "stakes_word",
    "strength": "strong",
    "valence": 0.5,
@@ -303,8 +303,8 @@
    "version": 1
   },
   {
-   "id": "hu.stakes.\u00e1ldozat",
-   "lemma": "\u00e1ldozat",
+   "id": "hu.stakes.áldozat",
+   "lemma": "áldozat",
    "kind": "stakes_word",
    "strength": "strong",
    "valence": -0.5,
@@ -316,8 +316,8 @@
    "version": 1
   },
   {
-   "id": "hu.stakes.v\u00e9rtan\u00fas\u00e1g",
-   "lemma": "v\u00e9rtan\u00fas\u00e1g",
+   "id": "hu.stakes.vértanúság",
+   "lemma": "vértanúság",
    "kind": "stakes_word",
    "strength": "strong",
    "valence": -0.6,
@@ -329,8 +329,8 @@
    "version": 1
   },
   {
-   "id": "hu.stakes.sz\u00e1m\u0171zet\u00e9s",
-   "lemma": "sz\u00e1m\u0171zet\u00e9s",
+   "id": "hu.stakes.száműzetés",
+   "lemma": "száműzetés",
    "kind": "stakes_word",
    "strength": "strong",
    "valence": -0.7,
@@ -342,8 +342,8 @@
    "version": 1
   },
   {
-   "id": "hu.stakes.rabs\u00e1g",
-   "lemma": "rabs\u00e1g",
+   "id": "hu.stakes.rabság",
+   "lemma": "rabság",
    "kind": "stakes_word",
    "strength": "strong",
    "valence": -0.8,
@@ -356,8 +356,8 @@
    "version": 1
   },
   {
-   "id": "hu.stakes.hal\u00e1l",
-   "lemma": "hal\u00e1l",
+   "id": "hu.stakes.halál",
+   "lemma": "halál",
    "kind": "stakes_word",
    "strength": "strong",
    "valence": -0.85,
@@ -370,8 +370,8 @@
    "version": 1
   },
   {
-   "id": "hu.stakes.haland\u00f3",
-   "lemma": "haland\u00f3",
+   "id": "hu.stakes.halandó",
+   "lemma": "halandó",
    "kind": "stakes_word",
    "strength": "strong",
    "valence": -0.5,
@@ -383,8 +383,8 @@
    "version": 1
   },
   {
-   "id": "hu.stakes.pusztul\u00e1s",
-   "lemma": "pusztul\u00e1s",
+   "id": "hu.stakes.pusztulás",
+   "lemma": "pusztulás",
    "kind": "stakes_word",
    "strength": "strong",
    "valence": -0.9,
@@ -396,8 +396,8 @@
    "version": 1
   },
   {
-   "id": "hu.stakes.megsemmis\u00fcl\u00e9s",
-   "lemma": "megsemmis\u00fcl\u00e9s",
+   "id": "hu.stakes.megsemmisülés",
+   "lemma": "megsemmisülés",
    "kind": "stakes_word",
    "strength": "strong",
    "valence": -0.95,
@@ -409,8 +409,8 @@
    "version": 1
   },
   {
-   "id": "hu.stakes.k\u00e1rhozat",
-   "lemma": "k\u00e1rhozat",
+   "id": "hu.stakes.kárhozat",
+   "lemma": "kárhozat",
    "kind": "stakes_word",
    "strength": "strong",
    "valence": -0.9,
@@ -422,8 +422,8 @@
    "version": 1
   },
   {
-   "id": "hu.stakes.\u00e1tok",
-   "lemma": "\u00e1tok",
+   "id": "hu.stakes.átok",
+   "lemma": "átok",
    "kind": "stakes_word",
    "strength": "strong",
    "valence": -0.75,
@@ -435,8 +435,8 @@
    "version": 1
   },
   {
-   "id": "hu.stakes.b\u00fcntet\u00e9s",
-   "lemma": "b\u00fcntet\u00e9s",
+   "id": "hu.stakes.büntetés",
+   "lemma": "büntetés",
    "kind": "stakes_word",
    "strength": "strong",
    "valence": -0.65,
@@ -448,8 +448,8 @@
    "version": 1
   },
   {
-   "id": "hu.stakes.\u00f6r\u00f6kk\u00e9val\u00f3s\u00e1g",
-   "lemma": "\u00f6r\u00f6kk\u00e9val\u00f3s\u00e1g",
+   "id": "hu.stakes.örökkévalóság",
+   "lemma": "örökkévalóság",
    "kind": "stakes_word",
    "strength": "strong",
    "valence": 0.1,
@@ -461,8 +461,8 @@
    "version": 1
   },
   {
-   "id": "hu.stakes.\u00f6r\u00f6k",
-   "lemma": "\u00f6r\u00f6k",
+   "id": "hu.stakes.örök",
+   "lemma": "örök",
    "kind": "stakes_word",
    "strength": "strong",
    "valence": 0.1,
@@ -487,8 +487,8 @@
    "version": 1
   },
   {
-   "id": "hu.stakes.v\u00e9g\u00edt\u00e9let",
-   "lemma": "v\u00e9g\u00edt\u00e9let",
+   "id": "hu.stakes.végítélet",
+   "lemma": "végítélet",
    "kind": "stakes_word",
    "strength": "strong",
    "valence": -0.95,
@@ -500,8 +500,8 @@
    "version": 1
   },
   {
-   "id": "hu.stakes.katasztr\u00f3fa",
-   "lemma": "katasztr\u00f3fa",
+   "id": "hu.stakes.katasztrófa",
+   "lemma": "katasztrófa",
    "kind": "stakes_word",
    "strength": "strong",
    "valence": -0.85,
@@ -513,8 +513,8 @@
    "version": 1
   },
   {
-   "id": "hu.stakes.vesztes\u00e9g",
-   "lemma": "vesztes\u00e9g",
+   "id": "hu.stakes.veszteség",
+   "lemma": "veszteség",
    "kind": "stakes_word",
    "strength": "strong",
    "valence": -0.71,
@@ -526,8 +526,8 @@
    "version": 1
   },
   {
-   "id": "hu.stakes.buk\u00e1s",
-   "lemma": "buk\u00e1s",
+   "id": "hu.stakes.bukás",
+   "lemma": "bukás",
    "kind": "stakes_word",
    "strength": "strong",
    "valence": -0.81,
@@ -540,8 +540,8 @@
    "version": 1
   },
   {
-   "id": "hu.stakes.gy\u0151zelem",
-   "lemma": "gy\u0151zelem",
+   "id": "hu.stakes.győzelem",
+   "lemma": "győzelem",
    "kind": "stakes_word",
    "strength": "strong",
    "valence": 0.86,
@@ -566,8 +566,8 @@
    "version": 1
   },
   {
-   "id": "hu.stakes.\u00f6sszeoml\u00e1s",
-   "lemma": "\u00f6sszeoml\u00e1s",
+   "id": "hu.stakes.összeomlás",
+   "lemma": "összeomlás",
    "kind": "stakes_word",
    "strength": "strong",
    "valence": -0.86,
@@ -580,8 +580,8 @@
    "version": 1
   },
   {
-   "id": "hu.stakes.\u00f6nfel\u00e1ldoz\u00e1s",
-   "lemma": "\u00f6nfel\u00e1ldoz\u00e1s",
+   "id": "hu.stakes.önfeláldozás",
+   "lemma": "önfeláldozás",
    "kind": "stakes_word",
    "strength": "strong",
    "valence": 0.61,
@@ -606,8 +606,8 @@
    "version": 1
   },
   {
-   "id": "hu.stakes.igazs\u00e1g",
-   "lemma": "igazs\u00e1g",
+   "id": "hu.stakes.igazság",
+   "lemma": "igazság",
    "kind": "stakes_word",
    "strength": "strong",
    "valence": 0.76,
@@ -619,8 +619,8 @@
    "version": 1
   },
   {
-   "id": "hu.stakes.gyal\u00e1zat",
-   "lemma": "gyal\u00e1zat",
+   "id": "hu.stakes.gyalázat",
+   "lemma": "gyalázat",
    "kind": "stakes_word",
    "strength": "strong",
    "valence": -0.86,
@@ -633,8 +633,8 @@
    "version": 1
   },
   {
-   "id": "hu.stakes.sz\u00e9gyen",
-   "lemma": "sz\u00e9gyen",
+   "id": "hu.stakes.szégyen",
+   "lemma": "szégyen",
    "kind": "stakes_word",
    "strength": "strong",
    "valence": -0.76,
@@ -646,8 +646,8 @@
    "version": 1
   },
   {
-   "id": "hu.stakes.h\u0171s\u00e9g",
-   "lemma": "h\u0171s\u00e9g",
+   "id": "hu.stakes.hűség",
+   "lemma": "hűség",
    "kind": "stakes_word",
    "strength": "strong",
    "valence": 0.81,
@@ -659,8 +659,8 @@
    "version": 1
   },
   {
-   "id": "hu.stakes.h\u0171tlens\u00e9g",
-   "lemma": "h\u0171tlens\u00e9g",
+   "id": "hu.stakes.hűtlenség",
+   "lemma": "hűtlenség",
    "kind": "stakes_word",
    "strength": "strong",
    "valence": -0.81,
@@ -670,6 +670,174 @@
     "sadness": 0.75
    },
    "source": "curated:gemini-2026-09",
+   "version": 1
+  },
+  {
+   "id": "hu.stakes.meghal",
+   "lemma": "meghal",
+   "pos": [
+    "VERB"
+   ],
+   "kind": "stakes_word",
+   "strength": "strong",
+   "valence": -0.9,
+   "arousal": 0.85,
+   "emotions": {
+    "fear": 0.8,
+    "sadness": 0.8
+   },
+   "source": "curated:gemini-2026-10",
+   "version": 1
+  },
+  {
+   "id": "hu.stakes.halott",
+   "lemma": "halott",
+   "pos": [
+    "ADJ"
+   ],
+   "kind": "stakes_word",
+   "strength": "strong",
+   "valence": -0.85,
+   "arousal": 0.75,
+   "emotions": {
+    "sadness": 0.8,
+    "fear": 0.6
+   },
+   "source": "curated:gemini-2026-10",
+   "version": 1
+  },
+  {
+   "id": "hu.stakes.sír",
+   "lemma": "sír",
+   "pos": [
+    "NOUN"
+   ],
+   "kind": "stakes_word",
+   "strength": "weak",
+   "valence": -0.65,
+   "arousal": 0.6,
+   "emotions": {
+    "sadness": 0.7
+   },
+   "source": "curated:gemini-2026-10",
+   "version": 1,
+   "note": "also weep ('sírni')"
+  },
+  {
+   "id": "hu.stakes.sírbolt",
+   "lemma": "sírbolt",
+   "pos": [
+    "NOUN"
+   ],
+   "kind": "stakes_word",
+   "strength": "strong",
+   "valence": -0.7,
+   "arousal": 0.65,
+   "emotions": {
+    "sadness": 0.7,
+    "fear": 0.5
+   },
+   "source": "curated:gemini-2026-10",
+   "version": 1
+  },
+  {
+   "id": "hu.stakes.temetés",
+   "lemma": "temetés",
+   "pos": [
+    "NOUN"
+   ],
+   "kind": "stakes_word",
+   "strength": "strong",
+   "valence": -0.75,
+   "arousal": 0.65,
+   "emotions": {
+    "sadness": 0.8
+   },
+   "source": "curated:gemini-2026-10",
+   "version": 1
+  },
+  {
+   "id": "hu.stakes.elveszít",
+   "lemma": "elveszít",
+   "pos": [
+    "VERB"
+   ],
+   "kind": "stakes_word",
+   "strength": "weak",
+   "valence": -0.65,
+   "arousal": 0.65,
+   "emotions": {
+    "sadness": 0.7
+   },
+   "source": "curated:gemini-2026-10",
+   "version": 1,
+   "note": "also lose item"
+  },
+  {
+   "id": "hu.stakes.túlél",
+   "lemma": "túlél",
+   "pos": [
+    "VERB"
+   ],
+   "kind": "stakes_word",
+   "strength": "strong",
+   "valence": 0.6,
+   "arousal": 0.75,
+   "emotions": {
+    "trust": 0.6,
+    "anticipation": 0.5
+   },
+   "source": "curated:gemini-2026-10",
+   "version": 1
+  },
+  {
+   "id": "hu.stakes.elpusztul",
+   "lemma": "elpusztul",
+   "pos": [
+    "VERB"
+   ],
+   "kind": "stakes_word",
+   "strength": "strong",
+   "valence": -0.9,
+   "arousal": 0.85,
+   "emotions": {
+    "fear": 0.8,
+    "sadness": 0.7
+   },
+   "source": "curated:gemini-2026-10",
+   "version": 1
+  },
+  {
+   "id": "hu.stakes.örökre",
+   "lemma": "örökre",
+   "pos": [
+    "ADV"
+   ],
+   "kind": "stakes_word",
+   "strength": "weak",
+   "valence": 0.1,
+   "arousal": 0.55,
+   "emotions": {
+    "anticipation": 0.4
+   },
+   "source": "curated:gemini-2026-10",
+   "version": 1,
+   "note": "time intensifier"
+  },
+  {
+   "id": "hu.stakes.romlás",
+   "lemma": "romlás",
+   "pos": [
+    "NOUN"
+   ],
+   "kind": "stakes_word",
+   "strength": "strong",
+   "valence": -0.75,
+   "arousal": 0.7,
+   "emotions": {
+    "sadness": 0.7
+   },
+   "source": "curated:gemini-2026-10",
    "version": 1
   }
  ]

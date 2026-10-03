@@ -575,6 +575,22 @@ export default function ProjectSettingsModal({ isOpen, onClose, projectPath, onC
                                         <p className="settings-desc">{t('settings.janitorSdtConfidenceDesc', 'Lower = more suggestions (may include false positives). Higher = only high-confidence tells.')}</p>
                                     </div>
                                 )}
+
+                                {/* Off unless switched on: unlike the cards above, a missing key means off */}
+                                <div className="settings-card">
+                                    <label className="checkbox-label">
+                                        <input
+                                            type="checkbox"
+                                            checked={config.janitor_show_story_pulse === true}
+                                            onChange={() => handleUpdate('janitor_show_story_pulse', config.janitor_show_story_pulse !== true, 'toggle')}
+                                        />
+                                        <div>
+                                            <strong>{t('settings.storyPulse', 'Story Pulse')}</strong>
+                                            <span className="experimental-badge">{t('settings.experimental', 'Experimental')}</span>
+                                            <p className="settings-desc">{t('settings.storyPulseDesc', 'Adds a lane to the plot planner that estimates how tense each paragraph is, from the words in it, relative to the rest of your book. It is a rough sketch: expect misses, especially in quiet or dialogue-heavy scenes. English, Hungarian and Polish only.')}</p>
+                                        </div>
+                                    </label>
+                                </div>
                             </div>
                         )}
 

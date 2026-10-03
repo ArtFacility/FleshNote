@@ -3,6 +3,7 @@ import os
 import shutil
 import sqlite3
 import sys
+import tempfile
 import unittest
 import uuid
 
@@ -18,8 +19,7 @@ class TestProjectScanBookStats(unittest.TestCase):
     """Bookshelf picker data: word counts, completion, look, stable id."""
 
     def setUp(self):
-        self.workspace = os.path.join(backend_dir, "temp_test_project_scan", uuid.uuid4().hex)
-        os.makedirs(self.workspace)
+        self.workspace = tempfile.mkdtemp(prefix="fn_project_scan_")
 
     def tearDown(self):
         shutil.rmtree(self.workspace, ignore_errors=True)

@@ -20,6 +20,32 @@ def flagged(fn, text, lang):
     return bool(fn(text, lang))
 
 
+class TestDashDialogue(unittest.TestCase):
+    """HU/PL dialogue dashes, including the plain hyphen many writers type."""
+
+    def spoken(self, text):
+        # a span runs up to and including the dash that closes it
+        return [text[s:e].strip(" –-") for s, e in J._speech_spans(text, dash_dialogue=True)]
+
+    def test_hyphen_dialogue_with_attribution(self):
+        self.assertEqual(self.spoken("- Nem megyek - mondta a lány. - Soha."), ["Nem megyek", "Soha."])
+
+    def test_hyphen_and_en_dash_mixed_in_one_line(self):
+        self.assertEqual(self.spoken("- Hová mész? – kérdezte a fiú. - Haza."), ["Hová mész?", "Haza."])
+
+    def test_hyphen_after_a_colon_opens_speech(self):
+        self.assertEqual(self.spoken("Aztán így szólt: - Gyere velem."), ["Gyere velem."])
+
+    def test_hyphens_in_narration_are_not_dialogue(self):
+        for text in ("A csak-csak működő lámpa alatt állt.",
+                     "Ez a ház - ha még áll - a nagyapjáé volt.",
+                     "-Hozzáférés megtagadva, olvasta a képernyőn."):
+            self.assertEqual(self.spoken(text), [], text)
+
+    def test_english_ignores_dashes(self):
+        self.assertEqual(J._speech_spans("- No - he said.", dash_dialogue=False), [])
+
+
 @unittest.skipUnless(check_model_exists("en"), "English spaCy model not downloaded")
 class TestEnglishRules(unittest.TestCase):
     def test_passive_only_with_named_agent(self):
@@ -63,10 +89,29 @@ class TestEnglishRules(unittest.TestCase):
         self.assertFalse(flagged(J._analyze_show_dont_tell,
                                  "“I am furious,” she said.", "en"))
 
+    def test_look_as_a_noun_is_not_a_linking_verb(self):
+        from nlp_manager import get_nlp
+        sent = next(get_nlp("en")("The whites had a curious look about them.").sents)
+        self.assertIsNone(J._detect_emotion_label_en(sent))
+
+    def test_modern_draft_patterns_flagged(self):
+        for text in ("Sophia scared, hides below the seat.",          # name + emotion fragment
+                     "The little creature gets scared.",              # get as linking verb
+                     "Matheus looks down on the nervous Sophia.",     # emotion adj on a character
+                     "Torin looks at her with a worried expression.",  # on a face noun
+                     "Anger starts to escape through his eyes.",      # emotion as the actor
+                     "She holds her hand to contain her nervousness.",
+                     "The officer looks down on him angrily.",        # manner on any verb
+                     "She says out loud, confused."):                 # trailing detached
+            self.assertTrue(flagged(J._analyze_show_dont_tell, text, "en"), text)
+        for text in ("Sophia scared the cat away.",                   # an action, not a feeling
+                     "They stood in a charmed circle of ice.",        # a group is not a character
+                     "The angry sea swallowed the boat."):
+            self.assertFalse(flagged(J._analyze_show_dont_tell, text, "en"), text)
+
     def test_lookalikes_not_flagged(self):
         for text in ("Ned Land was content to sharpen his harpoon.",   # content to = willing
                      "The watchman was relieved by the day crew.",     # relieved = replaced
-                     "The whites had a curious look about them.",      # 'look' the noun
                      "The day was ending in a serenity of still brilliance.",
                      "The silence was menacing.",                      # a thing, not a character
                      "Queequeg disdained no seeming ignominy.",
@@ -105,6 +150,9 @@ class TestHungarianRules(unittest.TestCase):
     def test_dialogue_skipped_but_attribution_checked(self):
         self.assertTrue(flagged(H._analyze_show_dont_tell_hu, "– Nem – mondta büszkén Weisz.", "hu"))
         self.assertFalse(flagged(H._analyze_show_dont_tell_hu, "– Nagyon dühös vagyok – mondta Weisz.", "hu"))
+        # the same with the plain hyphen writers type
+        self.assertTrue(flagged(H._analyze_show_dont_tell_hu, "- Nem - mondta büszkén Weisz.", "hu"))
+        self.assertFalse(flagged(H._analyze_show_dont_tell_hu, "- Nagyon dühös vagyok - mondta Weisz.", "hu"))
 
 
 @unittest.skipUnless(check_model_exists("pl"), "Polish model not downloaded")

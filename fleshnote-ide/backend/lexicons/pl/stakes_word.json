@@ -1,971 +1,953 @@
 {
-  "lang": "pl",
-  "kind": "stakes_word",
-  "version": 1,
-  "entries": [
-    {
-      "id": "pl.stakes.śmierć",
-      "lemma": "śmierć",
-      "kind": "stakes_word",
-      "strength": "strong",
-      "valence": -0.48,
-      "arousal": 0.94,
-      "emotions": {
-        "anticipation": 0.8,
-        "fear": 0.6
-      },
-      "source": "curated:gemini-2026-09",
-      "version": 1
-    },
-    {
-      "id": "pl.stakes.zagładać",
-      "lemma": "zagłada",
-      "kind": "stakes_word",
-      "strength": "strong",
-      "valence": -0.54,
-      "arousal": 0.95,
-      "emotions": {
-        "anticipation": 0.8,
-        "fear": 0.6
-      },
-      "source": "curated:gemini-2026-09",
-      "version": 1
-    },
-    {
-      "id": "pl.stakes.zguba",
-      "lemma": "zguba",
-      "kind": "stakes_word",
-      "strength": "strong",
-      "valence": -0.46,
-      "arousal": 0.88,
-      "emotions": {
-        "anticipation": 0.8,
-        "fear": 0.6
-      },
-      "source": "curated:gemini-2026-09",
-      "version": 1
-    },
-    {
-      "id": "pl.stakes.upadek",
-      "lemma": "upadek",
-      "kind": "stakes_word",
-      "strength": "strong",
-      "valence": -0.42,
-      "arousal": 0.84,
-      "emotions": {
-        "anticipation": 0.8,
-        "fear": 0.6
-      },
-      "source": "curated:gemini-2026-09",
-      "version": 1
-    },
-    {
-      "id": "pl.stakes.klęska",
-      "lemma": "klęska",
-      "kind": "stakes_word",
-      "strength": "strong",
-      "valence": -0.42,
-      "arousal": 0.82,
-      "emotions": {
-        "anticipation": 0.8,
-        "fear": 0.6
-      },
-      "source": "curated:gemini-2026-09",
-      "version": 1
-    },
-    {
-      "id": "pl.stakes.hańba",
-      "lemma": "hańba",
-      "kind": "stakes_word",
-      "strength": "strong",
-      "valence": -0.52,
-      "arousal": 0.86,
-      "emotions": {
-        "anticipation": 0.8,
-        "fear": 0.6
-      },
-      "source": "curated:gemini-2026-09",
-      "version": 1
-    },
-    {
-      "id": "pl.stakes.wstyd",
-      "lemma": "wstyd",
-      "kind": "stakes_word",
-      "strength": "strong",
-      "valence": -0.44,
-      "arousal": 0.72,
-      "emotions": {
-        "anticipation": 0.8,
-        "fear": 0.6
-      },
-      "source": "curated:gemini-2026-09",
-      "version": 1
-    },
-    {
-      "id": "pl.stakes.potępieć",
-      "lemma": "potępienie",
-      "kind": "stakes_word",
-      "strength": "strong",
-      "valence": -0.54,
-      "arousal": 0.9,
-      "emotions": {
-        "anticipation": 0.8,
-        "fear": 0.6
-      },
-      "source": "curated:gemini-2026-09",
-      "version": 1
-    },
-    {
-      "id": "pl.stakes.sąd_ostateczny",
-      "phrase": [
-        "sąd",
-        "ostateczny"
-      ],
-      "kind": "stakes_word",
-      "strength": "strong",
-      "valence": -0.38,
-      "arousal": 0.92,
-      "emotions": {
-        "anticipation": 0.8,
-        "fear": 0.6
-      },
-      "source": "curated:gemini-2026-09",
-      "version": 1,
-      "example": "Grzesznicy drżeli na samą myśl o sądzie ostatecznym."
-    },
-    {
-      "id": "pl.stakes.życie",
-      "lemma": "życie",
-      "kind": "stakes_word",
-      "strength": "strong",
-      "valence": 0.72,
-      "arousal": 0.88,
-      "emotions": {
-        "anticipation": 0.8,
-        "fear": 0.6
-      },
-      "source": "curated:gemini-2026-09",
-      "version": 1
-    },
-    {
-      "id": "pl.stakes.wolność",
-      "lemma": "wolność",
-      "kind": "stakes_word",
-      "strength": "strong",
-      "valence": 0.84,
-      "arousal": 0.86,
-      "emotions": {
-        "anticipation": 0.8,
-        "fear": 0.6
-      },
-      "source": "curated:gemini-2026-09",
-      "version": 1
-    },
-    {
-      "id": "pl.stakes.niepodległość",
-      "lemma": "niepodległość",
-      "kind": "stakes_word",
-      "strength": "strong",
-      "valence": 0.82,
-      "arousal": 0.84,
-      "emotions": {
-        "anticipation": 0.8,
-        "fear": 0.6
-      },
-      "source": "curated:gemini-2026-09",
-      "version": 1
-    },
-    {
-      "id": "pl.stakes.swoboda",
-      "lemma": "swoboda",
-      "kind": "stakes_word",
-      "strength": "strong",
-      "valence": 0.76,
-      "arousal": 0.76,
-      "emotions": {
-        "anticipation": 0.8,
-        "fear": 0.6
-      },
-      "source": "curated:gemini-2026-09",
-      "version": 1
-    },
-    {
-      "id": "pl.stakes.ojczyzna",
-      "lemma": "ojczyzna",
-      "kind": "stakes_word",
-      "strength": "strong",
-      "valence": 0.78,
-      "arousal": 0.82,
-      "emotions": {
-        "anticipation": 0.8,
-        "fear": 0.6
-      },
-      "source": "curated:gemini-2026-09",
-      "version": 1
-    },
-    {
-      "id": "pl.stakes.kraj",
-      "lemma": "kraj",
-      "kind": "stakes_word",
-      "strength": "strong",
-      "valence": 0.6,
-      "arousal": 0.68,
-      "emotions": {
-        "anticipation": 0.8,
-        "fear": 0.6
-      },
-      "source": "curated:gemini-2026-09",
-      "version": 1
-    },
-    {
-      "id": "pl.stakes.naród",
-      "lemma": "naród",
-      "kind": "stakes_word",
-      "strength": "strong",
-      "valence": 0.64,
-      "arousal": 0.74,
-      "emotions": {
-        "anticipation": 0.8,
-        "fear": 0.6
-      },
-      "source": "curated:gemini-2026-09",
-      "version": 1
-    },
-    {
-      "id": "pl.stakes.niewola",
-      "lemma": "niewola",
-      "kind": "stakes_word",
-      "strength": "strong",
-      "valence": -0.54,
-      "arousal": 0.84,
-      "emotions": {
-        "anticipation": 0.8,
-        "fear": 0.6
-      },
-      "source": "curated:gemini-2026-09",
-      "version": 1
-    },
-    {
-      "id": "pl.stakes.jarzmo",
-      "lemma": "jarzmo",
-      "kind": "stakes_word",
-      "strength": "strong",
-      "valence": -0.5,
-      "arousal": 0.78,
-      "emotions": {
-        "anticipation": 0.8,
-        "fear": 0.6
-      },
-      "source": "curated:gemini-2026-09",
-      "version": 1
-    },
-    {
-      "id": "pl.stakes.kajdać",
-      "lemma": "kajdany",
-      "kind": "stakes_word",
-      "strength": "strong",
-      "valence": -0.5,
-      "arousal": 0.78,
-      "emotions": {
-        "anticipation": 0.8,
-        "fear": 0.6
-      },
-      "source": "curated:gemini-2026-09",
-      "version": 1
-    },
-    {
-      "id": "pl.stakes.rodzina",
-      "lemma": "rodzina",
-      "kind": "stakes_word",
-      "strength": "strong",
-      "valence": 0.78,
-      "arousal": 0.72,
-      "emotions": {
-        "anticipation": 0.8,
-        "fear": 0.6
-      },
-      "source": "curated:gemini-2026-09",
-      "version": 1
-    },
-    {
-      "id": "pl.stakes.dziecko",
-      "lemma": "dziecko",
-      "kind": "stakes_word",
-      "strength": "strong",
-      "valence": 0.76,
-      "arousal": 0.74,
-      "emotions": {
-        "anticipation": 0.8,
-        "fear": 0.6
-      },
-      "source": "curated:gemini-2026-09",
-      "version": 1
-    },
-    {
-      "id": "pl.stakes.syn",
-      "lemma": "syn",
-      "kind": "stakes_word",
-      "strength": "strong",
-      "valence": 0.7,
-      "arousal": 0.68,
-      "emotions": {
-        "anticipation": 0.8,
-        "fear": 0.6
-      },
-      "source": "curated:gemini-2026-09",
-      "version": 1
-    },
-    {
-      "id": "pl.stakes.córka",
-      "lemma": "córka",
-      "kind": "stakes_word",
-      "strength": "strong",
-      "valence": 0.7,
-      "arousal": 0.68,
-      "emotions": {
-        "anticipation": 0.8,
-        "fear": 0.6
-      },
-      "source": "curated:gemini-2026-09",
-      "version": 1
-    },
-    {
-      "id": "pl.stakes.matka",
-      "lemma": "matka",
-      "kind": "stakes_word",
-      "strength": "strong",
-      "valence": 0.78,
-      "arousal": 0.72,
-      "emotions": {
-        "anticipation": 0.8,
-        "fear": 0.6
-      },
-      "source": "curated:gemini-2026-09",
-      "version": 1
-    },
-    {
-      "id": "pl.stakes.ojciec",
-      "lemma": "ojciec",
-      "kind": "stakes_word",
-      "strength": "strong",
-      "valence": 0.74,
-      "arousal": 0.7,
-      "emotions": {
-        "anticipation": 0.8,
-        "fear": 0.6
-      },
-      "source": "curated:gemini-2026-09",
-      "version": 1
-    },
-    {
-      "id": "pl.stakes.żona",
-      "lemma": "żona",
-      "kind": "stakes_word",
-      "strength": "strong",
-      "valence": 0.74,
-      "arousal": 0.68,
-      "emotions": {
-        "anticipation": 0.8,
-        "fear": 0.6
-      },
-      "source": "curated:gemini-2026-09",
-      "version": 1
-    },
-    {
-      "id": "pl.stakes.mąż",
-      "lemma": "mąż",
-      "kind": "stakes_word",
-      "strength": "strong",
-      "valence": 0.72,
-      "arousal": 0.66,
-      "emotions": {
-        "anticipation": 0.8,
-        "fear": 0.6
-      },
-      "source": "curated:gemini-2026-09",
-      "version": 1
-    },
-    {
-      "id": "pl.stakes.brat",
-      "lemma": "brat",
-      "kind": "stakes_word",
-      "strength": "strong",
-      "valence": 0.68,
-      "arousal": 0.64,
-      "emotions": {
-        "anticipation": 0.8,
-        "fear": 0.6
-      },
-      "source": "curated:gemini-2026-09",
-      "version": 1
-    },
-    {
-      "id": "pl.stakes.siostra",
-      "lemma": "siostra",
-      "kind": "stakes_word",
-      "strength": "strong",
-      "valence": 0.68,
-      "arousal": 0.64,
-      "emotions": {
-        "anticipation": 0.8,
-        "fear": 0.6
-      },
-      "source": "curated:gemini-2026-09",
-      "version": 1
-    },
-    {
-      "id": "pl.stakes.dom",
-      "lemma": "dom",
-      "kind": "stakes_word",
-      "strength": "strong",
-      "valence": 0.72,
-      "arousal": 0.62,
-      "emotions": {
-        "anticipation": 0.8,
-        "fear": 0.6
-      },
-      "source": "curated:gemini-2026-09",
-      "version": 1
-    },
-    {
-      "id": "pl.stakes.ziemia",
-      "lemma": "ziemia",
-      "kind": "stakes_word",
-      "strength": "strong",
-      "valence": 0.62,
-      "arousal": 0.62,
-      "emotions": {
-        "anticipation": 0.8,
-        "fear": 0.6
-      },
-      "source": "curated:gemini-2026-09",
-      "version": 1
-    },
-    {
-      "id": "pl.stakes.honor",
-      "lemma": "honor",
-      "kind": "stakes_word",
-      "strength": "strong",
-      "valence": 0.82,
-      "arousal": 0.76,
-      "emotions": {
-        "anticipation": 0.8,
-        "fear": 0.6
-      },
-      "source": "curated:gemini-2026-09",
-      "version": 1
-    },
-    {
-      "id": "pl.stakes.godność",
-      "lemma": "godność",
-      "kind": "stakes_word",
-      "strength": "strong",
-      "valence": 0.8,
-      "arousal": 0.7,
-      "emotions": {
-        "anticipation": 0.8,
-        "fear": 0.6
-      },
-      "source": "curated:gemini-2026-09",
-      "version": 1
-    },
-    {
-      "id": "pl.stakes.duma",
-      "lemma": "duma",
-      "kind": "stakes_word",
-      "strength": "strong",
-      "valence": 0.72,
-      "arousal": 0.66,
-      "emotions": {
-        "anticipation": 0.8,
-        "fear": 0.6
-      },
-      "source": "curated:gemini-2026-09",
-      "version": 1
-    },
-    {
-      "id": "pl.stakes.sława",
-      "lemma": "sława",
-      "kind": "stakes_word",
-      "strength": "strong",
-      "valence": 0.68,
-      "arousal": 0.72,
-      "emotions": {
-        "anticipation": 0.8,
-        "fear": 0.6
-      },
-      "source": "curated:gemini-2026-09",
-      "version": 1
-    },
-    {
-      "id": "pl.stakes.chwała",
-      "lemma": "chwała",
-      "kind": "stakes_word",
-      "strength": "strong",
-      "valence": 0.74,
-      "arousal": 0.74,
-      "emotions": {
-        "anticipation": 0.8,
-        "fear": 0.6
-      },
-      "source": "curated:gemini-2026-09",
-      "version": 1
-    },
-    {
-      "id": "pl.stakes.dobry_imię",
-      "phrase": [
-        "dobry",
-        "imię"
-      ],
-      "kind": "stakes_word",
-      "strength": "strong",
-      "valence": 0.74,
-      "arousal": 0.68,
-      "emotions": {
-        "anticipation": 0.8,
-        "fear": 0.6
-      },
-      "source": "curated:gemini-2026-09",
-      "version": 1,
-      "example": "Rycerz cenił dobre imię ponad wszelkie bogactwa tego świata."
-    },
-    {
-      "id": "pl.stakes.reputacja",
-      "lemma": "reputacja",
-      "kind": "stakes_word",
-      "strength": "strong",
-      "valence": 0.62,
-      "arousal": 0.64,
-      "emotions": {
-        "anticipation": 0.8,
-        "fear": 0.6
-      },
-      "source": "curated:gemini-2026-09",
-      "version": 1
-    },
-    {
-      "id": "pl.stakes.przysięga",
-      "lemma": "przysięga",
-      "kind": "stakes_word",
-      "strength": "strong",
-      "valence": 0.72,
-      "arousal": 0.78,
-      "emotions": {
-        "anticipation": 0.8,
-        "fear": 0.6
-      },
-      "source": "curated:gemini-2026-09",
-      "version": 1
-    },
-    {
-      "id": "pl.stakes.ślub",
-      "lemma": "ślub",
-      "kind": "stakes_word",
-      "strength": "strong",
-      "valence": 0.72,
-      "arousal": 0.74,
-      "emotions": {
-        "anticipation": 0.8,
-        "fear": 0.6
-      },
-      "source": "curated:gemini-2026-09",
-      "version": 1
-    },
-    {
-      "id": "pl.stakes.słowo",
-      "lemma": "słowo",
-      "kind": "stakes_word",
-      "strength": "strong",
-      "valence": 0.64,
-      "arousal": 0.64,
-      "emotions": {
-        "anticipation": 0.8,
-        "fear": 0.6
-      },
-      "source": "curated:gemini-2026-09",
-      "version": 1
-    },
-    {
-      "id": "pl.stakes.zdrada",
-      "lemma": "zdrada",
-      "kind": "stakes_word",
-      "strength": "strong",
-      "valence": -0.56,
-      "arousal": 0.86,
-      "emotions": {
-        "anticipation": 0.8,
-        "fear": 0.6
-      },
-      "source": "curated:gemini-2026-09",
-      "version": 1
-    },
-    {
-      "id": "pl.stakes.wierność",
-      "lemma": "wierność",
-      "kind": "stakes_word",
-      "strength": "strong",
-      "valence": 0.82,
-      "arousal": 0.72,
-      "emotions": {
-        "anticipation": 0.8,
-        "fear": 0.6
-      },
-      "source": "curated:gemini-2026-09",
-      "version": 1
-    },
-    {
-      "id": "pl.stakes.ocaleć",
-      "lemma": "ocaleć",
-      "kind": "stakes_word",
-      "strength": "strong",
-      "valence": 0.84,
-      "arousal": 0.88,
-      "emotions": {
-        "anticipation": 0.8,
-        "fear": 0.6
-      },
-      "source": "curated:gemini-2026-09",
-      "version": 1
-    },
-    {
-      "id": "pl.stakes.ratunek",
-      "lemma": "ratunek",
-      "kind": "stakes_word",
-      "strength": "strong",
-      "valence": 0.82,
-      "arousal": 0.86,
-      "emotions": {
-        "anticipation": 0.8,
-        "fear": 0.6
-      },
-      "source": "curated:gemini-2026-09",
-      "version": 1
-    },
-    {
-      "id": "pl.stakes.triumf",
-      "lemma": "triumf",
-      "kind": "stakes_word",
-      "strength": "strong",
-      "valence": 0.84,
-      "arousal": 0.82,
-      "emotions": {
-        "anticipation": 0.8,
-        "fear": 0.6
-      },
-      "source": "curated:gemini-2026-09",
-      "version": 1
-    },
-    {
-      "id": "pl.stakes.zwycięstwo",
-      "lemma": "zwycięstwo",
-      "kind": "stakes_word",
-      "strength": "strong",
-      "valence": 0.84,
-      "arousal": 0.84,
-      "emotions": {
-        "anticipation": 0.8,
-        "fear": 0.6
-      },
-      "source": "curated:gemini-2026-09",
-      "version": 1
-    },
-    {
-      "id": "pl.stakes.zbawienie",
-      "lemma": "zbawienie",
-      "kind": "stakes_word",
-      "strength": "strong",
-      "valence": 0.86,
-      "arousal": 0.8,
-      "emotions": {
-        "anticipation": 0.8,
-        "fear": 0.6
-      },
-      "source": "curated:gemini-2026-09",
-      "version": 1
-    },
-    {
-      "id": "pl.stakes.dusza",
-      "lemma": "dusza",
-      "kind": "stakes_word",
-      "strength": "strong",
-      "valence": 0.68,
-      "arousal": 0.76,
-      "emotions": {
-        "anticipation": 0.8,
-        "fear": 0.6
-      },
-      "source": "curated:gemini-2026-09",
-      "version": 1
-    },
-    {
-      "id": "pl.stakes.wieczność",
-      "lemma": "wieczność",
-      "kind": "stakes_word",
-      "strength": "strong",
-      "valence": 0.62,
-      "arousal": 0.78,
-      "emotions": {
-        "anticipation": 0.8,
-        "fear": 0.6
-      },
-      "source": "curated:gemini-2026-09",
-      "version": 1
-    },
-    {
-      "id": "pl.stakes.poświęcenie",
-      "lemma": "poświęcenie",
-      "kind": "stakes_word",
-      "strength": "strong",
-      "valence": 0.52,
-      "arousal": 0.82,
-      "emotions": {
-        "anticipation": 0.8,
-        "fear": 0.6
-      },
-      "source": "curated:gemini-2026-09",
-      "version": 1
-    },
-    {
-      "id": "pl.stakes.ofiara",
-      "lemma": "ofiara",
-      "kind": "stakes_word",
-      "strength": "strong",
-      "valence": 0.44,
-      "arousal": 0.8,
-      "emotions": {
-        "anticipation": 0.8,
-        "fear": 0.6
-      },
-      "source": "curated:gemini-2026-09",
-      "version": 1
-    },
-    {
-      "id": "pl.stakes.odkupiena",
-      "lemma": "odkupienie",
-      "kind": "stakes_word",
-      "strength": "strong",
-      "valence": 0.76,
-      "arousal": 0.78,
-      "emotions": {
-        "anticipation": 0.8,
-        "fear": 0.6
-      },
-      "source": "curated:gemini-2026-09",
-      "version": 1
-    },
-    {
-      "id": "pl.stakes.los",
-      "lemma": "los",
-      "kind": "stakes_word",
-      "strength": "strong",
-      "valence": 0.32,
-      "arousal": 0.74,
-      "emotions": {
-        "anticipation": 0.8,
-        "fear": 0.6
-      },
-      "source": "curated:gemini-2026-09",
-      "version": 1
-    },
-    {
-      "id": "pl.stakes.przeznaczenie",
-      "lemma": "przeznaczenie",
-      "kind": "stakes_word",
-      "strength": "strong",
-      "valence": 0.42,
-      "arousal": 0.76,
-      "emotions": {
-        "anticipation": 0.8,
-        "fear": 0.6
-      },
-      "source": "curated:gemini-2026-09",
-      "version": 1
-    },
-    {
-      "id": "pl.stakes.fatum",
-      "lemma": "fatum",
-      "kind": "stakes_word",
-      "strength": "strong",
-      "valence": -0.32,
-      "arousal": 0.82,
-      "emotions": {
-        "anticipation": 0.8,
-        "fear": 0.6
-      },
-      "source": "curated:gemini-2026-09",
-      "version": 1
-    },
-    {
-      "id": "pl.stakes.dola",
-      "lemma": "dola",
-      "kind": "stakes_word",
-      "strength": "strong",
-      "valence": 0.3,
-      "arousal": 0.68,
-      "emotions": {
-        "anticipation": 0.8,
-        "fear": 0.6
-      },
-      "source": "curated:gemini-2026-09",
-      "version": 1
-    },
-    {
-      "id": "pl.stakes.przyszłość",
-      "lemma": "przyszłość",
-      "kind": "stakes_word",
-      "strength": "strong",
-      "valence": 0.52,
-      "arousal": 0.7,
-      "emotions": {
-        "anticipation": 0.8,
-        "fear": 0.6
-      },
-      "source": "curated:gemini-2026-09",
-      "version": 1
-    },
-    {
-      "id": "pl.stakes.władza",
-      "lemma": "władza",
-      "kind": "stakes_word",
-      "strength": "strong",
-      "valence": 0.46,
-      "arousal": 0.76,
-      "emotions": {
-        "anticipation": 0.8,
-        "fear": 0.6
-      },
-      "source": "curated:gemini-2026-09",
-      "version": 1
-    },
-    {
-      "id": "pl.stakes.tron",
-      "lemma": "tron",
-      "kind": "stakes_word",
-      "strength": "strong",
-      "valence": 0.52,
-      "arousal": 0.72,
-      "emotions": {
-        "anticipation": 0.8,
-        "fear": 0.6
-      },
-      "source": "curated:gemini-2026-09",
-      "version": 1
-    },
-    {
-      "id": "pl.stakes.korć",
-      "lemma": "korć",
-      "kind": "stakes_word",
-      "strength": "strong",
-      "valence": 0.56,
-      "arousal": 0.68,
-      "emotions": {
-        "anticipation": 0.8,
-        "fear": 0.6
-      },
-      "source": "curated:gemini-2026-09",
-      "version": 1
-    },
-    {
-      "id": "pl.stakes.berło",
-      "lemma": "berło",
-      "kind": "stakes_word",
-      "strength": "strong",
-      "valence": 0.52,
-      "arousal": 0.66,
-      "emotions": {
-        "anticipation": 0.8,
-        "fear": 0.6
-      },
-      "source": "curated:gemini-2026-09",
-      "version": 1
-    },
-    {
-      "id": "pl.stakes.królestwo",
-      "lemma": "królestwo",
-      "kind": "stakes_word",
-      "strength": "strong",
-      "valence": 0.62,
-      "arousal": 0.72,
-      "emotions": {
-        "anticipation": 0.8,
-        "fear": 0.6
-      },
-      "source": "curated:gemini-2026-09",
-      "version": 1
-    },
-    {
-      "id": "pl.stakes.majątek",
-      "lemma": "majątek",
-      "kind": "stakes_word",
-      "strength": "strong",
-      "valence": 0.46,
-      "arousal": 0.6,
-      "emotions": {
-        "anticipation": 0.8,
-        "fear": 0.6
-      },
-      "source": "curated:gemini-2026-09",
-      "version": 1
-    },
-    {
-      "id": "pl.stakes.fortun",
-      "lemma": "fortun",
-      "kind": "stakes_word",
-      "strength": "strong",
-      "valence": 0.54,
-      "arousal": 0.64,
-      "emotions": {
-        "anticipation": 0.8,
-        "fear": 0.6
-      },
-      "source": "curated:gemini-2026-09",
-      "version": 1,
-      "alt_lemmas": [
-        "fortuna"
-      ],
-      "lemma_evidence": "carrier"
-    },
-    {
-      "id": "pl.stakes.bogactwo",
-      "lemma": "bogactwo",
-      "kind": "stakes_word",
-      "strength": "strong",
-      "valence": 0.58,
-      "arousal": 0.62,
-      "emotions": {
-        "anticipation": 0.8,
-        "fear": 0.6
-      },
-      "source": "curated:gemini-2026-09",
-      "version": 1
-    },
-    {
-      "id": "pl.stakes.skarb",
-      "lemma": "skarb",
-      "kind": "stakes_word",
-      "strength": "strong",
-      "valence": 0.68,
-      "arousal": 0.66,
-      "emotions": {
-        "anticipation": 0.8,
-        "fear": 0.6
-      },
-      "source": "curated:gemini-2026-09",
-      "version": 1
-    },
-    {
-      "id": "pl.stakes.dziedzictwo",
-      "lemma": "dziedzictwo",
-      "kind": "stakes_word",
-      "strength": "strong",
-      "valence": 0.66,
-      "arousal": 0.66,
-      "emotions": {
-        "anticipation": 0.8,
-        "fear": 0.6
-      },
-      "source": "curated:gemini-2026-09",
-      "version": 1
-    }
-  ]
+ "lang": "pl",
+ "kind": "stakes_word",
+ "version": 1,
+ "entries": [
+  {
+   "id": "pl.stakes.śmierć",
+   "lemma": "śmierć",
+   "kind": "stakes_word",
+   "strength": "strong",
+   "valence": -0.48,
+   "arousal": 0.94,
+   "emotions": {
+    "anticipation": 0.8,
+    "fear": 0.6
+   },
+   "source": "curated:gemini-2026-09",
+   "version": 1
+  },
+  {
+   "id": "pl.stakes.zagładać",
+   "lemma": "zagłada",
+   "kind": "stakes_word",
+   "strength": "strong",
+   "valence": -0.54,
+   "arousal": 0.95,
+   "emotions": {
+    "anticipation": 0.8,
+    "fear": 0.6
+   },
+   "source": "curated:gemini-2026-09",
+   "version": 1
+  },
+  {
+   "id": "pl.stakes.zguba",
+   "lemma": "zguba",
+   "kind": "stakes_word",
+   "strength": "strong",
+   "valence": -0.46,
+   "arousal": 0.88,
+   "emotions": {
+    "anticipation": 0.8,
+    "fear": 0.6
+   },
+   "source": "curated:gemini-2026-09",
+   "version": 1
+  },
+  {
+   "id": "pl.stakes.upadek",
+   "lemma": "upadek",
+   "kind": "stakes_word",
+   "strength": "strong",
+   "valence": -0.42,
+   "arousal": 0.84,
+   "emotions": {
+    "anticipation": 0.8,
+    "fear": 0.6
+   },
+   "source": "curated:gemini-2026-09",
+   "version": 1
+  },
+  {
+   "id": "pl.stakes.klęska",
+   "lemma": "klęska",
+   "kind": "stakes_word",
+   "strength": "strong",
+   "valence": -0.42,
+   "arousal": 0.82,
+   "emotions": {
+    "anticipation": 0.8,
+    "fear": 0.6
+   },
+   "source": "curated:gemini-2026-09",
+   "version": 1
+  },
+  {
+   "id": "pl.stakes.hańba",
+   "lemma": "hańba",
+   "kind": "stakes_word",
+   "strength": "strong",
+   "valence": -0.52,
+   "arousal": 0.86,
+   "emotions": {
+    "anticipation": 0.8,
+    "fear": 0.6
+   },
+   "source": "curated:gemini-2026-09",
+   "version": 1
+  },
+  {
+   "id": "pl.stakes.wstyd",
+   "lemma": "wstyd",
+   "kind": "stakes_word",
+   "strength": "strong",
+   "valence": -0.44,
+   "arousal": 0.72,
+   "emotions": {
+    "anticipation": 0.8,
+    "fear": 0.6
+   },
+   "source": "curated:gemini-2026-09",
+   "version": 1
+  },
+  {
+   "id": "pl.stakes.potępieć",
+   "lemma": "potępienie",
+   "kind": "stakes_word",
+   "strength": "strong",
+   "valence": -0.54,
+   "arousal": 0.9,
+   "emotions": {
+    "anticipation": 0.8,
+    "fear": 0.6
+   },
+   "source": "curated:gemini-2026-09",
+   "version": 1
+  },
+  {
+   "id": "pl.stakes.sąd_ostateczny",
+   "phrase": [
+    "sąd",
+    "ostateczny"
+   ],
+   "kind": "stakes_word",
+   "strength": "strong",
+   "valence": -0.38,
+   "arousal": 0.92,
+   "emotions": {
+    "anticipation": 0.8,
+    "fear": 0.6
+   },
+   "source": "curated:gemini-2026-09",
+   "version": 1,
+   "example": "Grzesznicy drżeli na samą myśl o sądzie ostatecznym."
+  },
+  {
+   "id": "pl.stakes.wolność",
+   "lemma": "wolność",
+   "kind": "stakes_word",
+   "strength": "strong",
+   "valence": 0.84,
+   "arousal": 0.86,
+   "emotions": {
+    "anticipation": 0.8,
+    "fear": 0.6
+   },
+   "source": "curated:gemini-2026-09",
+   "version": 1
+  },
+  {
+   "id": "pl.stakes.niepodległość",
+   "lemma": "niepodległość",
+   "kind": "stakes_word",
+   "strength": "strong",
+   "valence": 0.82,
+   "arousal": 0.84,
+   "emotions": {
+    "anticipation": 0.8,
+    "fear": 0.6
+   },
+   "source": "curated:gemini-2026-09",
+   "version": 1
+  },
+  {
+   "id": "pl.stakes.swoboda",
+   "lemma": "swoboda",
+   "kind": "stakes_word",
+   "strength": "strong",
+   "valence": 0.76,
+   "arousal": 0.76,
+   "emotions": {
+    "anticipation": 0.8,
+    "fear": 0.6
+   },
+   "source": "curated:gemini-2026-09",
+   "version": 1
+  },
+  {
+   "id": "pl.stakes.ojczyzna",
+   "lemma": "ojczyzna",
+   "kind": "stakes_word",
+   "strength": "strong",
+   "valence": 0.78,
+   "arousal": 0.82,
+   "emotions": {
+    "anticipation": 0.8,
+    "fear": 0.6
+   },
+   "source": "curated:gemini-2026-09",
+   "version": 1
+  },
+  {
+   "id": "pl.stakes.naród",
+   "lemma": "naród",
+   "kind": "stakes_word",
+   "strength": "strong",
+   "valence": 0.64,
+   "arousal": 0.74,
+   "emotions": {
+    "anticipation": 0.8,
+    "fear": 0.6
+   },
+   "source": "curated:gemini-2026-09",
+   "version": 1
+  },
+  {
+   "id": "pl.stakes.niewola",
+   "lemma": "niewola",
+   "kind": "stakes_word",
+   "strength": "strong",
+   "valence": -0.54,
+   "arousal": 0.84,
+   "emotions": {
+    "anticipation": 0.8,
+    "fear": 0.6
+   },
+   "source": "curated:gemini-2026-09",
+   "version": 1
+  },
+  {
+   "id": "pl.stakes.jarzmo",
+   "lemma": "jarzmo",
+   "kind": "stakes_word",
+   "strength": "strong",
+   "valence": -0.5,
+   "arousal": 0.78,
+   "emotions": {
+    "anticipation": 0.8,
+    "fear": 0.6
+   },
+   "source": "curated:gemini-2026-09",
+   "version": 1
+  },
+  {
+   "id": "pl.stakes.kajdać",
+   "lemma": "kajdany",
+   "kind": "stakes_word",
+   "strength": "strong",
+   "valence": -0.5,
+   "arousal": 0.78,
+   "emotions": {
+    "anticipation": 0.8,
+    "fear": 0.6
+   },
+   "source": "curated:gemini-2026-09",
+   "version": 1
+  },
+  {
+   "id": "pl.stakes.honor",
+   "lemma": "honor",
+   "kind": "stakes_word",
+   "strength": "strong",
+   "valence": 0.82,
+   "arousal": 0.76,
+   "emotions": {
+    "anticipation": 0.8,
+    "fear": 0.6
+   },
+   "source": "curated:gemini-2026-09",
+   "version": 1
+  },
+  {
+   "id": "pl.stakes.godność",
+   "lemma": "godność",
+   "kind": "stakes_word",
+   "strength": "strong",
+   "valence": 0.8,
+   "arousal": 0.7,
+   "emotions": {
+    "anticipation": 0.8,
+    "fear": 0.6
+   },
+   "source": "curated:gemini-2026-09",
+   "version": 1
+  },
+  {
+   "id": "pl.stakes.duma",
+   "lemma": "duma",
+   "kind": "stakes_word",
+   "strength": "strong",
+   "valence": 0.72,
+   "arousal": 0.66,
+   "emotions": {
+    "anticipation": 0.8,
+    "fear": 0.6
+   },
+   "source": "curated:gemini-2026-09",
+   "version": 1
+  },
+  {
+   "id": "pl.stakes.sława",
+   "lemma": "sława",
+   "kind": "stakes_word",
+   "strength": "strong",
+   "valence": 0.68,
+   "arousal": 0.72,
+   "emotions": {
+    "anticipation": 0.8,
+    "fear": 0.6
+   },
+   "source": "curated:gemini-2026-09",
+   "version": 1
+  },
+  {
+   "id": "pl.stakes.chwała",
+   "lemma": "chwała",
+   "kind": "stakes_word",
+   "strength": "strong",
+   "valence": 0.74,
+   "arousal": 0.74,
+   "emotions": {
+    "anticipation": 0.8,
+    "fear": 0.6
+   },
+   "source": "curated:gemini-2026-09",
+   "version": 1
+  },
+  {
+   "id": "pl.stakes.dobry_imię",
+   "phrase": [
+    "dobry",
+    "imię"
+   ],
+   "kind": "stakes_word",
+   "strength": "strong",
+   "valence": 0.74,
+   "arousal": 0.68,
+   "emotions": {
+    "anticipation": 0.8,
+    "fear": 0.6
+   },
+   "source": "curated:gemini-2026-09",
+   "version": 1,
+   "example": "Rycerz cenił dobre imię ponad wszelkie bogactwa tego świata."
+  },
+  {
+   "id": "pl.stakes.reputacja",
+   "lemma": "reputacja",
+   "kind": "stakes_word",
+   "strength": "strong",
+   "valence": 0.62,
+   "arousal": 0.64,
+   "emotions": {
+    "anticipation": 0.8,
+    "fear": 0.6
+   },
+   "source": "curated:gemini-2026-09",
+   "version": 1
+  },
+  {
+   "id": "pl.stakes.przysięga",
+   "lemma": "przysięga",
+   "kind": "stakes_word",
+   "strength": "strong",
+   "valence": 0.72,
+   "arousal": 0.78,
+   "emotions": {
+    "anticipation": 0.8,
+    "fear": 0.6
+   },
+   "source": "curated:gemini-2026-09",
+   "version": 1
+  },
+  {
+   "id": "pl.stakes.ślub",
+   "lemma": "ślub",
+   "kind": "stakes_word",
+   "strength": "strong",
+   "valence": 0.72,
+   "arousal": 0.74,
+   "emotions": {
+    "anticipation": 0.8,
+    "fear": 0.6
+   },
+   "source": "curated:gemini-2026-09",
+   "version": 1
+  },
+  {
+   "id": "pl.stakes.zdrada",
+   "lemma": "zdrada",
+   "kind": "stakes_word",
+   "strength": "strong",
+   "valence": -0.56,
+   "arousal": 0.86,
+   "emotions": {
+    "anticipation": 0.8,
+    "fear": 0.6
+   },
+   "source": "curated:gemini-2026-09",
+   "version": 1
+  },
+  {
+   "id": "pl.stakes.wierność",
+   "lemma": "wierność",
+   "kind": "stakes_word",
+   "strength": "strong",
+   "valence": 0.82,
+   "arousal": 0.72,
+   "emotions": {
+    "anticipation": 0.8,
+    "fear": 0.6
+   },
+   "source": "curated:gemini-2026-09",
+   "version": 1
+  },
+  {
+   "id": "pl.stakes.ocaleć",
+   "lemma": "ocaleć",
+   "kind": "stakes_word",
+   "strength": "strong",
+   "valence": 0.84,
+   "arousal": 0.88,
+   "emotions": {
+    "anticipation": 0.8,
+    "fear": 0.6
+   },
+   "source": "curated:gemini-2026-09",
+   "version": 1
+  },
+  {
+   "id": "pl.stakes.ratunek",
+   "lemma": "ratunek",
+   "kind": "stakes_word",
+   "strength": "strong",
+   "valence": 0.82,
+   "arousal": 0.86,
+   "emotions": {
+    "anticipation": 0.8,
+    "fear": 0.6
+   },
+   "source": "curated:gemini-2026-09",
+   "version": 1
+  },
+  {
+   "id": "pl.stakes.triumf",
+   "lemma": "triumf",
+   "kind": "stakes_word",
+   "strength": "strong",
+   "valence": 0.84,
+   "arousal": 0.82,
+   "emotions": {
+    "anticipation": 0.8,
+    "fear": 0.6
+   },
+   "source": "curated:gemini-2026-09",
+   "version": 1
+  },
+  {
+   "id": "pl.stakes.zwycięstwo",
+   "lemma": "zwycięstwo",
+   "kind": "stakes_word",
+   "strength": "strong",
+   "valence": 0.84,
+   "arousal": 0.84,
+   "emotions": {
+    "anticipation": 0.8,
+    "fear": 0.6
+   },
+   "source": "curated:gemini-2026-09",
+   "version": 1
+  },
+  {
+   "id": "pl.stakes.zbawienie",
+   "lemma": "zbawienie",
+   "kind": "stakes_word",
+   "strength": "strong",
+   "valence": 0.86,
+   "arousal": 0.8,
+   "emotions": {
+    "anticipation": 0.8,
+    "fear": 0.6
+   },
+   "source": "curated:gemini-2026-09",
+   "version": 1
+  },
+  {
+   "id": "pl.stakes.dusza",
+   "lemma": "dusza",
+   "kind": "stakes_word",
+   "strength": "strong",
+   "valence": 0.68,
+   "arousal": 0.76,
+   "emotions": {
+    "anticipation": 0.8,
+    "fear": 0.6
+   },
+   "source": "curated:gemini-2026-09",
+   "version": 1
+  },
+  {
+   "id": "pl.stakes.wieczność",
+   "lemma": "wieczność",
+   "kind": "stakes_word",
+   "strength": "strong",
+   "valence": 0.62,
+   "arousal": 0.78,
+   "emotions": {
+    "anticipation": 0.8,
+    "fear": 0.6
+   },
+   "source": "curated:gemini-2026-09",
+   "version": 1
+  },
+  {
+   "id": "pl.stakes.poświęcenie",
+   "lemma": "poświęcenie",
+   "kind": "stakes_word",
+   "strength": "strong",
+   "valence": 0.52,
+   "arousal": 0.82,
+   "emotions": {
+    "anticipation": 0.8,
+    "fear": 0.6
+   },
+   "source": "curated:gemini-2026-09",
+   "version": 1
+  },
+  {
+   "id": "pl.stakes.ofiara",
+   "lemma": "ofiara",
+   "kind": "stakes_word",
+   "strength": "strong",
+   "valence": 0.44,
+   "arousal": 0.8,
+   "emotions": {
+    "anticipation": 0.8,
+    "fear": 0.6
+   },
+   "source": "curated:gemini-2026-09",
+   "version": 1
+  },
+  {
+   "id": "pl.stakes.odkupiena",
+   "lemma": "odkupienie",
+   "kind": "stakes_word",
+   "strength": "strong",
+   "valence": 0.76,
+   "arousal": 0.78,
+   "emotions": {
+    "anticipation": 0.8,
+    "fear": 0.6
+   },
+   "source": "curated:gemini-2026-09",
+   "version": 1
+  },
+  {
+   "id": "pl.stakes.los",
+   "lemma": "los",
+   "kind": "stakes_word",
+   "strength": "strong",
+   "valence": 0.32,
+   "arousal": 0.74,
+   "emotions": {
+    "anticipation": 0.8,
+    "fear": 0.6
+   },
+   "source": "curated:gemini-2026-09",
+   "version": 1
+  },
+  {
+   "id": "pl.stakes.przeznaczenie",
+   "lemma": "przeznaczenie",
+   "kind": "stakes_word",
+   "strength": "strong",
+   "valence": 0.42,
+   "arousal": 0.76,
+   "emotions": {
+    "anticipation": 0.8,
+    "fear": 0.6
+   },
+   "source": "curated:gemini-2026-09",
+   "version": 1
+  },
+  {
+   "id": "pl.stakes.fatum",
+   "lemma": "fatum",
+   "kind": "stakes_word",
+   "strength": "strong",
+   "valence": -0.32,
+   "arousal": 0.82,
+   "emotions": {
+    "anticipation": 0.8,
+    "fear": 0.6
+   },
+   "source": "curated:gemini-2026-09",
+   "version": 1
+  },
+  {
+   "id": "pl.stakes.dola",
+   "lemma": "dola",
+   "kind": "stakes_word",
+   "strength": "strong",
+   "valence": 0.3,
+   "arousal": 0.68,
+   "emotions": {
+    "anticipation": 0.8,
+    "fear": 0.6
+   },
+   "source": "curated:gemini-2026-09",
+   "version": 1
+  },
+  {
+   "id": "pl.stakes.przyszłość",
+   "lemma": "przyszłość",
+   "kind": "stakes_word",
+   "strength": "strong",
+   "valence": 0.52,
+   "arousal": 0.7,
+   "emotions": {
+    "anticipation": 0.8,
+    "fear": 0.6
+   },
+   "source": "curated:gemini-2026-09",
+   "version": 1
+  },
+  {
+   "id": "pl.stakes.władza",
+   "lemma": "władza",
+   "kind": "stakes_word",
+   "strength": "strong",
+   "valence": 0.46,
+   "arousal": 0.76,
+   "emotions": {
+    "anticipation": 0.8,
+    "fear": 0.6
+   },
+   "source": "curated:gemini-2026-09",
+   "version": 1
+  },
+  {
+   "id": "pl.stakes.tron",
+   "lemma": "tron",
+   "kind": "stakes_word",
+   "strength": "strong",
+   "valence": 0.52,
+   "arousal": 0.72,
+   "emotions": {
+    "anticipation": 0.8,
+    "fear": 0.6
+   },
+   "source": "curated:gemini-2026-09",
+   "version": 1
+  },
+  {
+   "id": "pl.stakes.berło",
+   "lemma": "berło",
+   "kind": "stakes_word",
+   "strength": "strong",
+   "valence": 0.52,
+   "arousal": 0.66,
+   "emotions": {
+    "anticipation": 0.8,
+    "fear": 0.6
+   },
+   "source": "curated:gemini-2026-09",
+   "version": 1
+  },
+  {
+   "id": "pl.stakes.królestwo",
+   "lemma": "królestwo",
+   "kind": "stakes_word",
+   "strength": "strong",
+   "valence": 0.62,
+   "arousal": 0.72,
+   "emotions": {
+    "anticipation": 0.8,
+    "fear": 0.6
+   },
+   "source": "curated:gemini-2026-09",
+   "version": 1
+  },
+  {
+   "id": "pl.stakes.majątek",
+   "lemma": "majątek",
+   "kind": "stakes_word",
+   "strength": "strong",
+   "valence": 0.46,
+   "arousal": 0.6,
+   "emotions": {
+    "anticipation": 0.8,
+    "fear": 0.6
+   },
+   "source": "curated:gemini-2026-09",
+   "version": 1
+  },
+  {
+   "id": "pl.stakes.fortun",
+   "lemma": "fortun",
+   "kind": "stakes_word",
+   "strength": "strong",
+   "valence": 0.54,
+   "arousal": 0.64,
+   "emotions": {
+    "anticipation": 0.8,
+    "fear": 0.6
+   },
+   "source": "curated:gemini-2026-09",
+   "version": 1,
+   "alt_lemmas": [
+    "fortuna"
+   ],
+   "lemma_evidence": "carrier"
+  },
+  {
+   "id": "pl.stakes.bogactwo",
+   "lemma": "bogactwo",
+   "kind": "stakes_word",
+   "strength": "strong",
+   "valence": 0.58,
+   "arousal": 0.62,
+   "emotions": {
+    "anticipation": 0.8,
+    "fear": 0.6
+   },
+   "source": "curated:gemini-2026-09",
+   "version": 1
+  },
+  {
+   "id": "pl.stakes.skarb",
+   "lemma": "skarb",
+   "kind": "stakes_word",
+   "strength": "strong",
+   "valence": 0.68,
+   "arousal": 0.66,
+   "emotions": {
+    "anticipation": 0.8,
+    "fear": 0.6
+   },
+   "source": "curated:gemini-2026-09",
+   "version": 1
+  },
+  {
+   "id": "pl.stakes.dziedzictwo",
+   "lemma": "dziedzictwo",
+   "kind": "stakes_word",
+   "strength": "strong",
+   "valence": 0.66,
+   "arousal": 0.66,
+   "emotions": {
+    "anticipation": 0.8,
+    "fear": 0.6
+   },
+   "source": "curated:gemini-2026-09",
+   "version": 1
+  },
+  {
+   "id": "pl.stakes.umrzeć",
+   "lemma": "umrzeć",
+   "pos": [
+    "VERB"
+   ],
+   "kind": "stakes_word",
+   "strength": "strong",
+   "valence": -0.9,
+   "arousal": 0.85,
+   "emotions": {
+    "fear": 0.8,
+    "sadness": 0.8
+   },
+   "source": "curated:gemini-2026-10",
+   "version": 1
+  },
+  {
+   "id": "pl.stakes.umierać",
+   "lemma": "umierać",
+   "pos": [
+    "VERB"
+   ],
+   "kind": "stakes_word",
+   "strength": "strong",
+   "valence": -0.85,
+   "arousal": 0.8,
+   "emotions": {
+    "sadness": 0.8,
+    "fear": 0.7
+   },
+   "source": "curated:gemini-2026-10",
+   "version": 1
+  },
+  {
+   "id": "pl.stakes.martwy",
+   "lemma": "martwy",
+   "pos": [
+    "ADJ"
+   ],
+   "kind": "stakes_word",
+   "strength": "strong",
+   "valence": -0.85,
+   "arousal": 0.75,
+   "emotions": {
+    "sadness": 0.8,
+    "fear": 0.6
+   },
+   "source": "curated:gemini-2026-10",
+   "version": 1
+  },
+  {
+   "id": "pl.stakes.zginąć",
+   "lemma": "zginąć",
+   "pos": [
+    "VERB"
+   ],
+   "kind": "stakes_word",
+   "strength": "strong",
+   "valence": -0.9,
+   "arousal": 0.85,
+   "emotions": {
+    "fear": 0.8,
+    "sadness": 0.7
+   },
+   "source": "curated:gemini-2026-10",
+   "version": 1
+  },
+  {
+   "id": "pl.stakes.ginąć",
+   "lemma": "ginąć",
+   "pos": [
+    "VERB"
+   ],
+   "kind": "stakes_word",
+   "strength": "strong",
+   "valence": -0.85,
+   "arousal": 0.8,
+   "emotions": {
+    "fear": 0.7,
+    "sadness": 0.7
+   },
+   "source": "curated:gemini-2026-10",
+   "version": 1
+  },
+  {
+   "id": "pl.stakes.pogrzeb",
+   "lemma": "pogrzeb",
+   "pos": [
+    "NOUN"
+   ],
+   "kind": "stakes_word",
+   "strength": "strong",
+   "valence": -0.75,
+   "arousal": 0.65,
+   "emotions": {
+    "sadness": 0.8
+   },
+   "source": "curated:gemini-2026-10",
+   "version": 1
+  },
+  {
+   "id": "pl.stakes.stracić",
+   "lemma": "stracić",
+   "pos": [
+    "VERB"
+   ],
+   "kind": "stakes_word",
+   "strength": "weak",
+   "valence": -0.65,
+   "arousal": 0.65,
+   "emotions": {
+    "sadness": 0.7
+   },
+   "source": "curated:gemini-2026-10",
+   "version": 1,
+   "note": "also lose object"
+  },
+  {
+   "id": "pl.stakes.strata",
+   "lemma": "strata",
+   "pos": [
+    "NOUN"
+   ],
+   "kind": "stakes_word",
+   "strength": "weak",
+   "valence": -0.65,
+   "arousal": 0.6,
+   "emotions": {
+    "sadness": 0.7
+   },
+   "source": "curated:gemini-2026-10",
+   "version": 1,
+   "note": "also financial loss",
+   "alt_lemmas": [
+    "strat"
+   ]
+  },
+  {
+   "id": "pl.stakes.przetrwać",
+   "lemma": "przetrwać",
+   "pos": [
+    "VERB"
+   ],
+   "kind": "stakes_word",
+   "strength": "strong",
+   "valence": 0.6,
+   "arousal": 0.75,
+   "emotions": {
+    "trust": 0.6,
+    "anticipation": 0.5
+   },
+   "source": "curated:gemini-2026-10",
+   "version": 1
+  },
+  {
+   "id": "pl.stakes.koniec",
+   "lemma": "koniec",
+   "pos": [
+    "NOUN"
+   ],
+   "kind": "stakes_word",
+   "strength": "weak",
+   "valence": -0.2,
+   "arousal": 0.55,
+   "emotions": {
+    "anticipation": 0.4
+   },
+   "source": "curated:gemini-2026-10",
+   "version": 1,
+   "note": "also end of line"
+  },
+  {
+   "id": "pl.stakes.ruina",
+   "lemma": "ruina",
+   "pos": [
+    "NOUN"
+   ],
+   "kind": "stakes_word",
+   "strength": "weak",
+   "valence": -0.7,
+   "arousal": 0.65,
+   "emotions": {
+    "sadness": 0.6
+   },
+   "source": "curated:gemini-2026-10",
+   "version": 1,
+   "note": "also ancient ruins"
+  },
+  {
+   "id": "pl.stakes.zabity",
+   "lemma": "zabity",
+   "pos": [
+    "ADJ"
+   ],
+   "kind": "stakes_word",
+   "strength": "strong",
+   "valence": -0.9,
+   "arousal": 0.85,
+   "emotions": {
+    "fear": 0.8,
+    "sadness": 0.7
+   },
+   "source": "curated:gemini-2026-10",
+   "version": 1
+  }
+ ]
 }

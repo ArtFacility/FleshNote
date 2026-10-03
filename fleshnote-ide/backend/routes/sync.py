@@ -74,6 +74,14 @@ def _pk_col(table_name: str) -> str:
     return "config_key" if table_name in ["project_config", "calendar_config"] else "id"
 
 
+def _ensure_newer_tables(cursor) -> None:
+    """Tables created on demand (not by every older schema) must exist locally
+    before the allowlist is built, or remote rows for them would be skipped
+    while the version vector still advances, i.e. lost for this peer."""
+    from db_setup import ensure_pulse_corrections
+    ensure_pulse_corrections(cursor)
+
+
 def _schema_allowlist(conn) -> Dict[str, set]:
     """{table: {column}} built from THIS db's real schema. change_log rows carry
     table/column names authored on another device (or inside a hostile project
@@ -428,6 +436,7 @@ def sync_preview(req: SyncPreviewRequest):
     remote_conn = _get_db(req.remote_path)
     try:
         cl, cr = local_conn.cursor(), remote_conn.cursor()
+        _ensure_newer_tables(cl)
         allow = _schema_allowlist(local_conn)
         local_vv, _, _ = _load_meta(cl)
         remote_vv, _, _ = _load_meta(cr)
@@ -484,6 +493,7 @@ def sync_apply(req: SyncApplyRequest):
     remote_conn = _get_db(req.remote_path)
     try:
         cl, cr = local_conn.cursor(), remote_conn.cursor()
+        _ensure_newer_tables(cl)
         allow = _schema_allowlist(local_conn)
         local_vv, local_last_hlc, local_device = _load_meta(cl)
         remote_vv, remote_last_hlc, remote_device = _load_meta(cr)

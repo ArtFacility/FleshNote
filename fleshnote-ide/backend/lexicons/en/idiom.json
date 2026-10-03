@@ -19,7 +19,11 @@
       "blocks": [],
       "source": "curated:gemini-2026-09",
       "version": 1,
-      "example": "Her heart sank when she saw the tragic news arrive."
+      "example": "Her heart sank when she saw the tragic news arrive.",
+      "phrase_pos": [
+        "NOUN",
+        "VERB"
+      ]
     },
     {
       "id": "en.idiom.blood_run_cold",
@@ -38,7 +42,12 @@
       "blocks": [],
       "source": "curated:gemini-2026-09",
       "version": 1,
-      "example": "His blood ran cold at the terrifying sound in the dark."
+      "example": "His blood ran cold at the terrifying sound in the dark.",
+      "phrase_pos": [
+        "NOUN",
+        "VERB",
+        "ADJ"
+      ]
     },
     {
       "id": "en.idiom.beside_oneself",
@@ -58,7 +67,11 @@
       "source": "curated:gemini-2026-09",
       "version": 1,
       "note": "spatial proximity vs overcome with emotion",
-      "example": "To be beside oneself with grief is completely overwhelming."
+      "example": "To be beside oneself with grief is completely overwhelming.",
+      "phrase_pos": [
+        "ADP",
+        "PRON"
+      ]
     },
     {
       "id": "en.idiom.at_wit_end",
@@ -77,7 +90,12 @@
       "blocks": [],
       "source": "curated:gemini-2026-09",
       "version": 1,
-      "example": "He was at wit end trying to solve the complex riddle."
+      "example": "He was at wit end trying to solve the complex riddle.",
+      "phrase_pos": [
+        "ADP",
+        "NOUN",
+        "NOUN"
+      ]
     },
     {
       "id": "en.idiom.lump_in_throat",
@@ -96,7 +114,12 @@
       "blocks": [],
       "source": "curated:gemini-2026-09",
       "version": 1,
-      "example": "He felt a lump in throat as he said his final farewell."
+      "example": "He felt a lump in throat as he said his final farewell.",
+      "phrase_pos": [
+        "NOUN",
+        "ADP",
+        "NOUN"
+      ]
     },
     {
       "id": "en.idiom.make_blood_boil",
@@ -115,7 +138,12 @@
       "blocks": [],
       "source": "curated:gemini-2026-09",
       "version": 1,
-      "example": "Cruelty like that will make blood boil in any decent person."
+      "example": "Cruelty like that will make blood boil in any decent person.",
+      "phrase_pos": [
+        "VERB",
+        "NOUN",
+        "VERB"
+      ]
     },
     {
       "id": "en.idiom.fly_into_rage",
@@ -136,7 +164,12 @@
       ],
       "source": "curated:gemini-2026-09",
       "version": 1,
-      "example": "The tyrant would often fly into rage over minor mistakes."
+      "example": "The tyrant would often fly into rage over minor mistakes.",
+      "phrase_pos": [
+        "VERB",
+        "ADP",
+        "NOUN"
+      ]
     },
     {
       "id": "en.idiom.breathe_sigh_of_relief",
@@ -156,7 +189,13 @@
       "blocks": [],
       "source": "curated:gemini-2026-09",
       "version": 1,
-      "example": "The crew could breathe sigh of relief when the ship reached port."
+      "example": "The crew could breathe sigh of relief when the ship reached port.",
+      "phrase_pos": [
+        "VERB",
+        "NOUN",
+        "ADP",
+        "NOUN"
+      ]
     },
     {
       "id": "en.idiom.lose_temper",
@@ -174,7 +213,11 @@
       "blocks": [],
       "source": "curated:gemini-2026-09",
       "version": 1,
-      "example": "A good diplomat should never lose temper during negotiations."
+      "example": "A good diplomat should never lose temper during negotiations.",
+      "phrase_pos": [
+        "VERB",
+        "NOUN"
+      ]
     },
     {
       "id": "en.idiom.on_cloud_nine",
@@ -193,7 +236,12 @@
       "blocks": [],
       "source": "curated:gemini-2026-09",
       "version": 1,
-      "example": "She was on cloud nine after receiving the scholarship."
+      "example": "She was on cloud nine after receiving the scholarship.",
+      "phrase_pos": [
+        "ADP",
+        "NOUN",
+        "NUM"
+      ]
     },
     {
       "id": "en.idiom.down_in_dump",
@@ -212,7 +260,12 @@
       "blocks": [],
       "source": "curated:gemini-2026-09",
       "version": 1,
-      "example": "He felt down in dump after losing the final match."
+      "example": "He felt down in dump after losing the final match.",
+      "phrase_pos": [
+        "ADP",
+        "ADP",
+        "NOUN"
+      ]
     },
     {
       "id": "en.idiom.scared_to_death",
@@ -236,7 +289,12 @@
       "version": 1,
       "alt_lemmas": [],
       "lemma_evidence": "carrier",
-      "example": "The child was scared to death by the sudden thunder."
+      "example": "The child was scared to death by the sudden thunder.",
+      "phrase_pos": [
+        "ADJ",
+        "ADP",
+        "NOUN"
+      ]
     },
     {
       "id": "en.idiom.grin_from_ear_to_ear",
@@ -257,7 +315,14 @@
       "blocks": [],
       "source": "curated:gemini-2026-09",
       "version": 1,
-      "example": "He began to grin from ear to ear upon seeing his gift."
+      "example": "He began to grin from ear to ear upon seeing his gift.",
+      "phrase_pos": [
+        "VERB",
+        "ADP",
+        null,
+        null,
+        null
+      ]
     },
     {
       "id": "en.idiom.tear_hair_out",
@@ -277,7 +342,12 @@
       "blocks": [],
       "source": "curated:gemini-2026-09",
       "version": 1,
-      "example": "The desperate father would tear hair out in grief."
+      "example": "The desperate father would tear hair out in grief.",
+      "phrase_pos": [
+        "VERB",
+        "NOUN",
+        "ADP"
+      ]
     },
     {
       "id": "en.idiom.chill_to_bone",
@@ -296,7 +366,12 @@
       "blocks": [],
       "source": "curated:gemini-2026-09",
       "version": 1,
-      "example": "The freezing wind began to chill to bone every sentry."
+      "example": "The freezing wind began to chill to bone every sentry.",
+      "phrase_pos": [
+        "VERB",
+        null,
+        null
+      ]
     },
     {
       "id": "en.idiom.hair_stand_on_end",
@@ -316,7 +391,13 @@
       "blocks": [],
       "source": "curated:gemini-2026-09",
       "version": 1,
-      "example": "The terrifying roar made his hair stand on end."
+      "example": "The terrifying roar made his hair stand on end.",
+      "phrase_pos": [
+        "NOUN",
+        "VERB",
+        "ADP",
+        "NOUN"
+      ]
     },
     {
       "id": "en.idiom.burst_into_tear",
@@ -335,7 +416,12 @@
       "blocks": [],
       "source": "curated:gemini-2026-09",
       "version": 1,
-      "example": "Overwhelmed with sorrow, she began to burst into tear."
+      "example": "Overwhelmed with sorrow, she began to burst into tear.",
+      "phrase_pos": [
+        "VERB",
+        "ADP",
+        "NOUN"
+      ]
     },
     {
       "id": "en.idiom.grind_teeth",
@@ -357,7 +443,11 @@
         "tooth"
       ],
       "lemma_evidence": "carrier",
-      "example": "He could only grind teeth in silence when confronted."
+      "example": "He could only grind teeth in silence when confronted.",
+      "phrase_pos": [
+        "VERB",
+        "NOUN"
+      ]
     },
     {
       "id": "en.idiom.foam_at_mouth",
@@ -376,7 +466,12 @@
       "blocks": [],
       "source": "curated:gemini-2026-09",
       "version": 1,
-      "example": "The rabid dog started to foam at mouth as it barked."
+      "example": "The rabid dog started to foam at mouth as it barked.",
+      "phrase_pos": [
+        null,
+        "ADP",
+        "NOUN"
+      ]
     },
     {
       "id": "en.idiom.jump_out_of_skin",
@@ -397,7 +492,13 @@
       "blocks": [],
       "source": "curated:gemini-2026-09",
       "version": 1,
-      "example": "The sudden gunshot made him jump out of skin."
+      "example": "The sudden gunshot made him jump out of skin.",
+      "phrase_pos": [
+        "VERB",
+        "ADP",
+        "ADP",
+        "NOUN"
+      ]
     },
     {
       "id": "en.idiom.green_with_envy",
@@ -417,7 +518,12 @@
       "blocks": [],
       "source": "curated:gemini-2026-09",
       "version": 1,
-      "example": "The rivals were green with envy at his sudden success."
+      "example": "The rivals were green with envy at his sudden success.",
+      "phrase_pos": [
+        "ADJ",
+        "ADP",
+        "NOUN"
+      ]
     },
     {
       "id": "en.idiom.swallow_pride",
@@ -437,7 +543,11 @@
       ],
       "source": "curated:gemini-2026-09",
       "version": 1,
-      "example": "He had to swallow pride and apologize sincerely."
+      "example": "He had to swallow pride and apologize sincerely.",
+      "phrase_pos": [
+        "VERB",
+        "NOUN"
+      ]
     },
     {
       "id": "en.idiom.cross_finger",
@@ -455,7 +565,11 @@
       "blocks": [],
       "source": "curated:gemini-2026-09",
       "version": 1,
-      "example": "We can only cross finger and hope for the best outcome."
+      "example": "We can only cross finger and hope for the best outcome.",
+      "phrase_pos": [
+        "VERB",
+        "NOUN"
+      ]
     },
     {
       "id": "en.idiom.heavy_heart",
@@ -473,7 +587,11 @@
       "blocks": [],
       "source": "curated:gemini-2026-09",
       "version": 1,
-      "example": "With a heavy heart, the king signed the declaration of war."
+      "example": "With a heavy heart, the king signed the declaration of war.",
+      "phrase_pos": [
+        "ADJ",
+        "NOUN"
+      ]
     },
     {
       "id": "en.idiom.light_at_end_of_tunnel",
@@ -495,7 +613,14 @@
       "blocks": [],
       "source": "curated:gemini-2026-09",
       "version": 1,
-      "example": "They finally saw light at end of tunnel as the storm passed."
+      "example": "They finally saw light at end of tunnel as the storm passed.",
+      "phrase_pos": [
+        "NOUN",
+        "ADP",
+        "NOUN",
+        "ADP",
+        "NOUN"
+      ]
     },
     {
       "id": "en.idiom.heart_skip_beat",
@@ -514,7 +639,12 @@
       "blocks": [],
       "source": "curated:gemini-2026-09",
       "version": 1,
-      "example": "She felt her heart skip beat when the messenger arrived."
+      "example": "She felt her heart skip beat when the messenger arrived.",
+      "phrase_pos": [
+        "NOUN",
+        null,
+        "NOUN"
+      ]
     },
     {
       "id": "en.idiom.on_pin_and_needle",
@@ -535,7 +665,13 @@
       "blocks": [],
       "source": "curated:gemini-2026-09",
       "version": 1,
-      "example": "They sat on pin and needle waiting for the diagnosis."
+      "example": "They sat on pin and needle waiting for the diagnosis.",
+      "phrase_pos": [
+        "ADP",
+        "NOUN",
+        "CCONJ",
+        "NOUN"
+      ]
     },
     {
       "id": "en.idiom.in_seventh_heaven",
@@ -554,7 +690,12 @@
       "blocks": [],
       "source": "curated:gemini-2026-09",
       "version": 1,
-      "example": "The bride was in seventh heaven throughout the wedding day."
+      "example": "The bride was in seventh heaven throughout the wedding day.",
+      "phrase_pos": [
+        "ADP",
+        "ADJ",
+        "NOUN"
+      ]
     },
     {
       "id": "en.idiom.hang_head",
@@ -572,7 +713,11 @@
       "blocks": [],
       "source": "curated:gemini-2026-09",
       "version": 1,
-      "example": "Ashamed of his mistake, the boy could only hang head in silence."
+      "example": "Ashamed of his mistake, the boy could only hang head in silence.",
+      "phrase_pos": [
+        "VERB",
+        "NOUN"
+      ]
     },
     {
       "id": "en.idiom.keep_chin_up",
@@ -591,7 +736,12 @@
       "blocks": [],
       "source": "curated:gemini-2026-09",
       "version": 1,
-      "example": "She told her brother to keep chin up despite the setback."
+      "example": "She told her brother to keep chin up despite the setback.",
+      "phrase_pos": [
+        "VERB",
+        "NOUN",
+        "ADP"
+      ]
     },
     {
       "id": "en.idiom.sick_to_stomach",
@@ -610,7 +760,12 @@
       "blocks": [],
       "source": "curated:gemini-2026-09",
       "version": 1,
-      "example": "The sight of the battlefield made him sick to stomach."
+      "example": "The sight of the battlefield made him sick to stomach.",
+      "phrase_pos": [
+        "ADJ",
+        null,
+        null
+      ]
     },
     {
       "id": "en.idiom.take_breath_away",
@@ -630,7 +785,12 @@
       "blocks": [],
       "source": "curated:gemini-2026-09",
       "version": 1,
-      "example": "The breathtaking view from the cliff will take breath away."
+      "example": "The breathtaking view from the cliff will take breath away.",
+      "phrase_pos": [
+        "VERB",
+        "NOUN",
+        "ADV"
+      ]
     },
     {
       "id": "en.idiom.bite_tongue",
@@ -648,7 +808,11 @@
       "blocks": [],
       "source": "curated:gemini-2026-09",
       "version": 1,
-      "example": "He had to bite tongue rather than speak out in anger."
+      "example": "He had to bite tongue rather than speak out in anger.",
+      "phrase_pos": [
+        "VERB",
+        "NOUN"
+      ]
     },
     {
       "id": "en.idiom.keep_cool",
@@ -666,7 +830,11 @@
       "blocks": [],
       "source": "curated:gemini-2026-09",
       "version": 1,
-      "example": "A good captain must keep cool during a severe gale."
+      "example": "A good captain must keep cool during a severe gale.",
+      "phrase_pos": [
+        "VERB",
+        "ADJ"
+      ]
     },
     {
       "id": "en.idiom.lose_cool",
@@ -684,7 +852,11 @@
       "blocks": [],
       "source": "curated:gemini-2026-09",
       "version": 1,
-      "example": "It is dangerous for a commander to lose cool in battle."
+      "example": "It is dangerous for a commander to lose cool in battle.",
+      "phrase_pos": [
+        "VERB",
+        "ADJ"
+      ]
     },
     {
       "id": "en.idiom.get_on_nerve",
@@ -703,7 +875,12 @@
       "blocks": [],
       "source": "curated:gemini-2026-09",
       "version": 1,
-      "example": "The repetitive clicking noise began to get on nerve after hours."
+      "example": "The repetitive clicking noise began to get on nerve after hours.",
+      "phrase_pos": [
+        "VERB",
+        "ADP",
+        "NOUN"
+      ]
     },
     {
       "id": "en.idiom.clench_fist",
@@ -721,7 +898,11 @@
       "blocks": [],
       "source": "curated:gemini-2026-09",
       "version": 1,
-      "example": "He felt his anger rise and began to clench fist tightly."
+      "example": "He felt his anger rise and began to clench fist tightly.",
+      "phrase_pos": [
+        "VERB",
+        "NOUN"
+      ]
     },
     {
       "id": "en.idiom.drop_jaw",
@@ -739,7 +920,11 @@
       "blocks": [],
       "source": "curated:gemini-2026-09",
       "version": 1,
-      "example": "The astonishing discovery made him drop jaw in wonder."
+      "example": "The astonishing discovery made him drop jaw in wonder.",
+      "phrase_pos": [
+        "VERB",
+        null
+      ]
     },
     {
       "id": "en.idiom.turn_pale",
@@ -757,7 +942,11 @@
       "blocks": [],
       "source": "curated:gemini-2026-09",
       "version": 1,
-      "example": "She started to turn pale when the doctor delivered the news."
+      "example": "She started to turn pale when the doctor delivered the news.",
+      "phrase_pos": [
+        "VERB",
+        "ADJ"
+      ]
     },
     {
       "id": "en.idiom.cross_arm",
@@ -775,7 +964,11 @@
       "blocks": [],
       "source": "curated:gemini-2026-09",
       "version": 1,
-      "example": "The stubborn guard decided to cross arm and block the door."
+      "example": "The stubborn guard decided to cross arm and block the door.",
+      "phrase_pos": [
+        "VERB",
+        "NOUN"
+      ]
     },
     {
       "id": "en.idiom.raise_eyebrow",
@@ -793,7 +986,11 @@
       "blocks": [],
       "source": "curated:gemini-2026-09",
       "version": 1,
-      "example": "Her bizarre story caused the inspector to raise eyebrow in doubt."
+      "example": "Her bizarre story caused the inspector to raise eyebrow in doubt.",
+      "phrase_pos": [
+        "VERB",
+        "NOUN"
+      ]
     },
     {
       "id": "en.idiom.shake_in_shoe",
@@ -812,7 +1009,12 @@
       "blocks": [],
       "source": "curated:gemini-2026-09",
       "version": 1,
-      "example": "The frightened recruits began to shake in shoe before the assault."
+      "example": "The frightened recruits began to shake in shoe before the assault.",
+      "phrase_pos": [
+        "VERB",
+        "ADP",
+        "NOUN"
+      ]
     },
     {
       "id": "en.idiom.see_red",
@@ -830,7 +1032,79 @@
       "blocks": [],
       "source": "curated:gemini-2026-09",
       "version": 1,
-      "example": "Whenever he saw injustice against children, he would see red."
+      "example": "Whenever he saw injustice against children, he would see red.",
+      "phrase_pos": [
+        "VERB",
+        null
+      ]
+    },
+    {
+      "id": "en.idiom.out_of_touch",
+      "phrase": [
+        "out",
+        "of",
+        "touch"
+      ],
+      "kind": "idiom",
+      "strength": "strong",
+      "valence": 0.0,
+      "arousal": 0.0,
+      "emotions": null,
+      "blocks": [
+        "en.sens.touch_touch"
+      ],
+      "source": "curated:claude-2026-09",
+      "version": 1,
+      "example": "The old council was hopelessly out of touch with the villages.",
+      "phrase_pos": [
+        "ADP",
+        "ADP",
+        "NOUN"
+      ]
+    },
+    {
+      "id": "en.idiom.in_touch",
+      "phrase": [
+        "in",
+        "touch"
+      ],
+      "kind": "idiom",
+      "strength": "strong",
+      "valence": 0.0,
+      "arousal": 0.0,
+      "emotions": null,
+      "blocks": [
+        "en.sens.touch_touch"
+      ],
+      "source": "curated:claude-2026-09",
+      "version": 1,
+      "example": "She promised to stay in touch after the war.",
+      "phrase_pos": [
+        "ADP",
+        "NOUN"
+      ]
+    },
+    {
+      "id": "en.idiom.see_point",
+      "phrase": [
+        "see",
+        "point"
+      ],
+      "kind": "idiom",
+      "strength": "strong",
+      "valence": 0.0,
+      "arousal": 0.0,
+      "emotions": null,
+      "blocks": [
+        "en.sens.sight_see"
+      ],
+      "source": "curated:claude-2026-09",
+      "version": 1,
+      "example": "I see your point, but the ship leaves at dawn.",
+      "phrase_pos": [
+        "VERB",
+        "NOUN"
+      ]
     }
   ]
 }

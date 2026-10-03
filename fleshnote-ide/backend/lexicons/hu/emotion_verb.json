@@ -1642,7 +1642,8 @@
    "role": "experiencer",
    "source": "curated:claude-2026-09",
    "version": 1,
-   "note": "archaic spelling of elszörnyülködik (Gárdonyi)"
+   "note": "archaic spelling of elszörnyülködik (Gárdonyi)",
+   "spell_ok": "archaic spelling of elszörnyülködik in 19th c. Hungarian (Gárdonyi)"
   },
   {
    "id": "hu.emoverb.felbosszankodik",

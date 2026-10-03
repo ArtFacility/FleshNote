@@ -5,6 +5,8 @@ import tempfile
 import tarfile
 import zipfile
 import shutil
+import threading
+from collections import OrderedDict
 from urllib.request import urlretrieve, urlopen
 from urllib.error import URLError
 import spacy
@@ -197,6 +199,48 @@ def _download_with_pip(url: str, models_dir: str):
         raise RuntimeError(f"pip install failed with return code {process.returncode}")
 
 
+@spacy.Language.component("fleshnote_paragraph_breaks")
+def _paragraph_breaks(doc):
+    """A line break always ends a sentence. Drafts often leave a line without a
+    full stop, and the parser would otherwise run it into the next paragraph
+    ('…falls from the ceiling⏎Sophia looks offended'), garbling both parses."""
+    for tok in doc[1:]:
+        prev = doc[tok.i - 1]
+        if "\n" in prev.whitespace_ or (prev.is_space and "\n" in prev.text):
+            tok.is_sent_start = True
+    return doc
+
+
+def _add_paragraph_breaks(nlp):
+    """Insert the paragraph-break step before whatever segments sentences."""
+    first = next((name for name in ("senter", "parser") if name in nlp.pipe_names), None)
+    if first and "fleshnote_paragraph_breaks" not in nlp.pipe_names:
+        nlp.add_pipe("fleshnote_paragraph_breaks", before=first)
+    return nlp
+
+
+_parse_cache: "OrderedDict[tuple[str, str], object]" = OrderedDict()
+_parse_lock = threading.Lock()
+_PARSE_CACHE_SIZE = 4
+
+
+def parse_cached(lang_code: str, text: str):
+    """Parse `text` once and share the Doc. One Janitor run feeds the same chapter
+    to four analyzers, and the idle trigger re-sends unchanged text; with the
+    large Hungarian model each parse of 10k characters takes several seconds.
+    Callers only read the Doc."""
+    key = (lang_code, text)
+    with _parse_lock:
+        if key in _parse_cache:
+            _parse_cache.move_to_end(key)
+            return _parse_cache[key]
+        doc = get_nlp(lang_code)(text)
+        _parse_cache[key] = doc
+        if len(_parse_cache) > _PARSE_CACHE_SIZE:
+            _parse_cache.popitem(last=False)
+        return doc
+
+
 def get_nlp(lang_code: str):
     """
     Get the NLP pipeline for the requested language.
@@ -223,9 +267,9 @@ def get_nlp(lang_code: str):
     def load_model():
         if lang_code == "hu" and model_name == "huspacy":
             import huspacy
-            return huspacy.load()
+            return _add_paragraph_breaks(huspacy.load())
         else:
-            return spacy.load(model_name)
+            return _add_paragraph_breaks(spacy.load(model_name))
 
     # Check cache first
     if lang_code in _model_cache:

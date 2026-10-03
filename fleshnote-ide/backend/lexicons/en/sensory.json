@@ -174,7 +174,11 @@
    "alt_lemmas": [
     "glanced"
    ],
-   "lemma_evidence": "corpus"
+   "lemma_evidence": "corpus",
+   "pos": [
+    "VERB",
+    "NOUN"
+   ]
   },
   {
    "id": "en.sens.sight_gleam",
@@ -470,7 +474,10 @@
    "alt_lemmas": [
     "spotted"
    ],
-   "lemma_evidence": "corpus"
+   "lemma_evidence": "corpus",
+   "pos": [
+    "VERB"
+   ]
   },
   {
    "id": "en.sens.sight_squint",
@@ -542,7 +549,10 @@
    "alt_lemmas": [
     "watched"
    ],
-   "lemma_evidence": "corpus"
+   "lemma_evidence": "corpus",
+   "pos": [
+    "VERB"
+   ]
   },
   {
    "id": "en.sens.sound_bang",
@@ -807,7 +817,10 @@
     "rang",
     "ringing"
    ],
-   "lemma_evidence": "corpus"
+   "lemma_evidence": "corpus",
+   "pos": [
+    "VERB"
+   ]
   },
   {
    "id": "en.sens.sound_rattle",
@@ -1236,18 +1249,6 @@
    "version": 1
   },
   {
-   "id": "en.sens.smell_rank",
-   "lemma": "rank",
-   "kind": "sensory",
-   "sense": "smell",
-   "strength": "strong",
-   "valence": 0.0,
-   "arousal": 0.1,
-   "emotions": null,
-   "source": "migrated:janitor.py",
-   "version": 1
-  },
-  {
    "id": "en.sens.smell_reek",
    "lemma": "reek",
    "kind": "sensory",
@@ -1496,7 +1497,7 @@
    "lemma": "grasp",
    "kind": "sensory",
    "sense": "touch",
-   "strength": "strong",
+   "strength": "weak",
    "valence": 0.0,
    "arousal": 0.1,
    "emotions": null,
@@ -1528,12 +1529,15 @@
    "lemma": "hard",
    "kind": "sensory",
    "sense": "touch",
-   "strength": "strong",
+   "strength": "weak",
    "valence": 0.0,
    "arousal": 0.1,
    "emotions": null,
    "source": "migrated:janitor.py",
-   "version": 1
+   "version": 1,
+   "pos": [
+    "ADJ"
+   ]
   },
   {
    "id": "en.sens.touch_hot",
@@ -1573,7 +1577,10 @@
    "alt_lemmas": [
     "pressed"
    ],
-   "lemma_evidence": "corpus"
+   "lemma_evidence": "corpus",
+   "pos": [
+    "VERB"
+   ]
   },
   {
    "id": "en.sens.touch_prick",
@@ -1753,7 +1760,10 @@
    "alt_lemmas": [
     "stroked"
    ],
-   "lemma_evidence": "corpus"
+   "lemma_evidence": "corpus",
+   "pos": [
+    "VERB"
+   ]
   },
   {
    "id": "en.sens.touch_texture",
@@ -2148,7 +2158,7 @@
    "lemma": "tongue",
    "kind": "sensory",
    "sense": "taste",
-   "strength": "strong",
+   "strength": "weak",
    "valence": 0.0,
    "arousal": 0.1,
    "emotions": null,
@@ -2506,18 +2516,6 @@
   {
    "id": "en.sens.sight_misty",
    "lemma": "misty",
-   "kind": "sensory",
-   "sense": "sight",
-   "strength": "strong",
-   "valence": 0.0,
-   "arousal": 0.1,
-   "emotions": null,
-   "source": "curated:gemini-2026-09",
-   "version": 1
-  },
-  {
-   "id": "en.sens.sight_pitch",
-   "lemma": "pitch",
    "kind": "sensory",
    "sense": "sight",
    "strength": "strong",
@@ -2965,18 +2963,6 @@
    "version": 1
   },
   {
-   "id": "en.sens.sound_crank",
-   "lemma": "crank",
-   "kind": "sensory",
-   "sense": "sound",
-   "strength": "strong",
-   "valence": 0.0,
-   "arousal": 0.1,
-   "emotions": null,
-   "source": "curated:gemini-2026-09",
-   "version": 1
-  },
-  {
    "id": "en.sens.sound_screech",
    "lemma": "screech",
    "kind": "sensory",
@@ -3308,18 +3294,6 @@
   {
    "id": "en.sens.smell_tang",
    "lemma": "tang",
-   "kind": "sensory",
-   "sense": "smell",
-   "strength": "strong",
-   "valence": 0.0,
-   "arousal": 0.1,
-   "emotions": null,
-   "source": "curated:gemini-2026-09",
-   "version": 1
-  },
-  {
-   "id": "en.sens.smell_z",
-   "lemma": "z",
    "kind": "sensory",
    "sense": "smell",
    "strength": "strong",
@@ -3714,18 +3688,6 @@
    "version": 1
   },
   {
-   "id": "en.sens.touch_yield",
-   "lemma": "yield",
-   "kind": "sensory",
-   "sense": "touch",
-   "strength": "strong",
-   "valence": 0.0,
-   "arousal": 0.1,
-   "emotions": null,
-   "source": "curated:gemini-2026-09",
-   "version": 1
-  },
-  {
    "id": "en.sens.touch_unyielde",
    "lemma": "unyielding",
    "kind": "sensory",
@@ -4088,6 +4050,18 @@
    "arousal": 0.1,
    "emotions": null,
    "source": "curated:gemini-2026-09",
+   "version": 1
+  },
+  {
+   "id": "en.sens.smell_smoke",
+   "lemma": "smoke",
+   "kind": "sensory",
+   "sense": "smell",
+   "strength": "strong",
+   "valence": 0.0,
+   "arousal": 0.1,
+   "emotions": null,
+   "source": "curated:claude-2026-09",
    "version": 1
   }
  ]

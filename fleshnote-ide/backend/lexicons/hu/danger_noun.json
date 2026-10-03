@@ -1672,6 +1672,156 @@
    "source": "curated:gemini-2026-09",
    "version": 1,
    "note": "buta ember vs fa fegyver"
+  },
+  {
+   "id": "hu.danger.vér",
+   "lemma": "vér",
+   "pos": [
+    "NOUN"
+   ],
+   "kind": "danger_noun",
+   "strength": "weak",
+   "valence": -0.6,
+   "arousal": 0.7,
+   "emotions": {
+    "fear": 0.7,
+    "disgust": 0.4
+   },
+   "source": "curated:gemini-2026-10",
+   "version": 1,
+   "note": "also bloodline"
+  },
+  {
+   "id": "hu.danger.veszély",
+   "lemma": "veszély",
+   "pos": [
+    "NOUN"
+   ],
+   "kind": "danger_noun",
+   "strength": "strong",
+   "valence": -0.75,
+   "arousal": 0.8,
+   "emotions": {
+    "fear": 0.8
+   },
+   "source": "curated:gemini-2026-10",
+   "version": 1
+  },
+  {
+   "id": "hu.danger.fenyegetés",
+   "lemma": "fenyegetés",
+   "pos": [
+    "NOUN"
+   ],
+   "kind": "danger_noun",
+   "strength": "strong",
+   "valence": -0.7,
+   "arousal": 0.75,
+   "emotions": {
+    "fear": 0.7,
+    "anger": 0.4
+   },
+   "source": "curated:gemini-2026-10",
+   "version": 1
+  },
+  {
+   "id": "hu.danger.sebesülés",
+   "lemma": "sebesülés",
+   "pos": [
+    "NOUN"
+   ],
+   "kind": "danger_noun",
+   "strength": "strong",
+   "valence": -0.75,
+   "arousal": 0.75,
+   "emotions": {
+    "fear": 0.7
+   },
+   "source": "curated:gemini-2026-10",
+   "version": 1
+  },
+  {
+   "id": "hu.danger.sebesült",
+   "lemma": "sebesült",
+   "pos": [
+    "ADJ",
+    "NOUN"
+   ],
+   "kind": "danger_noun",
+   "strength": "strong",
+   "valence": -0.7,
+   "arousal": 0.7,
+   "emotions": {
+    "fear": 0.6,
+    "sadness": 0.5
+   },
+   "source": "curated:gemini-2026-10",
+   "version": 1
+  },
+  {
+   "id": "hu.danger.lövedék",
+   "lemma": "lövedék",
+   "pos": [
+    "NOUN"
+   ],
+   "kind": "danger_noun",
+   "strength": "strong",
+   "valence": -0.75,
+   "arousal": 0.8,
+   "emotions": {
+    "fear": 0.7
+   },
+   "source": "curated:gemini-2026-10",
+   "version": 1
+  },
+  {
+   "id": "hu.danger.szörnyeteg",
+   "lemma": "szörnyeteg",
+   "pos": [
+    "NOUN"
+   ],
+   "kind": "danger_noun",
+   "strength": "strong",
+   "valence": -0.8,
+   "arousal": 0.85,
+   "emotions": {
+    "fear": 0.8
+   },
+   "source": "curated:gemini-2026-10",
+   "version": 1
+  },
+  {
+   "id": "hu.danger.robbanás",
+   "lemma": "robbanás",
+   "pos": [
+    "NOUN"
+   ],
+   "kind": "danger_noun",
+   "strength": "strong",
+   "valence": -0.85,
+   "arousal": 0.9,
+   "emotions": {
+    "fear": 0.8,
+    "surprise": 0.7
+   },
+   "source": "curated:gemini-2026-10",
+   "version": 1
+  },
+  {
+   "id": "hu.danger.penge",
+   "lemma": "penge",
+   "pos": [
+    "NOUN"
+   ],
+   "kind": "danger_noun",
+   "strength": "strong",
+   "valence": -0.65,
+   "arousal": 0.7,
+   "emotions": {
+    "fear": 0.6
+   },
+   "source": "curated:gemini-2026-10",
+   "version": 1
   }
  ]
 }

@@ -2504,6 +2504,40 @@
    },
    "source": "curated:gemini-2026-09",
    "version": 1
+  },
+  {
+   "id": "hu.act.rálő",
+   "lemma": "rálő",
+   "pos": [
+    "VERB"
+   ],
+   "kind": "action_violent",
+   "strength": "strong",
+   "valence": -0.85,
+   "arousal": 0.85,
+   "emotions": {
+    "fear": 0.8,
+    "anger": 0.6
+   },
+   "source": "curated:gemini-2026-10",
+   "version": 1
+  },
+  {
+   "id": "hu.act.megtámad",
+   "lemma": "megtámad",
+   "pos": [
+    "VERB"
+   ],
+   "kind": "action_violent",
+   "strength": "strong",
+   "valence": -0.8,
+   "arousal": 0.85,
+   "emotions": {
+    "anger": 0.8,
+    "fear": 0.6
+   },
+   "source": "curated:gemini-2026-10",
+   "version": 1
   }
  ]
 }

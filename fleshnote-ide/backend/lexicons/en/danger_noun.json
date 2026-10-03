@@ -220,22 +220,6 @@
    "version": 1
   },
   {
-   "id": "en.danger.temp",
-   "lemma": "temp",
-   "pos": [
-    "NOUN"
-   ],
-   "kind": "danger_noun",
-   "strength": "strong",
-   "valence": -0.6,
-   "arousal": 0.65,
-   "emotions": {
-    "fear": 0.65
-   },
-   "source": "curated:gemini-2026-09",
-   "version": 1
-  },
-  {
    "id": "en.danger.hurricane",
    "lemma": "hurricane",
    "pos": [
@@ -1675,6 +1659,161 @@
     "fear": 0.85
    },
    "source": "curated:gemini-2026-09",
+   "version": 1
+  },
+  {
+   "id": "en.danger.blood",
+   "lemma": "blood",
+   "pos": [
+    "NOUN"
+   ],
+   "kind": "danger_noun",
+   "strength": "weak",
+   "valence": -0.6,
+   "arousal": 0.7,
+   "emotions": {
+    "fear": 0.7,
+    "disgust": 0.4
+   },
+   "source": "curated:gemini-2026-10",
+   "version": 1,
+   "note": "also royal bloodline"
+  },
+  {
+   "id": "en.danger.danger",
+   "lemma": "danger",
+   "pos": [
+    "NOUN"
+   ],
+   "kind": "danger_noun",
+   "strength": "strong",
+   "valence": -0.75,
+   "arousal": 0.8,
+   "emotions": {
+    "fear": 0.8
+   },
+   "source": "curated:gemini-2026-10",
+   "version": 1
+  },
+  {
+   "id": "en.danger.threat",
+   "lemma": "threat",
+   "pos": [
+    "NOUN"
+   ],
+   "kind": "danger_noun",
+   "strength": "strong",
+   "valence": -0.7,
+   "arousal": 0.75,
+   "emotions": {
+    "fear": 0.7,
+    "anger": 0.4
+   },
+   "source": "curated:gemini-2026-10",
+   "version": 1
+  },
+  {
+   "id": "en.danger.weapon",
+   "lemma": "weapon",
+   "pos": [
+    "NOUN"
+   ],
+   "kind": "danger_noun",
+   "strength": "strong",
+   "valence": -0.65,
+   "arousal": 0.75,
+   "emotions": {
+    "fear": 0.6,
+    "anger": 0.4
+   },
+   "source": "curated:gemini-2026-10",
+   "version": 1
+  },
+  {
+   "id": "en.danger.gun",
+   "lemma": "gun",
+   "pos": [
+    "NOUN"
+   ],
+   "kind": "danger_noun",
+   "strength": "strong",
+   "valence": -0.7,
+   "arousal": 0.8,
+   "emotions": {
+    "fear": 0.7,
+    "anger": 0.4
+   },
+   "source": "curated:gemini-2026-10",
+   "version": 1
+  },
+  {
+   "id": "en.danger.peril",
+   "lemma": "peril",
+   "pos": [
+    "NOUN"
+   ],
+   "kind": "danger_noun",
+   "strength": "strong",
+   "valence": -0.75,
+   "arousal": 0.8,
+   "emotions": {
+    "fear": 0.8
+   },
+   "source": "curated:gemini-2026-10",
+   "version": 1
+  },
+  {
+   "id": "en.danger.blast",
+   "lemma": "blast",
+   "pos": [
+    "NOUN"
+   ],
+   "kind": "danger_noun",
+   "strength": "weak",
+   "valence": -0.6,
+   "arousal": 0.8,
+   "emotions": {
+    "surprise": 0.6,
+    "fear": 0.6
+   },
+   "source": "curated:gemini-2026-10",
+   "version": 1,
+   "note": "also have a blast"
+  },
+  {
+   "id": "en.danger.fire",
+   "lemma": "fire",
+   "pos": [
+    "NOUN"
+   ],
+   "kind": "danger_noun",
+   "strength": "weak",
+   "valence": -0.45,
+   "arousal": 0.65,
+   "emotions": {
+    "fear": 0.6,
+    "anticipation": 0.4
+   },
+   "note": "also fireplace / fire someone",
+   "source": "curated:gemini-2026-10",
+   "version": 1
+  },
+  {
+   "id": "en.danger.flame",
+   "lemma": "flame",
+   "pos": [
+    "NOUN"
+   ],
+   "kind": "danger_noun",
+   "strength": "weak",
+   "valence": -0.4,
+   "arousal": 0.65,
+   "emotions": {
+    "fear": 0.5,
+    "anticipation": 0.4
+   },
+   "note": "also candle flame / old flame",
+   "source": "curated:gemini-2026-10",
    "version": 1
   }
  ]

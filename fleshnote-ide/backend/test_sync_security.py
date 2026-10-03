@@ -2,6 +2,7 @@ import os
 import sys
 import json
 import shutil
+import tempfile
 import unittest
 import sqlite3
 
@@ -24,16 +25,13 @@ def _hlc(ms, ctr=0, device="device-b"):
 
 class TestMdFilenameGuard(unittest.TestCase):
     def setUp(self):
-        self.test_dir = os.path.join(backend_dir, "temp_test_sync_sec_guard")
-        if os.path.exists(self.test_dir):
-            shutil.rmtree(self.test_dir)
-        os.makedirs(self.test_dir)
+        self.test_dir = tempfile.mkdtemp(prefix="fn_sync_sec_guard_")
         self.md_dir = os.path.join(self.test_dir, "md")
-        os.makedirs(self.md_dir)
+        os.makedirs(self.md_dir, exist_ok=True)
 
     def tearDown(self):
         if os.path.exists(self.test_dir):
-            shutil.rmtree(self.test_dir)
+            shutil.rmtree(self.test_dir, ignore_errors=True)
 
     def test_safe_names_pass(self):
         good = [
@@ -83,7 +81,8 @@ class TestMdFilenameGuard(unittest.TestCase):
 
     def test_safe_md_path_containment(self):
         safe = safe_md_path(self.md_dir, "ch_001_ok.md")
-        self.assertEqual(safe, os.path.join(self.md_dir, "ch_001_ok.md"))
+        expected = os.path.realpath(os.path.join(self.md_dir, "ch_001_ok.md"))
+        self.assertEqual(os.path.normcase(safe), os.path.normcase(expected))
         self.assertIsNone(safe_md_path(self.md_dir, "../evil.md"))
         self.assertIsNone(safe_md_path(self.md_dir, "sub\\evil.md"))
         self.assertIsNone(safe_md_path(self.md_dir, ""))
@@ -94,17 +93,13 @@ class TestSyncSecurityBase(unittest.TestCase):
     """Two projects with the same project_id, seeded with hostile remote data."""
 
     def setUp(self):
-        self.test_dir = os.path.join(backend_dir, "temp_test_sync_security")
-        if os.path.exists(self.test_dir):
-            shutil.rmtree(self.test_dir)
-        os.makedirs(self.test_dir)
-
+        self.test_dir = tempfile.mkdtemp(prefix="fn_sync_security_")
         self.project_a_path = os.path.join(self.test_dir, "project_a")
         self.project_b_path = os.path.join(self.test_dir, "project_b")
-        os.makedirs(self.project_a_path)
-        os.makedirs(self.project_b_path)
-        os.makedirs(os.path.join(self.project_a_path, "md"))
-        os.makedirs(os.path.join(self.project_b_path, "md"))
+        os.makedirs(self.project_a_path, exist_ok=True)
+        os.makedirs(self.project_b_path, exist_ok=True)
+        os.makedirs(os.path.join(self.project_a_path, "md"), exist_ok=True)
+        os.makedirs(os.path.join(self.project_b_path, "md"), exist_ok=True)
 
         self.project_id = "test-proj-uuid-sec"
         for p in [self.project_a_path, self.project_b_path]:
@@ -120,11 +115,12 @@ class TestSyncSecurityBase(unittest.TestCase):
     def _conn(self, project):
         conn = sqlite3.connect(os.path.join(project, "fleshnote.db"))
         conn.row_factory = sqlite3.Row
+        self.addCleanup(conn.close)
         return conn
 
     def tearDown(self):
         if os.path.exists(self.test_dir):
-            shutil.rmtree(self.test_dir)
+            shutil.rmtree(self.test_dir, ignore_errors=True)
 
 
 class TestHostileMdFilenameMerge(TestSyncSecurityBase):

@@ -1,2014 +1,2098 @@
 {
-  "lang": "pl",
-  "kind": "danger_noun",
-  "version": 1,
-  "entries": [
-    {
-      "id": "pl.danger.miecz",
-      "lemma": "miecz",
-      "pos": [
-        "NOUN"
-      ],
-      "kind": "danger_noun",
-      "strength": "strong",
-      "valence": -0.74,
-      "arousal": 0.84,
-      "emotions": {
-        "fear": 0.9,
-        "anger": 0.6
-      },
-      "source": "curated:gemini-2026-09",
-      "version": 1
-    },
-    {
-      "id": "pl.danger.szabla",
-      "lemma": "szabla",
-      "pos": [
-        "NOUN"
-      ],
-      "kind": "danger_noun",
-      "strength": "strong",
-      "valence": -0.72,
-      "arousal": 0.82,
-      "emotions": {
-        "fear": 0.9,
-        "anger": 0.6
-      },
-      "source": "curated:gemini-2026-09",
-      "version": 1
-    },
-    {
-      "id": "pl.danger.sztylet",
-      "lemma": "sztylet",
-      "pos": [
-        "NOUN"
-      ],
-      "kind": "danger_noun",
-      "strength": "strong",
-      "valence": -0.78,
-      "arousal": 0.84,
-      "emotions": {
-        "fear": 0.9,
-        "anger": 0.6
-      },
-      "source": "curated:gemini-2026-09",
-      "version": 1
-    },
-    {
-      "id": "pl.danger.nóż",
-      "lemma": "nóż",
-      "pos": [
-        "NOUN"
-      ],
-      "kind": "danger_noun",
-      "strength": "weak",
-      "valence": -0.68,
-      "arousal": 0.78,
-      "emotions": {
-        "fear": 0.9,
-        "anger": 0.6
-      },
-      "source": "curated:gemini-2026-09",
-      "version": 1,
-      "note": "narzędzie kuchenne vs broń"
-    },
-    {
-      "id": "pl.danger.topór",
-      "lemma": "topór",
-      "pos": [
-        "NOUN"
-      ],
-      "kind": "danger_noun",
-      "strength": "strong",
-      "valence": -0.74,
-      "arousal": 0.82,
-      "emotions": {
-        "fear": 0.9,
-        "anger": 0.6
-      },
-      "source": "curated:gemini-2026-09",
-      "version": 1
-    },
-    {
-      "id": "pl.danger.siekier",
-      "lemma": "siekier",
-      "pos": [
-        "NOUN"
-      ],
-      "kind": "danger_noun",
-      "strength": "weak",
-      "valence": -0.7,
-      "arousal": 0.78,
-      "emotions": {
-        "fear": 0.9,
-        "anger": 0.6
-      },
-      "source": "curated:gemini-2026-09",
-      "version": 1,
-      "note": "narzędzie do drewna vs broń"
-    },
-    {
-      "id": "pl.danger.kopiać",
-      "lemma": "kopia",
-      "pos": [
-        "NOUN"
-      ],
-      "kind": "danger_noun",
-      "strength": "strong",
-      "valence": -0.68,
-      "arousal": 0.76,
-      "emotions": {
-        "fear": 0.9,
-        "anger": 0.6
-      },
-      "source": "curated:gemini-2026-09",
-      "version": 1
-    },
-    {
-      "id": "pl.danger.lanca",
-      "lemma": "lanca",
-      "pos": [
-        "NOUN"
-      ],
-      "kind": "danger_noun",
-      "strength": "strong",
-      "valence": -0.7,
-      "arousal": 0.78,
-      "emotions": {
-        "fear": 0.9,
-        "anger": 0.6
-      },
-      "source": "curated:gemini-2026-09",
-      "version": 1
-    },
-    {
-      "id": "pl.danger.włócznia",
-      "lemma": "włócznia",
-      "pos": [
-        "NOUN"
-      ],
-      "kind": "danger_noun",
-      "strength": "strong",
-      "valence": -0.74,
-      "arousal": 0.82,
-      "emotions": {
-        "fear": 0.9,
-        "anger": 0.6
-      },
-      "source": "curated:gemini-2026-09",
-      "version": 1
-    },
-    {
-      "id": "pl.danger.oszczep",
-      "lemma": "oszczep",
-      "pos": [
-        "NOUN"
-      ],
-      "kind": "danger_noun",
-      "strength": "strong",
-      "valence": -0.72,
-      "arousal": 0.8,
-      "emotions": {
-        "fear": 0.9,
-        "anger": 0.6
-      },
-      "source": "curated:gemini-2026-09",
-      "version": 1
-    },
-    {
-      "id": "pl.danger.strzać",
-      "lemma": "strzała",
-      "pos": [
-        "NOUN"
-      ],
-      "kind": "danger_noun",
-      "strength": "strong",
-      "valence": -0.68,
-      "arousal": 0.76,
-      "emotions": {
-        "fear": 0.9,
-        "anger": 0.6
-      },
-      "source": "curated:gemini-2026-09",
-      "version": 1
-    },
-    {
-      "id": "pl.danger.łuk",
-      "lemma": "łuk",
-      "pos": [
-        "NOUN"
-      ],
-      "kind": "danger_noun",
-      "strength": "weak",
-      "valence": -0.6,
-      "arousal": 0.7,
-      "emotions": {
-        "fear": 0.9,
-        "anger": 0.6
-      },
-      "source": "curated:gemini-2026-09",
-      "version": 1,
-      "note": "łuk architektoniczny / tęcza vs broń"
-    },
-    {
-      "id": "pl.danger.kusza",
-      "lemma": "kusza",
-      "pos": [
-        "NOUN"
-      ],
-      "kind": "danger_noun",
-      "strength": "strong",
-      "valence": -0.74,
-      "arousal": 0.82,
-      "emotions": {
-        "fear": 0.9,
-        "anger": 0.6
-      },
-      "source": "curated:gemini-2026-09",
-      "version": 1
-    },
-    {
-      "id": "pl.danger.karabin",
-      "lemma": "karabin",
-      "pos": [
-        "NOUN"
-      ],
-      "kind": "danger_noun",
-      "strength": "strong",
-      "valence": -0.82,
-      "arousal": 0.88,
-      "emotions": {
-        "fear": 0.9,
-        "anger": 0.6
-      },
-      "source": "curated:gemini-2026-09",
-      "version": 1
-    },
-    {
-      "id": "pl.danger.pistolet",
-      "lemma": "pistolet",
-      "pos": [
-        "NOUN"
-      ],
-      "kind": "danger_noun",
-      "strength": "strong",
-      "valence": -0.8,
-      "arousal": 0.86,
-      "emotions": {
-        "fear": 0.9,
-        "anger": 0.6
-      },
-      "source": "curated:gemini-2026-09",
-      "version": 1
-    },
-    {
-      "id": "pl.danger.rewolwer",
-      "lemma": "rewolwer",
-      "pos": [
-        "NOUN"
-      ],
-      "kind": "danger_noun",
-      "strength": "strong",
-      "valence": -0.8,
-      "arousal": 0.86,
-      "emotions": {
-        "fear": 0.9,
-        "anger": 0.6
-      },
-      "source": "curated:gemini-2026-09",
-      "version": 1
-    },
-    {
-      "id": "pl.danger.armata",
-      "lemma": "armata",
-      "pos": [
-        "NOUN"
-      ],
-      "kind": "danger_noun",
-      "strength": "strong",
-      "valence": -0.84,
-      "arousal": 0.9,
-      "emotions": {
-        "fear": 0.9,
-        "anger": 0.6
-      },
-      "source": "curated:gemini-2026-09",
-      "version": 1
-    },
-    {
-      "id": "pl.danger.dziać",
-      "lemma": "dziać",
-      "pos": [
-        "NOUN"
-      ],
-      "kind": "danger_noun",
-      "strength": "strong",
-      "valence": -0.82,
-      "arousal": 0.88,
-      "emotions": {
-        "fear": 0.9,
-        "anger": 0.6
-      },
-      "source": "curated:gemini-2026-09",
-      "version": 1
-    },
-    {
-      "id": "pl.danger.pocisk",
-      "lemma": "pocisk",
-      "pos": [
-        "NOUN"
-      ],
-      "kind": "danger_noun",
-      "strength": "strong",
-      "valence": -0.78,
-      "arousal": 0.86,
-      "emotions": {
-        "fear": 0.9,
-        "anger": 0.6
-      },
-      "source": "curated:gemini-2026-09",
-      "version": 1
-    },
-    {
-      "id": "pl.danger.kula",
-      "lemma": "kula",
-      "pos": [
-        "NOUN"
-      ],
-      "kind": "danger_noun",
-      "strength": "weak",
-      "valence": -0.72,
-      "arousal": 0.8,
-      "emotions": {
-        "fear": 0.9,
-        "anger": 0.6
-      },
-      "source": "curated:gemini-2026-09",
-      "version": 1,
-      "note": "kula ziemska / bilard vs kula pistoletowa"
-    },
-    {
-      "id": "pl.danger.bomba",
-      "lemma": "bomba",
-      "pos": [
-        "NOUN"
-      ],
-      "kind": "danger_noun",
-      "strength": "strong",
-      "valence": -0.92,
-      "arousal": 0.95,
-      "emotions": {
-        "fear": 0.9,
-        "anger": 0.6
-      },
-      "source": "curated:gemini-2026-09",
-      "version": 1
-    },
-    {
-      "id": "pl.danger.granat",
-      "lemma": "granat",
-      "pos": [
-        "NOUN"
-      ],
-      "kind": "danger_noun",
-      "strength": "weak",
-      "valence": -0.88,
-      "arousal": 0.92,
-      "emotions": {
-        "fear": 0.9,
-        "anger": 0.6
-      },
-      "source": "curated:gemini-2026-09",
-      "version": 1,
-      "note": "owoc granatu vs broń"
-    },
-    {
-      "id": "pl.danger.mina",
-      "lemma": "mina",
-      "pos": [
-        "NOUN"
-      ],
-      "kind": "danger_noun",
-      "strength": "weak",
-      "valence": -0.84,
-      "arousal": 0.88,
-      "emotions": {
-        "fear": 0.9,
-        "anger": 0.6
-      },
-      "source": "curated:gemini-2026-09",
-      "version": 1,
-      "note": "mina lądowa vs wyraz twarzy",
-      "alt_lemmas": [
-        "min"
-      ],
-      "lemma_evidence": "carrier"
-    },
-    {
-      "id": "pl.danger.dynamit",
-      "lemma": "dynamit",
-      "pos": [
-        "NOUN"
-      ],
-      "kind": "danger_noun",
-      "strength": "strong",
-      "valence": -0.88,
-      "arousal": 0.92,
-      "emotions": {
-        "fear": 0.9,
-        "anger": 0.6
-      },
-      "source": "curated:gemini-2026-09",
-      "version": 1
-    },
-    {
-      "id": "pl.danger.proch",
-      "lemma": "proch",
-      "pos": [
-        "NOUN"
-      ],
-      "kind": "danger_noun",
-      "strength": "weak",
-      "valence": -0.72,
-      "arousal": 0.78,
-      "emotions": {
-        "fear": 0.9,
-        "anger": 0.6
-      },
-      "source": "curated:gemini-2026-09",
-      "version": 1,
-      "note": "proch strzelniczy vs kurz/prochy"
-    },
-    {
-      "id": "pl.danger.bagnet",
-      "lemma": "bagnet",
-      "pos": [
-        "NOUN"
-      ],
-      "kind": "danger_noun",
-      "strength": "strong",
-      "valence": -0.8,
-      "arousal": 0.86,
-      "emotions": {
-        "fear": 0.9,
-        "anger": 0.6
-      },
-      "source": "curated:gemini-2026-09",
-      "version": 1
-    },
-    {
-      "id": "pl.danger.rapier",
-      "lemma": "rapier",
-      "pos": [
-        "NOUN"
-      ],
-      "kind": "danger_noun",
-      "strength": "strong",
-      "valence": -0.72,
-      "arousal": 0.8,
-      "emotions": {
-        "fear": 0.9,
-        "anger": 0.6
-      },
-      "source": "curated:gemini-2026-09",
-      "version": 1
-    },
-    {
-      "id": "pl.danger.buława",
-      "lemma": "buława",
-      "pos": [
-        "NOUN"
-      ],
-      "kind": "danger_noun",
-      "strength": "strong",
-      "valence": -0.68,
-      "arousal": 0.74,
-      "emotions": {
-        "fear": 0.9,
-        "anger": 0.6
-      },
-      "source": "curated:gemini-2026-09",
-      "version": 1
-    },
-    {
-      "id": "pl.danger.maczuga",
-      "lemma": "maczuga",
-      "pos": [
-        "NOUN"
-      ],
-      "kind": "danger_noun",
-      "strength": "strong",
-      "valence": -0.74,
-      "arousal": 0.8,
-      "emotions": {
-        "fear": 0.9,
-        "anger": 0.6
-      },
-      "source": "curated:gemini-2026-09",
-      "version": 1
-    },
-    {
-      "id": "pl.danger.pałka",
-      "lemma": "pałka",
-      "pos": [
-        "NOUN"
-      ],
-      "kind": "danger_noun",
-      "strength": "strong",
-      "valence": -0.65,
-      "arousal": 0.72,
-      "emotions": {
-        "fear": 0.9,
-        "anger": 0.6
-      },
-      "source": "curated:gemini-2026-09",
-      "version": 1
-    },
-    {
-      "id": "pl.danger.bat",
-      "lemma": "bat",
-      "pos": [
-        "NOUN"
-      ],
-      "kind": "danger_noun",
-      "strength": "strong",
-      "valence": -0.72,
-      "arousal": 0.78,
-      "emotions": {
-        "fear": 0.9,
-        "anger": 0.6
-      },
-      "source": "curated:gemini-2026-09",
-      "version": 1
-    },
-    {
-      "id": "pl.danger.bicz",
-      "lemma": "bicz",
-      "pos": [
-        "NOUN"
-      ],
-      "kind": "danger_noun",
-      "strength": "strong",
-      "valence": -0.74,
-      "arousal": 0.8,
-      "emotions": {
-        "fear": 0.9,
-        "anger": 0.6
-      },
-      "source": "curated:gemini-2026-09",
-      "version": 1
-    },
-    {
-      "id": "pl.danger.kajdać",
-      "lemma": "kajdany",
-      "pos": [
-        "NOUN"
-      ],
-      "kind": "danger_noun",
-      "strength": "strong",
-      "valence": -0.78,
-      "arousal": 0.76,
-      "emotions": {
-        "fear": 0.9,
-        "anger": 0.6
-      },
-      "source": "curated:gemini-2026-09",
-      "version": 1
-    },
-    {
-      "id": "pl.danger.łańcuch",
-      "lemma": "łańcuch",
-      "pos": [
-        "NOUN"
-      ],
-      "kind": "danger_noun",
-      "strength": "weak",
-      "valence": -0.62,
-      "arousal": 0.65,
-      "emotions": {
-        "fear": 0.9,
-        "anger": 0.6
-      },
-      "source": "curated:gemini-2026-09",
-      "version": 1,
-      "note": "łańcuch górski / ozdobny vs więzy"
-    },
-    {
-      "id": "pl.danger.dyby",
-      "lemma": "dyby",
-      "pos": [
-        "NOUN"
-      ],
-      "kind": "danger_noun",
-      "strength": "strong",
-      "valence": -0.76,
-      "arousal": 0.72,
-      "emotions": {
-        "fear": 0.9,
-        "anger": 0.6
-      },
-      "source": "curated:gemini-2026-09",
-      "version": 1
-    },
-    {
-      "id": "pl.danger.szubienica",
-      "lemma": "szubienica",
-      "pos": [
-        "NOUN"
-      ],
-      "kind": "danger_noun",
-      "strength": "strong",
-      "valence": -0.92,
-      "arousal": 0.9,
-      "emotions": {
-        "fear": 0.9,
-        "anger": 0.6
-      },
-      "source": "curated:gemini-2026-09",
-      "version": 1
-    },
-    {
-      "id": "pl.danger.stryczka",
-      "lemma": "stryczka",
-      "pos": [
-        "NOUN"
-      ],
-      "kind": "danger_noun",
-      "strength": "strong",
-      "valence": -0.9,
-      "arousal": 0.88,
-      "emotions": {
-        "fear": 0.9,
-        "anger": 0.6
-      },
-      "source": "curated:gemini-2026-09",
-      "version": 1,
-      "alt_lemmas": [
-        "stryczki"
-      ],
-      "lemma_evidence": "carrier"
-    },
-    {
-      "id": "pl.danger.pętla",
-      "lemma": "pętla",
-      "pos": [
-        "NOUN"
-      ],
-      "kind": "danger_noun",
-      "strength": "weak",
-      "valence": -0.75,
-      "arousal": 0.78,
-      "emotions": {
-        "fear": 0.9,
-        "anger": 0.6
-      },
-      "source": "curated:gemini-2026-09",
-      "version": 1,
-      "note": "pętla autobusowa vs pętla szubieniczna"
-    },
-    {
-      "id": "pl.danger.szafot",
-      "lemma": "szafot",
-      "pos": [
-        "NOUN"
-      ],
-      "kind": "danger_noun",
-      "strength": "strong",
-      "valence": -0.92,
-      "arousal": 0.9,
-      "emotions": {
-        "fear": 0.9,
-        "anger": 0.6
-      },
-      "source": "curated:gemini-2026-09",
-      "version": 1
-    },
-    {
-      "id": "pl.danger.gilotyn",
-      "lemma": "gilotyn",
-      "pos": [
-        "NOUN"
-      ],
-      "kind": "danger_noun",
-      "strength": "strong",
-      "valence": -0.94,
-      "arousal": 0.92,
-      "emotions": {
-        "fear": 0.9,
-        "anger": 0.6
-      },
-      "source": "curated:gemini-2026-09",
-      "version": 1
-    },
-    {
-      "id": "pl.danger.topornik",
-      "lemma": "topornik",
-      "pos": [
-        "NOUN"
-      ],
-      "kind": "danger_noun",
-      "strength": "strong",
-      "valence": -0.82,
-      "arousal": 0.84,
-      "emotions": {
-        "fear": 0.9,
-        "anger": 0.6
-      },
-      "source": "curated:gemini-2026-09",
-      "version": 1,
-      "spell_ok": "historical/literary noun for an axe-wielding warrior, used by Sienkiewicz"
-    },
-    {
-      "id": "pl.danger.kat",
-      "lemma": "kat",
-      "pos": [
-        "NOUN"
-      ],
-      "kind": "danger_noun",
-      "strength": "strong",
-      "valence": -0.9,
-      "arousal": 0.88,
-      "emotions": {
-        "fear": 0.9,
-        "anger": 0.6
-      },
-      "source": "curated:gemini-2026-09",
-      "version": 1
-    },
-    {
-      "id": "pl.danger.oprawca",
-      "lemma": "oprawca",
-      "pos": [
-        "NOUN"
-      ],
-      "kind": "danger_noun",
-      "strength": "strong",
-      "valence": -0.9,
-      "arousal": 0.88,
-      "emotions": {
-        "fear": 0.9,
-        "anger": 0.6
-      },
-      "source": "curated:gemini-2026-09",
-      "version": 1
-    },
-    {
-      "id": "pl.danger.morderca",
-      "lemma": "morderca",
-      "pos": [
-        "NOUN"
-      ],
-      "kind": "danger_noun",
-      "strength": "strong",
-      "valence": -0.92,
-      "arousal": 0.9,
-      "emotions": {
-        "fear": 0.9,
-        "anger": 0.6
-      },
-      "source": "curated:gemini-2026-09",
-      "version": 1
-    },
-    {
-      "id": "pl.danger.zabójca",
-      "lemma": "zabójca",
-      "pos": [
-        "NOUN"
-      ],
-      "kind": "danger_noun",
-      "strength": "strong",
-      "valence": -0.9,
-      "arousal": 0.88,
-      "emotions": {
-        "fear": 0.9,
-        "anger": 0.6
-      },
-      "source": "curated:gemini-2026-09",
-      "version": 1
-    },
-    {
-      "id": "pl.danger.zamachowiec",
-      "lemma": "zamachowiec",
-      "pos": [
-        "NOUN"
-      ],
-      "kind": "danger_noun",
-      "strength": "strong",
-      "valence": -0.88,
-      "arousal": 0.9,
-      "emotions": {
-        "fear": 0.9,
-        "anger": 0.6
-      },
-      "source": "curated:gemini-2026-09",
-      "version": 1
-    },
-    {
-      "id": "pl.danger.zbójca",
-      "lemma": "zbójca",
-      "pos": [
-        "NOUN"
-      ],
-      "kind": "danger_noun",
-      "strength": "strong",
-      "valence": -0.82,
-      "arousal": 0.82,
-      "emotions": {
-        "fear": 0.9,
-        "anger": 0.6
-      },
-      "source": "curated:gemini-2026-09",
-      "version": 1
-    },
-    {
-      "id": "pl.danger.rozbójnik",
-      "lemma": "rozbójnik",
-      "pos": [
-        "NOUN"
-      ],
-      "kind": "danger_noun",
-      "strength": "strong",
-      "valence": -0.78,
-      "arousal": 0.78,
-      "emotions": {
-        "fear": 0.9,
-        "anger": 0.6
-      },
-      "source": "curated:gemini-2026-09",
-      "version": 1
-    },
-    {
-      "id": "pl.danger.bandyta",
-      "lemma": "bandyta",
-      "pos": [
-        "NOUN"
-      ],
-      "kind": "danger_noun",
-      "strength": "strong",
-      "valence": -0.82,
-      "arousal": 0.82,
-      "emotions": {
-        "fear": 0.9,
-        "anger": 0.6
-      },
-      "source": "curated:gemini-2026-09",
-      "version": 1
-    },
-    {
-      "id": "pl.danger.zbrodniarz",
-      "lemma": "zbrodniarz",
-      "pos": [
-        "NOUN"
-      ],
-      "kind": "danger_noun",
-      "strength": "strong",
-      "valence": -0.9,
-      "arousal": 0.86,
-      "emotions": {
-        "fear": 0.9,
-        "anger": 0.6
-      },
-      "source": "curated:gemini-2026-09",
-      "version": 1
-    },
-    {
-      "id": "pl.danger.wróg",
-      "lemma": "wróg",
-      "pos": [
-        "NOUN"
-      ],
-      "kind": "danger_noun",
-      "strength": "strong",
-      "valence": -0.8,
-      "arousal": 0.82,
-      "emotions": {
-        "fear": 0.9,
-        "anger": 0.6
-      },
-      "source": "curated:gemini-2026-09",
-      "version": 1
-    },
-    {
-      "id": "pl.danger.nieprzyjaciel",
-      "lemma": "nieprzyjaciel",
-      "pos": [
-        "NOUN"
-      ],
-      "kind": "danger_noun",
-      "strength": "strong",
-      "valence": -0.78,
-      "arousal": 0.78,
-      "emotions": {
-        "fear": 0.9,
-        "anger": 0.6
-      },
-      "source": "curated:gemini-2026-09",
-      "version": 1
-    },
-    {
-      "id": "pl.danger.przeciwnik",
-      "lemma": "przeciwnik",
-      "pos": [
-        "NOUN"
-      ],
-      "kind": "danger_noun",
-      "strength": "strong",
-      "valence": -0.55,
-      "arousal": 0.65,
-      "emotions": {
-        "fear": 0.9,
-        "anger": 0.6
-      },
-      "source": "curated:gemini-2026-09",
-      "version": 1
-    },
-    {
-      "id": "pl.danger.najeźdźca",
-      "lemma": "najeźdźca",
-      "pos": [
-        "NOUN"
-      ],
-      "kind": "danger_noun",
-      "strength": "strong",
-      "valence": -0.82,
-      "arousal": 0.84,
-      "emotions": {
-        "fear": 0.9,
-        "anger": 0.6
-      },
-      "source": "curated:gemini-2026-09",
-      "version": 1
-    },
-    {
-      "id": "pl.danger.okupant",
-      "lemma": "okupant",
-      "pos": [
-        "NOUN"
-      ],
-      "kind": "danger_noun",
-      "strength": "strong",
-      "valence": -0.84,
-      "arousal": 0.82,
-      "emotions": {
-        "fear": 0.9,
-        "anger": 0.6
-      },
-      "source": "curated:gemini-2026-09",
-      "version": 1
-    },
-    {
-      "id": "pl.danger.potwór",
-      "lemma": "potwór",
-      "pos": [
-        "NOUN"
-      ],
-      "kind": "danger_noun",
-      "strength": "strong",
-      "valence": -0.84,
-      "arousal": 0.86,
-      "emotions": {
-        "fear": 0.9,
-        "anger": 0.6
-      },
-      "source": "curated:gemini-2026-09",
-      "version": 1
-    },
-    {
-      "id": "pl.danger.bestia",
-      "lemma": "bestia",
-      "pos": [
-        "NOUN"
-      ],
-      "kind": "danger_noun",
-      "strength": "strong",
-      "valence": -0.82,
-      "arousal": 0.86,
-      "emotions": {
-        "fear": 0.9,
-        "anger": 0.6
-      },
-      "source": "curated:gemini-2026-09",
-      "version": 1
-    },
-    {
-      "id": "pl.danger.wilk",
-      "lemma": "wilk",
-      "pos": [
-        "NOUN"
-      ],
-      "kind": "danger_noun",
-      "strength": "strong",
-      "valence": -0.68,
-      "arousal": 0.76,
-      "emotions": {
-        "fear": 0.9,
-        "anger": 0.6
-      },
-      "source": "curated:gemini-2026-09",
-      "version": 1
-    },
-    {
-      "id": "pl.danger.niedźwiedź",
-      "lemma": "niedźwiedź",
-      "pos": [
-        "NOUN"
-      ],
-      "kind": "danger_noun",
-      "strength": "strong",
-      "valence": -0.66,
-      "arousal": 0.74,
-      "emotions": {
-        "fear": 0.9,
-        "anger": 0.6
-      },
-      "source": "curated:gemini-2026-09",
-      "version": 1
-    },
-    {
-      "id": "pl.danger.żmija",
-      "lemma": "żmija",
-      "pos": [
-        "NOUN"
-      ],
-      "kind": "danger_noun",
-      "strength": "strong",
-      "valence": -0.76,
-      "arousal": 0.8,
-      "emotions": {
-        "fear": 0.9,
-        "anger": 0.6
-      },
-      "source": "curated:gemini-2026-09",
-      "version": 1
-    },
-    {
-      "id": "pl.danger.wąż",
-      "lemma": "wąż",
-      "pos": [
-        "NOUN"
-      ],
-      "kind": "danger_noun",
-      "strength": "strong",
-      "valence": -0.68,
-      "arousal": 0.72,
-      "emotions": {
-        "fear": 0.9,
-        "anger": 0.6
-      },
-      "source": "curated:gemini-2026-09",
-      "version": 1
-    },
-    {
-      "id": "pl.danger.skorpiona",
-      "lemma": "skorpiona",
-      "pos": [
-        "NOUN"
-      ],
-      "kind": "danger_noun",
-      "strength": "strong",
-      "valence": -0.74,
-      "arousal": 0.78,
-      "emotions": {
-        "fear": 0.9,
-        "anger": 0.6
-      },
-      "source": "curated:gemini-2026-09",
-      "version": 1,
-      "alt_lemmas": [
-        "skorpione"
-      ],
-      "lemma_evidence": "carrier"
-    },
-    {
-      "id": "pl.danger.pająk",
-      "lemma": "pająk",
-      "pos": [
-        "NOUN"
-      ],
-      "kind": "danger_noun",
-      "strength": "strong",
-      "valence": -0.62,
-      "arousal": 0.7,
-      "emotions": {
-        "fear": 0.9,
-        "anger": 0.6
-      },
-      "source": "curated:gemini-2026-09",
-      "version": 1
-    },
-    {
-      "id": "pl.danger.jad",
-      "lemma": "jad",
-      "pos": [
-        "NOUN"
-      ],
-      "kind": "danger_noun",
-      "strength": "strong",
-      "valence": -0.86,
-      "arousal": 0.84,
-      "emotions": {
-        "fear": 0.9,
-        "anger": 0.6
-      },
-      "source": "curated:gemini-2026-09",
-      "version": 1
-    },
-    {
-      "id": "pl.danger.trucizna",
-      "lemma": "trucizna",
-      "pos": [
-        "NOUN"
-      ],
-      "kind": "danger_noun",
-      "strength": "strong",
-      "valence": -0.88,
-      "arousal": 0.86,
-      "emotions": {
-        "fear": 0.9,
-        "anger": 0.6
-      },
-      "source": "curated:gemini-2026-09",
-      "version": 1
-    },
-    {
-      "id": "pl.danger.arszenik",
-      "lemma": "arszenik",
-      "pos": [
-        "NOUN"
-      ],
-      "kind": "danger_noun",
-      "strength": "strong",
-      "valence": -0.88,
-      "arousal": 0.84,
-      "emotions": {
-        "fear": 0.9,
-        "anger": 0.6
-      },
-      "source": "curated:gemini-2026-09",
-      "version": 1
-    },
-    {
-      "id": "pl.danger.ogień",
-      "lemma": "ogień",
-      "pos": [
-        "NOUN"
-      ],
-      "kind": "danger_noun",
-      "strength": "weak",
-      "valence": -0.45,
-      "arousal": 0.65,
-      "emotions": {
-        "fear": 0.9,
-        "anger": 0.6
-      },
-      "source": "curated:gemini-2026-09",
-      "version": 1,
-      "note": "ogień domowy / ciepło vs żywioł ognia"
-    },
-    {
-      "id": "pl.danger.płomień",
-      "lemma": "płomień",
-      "pos": [
-        "NOUN"
-      ],
-      "kind": "danger_noun",
-      "strength": "weak",
-      "valence": -0.52,
-      "arousal": 0.72,
-      "emotions": {
-        "fear": 0.9,
-        "anger": 0.6
-      },
-      "source": "curated:gemini-2026-09",
-      "version": 1,
-      "note": "płomień świecy vs pożar"
-    },
-    {
-      "id": "pl.danger.pożar",
-      "lemma": "pożar",
-      "pos": [
-        "NOUN"
-      ],
-      "kind": "danger_noun",
-      "strength": "strong",
-      "valence": -0.84,
-      "arousal": 0.9,
-      "emotions": {
-        "fear": 0.9,
-        "anger": 0.6
-      },
-      "source": "curated:gemini-2026-09",
-      "version": 1
-    },
-    {
-      "id": "pl.danger.pożogi",
-      "lemma": "pożogi",
-      "pos": [
-        "NOUN"
-      ],
-      "kind": "danger_noun",
-      "strength": "strong",
-      "valence": -0.86,
-      "arousal": 0.92,
-      "emotions": {
-        "fear": 0.9,
-        "anger": 0.6
-      },
-      "source": "curated:gemini-2026-09",
-      "version": 1,
-      "alt_lemmas": [
-        "pożoga"
-      ],
-      "lemma_evidence": "carrier"
-    },
-    {
-      "id": "pl.danger.zaraza",
-      "lemma": "zaraza",
-      "pos": [
-        "NOUN"
-      ],
-      "kind": "danger_noun",
-      "strength": "strong",
-      "valence": -0.92,
-      "arousal": 0.88,
-      "emotions": {
-        "fear": 0.9,
-        "anger": 0.6
-      },
-      "source": "curated:gemini-2026-09",
-      "version": 1
-    },
-    {
-      "id": "pl.danger.dżuma",
-      "lemma": "dżuma",
-      "pos": [
-        "NOUN"
-      ],
-      "kind": "danger_noun",
-      "strength": "strong",
-      "valence": -0.95,
-      "arousal": 0.9,
-      "emotions": {
-        "fear": 0.9,
-        "anger": 0.6
-      },
-      "source": "curated:gemini-2026-09",
-      "version": 1
-    },
-    {
-      "id": "pl.danger.cholerka",
-      "lemma": "cholerka",
-      "pos": [
-        "NOUN"
-      ],
-      "kind": "danger_noun",
-      "strength": "strong",
-      "valence": -0.85,
-      "arousal": 0.8,
-      "emotions": {
-        "fear": 0.9,
-        "anger": 0.6
-      },
-      "source": "curated:gemini-2026-09",
-      "version": 1
-    },
-    {
-      "id": "pl.danger.epidemia",
-      "lemma": "epidemia",
-      "pos": [
-        "NOUN"
-      ],
-      "kind": "danger_noun",
-      "strength": "strong",
-      "valence": -0.88,
-      "arousal": 0.86,
-      "emotions": {
-        "fear": 0.9,
-        "anger": 0.6
-      },
-      "source": "curated:gemini-2026-09",
-      "version": 1
-    },
-    {
-      "id": "pl.danger.mór",
-      "lemma": "mór",
-      "pos": [
-        "NOUN"
-      ],
-      "kind": "danger_noun",
-      "strength": "strong",
-      "valence": -0.9,
-      "arousal": 0.86,
-      "emotions": {
-        "fear": 0.9,
-        "anger": 0.6
-      },
-      "source": "curated:gemini-2026-09",
-      "version": 1,
-      "spell_ok": "archaic literary noun for plague or pestilence, used in historical prose"
-    },
-    {
-      "id": "pl.danger.burza",
-      "lemma": "burza",
-      "pos": [
-        "NOUN"
-      ],
-      "kind": "danger_noun",
-      "strength": "strong",
-      "valence": -0.64,
-      "arousal": 0.76,
-      "emotions": {
-        "fear": 0.9,
-        "anger": 0.6
-      },
-      "source": "curated:gemini-2026-09",
-      "version": 1
-    },
-    {
-      "id": "pl.danger.nawałnica",
-      "lemma": "nawałnica",
-      "pos": [
-        "NOUN"
-      ],
-      "kind": "danger_noun",
-      "strength": "strong",
-      "valence": -0.76,
-      "arousal": 0.84,
-      "emotions": {
-        "fear": 0.9,
-        "anger": 0.6
-      },
-      "source": "curated:gemini-2026-09",
-      "version": 1
-    },
-    {
-      "id": "pl.danger.piorun",
-      "lemma": "piorun",
-      "pos": [
-        "NOUN"
-      ],
-      "kind": "danger_noun",
-      "strength": "strong",
-      "valence": -0.72,
-      "arousal": 0.82,
-      "emotions": {
-        "fear": 0.9,
-        "anger": 0.6
-      },
-      "source": "curated:gemini-2026-09",
-      "version": 1
-    },
-    {
-      "id": "pl.danger.grom",
-      "lemma": "grom",
-      "pos": [
-        "NOUN"
-      ],
-      "kind": "danger_noun",
-      "strength": "strong",
-      "valence": -0.7,
-      "arousal": 0.8,
-      "emotions": {
-        "fear": 0.9,
-        "anger": 0.6
-      },
-      "source": "curated:gemini-2026-09",
-      "version": 1
-    },
-    {
-      "id": "pl.danger.huragan",
-      "lemma": "huragan",
-      "pos": [
-        "NOUN"
-      ],
-      "kind": "danger_noun",
-      "strength": "strong",
-      "valence": -0.82,
-      "arousal": 0.88,
-      "emotions": {
-        "fear": 0.9,
-        "anger": 0.6
-      },
-      "source": "curated:gemini-2026-09",
-      "version": 1
-    },
-    {
-      "id": "pl.danger.orkan",
-      "lemma": "orkan",
-      "pos": [
-        "NOUN"
-      ],
-      "kind": "danger_noun",
-      "strength": "strong",
-      "valence": -0.84,
-      "arousal": 0.88,
-      "emotions": {
-        "fear": 0.9,
-        "anger": 0.6
-      },
-      "source": "curated:gemini-2026-09",
-      "version": 1
-    },
-    {
-      "id": "pl.danger.zamieć",
-      "lemma": "zamieć",
-      "pos": [
-        "NOUN"
-      ],
-      "kind": "danger_noun",
-      "strength": "strong",
-      "valence": -0.68,
-      "arousal": 0.74,
-      "emotions": {
-        "fear": 0.9,
-        "anger": 0.6
-      },
-      "source": "curated:gemini-2026-09",
-      "version": 1
-    },
-    {
-      "id": "pl.danger.lawina",
-      "lemma": "lawina",
-      "pos": [
-        "NOUN"
-      ],
-      "kind": "danger_noun",
-      "strength": "strong",
-      "valence": -0.84,
-      "arousal": 0.9,
-      "emotions": {
-        "fear": 0.9,
-        "anger": 0.6
-      },
-      "source": "curated:gemini-2026-09",
-      "version": 1
-    },
-    {
-      "id": "pl.danger.powódź",
-      "lemma": "powódź",
-      "pos": [
-        "NOUN"
-      ],
-      "kind": "danger_noun",
-      "strength": "strong",
-      "valence": -0.82,
-      "arousal": 0.84,
-      "emotions": {
-        "fear": 0.9,
-        "anger": 0.6
-      },
-      "source": "curated:gemini-2026-09",
-      "version": 1
-    },
-    {
-      "id": "pl.danger.trzęsienie_ziemia",
-      "phrase": [
-        "trzęsienie",
-        "ziemia"
-      ],
-      "kind": "danger_noun",
-      "strength": "strong",
-      "valence": -0.88,
-      "arousal": 0.92,
-      "emotions": {
-        "fear": 0.9,
-        "anger": 0.6
-      },
-      "source": "curated:gemini-2026-09",
-      "version": 1,
-      "example": "Nagle gwałtowne trzęsienie ziemi obróciło domy w ruinę."
-    },
-    {
-      "id": "pl.danger.przepaść",
-      "lemma": "przepaść",
-      "pos": [
-        "NOUN"
-      ],
-      "kind": "danger_noun",
-      "strength": "strong",
-      "valence": -0.74,
-      "arousal": 0.78,
-      "emotions": {
-        "fear": 0.9,
-        "anger": 0.6
-      },
-      "source": "curated:gemini-2026-09",
-      "version": 1
-    },
-    {
-      "id": "pl.danger.otchłanie",
-      "lemma": "otchłanie",
-      "pos": [
-        "NOUN"
-      ],
-      "kind": "danger_noun",
-      "strength": "strong",
-      "valence": -0.76,
-      "arousal": 0.8,
-      "emotions": {
-        "fear": 0.9,
-        "anger": 0.6
-      },
-      "source": "curated:gemini-2026-09",
-      "version": 1,
-      "alt_lemmas": [
-        "otchłać"
-      ],
-      "lemma_evidence": "carrier"
-    },
-    {
-      "id": "pl.danger.urwisko",
-      "lemma": "urwisko",
-      "pos": [
-        "NOUN"
-      ],
-      "kind": "danger_noun",
-      "strength": "strong",
-      "valence": -0.68,
-      "arousal": 0.72,
-      "emotions": {
-        "fear": 0.9,
-        "anger": 0.6
-      },
-      "source": "curated:gemini-2026-09",
-      "version": 1
-    },
-    {
-      "id": "pl.danger.bagno",
-      "lemma": "bagno",
-      "pos": [
-        "NOUN"
-      ],
-      "kind": "danger_noun",
-      "strength": "strong",
-      "valence": -0.64,
-      "arousal": 0.62,
-      "emotions": {
-        "fear": 0.9,
-        "anger": 0.6
-      },
-      "source": "curated:gemini-2026-09",
-      "version": 1
-    },
-    {
-      "id": "pl.danger.grzęzawiski",
-      "lemma": "grzęzawisko",
-      "pos": [
-        "NOUN"
-      ],
-      "kind": "danger_noun",
-      "strength": "strong",
-      "valence": -0.68,
-      "arousal": 0.65,
-      "emotions": {
-        "fear": 0.9,
-        "anger": 0.6
-      },
-      "source": "curated:gemini-2026-09",
-      "version": 1
-    },
-    {
-      "id": "pl.danger.wira",
-      "lemma": "wir",
-      "pos": [
-        "NOUN"
-      ],
-      "kind": "danger_noun",
-      "strength": "strong",
-      "valence": -0.7,
-      "arousal": 0.76,
-      "emotions": {
-        "fear": 0.9,
-        "anger": 0.6
-      },
-      "source": "curated:gemini-2026-09",
-      "version": 1,
-      "alt_lemmas": [
-        "wirać"
-      ],
-      "lemma_evidence": "carrier"
-    },
-    {
-      "id": "pl.danger.topiel",
-      "lemma": "topiel",
-      "pos": [
-        "NOUN"
-      ],
-      "kind": "danger_noun",
-      "strength": "strong",
-      "valence": -0.8,
-      "arousal": 0.8,
-      "emotions": {
-        "fear": 0.9,
-        "anger": 0.6
-      },
-      "source": "curated:gemini-2026-09",
-      "version": 1
-    },
-    {
-      "id": "pl.danger.krew",
-      "lemma": "krew",
-      "pos": [
-        "NOUN"
-      ],
-      "kind": "danger_noun",
-      "strength": "weak",
-      "valence": -0.58,
-      "arousal": 0.68,
-      "emotions": {
-        "fear": 0.9,
-        "anger": 0.6
-      },
-      "source": "curated:gemini-2026-09",
-      "version": 1,
-      "note": "krew fizjologiczna vs rozlew krwi"
-    },
-    {
-      "id": "pl.danger.rać",
-      "lemma": "rać",
-      "pos": [
-        "NOUN"
-      ],
-      "kind": "danger_noun",
-      "strength": "strong",
-      "valence": -0.78,
-      "arousal": 0.78,
-      "emotions": {
-        "fear": 0.9,
-        "anger": 0.6
-      },
-      "source": "curated:gemini-2026-09",
-      "version": 1
-    },
-    {
-      "id": "pl.danger.okaleczeć",
-      "lemma": "okaleczeć",
-      "pos": [
-        "NOUN"
-      ],
-      "kind": "danger_noun",
-      "strength": "strong",
-      "valence": -0.84,
-      "arousal": 0.82,
-      "emotions": {
-        "fear": 0.9,
-        "anger": 0.6
-      },
-      "source": "curated:gemini-2026-09",
-      "version": 1
-    },
-    {
-      "id": "pl.danger.blizna",
-      "lemma": "blizna",
-      "pos": [
-        "NOUN"
-      ],
-      "kind": "danger_noun",
-      "strength": "strong",
-      "valence": -0.62,
-      "arousal": 0.5,
-      "emotions": {
-        "fear": 0.9,
-        "anger": 0.6
-      },
-      "source": "curated:gemini-2026-09",
-      "version": 1
-    },
-    {
-      "id": "pl.danger.trupa",
-      "lemma": "trupa",
-      "pos": [
-        "NOUN"
-      ],
-      "kind": "danger_noun",
-      "strength": "strong",
-      "valence": -0.88,
-      "arousal": 0.74,
-      "emotions": {
-        "fear": 0.9,
-        "anger": 0.6
-      },
-      "source": "curated:gemini-2026-09",
-      "version": 1,
-      "alt_lemmas": [
-        "trup"
-      ],
-      "lemma_evidence": "carrier"
-    },
-    {
-      "id": "pl.danger.zwłoki",
-      "lemma": "zwłoki",
-      "pos": [
-        "NOUN"
-      ],
-      "kind": "danger_noun",
-      "strength": "strong",
-      "valence": -0.86,
-      "arousal": 0.7,
-      "emotions": {
-        "fear": 0.9,
-        "anger": 0.6
-      },
-      "source": "curated:gemini-2026-09",
-      "version": 1
-    },
-    {
-      "id": "pl.danger.kościotrupa",
-      "lemma": "kościotrupa",
-      "pos": [
-        "NOUN"
-      ],
-      "kind": "danger_noun",
-      "strength": "strong",
-      "valence": -0.72,
-      "arousal": 0.66,
-      "emotions": {
-        "fear": 0.9,
-        "anger": 0.6
-      },
-      "source": "curated:gemini-2026-09",
-      "version": 1
-    },
-    {
-      "id": "pl.danger.szkielet",
-      "lemma": "szkielet",
-      "pos": [
-        "NOUN"
-      ],
-      "kind": "danger_noun",
-      "strength": "weak",
-      "valence": -0.64,
-      "arousal": 0.6,
-      "emotions": {
-        "fear": 0.9,
-        "anger": 0.6
-      },
-      "source": "curated:gemini-2026-09",
-      "version": 1,
-      "note": "szkielet konstrukcji vs kości"
-    },
-    {
-      "id": "pl.danger.czaszek",
-      "lemma": "czaszek",
-      "pos": [
-        "NOUN"
-      ],
-      "kind": "danger_noun",
-      "strength": "strong",
-      "valence": -0.68,
-      "arousal": 0.62,
-      "emotions": {
-        "fear": 0.9,
-        "anger": 0.6
-      },
-      "source": "curated:gemini-2026-09",
-      "version": 1
-    },
-    {
-      "id": "pl.danger.groba",
-      "lemma": "grób",
-      "pos": [
-        "NOUN"
-      ],
-      "kind": "danger_noun",
-      "strength": "strong",
-      "valence": -0.72,
-      "arousal": 0.52,
-      "emotions": {
-        "fear": 0.9,
-        "anger": 0.6
-      },
-      "source": "curated:gemini-2026-09",
-      "version": 1
-    },
-    {
-      "id": "pl.danger.mogić",
-      "lemma": "mogiła",
-      "pos": [
-        "NOUN"
-      ],
-      "kind": "danger_noun",
-      "strength": "strong",
-      "valence": -0.74,
-      "arousal": 0.54,
-      "emotions": {
-        "fear": 0.9,
-        "anger": 0.6
-      },
-      "source": "curated:gemini-2026-09",
-      "version": 1
-    },
-    {
-      "id": "pl.danger.cmentarz",
-      "lemma": "cmentarz",
-      "pos": [
-        "NOUN"
-      ],
-      "kind": "danger_noun",
-      "strength": "strong",
-      "valence": -0.62,
-      "arousal": 0.44,
-      "emotions": {
-        "fear": 0.9,
-        "anger": 0.6
-      },
-      "source": "curated:gemini-2026-09",
-      "version": 1
-    },
-    {
-      "id": "pl.danger.trumny",
-      "lemma": "trumny",
-      "pos": [
-        "NOUN"
-      ],
-      "kind": "danger_noun",
-      "strength": "strong",
-      "valence": -0.76,
-      "arousal": 0.54,
-      "emotions": {
-        "fear": 0.9,
-        "anger": 0.6
-      },
-      "source": "curated:gemini-2026-09",
-      "version": 1,
-      "alt_lemmas": [
-        "trumna"
-      ],
-      "lemma_evidence": "carrier"
-    },
-    {
-      "id": "pl.danger.zasadzka",
-      "lemma": "zasadzka",
-      "pos": [
-        "NOUN"
-      ],
-      "kind": "danger_noun",
-      "strength": "strong",
-      "valence": -0.76,
-      "arousal": 0.82,
-      "emotions": {
-        "fear": 0.9,
-        "anger": 0.6
-      },
-      "source": "curated:gemini-2026-09",
-      "version": 1
-    },
-    {
-      "id": "pl.danger.pułapka",
-      "lemma": "pułapka",
-      "pos": [
-        "NOUN"
-      ],
-      "kind": "danger_noun",
-      "strength": "strong",
-      "valence": -0.74,
-      "arousal": 0.8,
-      "emotions": {
-        "fear": 0.9,
-        "anger": 0.6
-      },
-      "source": "curated:gemini-2026-09",
-      "version": 1
-    },
-    {
-      "id": "pl.danger.sidło",
-      "lemma": "sidło",
-      "pos": [
-        "NOUN"
-      ],
-      "kind": "danger_noun",
-      "strength": "strong",
-      "valence": -0.72,
-      "arousal": 0.76,
-      "emotions": {
-        "fear": 0.9,
-        "anger": 0.6
-      },
-      "source": "curated:gemini-2026-09",
-      "version": 1,
-      "alt_lemmas": [
-        "siść"
-      ],
-      "lemma_evidence": "carrier"
-    },
-    {
-      "id": "pl.danger.niebezpieczeństwo",
-      "lemma": "niebezpieczeństwo",
-      "pos": [
-        "NOUN"
-      ],
-      "kind": "danger_noun",
-      "strength": "strong",
-      "valence": -0.74,
-      "arousal": 0.8,
-      "emotions": {
-        "fear": 0.9,
-        "anger": 0.6
-      },
-      "source": "curated:gemini-2026-09",
-      "version": 1
-    },
-    {
-      "id": "pl.danger.zagrożenie",
-      "lemma": "zagrożenie",
-      "pos": [
-        "NOUN"
-      ],
-      "kind": "danger_noun",
-      "strength": "strong",
-      "valence": -0.72,
-      "arousal": 0.78,
-      "emotions": {
-        "fear": 0.9,
-        "anger": 0.6
-      },
-      "source": "curated:gemini-2026-09",
-      "version": 1
-    },
-    {
-      "id": "pl.danger.ryzyko",
-      "lemma": "ryzyko",
-      "pos": [
-        "NOUN"
-      ],
-      "kind": "danger_noun",
-      "strength": "strong",
-      "valence": -0.52,
-      "arousal": 0.68,
-      "emotions": {
-        "fear": 0.9,
-        "anger": 0.6
-      },
-      "source": "curated:gemini-2026-09",
-      "version": 1
-    },
-    {
-      "id": "pl.danger.klęska",
-      "lemma": "klęska",
-      "pos": [
-        "NOUN"
-      ],
-      "kind": "danger_noun",
-      "strength": "strong",
-      "valence": -0.78,
-      "arousal": 0.78,
-      "emotions": {
-        "fear": 0.9,
-        "anger": 0.6
-      },
-      "source": "curated:gemini-2026-09",
-      "version": 1
-    },
-    {
-      "id": "pl.danger.zguba",
-      "lemma": "zguba",
-      "pos": [
-        "NOUN"
-      ],
-      "kind": "danger_noun",
-      "strength": "strong",
-      "valence": -0.82,
-      "arousal": 0.82,
-      "emotions": {
-        "fear": 0.9,
-        "anger": 0.6
-      },
-      "source": "curated:gemini-2026-09",
-      "version": 1
-    },
-    {
-      "id": "pl.danger.katastrofa",
-      "lemma": "katastrofa",
-      "pos": [
-        "NOUN"
-      ],
-      "kind": "danger_noun",
-      "strength": "strong",
-      "valence": -0.86,
-      "arousal": 0.88,
-      "emotions": {
-        "fear": 0.9,
-        "anger": 0.6
-      },
-      "source": "curated:gemini-2026-09",
-      "version": 1
-    },
-    {
-      "id": "pl.danger.wypadek",
-      "lemma": "wypadek",
-      "pos": [
-        "NOUN"
-      ],
-      "kind": "danger_noun",
-      "strength": "strong",
-      "valence": -0.68,
-      "arousal": 0.74,
-      "emotions": {
-        "fear": 0.9,
-        "anger": 0.6
-      },
-      "source": "curated:gemini-2026-09",
-      "version": 1
-    }
-  ]
+ "lang": "pl",
+ "kind": "danger_noun",
+ "version": 1,
+ "entries": [
+  {
+   "id": "pl.danger.miecz",
+   "lemma": "miecz",
+   "pos": [
+    "NOUN"
+   ],
+   "kind": "danger_noun",
+   "strength": "strong",
+   "valence": -0.74,
+   "arousal": 0.84,
+   "emotions": {
+    "fear": 0.9,
+    "anger": 0.6
+   },
+   "source": "curated:gemini-2026-09",
+   "version": 1
+  },
+  {
+   "id": "pl.danger.szabla",
+   "lemma": "szabla",
+   "pos": [
+    "NOUN"
+   ],
+   "kind": "danger_noun",
+   "strength": "strong",
+   "valence": -0.72,
+   "arousal": 0.82,
+   "emotions": {
+    "fear": 0.9,
+    "anger": 0.6
+   },
+   "source": "curated:gemini-2026-09",
+   "version": 1
+  },
+  {
+   "id": "pl.danger.sztylet",
+   "lemma": "sztylet",
+   "pos": [
+    "NOUN"
+   ],
+   "kind": "danger_noun",
+   "strength": "strong",
+   "valence": -0.78,
+   "arousal": 0.84,
+   "emotions": {
+    "fear": 0.9,
+    "anger": 0.6
+   },
+   "source": "curated:gemini-2026-09",
+   "version": 1
+  },
+  {
+   "id": "pl.danger.nóż",
+   "lemma": "nóż",
+   "pos": [
+    "NOUN"
+   ],
+   "kind": "danger_noun",
+   "strength": "weak",
+   "valence": -0.68,
+   "arousal": 0.78,
+   "emotions": {
+    "fear": 0.9,
+    "anger": 0.6
+   },
+   "source": "curated:gemini-2026-09",
+   "version": 1,
+   "note": "narzędzie kuchenne vs broń"
+  },
+  {
+   "id": "pl.danger.topór",
+   "lemma": "topór",
+   "pos": [
+    "NOUN"
+   ],
+   "kind": "danger_noun",
+   "strength": "strong",
+   "valence": -0.74,
+   "arousal": 0.82,
+   "emotions": {
+    "fear": 0.9,
+    "anger": 0.6
+   },
+   "source": "curated:gemini-2026-09",
+   "version": 1
+  },
+  {
+   "id": "pl.danger.siekier",
+   "lemma": "siekier",
+   "pos": [
+    "NOUN"
+   ],
+   "kind": "danger_noun",
+   "strength": "weak",
+   "valence": -0.7,
+   "arousal": 0.78,
+   "emotions": {
+    "fear": 0.9,
+    "anger": 0.6
+   },
+   "source": "curated:gemini-2026-09",
+   "version": 1,
+   "note": "narzędzie do drewna vs broń"
+  },
+  {
+   "id": "pl.danger.kopiać",
+   "lemma": "kopia",
+   "pos": [
+    "NOUN"
+   ],
+   "kind": "danger_noun",
+   "strength": "strong",
+   "valence": -0.68,
+   "arousal": 0.76,
+   "emotions": {
+    "fear": 0.9,
+    "anger": 0.6
+   },
+   "source": "curated:gemini-2026-09",
+   "version": 1
+  },
+  {
+   "id": "pl.danger.lanca",
+   "lemma": "lanca",
+   "pos": [
+    "NOUN"
+   ],
+   "kind": "danger_noun",
+   "strength": "strong",
+   "valence": -0.7,
+   "arousal": 0.78,
+   "emotions": {
+    "fear": 0.9,
+    "anger": 0.6
+   },
+   "source": "curated:gemini-2026-09",
+   "version": 1
+  },
+  {
+   "id": "pl.danger.włócznia",
+   "lemma": "włócznia",
+   "pos": [
+    "NOUN"
+   ],
+   "kind": "danger_noun",
+   "strength": "strong",
+   "valence": -0.74,
+   "arousal": 0.82,
+   "emotions": {
+    "fear": 0.9,
+    "anger": 0.6
+   },
+   "source": "curated:gemini-2026-09",
+   "version": 1
+  },
+  {
+   "id": "pl.danger.oszczep",
+   "lemma": "oszczep",
+   "pos": [
+    "NOUN"
+   ],
+   "kind": "danger_noun",
+   "strength": "strong",
+   "valence": -0.72,
+   "arousal": 0.8,
+   "emotions": {
+    "fear": 0.9,
+    "anger": 0.6
+   },
+   "source": "curated:gemini-2026-09",
+   "version": 1
+  },
+  {
+   "id": "pl.danger.strzać",
+   "lemma": "strzała",
+   "pos": [
+    "NOUN"
+   ],
+   "kind": "danger_noun",
+   "strength": "strong",
+   "valence": -0.68,
+   "arousal": 0.76,
+   "emotions": {
+    "fear": 0.9,
+    "anger": 0.6
+   },
+   "source": "curated:gemini-2026-09",
+   "version": 1
+  },
+  {
+   "id": "pl.danger.łuk",
+   "lemma": "łuk",
+   "pos": [
+    "NOUN"
+   ],
+   "kind": "danger_noun",
+   "strength": "weak",
+   "valence": -0.6,
+   "arousal": 0.7,
+   "emotions": {
+    "fear": 0.9,
+    "anger": 0.6
+   },
+   "source": "curated:gemini-2026-09",
+   "version": 1,
+   "note": "łuk architektoniczny / tęcza vs broń"
+  },
+  {
+   "id": "pl.danger.kusza",
+   "lemma": "kusza",
+   "pos": [
+    "NOUN"
+   ],
+   "kind": "danger_noun",
+   "strength": "strong",
+   "valence": -0.74,
+   "arousal": 0.82,
+   "emotions": {
+    "fear": 0.9,
+    "anger": 0.6
+   },
+   "source": "curated:gemini-2026-09",
+   "version": 1
+  },
+  {
+   "id": "pl.danger.karabin",
+   "lemma": "karabin",
+   "pos": [
+    "NOUN"
+   ],
+   "kind": "danger_noun",
+   "strength": "strong",
+   "valence": -0.82,
+   "arousal": 0.88,
+   "emotions": {
+    "fear": 0.9,
+    "anger": 0.6
+   },
+   "source": "curated:gemini-2026-09",
+   "version": 1
+  },
+  {
+   "id": "pl.danger.pistolet",
+   "lemma": "pistolet",
+   "pos": [
+    "NOUN"
+   ],
+   "kind": "danger_noun",
+   "strength": "strong",
+   "valence": -0.8,
+   "arousal": 0.86,
+   "emotions": {
+    "fear": 0.9,
+    "anger": 0.6
+   },
+   "source": "curated:gemini-2026-09",
+   "version": 1
+  },
+  {
+   "id": "pl.danger.rewolwer",
+   "lemma": "rewolwer",
+   "pos": [
+    "NOUN"
+   ],
+   "kind": "danger_noun",
+   "strength": "strong",
+   "valence": -0.8,
+   "arousal": 0.86,
+   "emotions": {
+    "fear": 0.9,
+    "anger": 0.6
+   },
+   "source": "curated:gemini-2026-09",
+   "version": 1
+  },
+  {
+   "id": "pl.danger.armata",
+   "lemma": "armata",
+   "pos": [
+    "NOUN"
+   ],
+   "kind": "danger_noun",
+   "strength": "strong",
+   "valence": -0.84,
+   "arousal": 0.9,
+   "emotions": {
+    "fear": 0.9,
+    "anger": 0.6
+   },
+   "source": "curated:gemini-2026-09",
+   "version": 1
+  },
+  {
+   "id": "pl.danger.dziać",
+   "lemma": "dziać",
+   "pos": [
+    "NOUN"
+   ],
+   "kind": "danger_noun",
+   "strength": "strong",
+   "valence": -0.82,
+   "arousal": 0.88,
+   "emotions": {
+    "fear": 0.9,
+    "anger": 0.6
+   },
+   "source": "curated:gemini-2026-09",
+   "version": 1
+  },
+  {
+   "id": "pl.danger.pocisk",
+   "lemma": "pocisk",
+   "pos": [
+    "NOUN"
+   ],
+   "kind": "danger_noun",
+   "strength": "strong",
+   "valence": -0.78,
+   "arousal": 0.86,
+   "emotions": {
+    "fear": 0.9,
+    "anger": 0.6
+   },
+   "source": "curated:gemini-2026-09",
+   "version": 1
+  },
+  {
+   "id": "pl.danger.kula",
+   "lemma": "kula",
+   "pos": [
+    "NOUN"
+   ],
+   "kind": "danger_noun",
+   "strength": "weak",
+   "valence": -0.72,
+   "arousal": 0.8,
+   "emotions": {
+    "fear": 0.9,
+    "anger": 0.6
+   },
+   "source": "curated:gemini-2026-09",
+   "version": 1,
+   "note": "kula ziemska / bilard vs kula pistoletowa"
+  },
+  {
+   "id": "pl.danger.bomba",
+   "lemma": "bomba",
+   "pos": [
+    "NOUN"
+   ],
+   "kind": "danger_noun",
+   "strength": "strong",
+   "valence": -0.92,
+   "arousal": 0.95,
+   "emotions": {
+    "fear": 0.9,
+    "anger": 0.6
+   },
+   "source": "curated:gemini-2026-09",
+   "version": 1
+  },
+  {
+   "id": "pl.danger.granat",
+   "lemma": "granat",
+   "pos": [
+    "NOUN"
+   ],
+   "kind": "danger_noun",
+   "strength": "weak",
+   "valence": -0.88,
+   "arousal": 0.92,
+   "emotions": {
+    "fear": 0.9,
+    "anger": 0.6
+   },
+   "source": "curated:gemini-2026-09",
+   "version": 1,
+   "note": "owoc granatu vs broń"
+  },
+  {
+   "id": "pl.danger.mina",
+   "lemma": "mina",
+   "pos": [
+    "NOUN"
+   ],
+   "kind": "danger_noun",
+   "strength": "weak",
+   "valence": -0.84,
+   "arousal": 0.88,
+   "emotions": {
+    "fear": 0.9,
+    "anger": 0.6
+   },
+   "source": "curated:gemini-2026-09",
+   "version": 1,
+   "note": "mina lądowa vs wyraz twarzy",
+   "alt_lemmas": [
+    "min"
+   ],
+   "lemma_evidence": "carrier"
+  },
+  {
+   "id": "pl.danger.dynamit",
+   "lemma": "dynamit",
+   "pos": [
+    "NOUN"
+   ],
+   "kind": "danger_noun",
+   "strength": "strong",
+   "valence": -0.88,
+   "arousal": 0.92,
+   "emotions": {
+    "fear": 0.9,
+    "anger": 0.6
+   },
+   "source": "curated:gemini-2026-09",
+   "version": 1
+  },
+  {
+   "id": "pl.danger.proch",
+   "lemma": "proch",
+   "pos": [
+    "NOUN"
+   ],
+   "kind": "danger_noun",
+   "strength": "weak",
+   "valence": -0.72,
+   "arousal": 0.78,
+   "emotions": {
+    "fear": 0.9,
+    "anger": 0.6
+   },
+   "source": "curated:gemini-2026-09",
+   "version": 1,
+   "note": "proch strzelniczy vs kurz/prochy"
+  },
+  {
+   "id": "pl.danger.bagnet",
+   "lemma": "bagnet",
+   "pos": [
+    "NOUN"
+   ],
+   "kind": "danger_noun",
+   "strength": "strong",
+   "valence": -0.8,
+   "arousal": 0.86,
+   "emotions": {
+    "fear": 0.9,
+    "anger": 0.6
+   },
+   "source": "curated:gemini-2026-09",
+   "version": 1
+  },
+  {
+   "id": "pl.danger.rapier",
+   "lemma": "rapier",
+   "pos": [
+    "NOUN"
+   ],
+   "kind": "danger_noun",
+   "strength": "strong",
+   "valence": -0.72,
+   "arousal": 0.8,
+   "emotions": {
+    "fear": 0.9,
+    "anger": 0.6
+   },
+   "source": "curated:gemini-2026-09",
+   "version": 1
+  },
+  {
+   "id": "pl.danger.buława",
+   "lemma": "buława",
+   "pos": [
+    "NOUN"
+   ],
+   "kind": "danger_noun",
+   "strength": "strong",
+   "valence": -0.68,
+   "arousal": 0.74,
+   "emotions": {
+    "fear": 0.9,
+    "anger": 0.6
+   },
+   "source": "curated:gemini-2026-09",
+   "version": 1
+  },
+  {
+   "id": "pl.danger.maczuga",
+   "lemma": "maczuga",
+   "pos": [
+    "NOUN"
+   ],
+   "kind": "danger_noun",
+   "strength": "strong",
+   "valence": -0.74,
+   "arousal": 0.8,
+   "emotions": {
+    "fear": 0.9,
+    "anger": 0.6
+   },
+   "source": "curated:gemini-2026-09",
+   "version": 1
+  },
+  {
+   "id": "pl.danger.pałka",
+   "lemma": "pałka",
+   "pos": [
+    "NOUN"
+   ],
+   "kind": "danger_noun",
+   "strength": "strong",
+   "valence": -0.65,
+   "arousal": 0.72,
+   "emotions": {
+    "fear": 0.9,
+    "anger": 0.6
+   },
+   "source": "curated:gemini-2026-09",
+   "version": 1
+  },
+  {
+   "id": "pl.danger.bat",
+   "lemma": "bat",
+   "pos": [
+    "NOUN"
+   ],
+   "kind": "danger_noun",
+   "strength": "strong",
+   "valence": -0.72,
+   "arousal": 0.78,
+   "emotions": {
+    "fear": 0.9,
+    "anger": 0.6
+   },
+   "source": "curated:gemini-2026-09",
+   "version": 1
+  },
+  {
+   "id": "pl.danger.bicz",
+   "lemma": "bicz",
+   "pos": [
+    "NOUN"
+   ],
+   "kind": "danger_noun",
+   "strength": "strong",
+   "valence": -0.74,
+   "arousal": 0.8,
+   "emotions": {
+    "fear": 0.9,
+    "anger": 0.6
+   },
+   "source": "curated:gemini-2026-09",
+   "version": 1
+  },
+  {
+   "id": "pl.danger.kajdać",
+   "lemma": "kajdany",
+   "pos": [
+    "NOUN"
+   ],
+   "kind": "danger_noun",
+   "strength": "strong",
+   "valence": -0.78,
+   "arousal": 0.76,
+   "emotions": {
+    "fear": 0.9,
+    "anger": 0.6
+   },
+   "source": "curated:gemini-2026-09",
+   "version": 1
+  },
+  {
+   "id": "pl.danger.łańcuch",
+   "lemma": "łańcuch",
+   "pos": [
+    "NOUN"
+   ],
+   "kind": "danger_noun",
+   "strength": "weak",
+   "valence": -0.62,
+   "arousal": 0.65,
+   "emotions": {
+    "fear": 0.9,
+    "anger": 0.6
+   },
+   "source": "curated:gemini-2026-09",
+   "version": 1,
+   "note": "łańcuch górski / ozdobny vs więzy"
+  },
+  {
+   "id": "pl.danger.dyby",
+   "lemma": "dyby",
+   "pos": [
+    "NOUN"
+   ],
+   "kind": "danger_noun",
+   "strength": "strong",
+   "valence": -0.76,
+   "arousal": 0.72,
+   "emotions": {
+    "fear": 0.9,
+    "anger": 0.6
+   },
+   "source": "curated:gemini-2026-09",
+   "version": 1
+  },
+  {
+   "id": "pl.danger.szubienica",
+   "lemma": "szubienica",
+   "pos": [
+    "NOUN"
+   ],
+   "kind": "danger_noun",
+   "strength": "strong",
+   "valence": -0.92,
+   "arousal": 0.9,
+   "emotions": {
+    "fear": 0.9,
+    "anger": 0.6
+   },
+   "source": "curated:gemini-2026-09",
+   "version": 1
+  },
+  {
+   "id": "pl.danger.stryczka",
+   "lemma": "stryczka",
+   "pos": [
+    "NOUN"
+   ],
+   "kind": "danger_noun",
+   "strength": "strong",
+   "valence": -0.9,
+   "arousal": 0.88,
+   "emotions": {
+    "fear": 0.9,
+    "anger": 0.6
+   },
+   "source": "curated:gemini-2026-09",
+   "version": 1,
+   "alt_lemmas": [
+    "stryczki"
+   ],
+   "lemma_evidence": "carrier"
+  },
+  {
+   "id": "pl.danger.pętla",
+   "lemma": "pętla",
+   "pos": [
+    "NOUN"
+   ],
+   "kind": "danger_noun",
+   "strength": "weak",
+   "valence": -0.75,
+   "arousal": 0.78,
+   "emotions": {
+    "fear": 0.9,
+    "anger": 0.6
+   },
+   "source": "curated:gemini-2026-09",
+   "version": 1,
+   "note": "pętla autobusowa vs pętla szubieniczna"
+  },
+  {
+   "id": "pl.danger.szafot",
+   "lemma": "szafot",
+   "pos": [
+    "NOUN"
+   ],
+   "kind": "danger_noun",
+   "strength": "strong",
+   "valence": -0.92,
+   "arousal": 0.9,
+   "emotions": {
+    "fear": 0.9,
+    "anger": 0.6
+   },
+   "source": "curated:gemini-2026-09",
+   "version": 1
+  },
+  {
+   "id": "pl.danger.gilotyn",
+   "lemma": "gilotyn",
+   "pos": [
+    "NOUN"
+   ],
+   "kind": "danger_noun",
+   "strength": "strong",
+   "valence": -0.94,
+   "arousal": 0.92,
+   "emotions": {
+    "fear": 0.9,
+    "anger": 0.6
+   },
+   "source": "curated:gemini-2026-09",
+   "version": 1
+  },
+  {
+   "id": "pl.danger.topornik",
+   "lemma": "topornik",
+   "pos": [
+    "NOUN"
+   ],
+   "kind": "danger_noun",
+   "strength": "strong",
+   "valence": -0.82,
+   "arousal": 0.84,
+   "emotions": {
+    "fear": 0.9,
+    "anger": 0.6
+   },
+   "source": "curated:gemini-2026-09",
+   "version": 1,
+   "spell_ok": "historical/literary noun for an axe-wielding warrior, used by Sienkiewicz"
+  },
+  {
+   "id": "pl.danger.kat",
+   "lemma": "kat",
+   "pos": [
+    "NOUN"
+   ],
+   "kind": "danger_noun",
+   "strength": "strong",
+   "valence": -0.9,
+   "arousal": 0.88,
+   "emotions": {
+    "fear": 0.9,
+    "anger": 0.6
+   },
+   "source": "curated:gemini-2026-09",
+   "version": 1
+  },
+  {
+   "id": "pl.danger.oprawca",
+   "lemma": "oprawca",
+   "pos": [
+    "NOUN"
+   ],
+   "kind": "danger_noun",
+   "strength": "strong",
+   "valence": -0.9,
+   "arousal": 0.88,
+   "emotions": {
+    "fear": 0.9,
+    "anger": 0.6
+   },
+   "source": "curated:gemini-2026-09",
+   "version": 1
+  },
+  {
+   "id": "pl.danger.morderca",
+   "lemma": "morderca",
+   "pos": [
+    "NOUN"
+   ],
+   "kind": "danger_noun",
+   "strength": "strong",
+   "valence": -0.92,
+   "arousal": 0.9,
+   "emotions": {
+    "fear": 0.9,
+    "anger": 0.6
+   },
+   "source": "curated:gemini-2026-09",
+   "version": 1
+  },
+  {
+   "id": "pl.danger.zabójca",
+   "lemma": "zabójca",
+   "pos": [
+    "NOUN"
+   ],
+   "kind": "danger_noun",
+   "strength": "strong",
+   "valence": -0.9,
+   "arousal": 0.88,
+   "emotions": {
+    "fear": 0.9,
+    "anger": 0.6
+   },
+   "source": "curated:gemini-2026-09",
+   "version": 1
+  },
+  {
+   "id": "pl.danger.zamachowiec",
+   "lemma": "zamachowiec",
+   "pos": [
+    "NOUN"
+   ],
+   "kind": "danger_noun",
+   "strength": "strong",
+   "valence": -0.88,
+   "arousal": 0.9,
+   "emotions": {
+    "fear": 0.9,
+    "anger": 0.6
+   },
+   "source": "curated:gemini-2026-09",
+   "version": 1
+  },
+  {
+   "id": "pl.danger.zbójca",
+   "lemma": "zbójca",
+   "pos": [
+    "NOUN"
+   ],
+   "kind": "danger_noun",
+   "strength": "strong",
+   "valence": -0.82,
+   "arousal": 0.82,
+   "emotions": {
+    "fear": 0.9,
+    "anger": 0.6
+   },
+   "source": "curated:gemini-2026-09",
+   "version": 1
+  },
+  {
+   "id": "pl.danger.rozbójnik",
+   "lemma": "rozbójnik",
+   "pos": [
+    "NOUN"
+   ],
+   "kind": "danger_noun",
+   "strength": "strong",
+   "valence": -0.78,
+   "arousal": 0.78,
+   "emotions": {
+    "fear": 0.9,
+    "anger": 0.6
+   },
+   "source": "curated:gemini-2026-09",
+   "version": 1
+  },
+  {
+   "id": "pl.danger.bandyta",
+   "lemma": "bandyta",
+   "pos": [
+    "NOUN"
+   ],
+   "kind": "danger_noun",
+   "strength": "strong",
+   "valence": -0.82,
+   "arousal": 0.82,
+   "emotions": {
+    "fear": 0.9,
+    "anger": 0.6
+   },
+   "source": "curated:gemini-2026-09",
+   "version": 1
+  },
+  {
+   "id": "pl.danger.zbrodniarz",
+   "lemma": "zbrodniarz",
+   "pos": [
+    "NOUN"
+   ],
+   "kind": "danger_noun",
+   "strength": "strong",
+   "valence": -0.9,
+   "arousal": 0.86,
+   "emotions": {
+    "fear": 0.9,
+    "anger": 0.6
+   },
+   "source": "curated:gemini-2026-09",
+   "version": 1
+  },
+  {
+   "id": "pl.danger.wróg",
+   "lemma": "wróg",
+   "pos": [
+    "NOUN"
+   ],
+   "kind": "danger_noun",
+   "strength": "strong",
+   "valence": -0.8,
+   "arousal": 0.82,
+   "emotions": {
+    "fear": 0.9,
+    "anger": 0.6
+   },
+   "source": "curated:gemini-2026-09",
+   "version": 1
+  },
+  {
+   "id": "pl.danger.nieprzyjaciel",
+   "lemma": "nieprzyjaciel",
+   "pos": [
+    "NOUN"
+   ],
+   "kind": "danger_noun",
+   "strength": "strong",
+   "valence": -0.78,
+   "arousal": 0.78,
+   "emotions": {
+    "fear": 0.9,
+    "anger": 0.6
+   },
+   "source": "curated:gemini-2026-09",
+   "version": 1
+  },
+  {
+   "id": "pl.danger.przeciwnik",
+   "lemma": "przeciwnik",
+   "pos": [
+    "NOUN"
+   ],
+   "kind": "danger_noun",
+   "strength": "strong",
+   "valence": -0.55,
+   "arousal": 0.65,
+   "emotions": {
+    "fear": 0.9,
+    "anger": 0.6
+   },
+   "source": "curated:gemini-2026-09",
+   "version": 1
+  },
+  {
+   "id": "pl.danger.najeźdźca",
+   "lemma": "najeźdźca",
+   "pos": [
+    "NOUN"
+   ],
+   "kind": "danger_noun",
+   "strength": "strong",
+   "valence": -0.82,
+   "arousal": 0.84,
+   "emotions": {
+    "fear": 0.9,
+    "anger": 0.6
+   },
+   "source": "curated:gemini-2026-09",
+   "version": 1
+  },
+  {
+   "id": "pl.danger.okupant",
+   "lemma": "okupant",
+   "pos": [
+    "NOUN"
+   ],
+   "kind": "danger_noun",
+   "strength": "strong",
+   "valence": -0.84,
+   "arousal": 0.82,
+   "emotions": {
+    "fear": 0.9,
+    "anger": 0.6
+   },
+   "source": "curated:gemini-2026-09",
+   "version": 1
+  },
+  {
+   "id": "pl.danger.potwór",
+   "lemma": "potwór",
+   "pos": [
+    "NOUN"
+   ],
+   "kind": "danger_noun",
+   "strength": "strong",
+   "valence": -0.84,
+   "arousal": 0.86,
+   "emotions": {
+    "fear": 0.9,
+    "anger": 0.6
+   },
+   "source": "curated:gemini-2026-09",
+   "version": 1
+  },
+  {
+   "id": "pl.danger.bestia",
+   "lemma": "bestia",
+   "pos": [
+    "NOUN"
+   ],
+   "kind": "danger_noun",
+   "strength": "strong",
+   "valence": -0.82,
+   "arousal": 0.86,
+   "emotions": {
+    "fear": 0.9,
+    "anger": 0.6
+   },
+   "source": "curated:gemini-2026-09",
+   "version": 1
+  },
+  {
+   "id": "pl.danger.wilk",
+   "lemma": "wilk",
+   "pos": [
+    "NOUN"
+   ],
+   "kind": "danger_noun",
+   "strength": "strong",
+   "valence": -0.68,
+   "arousal": 0.76,
+   "emotions": {
+    "fear": 0.9,
+    "anger": 0.6
+   },
+   "source": "curated:gemini-2026-09",
+   "version": 1
+  },
+  {
+   "id": "pl.danger.żmija",
+   "lemma": "żmija",
+   "pos": [
+    "NOUN"
+   ],
+   "kind": "danger_noun",
+   "strength": "strong",
+   "valence": -0.76,
+   "arousal": 0.8,
+   "emotions": {
+    "fear": 0.9,
+    "anger": 0.6
+   },
+   "source": "curated:gemini-2026-09",
+   "version": 1
+  },
+  {
+   "id": "pl.danger.wąż",
+   "lemma": "wąż",
+   "pos": [
+    "NOUN"
+   ],
+   "kind": "danger_noun",
+   "strength": "strong",
+   "valence": -0.68,
+   "arousal": 0.72,
+   "emotions": {
+    "fear": 0.9,
+    "anger": 0.6
+   },
+   "source": "curated:gemini-2026-09",
+   "version": 1
+  },
+  {
+   "id": "pl.danger.skorpiona",
+   "lemma": "skorpiona",
+   "pos": [
+    "NOUN"
+   ],
+   "kind": "danger_noun",
+   "strength": "strong",
+   "valence": -0.74,
+   "arousal": 0.78,
+   "emotions": {
+    "fear": 0.9,
+    "anger": 0.6
+   },
+   "source": "curated:gemini-2026-09",
+   "version": 1,
+   "alt_lemmas": [
+    "skorpion",
+    "skorpione"
+   ],
+   "lemma_evidence": "carrier"
+  },
+  {
+   "id": "pl.danger.pająk",
+   "lemma": "pająk",
+   "pos": [
+    "NOUN"
+   ],
+   "kind": "danger_noun",
+   "strength": "strong",
+   "valence": -0.62,
+   "arousal": 0.7,
+   "emotions": {
+    "fear": 0.9,
+    "anger": 0.6
+   },
+   "source": "curated:gemini-2026-09",
+   "version": 1
+  },
+  {
+   "id": "pl.danger.jad",
+   "lemma": "jad",
+   "pos": [
+    "NOUN"
+   ],
+   "kind": "danger_noun",
+   "strength": "strong",
+   "valence": -0.86,
+   "arousal": 0.84,
+   "emotions": {
+    "fear": 0.9,
+    "anger": 0.6
+   },
+   "source": "curated:gemini-2026-09",
+   "version": 1
+  },
+  {
+   "id": "pl.danger.trucizna",
+   "lemma": "trucizna",
+   "pos": [
+    "NOUN"
+   ],
+   "kind": "danger_noun",
+   "strength": "strong",
+   "valence": -0.88,
+   "arousal": 0.86,
+   "emotions": {
+    "fear": 0.9,
+    "anger": 0.6
+   },
+   "source": "curated:gemini-2026-09",
+   "version": 1
+  },
+  {
+   "id": "pl.danger.arszenik",
+   "lemma": "arszenik",
+   "pos": [
+    "NOUN"
+   ],
+   "kind": "danger_noun",
+   "strength": "strong",
+   "valence": -0.88,
+   "arousal": 0.84,
+   "emotions": {
+    "fear": 0.9,
+    "anger": 0.6
+   },
+   "source": "curated:gemini-2026-09",
+   "version": 1
+  },
+  {
+   "id": "pl.danger.ogień",
+   "lemma": "ogień",
+   "pos": [
+    "NOUN"
+   ],
+   "kind": "danger_noun",
+   "strength": "weak",
+   "valence": -0.45,
+   "arousal": 0.65,
+   "emotions": {
+    "fear": 0.9,
+    "anger": 0.6
+   },
+   "source": "curated:gemini-2026-09",
+   "version": 1,
+   "note": "ogień domowy / ciepło vs żywioł ognia"
+  },
+  {
+   "id": "pl.danger.płomień",
+   "lemma": "płomień",
+   "pos": [
+    "NOUN"
+   ],
+   "kind": "danger_noun",
+   "strength": "weak",
+   "valence": -0.52,
+   "arousal": 0.72,
+   "emotions": {
+    "fear": 0.9,
+    "anger": 0.6
+   },
+   "source": "curated:gemini-2026-09",
+   "version": 1,
+   "note": "płomień świecy vs pożar"
+  },
+  {
+   "id": "pl.danger.pożar",
+   "lemma": "pożar",
+   "pos": [
+    "NOUN"
+   ],
+   "kind": "danger_noun",
+   "strength": "strong",
+   "valence": -0.84,
+   "arousal": 0.9,
+   "emotions": {
+    "fear": 0.9,
+    "anger": 0.6
+   },
+   "source": "curated:gemini-2026-09",
+   "version": 1
+  },
+  {
+   "id": "pl.danger.pożogi",
+   "lemma": "pożogi",
+   "pos": [
+    "NOUN"
+   ],
+   "kind": "danger_noun",
+   "strength": "strong",
+   "valence": -0.86,
+   "arousal": 0.92,
+   "emotions": {
+    "fear": 0.9,
+    "anger": 0.6
+   },
+   "source": "curated:gemini-2026-09",
+   "version": 1,
+   "alt_lemmas": [
+    "pożoga"
+   ],
+   "lemma_evidence": "carrier"
+  },
+  {
+   "id": "pl.danger.zaraza",
+   "lemma": "zaraza",
+   "pos": [
+    "NOUN"
+   ],
+   "kind": "danger_noun",
+   "strength": "strong",
+   "valence": -0.92,
+   "arousal": 0.88,
+   "emotions": {
+    "fear": 0.9,
+    "anger": 0.6
+   },
+   "source": "curated:gemini-2026-09",
+   "version": 1
+  },
+  {
+   "id": "pl.danger.dżuma",
+   "lemma": "dżuma",
+   "pos": [
+    "NOUN"
+   ],
+   "kind": "danger_noun",
+   "strength": "strong",
+   "valence": -0.95,
+   "arousal": 0.9,
+   "emotions": {
+    "fear": 0.9,
+    "anger": 0.6
+   },
+   "source": "curated:gemini-2026-09",
+   "version": 1
+  },
+  {
+   "id": "pl.danger.cholerka",
+   "lemma": "cholerka",
+   "pos": [
+    "NOUN"
+   ],
+   "kind": "danger_noun",
+   "strength": "strong",
+   "valence": -0.85,
+   "arousal": 0.8,
+   "emotions": {
+    "fear": 0.9,
+    "anger": 0.6
+   },
+   "source": "curated:gemini-2026-09",
+   "version": 1
+  },
+  {
+   "id": "pl.danger.epidemia",
+   "lemma": "epidemia",
+   "pos": [
+    "NOUN"
+   ],
+   "kind": "danger_noun",
+   "strength": "strong",
+   "valence": -0.88,
+   "arousal": 0.86,
+   "emotions": {
+    "fear": 0.9,
+    "anger": 0.6
+   },
+   "source": "curated:gemini-2026-09",
+   "version": 1
+  },
+  {
+   "id": "pl.danger.mór",
+   "lemma": "mór",
+   "pos": [
+    "NOUN"
+   ],
+   "kind": "danger_noun",
+   "strength": "strong",
+   "valence": -0.9,
+   "arousal": 0.86,
+   "emotions": {
+    "fear": 0.9,
+    "anger": 0.6
+   },
+   "source": "curated:gemini-2026-09",
+   "version": 1,
+   "spell_ok": "archaic literary noun for plague or pestilence, used in historical prose"
+  },
+  {
+   "id": "pl.danger.burza",
+   "lemma": "burza",
+   "pos": [
+    "NOUN"
+   ],
+   "kind": "danger_noun",
+   "strength": "strong",
+   "valence": -0.64,
+   "arousal": 0.76,
+   "emotions": {
+    "fear": 0.9,
+    "anger": 0.6
+   },
+   "source": "curated:gemini-2026-09",
+   "version": 1
+  },
+  {
+   "id": "pl.danger.nawałnica",
+   "lemma": "nawałnica",
+   "pos": [
+    "NOUN"
+   ],
+   "kind": "danger_noun",
+   "strength": "strong",
+   "valence": -0.76,
+   "arousal": 0.84,
+   "emotions": {
+    "fear": 0.9,
+    "anger": 0.6
+   },
+   "source": "curated:gemini-2026-09",
+   "version": 1
+  },
+  {
+   "id": "pl.danger.piorun",
+   "lemma": "piorun",
+   "pos": [
+    "NOUN"
+   ],
+   "kind": "danger_noun",
+   "strength": "strong",
+   "valence": -0.72,
+   "arousal": 0.82,
+   "emotions": {
+    "fear": 0.9,
+    "anger": 0.6
+   },
+   "source": "curated:gemini-2026-09",
+   "version": 1
+  },
+  {
+   "id": "pl.danger.grom",
+   "lemma": "grom",
+   "pos": [
+    "NOUN"
+   ],
+   "kind": "danger_noun",
+   "strength": "strong",
+   "valence": -0.7,
+   "arousal": 0.8,
+   "emotions": {
+    "fear": 0.9,
+    "anger": 0.6
+   },
+   "source": "curated:gemini-2026-09",
+   "version": 1
+  },
+  {
+   "id": "pl.danger.huragan",
+   "lemma": "huragan",
+   "pos": [
+    "NOUN"
+   ],
+   "kind": "danger_noun",
+   "strength": "strong",
+   "valence": -0.82,
+   "arousal": 0.88,
+   "emotions": {
+    "fear": 0.9,
+    "anger": 0.6
+   },
+   "source": "curated:gemini-2026-09",
+   "version": 1
+  },
+  {
+   "id": "pl.danger.orkan",
+   "lemma": "orkan",
+   "pos": [
+    "NOUN"
+   ],
+   "kind": "danger_noun",
+   "strength": "strong",
+   "valence": -0.84,
+   "arousal": 0.88,
+   "emotions": {
+    "fear": 0.9,
+    "anger": 0.6
+   },
+   "source": "curated:gemini-2026-09",
+   "version": 1
+  },
+  {
+   "id": "pl.danger.zamieć",
+   "lemma": "zamieć",
+   "pos": [
+    "NOUN"
+   ],
+   "kind": "danger_noun",
+   "strength": "strong",
+   "valence": -0.68,
+   "arousal": 0.74,
+   "emotions": {
+    "fear": 0.9,
+    "anger": 0.6
+   },
+   "source": "curated:gemini-2026-09",
+   "version": 1
+  },
+  {
+   "id": "pl.danger.lawina",
+   "lemma": "lawina",
+   "pos": [
+    "NOUN"
+   ],
+   "kind": "danger_noun",
+   "strength": "strong",
+   "valence": -0.84,
+   "arousal": 0.9,
+   "emotions": {
+    "fear": 0.9,
+    "anger": 0.6
+   },
+   "source": "curated:gemini-2026-09",
+   "version": 1
+  },
+  {
+   "id": "pl.danger.powódź",
+   "lemma": "powódź",
+   "pos": [
+    "NOUN"
+   ],
+   "kind": "danger_noun",
+   "strength": "strong",
+   "valence": -0.82,
+   "arousal": 0.84,
+   "emotions": {
+    "fear": 0.9,
+    "anger": 0.6
+   },
+   "source": "curated:gemini-2026-09",
+   "version": 1
+  },
+  {
+   "id": "pl.danger.trzęsienie_ziemia",
+   "phrase": [
+    "trzęsienie",
+    "ziemia"
+   ],
+   "kind": "danger_noun",
+   "strength": "strong",
+   "valence": -0.88,
+   "arousal": 0.92,
+   "emotions": {
+    "fear": 0.9,
+    "anger": 0.6
+   },
+   "source": "curated:gemini-2026-09",
+   "version": 1,
+   "example": "Nagle gwałtowne trzęsienie ziemi obróciło domy w ruinę."
+  },
+  {
+   "id": "pl.danger.przepaść",
+   "lemma": "przepaść",
+   "pos": [
+    "NOUN"
+   ],
+   "kind": "danger_noun",
+   "strength": "strong",
+   "valence": -0.74,
+   "arousal": 0.78,
+   "emotions": {
+    "fear": 0.9,
+    "anger": 0.6
+   },
+   "source": "curated:gemini-2026-09",
+   "version": 1
+  },
+  {
+   "id": "pl.danger.otchłanie",
+   "lemma": "otchłanie",
+   "pos": [
+    "NOUN"
+   ],
+   "kind": "danger_noun",
+   "strength": "strong",
+   "valence": -0.76,
+   "arousal": 0.8,
+   "emotions": {
+    "fear": 0.9,
+    "anger": 0.6
+   },
+   "source": "curated:gemini-2026-09",
+   "version": 1,
+   "alt_lemmas": [
+    "otchłać",
+    "otchłań"
+   ],
+   "lemma_evidence": "carrier"
+  },
+  {
+   "id": "pl.danger.urwisko",
+   "lemma": "urwisko",
+   "pos": [
+    "NOUN"
+   ],
+   "kind": "danger_noun",
+   "strength": "strong",
+   "valence": -0.68,
+   "arousal": 0.72,
+   "emotions": {
+    "fear": 0.9,
+    "anger": 0.6
+   },
+   "source": "curated:gemini-2026-09",
+   "version": 1
+  },
+  {
+   "id": "pl.danger.bagno",
+   "lemma": "bagno",
+   "pos": [
+    "NOUN"
+   ],
+   "kind": "danger_noun",
+   "strength": "strong",
+   "valence": -0.64,
+   "arousal": 0.62,
+   "emotions": {
+    "fear": 0.9,
+    "anger": 0.6
+   },
+   "source": "curated:gemini-2026-09",
+   "version": 1
+  },
+  {
+   "id": "pl.danger.grzęzawiski",
+   "lemma": "grzęzawisko",
+   "pos": [
+    "NOUN"
+   ],
+   "kind": "danger_noun",
+   "strength": "strong",
+   "valence": -0.68,
+   "arousal": 0.65,
+   "emotions": {
+    "fear": 0.9,
+    "anger": 0.6
+   },
+   "source": "curated:gemini-2026-09",
+   "version": 1
+  },
+  {
+   "id": "pl.danger.wira",
+   "lemma": "wir",
+   "pos": [
+    "NOUN"
+   ],
+   "kind": "danger_noun",
+   "strength": "strong",
+   "valence": -0.7,
+   "arousal": 0.76,
+   "emotions": {
+    "fear": 0.9,
+    "anger": 0.6
+   },
+   "source": "curated:gemini-2026-09",
+   "version": 1,
+   "alt_lemmas": [
+    "wirać"
+   ],
+   "lemma_evidence": "carrier"
+  },
+  {
+   "id": "pl.danger.topiel",
+   "lemma": "topiel",
+   "pos": [
+    "NOUN"
+   ],
+   "kind": "danger_noun",
+   "strength": "strong",
+   "valence": -0.8,
+   "arousal": 0.8,
+   "emotions": {
+    "fear": 0.9,
+    "anger": 0.6
+   },
+   "source": "curated:gemini-2026-09",
+   "version": 1
+  },
+  {
+   "id": "pl.danger.krew",
+   "lemma": "krew",
+   "pos": [
+    "NOUN"
+   ],
+   "kind": "danger_noun",
+   "strength": "weak",
+   "valence": -0.58,
+   "arousal": 0.68,
+   "emotions": {
+    "fear": 0.9,
+    "anger": 0.6
+   },
+   "source": "curated:gemini-2026-09",
+   "version": 1,
+   "note": "krew fizjologiczna vs rozlew krwi"
+  },
+  {
+   "id": "pl.danger.rać",
+   "lemma": "rać",
+   "pos": [
+    "NOUN"
+   ],
+   "kind": "danger_noun",
+   "strength": "strong",
+   "valence": -0.78,
+   "arousal": 0.78,
+   "emotions": {
+    "fear": 0.9,
+    "anger": 0.6
+   },
+   "source": "curated:gemini-2026-09",
+   "version": 1,
+   "alt_lemmas": [
+    "rana"
+   ]
+  },
+  {
+   "id": "pl.danger.okaleczeć",
+   "lemma": "okaleczeć",
+   "pos": [
+    "NOUN"
+   ],
+   "kind": "danger_noun",
+   "strength": "strong",
+   "valence": -0.84,
+   "arousal": 0.82,
+   "emotions": {
+    "fear": 0.9,
+    "anger": 0.6
+   },
+   "source": "curated:gemini-2026-09",
+   "version": 1
+  },
+  {
+   "id": "pl.danger.blizna",
+   "lemma": "blizna",
+   "pos": [
+    "NOUN"
+   ],
+   "kind": "danger_noun",
+   "strength": "strong",
+   "valence": -0.62,
+   "arousal": 0.5,
+   "emotions": {
+    "fear": 0.9,
+    "anger": 0.6
+   },
+   "source": "curated:gemini-2026-09",
+   "version": 1
+  },
+  {
+   "id": "pl.danger.trupa",
+   "lemma": "trupa",
+   "pos": [
+    "NOUN"
+   ],
+   "kind": "danger_noun",
+   "strength": "strong",
+   "valence": -0.88,
+   "arousal": 0.74,
+   "emotions": {
+    "fear": 0.9,
+    "anger": 0.6
+   },
+   "source": "curated:gemini-2026-09",
+   "version": 1,
+   "alt_lemmas": [
+    "trup"
+   ],
+   "lemma_evidence": "carrier"
+  },
+  {
+   "id": "pl.danger.zwłoki",
+   "lemma": "zwłoki",
+   "pos": [
+    "NOUN"
+   ],
+   "kind": "danger_noun",
+   "strength": "strong",
+   "valence": -0.86,
+   "arousal": 0.7,
+   "emotions": {
+    "fear": 0.9,
+    "anger": 0.6
+   },
+   "source": "curated:gemini-2026-09",
+   "version": 1
+  },
+  {
+   "id": "pl.danger.kościotrupa",
+   "lemma": "kościotrupa",
+   "pos": [
+    "NOUN"
+   ],
+   "kind": "danger_noun",
+   "strength": "strong",
+   "valence": -0.72,
+   "arousal": 0.66,
+   "emotions": {
+    "fear": 0.9,
+    "anger": 0.6
+   },
+   "source": "curated:gemini-2026-09",
+   "version": 1,
+   "alt_lemmas": [
+    "kościotrup"
+   ]
+  },
+  {
+   "id": "pl.danger.szkielet",
+   "lemma": "szkielet",
+   "pos": [
+    "NOUN"
+   ],
+   "kind": "danger_noun",
+   "strength": "weak",
+   "valence": -0.64,
+   "arousal": 0.6,
+   "emotions": {
+    "fear": 0.9,
+    "anger": 0.6
+   },
+   "source": "curated:gemini-2026-09",
+   "version": 1,
+   "note": "szkielet konstrukcji vs kości"
+  },
+  {
+   "id": "pl.danger.czaszek",
+   "lemma": "czaszek",
+   "pos": [
+    "NOUN"
+   ],
+   "kind": "danger_noun",
+   "strength": "strong",
+   "valence": -0.68,
+   "arousal": 0.62,
+   "emotions": {
+    "fear": 0.9,
+    "anger": 0.6
+   },
+   "source": "curated:gemini-2026-09",
+   "version": 1,
+   "alt_lemmas": [
+    "czaszka"
+   ]
+  },
+  {
+   "id": "pl.danger.groba",
+   "lemma": "grób",
+   "pos": [
+    "NOUN"
+   ],
+   "kind": "danger_noun",
+   "strength": "strong",
+   "valence": -0.72,
+   "arousal": 0.52,
+   "emotions": {
+    "fear": 0.9,
+    "anger": 0.6
+   },
+   "source": "curated:gemini-2026-09",
+   "version": 1,
+   "alt_lemmas": [
+    "grób"
+   ]
+  },
+  {
+   "id": "pl.danger.mogić",
+   "lemma": "mogiła",
+   "pos": [
+    "NOUN"
+   ],
+   "kind": "danger_noun",
+   "strength": "strong",
+   "valence": -0.74,
+   "arousal": 0.54,
+   "emotions": {
+    "fear": 0.9,
+    "anger": 0.6
+   },
+   "source": "curated:gemini-2026-09",
+   "version": 1,
+   "alt_lemmas": [
+    "mogiła"
+   ]
+  },
+  {
+   "id": "pl.danger.cmentarz",
+   "lemma": "cmentarz",
+   "pos": [
+    "NOUN"
+   ],
+   "kind": "danger_noun",
+   "strength": "strong",
+   "valence": -0.62,
+   "arousal": 0.44,
+   "emotions": {
+    "fear": 0.9,
+    "anger": 0.6
+   },
+   "source": "curated:gemini-2026-09",
+   "version": 1
+  },
+  {
+   "id": "pl.danger.trumny",
+   "lemma": "trumny",
+   "pos": [
+    "NOUN"
+   ],
+   "kind": "danger_noun",
+   "strength": "strong",
+   "valence": -0.76,
+   "arousal": 0.54,
+   "emotions": {
+    "fear": 0.9,
+    "anger": 0.6
+   },
+   "source": "curated:gemini-2026-09",
+   "version": 1,
+   "alt_lemmas": [
+    "trumna"
+   ],
+   "lemma_evidence": "carrier"
+  },
+  {
+   "id": "pl.danger.zasadzka",
+   "lemma": "zasadzka",
+   "pos": [
+    "NOUN"
+   ],
+   "kind": "danger_noun",
+   "strength": "strong",
+   "valence": -0.76,
+   "arousal": 0.82,
+   "emotions": {
+    "fear": 0.9,
+    "anger": 0.6
+   },
+   "source": "curated:gemini-2026-09",
+   "version": 1
+  },
+  {
+   "id": "pl.danger.pułapka",
+   "lemma": "pułapka",
+   "pos": [
+    "NOUN"
+   ],
+   "kind": "danger_noun",
+   "strength": "strong",
+   "valence": -0.74,
+   "arousal": 0.8,
+   "emotions": {
+    "fear": 0.9,
+    "anger": 0.6
+   },
+   "source": "curated:gemini-2026-09",
+   "version": 1
+  },
+  {
+   "id": "pl.danger.sidło",
+   "lemma": "sidło",
+   "pos": [
+    "NOUN"
+   ],
+   "kind": "danger_noun",
+   "strength": "strong",
+   "valence": -0.72,
+   "arousal": 0.76,
+   "emotions": {
+    "fear": 0.9,
+    "anger": 0.6
+   },
+   "source": "curated:gemini-2026-09",
+   "version": 1,
+   "alt_lemmas": [
+    "siść"
+   ],
+   "lemma_evidence": "carrier"
+  },
+  {
+   "id": "pl.danger.niebezpieczeństwo",
+   "lemma": "niebezpieczeństwo",
+   "pos": [
+    "NOUN"
+   ],
+   "kind": "danger_noun",
+   "strength": "strong",
+   "valence": -0.74,
+   "arousal": 0.8,
+   "emotions": {
+    "fear": 0.9,
+    "anger": 0.6
+   },
+   "source": "curated:gemini-2026-09",
+   "version": 1
+  },
+  {
+   "id": "pl.danger.zagrożenie",
+   "lemma": "zagrożenie",
+   "pos": [
+    "NOUN"
+   ],
+   "kind": "danger_noun",
+   "strength": "strong",
+   "valence": -0.72,
+   "arousal": 0.78,
+   "emotions": {
+    "fear": 0.9,
+    "anger": 0.6
+   },
+   "source": "curated:gemini-2026-09",
+   "version": 1
+  },
+  {
+   "id": "pl.danger.ryzyko",
+   "lemma": "ryzyko",
+   "pos": [
+    "NOUN"
+   ],
+   "kind": "danger_noun",
+   "strength": "strong",
+   "valence": -0.52,
+   "arousal": 0.68,
+   "emotions": {
+    "fear": 0.9,
+    "anger": 0.6
+   },
+   "source": "curated:gemini-2026-09",
+   "version": 1
+  },
+  {
+   "id": "pl.danger.klęska",
+   "lemma": "klęska",
+   "pos": [
+    "NOUN"
+   ],
+   "kind": "danger_noun",
+   "strength": "strong",
+   "valence": -0.78,
+   "arousal": 0.78,
+   "emotions": {
+    "fear": 0.9,
+    "anger": 0.6
+   },
+   "source": "curated:gemini-2026-09",
+   "version": 1
+  },
+  {
+   "id": "pl.danger.zguba",
+   "lemma": "zguba",
+   "pos": [
+    "NOUN"
+   ],
+   "kind": "danger_noun",
+   "strength": "strong",
+   "valence": -0.82,
+   "arousal": 0.82,
+   "emotions": {
+    "fear": 0.9,
+    "anger": 0.6
+   },
+   "source": "curated:gemini-2026-09",
+   "version": 1
+  },
+  {
+   "id": "pl.danger.katastrofa",
+   "lemma": "katastrofa",
+   "pos": [
+    "NOUN"
+   ],
+   "kind": "danger_noun",
+   "strength": "strong",
+   "valence": -0.86,
+   "arousal": 0.88,
+   "emotions": {
+    "fear": 0.9,
+    "anger": 0.6
+   },
+   "source": "curated:gemini-2026-09",
+   "version": 1
+  },
+  {
+   "id": "pl.danger.wypadek",
+   "lemma": "wypadek",
+   "pos": [
+    "NOUN"
+   ],
+   "kind": "danger_noun",
+   "strength": "strong",
+   "valence": -0.68,
+   "arousal": 0.74,
+   "emotions": {
+    "fear": 0.9,
+    "anger": 0.6
+   },
+   "source": "curated:gemini-2026-09",
+   "version": 1
+  },
+  {
+   "id": "pl.danger.broń",
+   "lemma": "broń",
+   "pos": [
+    "NOUN"
+   ],
+   "kind": "danger_noun",
+   "strength": "strong",
+   "valence": -0.65,
+   "arousal": 0.75,
+   "emotions": {
+    "fear": 0.6,
+    "anger": 0.4
+   },
+   "source": "curated:gemini-2026-10",
+   "version": 1
+  },
+  {
+   "id": "pl.danger.strzelba",
+   "lemma": "strzelba",
+   "pos": [
+    "NOUN"
+   ],
+   "kind": "danger_noun",
+   "strength": "strong",
+   "valence": -0.7,
+   "arousal": 0.8,
+   "emotions": {
+    "fear": 0.7
+   },
+   "source": "curated:gemini-2026-10",
+   "version": 1
+  },
+  {
+   "id": "pl.danger.ostrze",
+   "lemma": "ostrze",
+   "pos": [
+    "NOUN"
+   ],
+   "kind": "danger_noun",
+   "strength": "strong",
+   "valence": -0.65,
+   "arousal": 0.7,
+   "emotions": {
+    "fear": 0.6
+   },
+   "source": "curated:gemini-2026-10",
+   "version": 1
+  },
+  {
+   "id": "pl.danger.ranny",
+   "lemma": "ranny",
+   "pos": [
+    "ADJ",
+    "NOUN"
+   ],
+   "kind": "danger_noun",
+   "strength": "strong",
+   "valence": -0.7,
+   "arousal": 0.7,
+   "emotions": {
+    "fear": 0.6,
+    "sadness": 0.5
+   },
+   "source": "curated:gemini-2026-10",
+   "version": 1
+  },
+  {
+   "id": "pl.danger.wybuch",
+   "lemma": "wybuch",
+   "pos": [
+    "NOUN"
+   ],
+   "kind": "danger_noun",
+   "strength": "strong",
+   "valence": -0.85,
+   "arousal": 0.9,
+   "emotions": {
+    "fear": 0.8,
+    "surprise": 0.7
+   },
+   "source": "curated:gemini-2026-10",
+   "version": 1
+  }
+ ]
 }

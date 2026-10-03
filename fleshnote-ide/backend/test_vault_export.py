@@ -3,6 +3,7 @@ import os
 import shutil
 import sqlite3
 import sys
+import tempfile
 import unittest
 import uuid
 
@@ -16,8 +17,7 @@ from export.vault import export_vault, VaultExporter
 
 class TestVaultExport(unittest.TestCase):
     def setUp(self):
-        self.test_dir = os.path.join(backend_dir, "temp_test_vault_export", uuid.uuid4().hex)
-        os.makedirs(self.test_dir)
+        self.test_dir = tempfile.mkdtemp(prefix="fn_vault_export_")
         self.project_path = os.path.join(self.test_dir, "proj")
         os.makedirs(self.project_path)
         db_setup.generate_project_db(self.project_path, {

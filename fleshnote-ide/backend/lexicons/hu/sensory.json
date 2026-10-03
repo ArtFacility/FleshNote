@@ -460,18 +460,6 @@
    "version": 1
   },
   {
-   "id": "hu.sens.sight_pa",
-   "lemma": "pa",
-   "kind": "sensory",
-   "sense": "sight",
-   "strength": "strong",
-   "valence": 0.0,
-   "arousal": 0.1,
-   "emotions": null,
-   "source": "curated:gemini-2026-09",
-   "version": 1
-  },
-  {
    "id": "hu.sens.sight_füst",
    "lemma": "füst",
    "kind": "sensory",
@@ -618,18 +606,6 @@
   {
    "id": "hu.sens.sight_színtelen",
    "lemma": "színtelen",
-   "kind": "sensory",
-   "sense": "sight",
-   "strength": "strong",
-   "valence": 0.0,
-   "arousal": 0.1,
-   "emotions": null,
-   "source": "curated:gemini-2026-09",
-   "version": 1
-  },
-  {
-   "id": "hu.sens.sight_tiszta",
-   "lemma": "tiszta",
    "kind": "sensory",
    "sense": "sight",
    "strength": "strong",
@@ -837,18 +813,6 @@
    "kind": "sensory",
    "sense": "sound",
    "strength": "weak",
-   "valence": 0.0,
-   "arousal": 0.1,
-   "emotions": null,
-   "source": "curated:gemini-2026-09",
-   "version": 1
-  },
-  {
-   "id": "hu.sens.sound_figyel",
-   "lemma": "figyel",
-   "kind": "sensory",
-   "sense": "sound",
-   "strength": "strong",
    "valence": 0.0,
    "arousal": 0.1,
    "emotions": null,
@@ -1907,18 +1871,6 @@
    "version": 1
   },
   {
-   "id": "hu.sens.smell_ég",
-   "lemma": "ég",
-   "kind": "sensory",
-   "sense": "smell",
-   "strength": "strong",
-   "valence": 0.0,
-   "arousal": 0.1,
-   "emotions": null,
-   "source": "curated:gemini-2026-09",
-   "version": 1
-  },
-  {
    "id": "hu.sens.smell_kénkőszag",
    "lemma": "kénkőszag",
    "kind": "sensory",
@@ -2939,30 +2891,6 @@
    "version": 1
   },
   {
-   "id": "hu.sens.touch_tömör",
-   "lemma": "tömör",
-   "kind": "sensory",
-   "sense": "touch",
-   "strength": "strong",
-   "valence": 0.0,
-   "arousal": 0.1,
-   "emotions": null,
-   "source": "curated:gemini-2026-09",
-   "version": 1
-  },
-  {
-   "id": "hu.sens.touch_laza",
-   "lemma": "laza",
-   "kind": "sensory",
-   "sense": "touch",
-   "strength": "strong",
-   "valence": 0.0,
-   "arousal": 0.1,
-   "emotions": null,
-   "source": "curated:gemini-2026-09",
-   "version": 1
-  },
-  {
    "id": "hu.sens.touch_süppedős",
    "lemma": "süppedős",
    "kind": "sensory",
@@ -3001,18 +2929,6 @@
   {
    "id": "hu.sens.touch_éget",
    "lemma": "éget",
-   "kind": "sensory",
-   "sense": "touch",
-   "strength": "strong",
-   "valence": 0.0,
-   "arousal": 0.1,
-   "emotions": null,
-   "source": "curated:gemini-2026-09",
-   "version": 1
-  },
-  {
-   "id": "hu.sens.touch_érintetlen",
-   "lemma": "érintetlen",
    "kind": "sensory",
    "sense": "touch",
    "strength": "strong",
@@ -3631,18 +3547,6 @@
    "version": 1
   },
   {
-   "id": "hu.sens.taste_romlik",
-   "lemma": "romlik",
-   "kind": "sensory",
-   "sense": "taste",
-   "strength": "strong",
-   "valence": 0.0,
-   "arousal": 0.1,
-   "emotions": null,
-   "source": "curated:gemini-2026-09",
-   "version": 1
-  },
-  {
    "id": "hu.sens.taste_avas",
    "lemma": "avas",
    "kind": "sensory",
@@ -3694,7 +3598,10 @@
    "arousal": 0.1,
    "emotions": null,
    "source": "curated:gemini-2026-09",
-   "version": 1
+   "version": 1,
+   "pos": [
+    "VERB"
+   ]
   },
   {
    "id": "hu.sens.taste_harapás",

@@ -36,6 +36,7 @@ from routes.spellcheck import router as spellcheck_router
 from routes.world_times import router as world_times_router
 from routes.boards import router as boards_router
 from routes.janitor import router as janitor_router
+from routes.story_pulse import router as story_pulse_router
 from routes.image_references import router as image_references_router
 from routes.name_gen import router as name_gen_router
 from routes.sync import router as sync_router
@@ -73,6 +74,7 @@ app.include_router(spellcheck_router)
 app.include_router(world_times_router)
 app.include_router(boards_router)
 app.include_router(janitor_router)
+app.include_router(story_pulse_router)
 app.include_router(image_references_router)
 app.include_router(name_gen_router)
 app.include_router(sync_router)

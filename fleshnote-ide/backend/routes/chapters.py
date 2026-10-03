@@ -707,12 +707,20 @@ def load_chapter_content(req: ChapterLoad):
     elif md_path is None:
         unsafe_file = True   # poisoned md_filename row — fail closed, show nothing
 
+    return {"content": md_to_editor_html(content, quicknote_types), "md_filename": row["md_filename"],
+            "unsafe_file": unsafe_file}
+
+
+def md_to_editor_html(content: str, quicknote_types: dict = None) -> str:
+    """A chapter file's text as the HTML the editor loads. The Janitor's
+    Stats overview uses it too, so its paragraphs match the ones the editor
+    sends (and hit the same analysis cache)."""
     # Safety net: if content is plain text (no HTML tags), convert to <p> tags
     # so TipTap renders line breaks correctly
     content = _plain_text_to_html(content)
 
     # Convert entity markers {{char:5|Name}} to TipTap HTML spans
-    content = _entity_md_to_html(content, quicknote_types)
+    content = _entity_md_to_html(content, quicknote_types or {})
 
     # Convert twist/foreshadow markers to TipTap spans
     content = _twist_md_to_html(content)
@@ -721,10 +729,7 @@ def load_chapter_content(req: ChapterLoad):
     content = _knowledge_md_to_html(content)
     content = _relationship_md_to_html(content)
     content = _milestone_md_to_html(content)
-    content = _time_md_to_html(content)
-
-    return {"content": content, "md_filename": row["md_filename"],
-            "unsafe_file": unsafe_file}
+    return _time_md_to_html(content)
 
 
 @router.post("/api/project/chapter/save")

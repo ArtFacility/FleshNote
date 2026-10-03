@@ -1252,6 +1252,12 @@ app.whenReady().then(async () => {
   ipcMain.handle('api:janitorSensesOverview', async (_event, payload) => {
     return await backendPost('/api/project/janitor/senses-overview', payload)
   })
+  ipcMain.handle('api:storyPulse', async (_event, payload) => {
+    return await backendPost('/api/project/story-pulse', payload)
+  })
+  ipcMain.handle('api:storyPulseCorrect', async (_event, payload) => {
+    return await backendPost('/api/project/story-pulse/correct', payload)
+  })
 
   // ── Auto Updater ───────────────────────────────────
   ipcMain.handle('api:checkForUpdates', () => {

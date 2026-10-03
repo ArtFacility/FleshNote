@@ -220,16 +220,19 @@
    "version": 1
   },
   {
-   "id": "pl.sens.sight_czerwienie",
-   "lemma": "czerwienie",
+   "id": "pl.sens.sight_czerwień",
+   "lemma": "czerwień",
    "kind": "sensory",
    "sense": "sight",
    "strength": "strong",
    "valence": 0.0,
    "arousal": 0.1,
    "emotions": null,
-   "source": "curated:gemini-2026-09",
-   "version": 1
+   "source": "curated:claude-2026-09",
+   "version": 1,
+   "alt_lemmas": [
+    "czerwienie"
+   ]
   },
   {
    "id": "pl.sens.sight_błękit",
@@ -244,20 +247,20 @@
    "version": 1
   },
   {
-   "id": "pl.sens.sight_zielenie",
-   "lemma": "zielenie",
+   "id": "pl.sens.sight_zieleń",
+   "lemma": "zieleń",
    "kind": "sensory",
    "sense": "sight",
    "strength": "strong",
    "valence": 0.0,
    "arousal": 0.1,
    "emotions": null,
-   "source": "curated:gemini-2026-09",
+   "source": "curated:claude-2026-09",
    "version": 1,
    "alt_lemmas": [
+    "zielenie",
     "zieleć"
-   ],
-   "lemma_evidence": "carrier"
+   ]
   },
   {
    "id": "pl.sens.sight_żółć",
@@ -576,30 +579,6 @@
    "version": 1
   },
   {
-   "id": "pl.sens.sight_postać",
-   "lemma": "postać",
-   "kind": "sensory",
-   "sense": "sight",
-   "strength": "strong",
-   "valence": 0.0,
-   "arousal": 0.1,
-   "emotions": null,
-   "source": "curated:gemini-2026-09",
-   "version": 1
-  },
-  {
-   "id": "pl.sens.sight_figura",
-   "lemma": "figura",
-   "kind": "sensory",
-   "sense": "sight",
-   "strength": "strong",
-   "valence": 0.0,
-   "arousal": 0.1,
-   "emotions": null,
-   "source": "curated:gemini-2026-09",
-   "version": 1
-  },
-  {
    "id": "pl.sens.sight_kształt",
    "lemma": "kształt",
    "kind": "sensory",
@@ -732,20 +711,19 @@
    "version": 1
   },
   {
-   "id": "pl.sens.sight_blada",
-   "lemma": "blada",
+   "id": "pl.sens.sight_blady",
+   "lemma": "blady",
    "kind": "sensory",
    "sense": "sight",
    "strength": "strong",
    "valence": 0.0,
    "arousal": 0.1,
    "emotions": null,
-   "source": "curated:gemini-2026-09",
+   "source": "curated:claude-2026-09",
    "version": 1,
    "alt_lemmas": [
-    "blady"
-   ],
-   "lemma_evidence": "carrier"
+    "blada"
+   ]
   },
   {
    "id": "pl.sens.sight_jaskrawy",
@@ -760,20 +738,19 @@
    "version": 1
   },
   {
-   "id": "pl.sens.sight_pstra",
-   "lemma": "pstra",
+   "id": "pl.sens.sight_pstry",
+   "lemma": "pstry",
    "kind": "sensory",
    "sense": "sight",
    "strength": "strong",
    "valence": 0.0,
    "arousal": 0.1,
    "emotions": null,
-   "source": "curated:gemini-2026-09",
+   "source": "curated:claude-2026-09",
    "version": 1,
    "alt_lemmas": [
-    "pstry"
-   ],
-   "lemma_evidence": "carrier"
+    "pstra"
+   ]
   },
   {
    "id": "pl.sens.sight_kolorowy",
@@ -901,12 +878,13 @@
    "lemma": "dojrzeć",
    "kind": "sensory",
    "sense": "sight",
-   "strength": "strong",
+   "strength": "weak",
    "valence": 0.0,
    "arousal": 0.1,
    "emotions": null,
    "source": "migrated:pol_janitor.py",
-   "version": 1
+   "version": 1,
+   "note": "also \"to ripen\"; sight only with an object (dojrzał statek)"
   },
   {
    "id": "pl.sens.sight_przyglądać",
@@ -1197,20 +1175,20 @@
    "version": 1
   },
   {
-   "id": "pl.sens.sound_brzęczenia",
-   "lemma": "brzęczenia",
+   "id": "pl.sens.sound_brzęczenie",
+   "lemma": "brzęczenie",
    "kind": "sensory",
    "sense": "sound",
    "strength": "strong",
    "valence": 0.0,
    "arousal": 0.1,
    "emotions": null,
-   "source": "curated:gemini-2026-09",
+   "source": "curated:claude-2026-09",
    "version": 1,
    "alt_lemmas": [
+    "brzęczenia",
     "brzęczeć"
-   ],
-   "lemma_evidence": "carrier"
+   ]
   },
   {
    "id": "pl.sens.sound_dzwon",
@@ -1979,18 +1957,6 @@
    "version": 1
   },
   {
-   "id": "pl.sens.smell_dusić",
-   "lemma": "dusić",
-   "kind": "sensory",
-   "sense": "smell",
-   "strength": "strong",
-   "valence": 0.0,
-   "arousal": 0.1,
-   "emotions": null,
-   "source": "curated:gemini-2026-09",
-   "version": 1
-  },
-  {
    "id": "pl.sens.smell_nozdrze",
    "lemma": "nozdrze",
    "kind": "sensory",
@@ -2141,16 +2107,19 @@
    "version": 1
   },
   {
-   "id": "pl.sens.smell_słodkawa",
-   "lemma": "słodkawa",
+   "id": "pl.sens.smell_słodkawy",
+   "lemma": "słodkawy",
    "kind": "sensory",
    "sense": "smell",
    "strength": "strong",
    "valence": 0.0,
    "arousal": 0.1,
    "emotions": null,
-   "source": "curated:gemini-2026-09",
-   "version": 1
+   "source": "curated:claude-2026-09",
+   "version": 1,
+   "alt_lemmas": [
+    "słodkawa"
+   ]
   },
   {
    "id": "pl.sens.smell_mść",
@@ -2165,16 +2134,19 @@
    "version": 1
   },
   {
-   "id": "pl.sens.smell_cierpka",
-   "lemma": "cierpka",
+   "id": "pl.sens.smell_cierpki",
+   "lemma": "cierpki",
    "kind": "sensory",
    "sense": "smell",
    "strength": "strong",
    "valence": 0.0,
    "arousal": 0.1,
    "emotions": null,
-   "source": "curated:gemini-2026-09",
-   "version": 1
+   "source": "curated:claude-2026-09",
+   "version": 1,
+   "alt_lemmas": [
+    "cierpka"
+   ]
   },
   {
    "id": "pl.sens.smell_ostry",
@@ -2230,56 +2202,64 @@
    "version": 1
   },
   {
-   "id": "pl.sens.smell_spalenizny",
-   "lemma": "spalenizny",
+   "id": "pl.sens.smell_spalenizna",
+   "lemma": "spalenizna",
    "kind": "sensory",
    "sense": "smell",
    "strength": "strong",
    "valence": 0.0,
    "arousal": 0.1,
    "emotions": null,
-   "source": "curated:gemini-2026-09",
-   "version": 1
-  },
-  {
-   "id": "pl.sens.smell_zgnilizny",
-   "lemma": "zgnilizny",
-   "kind": "sensory",
-   "sense": "smell",
-   "strength": "strong",
-   "valence": 0.0,
-   "arousal": 0.1,
-   "emotions": null,
-   "source": "curated:gemini-2026-09",
+   "source": "curated:claude-2026-09",
    "version": 1,
    "alt_lemmas": [
-    "zgnilizna"
-   ],
-   "lemma_evidence": "carrier"
+    "spalenizny"
+   ]
   },
   {
-   "id": "pl.sens.smell_stęchła",
-   "lemma": "stęchła",
+   "id": "pl.sens.smell_zgnilizna",
+   "lemma": "zgnilizna",
    "kind": "sensory",
    "sense": "smell",
    "strength": "strong",
    "valence": 0.0,
    "arousal": 0.1,
    "emotions": null,
-   "source": "curated:gemini-2026-09",
-   "version": 1
+   "source": "curated:claude-2026-09",
+   "version": 1,
+   "alt_lemmas": [
+    "zgnilizny"
+   ]
   },
   {
-   "id": "pl.sens.smell_stęchlizny",
-   "lemma": "stęchlizny",
+   "id": "pl.sens.smell_stęchły",
+   "lemma": "stęchły",
    "kind": "sensory",
    "sense": "smell",
    "strength": "strong",
    "valence": 0.0,
    "arousal": 0.1,
    "emotions": null,
-   "source": "curated:gemini-2026-09",
-   "version": 1
+   "source": "curated:claude-2026-09",
+   "version": 1,
+   "alt_lemmas": [
+    "stęchła"
+   ]
+  },
+  {
+   "id": "pl.sens.smell_stęchlizna",
+   "lemma": "stęchlizna",
+   "kind": "sensory",
+   "sense": "smell",
+   "strength": "strong",
+   "valence": 0.0,
+   "arousal": 0.1,
+   "emotions": null,
+   "source": "curated:claude-2026-09",
+   "version": 1,
+   "alt_lemmas": [
+    "stęchlizny"
+   ]
   },
   {
    "id": "pl.sens.smell_zbutwiać",
@@ -2412,18 +2392,6 @@
   {
    "id": "pl.sens.smell_piżmo",
    "lemma": "piżmo",
-   "kind": "sensory",
-   "sense": "smell",
-   "strength": "strong",
-   "valence": 0.0,
-   "arousal": 0.1,
-   "emotions": null,
-   "source": "curated:gemini-2026-09",
-   "version": 1
-  },
-  {
-   "id": "pl.sens.smell_leśny",
-   "lemma": "leśny",
    "kind": "sensory",
    "sense": "smell",
    "strength": "strong",
@@ -2928,40 +2896,49 @@
    "lemma_evidence": "carrier"
   },
   {
-   "id": "pl.sens.touch_gładka",
-   "lemma": "gładka",
+   "id": "pl.sens.touch_gładki",
+   "lemma": "gładki",
    "kind": "sensory",
    "sense": "touch",
    "strength": "strong",
    "valence": 0.0,
    "arousal": 0.1,
    "emotions": null,
-   "source": "migrated:pol_janitor.py",
-   "version": 1
+   "source": "curated:claude-2026-09",
+   "version": 1,
+   "alt_lemmas": [
+    "gładka"
+   ]
   },
   {
-   "id": "pl.sens.touch_szorstka",
-   "lemma": "szorstka",
+   "id": "pl.sens.touch_szorstki",
+   "lemma": "szorstki",
    "kind": "sensory",
    "sense": "touch",
    "strength": "strong",
    "valence": 0.0,
    "arousal": 0.1,
    "emotions": null,
-   "source": "migrated:pol_janitor.py",
-   "version": 1
+   "source": "curated:claude-2026-09",
+   "version": 1,
+   "alt_lemmas": [
+    "szorstka"
+   ]
   },
   {
-   "id": "pl.sens.touch_chropowata",
-   "lemma": "chropowata",
+   "id": "pl.sens.touch_chropowaty",
+   "lemma": "chropowaty",
    "kind": "sensory",
    "sense": "touch",
    "strength": "strong",
    "valence": 0.0,
    "arousal": 0.1,
    "emotions": null,
-   "source": "curated:gemini-2026-09",
-   "version": 1
+   "source": "curated:claude-2026-09",
+   "version": 1,
+   "alt_lemmas": [
+    "chropowata"
+   ]
   },
   {
    "id": "pl.sens.touch_ostry",
@@ -2976,16 +2953,19 @@
    "version": 1
   },
   {
-   "id": "pl.sens.touch_tęp",
-   "lemma": "tęp",
+   "id": "pl.sens.touch_tępy",
+   "lemma": "tępy",
    "kind": "sensory",
    "sense": "touch",
    "strength": "strong",
    "valence": 0.0,
    "arousal": 0.1,
    "emotions": null,
-   "source": "curated:gemini-2026-09",
-   "version": 1
+   "source": "curated:claude-2026-09",
+   "version": 1,
+   "alt_lemmas": [
+    "tęp"
+   ]
   },
   {
    "id": "pl.sens.touch_śliski",
@@ -3000,28 +2980,34 @@
    "version": 1
   },
   {
-   "id": "pl.sens.touch_lepka",
-   "lemma": "lepka",
+   "id": "pl.sens.touch_lepki",
+   "lemma": "lepki",
    "kind": "sensory",
    "sense": "touch",
    "strength": "strong",
    "valence": 0.0,
    "arousal": 0.1,
    "emotions": null,
-   "source": "migrated:pol_janitor.py",
-   "version": 1
+   "source": "curated:claude-2026-09",
+   "version": 1,
+   "alt_lemmas": [
+    "lepka"
+   ]
   },
   {
-   "id": "pl.sens.touch_kleist",
-   "lemma": "kleist",
+   "id": "pl.sens.touch_kleisty",
+   "lemma": "kleisty",
    "kind": "sensory",
    "sense": "touch",
    "strength": "strong",
    "valence": 0.0,
    "arousal": 0.1,
    "emotions": null,
-   "source": "curated:gemini-2026-09",
-   "version": 1
+   "source": "curated:claude-2026-09",
+   "version": 1,
+   "alt_lemmas": [
+    "kleist"
+   ]
   },
   {
    "id": "pl.sens.touch_mokry",
@@ -3048,36 +3034,35 @@
    "version": 1
   },
   {
-   "id": "pl.sens.touch_such",
-   "lemma": "such",
+   "id": "pl.sens.touch_suchy",
+   "lemma": "suchy",
    "kind": "sensory",
    "sense": "touch",
    "strength": "strong",
    "valence": 0.0,
    "arousal": 0.1,
    "emotions": null,
-   "source": "migrated:pol_janitor.py",
+   "source": "curated:claude-2026-09",
    "version": 1,
    "alt_lemmas": [
-    "suchy"
-   ],
-   "lemma_evidence": "carrier"
+    "such"
+   ]
   },
   {
-   "id": "pl.sens.touch_jedwabista",
-   "lemma": "jedwabista",
+   "id": "pl.sens.touch_jedwabisty",
+   "lemma": "jedwabisty",
    "kind": "sensory",
    "sense": "touch",
    "strength": "strong",
    "valence": 0.0,
    "arousal": 0.1,
    "emotions": null,
-   "source": "curated:gemini-2026-09",
+   "source": "curated:claude-2026-09",
    "version": 1,
    "alt_lemmas": [
+    "jedwabista",
     "jedwabiś"
-   ],
-   "lemma_evidence": "carrier"
+   ]
   },
   {
    "id": "pl.sens.touch_aksamitny",
@@ -3146,32 +3131,34 @@
    "version": 1
   },
   {
-   "id": "pl.sens.touch_sprężysta",
-   "lemma": "sprężysta",
+   "id": "pl.sens.touch_sprężysty",
+   "lemma": "sprężysty",
    "kind": "sensory",
    "sense": "touch",
    "strength": "strong",
    "valence": 0.0,
    "arousal": 0.1,
    "emotions": null,
-   "source": "curated:gemini-2026-09",
-   "version": 1
-  },
-  {
-   "id": "pl.sens.touch_ciężka",
-   "lemma": "ciężka",
-   "kind": "sensory",
-   "sense": "touch",
-   "strength": "strong",
-   "valence": 0.0,
-   "arousal": 0.1,
-   "emotions": null,
-   "source": "curated:gemini-2026-09",
+   "source": "curated:claude-2026-09",
    "version": 1,
    "alt_lemmas": [
-    "ciężki"
-   ],
-   "lemma_evidence": "carrier"
+    "sprężysta"
+   ]
+  },
+  {
+   "id": "pl.sens.touch_ciężki",
+   "lemma": "ciężki",
+   "kind": "sensory",
+   "sense": "touch",
+   "strength": "strong",
+   "valence": 0.0,
+   "arousal": 0.1,
+   "emotions": null,
+   "source": "curated:claude-2026-09",
+   "version": 1,
+   "alt_lemmas": [
+    "ciężka"
+   ]
   },
   {
    "id": "pl.sens.touch_lekki",
@@ -3212,16 +3199,19 @@
    "version": 1
   },
   {
-   "id": "pl.sens.touch_lodowata",
-   "lemma": "lodowata",
+   "id": "pl.sens.touch_lodowaty",
+   "lemma": "lodowaty",
    "kind": "sensory",
    "sense": "touch",
    "strength": "strong",
    "valence": 0.0,
    "arousal": 0.1,
    "emotions": null,
-   "source": "curated:gemini-2026-09",
-   "version": 1
+   "source": "curated:claude-2026-09",
+   "version": 1,
+   "alt_lemmas": [
+    "lodowata"
+   ]
   },
   {
    "id": "pl.sens.touch_piekący",
@@ -3436,12 +3426,13 @@
    "lemma": "spróbować",
    "kind": "sensory",
    "sense": "taste",
-   "strength": "strong",
+   "strength": "weak",
    "valence": 0.0,
    "arousal": 0.1,
    "emotions": null,
    "source": "curated:gemini-2026-09",
-   "version": 1
+   "version": 1,
+   "note": "usually \"try\"; taste only with a food object (spróbował polędwicy)"
   },
   {
    "id": "pl.sens.taste_jeść",
@@ -3628,48 +3619,34 @@
    "version": 1
   },
   {
-   "id": "pl.sens.taste_kropla",
-   "lemma": "kropla",
+   "id": "pl.sens.taste_słodki",
+   "lemma": "słodki",
    "kind": "sensory",
    "sense": "taste",
    "strength": "strong",
    "valence": 0.0,
    "arousal": 0.1,
    "emotions": null,
-   "source": "curated:gemini-2026-09",
-   "version": 1
-  },
-  {
-   "id": "pl.sens.taste_słodka",
-   "lemma": "słodka",
-   "kind": "sensory",
-   "sense": "taste",
-   "strength": "strong",
-   "valence": 0.0,
-   "arousal": 0.1,
-   "emotions": null,
-   "source": "migrated:pol_janitor.py",
+   "source": "curated:claude-2026-09",
    "version": 1,
    "alt_lemmas": [
-    "słodki"
-   ],
-   "lemma_evidence": "carrier"
+    "słodka"
+   ]
   },
   {
-   "id": "pl.sens.taste_gorzka",
-   "lemma": "gorzka",
+   "id": "pl.sens.taste_gorzki",
+   "lemma": "gorzki",
    "kind": "sensory",
    "sense": "taste",
    "strength": "strong",
    "valence": 0.0,
    "arousal": 0.1,
    "emotions": null,
-   "source": "migrated:pol_janitor.py",
+   "source": "curated:claude-2026-09",
    "version": 1,
    "alt_lemmas": [
-    "gorzki"
-   ],
-   "lemma_evidence": "carrier"
+    "gorzka"
+   ]
   },
   {
    "id": "pl.sens.taste_kwaśny",
@@ -3684,21 +3661,20 @@
    "version": 1
   },
   {
-   "id": "pl.sens.taste_słić",
-   "lemma": "słić",
+   "id": "pl.sens.taste_słony",
+   "lemma": "słony",
    "kind": "sensory",
    "sense": "taste",
    "strength": "strong",
    "valence": 0.0,
    "arousal": 0.1,
    "emotions": null,
-   "source": "migrated:pol_janitor.py",
+   "source": "curated:claude-2026-09",
    "version": 1,
    "alt_lemmas": [
+    "słić",
     "słon"
-   ],
-   "lemma_evidence": "carrier",
-   "spell_ok": "migrated stem from pol_janitor.py pinned by legacy parity contract"
+   ]
   },
   {
    "id": "pl.sens.taste_ostry",
@@ -3749,16 +3725,19 @@
    "version": 1
   },
   {
-   "id": "pl.sens.taste_cierpka",
-   "lemma": "cierpka",
+   "id": "pl.sens.taste_cierpki",
+   "lemma": "cierpki",
    "kind": "sensory",
    "sense": "taste",
    "strength": "strong",
    "valence": 0.0,
    "arousal": 0.1,
    "emotions": null,
-   "source": "curated:gemini-2026-09",
-   "version": 1
+   "source": "curated:claude-2026-09",
+   "version": 1,
+   "alt_lemmas": [
+    "cierpka"
+   ]
   },
   {
    "id": "pl.sens.taste_wytrawny",
@@ -3785,20 +3764,19 @@
    "version": 1
   },
   {
-   "id": "pl.sens.taste_such",
-   "lemma": "such",
+   "id": "pl.sens.taste_suchy",
+   "lemma": "suchy",
    "kind": "sensory",
    "sense": "taste",
    "strength": "strong",
    "valence": 0.0,
    "arousal": 0.1,
    "emotions": null,
-   "source": "curated:gemini-2026-09",
+   "source": "curated:claude-2026-09",
    "version": 1,
    "alt_lemmas": [
-    "suchy"
-   ],
-   "lemma_evidence": "carrier"
+    "such"
+   ]
   },
   {
    "id": "pl.sens.taste_tłusty",
@@ -3811,22 +3789,6 @@
    "emotions": null,
    "source": "curated:gemini-2026-09",
    "version": 1
-  },
-  {
-   "id": "pl.sens.taste_chuda",
-   "lemma": "chuda",
-   "kind": "sensory",
-   "sense": "taste",
-   "strength": "strong",
-   "valence": 0.0,
-   "arousal": 0.1,
-   "emotions": null,
-   "source": "curated:gemini-2026-09",
-   "version": 1,
-   "alt_lemmas": [
-    "chudi"
-   ],
-   "lemma_evidence": "carrier"
   },
   {
    "id": "pl.sens.taste_wodnist",
@@ -3853,20 +3815,19 @@
    "version": 1
   },
   {
-   "id": "pl.sens.taste_wyrazista",
-   "lemma": "wyrazista",
+   "id": "pl.sens.taste_wyrazisty",
+   "lemma": "wyrazisty",
    "kind": "sensory",
    "sense": "taste",
    "strength": "strong",
    "valence": 0.0,
    "arousal": 0.1,
    "emotions": null,
-   "source": "curated:gemini-2026-09",
+   "source": "curated:claude-2026-09",
    "version": 1,
    "alt_lemmas": [
-    "wyrazisty"
-   ],
-   "lemma_evidence": "carrier"
+    "wyrazista"
+   ]
   },
   {
    "id": "pl.sens.taste_smaczny",
@@ -3920,20 +3881,6 @@
    "arousal": 0.5,
    "emotions": {
     "joy": 0.85
-   },
-   "source": "curated:gemini-2026-09",
-   "version": 1
-  },
-  {
-   "id": "pl.sens.taste_niesmaczny",
-   "lemma": "niesmaczny",
-   "kind": "sensory",
-   "sense": "taste",
-   "strength": "strong",
-   "valence": -0.65,
-   "arousal": 0.4,
-   "emotions": {
-    "disgust": 0.75
    },
    "source": "curated:gemini-2026-09",
    "version": 1
@@ -3995,18 +3942,6 @@
    "version": 1
   },
   {
-   "id": "pl.sens.taste_spalić",
-   "lemma": "spalić",
-   "kind": "sensory",
-   "sense": "taste",
-   "strength": "strong",
-   "valence": 0.0,
-   "arousal": 0.1,
-   "emotions": null,
-   "source": "curated:gemini-2026-09",
-   "version": 1
-  },
-  {
    "id": "pl.sens.taste_przypalyć",
    "lemma": "przypalony",
    "kind": "sensory",
@@ -4019,32 +3954,8 @@
    "version": 1
   },
   {
-   "id": "pl.sens.taste_surowy",
-   "lemma": "surowy",
-   "kind": "sensory",
-   "sense": "taste",
-   "strength": "strong",
-   "valence": 0.0,
-   "arousal": 0.1,
-   "emotions": null,
-   "source": "curated:gemini-2026-09",
-   "version": 1
-  },
-  {
    "id": "pl.sens.taste_niedojrzać",
    "lemma": "niedojrzały",
-   "kind": "sensory",
-   "sense": "taste",
-   "strength": "strong",
-   "valence": 0.0,
-   "arousal": 0.1,
-   "emotions": null,
-   "source": "curated:gemini-2026-09",
-   "version": 1
-  },
-  {
-   "id": "pl.sens.taste_dojrzeć",
-   "lemma": "dojrzeć",
    "kind": "sensory",
    "sense": "taste",
    "strength": "strong",
@@ -4175,18 +4086,6 @@
    "version": 1
   },
   {
-   "id": "pl.sens.taste_winien",
-   "lemma": "winien",
-   "kind": "sensory",
-   "sense": "taste",
-   "strength": "strong",
-   "valence": 0.0,
-   "arousal": 0.1,
-   "emotions": null,
-   "source": "curated:gemini-2026-09",
-   "version": 1
-  },
-  {
    "id": "pl.sens.taste_czekoladowy",
    "lemma": "czekoladowy",
    "kind": "sensory",
@@ -4285,22 +4184,6 @@
    "version": 1
   },
   {
-   "id": "pl.sens.taste_kosztować",
-   "lemma": "kosztować",
-   "kind": "sensory",
-   "sense": "taste",
-   "strength": "strong",
-   "valence": 0.0,
-   "arousal": 0.1,
-   "emotions": null,
-   "source": "migrated:pol_janitor.py",
-   "version": 1,
-   "alt_lemmas": [
-    "kosztow"
-   ],
-   "lemma_evidence": "carrier"
-  },
-  {
    "id": "pl.sens.taste_oblizać",
    "lemma": "oblizać",
    "kind": "sensory",
@@ -4332,6 +4215,54 @@
     "popijał"
    ],
    "lemma_evidence": "carrier"
+  },
+  {
+   "id": "pl.sens.touch_zimny",
+   "lemma": "zimny",
+   "kind": "sensory",
+   "sense": "touch",
+   "strength": "strong",
+   "valence": 0.0,
+   "arousal": 0.1,
+   "emotions": null,
+   "source": "curated:claude-2026-09",
+   "version": 1
+  },
+  {
+   "id": "pl.sens.touch_ciepły",
+   "lemma": "ciepły",
+   "kind": "sensory",
+   "sense": "touch",
+   "strength": "strong",
+   "valence": 0.0,
+   "arousal": 0.1,
+   "emotions": null,
+   "source": "curated:claude-2026-09",
+   "version": 1
+  },
+  {
+   "id": "pl.sens.touch_gorący",
+   "lemma": "gorący",
+   "kind": "sensory",
+   "sense": "touch",
+   "strength": "strong",
+   "valence": 0.0,
+   "arousal": 0.1,
+   "emotions": null,
+   "source": "curated:claude-2026-09",
+   "version": 1
+  },
+  {
+   "id": "pl.sens.touch_chłodny",
+   "lemma": "chłodny",
+   "kind": "sensory",
+   "sense": "touch",
+   "strength": "strong",
+   "valence": 0.0,
+   "arousal": 0.1,
+   "emotions": null,
+   "source": "curated:claude-2026-09",
+   "version": 1
   }
  ]
 }

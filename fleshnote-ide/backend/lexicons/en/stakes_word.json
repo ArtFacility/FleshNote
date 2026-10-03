@@ -733,6 +733,158 @@
    },
    "source": "curated:gemini-2026-09",
    "version": 1
+  },
+  {
+   "id": "en.stakes.die",
+   "lemma": "die",
+   "pos": [
+    "VERB"
+   ],
+   "kind": "stakes_word",
+   "strength": "strong",
+   "valence": -0.9,
+   "arousal": 0.85,
+   "emotions": {
+    "fear": 0.8,
+    "sadness": 0.8
+   },
+   "source": "curated:gemini-2026-10",
+   "version": 1
+  },
+  {
+   "id": "en.stakes.dead",
+   "lemma": "dead",
+   "pos": [
+    "ADJ"
+   ],
+   "kind": "stakes_word",
+   "strength": "strong",
+   "valence": -0.85,
+   "arousal": 0.75,
+   "emotions": {
+    "sadness": 0.8,
+    "fear": 0.6
+   },
+   "source": "curated:gemini-2026-10",
+   "version": 1
+  },
+  {
+   "id": "en.stakes.grave",
+   "lemma": "grave",
+   "pos": [
+    "NOUN"
+   ],
+   "kind": "stakes_word",
+   "strength": "weak",
+   "valence": -0.65,
+   "arousal": 0.6,
+   "emotions": {
+    "sadness": 0.7
+   },
+   "source": "curated:gemini-2026-10",
+   "version": 1,
+   "note": "also grave expression"
+  },
+  {
+   "id": "en.stakes.funeral",
+   "lemma": "funeral",
+   "pos": [
+    "NOUN"
+   ],
+   "kind": "stakes_word",
+   "strength": "strong",
+   "valence": -0.75,
+   "arousal": 0.65,
+   "emotions": {
+    "sadness": 0.8
+   },
+   "source": "curated:gemini-2026-10",
+   "version": 1
+  },
+  {
+   "id": "en.stakes.lose",
+   "lemma": "lose",
+   "pos": [
+    "VERB"
+   ],
+   "kind": "stakes_word",
+   "strength": "weak",
+   "valence": -0.65,
+   "arousal": 0.65,
+   "emotions": {
+    "sadness": 0.7
+   },
+   "source": "curated:gemini-2026-10",
+   "version": 1,
+   "note": "also lose keys"
+  },
+  {
+   "id": "en.stakes.loss",
+   "lemma": "loss",
+   "pos": [
+    "NOUN"
+   ],
+   "kind": "stakes_word",
+   "strength": "weak",
+   "valence": -0.65,
+   "arousal": 0.6,
+   "emotions": {
+    "sadness": 0.7
+   },
+   "source": "curated:gemini-2026-10",
+   "version": 1,
+   "note": "also financial loss"
+  },
+  {
+   "id": "en.stakes.survive",
+   "lemma": "survive",
+   "pos": [
+    "VERB"
+   ],
+   "kind": "stakes_word",
+   "strength": "strong",
+   "valence": 0.6,
+   "arousal": 0.75,
+   "emotions": {
+    "trust": 0.6,
+    "anticipation": 0.5
+   },
+   "source": "curated:gemini-2026-10",
+   "version": 1
+  },
+  {
+   "id": "en.stakes.last",
+   "lemma": "last",
+   "pos": [
+    "ADJ"
+   ],
+   "kind": "stakes_word",
+   "strength": "weak",
+   "valence": -0.1,
+   "arousal": 0.55,
+   "emotions": {
+    "anticipation": 0.4
+   },
+   "source": "curated:gemini-2026-10",
+   "version": 1,
+   "note": "also last week"
+  },
+  {
+   "id": "en.stakes.destruction",
+   "lemma": "destruction",
+   "pos": [
+    "NOUN"
+   ],
+   "kind": "stakes_word",
+   "strength": "strong",
+   "valence": -0.85,
+   "arousal": 0.85,
+   "emotions": {
+    "fear": 0.8,
+    "anger": 0.6
+   },
+   "source": "curated:gemini-2026-10",
+   "version": 1
   }
  ]
 }

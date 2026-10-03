@@ -132,6 +132,15 @@ class TestLoader(unittest.TestCase):
         lex = LE.get_lexicon("en")
         self.assertLess(lex.lemmas("emotion_label", legacy_only=True), lex.lemmas("emotion_label"))
 
+    def test_pos_gates_name_word_classes(self):
+        # A `pos` list gates matching, so a tag from tagging the bare word
+        # ('gun' → PROPN) makes the entry dead in real text (batch 2).
+        for lang in ("en", "hu", "pl"):
+            lex = LE.get_lexicon(lang)
+            for kind in LE.KINDS:
+                bad = [e["id"] for e in lex.entries(kind) if set(e.get("pos") or ()) & {"PROPN", "X", "SYM", "NUM"}]
+                self.assertEqual(bad, [], f"{lang}/{kind}")
+
     def test_lookup_by_id(self):
         self.assertEqual(LE.get_lexicon("en").get("en.emo.angry")["lemma"], "angry")
         self.assertIsNone(LE.get_lexicon("en").get("en.emo.nope"))

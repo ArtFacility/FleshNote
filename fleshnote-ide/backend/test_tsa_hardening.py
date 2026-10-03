@@ -3,6 +3,7 @@ import sys
 import io
 import json
 import shutil
+import tempfile
 import threading
 import time
 import unittest
@@ -143,10 +144,7 @@ class TestReceiptShape(unittest.TestCase):
 
 class TestReceiptStateMachine(unittest.TestCase):
     def setUp(self):
-        self.test_dir = os.path.join(backend_dir, "temp_test_tsa_hardening")
-        if os.path.exists(self.test_dir):
-            shutil.rmtree(self.test_dir)
-        os.makedirs(self.test_dir)
+        self.test_dir = tempfile.mkdtemp(prefix="fn_tsa_hardening_")
         self.project = os.path.join(self.test_dir, "proj")
         os.makedirs(self.project)
         db_setup.generate_project_db(self.project, {
@@ -167,7 +165,7 @@ class TestReceiptStateMachine(unittest.TestCase):
         except Exception:
             pass
         if os.path.exists(self.test_dir):
-            shutil.rmtree(self.test_dir)
+            shutil.rmtree(self.test_dir, ignore_errors=True)
 
     def _run(self, anchor=None):
         """Run _process_receipt with tsa_client.anchor_hash stubbed."""

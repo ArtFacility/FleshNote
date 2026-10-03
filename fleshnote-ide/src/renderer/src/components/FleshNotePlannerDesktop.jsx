@@ -1,6 +1,7 @@
 import React, { useState, useRef, useCallback, useEffect, useMemo } from "react";
 import { useTranslation } from "react-i18next";
 import FrameworkSwitcherModal from "./FrameworkSwitcherModal";
+import StoryPulseLane, { PULSE_LANE_H } from "./StoryPulseLane";
 
 /* ─── constants ─── */
 const RAIL_Y = 240; // Shifted down so the text input doesn't overlap the top lane
@@ -59,8 +60,17 @@ const Icons = {
     ),
 };
 
-export default function FleshNotePlannerDesktop({ projectPath, chapters, activeChapter, projectConfig }) {
+export default function FleshNotePlannerDesktop({ projectPath, chapters, activeChapter, projectConfig, onOpenParagraph, onConfigUpdate }) {
     const { t } = useTranslation();
+    // Story Pulse (experimental): switched on in the Janitor settings; a missing key means off
+    const pulseEnabled = projectConfig?.janitor_show_story_pulse === true;
+    const [pulseVisible, setPulseVisible] = useState(() => {
+        try { return localStorage.getItem("fleshnote.storyPulse.visible") !== "false"; } catch { return true; }
+    });
+    const togglePulse = () => setPulseVisible((v) => {
+        try { localStorage.setItem("fleshnote.storyPulse.visible", String(!v)); } catch { /* convenience only */ }
+        return !v;
+    });
     // Data
     const [settings, setSettings] = useState({ theme: "", cursor_pct: 0, shadow_visible: 0 });
     const [blocks, setBlocks] = useState([]);
@@ -668,6 +678,28 @@ export default function FleshNotePlannerDesktop({ projectPath, chapters, activeC
                         {settings.shadow_visible ? <Icons.Eye /> : <Icons.EyeOff />}
                     </button>
 
+                    {pulseEnabled && (
+                        <button
+                            onClick={togglePulse}
+                            title={pulseVisible ? t('storyPulse.hideLane', 'Hide the Story Pulse lane') : t('storyPulse.showLane', 'Show the Story Pulse lane')}
+                            aria-label={t('storyPulse.title', 'Story Pulse')}
+                            aria-pressed={pulseVisible}
+                            style={{
+                                display: "flex",
+                                alignItems: "center",
+                                justifyContent: "center",
+                                width: "28px",
+                                height: "28px",
+                                background: pulseVisible ? "var(--accent-purple-dim)" : "var(--bg-surface)",
+                                border: `1px solid ${pulseVisible ? "var(--accent-purple)" : "var(--border-subtle)"}`,
+                                color: pulseVisible ? "var(--accent-purple)" : "var(--text-tertiary)",
+                                cursor: "pointer",
+                            }}
+                        >
+                            <svg width="14" height="12" viewBox="0 0 28 24" fill="none" stroke="currentColor" strokeWidth="2.2"><polyline points="1 13 7 13 10 4 15 21 19 9 21 13 27 13" /></svg>
+                        </button>
+                    )}
+
                     <button
                         onClick={addArc}
                         style={{
@@ -825,7 +857,7 @@ export default function FleshNotePlannerDesktop({ projectPath, chapters, activeC
                     cursor: isCanvasPanning ? "grabbing" : "grab"
                 }}
             >
-                <div id="planner-bg" style={{ position: "absolute", left: 0, top: 0, right: 0, bottom: 0, minWidth: `${Math.max(800, railGeom.right + 100)}px`, minHeight: `${Math.max(400, ARC_TOP + (visibleArcs.length * 72) + 80)}px` }}>
+                <div id="planner-bg" style={{ position: "absolute", left: 0, top: 0, right: 0, bottom: 0, minWidth: `${Math.max(800, railGeom.right + 100)}px`, minHeight: `${Math.max(400, ARC_TOP + (visibleArcs.length * 72) + 80 + (pulseEnabled && pulseVisible ? PULSE_LANE_H + 24 : 0))}px` }}>
                     {/* Visual Lane Background Rails */}
                     {LANE_Y.map((y, idx) => (
                         <div
@@ -1550,6 +1582,21 @@ export default function FleshNotePlannerDesktop({ projectPath, chapters, activeC
                             </>
                         );
                     })()}
+
+                    {pulseEnabled && pulseVisible && (
+                        <StoryPulseLane
+                            projectPath={projectPath}
+                            language={projectConfig?.story_language || "en"}
+                            projectConfig={projectConfig}
+                            frameworkId={projectConfig?.narrative_framework || settings.narrative_framework || null}
+                            onConfigUpdate={onConfigUpdate}
+                            chapterSpans={chapterSpans}
+                            railGeom={railGeom}
+                            top={ARC_TOP + visibleArcs.length * 72 + 24}
+                            totalWidth={Math.max(800, railGeom.right + 100)}
+                            onOpenParagraph={onOpenParagraph}
+                        />
+                    )}
                 </div>
             </div>
 

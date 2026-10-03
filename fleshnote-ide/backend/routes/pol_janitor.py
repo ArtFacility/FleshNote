@@ -1,5 +1,5 @@
 import re
-from routes.janitor import _build_context, _make_id, _speech_spans, _in_speech, _touches_speech
+from routes.janitor import _build_context, _make_id, _speech_spans, _in_speech, _touches_speech, _narration_segments
 from lexicon_engine import get_lexicon
 
 # --- Polish SDT lexicons ---
@@ -111,7 +111,8 @@ PASSIVE_AUX_PL = {"być", "zostać", "bywać", "zostawać"}
 
 # --- Five Senses Lexicons (Polish) ---
 # Stem-based: Polish is inflected, so prefix matching is used.
-# Stays here until sense detection moves onto the lexicon's sensory entries (plan §4.4).
+# Only the fallback for text with no parse; sense evidence comes from the
+# lexicon's sensory entries (routes/janitor_senses.py).
 SIGHT_STEMS_PL = (
     "widz", "patrz", "spojrz", "wzrok", "blask", "ciemn", "jasn", "kolor",
     "świat", "migot", "lśni", "błyszk", "połysk", "widocz", "niewidocz",
@@ -155,40 +156,14 @@ def _count_senses_pl(plain_text: str) -> dict:
     return result
 
 
-def _analyze_five_senses_pl(plain_text: str, language: str) -> list[dict]:
-    """Flag senses completely absent from the chapter text (Polish)."""
-    if language != "pl":
-        return []
-    counts = _count_senses_pl(plain_text)
-    missing = [sense for sense, count in counts.items() if count == 0]
-    if not missing:
-        return []
-    label = ", ".join(missing)
-    context = plain_text[:120].strip()
-    return [{
-        "id": _make_id("five_senses", label, 0),
-        "type": "five_senses",
-        "entity_type": label,
-        "entity_id": None,
-        "entity_name": None,
-        "matched_text": label,
-        "context": context,
-        "context_highlight_start": 0,
-        "context_highlight_end": 0,
-        "char_offset": 0,
-        "replacement": None,
-    }]
-
-
 def _analyze_weak_adverbs_pl(plain_text: str, language: str, cap: int = 5) -> list[dict]:
     """Detect weak adverbs modifying verbs in Polish text."""
     if language != "pl":
         return []
     suggestions = []
     try:
-        from nlp_manager import get_nlp
-        nlp = get_nlp(language)
-        doc = nlp(plain_text[:10000])
+        from nlp_manager import parse_cached
+        doc = parse_cached(language, plain_text[:10000])
     except Exception:
         return []
 
@@ -291,9 +266,8 @@ def _analyze_passive_voice_pl(plain_text: str, language: str, cap: int = 3) -> l
         return []
     suggestions = []
     try:
-        from nlp_manager import get_nlp
-        nlp = get_nlp(language)
-        doc = nlp(plain_text[:10000])
+        from nlp_manager import parse_cached
+        doc = parse_cached(language, plain_text[:10000])
     except Exception:
         return []
 
@@ -448,7 +422,7 @@ def _detect_realize_verb_pl(sent) -> dict | None:
                     "start_char": token.idx,
                     "end_char": token.idx + len(token.text),
                     "entity_type": "realize_verb",
-                    "confidence": 0.55,
+                    "confidence": 0.45,
                 }
     return None
 
@@ -582,9 +556,8 @@ def _analyze_show_dont_tell_pl(
         return []
     suggestions = []
     try:
-        from nlp_manager import get_nlp
-        nlp = get_nlp(language)
-        doc = nlp(plain_text[:10000])
+        from nlp_manager import parse_cached
+        doc = parse_cached(language, plain_text[:10000])
     except Exception:
         return []
 
@@ -600,6 +573,7 @@ def _analyze_show_dont_tell_pl(
     ]
 
     speech = _speech_spans(plain_text, dash_dialogue=True)
+    flagged_spans: list[tuple[int, int]] = []
     seen_offsets: set = set()
     for sent in doc.sents:
         if len(suggestions) >= cap:
@@ -608,26 +582,36 @@ def _analyze_show_dont_tell_pl(
         # for dialogue the marks can't delimit.
         if not _touches_speech(sent, speech) and _is_dialogue_pl(sent):
             continue
-        for detector in detectors:
+        for detector, segment in ((d, seg) for d in detectors
+                                  for seg in _narration_segments(sent, speech)):
             if len(suggestions) >= cap:
                 break
-            result = detector(sent)
+            result = detector(segment)
             if result is None:
                 continue
             if result["confidence"] < confidence_threshold:
                 continue
             start_char = result["start_char"]
+            end_char = result["end_char"]
             if (start_char in seen_offsets or _in_speech(start_char, speech)
-                    or _in_speech(result["end_char"] - 1, speech)):
+                    or _in_speech(end_char - 1, speech)):
+                continue
+            # One card per spot: two rules can flag the same words ('Sophia
+            # worried' as a verb and as a fragment).
+            if any(start_char < e and s < end_char for s, e in flagged_spans):
+                continue
+            # A missing full stop can merge paragraphs into one parsed sentence.
+            if "\n" in plain_text[start_char:end_char]:
                 continue
             seen_offsets.add(start_char)
-            end_char = result["end_char"]
+            flagged_spans.append((start_char, end_char))
             matched_text = plain_text[start_char:end_char]
             context, hl_start, hl_end = _build_context(plain_text, start_char, end_char)
             suggestions.append({
                 "id": _make_id("show_dont_tell", matched_text, start_char),
                 "type": "show_dont_tell",
                 "entity_type": result["entity_type"],
+                "confidence": result["confidence"],
                 "matched_text": matched_text,
                 "context": context,
                 "context_highlight_start": hl_start,
@@ -647,9 +631,8 @@ def _analyze_pacing_pl(
         return []
     suggestions = []
     try:
-        from nlp_manager import get_nlp
-        nlp = get_nlp(language)
-        doc = nlp(plain_text[:10000])
+        from nlp_manager import parse_cached
+        doc = parse_cached(language, plain_text[:10000])
     except Exception:
         return []
 

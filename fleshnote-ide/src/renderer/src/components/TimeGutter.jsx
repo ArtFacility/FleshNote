@@ -262,7 +262,7 @@ export default function TimeGutter({
           width: gutterWidth,
           minWidth: gutterWidth,
           position: 'relative',
-          borderRight: '1px solid var(--border-subtle)',
+          borderInlineEnd: '1px solid var(--border-subtle)',
           flex: 1,
           transition: 'width 0.2s',
         }}

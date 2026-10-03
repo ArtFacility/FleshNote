@@ -9,6 +9,7 @@
 @import './styles/picker.css';
 @import './styles/bookshelf.css';
 @import './styles/reviewer.css';
+@import './styles/story-pulse.css';
 
 @font-face {
   font-family: 'Crimson Pro';

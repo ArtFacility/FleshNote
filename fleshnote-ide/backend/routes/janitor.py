@@ -40,7 +40,8 @@ WEAK_WORDS = [
 # full kind is a behavior change that needs benchmark numbers.
 _LEX_EN = get_lexicon("en")
 
-LINKING_VERBS_EN = {"be", "feel", "seem", "appear", "look", "become", "grow"}
+LINKING_VERBS_EN = {"be", "feel", "seem", "appear", "look", "become", "grow",
+                    "get", "remain", "stay"}
 
 # Original tuned list plus every strong entry, keeping only felt states: weak
 # entries (cold, broken, moved…) are only evidence in the right company, and
@@ -79,8 +80,9 @@ IGNORE_ADVERBS_EN = {
 }
 
 # --- Five Senses Lexicons (English) ---
-# Matched as surface words, not lemmas, so these stay here until sense detection
-# moves onto the lexicon's sensory entries (plan §4.4) instead of being ported.
+# Matched as surface words. Only the fallback now: sense evidence comes from the
+# lexicon's sensory entries on a parse (routes/janitor_senses.py); these count
+# text that has no parse (no spaCy model).
 SIGHT_WORDS_EN = frozenset({
     "see", "saw", "seen", "look", "looks", "looked", "watch", "watched", "gaze", "gazed",
     "glance", "glanced", "stare", "stared", "glimpse", "glimpsed", "observe", "observed",
@@ -304,19 +306,19 @@ def _analyze_create_entity(
     entities: list[dict],
     language: str,
     linked_ranges: list[tuple[int, int]],
-    cap: int = 5
+    cap: int = 5,
+    ents: list[tuple[int, int, str, str]] | None = None,
 ) -> list[dict]:
+    """New-entity candidates from spaCy NER. `ents` is (start, end, label, text)
+    from the paragraph cache; without it the first 5000 characters are parsed."""
     suggestions = []
-    try:
-        from nlp_manager import get_nlp
-        nlp = get_nlp(language)
-    except Exception:
-        return []
-
-    try:
-        doc = nlp(plain_text[:5000])  # cap for performance
-    except Exception:
-        return []
+    if ents is None:
+        try:
+            from nlp_manager import get_nlp
+            doc = get_nlp(language)(plain_text[:5000])  # cap for performance
+        except Exception:
+            return []
+        ents = [(e.start_char, e.end_char, e.label_, e.text) for e in doc.ents]
 
     existing_names_lower = set()
     for e in entities:
@@ -349,13 +351,13 @@ def _analyze_create_entity(
     }
 
     seen_texts: set = set()
-    for ent in doc.ents:
+    for ent_start, ent_end, ent_label, ent_text in ents:
         if len(suggestions) >= cap:
             break
-        etype = spacy_to_entity.get(ent.label_)
+        etype = spacy_to_entity.get(ent_label)
         if not etype:
             continue
-        name = ent.text.strip()
+        name = ent_text.strip()
         if not name or len(name) < 3:
             continue
         name_lower = name.lower()
@@ -364,10 +366,10 @@ def _analyze_create_entity(
         if _overlaps_existing(name_lower):
             continue
         seen_texts.add(name_lower)
-        offset = ent.start_char
+        offset = ent_start
         if _is_in_linked_range(offset, linked_ranges):
             continue
-        context, hl_start, hl_end = _build_context(plain_text, ent.start_char, ent.end_char)
+        context, hl_start, hl_end = _build_context(plain_text, ent_start, ent_end)
         suggestions.append({
             "id": _make_id("create_entity", name, offset),
             "type": "create_entity",
@@ -560,9 +562,8 @@ def _analyze_weak_adverbs(plain_text: str, language: str, cap: int = 5) -> list[
         return []
     suggestions = []
     try:
-        from nlp_manager import get_nlp
-        nlp = get_nlp(language)
-        doc = nlp(plain_text[:10000])
+        from nlp_manager import parse_cached
+        doc = parse_cached(language, plain_text[:10000])
     except Exception:
         return []
 
@@ -619,9 +620,8 @@ def _analyze_passive_voice(plain_text: str, language: str, cap: int = 3) -> list
         return []
     suggestions = []
     try:
-        from nlp_manager import get_nlp
-        nlp = get_nlp(language)
-        doc = nlp(plain_text[:10000])
+        from nlp_manager import parse_cached
+        doc = parse_cached(language, plain_text[:10000])
     except Exception:
         return []
 
@@ -661,14 +661,18 @@ _QUOTED_SPEECH_RE = re.compile(
     r"|(?<!\w)‘[^\n]*?’(?!\w)"       # ‘…’ (’ inside words is an apostrophe)
     r"|(?<!\w)'[^\n]*?'(?!\w)"                 # '…' (Conrad-style)
 )
-_SPACED_DASH_RE = re.compile(r"(?:^|\s)[–—](?=\s)")
+# Many writers type a plain hyphen for the dialogue dash ('- Igen - mondta.'),
+# often mixed with '–' in the same line. Only spaced dashes count, so compounds
+# ('csak-csak') never switch.
+_SPACED_DASH_RE = re.compile(r"(?:^|\s)[–—-](?=\s)")
 
 
 def _speech_spans(text: str, dash_dialogue: bool = False) -> list[tuple[int, int]]:
     """Character ranges of spoken text: quoted passages, and for HU/PL the dash
     dialogue convention ('– Nem – mondta büszkén Weisz. – Igen.'), where a line
     that opens with a dash (or ': –') is speech until the next spaced dash, and
-    each further spaced dash switches between speech and narration.
+    each further spaced dash switches between speech and narration. A spaced
+    hyphen counts as a dash; one inside a narration line changes nothing.
 
     Show-don't-tell only skips flags inside these ranges, so the narration around
     a line of dialogue ('mondta büszkén') is still checked."""
@@ -679,7 +683,7 @@ def _speech_spans(text: str, dash_dialogue: bool = False) -> list[tuple[int, int
             dashes = [m.end() for m in _SPACED_DASH_RE.finditer(line)]
             if dashes:
                 stripped = line.lstrip()
-                opens = stripped[:1] in ("–", "—")
+                opens = stripped[:1] in ("–", "—", "-")
                 if not opens:
                     # 'fordult a paphoz: – Mi lesz…' opens speech mid-line.
                     first = next((m for m in _SPACED_DASH_RE.finditer(line)
@@ -703,6 +707,26 @@ def _touches_speech(sent, spans: list[tuple[int, int]]) -> bool:
     return any(start < sent.end_char and sent.start_char < end for start, end in spans)
 
 
+def _narration_segments(sent, spans: list[tuple[int, int]]) -> list:
+    """The parts of a sentence outside quoted speech, as spans the detectors can
+    run on. Detectors report their first match, so running them on the whole
+    sentence would let a match inside the quote hide one in the narration
+    ('Sophia looks offended: “Playing around?”')."""
+    if not _touches_speech(sent, spans):
+        return [sent]
+    segments, start = [], None
+    for tok in sent:
+        inside = _in_speech(tok.idx, spans)
+        if not inside and start is None:
+            start = tok.i
+        elif inside and start is not None:
+            segments.append(sent.doc[start:tok.i])
+            start = None
+    if start is not None:
+        segments.append(sent.doc[start:sent.end])
+    return [seg for seg in segments if any(t.is_alpha for t in seg)]
+
+
 def _is_dialogue_en(sent) -> bool:
     """Return True if this sentence looks like dialogue that _speech_spans can't
     delimit: an unpaired quote mark, or reported speech ('he said that…').
@@ -713,7 +737,8 @@ def _is_dialogue_en(sent) -> bool:
     for token in sent:
         if token.lemma_ in SPEECH_VERBS_EN:
             for child in token.children:
-                if child.dep_ in ("ccomp", "parataxis"):
+                # A clause ('said he was fine'); 'she says, confused' is not one.
+                if child.dep_ in ("ccomp", "parataxis") and child.pos_ in ("VERB", "AUX"):
                     return True
             if token.dep_ == "parataxis" and token.head.dep_ == "ROOT":
                 return True
@@ -725,30 +750,35 @@ _ANIMATE_PRONOUNS_EN = {
     "one", "who", "someone", "somebody", "everyone", "everybody", "anyone", "anybody",
     "nobody", "myself", "yourself", "himself", "herself", "ourselves", "themselves",
 }
-_animate_noun_cache: dict[str, bool] = {}
+_animate_noun_cache: dict[tuple[str, bool], bool] = {}
 
 
-def _is_animate_noun_en(lemma: str) -> bool:
+def _is_animate_noun_en(lemma: str, persons_only: bool = False) -> bool:
     """True if WordNet files the noun under person/animal/people (captain, crew,
     whale) or body part (heart, eyes — feelings are told through them too).
 
+    `persons_only` leaves out groups and body parts ('a charmed circle', 'the
+    jealous orb'), for rules where the noun itself must be a character.
     Without WordNet nothing is ruled out, which keeps the pre-lexicon behavior."""
-    if lemma not in _animate_noun_cache:
+    key = (lemma, persons_only)
+    if key not in _animate_noun_cache:
         try:
             from nltk_manager import check_wordnet_exists
             if not check_wordnet_exists():
                 return True
             from nltk.corpus import wordnet as wn
-            roots = {wn.synset(s) for s in ("person.n.01", "animal.n.01", "people.n.01",
-                                            "social_group.n.01", "body_part.n.01")}
-            _animate_noun_cache[lemma] = any(
+            names = ("person.n.01", "animal.n.01", "people.n.01")
+            if not persons_only:
+                names += ("social_group.n.01", "body_part.n.01")
+            roots = {wn.synset(n) for n in names}
+            _animate_noun_cache[key] = any(
                 roots.intersection(path)
                 for syn in wn.synsets(lemma, pos="n")[:3]
                 for path in syn.hypernym_paths()
             )
         except Exception:
             return True
-    return _animate_noun_cache[lemma]
+    return _animate_noun_cache[key]
 
 
 def _has_animate_subject_en(verb) -> bool:
@@ -777,8 +807,13 @@ def _detect_emotion_label_en(sent) -> dict | None:
     for token in sent:
         if token.lemma_ in LINKING_VERBS_EN and token.pos_ in ("VERB", "AUX"):
             for child in token.children:
-                if child.pos_ == "ADJ":
-                    lemma = child.lemma_.lower()
+                # 'she is shocked' / 'looks offended' can come out as a VBN, and
+                # the small model sometimes labels it advmod or dep.
+                is_participle = (child.tag_ == "VBN"
+                                 and child.dep_ in ("acomp", "oprd", "advmod", "xcomp", "dep")
+                                 and not any(c.dep_ in ("dobj", "nsubj") for c in child.children))
+                if child.pos_ == "ADJ" or is_participle:
+                    lemma = child.lower_ if is_participle else child.lemma_.lower()
                     if lemma in STATE_EXEMPTIONS_EN:
                         continue
                     if lemma in WILLING_BEFORE_INFINITIVE_EN and any(
@@ -842,7 +877,7 @@ def _detect_realize_verb_en(sent) -> dict | None:
                     "start_char": token.idx,
                     "end_char": token.idx + len(token.text),
                     "entity_type": "realize_verb",
-                    "confidence": 0.65,
+                    "confidence": 0.45,
                 }
     return None
 
@@ -934,18 +969,38 @@ def _detect_detached_emotion_en(sent) -> dict | None:
     if i >= len(toks):
         return None
     cand = toks[i]
-    is_label = ((cand.pos_ == "ADJ" and cand.lemma_.lower() in EMOTION_LEXICON_EN)
-                or (cand.tag_ == "VBN" and cand.lower_ in EMOTION_LEXICON_EN))
-    if not is_label or cand.dep_ == "ROOT":
-        return None
-    after = cand.right_edge.i + 1
-    if after >= len(cand.doc) or cand.doc[after].text != ",":
-        return None
-    start = cand.left_edge.idx  # include its own modifier ('Rather surprised')
+    if _is_emotion_word_en(cand) and cand.dep_ != "ROOT":
+        after = cand.right_edge.i + 1
+        if after < len(cand.doc) and cand.doc[after].text == ",":
+            return _detached_result_en(cand)
+    # Set off by a comma after the verb: '– She says, frustrated.', 'leans back
+    # into his chair, seeming distressed'.
+    for tok in sent:
+        if not _is_emotion_word_en(tok) or tok.head.pos_ != "VERB" or tok.head is tok:
+            continue
+        if tok.dep_ not in ("advcl", "ccomp", "oprd", "xcomp", "npadvmod", "dep"):
+            continue
+        if any(c.dep_ in ("nsubj", "nsubjpass", "dobj") for c in tok.children):
+            continue
+        # The comma may hang off the adjective itself, inside its subtree.
+        first = next(t for t in tok.subtree if not t.is_punct)
+        before = first.i - 1
+        if before >= 0 and tok.doc[before].text == ",":
+            return _detached_result_en(tok)
+    return None
+
+
+def _is_emotion_word_en(tok) -> bool:
+    return ((tok.pos_ == "ADJ" and tok.lemma_.lower() in EMOTION_LEXICON_EN)
+            or (tok.tag_ == "VBN" and tok.lower_ in EMOTION_LEXICON_EN))
+
+
+def _detached_result_en(tok) -> dict:
     return {
         "matched_text": None,
-        "start_char": start,
-        "end_char": cand.idx + len(cand.text),
+        # include its own modifier ('Rather surprised'), not a leading comma
+        "start_char": next(t for t in tok.subtree if not t.is_punct).idx,
+        "end_char": tok.idx + len(tok.text),
         "entity_type": "detached_emotion",
         "confidence": 0.8,
     }
@@ -992,6 +1047,119 @@ def _detect_emotion_verb_en(sent) -> dict | None:
     return None
 
 
+ALL_EMOTION_ADVERBS_EN = _LEX_EN.lemmas("emotion_adverb", felt="state")
+# Face, look and voice nouns: an emotion word on them tells the moment's state,
+# and a trait word does too ('a worried expression', 'in a lighthearted tone').
+FACE_NOUNS_EN = {"face", "expression", "look", "glance", "gaze", "eye", "voice", "tone",
+                 "smile", "grin", "frown", "stare"}
+FACE_ADJECTIVES_EN = EMOTION_LEXICON_EN | _LEX_EN.lemmas("emotion_label", felt="trait")
+# Verbs that take a feeling as their object: 'contain her nervousness'.
+_MODALS_EN = {"might", "could", "would", "may", "should", "must"}
+HOLD_EMOTION_VERBS_EN = {"feel", "contain", "hide", "hold", "suppress", "control", "swallow",
+                         "mask", "conceal", "fight", "stifle", "choke", "master", "betray"}
+
+
+def _is_animate_token_en(tok, persons_only: bool = False) -> bool:
+    if tok.pos_ == "PROPN":
+        return True
+    if tok.pos_ == "PRON":
+        return tok.lower_ in _ANIMATE_PRONOUNS_EN
+    return tok.pos_ == "NOUN" and _is_animate_noun_en(tok.lemma_.lower(), persons_only)
+
+
+def _detect_emotion_fragment_en(sent) -> dict | None:
+    """Detect a verbless name + emotion fragment, common in drafts and
+    screenplay-like prose: 'Sophia scared, hides…', 'Spook terrified',
+    'Matheus visibly annoyed by it'. The parser reads the emotion word as the
+    predicate; with an object ('Sophia scared the cat') it's an action."""
+    for tok in sent:
+        if tok.tag_ not in ("VBD", "VBN", "JJ") or tok.lower_ not in EMOTION_LEXICON_EN:
+            continue
+        children = list(tok.children)
+        if any(c.dep_ in ("dobj", "aux", "auxpass", "cop") for c in children):
+            continue
+        subj = next((c for c in children if c.dep_ == "nsubj"), None)
+        if subj is None or not _is_animate_token_en(subj):
+            continue
+        return {
+            "matched_text": None,
+            "start_char": subj.idx,
+            "end_char": tok.idx + len(tok.text),
+            "entity_type": "emotion_label",
+            "confidence": 0.8,
+        }
+    return None
+
+
+def _detect_emotion_attribute_en(sent) -> dict | None:
+    """Detect an emotion adjective on a character or on a face/voice noun:
+    'the nervous Sophia', 'her excited daughter', 'a worried expression',
+    'in a lighthearted tone'. On things it's description ('the angry sea')."""
+    for tok in sent:
+        if tok.pos_ != "ADJ" or tok.dep_ != "amod":
+            continue
+        if tok.i > 0 and tok.doc[tok.i - 1].text == "-":
+            continue  # part of a compound ('a color-happy painter')
+        lemma = tok.lemma_.lower()
+        noun = tok.head
+        on_face = noun.lemma_.lower() in FACE_NOUNS_EN and lemma in FACE_ADJECTIVES_EN
+        on_character = (lemma in EMOTION_LEXICON_EN and lemma not in STATE_EXEMPTIONS_EN
+                        and noun.pos_ in ("PROPN", "NOUN")
+                        and _is_animate_token_en(noun, persons_only=True))
+        if on_face or on_character:
+            return {
+                "matched_text": None,
+                "start_char": tok.idx,
+                "end_char": noun.idx + len(noun.text) if noun.i > tok.i else tok.idx + len(tok.text),
+                "entity_type": "emotion_attribute",
+                "confidence": 0.7,
+            }
+    return None
+
+
+def _detect_emotion_noun_actor_en(sent) -> dict | None:
+    """Detect an emotion named as the one acting, or as what's held back:
+    'Anger starts to escape through his eyes', 'Excitement takes over her',
+    'to contain her nervousness'."""
+    for tok in sent:
+        if tok.pos_ != "NOUN" or tok.lemma_.lower() not in STRONG_EMOTION_NOUNS_EN:
+            continue
+        head = tok.head
+        # Not 'the more's the pity' / 'was it fear': those are 'be' sentences.
+        acting = tok.dep_ == "nsubj" and head.pos_ == "VERB" and head.lemma_ != "be"
+        held = tok.dep_ == "dobj" and head.lemma_.lower() in HOLD_EMOTION_VERBS_EN
+        if acting or held:
+            return {
+                "matched_text": None,
+                "start_char": tok.idx,
+                "end_char": tok.idx + len(tok.text),
+                "entity_type": "emotion_noun_frame",
+                "confidence": 0.75,
+            }
+    return None
+
+
+def _detect_emotion_manner_en(sent) -> dict | None:
+    """Detect an emotion adverb on any action: 'looks down on him angrily',
+    'nervously tries to ignore it'. Speech verbs are covered by
+    _detect_adverb_emotion_en."""
+    for tok in sent:
+        if tok.pos_ != "ADV" or tok.dep_ != "advmod" or tok.head.pos_ != "VERB":
+            continue
+        # 'he might happily gain…' — a hypothetical, and often 'gladly'.
+        if any(c.dep_ == "aux" and c.lower_ in _MODALS_EN for c in tok.head.children):
+            continue
+        if tok.lower_ in ALL_EMOTION_ADVERBS_EN or tok.lemma_.lower() in ALL_EMOTION_ADVERBS_EN:
+            return {
+                "matched_text": None,
+                "start_char": tok.idx,
+                "end_char": tok.idx + len(tok.text),
+                "entity_type": "emotion_manner",
+                "confidence": 0.7,
+            }
+    return None
+
+
 def _analyze_show_dont_tell(
     plain_text: str,
     language: str,
@@ -1008,9 +1176,8 @@ def _analyze_show_dont_tell(
         return []
     suggestions = []
     try:
-        from nlp_manager import get_nlp
-        nlp = get_nlp(language)
-        doc = nlp(plain_text[:10000])
+        from nlp_manager import parse_cached
+        doc = parse_cached(language, plain_text[:10000])
     except Exception:
         return []
 
@@ -1021,9 +1188,14 @@ def _analyze_show_dont_tell(
         _detect_emotion_noun_frame_en,
         _detect_detached_emotion_en,
         _detect_emotion_verb_en,
+        _detect_emotion_fragment_en,
+        _detect_emotion_attribute_en,
+        _detect_emotion_noun_actor_en,
+        _detect_emotion_manner_en,
     ]
 
     speech = _speech_spans(plain_text, dash_dialogue=False)
+    flagged_spans: list[tuple[int, int]] = []
     seen_offsets: set = set()
     for sent in doc.sents:
         if len(suggestions) >= cap:
@@ -1032,26 +1204,36 @@ def _analyze_show_dont_tell(
         # for dialogue the marks can't delimit.
         if not _touches_speech(sent, speech) and _is_dialogue_en(sent):
             continue
-        for detector in detectors:
+        for detector, segment in ((d, seg) for d in detectors
+                                  for seg in _narration_segments(sent, speech)):
             if len(suggestions) >= cap:
                 break
-            result = detector(sent)
+            result = detector(segment)
             if result is None:
                 continue
             if result["confidence"] < confidence_threshold:
                 continue
             start_char = result["start_char"]
+            end_char = result["end_char"]
             if (start_char in seen_offsets or _in_speech(start_char, speech)
-                    or _in_speech(result["end_char"] - 1, speech)):
+                    or _in_speech(end_char - 1, speech)):
+                continue
+            # One card per spot: two rules can flag the same words ('Sophia
+            # worried' as a verb and as a fragment).
+            if any(start_char < e and s < end_char for s, e in flagged_spans):
+                continue
+            # A missing full stop can merge paragraphs into one parsed sentence.
+            if "\n" in plain_text[start_char:end_char]:
                 continue
             seen_offsets.add(start_char)
-            end_char = result["end_char"]
+            flagged_spans.append((start_char, end_char))
             matched_text = plain_text[start_char:end_char]
             context, hl_start, hl_end = _build_context(plain_text, start_char, end_char)
             suggestions.append({
                 "id": _make_id("show_dont_tell", matched_text, start_char),
                 "type": "show_dont_tell",
                 "entity_type": result["entity_type"],
+                "confidence": result["confidence"],
                 "matched_text": matched_text,
                 "context": context,
                 "context_highlight_start": hl_start,
@@ -1071,9 +1253,8 @@ def _analyze_pacing(
         return []
     suggestions = []
     try:
-        from nlp_manager import get_nlp
-        nlp = get_nlp(language)
-        doc = nlp(plain_text[:10000])
+        from nlp_manager import parse_cached
+        doc = parse_cached(language, plain_text[:10000])
     except Exception:
         return []
 
@@ -1185,31 +1366,6 @@ def _flesch_kincaid_en(plain_text: str) -> dict:
     return {"score": score, "grade": grade, "label": label}
 
 
-def _analyze_five_senses(plain_text: str, language: str) -> list[dict]:
-    """Flag senses completely absent from the chapter text (English only)."""
-    if language != "en":
-        return []
-    words = set(re.findall(r'\b[a-zA-Z]+\b', plain_text.lower()))
-    missing = [sense for sense, lexicon in EN_SENSES.items() if not (words & lexicon)]
-    if not missing:
-        return []
-    label = ", ".join(missing)
-    context = plain_text[:120].strip()
-    return [{
-        "id": _make_id("five_senses", label, 0),
-        "type": "five_senses",
-        "entity_type": label,
-        "entity_id": None,
-        "entity_name": None,
-        "matched_text": label,
-        "context": context,
-        "context_highlight_start": 0,
-        "context_highlight_end": 0,
-        "char_offset": 0,
-        "replacement": None,
-    }]
-
-
 def _analyze_readability(plain_text: str, language: str) -> list[dict]:
     """Warn if chapter readability is too complex (FK grade > 11)."""
     if language != "en":
@@ -1245,10 +1401,20 @@ def janitor_senses_overview(req: SensesOverviewRequest):
         conn = _get_db(req.project_path)
     except FileNotFoundError as e:
         return {"status": "error", "chapters": [], "error": str(e)}
+    counter = None
     try:
+        from routes.chapters import md_to_editor_html
+        from routes.janitor_senses import OverviewCounter, lexical_counts
         chapters = conn.execute(
-            "SELECT id, chapter_number, title, md_filename FROM chapters ORDER BY chapter_number"
+            "SELECT id, chapter_number, title, md_filename FROM chapters "
+            "WHERE deleted = 0 ORDER BY chapter_number"
         ).fetchall()
+        # Sense evidence comes from the Janitor's paragraph cache; paragraphs it
+        # hasn't seen yet are parsed within a time budget, the rest counted
+        # lexically (routes/janitor_senses.py).
+        parse_based = req.language in ("en", "hu", "pl")
+        if parse_based:
+            counter = OverviewCounter(req.project_path, req.language)
         result = []
         for ch in chapters:
             if not ch["md_filename"]:
@@ -1257,20 +1423,14 @@ def janitor_senses_overview(req: SensesOverviewRequest):
             if not md_path or not os.path.exists(md_path):
                 continue
             with open(md_path, "r", encoding="utf-8") as f:
-                raw = f.read()
-            # Strip entity/twist markers so they don't pollute word lists
-            plain = _strip_todo_blocks(_html_to_plain(raw)).strip()
+                html = md_to_editor_html(f.read())
+            plain = _strip_todo_blocks(_html_to_plain(html)).strip()
             if not plain:
                 continue
-            if req.language == "hu":
-                from routes.hun_janitor import _count_senses_hu
-                senses = _count_senses_hu(plain)
-            elif req.language == "pl":
-                from routes.pol_janitor import _count_senses_pl
-                senses = _count_senses_pl(plain)
+            if parse_based:
+                senses, parsed, blocks = counter.count(html)
             else:
-                words = set(re.findall(r'\b[a-zA-Z]+\b', plain.lower()))
-                senses = {sense: len(words & lexicon) for sense, lexicon in EN_SENSES.items()}
+                senses, parsed, blocks = lexical_counts(plain, "en"), 0, 0
             fk = _flesch_kincaid_en(plain) if req.language == "en" else {"score": None, "grade": None, "label": None}
             result.append({
                 "chapter_id": ch["id"],
@@ -1278,11 +1438,15 @@ def janitor_senses_overview(req: SensesOverviewRequest):
                 "title": ch["title"] or f"Chapter {ch['chapter_number']}",
                 "senses": senses,
                 "readability": fk,
+                "parsed_blocks": parsed,
+                "total_blocks": blocks,
             })
         return {"status": "ok", "chapters": result}
     except Exception as e:
         return {"status": "error", "chapters": [], "error": str(e)}
     finally:
+        if counter is not None:
+            counter.close()
         conn.close()
 
 
@@ -1294,60 +1458,34 @@ def janitor_analyze(req: JanitorRequest):
         return {"status": "error", "suggestions": [], "error": str(e)}
 
     try:
-        plain_text = _strip_todo_blocks(_html_to_plain(req.html))
+        from routes.janitor_paragraphs import ChapterAnalysis
+        # Parse-based rules run per paragraph, cached in fleshnote_cache.db, so an
+        # edit only re-parses the paragraph it touched (routes/janitor_paragraphs.py).
+        analysis = ChapterAnalysis(req.project_path, req.chapter_id, req.html, req.language)
+        plain_text = analysis.plain_text
         if not plain_text.strip():
             return {"status": "ok", "suggestions": []}
         # Word-boundary-safe version for typo/synonym tokenization (adds spaces at block breaks)
         words_plain = _strip_todo_blocks(_html_to_words_plain(req.html))
         entities = _get_all_entities(conn)
         linked_ranges = _get_linked_ranges(req.html)
-        if req.language == "hu":
-            from routes.hun_janitor import (
-                _analyze_weak_adverbs_hu,
-                _analyze_passive_voice_hu,
-                _analyze_show_dont_tell_hu,
-                _analyze_pacing_hu,
-                _analyze_five_senses_hu,
-            )
-            weak_adverbs = _analyze_weak_adverbs_hu(plain_text, req.language)
-            passive_voice = _analyze_passive_voice_hu(plain_text, req.language)
-            sdt = _analyze_show_dont_tell_hu(plain_text, req.language, req.confidence_threshold)
-            pacing = _analyze_pacing_hu(plain_text, req.language)
-            five_senses = _analyze_five_senses_hu(plain_text, req.language)
-        elif req.language == "pl":
-            from routes.pol_janitor import (
-                _analyze_weak_adverbs_pl,
-                _analyze_passive_voice_pl,
-                _analyze_show_dont_tell_pl,
-                _analyze_pacing_pl,
-                _analyze_five_senses_pl,
-            )
-            weak_adverbs = _analyze_weak_adverbs_pl(plain_text, req.language)
-            passive_voice = _analyze_passive_voice_pl(plain_text, req.language)
-            sdt = _analyze_show_dont_tell_pl(plain_text, req.language, req.confidence_threshold)
-            pacing = _analyze_pacing_pl(plain_text, req.language)
-            five_senses = _analyze_five_senses_pl(plain_text, req.language)
-        else:
-            weak_adverbs = _analyze_weak_adverbs(plain_text, req.language)
-            passive_voice = _analyze_passive_voice(plain_text, req.language)
-            sdt = _analyze_show_dont_tell(plain_text, req.language, req.confidence_threshold)
-            pacing = _analyze_pacing(plain_text, req.language)
-            five_senses = _analyze_five_senses(plain_text, req.language)
-
-        readability = _analyze_readability(plain_text, req.language)
+        # Chapter-wide checks count words, so keep paragraph edges apart
+        # ('ceiling' + 'Sophia', not 'ceilingSophia').
+        chapter_words = " ".join(text for _, text in analysis.blocks)
+        five_senses = analysis.senses_card()
+        readability = _analyze_readability(chapter_words, req.language)
         suggestions = (
             _analyze_link_existing(plain_text, linked_ranges, entities) +
-            _analyze_create_entity(plain_text, entities, req.language, linked_ranges) +
+            _analyze_create_entity(plain_text, entities, req.language, linked_ranges,
+                                   ents=analysis.entities()) +
             _analyze_alias(plain_text, entities) +
             _analyze_typo(plain_text, req.language, words_plain, entities) +
             _analyze_synonym(plain_text, req.language, words_plain) +
-            weak_adverbs +
-            passive_voice +
-            sdt +
-            pacing +
+            analysis.rule_suggestions(req.confidence_threshold) +
             five_senses +
             readability
         )
+        suggestions = [analysis.finish(s, _make_id) for s in suggestions]
         return {"status": "ok", "suggestions": suggestions}
     except Exception as e:
         return {"status": "error", "suggestions": [], "error": str(e)}

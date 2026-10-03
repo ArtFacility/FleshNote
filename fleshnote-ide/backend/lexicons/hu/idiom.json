@@ -16,7 +16,11 @@
       ],
       "source": "curated:gemini-2026-09",
       "version": 1,
-      "example": "Hideg vérrel irányította a menekülő embereket a viharban."
+      "example": "Hideg vérrel irányította a menekülő embereket a viharban.",
+      "phrase_pos": [
+        "ADJ",
+        "NOUN"
+      ]
     },
     {
       "id": "hu.idiom.meleg_szív",
@@ -31,7 +35,11 @@
       ],
       "source": "curated:gemini-2026-09",
       "version": 1,
-      "example": "Meleg szívvel fogadta be házába az éhező zarándokot."
+      "example": "Meleg szívvel fogadta be házába az éhező zarándokot.",
+      "phrase_pos": [
+        null,
+        "NOUN"
+      ]
     },
     {
       "id": "hu.idiom.rossz_vér",
@@ -44,7 +52,11 @@
       "blocks": [],
       "source": "curated:gemini-2026-09",
       "version": 1,
-      "example": "A vagyonmegosztás csak rossz vért szült a testvérek között."
+      "example": "A vagyonmegosztás csak rossz vért szült a testvérek között.",
+      "phrase_pos": [
+        "ADJ",
+        "NOUN"
+      ]
     },
     {
       "id": "hu.idiom.vér_szomjazik",
@@ -57,7 +69,11 @@
       "blocks": [],
       "source": "curated:gemini-2026-09",
       "version": 1,
-      "example": "A kegyetlen hadúr pusztán vér szomjazik a csatamezőn."
+      "example": "A kegyetlen hadúr pusztán vér szomjazik a csatamezőn.",
+      "phrase_pos": [
+        "NOUN",
+        "VERB"
+      ]
     },
     {
       "id": "hu.idiom.tűz_tesz_a_kéz",
@@ -74,7 +90,13 @@
       ],
       "source": "curated:gemini-2026-09",
       "version": 1,
-      "example": "A barátjáért habozás nélkül tűzbe teszi a kezét."
+      "example": "A barátjáért habozás nélkül tűzbe teszi a kezét.",
+      "phrase_pos": [
+        "NOUN",
+        "VERB",
+        null,
+        "NOUN"
+      ]
     },
     {
       "id": "hu.idiom.játszik_a_tűz",
@@ -90,7 +112,12 @@
       ],
       "source": "curated:gemini-2026-09",
       "version": 1,
-      "example": "Aki a törvényekkel dacol, az valójában játszik a tűzzel."
+      "example": "Aki a törvényekkel dacol, az valójában játszik a tűzzel.",
+      "phrase_pos": [
+        "VERB",
+        null,
+        "NOUN"
+      ]
     },
     {
       "id": "hu.idiom.tűz_víz_át",
@@ -106,7 +133,12 @@
       ],
       "source": "curated:gemini-2026-09",
       "version": 1,
-      "example": "A hűséges katona kész volt tűzön vízen át követni vezérét."
+      "example": "A hűséges katona kész volt tűzön vízen át követni vezérét.",
+      "phrase_pos": [
+        "NOUN",
+        "NOUN",
+        "ADP"
+      ]
     },
     {
       "id": "hu.idiom.tűz_jön",
@@ -121,7 +153,11 @@
       ],
       "source": "curated:gemini-2026-09",
       "version": 1,
-      "example": "A lelkes szónok azonnal tűzbe jött a tömeg éljenzésétől."
+      "example": "A lelkes szónok azonnal tűzbe jött a tömeg éljenzésétől.",
+      "phrase_pos": [
+        "NOUN",
+        "VERB"
+      ]
     },
     {
       "id": "hu.idiom.kardél_hány",
@@ -134,7 +170,11 @@
       "blocks": [],
       "source": "curated:gemini-2026-09",
       "version": 1,
-      "example": "A kegyetlen ostromlók kardélre hányták a vár védőit."
+      "example": "A kegyetlen ostromlók kardélre hányták a vár védőit.",
+      "phrase_pos": [
+        "NOUN",
+        "VERB"
+      ]
     },
     {
       "id": "hu.idiom.kard_ránt",
@@ -144,12 +184,15 @@
       ],
       "kind": "idiom",
       "strength": "strong",
-      "blocks": [
-        "hu.danger.kard"
-      ],
+      "blocks": [],
       "source": "curated:gemini-2026-09",
       "version": 1,
-      "example": "A vitéz lovag gyorsan kardot rántott a rablók ellen."
+      "example": "A vitéz lovag gyorsan kardot rántott a rablók ellen.",
+      "phrase_pos": [
+        "NOUN",
+        "VERB"
+      ],
+      "note": "usually literal in fiction (drawing a sword): cancels nothing"
     },
     {
       "id": "hu.idiom.szem_huny",
@@ -162,7 +205,11 @@
       "blocks": [],
       "source": "curated:gemini-2026-09",
       "version": 1,
-      "example": "A szigorú tanár most szemet hunyt az apró csínytevés felett."
+      "example": "A szigorú tanár most szemet hunyt az apró csínytevés felett.",
+      "phrase_pos": [
+        "NOUN",
+        "VERB"
+      ]
     },
     {
       "id": "hu.idiom.szem_szúr",
@@ -175,7 +222,11 @@
       "blocks": [],
       "source": "curated:gemini-2026-09",
       "version": 1,
-      "example": "A díszes palota mindenkinek szemet szúrt a szegény faluban."
+      "example": "A díszes palota mindenkinek szemet szúrt a szegény faluban.",
+      "phrase_pos": [
+        "NOUN",
+        "VERB"
+      ]
     },
     {
       "id": "hu.idiom.szem_tart",
@@ -188,7 +239,11 @@
       "blocks": [],
       "source": "curated:gemini-2026-09",
       "version": 1,
-      "example": "Az őrök folyamatosan szemmel tartották a gyanús idegent."
+      "example": "Az őrök folyamatosan szemmel tartották a gyanús idegent.",
+      "phrase_pos": [
+        "NOUN",
+        "VERB"
+      ]
     },
     {
       "id": "hu.idiom.szembe_néz",
@@ -201,7 +256,11 @@
       "blocks": [],
       "source": "curated:gemini-2026-09",
       "version": 1,
-      "example": "A bátor harcos habozás nélkül szembe nézett a halálos veszedelemmel."
+      "example": "A bátor harcos habozás nélkül szembe nézett a halálos veszedelemmel.",
+      "phrase_pos": [
+        "ADV",
+        "VERB"
+      ]
     },
     {
       "id": "hu.idiom.fül_bot_se_mozgat",
@@ -216,7 +275,13 @@
       "blocks": [],
       "source": "curated:gemini-2026-09",
       "version": 1,
-      "example": "A parancs hallatára a lusta szolga fülét botját se mozgatta."
+      "example": "A parancs hallatára a lusta szolga fülét botját se mozgatta.",
+      "phrase_pos": [
+        "NOUN",
+        "NOUN",
+        "ADV",
+        "VERB"
+      ]
     },
     {
       "id": "hu.idiom.fül_jut",
@@ -229,7 +294,11 @@
       "blocks": [],
       "source": "curated:gemini-2026-09",
       "version": 1,
-      "example": "Hamar fülébe jutott a hír a király titkos készülődéséről."
+      "example": "Hamar fülébe jutott a hír a király titkos készülődéséről.",
+      "phrase_pos": [
+        "NOUN",
+        "VERB"
+      ]
     },
     {
       "id": "hu.idiom.fül_hegyez",
@@ -242,7 +311,11 @@
       "blocks": [],
       "source": "curated:gemini-2026-09",
       "version": 1,
-      "example": "A vadász feszülten fülét hegyezte a bokrok felé."
+      "example": "A vadász feszülten fülét hegyezte a bokrok felé.",
+      "phrase_pos": [
+        "NOUN",
+        "VERB"
+      ]
     },
     {
       "id": "hu.idiom.orr_koppin",
@@ -255,7 +328,11 @@
       "blocks": [],
       "source": "curated:gemini-2026-09",
       "version": 1,
-      "example": "A szigorú mester orron koppint a hanyag inasra."
+      "example": "A szigorú mester orron koppint a hanyag inasra.",
+      "phrase_pos": [
+        "NOUN",
+        "VERB"
+      ]
     },
     {
       "id": "hu.idiom.orr_fricskáz",
@@ -268,7 +345,11 @@
       "blocks": [],
       "source": "curated:gemini-2026-09",
       "version": 1,
-      "example": "A bátor legény tréfásan orron fricskázta a gőgös ellenfelét."
+      "example": "A bátor legény tréfásan orron fricskázta a gőgös ellenfelét.",
+      "phrase_pos": [
+        "NOUN",
+        "VERB"
+      ]
     },
     {
       "id": "hu.idiom.fog_fehérít",
@@ -281,7 +362,11 @@
       "blocks": [],
       "source": "curated:gemini-2026-09",
       "version": 1,
-      "example": "A vidám cimbora jókedvűen fogát fehérítette a tréfán."
+      "example": "A vidám cimbora jókedvűen fogát fehérítette a tréfán.",
+      "phrase_pos": [
+        "NOUN",
+        "VERB"
+      ]
     },
     {
       "id": "hu.idiom.fog_csikorgat",
@@ -294,7 +379,11 @@
       "blocks": [],
       "source": "curated:gemini-2026-09",
       "version": 1,
-      "example": "Dühében tehetetlenül fogát csikorgatta a rácsok mögött."
+      "example": "Dühében tehetetlenül fogát csikorgatta a rácsok mögött.",
+      "phrase_pos": [
+        "NOUN",
+        "VERB"
+      ]
     },
     {
       "id": "hu.idiom.nyak_vesz",
@@ -307,7 +396,11 @@
       "blocks": [],
       "source": "curated:gemini-2026-09",
       "version": 1,
-      "example": "A menekülő tolvaj nyakát vette a sötét sikátorban."
+      "example": "A menekülő tolvaj nyakát vette a sötét sikátorban.",
+      "phrase_pos": [
+        "NOUN",
+        "VERB"
+      ]
     },
     {
       "id": "hu.idiom.láb_lógat",
@@ -320,7 +413,11 @@
       "blocks": [],
       "source": "curated:gemini-2026-09",
       "version": 1,
-      "example": "Egész délután a stégen ült és a lábát lógatta a vízbe."
+      "example": "Egész délután a stégen ült és a lábát lógatta a vízbe.",
+      "phrase_pos": [
+        "NOUN",
+        "VERB"
+      ]
     },
     {
       "id": "hu.idiom.kéz_mos",
@@ -333,7 +430,11 @@
       "blocks": [],
       "source": "curated:gemini-2026-09",
       "version": 1,
-      "example": "A bíró nyilvánosan kezet mosott az ítélethirdetés után."
+      "example": "A bíró nyilvánosan kezet mosott az ítélethirdetés után.",
+      "phrase_pos": [
+        "NOUN",
+        "VERB"
+      ]
     },
     {
       "id": "hu.idiom.szív_vesz",
@@ -346,7 +447,11 @@
       "blocks": [],
       "source": "curated:gemini-2026-09",
       "version": 1,
-      "example": "A jószívű lány túlságosan szívére vette a koldus sorsát."
+      "example": "A jószívű lány túlságosan szívére vette a koldus sorsát.",
+      "phrase_pos": [
+        "NOUN",
+        "VERB"
+      ]
     },
     {
       "id": "hu.idiom.kő_esik_le_a_szív",
@@ -362,7 +467,14 @@
       "blocks": [],
       "source": "curated:gemini-2026-09",
       "version": 1,
-      "example": "Hatalmas kő esett le a szívéről a vizsgálat lezárásakor."
+      "example": "Hatalmas kő esett le a szívéről a vizsgálat lezárásakor.",
+      "phrase_pos": [
+        "NOUN",
+        "VERB",
+        "ADV",
+        null,
+        "NOUN"
+      ]
     },
     {
       "id": "hu.idiom.megköt_az_eb_a_karó",
@@ -378,7 +490,14 @@
       "blocks": [],
       "source": "curated:gemini-2026-09",
       "version": 1,
-      "example": "A bíró szerint megköt az eb a karó mellett."
+      "example": "A bíró szerint megköt az eb a karó mellett.",
+      "phrase_pos": [
+        "VERB",
+        null,
+        "NOUN",
+        null,
+        "NOUN"
+      ]
     },
     {
       "id": "hu.idiom.egy_húr_pendül",
@@ -392,7 +511,12 @@
       "blocks": [],
       "source": "curated:gemini-2026-09",
       "version": 1,
-      "example": "A két jóbarát minden kérdésben egy húron pendült."
+      "example": "A két jóbarát minden kérdésben egy húron pendült.",
+      "phrase_pos": [
+        null,
+        "NOUN",
+        "VERB"
+      ]
     },
     {
       "id": "hu.idiom.sírva_vigad",
@@ -405,7 +529,11 @@
       "blocks": [],
       "source": "curated:gemini-2026-09",
       "version": 1,
-      "example": "A magyar ember gyakran sírva vigad a mulatságokon."
+      "example": "A magyar ember gyakran sírva vigad a mulatságokon.",
+      "phrase_pos": [
+        "ADV",
+        "VERB"
+      ]
     },
     {
       "id": "hu.idiom.kitesz_a_szűr",
@@ -419,7 +547,12 @@
       "blocks": [],
       "source": "curated:gemini-2026-09",
       "version": 1,
-      "example": "A faluban kitesz a szűr a kerítésre."
+      "example": "A faluban kitesz a szűr a kerítésre.",
+      "phrase_pos": [
+        "VERB",
+        null,
+        "NOUN"
+      ]
     },
     {
       "id": "hu.idiom.hát_fordít",
@@ -432,7 +565,11 @@
       "blocks": [],
       "source": "curated:gemini-2026-09",
       "version": 1,
-      "example": "A büszke nemes azonnal hátat fordított a gúnyolódóknak."
+      "example": "A büszke nemes azonnal hátat fordított a gúnyolódóknak.",
+      "phrase_pos": [
+        "NOUN",
+        "VERB"
+      ]
     },
     {
       "id": "hu.idiom.fej_veszít",
@@ -445,7 +582,11 @@
       "blocks": [],
       "source": "curated:gemini-2026-09",
       "version": 1,
-      "example": "A pánik közepette sem szabad fejét veszítenie a kapitánynak."
+      "example": "A pánik közepette sem szabad fejét veszítenie a kapitánynak.",
+      "phrase_pos": [
+        "NOUN",
+        "VERB"
+      ]
     },
     {
       "id": "hu.idiom.szem_szembe",
@@ -458,7 +599,11 @@
       "blocks": [],
       "source": "curated:gemini-2026-09",
       "version": 1,
-      "example": "A tisztás szélén végül szemtől szembe kerültek az ellenséggel."
+      "example": "A tisztás szélén végül szemtől szembe kerültek az ellenséggel.",
+      "phrase_pos": [
+        "NOUN",
+        "ADV"
+      ]
     },
     {
       "id": "hu.idiom.lát_a_fa_az_erdő",
@@ -476,7 +621,14 @@
       ],
       "source": "curated:gemini-2026-09",
       "version": 1,
-      "example": "A sok részlet miatt nem látja a fától az erdőt."
+      "example": "A sok részlet miatt nem látja a fától az erdőt.",
+      "phrase_pos": [
+        "VERB",
+        null,
+        "NOUN",
+        null,
+        "NOUN"
+      ]
     },
     {
       "id": "hu.idiom.szó_ér",
@@ -489,7 +641,11 @@
       "blocks": [],
       "source": "curated:gemini-2026-09",
       "version": 1,
-      "example": "A tolmács minden helyzetben szót ért a külföldiekkel."
+      "example": "A tolmács minden helyzetben szót ért a külföldiekkel.",
+      "phrase_pos": [
+        "NOUN",
+        "VERB"
+      ]
     },
     {
       "id": "hu.idiom.szó_áll",
@@ -502,7 +658,11 @@
       "blocks": [],
       "source": "curated:gemini-2026-09",
       "version": 1,
-      "example": "A becsületes kereskedő mindig szót áll a vásáron."
+      "example": "A becsületes kereskedő mindig szót áll a vásáron.",
+      "phrase_pos": [
+        "NOUN",
+        "VERB"
+      ]
     },
     {
       "id": "hu.idiom.szó_fogad",
@@ -515,7 +675,11 @@
       "blocks": [],
       "source": "curated:gemini-2026-09",
       "version": 1,
-      "example": "A jó gyermek készségesen szót fogadott az édesanyjának."
+      "example": "A jó gyermek készségesen szót fogadott az édesanyjának.",
+      "phrase_pos": [
+        "NOUN",
+        "VERB"
+      ]
     },
     {
       "id": "hu.idiom.száj_vesz",
@@ -528,7 +692,11 @@
       "blocks": [],
       "source": "curated:gemini-2026-09",
       "version": 1,
-      "example": "A pletykás szomszédok hamar szájukra vették az ifjú párt."
+      "example": "A pletykás szomszédok hamar szájukra vették az ifjú párt.",
+      "phrase_pos": [
+        "NOUN",
+        "VERB"
+      ]
     },
     {
       "id": "hu.idiom.tart_a_hát",
@@ -542,7 +710,12 @@
       "blocks": [],
       "source": "curated:gemini-2026-09",
       "version": 1,
-      "example": "A bűnért egyedül a szegény legény tartotta a hátát."
+      "example": "A bűnért egyedül a szegény legény tartotta a hátát.",
+      "phrase_pos": [
+        "VERB",
+        null,
+        "NOUN"
+      ]
     },
     {
       "id": "hu.idiom.nyom_ered",
@@ -555,7 +728,11 @@
       "blocks": [],
       "source": "curated:gemini-2026-09",
       "version": 1,
-      "example": "A vadász gyorsan a nyomába ered az óvatos vadnak."
+      "example": "A vadász gyorsan a nyomába ered az óvatos vadnak.",
+      "phrase_pos": [
+        "NOUN",
+        "VERB"
+      ]
     },
     {
       "id": "hu.idiom.fészket_rak",
@@ -568,7 +745,11 @@
       "blocks": [],
       "source": "curated:gemini-2026-09",
       "version": 1,
-      "example": "A madár fészket rak tavasszal az ágon."
+      "example": "A madár fészket rak tavasszal az ágon.",
+      "phrase_pos": [
+        "NOUN",
+        "VERB"
+      ]
     },
     {
       "id": "hu.idiom.béke_köt",
@@ -583,7 +764,11 @@
       ],
       "source": "curated:gemini-2026-09",
       "version": 1,
-      "example": "A véres háború után a felek végre békét kötöttek a határnál."
+      "example": "A véres háború után a felek végre békét kötöttek a határnál.",
+      "phrase_pos": [
+        "NOUN",
+        "VERB"
+      ]
     },
     {
       "id": "hu.idiom.álom_merül",
@@ -598,7 +783,11 @@
       ],
       "source": "curated:gemini-2026-09",
       "version": 1,
-      "example": "A kimerült vándor a fa tövében azonnal mély álomba merült."
+      "example": "A kimerült vándor a fa tövében azonnal mély álomba merült.",
+      "phrase_pos": [
+        "NOUN",
+        "VERB"
+      ]
     },
     {
       "id": "hu.idiom.élet_ad",
@@ -611,7 +800,11 @@
       "blocks": [],
       "source": "curated:gemini-2026-09",
       "version": 1,
-      "example": "A hős harcos kész volt életét adni a hazájáért."
+      "example": "A hős harcos kész volt életét adni a hazájáért.",
+      "phrase_pos": [
+        "NOUN",
+        "VERB"
+      ]
     }
   ]
 }

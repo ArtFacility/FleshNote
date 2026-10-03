@@ -47,6 +47,7 @@ import FogMode from './focus-modes/FogMode'
 import MomentumMode from './focus-modes/MomentumMode'
 import SynonymPopup from './SynonymPopup'
 import TimeGutter from './TimeGutter'
+import PulseGutter from './PulseGutter'
 import { matchesHotkey } from '../utils/hotkeyMatcher'
 import KarolyEasterEgg from './KarolyEasterEgg'
 import EntityCommandPalette from './EntityCommandPalette'
@@ -147,6 +148,9 @@ function statusColor(status) {
   }
 }
 
+// Whether a project's language has Story Pulse weights, asked once per session
+const PULSE_SUPPORT = new Map()
+
 const DEFAULT_LINK_VISIBILITY = {
   character: true,
   location: true,
@@ -181,8 +185,11 @@ export default function Editor({
   calConfig,
   onConfigUpdate,
   scrollToWordOffset, // { wordOffset, timestamp } — triggers scroll to word position
+  scrollToCharTarget, // { chapterId, charOffset, snippet, timestamp } — caret to a paragraph (Story Pulse)
+  onCharTargetConsumed, // called once scrollToCharTarget has been applied
   janitorActionsRef,  // ref that receives { navigateToCharOffset, linkEntityAtOffset, replaceAtOffset }
   onJanitorTrigger,   // called when 100-word boundary crossed or 10s idle
+  pulseRefreshKey,    // bumps after each Janitor run: the Pulse gutter refetches its scores
   onEffectiveTimeChange // called when cursor time changes
 }) {
   const { t, i18n } = useTranslation()
@@ -217,6 +224,14 @@ export default function Editor({
   useEffect(() => {
     onUpdateRef.current = onUpdate
   }, [onUpdate])
+
+  // The Janitor triggers fire from timers set during typing; calling the prop
+  // captured back then would analyze the chapter as it was when the timer was
+  // set. Always call the latest callback, with the editor's current HTML.
+  const onJanitorTriggerRef = useRef(onJanitorTrigger)
+  useEffect(() => {
+    onJanitorTriggerRef.current = onJanitorTrigger
+  }, [onJanitorTrigger])
 
   // Expose flush method via janitorActionsRef (shared ref for editor actions)
   useEffect(() => {
@@ -358,6 +373,14 @@ export default function Editor({
   const [timeMarkers, setTimeMarkers] = useState([])
   const [activeTimeMarkerId, setActiveTimeMarkerId] = useState(null)
   const [gutterMeasureTick, setGutterMeasureTick] = useState(0)
+  // Story Pulse gutter (inline-end side): only when the experimental setting is
+  // on and the project's language has intensity weights; off until toggled.
+  const pulseEnabled = projectConfig?.janitor_show_story_pulse === true
+  const pulseLanguage = projectConfig?.story_language || 'en'
+  const [pulseSupported, setPulseSupported] = useState(false)
+  const [pulseGutterVisible, setPulseGutterVisible] = useState(() => {
+    try { return localStorage.getItem('fleshnote.storyPulse.gutter') === 'true' } catch { return false }
+  })
   const editorColumnRef = useRef(null)
   const gutterMeasureTimeoutRef = useRef(null)
 
@@ -367,6 +390,28 @@ export default function Editor({
       .then(res => setTimeMarkers(res.markers || []))
       .catch(() => { })
   }, [projectPath, chapter?.id])
+
+  useEffect(() => {
+    if (!pulseEnabled || !projectPath) { setPulseSupported(false); return }
+    const key = `${projectPath}|${pulseLanguage}`
+    if (PULSE_SUPPORT.has(key)) { setPulseSupported(PULSE_SUPPORT.get(key)); return }
+    let live = true
+    window.api.storyPulse({ project_path: projectPath, language: pulseLanguage, cache_only: true })
+      .then(res => {
+        if (res?.status !== 'ok') return
+        PULSE_SUPPORT.set(key, res.supported === true)
+        if (live) setPulseSupported(res.supported === true)
+      })
+      .catch(() => { })
+    return () => { live = false }
+  }, [pulseEnabled, projectPath, pulseLanguage])
+
+  const togglePulseGutter = useCallback(() => {
+    setPulseGutterVisible(v => {
+      try { localStorage.setItem('fleshnote.storyPulse.gutter', String(!v)) } catch { /* per-viewer nicety only */ }
+      return !v
+    })
+  }, [])
 
   const effectiveWorldTime = useMemo(() => {
     if (activeTimeMarkerId) {
@@ -660,12 +705,13 @@ export default function Editor({
         const currBoundary = Math.floor(words / 100)
         if (currBoundary > prevBoundary) {
           lastJanitorWordCountRef.current = words
-          onJanitorTrigger?.()
+          onJanitorTriggerRef.current?.(html)
         }
       }
       // Janitor: 10-second inactivity trigger
       if (janitorInactivityTimerRef.current) clearTimeout(janitorInactivityTimerRef.current)
-      janitorInactivityTimerRef.current = setTimeout(() => onJanitorTrigger?.(), 10000)
+      janitorInactivityTimerRef.current = setTimeout(
+        () => onJanitorTriggerRef.current?.(editor.isDestroyed ? undefined : editor.getHTML()), 10000)
 
       // Debounced gutter re-measure on content change
       if (gutterMeasureTimeoutRef.current) clearTimeout(gutterMeasureTimeoutRef.current)
@@ -838,6 +884,12 @@ export default function Editor({
       } finally {
         setTimeout(() => { pentiLoadingRef.current = false }, 0)
       }
+      // Loading content emits no update, so the Janitor would wait for the first
+      // keystroke. Run it now: opening a chapter, a history restore or a sync
+      // reload. Unchanged paragraphs come from the analysis cache.
+      setTimeout(() => {
+        if (!editor.isDestroyed) onJanitorTriggerRef.current?.(editor.getHTML())
+      }, 300)
     }
   }, [editor, chapter?.id, chapter?._rev])
 
@@ -966,7 +1018,9 @@ export default function Editor({
     if (!janitorActionsRef) return
 
     janitorActionsRef.current = {
-      navigateToCharOffset(charOffset, matchedText = '') {
+      // caret: place the cursor at the match instead of selecting it (a paragraph
+      // jump must not leave text selected for the next keystroke to replace)
+      navigateToCharOffset(charOffset, matchedText = '', { caret = false } = {}) {
         if (!editor || editor.isDestroyed) return
         let plain = 0
         let approxPos = null
@@ -1008,7 +1062,7 @@ export default function Editor({
 
         setTimeout(() => {
           editor.commands.focus()
-          if (matchedText && targetTo > targetFrom) {
+          if (matchedText && targetTo > targetFrom && !caret) {
             editor.commands.setTextSelection({ from: targetFrom, to: targetTo })
           } else {
             editor.commands.setTextSelection(targetFrom)
@@ -1098,6 +1152,36 @@ export default function Editor({
       }
     }
   }, [editor, janitorActionsRef])
+
+  // Jump to a paragraph opened from elsewhere (Story Pulse lane): the target
+  // names its chapter, so it waits until that chapter's content is loaded. The
+  // content-load effect above runs first in the same commit, so the doc is current.
+  const appliedCharTargetRef = useRef(null)
+  useEffect(() => {
+    const target = scrollToCharTarget
+    if (!editor || editor.isDestroyed || !target || !chapter || chapter.content === undefined) return
+    if (String(chapter.id) !== String(target.chapterId) || appliedCharTargetRef.current === target.timestamp) return
+    appliedCharTargetRef.current = target.timestamp
+    janitorActionsRef?.current?.navigateToCharOffset(target.charOffset, target.snippet || '', { caret: true })
+    // opened from the Story Pulse lane: show the gutter so the paragraph's bar
+    // (and its correction pad) is right there; not saved as the default
+    if (target.showPulse) setPulseGutterVisible(true)
+    // one-shot: the Editor remounts when leaving the planner, and a target still
+    // set then would pull the caret back to this paragraph mid-writing
+    onCharTargetConsumed?.()
+    // brief flash on the paragraph, as for word-offset navigation
+    setTimeout(() => {
+      if (editor.isDestroyed) return
+      const { node } = editor.view.domAtPos(editor.state.selection.from) || {}
+      const el = node && (node.nodeType === Node.TEXT_NODE ? node.parentElement : node)
+      const block = el?.closest?.('p, li, blockquote') || el
+      if (!block?.style) return
+      block.scrollIntoView?.({ block: 'center' })
+      block.style.transition = 'background 0.3s'
+      block.style.background = 'rgba(196, 167, 76, 0.18)'
+      setTimeout(() => { block.style.background = '' }, 1600)
+    }, 200)
+  }, [editor, chapter?.id, chapter?._rev, scrollToCharTarget, janitorActionsRef])
 
   // ── Context menu handlers ───────────────────────────
 
@@ -1812,6 +1896,19 @@ export default function Editor({
         >
           𐲎
         </button>
+        {pulseEnabled && pulseSupported && (
+          <button
+            className={`format-btn ${pulseGutterVisible ? 'active' : ''}`}
+            onClick={togglePulseGutter}
+            title={pulseGutterVisible ? t('storyPulse.gutterHide', 'Hide the Story Pulse beside the text') : t('storyPulse.gutterShow', 'Show the Story Pulse beside the text')}
+            aria-label={t('storyPulse.gutterShow', 'Show the Story Pulse beside the text')}
+            aria-pressed={pulseGutterVisible}
+          >
+            <svg width="14" height="14" viewBox="0 0 14 14" fill="none" stroke="currentColor" strokeWidth="1.4" strokeLinecap="round" aria-hidden="true">
+              <path d="M7 0.5 q 3.5 1.5 0 3 q -3.5 1.5 0 3 q 3.5 1.5 0 3 q -3.5 1.5 0 3" />
+            </svg>
+          </button>
+        )}
       </div>
 
       {/* ── Focus Mode Overlays ────────────────────────────── */}
@@ -1854,9 +1951,12 @@ export default function Editor({
             overflowX: 'hidden',
             height: '100%',
             display: 'flex',
-            flexDirection: 'row'
+            flexDirection: 'column'
           }}
         >
+          {/* Inner row grows with the text (never shrinks below it), so side
+              gutters stretch to the full scroll height, not just the viewport */}
+          <div style={{ flex: '1 0 auto', display: 'flex', flexDirection: 'row' }}>
           {gutterVisible && chapter?.id && (
             <TimeGutter
               markers={timeMarkers}
@@ -1936,6 +2036,18 @@ export default function Editor({
               </div>
             )}
             <EditorContent editor={editor} />
+          </div>
+          {pulseEnabled && pulseSupported && pulseGutterVisible && chapter?.id && (
+            <PulseGutter
+              editor={editor}
+              projectPath={projectPath}
+              language={pulseLanguage}
+              chapterId={chapter.id}
+              editorColumnRef={editorColumnRef}
+              measureTick={gutterMeasureTick}
+              refreshKey={pulseRefreshKey}
+            />
+          )}
           </div>
         </div>
       </div>

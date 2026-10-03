@@ -39,7 +39,9 @@ PROJECT_EXT = ".flnote"
 # gets extracted (junk like desktop.ini/Thumbs.db is silently skipped).
 ALLOWED_TOP_FILES = {"fleshnote.db", "fleshnote_project.json"}
 ALLOWED_TOP_DIRS = {"md", "assets"}
-JUNK_NAMES = {"desktop.ini", "thumbs.db", ".ds_store", "fleshnote.db.bak"}
+# fleshnote_cache.db is local derived data (janitor_cache.py), rebuilt on demand.
+JUNK_NAMES = {"desktop.ini", "thumbs.db", ".ds_store", "fleshnote.db.bak",
+              "fleshnote_cache.db", "fleshnote_cache.db-wal", "fleshnote_cache.db-shm"}
 
 # Extraction caps (both compressed upload caps and these uncompressed caps are
 # enforced — a 20 MB compressed zip bomb can expand to many GB otherwise).

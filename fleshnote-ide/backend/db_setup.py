@@ -219,6 +219,31 @@ def run_onboarding() -> dict:
 # ─── DATABASE GENERATOR ──────────────────────────────────────────────────────
 
 
+def ensure_pulse_corrections(cursor) -> None:
+    """Story Pulse corrections (plan §5.6): the writer's own intensity / valence
+    for a paragraph, anchored by its content key (story_pulse.paragraph_key) and
+    re-anchored by similarity after edits. Authored intent, so synced via
+    change_log. Created for new projects, on project open, on demand by the
+    route, and before a sync merge (a missing table would drop remote rows)."""
+    cursor.execute("""
+        CREATE TABLE IF NOT EXISTS paragraph_intensity_corrections (
+            id          TEXT PRIMARY KEY,
+            chapter_id  TEXT NOT NULL,
+            para_hash   TEXT NOT NULL,
+            para_idx    INTEGER,
+            anchor_text TEXT,
+            intensity   REAL NOT NULL,
+            valence     REAL NOT NULL,
+            updated_at  TEXT,
+            deleted     INTEGER DEFAULT 0,
+            deleted_at  TEXT,
+            created_at  TEXT DEFAULT (datetime('now'))
+        )
+    """)
+    cursor.execute("CREATE INDEX IF NOT EXISTS idx_pulse_corr_chapter "
+                   "ON paragraph_intensity_corrections(chapter_id, deleted)")
+
+
 def generate_project_db(project_path: str, answers: dict) -> str:
     """
     Builds the SQLite database with a kitchen-sink schema.
@@ -740,6 +765,8 @@ def generate_project_db(project_path: str, answers: dict) -> str:
             created_at  TEXT DEFAULT (datetime('now'))
         )
     """)
+
+    ensure_pulse_corrections(cursor)
 
     # ══════════════════════════════════════════════════════════
     # SKETCHBOARDS: boards, board_items, item_connections
@@ -1816,6 +1843,8 @@ def apply_migrations(db_path: str):
         """)
         cursor.execute("CREATE INDEX IF NOT EXISTS idx_imgref_entity ON image_references(entity_type, entity_id);")
         cursor.execute("CREATE INDEX IF NOT EXISTS idx_imgref_icon ON image_references(entity_type, entity_id, is_icon);")
+
+        ensure_pulse_corrections(cursor)
 
         # Ensure assets directory exists for existing projects
         project_dir = os.path.dirname(db_path)

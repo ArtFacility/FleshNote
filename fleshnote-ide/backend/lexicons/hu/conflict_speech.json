@@ -1,649 +1,815 @@
 {
-  "lang": "hu",
-  "kind": "conflict_speech",
-  "version": 1,
-  "entries": [
-    {
-      "id": "hu.speech.mond",
-      "lemma": "mond",
-      "pos": [
-        "VERB"
-      ],
-      "kind": "conflict_speech",
-      "strength": "weak",
-      "valence": 0.0,
-      "arousal": 0.2,
-      "emotions": null,
-      "source": "migrated:hun_janitor.py",
-      "version": 1,
-      "note": "semleges párbeszédjelölő"
-    },
-    {
-      "id": "hu.speech.szól",
-      "lemma": "szól",
-      "pos": [
-        "VERB"
-      ],
-      "kind": "conflict_speech",
-      "strength": "weak",
-      "valence": 0.0,
-      "arousal": 0.25,
-      "emotions": null,
-      "source": "migrated:hun_janitor.py",
-      "version": 1,
-      "note": "semleges megszólalás"
-    },
-    {
-      "id": "hu.speech.kérdez",
-      "lemma": "kérdez",
-      "pos": [
-        "VERB"
-      ],
-      "kind": "conflict_speech",
-      "strength": "weak",
-      "valence": 0.05,
-      "arousal": 0.3,
-      "emotions": {
-        "anticipation": 0.3
-      },
-      "source": "migrated:hun_janitor.py",
-      "version": 1,
-      "note": "semleges kérdés"
-    },
-    {
-      "id": "hu.speech.suttog",
-      "lemma": "suttog",
-      "pos": [
-        "VERB"
-      ],
-      "kind": "conflict_speech",
-      "strength": "weak",
-      "valence": 0.2,
-      "arousal": 0.15,
-      "emotions": null,
-      "source": "migrated:hun_janitor.py",
-      "version": 1,
-      "note": "halk beszédmód"
-    },
-    {
-      "id": "hu.speech.kiált",
-      "lemma": "kiált",
-      "pos": [
-        "VERB"
-      ],
-      "kind": "conflict_speech",
-      "strength": "strong",
-      "valence": -0.6,
-      "arousal": 0.75,
-      "emotions": {
-        "anger": 0.6
-      },
-      "source": "migrated:hun_janitor.py",
-      "version": 1
-    },
-    {
-      "id": "hu.speech.ordít",
-      "lemma": "ordít",
-      "pos": [
-        "VERB"
-      ],
-      "kind": "conflict_speech",
-      "strength": "strong",
-      "valence": -0.75,
-      "arousal": 0.85,
-      "emotions": {
-        "anger": 0.85
-      },
-      "source": "migrated:hun_janitor.py",
-      "version": 1
-    },
-    {
-      "id": "hu.speech.üvölt",
-      "lemma": "üvölt",
-      "pos": [
-        "VERB"
-      ],
-      "kind": "conflict_speech",
-      "strength": "strong",
-      "valence": -0.8,
-      "arousal": 0.85,
-      "emotions": {
-        "anger": 0.85
-      },
-      "source": "curated:gemini-2026-09",
-      "version": 1
-    },
-    {
-      "id": "hu.speech.morog",
-      "lemma": "morog",
-      "pos": [
-        "VERB"
-      ],
-      "kind": "conflict_speech",
-      "strength": "strong",
-      "valence": -0.65,
-      "arousal": 0.65,
-      "emotions": {
-        "anger": 0.7
-      },
-      "source": "migrated:hun_janitor.py",
-      "version": 1
-    },
-    {
-      "id": "hu.speech.mormol",
-      "lemma": "mormol",
-      "pos": [
-        "VERB"
-      ],
-      "kind": "conflict_speech",
-      "strength": "weak",
-      "valence": 0.05,
-      "arousal": 0.2,
-      "emotions": null,
-      "source": "migrated:hun_janitor.py",
-      "version": 1,
-      "note": "halk mormolás"
-    },
-    {
-      "id": "hu.speech.felel",
-      "lemma": "felel",
-      "pos": [
-        "VERB"
-      ],
-      "kind": "conflict_speech",
-      "strength": "weak",
-      "valence": 0.0,
-      "arousal": 0.25,
-      "emotions": null,
-      "source": "migrated:hun_janitor.py",
-      "version": 1,
-      "note": "semleges válasz"
-    },
-    {
-      "id": "hu.speech.válaszol",
-      "lemma": "válaszol",
-      "pos": [
-        "VERB"
-      ],
-      "kind": "conflict_speech",
-      "strength": "weak",
-      "valence": 0.0,
-      "arousal": 0.25,
-      "emotions": null,
-      "source": "migrated:hun_janitor.py",
-      "version": 1,
-      "note": "semleges válasz"
-    },
-    {
-      "id": "hu.speech.gondol",
-      "lemma": "gondol",
-      "pos": [
-        "VERB"
-      ],
-      "kind": "conflict_speech",
-      "strength": "weak",
-      "valence": 0.0,
-      "arousal": 0.2,
-      "emotions": null,
-      "source": "migrated:hun_janitor.py",
-      "version": 1,
-      "note": "belső monológ"
-    },
-    {
-      "id": "hu.speech.sóhajt",
-      "lemma": "sóhajt",
-      "pos": [
-        "VERB"
-      ],
-      "kind": "conflict_speech",
-      "strength": "weak",
-      "valence": -0.2,
-      "arousal": 0.25,
-      "emotions": {
-        "sadness": 0.4
-      },
-      "source": "curated:gemini-2026-09",
-      "version": 1,
-      "note": "sóhajtás"
-    },
-    {
-      "id": "hu.speech.könyörög",
-      "lemma": "könyörög",
-      "pos": [
-        "VERB"
-      ],
-      "kind": "conflict_speech",
-      "strength": "strong",
-      "valence": -0.6,
-      "arousal": 0.7,
-      "emotions": {
-        "fear": 0.6,
-        "sadness": 0.6
-      },
-      "source": "migrated:hun_janitor.py",
-      "version": 1
-    },
-    {
-      "id": "hu.speech.tűnődik",
-      "lemma": "tűnődik",
-      "pos": [
-        "VERB"
-      ],
-      "kind": "conflict_speech",
-      "strength": "weak",
-      "valence": 0.05,
-      "arousal": 0.25,
-      "emotions": {
-        "anticipation": 0.3
-      },
-      "source": "migrated:hun_janitor.py",
-      "version": 1,
-      "note": "belső tűnődés"
-    },
-    {
-      "id": "hu.speech.töpreng",
-      "lemma": "töpreng",
-      "pos": [
-        "VERB"
-      ],
-      "kind": "conflict_speech",
-      "strength": "weak",
-      "valence": 0.0,
-      "arousal": 0.3,
-      "emotions": {
-        "anticipation": 0.3
-      },
-      "source": "migrated:hun_janitor.py",
-      "version": 1,
-      "note": "töprengés"
-    },
-    {
-      "id": "hu.speech.követel",
-      "lemma": "követel",
-      "pos": [
-        "VERB"
-      ],
-      "kind": "conflict_speech",
-      "strength": "strong",
-      "valence": -0.45,
-      "arousal": 0.55,
-      "emotions": {
-        "anger": 0.5
-      },
-      "source": "curated:gemini-2026-09",
-      "version": 1
-    },
-    {
-      "id": "hu.speech.vitatkozik",
-      "lemma": "vitatkozik",
-      "pos": [
-        "VERB"
-      ],
-      "kind": "conflict_speech",
-      "strength": "strong",
-      "valence": -0.5,
-      "arousal": 0.55,
-      "emotions": {
-        "anger": 0.55
-      },
-      "source": "curated:gemini-2026-09",
-      "version": 1
-    },
-    {
-      "id": "hu.speech.gúnyolódik",
-      "lemma": "gúnyolódik",
-      "pos": [
-        "VERB"
-      ],
-      "kind": "conflict_speech",
-      "strength": "strong",
-      "valence": -0.65,
-      "arousal": 0.65,
-      "emotions": {
-        "disgust": 0.7,
-        "anger": 0.5
-      },
-      "source": "curated:gemini-2026-09",
-      "version": 1
-    },
-    {
-      "id": "hu.speech.förmed",
-      "lemma": "förmed",
-      "pos": [
-        "VERB"
-      ],
-      "kind": "conflict_speech",
-      "strength": "strong",
-      "valence": -0.7,
-      "arousal": 0.75,
-      "emotions": {
-        "anger": 0.75
-      },
-      "source": "curated:gemini-2026-09",
-      "version": 1
-    },
-    {
-      "id": "hu.speech.ráripakodik",
-      "lemma": "ráripakodik",
-      "pos": [
-        "VERB"
-      ],
-      "kind": "conflict_speech",
-      "strength": "strong",
-      "valence": -0.7,
-      "arousal": 0.75,
-      "emotions": {
-        "anger": 0.75
-      },
-      "source": "curated:gemini-2026-09",
-      "version": 1
-    },
-    {
-      "id": "hu.speech.rákiált",
-      "lemma": "rákiált",
-      "pos": [
-        "VERB"
-      ],
-      "kind": "conflict_speech",
-      "strength": "strong",
-      "valence": -0.65,
-      "arousal": 0.75,
-      "emotions": {
-        "anger": 0.7
-      },
-      "source": "curated:gemini-2026-09",
-      "version": 1
-    },
-    {
-      "id": "hu.speech.rámordul",
-      "lemma": "rámordul",
-      "pos": [
-        "VERB"
-      ],
-      "kind": "conflict_speech",
-      "strength": "strong",
-      "valence": -0.65,
-      "arousal": 0.7,
-      "emotions": {
-        "anger": 0.7
-      },
-      "source": "curated:gemini-2026-09",
-      "version": 1
-    },
-    {
-      "id": "hu.speech.visít",
-      "lemma": "visít",
-      "pos": [
-        "VERB"
-      ],
-      "kind": "conflict_speech",
-      "strength": "strong",
-      "valence": -0.75,
-      "arousal": 0.8,
-      "emotions": {
-        "fear": 0.75,
-        "anger": 0.7
-      },
-      "source": "curated:gemini-2026-09",
-      "version": 1
-    },
-    {
-      "id": "hu.speech.sikol",
-      "lemma": "sikolt",
-      "pos": [
-        "VERB"
-      ],
-      "kind": "conflict_speech",
-      "strength": "strong",
-      "valence": -0.8,
-      "arousal": 0.85,
-      "emotions": {
-        "fear": 0.85
-      },
-      "source": "curated:gemini-2026-09",
-      "version": 1
-    },
-    {
-      "id": "hu.speech.rikol",
-      "lemma": "rikolt",
-      "pos": [
-        "VERB"
-      ],
-      "kind": "conflict_speech",
-      "strength": "strong",
-      "valence": -0.65,
-      "arousal": 0.75,
-      "emotions": {
-        "anger": 0.65
-      },
-      "source": "curated:gemini-2026-09",
-      "version": 1
-    },
-    {
-      "id": "hu.speech.kurjan",
-      "lemma": "kurjant",
-      "pos": [
-        "VERB"
-      ],
-      "kind": "conflict_speech",
-      "strength": "strong",
-      "valence": 0.1,
-      "arousal": 0.65,
-      "emotions": {
-        "surprise": 0.6
-      },
-      "source": "curated:gemini-2026-09",
-      "version": 1,
-      "lemma_evidence": "carrier"
-    },
-    {
-      "id": "hu.speech.horkan",
-      "lemma": "horkan",
-      "pos": [
-        "VERB"
-      ],
-      "kind": "conflict_speech",
-      "strength": "strong",
-      "valence": -0.5,
-      "arousal": 0.55,
-      "emotions": {
-        "anger": 0.55
-      },
-      "source": "curated:gemini-2026-09",
-      "version": 1
-    },
-    {
-      "id": "hu.speech.sziszeg",
-      "lemma": "sziszeg",
-      "pos": [
-        "VERB"
-      ],
-      "kind": "conflict_speech",
-      "strength": "strong",
-      "valence": -0.65,
-      "arousal": 0.65,
-      "emotions": {
-        "anger": 0.7
-      },
-      "source": "curated:gemini-2026-09",
-      "version": 1
-    },
-    {
-      "id": "hu.speech.morr",
-      "lemma": "morran",
-      "pos": [
-        "VERB"
-      ],
-      "kind": "conflict_speech",
-      "strength": "strong",
-      "valence": -0.6,
-      "arousal": 0.65,
-      "emotions": {
-        "anger": 0.65
-      },
-      "source": "curated:gemini-2026-09",
-      "version": 1
-    },
-    {
-      "id": "hu.speech.dörög",
-      "lemma": "dörög",
-      "pos": [
-        "VERB"
-      ],
-      "kind": "conflict_speech",
-      "strength": "strong",
-      "valence": -0.75,
-      "arousal": 0.8,
-      "emotions": {
-        "anger": 0.8
-      },
-      "source": "curated:gemini-2026-09",
-      "version": 1
-    },
-    {
-      "id": "hu.speech.fenyegetőzik",
-      "lemma": "fenyegetőzik",
-      "pos": [
-        "VERB"
-      ],
-      "kind": "conflict_speech",
-      "strength": "strong",
-      "valence": -0.75,
-      "arousal": 0.75,
-      "emotions": {
-        "anger": 0.75,
-        "fear": 0.7
-      },
-      "source": "curated:gemini-2026-09",
-      "version": 1
-    },
-    {
-      "id": "hu.speech.kötekedik",
-      "lemma": "kötekedik",
-      "pos": [
-        "VERB"
-      ],
-      "kind": "conflict_speech",
-      "strength": "strong",
-      "valence": -0.55,
-      "arousal": 0.55,
-      "emotions": {
-        "anger": 0.6
-      },
-      "source": "curated:gemini-2026-09",
-      "version": 1
-    },
-    {
-      "id": "hu.speech.csúfolkodik",
-      "lemma": "csúfolkodik",
-      "pos": [
-        "VERB"
-      ],
-      "kind": "conflict_speech",
-      "strength": "strong",
-      "valence": -0.6,
-      "arousal": 0.6,
-      "emotions": {
-        "disgust": 0.6
-      },
-      "source": "curated:gemini-2026-09",
-      "version": 1
-    },
-    {
-      "id": "hu.speech.dorgál",
-      "lemma": "dorgál",
-      "pos": [
-        "VERB"
-      ],
-      "kind": "conflict_speech",
-      "strength": "strong",
-      "valence": -0.5,
-      "arousal": 0.55,
-      "emotions": {
-        "anger": 0.55
-      },
-      "source": "curated:gemini-2026-09",
-      "version": 1
-    },
-    {
-      "id": "hu.speech.leteremt",
-      "lemma": "leteremt",
-      "pos": [
-        "VERB"
-      ],
-      "kind": "conflict_speech",
-      "strength": "strong",
-      "valence": -0.7,
-      "arousal": 0.7,
-      "emotions": {
-        "anger": 0.75
-      },
-      "source": "curated:gemini-2026-09",
-      "version": 1
-    },
-    {
-      "id": "hu.speech.korhol",
-      "lemma": "korhol",
-      "pos": [
-        "VERB"
-      ],
-      "kind": "conflict_speech",
-      "strength": "strong",
-      "valence": -0.55,
-      "arousal": 0.55,
-      "emotions": {
-        "anger": 0.6
-      },
-      "source": "curated:gemini-2026-09",
-      "version": 1
-    },
-    {
-      "id": "hu.speech.átkozódik",
-      "lemma": "átkozódik",
-      "pos": [
-        "VERB"
-      ],
-      "kind": "conflict_speech",
-      "strength": "strong",
-      "valence": -0.8,
-      "arousal": 0.8,
-      "emotions": {
-        "anger": 0.85
-      },
-      "source": "curated:gemini-2026-09",
-      "version": 1
-    },
-    {
-      "id": "hu.speech.káromkodik",
-      "lemma": "káromkodik",
-      "pos": [
-        "VERB"
-      ],
-      "kind": "conflict_speech",
-      "strength": "strong",
-      "valence": -0.75,
-      "arousal": 0.75,
-      "emotions": {
-        "anger": 0.8
-      },
-      "source": "curated:gemini-2026-09",
-      "version": 1
-    },
-    {
-      "id": "hu.speech.háborgat",
-      "lemma": "háborgat",
-      "pos": [
-        "VERB"
-      ],
-      "kind": "conflict_speech",
-      "strength": "strong",
-      "valence": -0.6,
-      "arousal": 0.6,
-      "emotions": {
-        "anger": 0.65
-      },
-      "source": "curated:gemini-2026-09",
-      "version": 1
-    }
-  ]
+ "lang": "hu",
+ "kind": "conflict_speech",
+ "version": 1,
+ "entries": [
+  {
+   "id": "hu.speech.mond",
+   "lemma": "mond",
+   "pos": [
+    "VERB"
+   ],
+   "kind": "conflict_speech",
+   "strength": "weak",
+   "valence": 0.0,
+   "arousal": 0.2,
+   "emotions": null,
+   "source": "migrated:hun_janitor.py",
+   "version": 1,
+   "note": "semleges párbeszédjelölő"
+  },
+  {
+   "id": "hu.speech.szól",
+   "lemma": "szól",
+   "pos": [
+    "VERB"
+   ],
+   "kind": "conflict_speech",
+   "strength": "weak",
+   "valence": 0.0,
+   "arousal": 0.25,
+   "emotions": null,
+   "source": "migrated:hun_janitor.py",
+   "version": 1,
+   "note": "semleges megszólalás"
+  },
+  {
+   "id": "hu.speech.kérdez",
+   "lemma": "kérdez",
+   "pos": [
+    "VERB"
+   ],
+   "kind": "conflict_speech",
+   "strength": "weak",
+   "valence": 0.05,
+   "arousal": 0.3,
+   "emotions": {
+    "anticipation": 0.3
+   },
+   "source": "migrated:hun_janitor.py",
+   "version": 1,
+   "note": "semleges kérdés"
+  },
+  {
+   "id": "hu.speech.suttog",
+   "lemma": "suttog",
+   "pos": [
+    "VERB"
+   ],
+   "kind": "conflict_speech",
+   "strength": "weak",
+   "valence": 0.2,
+   "arousal": 0.15,
+   "emotions": null,
+   "source": "migrated:hun_janitor.py",
+   "version": 1,
+   "note": "halk beszédmód"
+  },
+  {
+   "id": "hu.speech.kiált",
+   "lemma": "kiált",
+   "pos": [
+    "VERB"
+   ],
+   "kind": "conflict_speech",
+   "strength": "strong",
+   "valence": -0.6,
+   "arousal": 0.75,
+   "emotions": {
+    "anger": 0.6
+   },
+   "source": "migrated:hun_janitor.py",
+   "version": 1
+  },
+  {
+   "id": "hu.speech.ordít",
+   "lemma": "ordít",
+   "pos": [
+    "VERB"
+   ],
+   "kind": "conflict_speech",
+   "strength": "strong",
+   "valence": -0.75,
+   "arousal": 0.85,
+   "emotions": {
+    "anger": 0.85
+   },
+   "source": "migrated:hun_janitor.py",
+   "version": 1
+  },
+  {
+   "id": "hu.speech.üvölt",
+   "lemma": "üvölt",
+   "pos": [
+    "VERB"
+   ],
+   "kind": "conflict_speech",
+   "strength": "strong",
+   "valence": -0.8,
+   "arousal": 0.85,
+   "emotions": {
+    "anger": 0.85
+   },
+   "source": "curated:gemini-2026-09",
+   "version": 1
+  },
+  {
+   "id": "hu.speech.morog",
+   "lemma": "morog",
+   "pos": [
+    "VERB"
+   ],
+   "kind": "conflict_speech",
+   "strength": "strong",
+   "valence": -0.65,
+   "arousal": 0.65,
+   "emotions": {
+    "anger": 0.7
+   },
+   "source": "migrated:hun_janitor.py",
+   "version": 1
+  },
+  {
+   "id": "hu.speech.mormol",
+   "lemma": "mormol",
+   "pos": [
+    "VERB"
+   ],
+   "kind": "conflict_speech",
+   "strength": "weak",
+   "valence": 0.05,
+   "arousal": 0.2,
+   "emotions": null,
+   "source": "migrated:hun_janitor.py",
+   "version": 1,
+   "note": "halk mormolás"
+  },
+  {
+   "id": "hu.speech.felel",
+   "lemma": "felel",
+   "pos": [
+    "VERB"
+   ],
+   "kind": "conflict_speech",
+   "strength": "weak",
+   "valence": 0.0,
+   "arousal": 0.25,
+   "emotions": null,
+   "source": "migrated:hun_janitor.py",
+   "version": 1,
+   "note": "semleges válasz"
+  },
+  {
+   "id": "hu.speech.válaszol",
+   "lemma": "válaszol",
+   "pos": [
+    "VERB"
+   ],
+   "kind": "conflict_speech",
+   "strength": "weak",
+   "valence": 0.0,
+   "arousal": 0.25,
+   "emotions": null,
+   "source": "migrated:hun_janitor.py",
+   "version": 1,
+   "note": "semleges válasz"
+  },
+  {
+   "id": "hu.speech.gondol",
+   "lemma": "gondol",
+   "pos": [
+    "VERB"
+   ],
+   "kind": "conflict_speech",
+   "strength": "weak",
+   "valence": 0.0,
+   "arousal": 0.2,
+   "emotions": null,
+   "source": "migrated:hun_janitor.py",
+   "version": 1,
+   "note": "belső monológ"
+  },
+  {
+   "id": "hu.speech.sóhajt",
+   "lemma": "sóhajt",
+   "pos": [
+    "VERB"
+   ],
+   "kind": "conflict_speech",
+   "strength": "weak",
+   "valence": -0.2,
+   "arousal": 0.25,
+   "emotions": {
+    "sadness": 0.4
+   },
+   "source": "curated:gemini-2026-09",
+   "version": 1,
+   "note": "sóhajtás"
+  },
+  {
+   "id": "hu.speech.könyörög",
+   "lemma": "könyörög",
+   "pos": [
+    "VERB"
+   ],
+   "kind": "conflict_speech",
+   "strength": "strong",
+   "valence": -0.6,
+   "arousal": 0.7,
+   "emotions": {
+    "fear": 0.6,
+    "sadness": 0.6
+   },
+   "source": "migrated:hun_janitor.py",
+   "version": 1
+  },
+  {
+   "id": "hu.speech.tűnődik",
+   "lemma": "tűnődik",
+   "pos": [
+    "VERB"
+   ],
+   "kind": "conflict_speech",
+   "strength": "weak",
+   "valence": 0.05,
+   "arousal": 0.25,
+   "emotions": {
+    "anticipation": 0.3
+   },
+   "source": "migrated:hun_janitor.py",
+   "version": 1,
+   "note": "belső tűnődés"
+  },
+  {
+   "id": "hu.speech.töpreng",
+   "lemma": "töpreng",
+   "pos": [
+    "VERB"
+   ],
+   "kind": "conflict_speech",
+   "strength": "weak",
+   "valence": 0.0,
+   "arousal": 0.3,
+   "emotions": {
+    "anticipation": 0.3
+   },
+   "source": "migrated:hun_janitor.py",
+   "version": 1,
+   "note": "töprengés"
+  },
+  {
+   "id": "hu.speech.követel",
+   "lemma": "követel",
+   "pos": [
+    "VERB"
+   ],
+   "kind": "conflict_speech",
+   "strength": "strong",
+   "valence": -0.45,
+   "arousal": 0.55,
+   "emotions": {
+    "anger": 0.5
+   },
+   "source": "curated:gemini-2026-09",
+   "version": 1
+  },
+  {
+   "id": "hu.speech.vitatkozik",
+   "lemma": "vitatkozik",
+   "pos": [
+    "VERB"
+   ],
+   "kind": "conflict_speech",
+   "strength": "strong",
+   "valence": -0.5,
+   "arousal": 0.55,
+   "emotions": {
+    "anger": 0.55
+   },
+   "source": "curated:gemini-2026-09",
+   "version": 1
+  },
+  {
+   "id": "hu.speech.gúnyolódik",
+   "lemma": "gúnyolódik",
+   "pos": [
+    "VERB"
+   ],
+   "kind": "conflict_speech",
+   "strength": "strong",
+   "valence": -0.65,
+   "arousal": 0.65,
+   "emotions": {
+    "disgust": 0.7,
+    "anger": 0.5
+   },
+   "source": "curated:gemini-2026-09",
+   "version": 1
+  },
+  {
+   "id": "hu.speech.förmed",
+   "lemma": "förmed",
+   "pos": [
+    "VERB"
+   ],
+   "kind": "conflict_speech",
+   "strength": "strong",
+   "valence": -0.7,
+   "arousal": 0.75,
+   "emotions": {
+    "anger": 0.75
+   },
+   "source": "curated:gemini-2026-09",
+   "version": 1
+  },
+  {
+   "id": "hu.speech.ráripakodik",
+   "lemma": "ráripakodik",
+   "pos": [
+    "VERB"
+   ],
+   "kind": "conflict_speech",
+   "strength": "strong",
+   "valence": -0.7,
+   "arousal": 0.75,
+   "emotions": {
+    "anger": 0.75
+   },
+   "source": "curated:gemini-2026-09",
+   "version": 1
+  },
+  {
+   "id": "hu.speech.rákiált",
+   "lemma": "rákiált",
+   "pos": [
+    "VERB"
+   ],
+   "kind": "conflict_speech",
+   "strength": "strong",
+   "valence": -0.65,
+   "arousal": 0.75,
+   "emotions": {
+    "anger": 0.7
+   },
+   "source": "curated:gemini-2026-09",
+   "version": 1
+  },
+  {
+   "id": "hu.speech.rámordul",
+   "lemma": "rámordul",
+   "pos": [
+    "VERB"
+   ],
+   "kind": "conflict_speech",
+   "strength": "strong",
+   "valence": -0.65,
+   "arousal": 0.7,
+   "emotions": {
+    "anger": 0.7
+   },
+   "source": "curated:gemini-2026-09",
+   "version": 1
+  },
+  {
+   "id": "hu.speech.visít",
+   "lemma": "visít",
+   "pos": [
+    "VERB"
+   ],
+   "kind": "conflict_speech",
+   "strength": "strong",
+   "valence": -0.75,
+   "arousal": 0.8,
+   "emotions": {
+    "fear": 0.75,
+    "anger": 0.7
+   },
+   "source": "curated:gemini-2026-09",
+   "version": 1
+  },
+  {
+   "id": "hu.speech.sikol",
+   "lemma": "sikolt",
+   "pos": [
+    "VERB"
+   ],
+   "kind": "conflict_speech",
+   "strength": "strong",
+   "valence": -0.8,
+   "arousal": 0.85,
+   "emotions": {
+    "fear": 0.85
+   },
+   "source": "curated:gemini-2026-09",
+   "version": 1
+  },
+  {
+   "id": "hu.speech.rikol",
+   "lemma": "rikolt",
+   "pos": [
+    "VERB"
+   ],
+   "kind": "conflict_speech",
+   "strength": "strong",
+   "valence": -0.65,
+   "arousal": 0.75,
+   "emotions": {
+    "anger": 0.65
+   },
+   "source": "curated:gemini-2026-09",
+   "version": 1
+  },
+  {
+   "id": "hu.speech.kurjan",
+   "lemma": "kurjant",
+   "pos": [
+    "VERB"
+   ],
+   "kind": "conflict_speech",
+   "strength": "strong",
+   "valence": 0.1,
+   "arousal": 0.65,
+   "emotions": {
+    "surprise": 0.6
+   },
+   "source": "curated:gemini-2026-09",
+   "version": 1,
+   "lemma_evidence": "carrier"
+  },
+  {
+   "id": "hu.speech.horkan",
+   "lemma": "horkan",
+   "pos": [
+    "VERB"
+   ],
+   "kind": "conflict_speech",
+   "strength": "strong",
+   "valence": -0.5,
+   "arousal": 0.55,
+   "emotions": {
+    "anger": 0.55
+   },
+   "source": "curated:gemini-2026-09",
+   "version": 1
+  },
+  {
+   "id": "hu.speech.sziszeg",
+   "lemma": "sziszeg",
+   "pos": [
+    "VERB"
+   ],
+   "kind": "conflict_speech",
+   "strength": "strong",
+   "valence": -0.65,
+   "arousal": 0.65,
+   "emotions": {
+    "anger": 0.7
+   },
+   "source": "curated:gemini-2026-09",
+   "version": 1
+  },
+  {
+   "id": "hu.speech.morr",
+   "lemma": "morran",
+   "pos": [
+    "VERB"
+   ],
+   "kind": "conflict_speech",
+   "strength": "strong",
+   "valence": -0.6,
+   "arousal": 0.65,
+   "emotions": {
+    "anger": 0.65
+   },
+   "source": "curated:gemini-2026-09",
+   "version": 1
+  },
+  {
+   "id": "hu.speech.dörög",
+   "lemma": "dörög",
+   "pos": [
+    "VERB"
+   ],
+   "kind": "conflict_speech",
+   "strength": "strong",
+   "valence": -0.75,
+   "arousal": 0.8,
+   "emotions": {
+    "anger": 0.8
+   },
+   "source": "curated:gemini-2026-09",
+   "version": 1
+  },
+  {
+   "id": "hu.speech.fenyegetőzik",
+   "lemma": "fenyegetőzik",
+   "pos": [
+    "VERB"
+   ],
+   "kind": "conflict_speech",
+   "strength": "strong",
+   "valence": -0.75,
+   "arousal": 0.75,
+   "emotions": {
+    "anger": 0.75,
+    "fear": 0.7
+   },
+   "source": "curated:gemini-2026-09",
+   "version": 1
+  },
+  {
+   "id": "hu.speech.kötekedik",
+   "lemma": "kötekedik",
+   "pos": [
+    "VERB"
+   ],
+   "kind": "conflict_speech",
+   "strength": "strong",
+   "valence": -0.55,
+   "arousal": 0.55,
+   "emotions": {
+    "anger": 0.6
+   },
+   "source": "curated:gemini-2026-09",
+   "version": 1
+  },
+  {
+   "id": "hu.speech.csúfolkodik",
+   "lemma": "csúfolkodik",
+   "pos": [
+    "VERB"
+   ],
+   "kind": "conflict_speech",
+   "strength": "strong",
+   "valence": -0.6,
+   "arousal": 0.6,
+   "emotions": {
+    "disgust": 0.6
+   },
+   "source": "curated:gemini-2026-09",
+   "version": 1
+  },
+  {
+   "id": "hu.speech.dorgál",
+   "lemma": "dorgál",
+   "pos": [
+    "VERB"
+   ],
+   "kind": "conflict_speech",
+   "strength": "strong",
+   "valence": -0.5,
+   "arousal": 0.55,
+   "emotions": {
+    "anger": 0.55
+   },
+   "source": "curated:gemini-2026-09",
+   "version": 1
+  },
+  {
+   "id": "hu.speech.leteremt",
+   "lemma": "leteremt",
+   "pos": [
+    "VERB"
+   ],
+   "kind": "conflict_speech",
+   "strength": "strong",
+   "valence": -0.7,
+   "arousal": 0.7,
+   "emotions": {
+    "anger": 0.75
+   },
+   "source": "curated:gemini-2026-09",
+   "version": 1
+  },
+  {
+   "id": "hu.speech.korhol",
+   "lemma": "korhol",
+   "pos": [
+    "VERB"
+   ],
+   "kind": "conflict_speech",
+   "strength": "strong",
+   "valence": -0.55,
+   "arousal": 0.55,
+   "emotions": {
+    "anger": 0.6
+   },
+   "source": "curated:gemini-2026-09",
+   "version": 1
+  },
+  {
+   "id": "hu.speech.átkozódik",
+   "lemma": "átkozódik",
+   "pos": [
+    "VERB"
+   ],
+   "kind": "conflict_speech",
+   "strength": "strong",
+   "valence": -0.8,
+   "arousal": 0.8,
+   "emotions": {
+    "anger": 0.85
+   },
+   "source": "curated:gemini-2026-09",
+   "version": 1
+  },
+  {
+   "id": "hu.speech.káromkodik",
+   "lemma": "káromkodik",
+   "pos": [
+    "VERB"
+   ],
+   "kind": "conflict_speech",
+   "strength": "strong",
+   "valence": -0.75,
+   "arousal": 0.75,
+   "emotions": {
+    "anger": 0.8
+   },
+   "source": "curated:gemini-2026-09",
+   "version": 1
+  },
+  {
+   "id": "hu.speech.háborgat",
+   "lemma": "háborgat",
+   "pos": [
+    "VERB"
+   ],
+   "kind": "conflict_speech",
+   "strength": "strong",
+   "valence": -0.6,
+   "arousal": 0.6,
+   "emotions": {
+    "anger": 0.65
+   },
+   "source": "curated:gemini-2026-09",
+   "version": 1
+  },
+  {
+   "id": "hu.speech.esdekel",
+   "lemma": "esdekel",
+   "pos": [
+    "VERB"
+   ],
+   "kind": "conflict_speech",
+   "strength": "strong",
+   "valence": -0.65,
+   "arousal": 0.75,
+   "emotions": {
+    "fear": 0.7,
+    "sadness": 0.6
+   },
+   "source": "curated:gemini-2026-10",
+   "version": 1
+  },
+  {
+   "id": "hu.speech.sikoly",
+   "lemma": "sikoly",
+   "pos": [
+    "NOUN"
+   ],
+   "kind": "conflict_speech",
+   "strength": "strong",
+   "valence": -0.8,
+   "arousal": 0.9,
+   "emotions": {
+    "fear": 0.9
+   },
+   "source": "curated:gemini-2026-10",
+   "version": 1
+  },
+  {
+   "id": "hu.speech.kiáltás",
+   "lemma": "kiáltás",
+   "pos": [
+    "NOUN"
+   ],
+   "kind": "conflict_speech",
+   "strength": "strong",
+   "valence": -0.6,
+   "arousal": 0.75,
+   "emotions": {
+    "fear": 0.6,
+    "surprise": 0.5
+   },
+   "source": "curated:gemini-2026-10",
+   "version": 1
+  },
+  {
+   "id": "hu.speech.ordítás",
+   "lemma": "ordítás",
+   "pos": [
+    "NOUN"
+   ],
+   "kind": "conflict_speech",
+   "strength": "strong",
+   "valence": -0.75,
+   "arousal": 0.85,
+   "emotions": {
+    "anger": 0.8
+   },
+   "source": "curated:gemini-2026-10",
+   "version": 1
+  },
+  {
+   "id": "hu.speech.üvöltés",
+   "lemma": "üvöltés",
+   "pos": [
+    "NOUN"
+   ],
+   "kind": "conflict_speech",
+   "strength": "strong",
+   "valence": -0.8,
+   "arousal": 0.85,
+   "emotions": {
+    "anger": 0.8,
+    "fear": 0.6
+   },
+   "source": "curated:gemini-2026-10",
+   "version": 1
+  },
+  {
+   "id": "hu.speech.jajgat",
+   "lemma": "jajgat",
+   "pos": [
+    "VERB"
+   ],
+   "kind": "conflict_speech",
+   "strength": "strong",
+   "valence": -0.7,
+   "arousal": 0.75,
+   "emotions": {
+    "sadness": 0.8,
+    "fear": 0.5
+   },
+   "source": "curated:gemini-2026-10",
+   "version": 1
+  },
+  {
+   "id": "hu.speech.zokog",
+   "lemma": "zokog",
+   "pos": [
+    "VERB"
+   ],
+   "kind": "conflict_speech",
+   "strength": "strong",
+   "valence": -0.7,
+   "arousal": 0.7,
+   "emotions": {
+    "sadness": 0.9
+   },
+   "source": "curated:gemini-2026-10",
+   "version": 1
+  },
+  {
+   "id": "hu.speech.rí",
+   "lemma": "rí",
+   "pos": [
+    "VERB"
+   ],
+   "kind": "conflict_speech",
+   "strength": "strong",
+   "valence": -0.6,
+   "arousal": 0.65,
+   "emotions": {
+    "sadness": 0.8
+   },
+   "source": "curated:gemini-2026-10",
+   "version": 1
+  },
+  {
+   "id": "hu.speech.bőg",
+   "lemma": "bőg",
+   "pos": [
+    "VERB"
+   ],
+   "kind": "conflict_speech",
+   "strength": "weak",
+   "valence": -0.65,
+   "arousal": 0.75,
+   "emotions": {
+    "anger": 0.6,
+    "sadness": 0.6
+   },
+   "source": "curated:gemini-2026-10",
+   "version": 1,
+   "note": "also cattle bellow"
+  },
+  {
+   "id": "hu.speech.ráförmed",
+   "lemma": "ráförmed",
+   "pos": [
+    "VERB"
+   ],
+   "kind": "conflict_speech",
+   "strength": "strong",
+   "valence": -0.7,
+   "arousal": 0.75,
+   "emotions": {
+    "anger": 0.8
+   },
+   "source": "curated:gemini-2026-10",
+   "version": 1
+  }
+ ]
 }

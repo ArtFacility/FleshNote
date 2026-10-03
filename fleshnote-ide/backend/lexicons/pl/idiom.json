@@ -17,7 +17,12 @@
       ],
       "source": "curated:gemini-2026-09",
       "version": 1,
-      "example": "Kapitan działał z zimną krwią nawet w obliczu potężnego sztormu."
+      "example": "Kapitan działał z zimną krwią nawet w obliczu potężnego sztormu.",
+      "phrase_pos": [
+        "ADP",
+        "ADJ",
+        "NOUN"
+      ]
     },
     {
       "id": "pl.idiom.z_ciepły_serce",
@@ -31,7 +36,12 @@
       "blocks": [],
       "source": "curated:gemini-2026-09",
       "version": 1,
-      "example": "Gospodarz przyjął wędrowców z ciepłym sercem pod swój skromny dach."
+      "example": "Gospodarz przyjął wędrowców z ciepłym sercem pod swój skromny dach.",
+      "phrase_pos": [
+        "ADP",
+        "ADJ",
+        "NOUN"
+      ]
     },
     {
       "id": "pl.idiom.zły_krew",
@@ -46,7 +56,11 @@
       ],
       "source": "curated:gemini-2026-09",
       "version": 1,
-      "example": "Nierozsądny spór zasiał złą krew między zwaśnionymi rodami."
+      "example": "Nierozsądny spór zasiał złą krew między zwaśnionymi rodami.",
+      "phrase_pos": [
+        "ADJ",
+        "NOUN"
+      ]
     },
     {
       "id": "pl.idiom.krew_z_nos",
@@ -62,7 +76,12 @@
       ],
       "source": "curated:gemini-2026-09",
       "version": 1,
-      "example": "Po niefortunnym zderzeniu poleciała mu krew z nosa."
+      "example": "Po niefortunnym zderzeniu poleciała mu krew z nosa.",
+      "phrase_pos": [
+        "NOUN",
+        "ADP",
+        "NOUN"
+      ]
     },
     {
       "id": "pl.idiom.krew_nie_woda",
@@ -78,7 +97,12 @@
       ],
       "source": "curated:gemini-2026-09",
       "version": 1,
-      "example": "Wiedział doskonale, że krew nie woda, gdy stanął w obronie brata."
+      "example": "Wiedział doskonale, że krew nie woda, gdy stanął w obronie brata.",
+      "phrase_pos": [
+        "NOUN",
+        "PART",
+        "NOUN"
+      ]
     },
     {
       "id": "pl.idiom.igrać_z_ogień",
@@ -94,7 +118,12 @@
       ],
       "source": "curated:gemini-2026-09",
       "version": 1,
-      "example": "Kto podważa władzę króla, ten zaczyna igrać z ogniem."
+      "example": "Kto podważa władzę króla, ten zaczyna igrać z ogniem.",
+      "phrase_pos": [
+        "VERB",
+        "ADP",
+        "NOUN"
+      ]
     },
     {
       "id": "pl.idiom.dolewać_oliwa_do_ogień",
@@ -111,7 +140,13 @@
       ],
       "source": "curated:gemini-2026-09",
       "version": 1,
-      "example": "Złośliwe plotki mogły tylko dolewać oliwy do ognia nienawiści."
+      "example": "Złośliwe plotki mogły tylko dolewać oliwy do ognia nienawiści.",
+      "phrase_pos": [
+        "VERB",
+        "NOUN",
+        "ADP",
+        "NOUN"
+      ]
     },
     {
       "id": "pl.idiom.w_ogień_walka",
@@ -127,7 +162,12 @@
       ],
       "source": "curated:gemini-2026-09",
       "version": 1,
-      "example": "Mężny chorąży poległ w ogniu walki o sztandar pułku."
+      "example": "Mężny chorąży poległ w ogniu walki o sztandar pułku.",
+      "phrase_pos": [
+        "ADP",
+        "NOUN",
+        "NOUN"
+      ]
     },
     {
       "id": "pl.idiom.skoczyć_w_ogień",
@@ -143,7 +183,12 @@
       ],
       "source": "curated:gemini-2026-09",
       "version": 1,
-      "example": "Dla wiernego przyjaciela gotów był w każdej chwili skoczyć w ogień."
+      "example": "Dla wiernego przyjaciela gotów był w każdej chwili skoczyć w ogień.",
+      "phrase_pos": [
+        "VERB",
+        "ADP",
+        "NOUN"
+      ]
     },
     {
       "id": "pl.idiom.pójść_pod_miecz",
@@ -159,7 +204,12 @@
       ],
       "source": "curated:gemini-2026-09",
       "version": 1,
-      "example": "Zbuntowani zdrajcy musieli pójść pod miecz na rozkaz monarchy."
+      "example": "Zbuntowani zdrajcy musieli pójść pod miecz na rozkaz monarchy.",
+      "phrase_pos": [
+        "VERB",
+        "ADP",
+        "NOUN"
+      ]
     },
     {
       "id": "pl.idiom.dobyć_miecz",
@@ -169,12 +219,15 @@
       ],
       "kind": "idiom",
       "strength": "strong",
-      "blocks": [
-        "pl.danger.miecz"
-      ],
+      "blocks": [],
       "source": "curated:gemini-2026-09",
       "version": 1,
-      "example": "Błyskawicznie zdołał dobyć miecza i odepchnąć nacierającego zbója."
+      "example": "Błyskawicznie zdołał dobyć miecza i odepchnąć nacierającego zbója.",
+      "phrase_pos": [
+        "VERB",
+        "NOUN"
+      ],
+      "note": "usually literal in fiction (drawing a sword): cancels nothing"
     },
     {
       "id": "pl.idiom.miecz_obosieczny",
@@ -189,7 +242,11 @@
       ],
       "source": "curated:gemini-2026-09",
       "version": 1,
-      "example": "Użycie czarnej magii to miecz obosieczny dla każdego czarnoksiężnika."
+      "example": "Użycie czarnej magii to miecz obosieczny dla każdego czarnoksiężnika.",
+      "phrase_pos": [
+        "NOUN",
+        "ADJ"
+      ]
     },
     {
       "id": "pl.idiom.zamknąć_oko",
@@ -202,7 +259,11 @@
       "blocks": [],
       "source": "curated:gemini-2026-09",
       "version": 1,
-      "example": "Z powodu niepokoju nie zdołał zamknąć oka przez całą długą noc."
+      "example": "Z powodu niepokoju nie zdołał zamknąć oka przez całą długą noc.",
+      "phrase_pos": [
+        "VERB",
+        "NOUN"
+      ]
     },
     {
       "id": "pl.idiom.otworzyć_oko",
@@ -215,7 +276,11 @@
       "blocks": [],
       "source": "curated:gemini-2026-09",
       "version": 1,
-      "example": "To bolesne doświadczenie pomogło mu otworzyć oczy na obłudę fałszywych doradców."
+      "example": "To bolesne doświadczenie pomogło mu otworzyć oczy na obłudę fałszywych doradców.",
+      "phrase_pos": [
+        "VERB",
+        "NOUN"
+      ]
     },
     {
       "id": "pl.idiom.wpaść_w_oko",
@@ -229,7 +294,12 @@
       "blocks": [],
       "source": "curated:gemini-2026-09",
       "version": 1,
-      "example": "Niezwykłej urody klejnot musiał natychmiast wpaść w oko wprawnemu jubilerowi."
+      "example": "Niezwykłej urody klejnot musiał natychmiast wpaść w oko wprawnemu jubilerowi.",
+      "phrase_pos": [
+        null,
+        "ADP",
+        "NOUN"
+      ]
     },
     {
       "id": "pl.idiom.mieć_na_ok",
@@ -247,7 +317,12 @@
         "około"
       ],
       "lemma_evidence": "carrier",
-      "example": "Czujny wartownik musiał mieć na oku każdego nieznajomego."
+      "example": "Czujny wartownik musiał mieć na oku każdego nieznajomego.",
+      "phrase_pos": [
+        "VERB",
+        "ADP",
+        "NOUN"
+      ]
     },
     {
       "id": "pl.idiom.zniknąć_z_oko",
@@ -261,7 +336,12 @@
       "blocks": [],
       "source": "curated:gemini-2026-09",
       "version": 1,
-      "example": "Szybki jeździec zdążył zniknąć z oczu pośród gęstych zarośli."
+      "example": "Szybki jeździec zdążył zniknąć z oczu pośród gęstych zarośli.",
+      "phrase_pos": [
+        "VERB",
+        "ADP",
+        "NOUN"
+      ]
     },
     {
       "id": "pl.idiom.zwrócić_uwaga",
@@ -274,7 +354,11 @@
       "blocks": [],
       "source": "curated:gemini-2026-09",
       "version": 1,
-      "example": "Nauczyciel pragnął zwrócić uwagę uczniów na kluczową zasadę."
+      "example": "Nauczyciel pragnął zwrócić uwagę uczniów na kluczową zasadę.",
+      "phrase_pos": [
+        "VERB",
+        "NOUN"
+      ]
     },
     {
       "id": "pl.idiom.rzucić_oko",
@@ -287,7 +371,11 @@
       "blocks": [],
       "source": "curated:gemini-2026-09",
       "version": 1,
-      "example": "Warto było rzucić okiem na starą mapę przed wyruszeniem w drogę."
+      "example": "Warto było rzucić okiem na starą mapę przed wyruszeniem w drogę.",
+      "phrase_pos": [
+        "VERB",
+        "NOUN"
+      ]
     },
     {
       "id": "pl.idiom.spojrzeć_prawda_w_oko",
@@ -302,7 +390,13 @@
       "blocks": [],
       "source": "curated:gemini-2026-09",
       "version": 1,
-      "example": "Wódz musiał wreszcie spojrzeć prawdzie w oczy i zarządzić odwrót."
+      "example": "Wódz musiał wreszcie spojrzeć prawdzie w oczy i zarządzić odwrót.",
+      "phrase_pos": [
+        "VERB",
+        "NOUN",
+        "ADP",
+        "NOUN"
+      ]
     },
     {
       "id": "pl.idiom.nie_wierzyć_własny_oko",
@@ -317,7 +411,13 @@
       "blocks": [],
       "source": "curated:gemini-2026-09",
       "version": 1,
-      "example": "Zdumiony żeglarz nie mógł nie wierzyć własnym oczom, widząc wyspę."
+      "example": "Zdumiony żeglarz nie mógł nie wierzyć własnym oczom, widząc wyspę.",
+      "phrase_pos": [
+        "PART",
+        "VERB",
+        "ADJ",
+        "NOUN"
+      ]
     },
     {
       "id": "pl.idiom.udawać_głuchy",
@@ -330,7 +430,11 @@
       "blocks": [],
       "source": "curated:gemini-2026-09",
       "version": 1,
-      "example": "Chytry sługa wolał udawać głuchego, by uniknąć trudnej pracy."
+      "example": "Chytry sługa wolał udawać głuchego, by uniknąć trudnej pracy.",
+      "phrase_pos": [
+        "VERB",
+        null
+      ]
     },
     {
       "id": "pl.idiom.zamienić_się_w_słuch",
@@ -345,7 +449,13 @@
       "blocks": [],
       "source": "curated:gemini-2026-09",
       "version": 1,
-      "example": "Ciekawski dwór postanowił zamienić się w słuch przed ogłoszeniem testamentu."
+      "example": "Ciekawski dwór postanowił zamienić się w słuch przed ogłoszeniem testamentu.",
+      "phrase_pos": [
+        "VERB",
+        "PRON",
+        "ADP",
+        "NOUN"
+      ]
     },
     {
       "id": "pl.idiom.wpaść_w_ucho",
@@ -359,7 +469,12 @@
       "blocks": [],
       "source": "curated:gemini-2026-09",
       "version": 1,
-      "example": "Ta skoczna piosenka musiała wpaść w ucho wszystkim biesiadnikom."
+      "example": "Ta skoczna piosenka musiała wpaść w ucho wszystkim biesiadnikom.",
+      "phrase_pos": [
+        null,
+        "ADP",
+        "NOUN"
+      ]
     },
     {
       "id": "pl.idiom.mieć_ucho",
@@ -372,7 +487,11 @@
       "blocks": [],
       "source": "curated:gemini-2026-09",
       "version": 1,
-      "example": "Utalentowany kompozytor powinien mieć ucho do subtelnych tonów."
+      "example": "Utalentowany kompozytor powinien mieć ucho do subtelnych tonów.",
+      "phrase_pos": [
+        "VERB",
+        "NOUN"
+      ]
     },
     {
       "id": "pl.idiom.utrzeć_nos",
@@ -385,7 +504,11 @@
       "blocks": [],
       "source": "curated:gemini-2026-09",
       "version": 1,
-      "example": "Zuchwały fechmistrz zdołał utrzeć nosa chełpliwemu rywalowi."
+      "example": "Zuchwały fechmistrz zdołał utrzeć nosa chełpliwemu rywalowi.",
+      "phrase_pos": [
+        "VERB",
+        "NOUN"
+      ]
     },
     {
       "id": "pl.idiom.kręcić_nos",
@@ -398,7 +521,11 @@
       "blocks": [],
       "source": "curated:gemini-2026-09",
       "version": 1,
-      "example": "Niezadowolony szlachcic zaczął kręcić nosem nad podaną pieczenią."
+      "example": "Niezadowolony szlachcic zaczął kręcić nosem nad podaną pieczenią.",
+      "phrase_pos": [
+        "VERB",
+        "NOUN"
+      ]
     },
     {
       "id": "pl.idiom.mieć_nos",
@@ -411,7 +538,11 @@
       "blocks": [],
       "source": "curated:gemini-2026-09",
       "version": 1,
-      "example": "Wytrawny traper musiał mieć nosa do tropienia zwierzyny."
+      "example": "Wytrawny traper musiał mieć nosa do tropienia zwierzyny.",
+      "phrase_pos": [
+        "VERB",
+        "NOUN"
+      ]
     },
     {
       "id": "pl.idiom.ostrzyć_ząb",
@@ -424,7 +555,11 @@
       "blocks": [],
       "source": "curated:gemini-2026-09",
       "version": 1,
-      "example": "Głodne drapieżniki zaczęły ostrzyć zęby na zabłąkaną owcę."
+      "example": "Głodne drapieżniki zaczęły ostrzyć zęby na zabłąkaną owcę.",
+      "phrase_pos": [
+        "VERB",
+        "NOUN"
+      ]
     },
     {
       "id": "pl.idiom.zgrzytać_ząb",
@@ -437,7 +572,11 @@
       "blocks": [],
       "source": "curated:gemini-2026-09",
       "version": 1,
-      "example": "Więzień mógł jedynie zgrzytać zębami z bezsilnej wściekłości."
+      "example": "Więzień mógł jedynie zgrzytać zębami z bezsilnej wściekłości.",
+      "phrase_pos": [
+        "VERB",
+        "NOUN"
+      ]
     },
     {
       "id": "pl.idiom.wziąć_noga_za_pas",
@@ -452,7 +591,13 @@
       "blocks": [],
       "source": "curated:gemini-2026-09",
       "version": 1,
-      "example": "Przerażony rzezimieszek wolał wziąć nogi za pas przed strażą miejską."
+      "example": "Przerażony rzezimieszek wolał wziąć nogi za pas przed strażą miejską.",
+      "phrase_pos": [
+        "VERB",
+        "NOUN",
+        "ADP",
+        "NOUN"
+      ]
     },
     {
       "id": "pl.idiom.umywać_ręka",
@@ -465,7 +610,11 @@
       "blocks": [],
       "source": "curated:gemini-2026-09",
       "version": 1,
-      "example": "Niesprawiedliwy sędzia wolał umywać ręce od odpowiedzialności za proces."
+      "example": "Niesprawiedliwy sędzia wolał umywać ręce od odpowiedzialności za proces.",
+      "phrase_pos": [
+        "VERB",
+        "NOUN"
+      ]
     },
     {
       "id": "pl.idiom.wziąć_do_serce",
@@ -479,7 +628,12 @@
       "blocks": [],
       "source": "curated:gemini-2026-09",
       "version": 1,
-      "example": "Młody czeladnik postanowił wziąć do serca mądre rady swego nauczyciela."
+      "example": "Młody czeladnik postanowił wziąć do serca mądre rady swego nauczyciela.",
+      "phrase_pos": [
+        "VERB",
+        "ADP",
+        "NOUN"
+      ]
     },
     {
       "id": "pl.idiom.kamień_z_serce",
@@ -493,7 +647,12 @@
       "blocks": [],
       "source": "curated:gemini-2026-09",
       "version": 1,
-      "example": "Po pomyślnych wieściach spadł mu kamień z serca."
+      "example": "Po pomyślnych wieściach spadł mu kamień z serca.",
+      "phrase_pos": [
+        "NOUN",
+        "ADP",
+        "NOUN"
+      ]
     },
     {
       "id": "pl.idiom.związać_ręka",
@@ -506,7 +665,11 @@
       "blocks": [],
       "source": "curated:gemini-2026-09",
       "version": 1,
-      "example": "Biurokratyczne nakazy mogły całkowicie związać ręce młodemu lekarzowi."
+      "example": "Biurokratyczne nakazy mogły całkowicie związać ręce młodemu lekarzowi.",
+      "phrase_pos": [
+        "VERB",
+        "NOUN"
+      ]
     },
     {
       "id": "pl.idiom.grać_na_nerw",
@@ -520,7 +683,12 @@
       "blocks": [],
       "source": "curated:gemini-2026-09",
       "version": 1,
-      "example": "Nieustanny pisk kół zaczął grać na nerwach zmęczonym podróżnym."
+      "example": "Nieustanny pisk kół zaczął grać na nerwach zmęczonym podróżnym.",
+      "phrase_pos": [
+        "VERB",
+        "ADP",
+        "NOUN"
+      ]
     },
     {
       "id": "pl.idiom.trzymać_język_za_ząb",
@@ -535,7 +703,13 @@
       "blocks": [],
       "source": "curated:gemini-2026-09",
       "version": 1,
-      "example": "Dyskretny powiernik potrafił trzymać język za zębami nawet pod presją."
+      "example": "Dyskretny powiernik potrafił trzymać język za zębami nawet pod presją.",
+      "phrase_pos": [
+        "VERB",
+        "NOUN",
+        "ADP",
+        "NOUN"
+      ]
     },
     {
       "id": "pl.idiom.rzucić_słowo_na_wiatr",
@@ -550,7 +724,13 @@
       "blocks": [],
       "source": "curated:gemini-2026-09",
       "version": 1,
-      "example": "Uczciwy kupiec nigdy by nie rzucił słowa na wiatr."
+      "example": "Uczciwy kupiec nigdy by nie rzucił słowa na wiatr.",
+      "phrase_pos": [
+        "VERB",
+        "NOUN",
+        "ADP",
+        "NOUN"
+      ]
     },
     {
       "id": "pl.idiom.dotrzymać_słowo",
@@ -563,7 +743,11 @@
       "blocks": [],
       "source": "curated:gemini-2026-09",
       "version": 1,
-      "example": "Honorowy rycerz zawsze starał się dotrzymać słowa danego damie."
+      "example": "Honorowy rycerz zawsze starał się dotrzymać słowa danego damie.",
+      "phrase_pos": [
+        "VERB",
+        "NOUN"
+      ]
     },
     {
       "id": "pl.idiom.zwrócić_się_plecy",
@@ -577,7 +761,12 @@
       "blocks": [],
       "source": "curated:gemini-2026-09",
       "version": 1,
-      "example": "Nie uchodziło zwrócić się plecami do witającego gościa."
+      "example": "Nie uchodziło zwrócić się plecami do witającego gościa.",
+      "phrase_pos": [
+        "VERB",
+        "PRON",
+        "NOUN"
+      ]
     },
     {
       "id": "pl.idiom.stanąć_na_noga",
@@ -591,7 +780,12 @@
       "blocks": [],
       "source": "curated:gemini-2026-09",
       "version": 1,
-      "example": "Po długiej i ciężkiej chorobie pacjent zdołał wreszcie stanąć na nogi."
+      "example": "Po długiej i ciężkiej chorobie pacjent zdołał wreszcie stanąć na nogi.",
+      "phrase_pos": [
+        "VERB",
+        "ADP",
+        "NOUN"
+      ]
     },
     {
       "id": "pl.idiom.zawrzeć_pokój",
@@ -606,7 +800,11 @@
       ],
       "source": "curated:gemini-2026-09",
       "version": 1,
-      "example": "Wycieńczeni wojną monarchowie postanowili zawrzeć pokój na granicy."
+      "example": "Wycieńczeni wojną monarchowie postanowili zawrzeć pokój na granicy.",
+      "phrase_pos": [
+        "VERB",
+        "NOUN"
+      ]
     },
     {
       "id": "pl.idiom.oddać_życie",
@@ -616,12 +814,14 @@
       ],
       "kind": "idiom",
       "strength": "strong",
-      "blocks": [
-        "pl.stakes.życie"
-      ],
+      "blocks": [],
       "source": "curated:gemini-2026-09",
       "version": 1,
-      "example": "Niezłomny żołnierz był gotów oddać życie za wolność swojej ojczyzny."
+      "example": "Niezłomny żołnierz był gotów oddać życie za wolność swojej ojczyzny.",
+      "phrase_pos": [
+        "VERB",
+        "NOUN"
+      ]
     },
     {
       "id": "pl.idiom.postawić_na_karta",
@@ -635,7 +835,32 @@
       "blocks": [],
       "source": "curated:gemini-2026-09",
       "version": 1,
-      "example": "Zdesperowany dowódca postanowił postawić na kartę losy całej armii."
+      "example": "Zdesperowany dowódca postanowił postawić na kartę losy całej armii.",
+      "phrase_pos": [
+        "VERB",
+        "ADP",
+        "NOUN"
+      ]
+    },
+    {
+      "id": "pl.idiom.zimny_krew",
+      "phrase": [
+        "zimny",
+        "krew"
+      ],
+      "kind": "idiom",
+      "strength": "strong",
+      "blocks": [
+        "pl.danger.krew",
+        "pl.sens.touch_zimny"
+      ],
+      "source": "curated:claude-2026-09",
+      "version": 1,
+      "example": "Zbyszko nie stracił ani na chwilę zimnej krwi.",
+      "phrase_pos": [
+        "ADJ",
+        "NOUN"
+      ]
     }
   ]
 }

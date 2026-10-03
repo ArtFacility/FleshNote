@@ -2612,6 +2612,112 @@
    "source": "curated:gemini-2026-09",
    "version": 1,
    "note": "surgical operation vs forced amputation"
+  },
+  {
+   "id": "en.act.kill",
+   "lemma": "kill",
+   "pos": [
+    "VERB"
+   ],
+   "kind": "action_violent",
+   "strength": "strong",
+   "valence": -0.95,
+   "arousal": 0.9,
+   "emotions": {
+    "anger": 0.7,
+    "fear": 0.8
+   },
+   "source": "curated:gemini-2026-10",
+   "version": 1
+  },
+  {
+   "id": "en.act.murder",
+   "lemma": "murder",
+   "pos": [
+    "NOUN",
+    "VERB"
+   ],
+   "kind": "action_violent",
+   "strength": "strong",
+   "valence": -0.95,
+   "arousal": 0.9,
+   "emotions": {
+    "anger": 0.8,
+    "fear": 0.8
+   },
+   "source": "curated:gemini-2026-10",
+   "version": 1
+  },
+  {
+   "id": "en.act.shoot",
+   "lemma": "shoot",
+   "pos": [
+    "VERB"
+   ],
+   "kind": "action_violent",
+   "strength": "weak",
+   "valence": -0.8,
+   "arousal": 0.85,
+   "emotions": {
+    "fear": 0.7,
+    "anger": 0.6
+   },
+   "source": "curated:gemini-2026-10",
+   "version": 1,
+   "note": "also shoot film"
+  },
+  {
+   "id": "en.act.attack",
+   "lemma": "attack",
+   "pos": [
+    "NOUN",
+    "VERB"
+   ],
+   "kind": "action_violent",
+   "strength": "strong",
+   "valence": -0.75,
+   "arousal": 0.85,
+   "emotions": {
+    "anger": 0.8,
+    "fear": 0.6
+   },
+   "source": "curated:gemini-2026-10",
+   "version": 1
+  },
+  {
+   "id": "en.act.fall",
+   "lemma": "fall",
+   "pos": [
+    "VERB",
+    "NOUN"
+   ],
+   "kind": "action_violent",
+   "strength": "weak",
+   "valence": -0.3,
+   "arousal": 0.6,
+   "emotions": {
+    "surprise": 0.4
+   },
+   "source": "curated:gemini-2026-10",
+   "version": 1,
+   "note": "also fall asleep / autumn"
+  },
+  {
+   "id": "en.act.fight",
+   "lemma": "fight",
+   "pos": [
+    "VERB"
+   ],
+   "kind": "action_violent",
+   "strength": "strong",
+   "valence": -0.7,
+   "arousal": 0.85,
+   "emotions": {
+    "anger": 0.8,
+    "fear": 0.5
+   },
+   "source": "curated:gemini-2026-10",
+   "version": 1
   }
  ]
 }
