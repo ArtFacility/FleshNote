@@ -78,8 +78,9 @@ def _ensure_newer_tables(cursor) -> None:
     """Tables created on demand (not by every older schema) must exist locally
     before the allowlist is built, or remote rows for them would be skipped
     while the version vector still advances, i.e. lost for this peer."""
-    from db_setup import ensure_pulse_corrections
+    from db_setup import ensure_pulse_corrections, ensure_review_tables
     ensure_pulse_corrections(cursor)
+    ensure_review_tables(cursor)
 
 
 def _schema_allowlist(conn) -> Dict[str, set]:
@@ -510,6 +511,10 @@ def sync_apply(req: SyncApplyRequest):
         # rows poisoned before this guard shipped (or via a hostile import)
         # get a fresh safe generated name so chapter I/O keeps working.
         _repair_poisoned_md_filenames(cl, req.local_path)
+        # Deleted chapters give up their numbers before incoming numbers land
+        # (chapter_number is UNIQUE across deleted rows too).
+        from chapter_numbers import park_deleted_chapter_numbers
+        park_deleted_chapter_numbers(cl)
 
         # group changes per row for clean insert/update
         rows_to_apply = {}

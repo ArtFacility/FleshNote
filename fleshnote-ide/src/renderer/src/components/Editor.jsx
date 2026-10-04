@@ -1017,7 +1017,83 @@ export default function Editor({
   useEffect(() => {
     if (!janitorActionsRef) return
 
+    // Find a passage by its text (review notes): the occurrence nearest `hint`,
+    // a plain-text offset counted over the editor's text nodes. Tries each of
+    // `texts` in turn; returns doc positions { from, to } or null.
+    const findPassage = (texts, hint = 0) => {
+      if (!editor || editor.isDestroyed) return null
+      const nodes = []
+      let plain = ''
+      editor.state.doc.descendants((node, pos) => {
+        if (!node.isText) return
+        nodes.push([plain.length, pos, node.text.length])
+        plain += node.text
+      })
+      const toPos = (off, isEnd) => {
+        for (const [start, pos, len] of nodes) {
+          if (off < start + len || (isEnd && off === start + len)) return pos + Math.max(0, off - start)
+        }
+        return null
+      }
+      const lower = plain.toLowerCase()
+      for (const text of texts) {
+        const q = (text || '').trim().toLowerCase()
+        if (!q) continue
+        let best = -1
+        for (let i = lower.indexOf(q); i !== -1; i = lower.indexOf(q, i + 1)) {
+          if (best < 0 || Math.abs(i - hint) < Math.abs(best - hint)) best = i
+        }
+        if (best < 0) continue
+        const from = toPos(best, false)
+        const to = toPos(best + q.length, true)
+        if (from != null && to != null) return { from, to }
+      }
+      return null
+    }
+    // A suggested rewrite may only replace text inside one paragraph: a quote
+    // that crosses paragraphs would merge them into one
+    const inOneBlock = (hit) => editor.state.doc.resolve(hit.from).sameParent(editor.state.doc.resolve(hit.to))
+
     janitorActionsRef.current = {
+      // Show a review note's passage: caret at its start (never a selection the
+      // next keystroke would replace) and a brief highlight drawn over the text
+      // without touching the document. False when the text is gone.
+      showPassage(texts, hint = 0) {
+        if (!editor || editor.isDestroyed) return false
+        const hit = findPassage(texts, hint)
+        if (!hit) return false
+        editor.commands.focus()
+        editor.commands.setTextSelection(hit.from)
+        editor.commands.scrollIntoView()
+        try {
+          const a = editor.view.domAtPos(hit.from)
+          const b = editor.view.domAtPos(hit.to)
+          const range = document.createRange()
+          range.setStart(a.node, a.offset)
+          range.setEnd(b.node, b.offset)
+          range.startContainer.parentElement?.scrollIntoView?.({ block: 'center' })
+          if (window.CSS?.highlights && window.Highlight) {
+            CSS.highlights.set('fn-review-passage', new window.Highlight(range))
+            setTimeout(() => CSS.highlights.delete('fn-review-passage'), 2600)
+          }
+        } catch { /* the highlight is decoration only */ }
+        return true
+      },
+      // Whether a review note's suggestion can be applied in place
+      canReplacePassage(texts, hint = 0) {
+        const hit = findPassage(texts, hint)
+        return !!hit && inOneBlock(hit)
+      },
+      // Replace a review note's passage with the reviewer's suggested text
+      replacePassage(texts, hint, replacement) {
+        const hit = findPassage(texts, hint)
+        if (!hit || !inOneBlock(hit)) return false
+        const chain = editor.chain().focus()
+        if (replacement) chain.insertContentAt(hit, { type: 'text', text: replacement })
+        else chain.deleteRange(hit)
+        chain.run()
+        return true
+      },
       // caret: place the cursor at the match instead of selecting it (a paragraph
       // jump must not leave text selected for the next keystroke to replace)
       navigateToCharOffset(charOffset, matchedText = '', { caret = false } = {}) {
@@ -1162,7 +1238,16 @@ export default function Editor({
     if (!editor || editor.isDestroyed || !target || !chapter || chapter.content === undefined) return
     if (String(chapter.id) !== String(target.chapterId) || appliedCharTargetRef.current === target.timestamp) return
     appliedCharTargetRef.current = target.timestamp
-    janitorActionsRef?.current?.navigateToCharOffset(target.charOffset, target.snippet || '', { caret: true })
+    if (target.passage) {
+      // a review note: find its text; when it's gone, land near where it was
+      if (janitorActionsRef?.current?.showPassage(target.passage.texts, target.passage.hint)) {
+        onCharTargetConsumed?.()
+        return
+      }
+      janitorActionsRef?.current?.navigateToCharOffset(target.passage.hint || 0, '', { caret: true })
+    } else {
+      janitorActionsRef?.current?.navigateToCharOffset(target.charOffset, target.snippet || '', { caret: true })
+    }
     // opened from the Story Pulse lane: show the gutter so the paragraph's bar
     // (and its correction pad) is right there; not saved as the default
     if (target.showPulse) setPulseGutterVisible(true)

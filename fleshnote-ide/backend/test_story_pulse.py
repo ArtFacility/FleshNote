@@ -184,7 +184,7 @@ class TestEndpoint(unittest.TestCase):
 
 
 class TestCorrections(unittest.TestCase):
-    """The writer's own values (plan §5.6): applied by content key, re-anchored
+    """The writer's own values: applied by content key, re-anchored
     after small edits, reported stale when the paragraph is gone, synced."""
     CALM = TestEndpoint.CALM
     BATTLE = TestEndpoint.BATTLE

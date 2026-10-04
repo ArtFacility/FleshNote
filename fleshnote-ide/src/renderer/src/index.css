@@ -6,9 +6,12 @@
 @import './styles/extractor.css';
 @import './styles/setup.css';
 @import './styles/brainstorm.css';
+@import './styles/start.css';
+@import './styles/finder.css';
 @import './styles/picker.css';
 @import './styles/bookshelf.css';
 @import './styles/reviewer.css';
+@import './styles/reviews.css';
 @import './styles/story-pulse.css';
 
 @font-face {
@@ -109,6 +112,7 @@
 
 
 :root {
+  --titlebar-h: 38px;
   --bg-deep: #0d0e11;
   --bg-base: #131519;
   --bg-surface: #1a1c22;

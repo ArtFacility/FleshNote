@@ -287,6 +287,8 @@ function destroySplash(): void {
 
 // ── Window ───────────────────────────────────────────────────────────────────
 
+let mainWindowRef: BrowserWindow | null = null
+
 function createWindow(): void {
   const mainWindow = new BrowserWindow({
     width: 1280,
@@ -301,6 +303,8 @@ function createWindow(): void {
     }
   })
 
+  mainWindowRef = mainWindow
+  mainWindow.on('closed', () => { if (mainWindowRef === mainWindow) mainWindowRef = null })
   mainWindow.on('ready-to-show', () => {
     mainWindow.show()
     destroySplash()
@@ -358,9 +362,41 @@ protocol.registerSchemesAsPrivileged([
   { scheme: 'fleshnote-asset', privileges: { standard: true, secure: true, supportFetchAPI: true, stream: true } }
 ])
 
+// ── Opening review files ─────────────────────────────────────────────────────
+// Double-clicking a .flreview file launches FleshNote with its path (or, on
+// macOS, sends 'open-file'). Only one FleshNote runs at a time: a second launch
+// would start a second backend, which kills the first one's on port 8000, so it
+// hands its file to the running window and quits.
+const gotSingleInstanceLock = app.requestSingleInstanceLock()
+if (!gotSingleInstanceLock) app.quit()
+
+function findLaunchFile(argv: string[]): string | null {
+  return argv.find((a) => /\.flreview$/i.test(a) && fs.existsSync(a)) || null
+}
+
+// The renderer asks for this once it has mounted ('api:takeLaunchFile') and
+// again whenever 'launch-file' tells it a new one arrived.
+let pendingLaunchFile: string | null = findLaunchFile(process.argv)
+
+function deliverLaunchFile(file: string | null): void {
+  if (file) pendingLaunchFile = file
+  const win = mainWindowRef
+  if (!win) return
+  if (win.isMinimized()) win.restore()
+  win.focus()
+  if (file) win.webContents.send('launch-file')
+}
+
+app.on('second-instance', (_event, argv) => deliverLaunchFile(findLaunchFile(argv)))
+app.on('open-file', (event, file) => {
+  event.preventDefault()
+  deliverLaunchFile(file)
+})
+
 // ── App Ready ────────────────────────────────────────────────────────────────
 
 app.whenReady().then(async () => {
+  if (!gotSingleInstanceLock) return
   // Instant visual feedback while the backend boots (createWindow waits on it below).
   createSplashWindow()
 
@@ -436,6 +472,20 @@ app.whenReady().then(async () => {
     if (canceled || !filePath) return { saved: false }
     fs.writeFileSync(filePath, image.toPNG())
     return { saved: true, path: filePath }
+  })
+
+  // Several files at once (manuscript import: one file per chapter)
+  ipcMain.handle('dialog:openFiles', async (_event, filters) => {
+    const { canceled, filePaths } = await dialog.showOpenDialog({
+      properties: ['openFile', 'multiSelections'],
+      title: 'Select Files to Import',
+      filters: filters || [
+        { name: 'Manuscripts', extensions: ['txt', 'md', 'docx'] },
+        { name: 'All Files', extensions: ['*'] }
+      ]
+    })
+    if (canceled) return []
+    return filePaths
   })
 
   ipcMain.handle('dialog:openFile', async (_event, filters) => {
@@ -575,13 +625,25 @@ app.whenReady().then(async () => {
     }
   })
 
+  // ── Reviews (.flreview) ──────────────────────────────
+  // A reviewer's notes live in a working copy under userData/reviews; the file
+  // they were sent is never written to.
+  const reviewStore = join(app.getPath('userData'), 'reviews')
+  const safeFileName = (name: string) => (name || 'Review').replace(/[\\/:*?"<>|]+/g, ' ').trim().slice(0, 120) || 'Review'
+
+  ipcMain.handle('api:takeLaunchFile', () => {
+    const file = pendingLaunchFile
+    pendingLaunchFile = null
+    return file
+  })
+
   ipcMain.handle('api:exportReviewPackage', async (event, payload) => {
     try {
       const win = BrowserWindow.fromWebContents(event.sender)
       if (!win) return { status: 'error', message: 'No window' }
       const { canceled, filePath } = await dialog.showSaveDialog(win, {
-        title: 'Export Review Package',
-        defaultPath: `${payload?.defaultName || 'Project'}.flreview`,
+        title: 'Save review copy',
+        defaultPath: join(app.getPath('documents'), `${safeFileName(payload?.defaultName)}.flreview`),
         filters: [{ name: 'FleshNote Review', extensions: ['flreview'] }]
       })
       if (canceled || !filePath) return { status: 'cancelled' }
@@ -589,7 +651,10 @@ app.whenReady().then(async () => {
         project_path: payload.project_path,
         dest_path: filePath,
         scope: payload.scope || {},
-        reviewer_label: payload.reviewer_label || ''
+        reviewer_label: payload.reviewer_label || '',
+        author_label: payload.author_label || '',
+        message: payload.message || '',
+        expires_days: payload.expires_days || 0
       })
     } catch (err: any) {
       console.error('Export review package failed:', err)
@@ -597,51 +662,116 @@ app.whenReady().then(async () => {
     }
   })
 
-  ipcMain.handle('api:openReviewPackage', async (event, payload) => {
+  // Read a review file without starting a review (to see who it is from and which project it belongs to)
+  ipcMain.handle('api:openReviewPackage', async (_event, payload) => {
     try {
-      if (payload?.path) {
-        return await backendPost('/api/review/open', { path: payload.path })
-      }
-      const win = BrowserWindow.fromWebContents(event.sender)
-      const openOpts = {
-        properties: (payload?.multiple ? ['openFile', 'multiSelections'] : ['openFile']) as Array<'openFile' | 'multiSelections'>,
-        title: 'Open Review Package',
-        filters: [{ name: 'FleshNote Review', extensions: ['flreview'] }]
-      }
-      const { canceled, filePaths } = win
-        ? await dialog.showOpenDialog(win, openOpts)
-        : await dialog.showOpenDialog(openOpts)
-      if (canceled || !filePaths[0]) return { status: 'cancelled' }
-      if (payload?.multiple) {
-        const packages: Array<{ path: string; pkg: unknown }> = []
-        for (const p of filePaths) {
-          const res = await backendPost('/api/review/open', { path: p })
-          if (res?.status === 'ok') packages.push({ path: res.path, pkg: res.package })
-        }
-        return { status: 'ok', packages }
-      }
-      return await backendPost('/api/review/open', { path: filePaths[0] })
+      return await backendPost('/api/review/open', { path: payload.path })
     } catch (err: any) {
-      console.error('Open review package failed:', err)
       return { status: 'error', message: err.message }
+    }
+  })
+
+  // Start (or resume) reviewing a file: copies it into the review store
+  ipcMain.handle('api:startReview', async (event, payload) => {
+    try {
+      let file = payload?.path
+      if (!file) {
+        const win = BrowserWindow.fromWebContents(event.sender)
+        const opts = {
+          properties: ['openFile'] as Array<'openFile'>,
+          title: 'Open a review file',
+          filters: [{ name: 'FleshNote Review', extensions: ['flreview'] }]
+        }
+        const { canceled, filePaths } = win ? await dialog.showOpenDialog(win, opts) : await dialog.showOpenDialog(opts)
+        if (canceled || !filePaths[0]) return { status: 'cancelled' }
+        file = filePaths[0]
+      }
+      return await backendPost('/api/review/start', { path: file, store_dir: reviewStore })
+    } catch (err: any) {
+      console.error('Start review failed:', err)
+      return { status: 'error', message: err.message }
+    }
+  })
+
+  ipcMain.handle('api:listReviews', async () => {
+    try {
+      return await backendPost('/api/review/list', { store_dir: reviewStore })
+    } catch (err: any) {
+      return { status: 'error', message: err.message, reviews: [] }
     }
   })
 
   ipcMain.handle('api:saveReviewPackage', async (_event, payload) => {
     try {
-      return await backendPost('/api/review/save', payload)
+      return await backendPost('/api/review/save', { path: payload.path, package: payload.package, store_dir: reviewStore })
     } catch (err: any) {
       return { status: 'error', message: err.message }
     }
   })
 
-  ipcMain.handle('api:collectReviews', async (_event, payload) => {
+  // The reviewer is done: save the copy that goes back to the author
+  ipcMain.handle('api:finishReview', async (event, payload) => {
     try {
-      return await backendPost('/api/review/collect', payload)
+      const win = BrowserWindow.fromWebContents(event.sender)
+      if (!win) return { status: 'error', message: 'No window' }
+      const { canceled, filePath } = await dialog.showSaveDialog(win, {
+        title: 'Save your review for the author',
+        defaultPath: join(app.getPath('documents'), `${safeFileName(payload?.defaultName)}.flreview`),
+        filters: [{ name: 'FleshNote Review', extensions: ['flreview'] }]
+      })
+      if (canceled || !filePath) return { status: 'cancelled' }
+      return await backendPost('/api/review/finish', { path: payload.path, dest_path: filePath, store_dir: reviewStore })
     } catch (err: any) {
       return { status: 'error', message: err.message }
     }
   })
+
+  ipcMain.handle('api:discardReview', async (_event, payload) => {
+    try {
+      return await backendPost('/api/review/discard', { path: payload.path, store_dir: reviewStore })
+    } catch (err: any) {
+      return { status: 'error', message: err.message }
+    }
+  })
+
+  // Author side: bring returned review files into a project
+  ipcMain.handle('api:importReviews', async (event, payload) => {
+    try {
+      let files: string[] = payload?.paths || []
+      if (!files.length) {
+        const win = BrowserWindow.fromWebContents(event.sender)
+        const opts = {
+          properties: ['openFile', 'multiSelections'] as Array<'openFile' | 'multiSelections'>,
+          title: 'Import reviews',
+          filters: [{ name: 'FleshNote Review', extensions: ['flreview'] }]
+        }
+        const { canceled, filePaths } = win ? await dialog.showOpenDialog(win, opts) : await dialog.showOpenDialog(opts)
+        if (canceled || !filePaths.length) return { status: 'cancelled' }
+        files = filePaths
+      }
+      return await backendPost('/api/review/import', { project_path: payload.project_path, package_paths: files })
+    } catch (err: any) {
+      return { status: 'error', message: err.message }
+    }
+  })
+
+  ipcMain.handle('api:pickReviewFiles', async (event) => {
+    const win = BrowserWindow.fromWebContents(event.sender)
+    const opts = {
+      properties: ['openFile', 'multiSelections'] as Array<'openFile' | 'multiSelections'>,
+      title: 'Choose review files',
+      filters: [{ name: 'FleshNote Review', extensions: ['flreview'] }]
+    }
+    const { canceled, filePaths } = win ? await dialog.showOpenDialog(win, opts) : await dialog.showOpenDialog(opts)
+    if (canceled || !filePaths.length) return { status: 'cancelled' }
+    return { status: 'ok', paths: filePaths }
+  })
+
+  ipcMain.handle('api:reviewNotes', async (_event, payload) => backendPost('/api/review/notes', payload))
+  ipcMain.handle('api:reviewCopies', async (_event, payload) => backendPost('/api/review/copies', payload))
+  ipcMain.handle('api:revokeReviewCopy', async (_event, payload) => backendPost('/api/review/copy/revoke', payload))
+  ipcMain.handle('api:setReviewNoteStatus', async (_event, payload) => backendPost('/api/review/note/status', payload))
+  ipcMain.handle('api:deleteReceivedReview', async (_event, payload) => backendPost('/api/review/received/delete', payload))
 
   ipcMain.handle('api:syncPreview', async (_event, payload) => {
     return await backendPost('/api/project/sync/preview', payload)
@@ -1200,6 +1330,10 @@ app.whenReady().then(async () => {
 
   ipcMain.handle('api:importNerAnalyze', async (_event, payload) => {
     return await backendPost('/api/project/import/ner-analyze', payload)
+  })
+
+  ipcMain.handle('api:importNerProgress', async (_event, jobId: string) => {
+    return await backendPost('/api/project/import/ner-progress', { job_id: jobId })
   })
 
   ipcMain.handle('api:importBulkCreateEntities', async (_event, payload) => {

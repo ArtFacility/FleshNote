@@ -1,6 +1,6 @@
 """
 FleshNote — sensory evidence for the Janitor's "missing senses" card and the
-Stats → Senses overview (plan §4.4).
+Stats → Senses overview.
 
 Words come from the lexicon's `sensory` kind. A strong entry ('crimson',
 'creak', 'illat', 'szorstki') is evidence on its own. A weak entry is a

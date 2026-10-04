@@ -24,6 +24,12 @@ extraResources:
     to: Tutorial
   - from: src/renderer/src/locales
     to: locales
+# double-clicking a review file opens it in FleshNote
+fileAssociations:
+  - ext: flreview
+    name: FleshNote Review
+    description: FleshNote review file
+    role: Editor
 win:
   executableName: fleshnote-ide
   icon: build/icon.png

@@ -16,7 +16,6 @@ from routes.review_export import (
     ReviewScope,
     build_snapshot,
     empty_package,
-    migrate_notes,
     reanchor_quote,
     save_package,
     load_package,
@@ -111,22 +110,6 @@ class TestReviewExport(unittest.TestCase):
         res = reanchor_quote("The night was warm and long.", "night was cold")
         self.assertIsNotNone(res)
         self.assertGreaterEqual(res["ratio"], 0.70)
-
-    def test_migrate_notes_unchanged_sha(self):
-        snap = build_snapshot(self.project_path, ReviewScope(entities=True))
-        notes = [{
-            "id": "n1",
-            "chapter_id": "ch-1",
-            "category": "comment",
-            "body": "hi",
-            "anchor_start": 0,
-            "anchor_end": 5,
-            "anchor_quote": "Hello",
-        }]
-        carried, dropped = migrate_notes(notes, snap, snap)
-        self.assertEqual(len(carried), 1)
-        self.assertEqual(len(dropped), 0)
-        self.assertEqual(carried[0]["anchor_start"], 0)
 
     def test_chapter_subset(self):
         snap = build_snapshot(self.project_path, ReviewScope(chapter_ids=["missing"]))

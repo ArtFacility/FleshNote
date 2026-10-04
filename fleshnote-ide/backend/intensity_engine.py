@@ -1,5 +1,5 @@
 """
-FleshNote — story intensity and valence per paragraph (Story Pulse, plan §5).
+FleshNote — story intensity and valence per paragraph (Story Pulse).
 
 Three layers, all rule-based and inspectable:
 
@@ -102,7 +102,7 @@ def paragraph_features(doc, text: str, lang: str) -> dict:
         hits.append((GROUPS[e["kind"]], e, tok, arousal, valence))
 
     # A weak entry ('push', 'blood', 'fire') is evidence only in the company of
-    # a strong one somewhere in the paragraph (plan §2).
+    # a strong one somewhere in the paragraph.
     if not any(h[1].get("strength") != "weak" for h in hits):
         hits = []
 

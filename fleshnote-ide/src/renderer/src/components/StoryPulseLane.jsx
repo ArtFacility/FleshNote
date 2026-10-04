@@ -5,7 +5,7 @@ import { applyFrameworkVariant } from "../utils/frameworkStack";
 import { NEUTRAL_BAND, BRIGHT_MOOD, DARK_MOOD, columnColor, moodColor } from "../utils/pulseColors";
 
 /*
- * Story Pulse lane (plan §5.5): measured intensity and mood, drawn on the
+ * Story Pulse lane: measured intensity and mood, drawn on the
  * planner's own x-axis next to the target curve the author is aiming for.
  * Lives inside the planner canvas so it scrolls and zooms with the rail.
  *
@@ -13,7 +13,7 @@ import { NEUTRAL_BAND, BRIGHT_MOOD, DARK_MOOD, columnColor, moodColor } from "..
  *  - smooth (default, for writers): one smoothed tension curve, its fill tinted
  *    by mood, against the target. "Is the story roughly going where I want?"
  *  - rough (icon toggle): per-paragraph columns or two raw lines, for the
- *    details. The measurement is coarse (plan §8, batch 2), so the lane says
+ *    details. The measurement is coarse (it ranks a book's scenes only roughly), so the lane says
  *    so: relative to this book, "provisional" while analyzing, words on hover.
  *
  * The target is the chosen framework's curve (variant applied) unless the

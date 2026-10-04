@@ -3,25 +3,35 @@ FleshNote API — Import Routes
 Chapter splitting from manuscript files + spaCy NER extraction.
 """
 
+import hashlib
 import os
 import re
 import sqlite3
+import uuid
 from fastapi import APIRouter, HTTPException
 from pydantic import BaseModel
+
+from manuscript_import import paragraphs_to_html, preview_files, word_count
 
 router = APIRouter()
 
 
 class SplitPreviewRequest(BaseModel):
     project_path: str
-    file_path: str
+    file_path: str | None = None          # a single manuscript file
+    file_paths: list[str] | None = None   # several files and/or folders
 
 
 class ConfirmSplitsRequest(BaseModel):
     project_path: str
-    splits: list[dict]  # [{"title": "Chapter 1", "content": "..."}]
-    pov_character_id: int | None = None
-    target_word_count: int = 4000
+    # [{"title": str, "paragraphs": [str]}]; a plain "content" string is accepted too
+    splits: list[dict]
+    pov_character_id: str | None = None
+    target_word_count: int | None = None   # None: the project's default chapter target
+    insert_after: int | None = None        # chapter number to insert after; None appends
+    # A brand-new project starts with an empty "Chapter 1". The new-project
+    # import flow asks for it to be replaced by the manuscript.
+    replace_placeholder: bool = False
 
 
 class NerExtractRequest(BaseModel):
@@ -40,6 +50,9 @@ class NerAnalyzeRequest(BaseModel):
     texts: list[ChapterText] | None = None
     text: str | None = None
     language: str = "en"
+    # Optional caller-chosen id; while the analysis runs, its progress can be
+    # read from /api/project/import/ner-progress.
+    job_id: str | None = None
 
 
 class BulkEntityDef(BaseModel):
@@ -52,6 +65,8 @@ class BulkEntityDef(BaseModel):
 class BulkCreateEntitiesRequest(BaseModel):
     project_path: str
     entities: list[BulkEntityDef]
+    # Also link every mention of the new entities in the project's chapters.
+    link_in_chapters: bool = False
 
 
 class NlpLoadRequest(BaseModel):
@@ -138,224 +153,136 @@ def _plain_text_to_html(text: str) -> str:
     return "".join(html_parts)
 
 
-def _read_file(file_path: str) -> str:
-    """Read a file and return its text content."""
-    ext = os.path.splitext(file_path)[1].lower()
-
-    if ext in (".txt", ".md"):
-        with open(file_path, "r", encoding="utf-8") as f:
-            return f.read()
-
-    elif ext == ".docx":
-        try:
-            import docx
-            doc = docx.Document(file_path)
-            paragraphs = []
-            for para in doc.paragraphs:
-                # Preserve heading info as markdown markers
-                if para.style.name.startswith("Heading 1"):
-                    paragraphs.append(f"# {para.text}")
-                elif para.style.name.startswith("Heading 2"):
-                    paragraphs.append(f"## {para.text}")
-                else:
-                    paragraphs.append(para.text)
-            return "\n\n".join(paragraphs)
-        except ImportError:
-            raise HTTPException(
-                status_code=500,
-                detail="python-docx is not installed. Run: pip install python-docx"
-            )
-
-    else:
-        raise HTTPException(status_code=400, detail=f"Unsupported file type: {ext}")
+def _split_paragraphs(split: dict) -> list[str]:
+    paragraphs = split.get("paragraphs")
+    if isinstance(paragraphs, list):
+        return [str(p) for p in paragraphs if str(p).strip()]
+    content = split.get("content") or ""
+    return [p.strip() for p in re.split(r"\n{2,}", content) if p.strip()]
 
 
-def _heuristic_split(text: str) -> list[dict]:
-    """
-    Split text into chapters using a waterfall of heuristics:
-    1. Markdown headings (# Chapter, ## Title)
-    2. DOCX-converted headings (already converted to # in _read_file)
-    3. Regex patterns (Chapter X, Prologue, Epilogue, Part X)
-    4. Delimiter patterns (---, ***, ###)
-    5. Large whitespace gaps (4+ blank lines)
-    """
-    lines = text.split("\n")
-    splits = []
-    current_title = ""
-    current_lines = []
-
-    # Combined pattern for chapter-like headings
-    chapter_pattern = re.compile(
-        r'^(?:#\s+|##\s+)?'  # optional markdown heading
-        r'(?:chapter|prologue|epilogue|part|act|book)\s*'
-        r'(?:one|two|three|four|five|six|seven|eight|nine|ten|'
-        r'eleven|twelve|thirteen|fourteen|fifteen|sixteen|'
-        r'seventeen|eighteen|nineteen|twenty|\d+)?'
-        r'[\s:.\-—]*(.*)$',
-        re.IGNORECASE
+def _is_untouched_placeholder(cursor, project_path: str) -> str | None:
+    """The id of a new project's empty default Chapter 1, if that is all the project holds."""
+    cursor.execute(
+        "SELECT id, title, word_count, status, md_filename FROM chapters WHERE deleted = 0"
     )
-
-    # Delimiter pattern
-    delimiter_pattern = re.compile(r'^(?:\*{3,}|-{3,}|#{3,}|={3,})\s*$')
-
-    # Track consecutive blank lines
-    blank_count = 0
-    BLANK_THRESHOLD = 4
-
-    for i, line in enumerate(lines):
-        stripped = line.strip()
-
-        # Check for chapter heading
-        match = chapter_pattern.match(stripped)
-        if match and len(stripped) > 0:
-            # Save previous chunk if it has content
-            if current_lines or current_title:
-                content = "\n".join(current_lines).strip()
-                if content or current_title:
-                    splits.append({
-                        "title": current_title or f"Section {len(splits) + 1}",
-                        "content": content,
-                        "preview": content[:150] if content else "",
-                        "word_count": len(content.split()) if content else 0,
-                    })
-
-            # Extract title from the heading line
-            title_suffix = match.group(1).strip()
-            # Rebuild a cleaner title
-            heading_text = stripped.lstrip("#").strip()
-            current_title = heading_text if heading_text else f"Chapter {len(splits) + 1}"
-            current_lines = []
-            blank_count = 0
-            continue
-
-        # Check for delimiter
-        if delimiter_pattern.match(stripped):
-            if current_lines:
-                content = "\n".join(current_lines).strip()
-                if content:
-                    splits.append({
-                        "title": current_title or f"Section {len(splits) + 1}",
-                        "content": content,
-                        "preview": content[:150] if content else "",
-                        "word_count": len(content.split()) if content else 0,
-                    })
-                current_title = ""
-                current_lines = []
-                blank_count = 0
-                continue
-
-        # Track blank lines
-        if not stripped:
-            blank_count += 1
-            if blank_count >= BLANK_THRESHOLD and current_lines:
-                content = "\n".join(current_lines).strip()
-                if content:
-                    splits.append({
-                        "title": current_title or f"Section {len(splits) + 1}",
-                        "content": content,
-                        "preview": content[:150] if content else "",
-                        "word_count": len(content.split()) if content else 0,
-                    })
-                current_title = ""
-                current_lines = []
-                blank_count = 0
-                continue
-        else:
-            blank_count = 0
-
-        current_lines.append(line)
-
-    # Don't forget the last chunk
-    if current_lines:
-        content = "\n".join(current_lines).strip()
-        if content:
-            splits.append({
-                "title": current_title or f"Section {len(splits) + 1}",
-                "content": content,
-                "preview": content[:150] if content else "",
-                "word_count": len(content.split()) if content else 0,
-            })
-
-    # If no splits were found, treat the whole file as one chapter
-    if not splits and text.strip():
-        splits.append({
-            "title": "Chapter 1",
-            "content": text.strip(),
-            "preview": text.strip()[:150],
-            "word_count": len(text.split()),
-        })
-
-    return splits
+    rows = cursor.fetchall()
+    if len(rows) != 1:
+        return None
+    row = rows[0]
+    if row["word_count"] or row["status"] != "planned" or row["title"] != "Chapter 1":
+        return None
+    md_path = os.path.join(project_path, "md", row["md_filename"] or "")
+    if os.path.exists(md_path):
+        with open(md_path, "r", encoding="utf-8") as f:
+            body = re.sub(r"<[^>]+>", " ", f.read())
+        if body.replace("#", " ").split() not in ([], ["Chapter", "1"]):
+            return None
+    return row["id"]
 
 
 @router.post("/api/project/import/split-preview")
 def split_preview(req: SplitPreviewRequest):
-    """Read a manuscript file and return proposed chapter splits."""
-    if not os.path.exists(req.file_path):
-        raise HTTPException(status_code=404, detail="File not found")
-
-    text = _read_file(req.file_path)
-    splits = _heuristic_split(text)
-
-    return {
-        "splits": splits,
-        "total_words": sum(s["word_count"] for s in splits),
-        "total_chapters": len(splits),
-    }
+    """Read manuscript files (or folders of them) and return proposed chapter splits."""
+    paths = list(req.file_paths or [])
+    if req.file_path:
+        paths.insert(0, req.file_path)
+    if not paths:
+        raise HTTPException(status_code=400, detail="No files given")
+    missing = [p for p in paths if not os.path.exists(p)]
+    if missing:
+        raise HTTPException(status_code=404, detail=f"File not found: {missing[0]}")
+    return preview_files(paths)
 
 
 @router.post("/api/project/import/confirm-splits")
 def confirm_splits(req: ConfirmSplitsRequest):
-    """Commit approved chapter splits to the database and create md files."""
+    """Commit reviewed chapter splits: one transaction, logged for sync."""
+    from sync_core import log_change
+    from chapter_numbers import park_deleted_chapter_numbers, retire_chapter, shift_chapters_after
+
+    splits = [s for s in req.splits if isinstance(s, dict)]
+    if not splits:
+        raise HTTPException(status_code=400, detail="Nothing to import")
+
     conn = _get_db(req.project_path)
     cursor = conn.cursor()
-
-    cursor.execute("SELECT COALESCE(MAX(chapter_number), 0) FROM chapters")
-    start_num = cursor.fetchone()[0] + 1
-
     md_dir = os.path.join(req.project_path, "md")
     os.makedirs(md_dir, exist_ok=True)
+    written: list[str] = []
+    try:
+        target = req.target_word_count
+        if target is None:
+            cursor.execute("SELECT config_value FROM project_config WHERE config_key = 'default_chapter_target'")
+            row = cursor.fetchone()
+            target = int(row[0]) if row and str(row[0]).isdigit() else 4000
 
-    created = []
-    for i, split in enumerate(req.splits):
-        num = start_num + i
-        title = split.get("title", f"Chapter {num}")
-        content = split.get("content", "")
+        park_deleted_chapter_numbers(cursor)
+        if req.replace_placeholder:
+            placeholder = _is_untouched_placeholder(cursor, req.project_path)
+            if placeholder:
+                retire_chapter(cursor, placeholder)
 
-        # Create safe filename
-        slug = re.sub(r'[^\w\s-]', '', title.lower().strip())
-        slug = re.sub(r'[\s_]+', '_', slug)[:50]
-        md_filename = f"ch_{num:03d}_{slug}.md"
+        cursor.execute("SELECT COALESCE(MAX(chapter_number), 0) FROM chapters WHERE deleted = 0")
+        last = cursor.fetchone()[0]
+        after = last if req.insert_after is None else max(0, min(req.insert_after, last))
+        shift_chapters_after(cursor, after, len(splits))
 
-        status = "draft" if content else "planned"
-        word_count = len(content.split()) if content else 0
-        pov_id = req.pov_character_id if i == 0 else None
+        created = []
+        for i, split in enumerate(splits):
+            num = after + 1 + i
+            title = (split.get("title") or "").strip() or f"Chapter {num}"
+            paragraphs = _split_paragraphs(split)
+            words = sum(word_count(p) for p in paragraphs)
+            status = "draft" if words else "planned"
+            pov_id = req.pov_character_id if i == 0 else None
 
-        chap_id = str(uuid.uuid4())
-        cursor.execute("""
-            INSERT INTO chapters (id, chapter_number, title, status, pov_character_id,
-                                  target_word_count, md_filename, word_count)
-            VALUES (?, ?, ?, ?, ?, ?, ?, ?)
-        """, (chap_id, num, title, status, pov_id, req.target_word_count, md_filename, word_count))
+            slug = re.sub(r"[^\w\s-]", "", title.lower().strip())
+            slug = re.sub(r"[\s_]+", "_", slug)[:40] or "chapter"
+            md_filename = f"ch_{num:03d}_{slug}_{uuid.uuid4().hex[:8]}.md"
+            md_path = os.path.join(md_dir, md_filename)
+            prose = paragraphs_to_html(paragraphs)
+            with open(md_path, "w", encoding="utf-8") as f:
+                f.write(prose)
+            written.append(md_path)
 
-        # Convert plain text to HTML paragraphs for TipTap, then write the md file
-        html_content = _plain_text_to_html(content)
-        md_path = os.path.join(md_dir, md_filename)
-        with open(md_path, "w", encoding="utf-8") as f:
-            f.write(html_content)
+            chap_id = str(uuid.uuid4())
+            cursor.execute("""
+                INSERT INTO chapters (id, chapter_number, title, status, pov_character_id,
+                                      target_word_count, md_filename, word_count)
+                VALUES (?, ?, ?, ?, ?, ?, ?, ?)
+            """, (chap_id, num, title, status, pov_id, target, md_filename, words))
+            log_change(cursor, "chapters", chap_id, {
+                "chapter_number": num,
+                "title": title,
+                "status": status,
+                "pov_character_id": pov_id,
+                "target_word_count": target,
+                "md_filename": md_filename,
+                "word_count": words,
+                "prose_hash": hashlib.sha256(prose.encode("utf-8")).hexdigest(),
+            })
+            created.append({
+                "id": chap_id,
+                "chapter_number": num,
+                "title": title,
+                "status": status,
+                "word_count": words,
+                "md_filename": md_filename,
+            })
 
-        created.append({
-            "id": chap_id,
-            "chapter_number": num,
-            "title": title,
-            "status": status,
-            "word_count": word_count,
-            "md_filename": md_filename,
-        })
-
-    conn.commit()
-    conn.close()
-    return {"chapters": created}
+        conn.commit()
+        return {"chapters": created}
+    except Exception:
+        conn.rollback()
+        for path in written:
+            try:
+                os.remove(path)
+            except OSError:
+                pass
+        raise
+    finally:
+        conn.close()
 
 
 @router.post("/api/project/import/ner-extract")
@@ -495,6 +422,152 @@ _STOPWORD_ENTITIES = {
 }
 
 
+# Models label entities differently: huSpaCy uses PER/LOC/ORG/MISC, the Polish
+# models persName/placeName/geogName/orgName. Normalize to the English set.
+_LABEL_ALIASES = {
+    "PER": "PERSON",
+    "persName": "PERSON",
+    "placeName": "GPE",
+    "geogName": "LOC",
+    "orgName": "ORG",
+}
+
+# Languages whose models give dictionary forms for names ("Bokával" -> "Boka").
+_LEMMATIZED_LANGUAGES = {"hu", "pl"}
+
+# Licence boilerplate and markup from public-domain ebooks.
+_BOILERPLATE_MARKERS = ("gutenberg", "literary archive foundation", "ebook", "illustration")
+
+# Words of these kinds at the edge of a name span are the model gluing a
+# neighbour on ("Felharsan Geréb" = "rings out Geréb"), not part of the name.
+_EDGE_POS_TO_TRIM = {
+    "VERB", "AUX", "ADV", "ADJ", "PRON", "DET", "ADP", "CCONJ", "SCONJ",
+    "INTJ", "NUM", "PART", "PUNCT",
+}
+
+MAX_SNIPPETS = 3
+
+
+def _core_tokens(ent, lowercase_lemmas: set) -> list:
+    """
+    The entity's tokens with glued-on non-name words trimmed from both ends: words
+    tagged as verbs, adjectives and the like, or capitalized only because they
+    start a sentence (the text uses them in lowercase elsewhere).
+    """
+    def glued(tok):
+        return tok.pos_ in _EDGE_POS_TO_TRIM or (tok.lemma_ or tok.text).lower() in lowercase_lemmas
+
+    tokens = list(ent)
+    while len(tokens) > 1 and glued(tokens[0]):
+        tokens = tokens[1:]
+    while len(tokens) > 1 and glued(tokens[-1]):
+        tokens = tokens[:-1]
+    return tokens
+
+
+def _surface_name(tokens) -> str:
+    return "".join(t.text_with_ws for t in tokens).strip()
+
+
+def _lemma_name(tokens) -> str:
+    """The dictionary form of a name, keeping the original capitalization of each word."""
+    words = []
+    for tok in tokens:
+        lemma = tok.lemma_ or tok.text
+        if tok.text[:1].isupper() and lemma[:1].islower():
+            lemma = lemma[:1].upper() + lemma[1:]
+        words.append(lemma + tok.whitespace_)
+    return "".join(words).strip()
+
+
+def _fold(text: str) -> str:
+    import unicodedata
+    return "".join(c for c in unicodedata.normalize("NFD", text.lower()) if not unicodedata.combining(c))
+
+
+def _alias_is_glued(alias: str, main: str, other_names: list[str], lowercase_lemmas: set) -> bool:
+    """
+    An alternative spelling that is really the main name glued to a neighbour:
+    another character ("Boka Cseléhez") or an ordinary word. Offered, but off.
+    """
+    extra = [w for w in alias.split() if w not in main.split()]
+    if not extra or len(alias.split()) <= len(main.split()):
+        return False
+    for word in extra:
+        folded = _fold(word)
+        if folded in lowercase_lemmas:
+            return True
+        # An inflected form of another name ("Cseléhez" from "Csele"); the bare
+        # name itself can be part of a real full name ("Kuno Lichtenstein").
+        if any(len(o) >= 3 and folded != _fold(o) and folded.startswith(_fold(o)[:4]) for o in other_names):
+            return True
+    return False
+
+
+_ENTITY_TABLES = ("characters", "locations", "lore_entities", "groups")
+
+
+def _known_names(project_path: str) -> set[str]:
+    """Lower-cased names and aliases of everything the project already has."""
+    import json
+
+    known: set[str] = set()
+    db_path = os.path.join(project_path or "", "fleshnote.db")
+    if not os.path.exists(db_path):
+        return known
+    conn = _get_db(project_path)
+    try:
+        for table in _ENTITY_TABLES:
+            for row in conn.execute(f"SELECT name, aliases FROM {table} WHERE deleted = 0"):
+                if row["name"]:
+                    known.add(row["name"].strip().lower())
+                try:
+                    known.update(a.strip().lower() for a in json.loads(row["aliases"] or "[]") if a)
+                except (ValueError, TypeError):
+                    pass
+    finally:
+        conn.close()
+    return known
+
+
+def _reads_as_common_word(name: str, lowercase_counts: dict, frequency: int) -> bool:
+    """A one-word 'name' the text also uses in lowercase as often is probably an ordinary word."""
+    if " " in name or not name[:1].isupper():
+        return False
+    return lowercase_counts.get(name.lower(), 0) >= frequency
+
+
+PIECE_CHARS = 4000
+
+
+def _text_pieces(text: str):
+    """Splits text at paragraph breaks into pieces of about PIECE_CHARS."""
+    piece = []
+    size = 0
+    for para in text.split("\n\n"):
+        piece.append(para)
+        size += len(para) + 2
+        if size >= PIECE_CHARS:
+            yield "\n\n".join(piece)
+            piece, size = [], 0
+    if piece:
+        yield "\n\n".join(piece)
+
+
+# Progress of running analyses, keyed by job_id. Stages: "loading" (language
+# model), "reading" (chapter by chapter; done/total count characters), "grouping".
+_NER_PROGRESS: dict[str, dict] = {}
+
+
+class NerProgressRequest(BaseModel):
+    job_id: str
+
+
+@router.post("/api/project/import/ner-progress")
+def ner_progress(req: NerProgressRequest):
+    return _NER_PROGRESS.get(req.job_id) or {"stage": "unknown"}
+
+
 @router.post("/api/project/import/ner-analyze")
 def ner_analyze(req: NerAnalyzeRequest):
     """
@@ -502,6 +575,17 @@ def ner_analyze(req: NerAnalyzeRequest):
     Returns grouped, deduplicated entities with frequency, chapter mapping,
     context snippets, and alias detection.
     """
+    progress = {"stage": "loading", "chapter": 0, "chapters": 0, "done": 0, "total": 0}
+    if req.job_id:
+        _NER_PROGRESS[req.job_id] = progress
+    try:
+        return _ner_analyze(req, progress)
+    finally:
+        if req.job_id:
+            _NER_PROGRESS.pop(req.job_id, None)
+
+
+def _ner_analyze(req: NerAnalyzeRequest, progress: dict):
     try:
         from nlp_manager import get_nlp
         nlp = get_nlp(req.language)
@@ -515,8 +599,10 @@ def ner_analyze(req: NerAnalyzeRequest):
     # Skip noise labels: DATE, TIME, CARDINAL, ORDINAL, QUANTITY, PERCENT, MONEY
     KEEP_LABELS = {
         "PERSON", "GPE", "LOC", "FAC", "ORG",
-        "NORP", "PRODUCT", "WORK_OF_ART", "EVENT", "LAW", "LANGUAGE",
+        "NORP", "PRODUCT", "WORK_OF_ART", "EVENT", "LAW", "MISC",
     }
+    lemmatize = req.language in _LEMMATIZED_LANGUAGES
+    cased_script = req.language != "ar"
 
     # Build list of (chapter_index, content) from either texts or text
     chapters = []
@@ -530,67 +616,110 @@ def ner_analyze(req: NerAnalyzeRequest):
     # Collect all entity occurrences across chapters
     # key: case-folded cleaned name -> entity data
     entity_map = {}
+    lowercase_counts: dict[str, int] = {}
+    lowercase_lemmas: set[str] = set()
 
-    for ch_index, content in chapters:
+    progress.update(stage="reading", chapters=len(chapters),
+                    total=sum(len(c or "") for _, c in chapters))
+    for position, (ch_index, content) in enumerate(chapters):
+        progress["chapter"] = position + 1
         if not content or not content.strip():
             continue
 
-        doc = nlp(content)
+        # Paragraph-sized pieces: names never span paragraphs, and the
+        # progress moves while a long chapter is read.
+        chapter_start = progress["done"]
+        for piece in _text_pieces(content):
+            doc = nlp(piece)
+            progress["done"] += len(piece)
+            for tok in doc:
+                if tok.text[:1].islower():
+                    lowercase_counts[tok.text] = lowercase_counts.get(tok.text, 0) + 1
+                    lowercase_lemmas.add((tok.lemma_ or tok.text).lower())
 
-        for ent in doc.ents:
-            # Filter out noise labels
-            if ent.label_ not in KEEP_LABELS:
-                continue
+            for ent in doc.ents:
+                label = _LABEL_ALIASES.get(ent.label_, ent.label_)
+                # Filter out noise labels
+                if label not in KEEP_LABELS:
+                    continue
 
-            # Clean the entity name
-            cleaned = _clean_entity_name(ent.text)
-            if not cleaned:
-                continue
+                # Clean the entity name. Inflected languages group by the
+                # dictionary form but show the spelling the text uses most.
+                core = _core_tokens(ent, lowercase_lemmas)
+                cleaned = _clean_entity_name(_surface_name(core))
+                if not cleaned:
+                    continue
+                group_name = (_clean_entity_name(_lemma_name(core)) or cleaned) if lemmatize else cleaned
+                # Names start with a capital; "bush" or "company" are ordinary words.
+                if cased_script and not cleaned[:1].isupper():
+                    continue
+                if any(marker in cleaned.lower() for marker in _BOILERPLATE_MARKERS):
+                    continue
 
-            # Skip pure numbers
-            if re.match(r'^[\d\s.,!?]+$', cleaned):
-                continue
-            # Skip common English words that aren't real entities
-            if cleaned.lower() in _STOPWORD_ENTITIES:
-                continue
+                # Skip pure numbers
+                if re.match(r'^[\d\s.,!?]+$', cleaned):
+                    continue
+                # Skip common English words that aren't real entities
+                if cleaned.lower() in _STOPWORD_ENTITIES:
+                    continue
 
-            fold_key = cleaned.lower()
+                fold_key = group_name.lower()
 
-            if fold_key not in entity_map:
-                # Extract context snippet (sentence containing this entity)
+                # Context snippet: the sentence containing this entity
                 snippet = ""
                 try:
                     sent = ent.sent
                     if sent:
                         snippet = sent.text.strip()[:200]
                 except Exception:
-                    # Fallback: extract surrounding text
                     start = max(0, ent.start_char - 40)
-                    end = min(len(content), ent.end_char + 120)
-                    snippet = content[start:end].strip()
+                    end = min(len(doc.text), ent.end_char + 120)
+                    snippet = doc.text[start:end].strip()
 
-                entity_map[fold_key] = {
-                    "name": cleaned,
-                    "name_counts": {cleaned: 1},
-                    "spacy_label": ent.label_,
-                    "frequency": 0,
-                    "chapter_indices": set(),
-                    "snippet": snippet,
-                }
-            else:
-                # Track casing variants
-                existing = entity_map[fold_key]
-                existing["name_counts"][cleaned] = (
-                    existing["name_counts"].get(cleaned, 0) + 1
-                )
+                # A lone word tagged as a verb, adverb… ("Belevágott") is rarely a name.
+                weak = len(core) == 1 and core[0].pos_ in _EDGE_POS_TO_TRIM
 
-            entity_map[fold_key]["frequency"] += 1
-            entity_map[fold_key]["chapter_indices"].add(ch_index)
+                if fold_key not in entity_map:
+                    entity_map[fold_key] = {
+                        "weak": 0,
+                        "name": cleaned,
+                        "dictionary_form": group_name,
+                        "name_counts": {cleaned: 1},
+                        "spacy_label": label,
+                        "frequency": 0,
+                        "chapter_indices": set(),
+                        "snippet": snippet,
+                        "snippets": [snippet] if snippet else [],
+                    }
+                else:
+                    # Track casing variants
+                    existing = entity_map[fold_key]
+                    existing["name_counts"][cleaned] = (
+                        existing["name_counts"].get(cleaned, 0) + 1
+                    )
+                    # Quotes from different chapters show the name in more than one light.
+                    if (snippet and len(existing["snippets"]) < MAX_SNIPPETS
+                            and ch_index not in existing["chapter_indices"]):
+                        existing["snippets"].append(snippet)
 
-    # Resolve display name to the most frequent casing
+                entity_map[fold_key]["frequency"] += 1
+                entity_map[fold_key]["weak"] += 1 if weak else 0
+                entity_map[fold_key]["chapter_indices"].add(ch_index)
+
+        progress["done"] = chapter_start + len(content)
+
+    progress["stage"] = "grouping"
+
+    # Display name: the dictionary form when the text itself uses it ("Kraków",
+    # not the more frequent "Krakowa"); otherwise the most frequent spelling, since
+    # lemmatizers sometimes clip unfamiliar names ("Nemecs").
     for fold_key, data in entity_map.items():
-        best_name = max(data["name_counts"], key=data["name_counts"].get)
-        data["name"] = best_name
+        spellings = {n.lower(): n for n in data["name_counts"]}
+        dictionary = data["dictionary_form"].lower()
+        if dictionary in spellings:
+            data["name"] = spellings[dictionary]
+        else:
+            data["name"] = max(data["name_counts"], key=lambda n: (data["name_counts"][n], -len(n)))
 
     # Map spaCy labels to FleshNote types
     # ORG is intentionally mapped to None — many character names get
@@ -604,6 +733,13 @@ def ner_analyze(req: NerAnalyzeRequest):
 
     for data in entity_map.values():
         data["suggested_type"] = LABEL_MAP.get(data["spacy_label"])
+        # "Absurd" or "Company" at the start of a sentence: let the writer decide.
+        if _reads_as_common_word(data["name"], lowercase_counts, data["frequency"]):
+            data["suggested_type"] = None
+        # Rare lone words tagged as verbs and the like; a name used dozens of
+        # times is a name whatever its tag.
+        if data["weak"] * 2 > data["frequency"] and data["frequency"] < 10:
+            data["suggested_type"] = None
 
     # Heuristic: single-word ORG entities with high frequency in fiction
     # are almost always character names that spaCy misclassified.
@@ -632,6 +768,7 @@ def ner_analyze(req: NerAnalyzeRequest):
             poss = entity_map[poss_key]
             base["frequency"] += poss["frequency"]
             base["chapter_indices"] |= poss["chapter_indices"]
+            base["snippets"] = (base["snippets"] + poss["snippets"])[:MAX_SNIPPETS]
             entity_map.pop(poss_key, None)
 
     # Detect aliases: within each label group AND across PERSON/ORG,
@@ -660,8 +797,13 @@ def ner_analyze(req: NerAnalyzeRequest):
                 if i == j or short_key in alias_targets or long_key in alias_targets:
                     continue
                 short_name = short_data["name"].lower()
-                # Check if short name is a word-boundary match in long name
+                # Check if short name is a word-boundary match in long name.
+                # The form the text uses more often becomes the main name:
+                # "Geréb" over a rare "Felharsant Geréb", "Marlow" over "Charlie Marlow".
                 if short_name in long_words and len(short_name) >= 2:
+                    if short_data["frequency"] > long_data["frequency"]:
+                        alias_targets[long_key] = short_key
+                        break
                     alias_targets[short_key] = long_key
 
     # Phase 2: Cross-group prefix/containment alias detection.
@@ -669,35 +811,45 @@ def ner_analyze(req: NerAnalyzeRequest):
     #   "Wern" (WORK_OF_ART) -> "Werniel" (PERSON)
     #   "Syl" (PERSON)       -> "Sylvie" (ORG)
     #   "Hannah" (PERSON)    -> "Hanna" (PERSON)  (containment)
+    #   "Cselének" (HU, unlemmatized) -> "Csele"; accents are ignored ("Bokáék" -> "Boka").
+    # Only names of the same kind merge: "Mari" (a person) stays apart from
+    # "Mária-utca" (a street).
+    def compatible(a, b):
+        ta, tb = entity_map[a]["suggested_type"], entity_map[b]["suggested_type"]
+        return ta is None or tb is None or ta == tb
+
     remaining_keys = [k for k in entity_map if k not in alias_targets]
     for i, key_a in enumerate(remaining_keys):
         if key_a in alias_targets:
             continue
-        name_a = entity_map[key_a]["name"].lower()
+        name_a = _fold(entity_map[key_a]["name"])
         if len(name_a) < 3:
             continue
         for key_b in remaining_keys[i + 1:]:
-            if key_b in alias_targets:
+            if key_b in alias_targets or key_a in alias_targets:
                 continue
-            name_b = entity_map[key_b]["name"].lower()
-            if len(name_b) < 3:
+            name_b = _fold(entity_map[key_b]["name"])
+            if len(name_b) < 3 or not compatible(key_a, key_b):
                 continue
             # Check if one name is a prefix of the other
-            is_related = False
-            if name_b.startswith(name_a) and len(name_b) > len(name_a):
-                is_related = True
-            elif name_a.startswith(name_b) and len(name_a) > len(name_b):
-                is_related = True
-            if not is_related:
+            if not ((name_b.startswith(name_a) and len(name_b) > len(name_a))
+                    or (name_a.startswith(name_b) and len(name_a) > len(name_b))):
                 continue
             # Make the higher-frequency one the primary
-            freq_a = entity_map[key_a]["frequency"]
-            freq_b = entity_map[key_b]["frequency"]
-            if freq_a >= freq_b:
+            if entity_map[key_a]["frequency"] >= entity_map[key_b]["frequency"]:
                 alias_targets[key_b] = key_a
             else:
                 alias_targets[key_a] = key_b
-            break
+
+    # An alias of an alias belongs to the final primary.
+    def root(key):
+        seen = set()
+        while key in alias_targets and key not in seen:
+            seen.add(key)
+            key = alias_targets[key]
+        return key
+
+    alias_targets = {k: root(k) for k in alias_targets if root(k) != k}
 
     # Merge aliases into their primaries
     for alias_key, primary_key in alias_targets.items():
@@ -710,6 +862,7 @@ def ner_analyze(req: NerAnalyzeRequest):
             # Merge frequency and chapters
             primary["frequency"] += alias_data["frequency"]
             primary["chapter_indices"] |= alias_data["chapter_indices"]
+            primary["snippets"] = (primary["snippets"] + alias_data["snippets"])[:MAX_SNIPPETS]
             # If the alias was PERSON and the primary was ORG,
             # upgrade the primary to PERSON (more likely correct)
             if (alias_data["spacy_label"] == "PERSON"
@@ -736,11 +889,24 @@ def ner_analyze(req: NerAnalyzeRequest):
         if name_words & _LOCATION_KEYWORDS:
             data["suggested_type"] = "location"
 
-    # Split into confident and low_confidence
+    # Split into confident and low_confidence. Names the project already has
+    # (as a name or an alias) are left out; only their count is reported.
     confident = []
     low_confidence = []
+    folded_lemmas = {_fold(l) for l in lowercase_lemmas}
+    known = _known_names(req.project_path)
+    already_known = 0
 
-    for fold_key, data in entity_map.items():
+    for fold_key, data in list(entity_map.items()):
+        if data["name"].lower() in known or any(a.lower() in known for a in data.get("aliases", [])):
+            already_known += 1
+            continue
+        others = [d["name"] for k, d in entity_map.items() if k != fold_key]
+        seen_aliases = {data["name"].lower()}
+        data["aliases"] = [
+            a for a in data.get("aliases", [])
+            if a.lower() not in seen_aliases and not seen_aliases.add(a.lower())
+        ]
         entity_out = {
             "name": data["name"],
             "suggested_type": data["suggested_type"],
@@ -749,7 +915,13 @@ def ner_analyze(req: NerAnalyzeRequest):
             "chapter_count": len(data["chapter_indices"]),
             "chapter_indices": sorted(data["chapter_indices"]),
             "snippet": data["snippet"],
+            "snippets": data["snippets"],
             "aliases": data.get("aliases", []),
+            # Whether each alias should start switched on in the review.
+            "aliases_on": [
+                not _alias_is_glued(a, data["name"], others, folded_lemmas)
+                for a in data.get("aliases", [])
+            ],
         }
 
         if data["suggested_type"] and data["frequency"] >= 2:
@@ -764,6 +936,7 @@ def ner_analyze(req: NerAnalyzeRequest):
     return {
         "confident": confident,
         "low_confidence": low_confidence,
+        "already_known": already_known,
     }
 
 
@@ -772,20 +945,30 @@ def bulk_create_entities(req: BulkCreateEntitiesRequest):
     """Create multiple entities of different types in one transaction."""
     import json
 
+    from sync_core import log_change
+
+    known = _known_names(req.project_path)
+    already_known = set(known)
     conn = _get_db(req.project_path)
     cursor = conn.cursor()
     created = []
+    skipped = 0
 
     for entity in req.entities:
         aliases_json = json.dumps(entity.aliases) if entity.aliases else "[]"
+        # Never create a second copy of something the project already has.
+        if entity.name.strip().lower() in known:
+            skipped += 1
+            continue
+        known.add(entity.name.strip().lower())
 
-        import uuid
         ent_id = str(uuid.uuid4())
         if entity.type == "character":
             cursor.execute(
                 "INSERT INTO characters (id, name, aliases) VALUES (?, ?, ?)",
                 (ent_id, entity.name, aliases_json),
             )
+            log_change(cursor, "characters", ent_id, {"name": entity.name, "aliases": entity.aliases})
             created.append({
                 "id": ent_id,
                 "type": "character",
@@ -797,6 +980,7 @@ def bulk_create_entities(req: BulkCreateEntitiesRequest):
                 "INSERT INTO locations (id, name, aliases) VALUES (?, ?, ?)",
                 (ent_id, entity.name, aliases_json),
             )
+            log_change(cursor, "locations", ent_id, {"name": entity.name, "aliases": entity.aliases})
             created.append({
                 "id": ent_id,
                 "type": "location",
@@ -809,6 +993,8 @@ def bulk_create_entities(req: BulkCreateEntitiesRequest):
                 "INSERT INTO lore_entities (id, name, category, aliases) VALUES (?, ?, ?, ?)",
                 (ent_id, entity.name, category, aliases_json),
             )
+            log_change(cursor, "lore_entities", ent_id,
+                       {"name": entity.name, "category": category, "aliases": entity.aliases})
             created.append({
                 "id": ent_id,
                 "type": "lore",
@@ -818,7 +1004,73 @@ def bulk_create_entities(req: BulkCreateEntitiesRequest):
 
     conn.commit()
     conn.close()
-    return {"created": created}
+
+    linked = {"links": 0, "chapters": 0}
+    if req.link_in_chapters and created:
+        aliases_by_name = {e.name: e.aliases for e in req.entities}
+        targets = [{**c, "aliases": aliases_by_name.get(c["name"], [])} for c in created]
+        # The entities are already saved; a chapter that can't be linked
+        # (say, a file another program holds open) must not undo that.
+        try:
+            linked = _link_names_in_chapters(req.project_path, targets, blocked=already_known)
+        except Exception as e:
+            print(f"[import] Linking names in chapters failed: {e}")
+            linked = {"links": 0, "chapters": 0, "error": str(e)}
+    return {"created": created, "skipped_existing": skipped, "linked": linked}
+
+
+def _link_names_in_chapters(project_path: str, entities: list[dict], blocked: set[str]) -> dict:
+    """
+    Wraps every mention of the given entities in the project's chapters in an
+    entity link. Each chapter that changes keeps a 'pre_link' history snapshot,
+    so the linking can be undone from the chapter's History.
+    """
+    from prose_linker import NameLinker, spellings_for
+    from project_io import safe_md_path
+    from routes.chapter_history import _create_snapshot
+    from routes.chapters import _update_entity_appearances
+    from sync_core import log_change
+
+    linker = NameLinker(spellings_for(entities, blocked))
+    md_dir = os.path.join(project_path, "md")
+    conn = _get_db(project_path)
+    cursor = conn.cursor()
+    originals: list[tuple[str, str]] = []
+    links = 0
+    try:
+        rows = cursor.execute(
+            "SELECT id, md_filename FROM chapters WHERE deleted = 0 AND md_filename IS NOT NULL"
+        ).fetchall()
+        for row in rows:
+            md_path = safe_md_path(md_dir, row["md_filename"])
+            if not md_path or not os.path.exists(md_path):
+                continue
+            with open(md_path, "r", encoding="utf-8") as f:
+                before = f.read()
+            after, count = linker.link(before)
+            if not count:
+                continue
+            try:
+                _create_snapshot(cursor, project_path, row["id"], "pre_link")
+            except sqlite3.Error as e:  # projects from before chapter History
+                print(f"[import] No history snapshot before linking: {e}")
+            originals.append((md_path, before))
+            with open(md_path, "w", encoding="utf-8") as f:
+                f.write(after)
+            _update_entity_appearances(cursor, row["id"], after)
+            log_change(cursor, "chapters", row["id"],
+                       {"prose_hash": hashlib.sha256(after.encode("utf-8")).hexdigest()})
+            links += count
+        conn.commit()
+    except Exception:
+        conn.rollback()
+        for md_path, before in originals:
+            with open(md_path, "w", encoding="utf-8") as f:
+                f.write(before)
+        raise
+    finally:
+        conn.close()
+    return {"links": links, "chapters": len(originals)}
 
 
 @router.post("/api/nlp/load")

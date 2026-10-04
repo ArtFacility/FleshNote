@@ -1,4 +1,4 @@
-import { contextBridge, ipcRenderer } from 'electron'
+import { contextBridge, ipcRenderer, webUtils } from 'electron'
 import { electronAPI } from '@electron-toolkit/preload'
 
 // Custom APIs for renderer
@@ -21,8 +21,24 @@ const api = {
   importFlnote: (payload) => ipcRenderer.invoke('api:importFlnote', payload),
   exportReviewPackage: (payload) => ipcRenderer.invoke('api:exportReviewPackage', payload),
   openReviewPackage: (payload) => ipcRenderer.invoke('api:openReviewPackage', payload),
+  startReview: (payload) => ipcRenderer.invoke('api:startReview', payload),
+  listReviews: () => ipcRenderer.invoke('api:listReviews'),
   saveReviewPackage: (payload) => ipcRenderer.invoke('api:saveReviewPackage', payload),
-  collectReviews: (payload) => ipcRenderer.invoke('api:collectReviews', payload),
+  finishReview: (payload) => ipcRenderer.invoke('api:finishReview', payload),
+  discardReview: (payload) => ipcRenderer.invoke('api:discardReview', payload),
+  importReviews: (payload) => ipcRenderer.invoke('api:importReviews', payload),
+  pickReviewFiles: () => ipcRenderer.invoke('api:pickReviewFiles'),
+  reviewNotes: (payload) => ipcRenderer.invoke('api:reviewNotes', payload),
+  reviewCopies: (payload) => ipcRenderer.invoke('api:reviewCopies', payload),
+  revokeReviewCopy: (payload) => ipcRenderer.invoke('api:revokeReviewCopy', payload),
+  setReviewNoteStatus: (payload) => ipcRenderer.invoke('api:setReviewNoteStatus', payload),
+  deleteReceivedReview: (payload) => ipcRenderer.invoke('api:deleteReceivedReview', payload),
+  takeLaunchFile: () => ipcRenderer.invoke('api:takeLaunchFile'),
+  onLaunchFile: (callback) => {
+    const listener = () => callback()
+    ipcRenderer.on('launch-file', listener)
+    return () => ipcRenderer.removeListener('launch-file', listener)
+  },
   syncPreview: (payload) => ipcRenderer.invoke('api:syncPreview', payload),
   syncApply: (payload) => ipcRenderer.invoke('api:syncApply', payload),
   remoteSyncStart: (payload) => ipcRenderer.invoke('api:remoteSyncStart', payload),
@@ -221,10 +237,20 @@ const api = {
 
   // ── Import ─────────────────────────────────────────
   openFile: (filters) => ipcRenderer.invoke('dialog:openFile', filters),
+  openFiles: (filters) => ipcRenderer.invoke('dialog:openFiles', filters),
+  // Dropped files no longer carry .path (Electron 32+); this recovers it.
+  getPathForFile: (file) => {
+    try {
+      return webUtils.getPathForFile(file) || ''
+    } catch {
+      return ''
+    }
+  },
   importSplitPreview: (payload) => ipcRenderer.invoke('api:importSplitPreview', payload),
   importConfirmSplits: (payload) => ipcRenderer.invoke('api:importConfirmSplits', payload),
   importNerExtract: (payload) => ipcRenderer.invoke('api:importNerExtract', payload),
   importNerAnalyze: (payload) => ipcRenderer.invoke('api:importNerAnalyze', payload),
+  importNerProgress: (jobId) => ipcRenderer.invoke('api:importNerProgress', jobId),
   importBulkCreateEntities: (payload) => ipcRenderer.invoke('api:importBulkCreateEntities', payload),
   importExternalEntities: (payload) => ipcRenderer.invoke('api:importExternalEntities', payload),
   importExternalEntitiesConfirm: (payload) => ipcRenderer.invoke('api:importExternalEntitiesConfirm', payload),

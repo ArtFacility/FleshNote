@@ -1,6 +1,6 @@
 """
 FleshNote — Story Pulse: per-paragraph intensity and valence for the whole
-manuscript (plan §5), for the planner's Story Pulse lane.
+manuscript, for the planner's Story Pulse lane.
 
 The features come from the Janitor's paragraph cache (fleshnote_cache.db), so
 chapters the writer has opened cost nothing. Paragraphs never analyzed are
@@ -38,7 +38,7 @@ def paragraph_key(text: str) -> str:
     return hashlib.sha1(norm.encode("utf-8")).hexdigest()[:20]
 
 
-# ── Corrections (plan §5.6): the writer's own values for a paragraph ─────────
+# ── Corrections: the writer's own values for a paragraph ───────────────────
 # Matched to the current text by content key; after an edit the key changes and
 # the correction is re-anchored to the most similar nearby paragraph (bounded
 # Levenshtein ratio >= REANCHOR_MIN, one correction per paragraph). Short lines

@@ -226,7 +226,27 @@ export const LOCATION_DATA = {
     { id: 'settlement', label: 'Settlement (~500)', badge: 'Hamlet' },
     { id: 'city', label: 'City (~50,000)', badge: 'Thriving City' },
     { id: 'metropolis', label: 'Metropolis (1,000,000+)', badge: 'Megalopolis' }
+  ],
+
+  // One-click tags in the Atmosphere panel, appended to the description via SENSORY_APPEND.
+  sensoryTags: [
+    'Obsidian Pillars', 'Perpetual Fog', 'Crumbling Aqueducts', 'Runic Monoliths',
+    'Howling Chasm', 'Sunken Crypts', 'Iron Ramparts'
   ]
+}
+
+// How a sensory tag joins the description: `first` when it is empty, `more` otherwise.
+export const SENSORY_APPEND = {
+  first: '{tag}.',
+  more: '{prev} Features {~tag}.'
+}
+
+// Glue for story ideas when no saved character / location is woven in.
+export const GENERIC_PATTERNS = {
+  protag: 'the {~archetype}',
+  protagConditioned: 'the {~condition} {~archetype}',
+  place: 'the {~siteType}',
+  placeName: 'The {siteType}'
 }
 
 export const STORY_GENRES = [

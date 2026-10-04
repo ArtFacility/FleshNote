@@ -7,7 +7,7 @@ import { useTranslation } from 'react-i18next'
  * hands off to the matching flow — the manuscript ExportModal, the Obsidian
  * vault / plain-text folder exporters, or the .flnote single-file share.
  */
-export default function ExportChooserModal({ isOpen, onClose, projectPath, projectName, onPickManuscript }) {
+export default function ExportChooserModal({ isOpen, onClose, projectPath, projectName, onPickManuscript, onPickReview }) {
   const { t } = useTranslation()
   const [phase, setPhase] = useState('idle') // idle | working | done | error
   const [result, setResult] = useState(null)
@@ -97,6 +97,11 @@ export default function ExportChooserModal({ isOpen, onClose, projectPath, proje
         <line x1="8" y1="13" x2="16" y2="13" /><line x1="8" y1="17" x2="16" y2="17" />
       </svg>
     ),
+    review: (
+      <svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8">
+        <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z" /><line x1="8" y1="9" x2="16" y2="9" /><line x1="8" y1="13" x2="13" y2="13" />
+      </svg>
+    ),
     flnote: (
       <svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8">
         <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4" /><polyline points="7 10 12 15 17 10" /><line x1="12" y1="15" x2="12" y2="3" />
@@ -129,6 +134,14 @@ export default function ExportChooserModal({ isOpen, onClose, projectPath, proje
             title={t('exportChooser.manuscriptTitle', 'Story manuscript')}
             desc={t('exportChooser.manuscriptDesc', 'Export the manuscript itself — DOCX, PDF, EPUB and other book formats, with content and formatting options.')}
           />
+          {onPickReview && (
+            <Card
+              onClick={() => { setPhase('idle'); setResult(null); setError(''); onPickReview() }}
+              icon={icons.review}
+              title={t('exportChooser.reviewTitle', 'Review copy for a beta reader')}
+              desc={t('exportChooser.reviewDesc', 'A file a reader opens in FleshNote to leave notes on your chapters, then sends back to you.')}
+            />
+          )}
           <Card
             onClick={() => runVaultExport('obsidian')}
             icon={icons.obsidian}

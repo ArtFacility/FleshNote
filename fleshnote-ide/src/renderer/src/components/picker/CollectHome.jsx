@@ -1,96 +1,95 @@
-import { useEffect, useState } from 'react'
+import { useState } from 'react'
 import { useTranslation } from 'react-i18next'
 
-export default function CollectHome({ projects, workspacePath, onCollect }) {
+// Author's start-screen entry for reviews that came back: pick the files, see
+// which project each belongs to, and import them into it (the project opens
+// with the Reviews panel showing the notes).
+export default function CollectHome({ projects, workspacePath, onImport }) {
   const { t } = useTranslation()
-  const [projectPath, setProjectPath] = useState(projects[0]?.path || '')
-  const [files, setFiles] = useState([])
-  const [busy, setBusy] = useState(false)
+  const [files, setFiles] = useState([]) // { path, title, reviewer, notes, projectId }
+  const [projectPath, setProjectPath] = useState('')
   const [error, setError] = useState(null)
+  const [dropActive, setDropActive] = useState(false)
 
-  useEffect(() => {
-    if (!projectPath && projects[0]?.path) setProjectPath(projects[0].path)
-  }, [projects, projectPath])
-
-  const addFiles = async () => {
+  const add = async (paths) => {
     setError(null)
-    try {
-      const res = await window.api.openReviewPackage({ multiple: true })
-      if (res?.status === 'ok' && res.packages?.length) {
-        setFiles((prev) => {
-          const next = [...prev]
-          for (const item of res.packages) {
-            if (!next.some((f) => f.path === item.path)) next.push(item)
-          }
-          return next
-        })
-      } else if (res?.status === 'ok' && res.path) {
-        setFiles((prev) => prev.some((f) => f.path === res.path) ? prev : [...prev, { path: res.path, pkg: res.package }])
-      } else if (res?.status && res.status !== 'cancelled') {
-        setError(res.message || t('picker.reviewOpenError', 'Could not open review file.'))
+    const next = [...files]
+    for (const path of paths) {
+      if (next.some((f) => f.path === path)) continue
+      const res = await window.api.openReviewPackage({ path })
+      if (res?.status !== 'ok') {
+        setError(res?.message || t('picker.reviewOpenError', 'Could not open review file.'))
+        continue
       }
-    } catch (err) {
-      setError(err.message)
-    }
-  }
-
-  const handleCollect = async () => {
-    if (!projectPath || files.length === 0) return
-    setBusy(true)
-    setError(null)
-    try {
-      const res = await window.api.collectReviews({
-        project_path: projectPath,
-        package_paths: files.map((f) => f.path),
+      const peek = res.peek || {}
+      next.push({
+        path,
+        title: peek.title || '',
+        reviewer: peek.reviewer_label || '',
+        notes: peek.notes,
+        locked: !!peek.sealed,
+        projectId: peek.desktop_id || '',
       })
-      if (res?.status === 'ok') {
-        onCollect({ projectPath, data: res })
-      } else {
-        setError(res?.message || t('picker.collectError', 'Could not combine review files.'))
-      }
-    } catch (err) {
-      setError(err.message)
-    } finally {
-      setBusy(false)
+    }
+    setFiles(next)
+    if (!projectPath) {
+      const match = projects.find((p) => next.some((f) => f.projectId && f.projectId === p.project_id))
+      if (match) setProjectPath(match.path)
     }
   }
+
+  const browse = async () => {
+    const res = await window.api.pickReviewFiles()
+    if (res?.status === 'ok') add(res.paths)
+  }
+
+  const target = projects.find((p) => p.path === projectPath)
+  const mismatched = target ? files.filter((f) => f.projectId && f.projectId !== target.project_id) : []
 
   return (
     <>
       <div className="picker-main-head">
-        <span className="picker-kicker">{t('picker.navCollect', 'Collect reviews')}</span>
-        <h2 className="picker-title">{t('picker.collectTitle', 'Combine reviewer notes')}</h2>
-        <p className="picker-sub">{t('picker.collectSub', 'Load every .flreview handed back and overlay the notes on your project.')}</p>
+        <span className="picker-kicker">{t('picker.navCollect', 'Returned reviews')}</span>
+        <h2 className="picker-title">{t('picker.collectTitle', 'Bring in a review')}</h2>
+        <p className="picker-sub">{t('picker.collectSub', 'Add the .flreview files your readers sent back. Their notes go into the project, beside your text.')}</p>
       </div>
 
       <div className="picker-collect-stack">
-        <div>
-          <div className="picker-kicker" style={{ marginBottom: 8 }}>{t('picker.collectProject', 'Target project')}</div>
-          {!workspacePath || projects.length === 0 ? (
-            <div className="picker-empty" style={{ marginTop: 0 }}>{t('picker.collectNeedProject', 'Select a workspace with at least one project.')}</div>
-          ) : (
-            <select
-              className="picker-workspace-path"
-              value={projectPath}
-              onChange={(e) => setProjectPath(e.target.value)}
-              style={{ width: '100%', appearance: 'none', cursor: 'pointer' }}
-            >
-              {projects.map((p) => (
-                <option key={p.path} value={p.path}>{p.name}</option>
-              ))}
-            </select>
-          )}
+        <div
+          className={`picker-drop collect-drop ${dropActive ? 'is-active' : ''}`}
+          onDragOver={(e) => { e.preventDefault(); setDropActive(true) }}
+          onDragLeave={() => setDropActive(false)}
+          onDrop={(e) => {
+            e.preventDefault()
+            setDropActive(false)
+            const paths = [...(e.dataTransfer?.files || [])].map((f) => window.api.getPathForFile(f)).filter((p) => p && p.toLowerCase().endsWith('.flreview'))
+            if (paths.length) add(paths)
+          }}
+        >
+          <div className="picker-drop-title">{t('picker.collectDrop', 'Drop returned review files here')}</div>
+          <button type="button" className="picker-ghost-btn" onClick={browse}>
+            {t('picker.collectAdd', 'Choose files')}
+          </button>
         </div>
 
-        <div>
-          <div className="picker-kicker" style={{ marginBottom: 8 }}>{t('picker.collectFiles', 'Review files')}</div>
-          <div style={{ display: 'flex', flexDirection: 'column', gap: 8 }}>
+        {files.length > 0 && (
+          <div className="collect-files">
             {files.map((f) => (
               <div key={f.path} className="picker-file-chip">
-                <span>{f.pkg?.reviewer_label || f.pkg?.snapshot?.project?.title || f.path.split(/[/\\]/).pop()}</span>
+                <span>
+                  {f.locked ? (
+                    <><strong>{f.title}</strong>{' · '}{t('picker.collectLocked', 'locked review (opens with this project)')}</>
+                  ) : (
+                    <>
+                      <strong>{f.reviewer || t('reviews.anonymous', 'Unnamed reviewer')}</strong>
+                      {' · '}{f.title}{' · '}{t('review.noteCount', '{{n}} notes', { n: f.notes ?? 0 })}
+                    </>
+                  )}
+                </span>
                 <button
                   type="button"
                   className="picker-icon-btn danger"
+                  aria-label={t('picker.collectRemoveFile', 'Remove')}
                   onClick={() => setFiles((prev) => prev.filter((x) => x.path !== f.path))}
                 >
                   <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
@@ -100,23 +99,48 @@ export default function CollectHome({ projects, workspacePath, onCollect }) {
                 </button>
               </div>
             ))}
-            <button type="button" className="picker-ghost-btn" onClick={addFiles} style={{ alignSelf: 'flex-start' }}>
-              {t('picker.collectAdd', '+ Add .flreview')}
-            </button>
           </div>
-        </div>
+        )}
+
+        {files.length > 0 && (
+          <div>
+            <div className="picker-kicker" style={{ marginBottom: 8 }}>{t('picker.collectProject', 'Into project')}</div>
+            {!workspacePath || projects.length === 0 ? (
+              <div className="picker-empty" style={{ marginTop: 0 }}>{t('picker.collectNeedProject', 'Select a workspace with at least one project.')}</div>
+            ) : (
+              <select
+                className="picker-workspace-path"
+                value={projectPath}
+                onChange={(e) => setProjectPath(e.target.value)}
+                style={{ width: '100%', appearance: 'none', cursor: 'pointer' }}
+              >
+                <option value="" disabled>{t('picker.collectChoose', 'Choose a project…')}</option>
+                {projects.map((p) => (
+                  <option key={p.path} value={p.path}>{p.name}</option>
+                ))}
+              </select>
+            )}
+            {mismatched.length > 0 && (
+              <div className="picker-drop-hint" style={{ color: 'var(--accent-red)', marginTop: 8 }}>
+                {t('picker.collectMismatch', 'Some files were made from a different project and will be skipped.')}
+              </div>
+            )}
+          </div>
+        )}
 
         {error && <div className="picker-drop-hint" style={{ color: 'var(--accent-red)' }}>{error}</div>}
 
-        <button
-          type="button"
-          className="picker-primary"
-          disabled={!projectPath || files.length === 0 || busy}
-          onClick={handleCollect}
-          style={{ alignSelf: 'flex-start' }}
-        >
-          {busy ? t('picker.collecting', 'Combining…') : t('picker.collectOpen', 'Open combined notes')}
-        </button>
+        {files.length > 0 && (
+          <button
+            type="button"
+            className="picker-primary"
+            disabled={!projectPath}
+            onClick={() => onImport({ projectPath, paths: files.map((f) => f.path) })}
+            style={{ alignSelf: 'flex-start' }}
+          >
+            {t('picker.collectOpen', 'Import and open the project')}
+          </button>
+        )}
       </div>
     </>
   )

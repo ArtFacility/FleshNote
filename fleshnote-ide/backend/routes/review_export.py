@@ -8,6 +8,7 @@ from datetime import datetime, timezone
 from fastapi import APIRouter, HTTPException
 from pydantic import BaseModel
 from project_io import safe_md_path
+import review_crypto as rc
 
 router = APIRouter()
 
@@ -31,6 +32,11 @@ PUBLIC_FIELDS = {
 
 NOTE_CATEGORIES = {"typo", "rewrite", "remove", "praise", "question", "comment"}
 NOTE_QUOTE_MAX = 600
+NOTE_BODY_MAX = 4000
+LABEL_MAX = 120
+MESSAGE_MAX = 2000
+SCORE_KEYS = ("pacing", "prose", "dialogue", "characters", "plot", "engagement", "overall")
+PACKAGE_MAX_BYTES = 64 * 1024 * 1024
 REANCHOR_MIN = 0.70
 
 
@@ -47,20 +53,42 @@ class ExportReviewRequest(BaseModel):
     dest_path: str
     scope: ReviewScope = ReviewScope()
     reviewer_label: str = ""
+    author_label: str = ""
+    message: str = ""
+    # 0: a plain copy with no expiry (works offline). 1..365: a locked copy
+    # whose key half lives on the key server until then.
+    expires_days: int = 0
+    key_server: str = ""
 
 
 class OpenReviewRequest(BaseModel):
     path: str
 
 
+class StartReviewRequest(BaseModel):
+    path: str
+    store_dir: str
+
+
+class StoreRequest(BaseModel):
+    store_dir: str
+
+
 class SaveReviewRequest(BaseModel):
     path: str
     package: dict
+    store_dir: str
 
 
-class CollectReviewRequest(BaseModel):
-    project_path: str
-    package_paths: list[str]
+class FinishReviewRequest(BaseModel):
+    path: str
+    dest_path: str
+    store_dir: str
+
+
+class DiscardReviewRequest(BaseModel):
+    path: str
+    store_dir: str
 
 
 def _get_db(project_path: str):
@@ -248,11 +276,25 @@ def build_snapshot(project_path: str, scope: ReviewScope) -> dict:
         conn.close()
 
 
-def empty_package(snapshot: dict, reviewer_label: str = "") -> dict:
+def _now() -> str:
+    return datetime.now(timezone.utc).strftime("%Y-%m-%dT%H:%M:%SZ")
+
+
+def _text(value, limit: int) -> str:
+    return str(value or "").strip()[:limit]
+
+
+def empty_package(snapshot: dict, reviewer_label: str = "", author_label: str = "", message: str = "") -> dict:
+    # review_id names one export, so a reviewer who opens the same file twice
+    # resumes their notes instead of starting over.
     return {
         "format": FORMAT,
         "crypto": None,
-        "reviewer_label": reviewer_label or "",
+        "review_id": str(uuid.uuid4()),
+        "created_at": _now(),
+        "author_label": _text(author_label, LABEL_MAX),
+        "message": _text(message, MESSAGE_MAX),
+        "reviewer_label": _text(reviewer_label, LABEL_MAX),
         "snapshot": snapshot,
         "notes": [],
         "scores": [],
@@ -260,24 +302,142 @@ def empty_package(snapshot: dict, reviewer_label: str = "") -> dict:
     }
 
 
+def review_id_of(pkg: dict) -> str:
+    """Files exported before review_id existed get a stable id from their snapshot."""
+    if pkg.get("review_id"):
+        return str(pkg["review_id"])[:64]
+    snap = pkg.get("snapshot") or {}
+    seed = "%s|%s" % ((snap.get("project") or {}).get("desktop_id") or "",
+                      (snap.get("checkpoints") or {}).get("captured_at") or "")
+    return hashlib.sha256(seed.encode("utf-8")).hexdigest()[:32]
+
+
+# Fields a locked copy keeps readable outside the encryption: what the apps need
+# to list it and route it to the right project before (or without) the key.
+HEADER_KEYS = ("format", "crypto", "review_id", "created_at", "title", "author_label",
+               "desktop_id", "copy_id", "finished_at")
+
+
+def plain_view(raw: dict, key) -> dict:
+    """A locked copy's header plus its decrypted content, shaped like a plain copy."""
+    if not rc.is_sealed(raw):
+        return raw
+    plain = {k: raw[k] for k in HEADER_KEYS if k in raw}
+    plain.update(rc.unseal(raw, key))
+    return plain
+
+
+def write_package(path: str, plain: dict, key=None):
+    """Save a package; locked copies (key given) are re-encrypted, never written in the clear."""
+    if not key:
+        save_package(path, plain)
+        return
+    header = {k: plain[k] for k in HEADER_KEYS if k in plain}
+    header["format"] = rc.SEALED_FORMAT
+    inner = {k: v for k, v in plain.items() if k not in HEADER_KEYS and k != "sealed"}
+    _write_json(path, rc.seal(header, inner, key))
+
+
+def peek(raw: dict) -> dict:
+    """What can be read from a review file without its key."""
+    snap = raw.get("snapshot") or {}
+    sealed = rc.is_sealed(raw)
+    return {
+        "sealed": sealed,
+        "title": raw.get("title") if sealed else (snap.get("project") or {}).get("title") or "",
+        "desktop_id": raw.get("desktop_id") if sealed else (snap.get("project") or {}).get("desktop_id") or "",
+        "author_label": raw.get("author_label") or "",
+        "reviewer_label": "" if sealed else raw.get("reviewer_label") or "",
+        "notes": None if sealed else len(raw.get("notes") or []),
+        "finished_at": raw.get("finished_at") or "",
+        "expires_at": (raw.get("crypto") or {}).get("expires_at", "") if sealed else "",
+    }
+
+
 def load_package(path: str) -> dict:
-    if not os.path.exists(path):
+    if not os.path.isfile(path):
         raise HTTPException(status_code=404, detail="Review file not found")
-    with open(path, encoding="utf-8") as f:
-        data = json.load(f)
-    if data.get("format") != FORMAT:
-        raise HTTPException(status_code=400, detail="Not a fleshnote-review/1 file")
+    if os.path.getsize(path) > PACKAGE_MAX_BYTES:
+        raise HTTPException(status_code=400, detail="Review file is too large")
+    try:
+        with open(path, encoding="utf-8") as f:
+            data = json.load(f)
+    except (ValueError, UnicodeDecodeError):
+        raise HTTPException(status_code=400, detail="Not a FleshNote review file")
+    if not isinstance(data, dict) or data.get("format") not in (FORMAT, rc.SEALED_FORMAT):
+        raise HTTPException(status_code=400, detail="Not a FleshNote review file")
     return data
+
+
+def clean_notes(notes) -> list[dict]:
+    """Reviewer notes come from a file someone else edited: keep known fields
+    only, cap every length and drop anything malformed."""
+    out = []
+    for n in notes if isinstance(notes, list) else []:
+        if not isinstance(n, dict) or n.get("category") not in NOTE_CATEGORIES:
+            continue
+        try:
+            start, end = int(n.get("anchor_start") or 0), int(n.get("anchor_end") or 0)
+        except (TypeError, ValueError):
+            continue
+        body = _text(n.get("body"), NOTE_BODY_MAX)
+        suggestion = _text(n.get("suggestion"), NOTE_BODY_MAX)
+        if not body and not suggestion and n.get("category") != "remove":
+            continue
+        out.append({
+            "id": _text(n.get("id"), 64) or str(uuid.uuid4()),
+            "chapter_id": _text(n.get("chapter_id"), 64),
+            "category": n["category"],
+            "body": body,
+            "suggestion": suggestion,
+            "anchor_start": max(0, start),
+            "anchor_end": max(0, end),
+            "anchor_quote": str(n.get("anchor_quote") or "")[:NOTE_QUOTE_MAX],
+            "created_at": _text(n.get("created_at"), 40),
+            "updated_at": _text(n.get("updated_at"), 40),
+        })
+    return out
+
+
+def clean_scores(scores) -> list[dict]:
+    out = []
+    for s in scores if isinstance(scores, list) else []:
+        if not isinstance(s, dict) or not s.get("chapter_id"):
+            continue
+        row = {"chapter_id": _text(s.get("chapter_id"), 64)}
+        for key in SCORE_KEYS:
+            try:
+                v = int(s.get(key) or 0)
+            except (TypeError, ValueError):
+                v = 0
+            if 1 <= v <= 5:
+                row[key] = v
+        if len(row) > 1:
+            out.append(row)
+    return out
+
+
+def _in_store(path: str, store_dir: str) -> str:
+    """Reviews in progress live in the app's own folder; refuse writes anywhere else."""
+    store = os.path.realpath(store_dir)
+    real = os.path.realpath(path)
+    if os.path.dirname(real) != store or not real.endswith(".flreview"):
+        raise HTTPException(status_code=400, detail="Not a review in progress")
+    return real
 
 
 def save_package(path: str, package: dict):
     package["format"] = FORMAT
     if "crypto" not in package:
         package["crypto"] = None
+    _write_json(path, package)
+
+
+def _write_json(path: str, data: dict):
     os.makedirs(os.path.dirname(path) or ".", exist_ok=True)
     tmp = path + ".tmp"
     with open(tmp, "w", encoding="utf-8") as f:
-        json.dump(package, f, ensure_ascii=False, indent=2)
+        json.dump(data, f, ensure_ascii=False, indent=2)
     os.replace(tmp, path)
 
 
@@ -343,37 +503,22 @@ def reanchor_quote(text: str, quote: str):
     return None
 
 
-def _chapter_index(snap: dict) -> dict:
-    shas = {c["chapter_id"]: c["sha256"] for c in (snap.get("checkpoints") or {}).get("chapters") or []}
-    out = {}
-    for ch in snap.get("chapters") or []:
-        out[ch["id"]] = {"sha": shas.get(ch["id"], ""), "text": ch.get("text_md") or ""}
-    return out
-
-
-def migrate_notes(notes: list, prev_snap: dict, next_snap: dict):
-    prev_idx = _chapter_index(prev_snap)
-    next_idx = _chapter_index(next_snap)
-    carried, dropped = [], []
-    for n in notes or []:
-        cid = n.get("chapter_id")
-        p = prev_idx.get(cid)
-        nx = next_idx.get(cid)
-        if not p or not nx:
-            dropped.append(n)
-            continue
-        if p["sha"] == nx["sha"] and nx["sha"]:
-            carried.append(n)
-            continue
-        res = reanchor_quote(nx["text"], n.get("anchor_quote") or "")
-        if res:
-            nn = dict(n)
-            nn["anchor_start"] = res["start"]
-            nn["anchor_end"] = res["end"]
-            carried.append(nn)
-        else:
-            dropped.append(n)
-    return carried, dropped
+def _record_copy(project_path: str, row: dict):
+    """The author's list of copies sent, with what's needed to read returned
+    locked copies (the server half) and to revoke them. Synced to the author's
+    other devices like any project data."""
+    from db_setup import ensure_review_tables
+    from sync_core import log_change
+    conn = _get_db(project_path)
+    try:
+        cur = conn.cursor()
+        ensure_review_tables(cur)
+        cols = ", ".join(row)
+        cur.execute("INSERT INTO review_copies (%s) VALUES (%s)" % (cols, ", ".join("?" * len(row))), tuple(row.values()))
+        log_change(cur, "review_copies", row["id"], {k: v for k, v in row.items() if k != "id"})
+        conn.commit()
+    finally:
+        conn.close()
 
 
 @router.post("/api/review/export")
@@ -381,64 +526,203 @@ def export_review(req: ExportReviewRequest):
     if not os.path.exists(req.project_path):
         raise HTTPException(status_code=404, detail="Project path not found")
     snap = build_snapshot(req.project_path, req.scope)
-    pkg = empty_package(snap, req.reviewer_label)
-    save_package(req.dest_path, pkg)
-    return {"status": "ok", "path": req.dest_path}
+    pkg = empty_package(snap, req.reviewer_label, req.author_label, req.message)
+    row = {
+        "id": pkg["review_id"], "reviewer_label": pkg["reviewer_label"],
+        "chapter_count": len(snap["chapters"]), "created_at": pkg["created_at"], "updated_at": pkg["created_at"],
+        "deleted": 0,
+    }
+    days = int(req.expires_days or 0)
+    if days <= 0:
+        save_package(req.dest_path, pkg)
+        _record_copy(req.project_path, row)
+        return {"status": "ok", "path": req.dest_path, "review_id": pkg["review_id"], "expires_at": ""}
+
+    server = req.key_server or rc.DEFAULT_KEY_SERVER
+    file_half, server_half = os.urandom(32), os.urandom(32)
+    try:
+        made = rc.create_server_key(server, server_half, min(days, 365))
+    except rc.NotTrusted:
+        return {"status": "error", "error": "untrusted_server", "message": server}
+    except rc.KeyServerError as e:
+        return {"status": "error", "error": "key_server_unreachable", "message": str(e)}
+    key_id = made["key_id"]
+    pkg.update({
+        "format": rc.SEALED_FORMAT,
+        "title": snap["project"]["title"],
+        "desktop_id": snap["project"]["desktop_id"],
+        "crypto": {"v": 1, "alg": "AES-256-GCM", "kdf": "HKDF-SHA256", "server": rc.check_trusted(server),
+                   "key_id": key_id, "file_half": rc.b64(file_half), "expires_at": made["expires_at"]},
+    })
+    write_package(req.dest_path, pkg, rc.derive_key(file_half, server_half, key_id))
+    row.update({"key_id": key_id, "server": rc.check_trusted(server), "server_half": rc.b64(server_half),
+                "revoke_token": made.get("revoke_token", ""), "expires_at": made["expires_at"]})
+    _record_copy(req.project_path, row)
+    return {"status": "ok", "path": req.dest_path, "review_id": pkg["review_id"], "expires_at": made["expires_at"]}
 
 
 @router.post("/api/review/open")
 def open_review(req: OpenReviewRequest):
-    pkg = load_package(req.path)
-    return {"status": "ok", "path": req.path, "package": pkg}
+    raw = load_package(req.path)
+    return {"status": "ok", "path": req.path, "peek": peek(raw)}
+
+
+def _summary(path: str, raw: dict, cache) -> dict:
+    """One row of the reviewer's list. Locked copies are only opened with a
+    key already cached here: listing never contacts the key server."""
+    info = peek(raw)
+    pkg, locked = raw, False
+    if info["sealed"]:
+        cached = cache.get((raw.get("crypto") or {}).get("key_id", ""))
+        if cached:
+            try:
+                key = rc.derive_key(rc.unb64(raw["crypto"]["file_half"]), cached[0], raw["crypto"]["key_id"])
+                pkg = plain_view(raw, key)
+            except (ValueError, KeyError):
+                locked = True
+        else:
+            locked = True
+    snap = pkg.get("snapshot") or {}
+    return {
+        "path": path,
+        "review_id": review_id_of(raw),
+        "title": info["title"],
+        "author_label": info["author_label"],
+        "reviewer_label": "" if locked else pkg.get("reviewer_label") or "",
+        "chapters": len(snap.get("chapters") or []),
+        "notes": None if locked else len(pkg.get("notes") or []),
+        "finished_at": info["finished_at"],
+        "expires_at": info["expires_at"],
+        "locked": locked,
+        "updated_at": datetime.fromtimestamp(os.path.getmtime(path), timezone.utc).strftime("%Y-%m-%dT%H:%M:%SZ"),
+    }
+
+
+def _working_copies(store_dir: str) -> list[dict]:
+    if not os.path.isdir(store_dir):
+        return []
+    cache = rc.KeyCache(store_dir)
+    out = []
+    for name in os.listdir(store_dir):
+        if not name.endswith(".flreview"):
+            continue
+        path = os.path.join(store_dir, name)
+        try:
+            out.append(_summary(path, load_package(path), cache))
+        except HTTPException:
+            continue
+    out.sort(key=lambda r: r["updated_at"], reverse=True)
+    return out
+
+
+def _key_problem(e: Exception, raw: dict) -> dict:
+    """Why a locked copy can't be opened, for the reviewer's screen."""
+    info = peek(raw)
+    if isinstance(e, rc.KeyGone):
+        return {"status": "expired", "title": info["title"], "author_label": info["author_label"],
+                "expires_at": info["expires_at"]}
+    if isinstance(e, rc.NotTrusted):
+        return {"status": "untrusted", "title": info["title"], "server": (raw.get("crypto") or {}).get("server", "")}
+    if isinstance(e, ValueError):
+        return {"status": "error", "message": str(e)}
+    return {"status": "offline", "title": info["title"]}
+
+
+def _open_key(raw: dict, store: str, online: bool):
+    """The content key of a locked copy (None for a plain one). Online: ask the
+    server, so an expired or revoked copy stops opening; offline-only: the
+    cached half (autosave must never wait on the network)."""
+    if not rc.is_sealed(raw):
+        return None
+    cache = rc.KeyCache(store)
+    if online:
+        return rc.reviewer_key(raw, cache)[0]
+    crypto = raw.get("crypto") or {}
+    cached = cache.get(crypto.get("key_id", ""))
+    if not cached:
+        raise rc.KeyGone(crypto.get("key_id", ""))
+    return rc.derive_key(rc.unb64(crypto.get("file_half", "")), cached[0], crypto["key_id"])
+
+
+@router.post("/api/review/start")
+def start_review(req: StartReviewRequest):
+    """Open a review file for reviewing. The reviewer never works in the file
+    they were sent (it may sit in an email client's temp folder): notes go to a
+    working copy in the app's folder, and opening the same review again later
+    resumes that copy. Locked copies stay encrypted on disk."""
+    store = os.path.realpath(req.store_dir)
+    os.makedirs(store, exist_ok=True)
+    raw = load_package(req.path)
+    path = None
+    if os.path.dirname(os.path.realpath(req.path)) == store:
+        path = os.path.realpath(req.path)
+    else:
+        rid = review_id_of(raw)
+        for row in _working_copies(store):
+            if row["review_id"] == rid:
+                path = row["path"]
+                raw = load_package(path)
+                break
+    try:
+        key = _open_key(raw, store, online=True)
+        pkg = plain_view(raw, key)
+    except (rc.KeyGone, rc.NotTrusted, rc.KeyServerError, ValueError) as e:
+        return _key_problem(e, raw)
+    if path:
+        return {"status": "ok", "path": path, "package": pkg, "resumed": True}
+    pkg["review_id"] = review_id_of(raw)
+    # several people can review the same file; each copy is told apart on return
+    pkg["copy_id"] = str(uuid.uuid4())
+    pkg["notes"] = clean_notes(pkg.get("notes"))
+    pkg["scores"] = clean_scores(pkg.get("scores"))
+    pkg.pop("finished_at", None)
+    dest = os.path.join(store, "%s.flreview" % uuid.uuid4())
+    write_package(dest, pkg, key)
+    return {"status": "ok", "path": dest, "package": pkg, "resumed": False}
+
+
+@router.post("/api/review/list")
+def list_reviews(req: StoreRequest):
+    return {"status": "ok", "reviews": _working_copies(os.path.realpath(req.store_dir))}
 
 
 @router.post("/api/review/save")
 def save_review(req: SaveReviewRequest):
-    notes = req.package.get("notes") or []
-    for n in notes:
-        if n.get("category") not in NOTE_CATEGORIES:
-            raise HTTPException(status_code=400, detail="Invalid note category")
-        if not n.get("id"):
-            n["id"] = str(uuid.uuid4())
-        body = n.get("body") or ""
-        if len(body) > 4000:
-            n["body"] = body[:4000]
-    save_package(req.path, req.package)
-    return {"status": "ok", "path": req.path}
+    path = _in_store(req.path, req.store_dir)
+    raw = load_package(path)
+    try:
+        key = _open_key(raw, os.path.realpath(req.store_dir), online=False)
+        current = plain_view(raw, key)
+    except (rc.KeyGone, ValueError) as e:
+        return _key_problem(e, raw)
+    incoming = req.package or {}
+    # only the reviewer's own fields change; the manuscript snapshot stays as sent
+    current["reviewer_label"] = _text(incoming.get("reviewer_label"), LABEL_MAX)
+    current["notes"] = clean_notes(incoming.get("notes"))
+    current["scores"] = clean_scores(incoming.get("scores"))
+    write_package(path, current, key)
+    return {"status": "ok", "path": path}
 
 
-@router.post("/api/review/collect")
-def collect_reviews(req: CollectReviewRequest):
-    if not os.path.exists(req.project_path):
-        raise HTTPException(status_code=404, detail="Project path not found")
-    live = build_snapshot(req.project_path, ReviewScope(manuscript=True, entities=True, plot=True))
-    live_id = live["project"]["desktop_id"]
-    reviews = []
-    dropped_total = 0
-    for path in req.package_paths:
-        pkg = load_package(path)
-        snap = pkg.get("snapshot") or {}
-        pkg_id = (snap.get("project") or {}).get("desktop_id")
-        if live_id and pkg_id and pkg_id != live_id:
-            raise HTTPException(
-                status_code=400,
-                detail=f"Review file does not belong to this project: {os.path.basename(path)}",
-            )
-        carried, dropped = migrate_notes(pkg.get("notes") or [], snap, live)
-        dropped_total += len(dropped)
-        label = pkg.get("reviewer_label") or os.path.splitext(os.path.basename(path))[0]
-        for n in carried:
-            n["reviewer_label"] = label
-        reviews.append({
-            "path": path,
-            "label": label,
-            "notes": carried,
-            "scores": pkg.get("scores") or [],
-            "dropped": len(dropped),
-        })
-    return {
-        "status": "ok",
-        "snapshot": live,
-        "reviews": reviews,
-        "dropped": dropped_total,
-    }
+@router.post("/api/review/finish")
+def finish_review(req: FinishReviewRequest):
+    """Write the reviewed copy the reviewer sends back to the author (still
+    locked, if it was: the author's app holds both key halves)."""
+    path = _in_store(req.path, req.store_dir)
+    raw = load_package(path)
+    try:
+        key = _open_key(raw, os.path.realpath(req.store_dir), online=False)
+        pkg = plain_view(raw, key)
+    except (rc.KeyGone, ValueError) as e:
+        return _key_problem(e, raw)
+    pkg["finished_at"] = _now()
+    write_package(path, pkg, key)
+    write_package(req.dest_path, pkg, key)
+    return {"status": "ok", "path": req.dest_path}
+
+
+@router.post("/api/review/discard")
+def discard_review(req: DiscardReviewRequest):
+    path = _in_store(req.path, req.store_dir)
+    os.remove(path)
+    return {"status": "ok"}

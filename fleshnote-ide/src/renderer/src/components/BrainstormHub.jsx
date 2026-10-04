@@ -1,6 +1,7 @@
 import React, { useState, useRef, useEffect } from 'react'
 import { useTranslation } from 'react-i18next'
-import { STORY_GENRES } from '../utils/madlibs'
+import { STORY_GENRES, getTraitPools, getLocationMetadata } from '../utils/madlibs'
+import AutoTextarea from './AutoTextarea'
 
 const CHAR_RUNE = '𐲤'
 const LOC_RUNE = '𐲛'
@@ -25,10 +26,11 @@ export default function BrainstormHub({
   onAddNote,
   onUpdateNote,
   onDeleteNote,
-  onNext
+  language = 'en'
 }) {
   const { t } = useTranslation()
-  const totalCount = characters.length + locations.length + notes.length
+  const roleLabels = Object.fromEntries(getTraitPools(language).roles.map((r) => [r.id, r.label]))
+  const siteLabels = Object.fromEntries(getLocationMetadata(language).siteTypes.map((s) => [s.id, s.label]))
 
   const [noteEditor, setNoteEditor] = useState(null) // { id?, text }
   const [noteInput, setNoteInput] = useState('')
@@ -94,11 +96,10 @@ export default function BrainstormHub({
         </div>
 
         <div className="story-idea-bar">
-          <textarea
+          <AutoTextarea
             className="story-idea-input"
-            rows={2}
             value={storyIdea}
-            onChange={(e) => onEditIdea && onEditIdea(e.target.value)}
+            onChange={(v) => onEditIdea && onEditIdea(v)}
             title={t('brainstorm.editIdea', 'Click to edit — this becomes your story summary')}
           />
           <button
@@ -119,7 +120,7 @@ export default function BrainstormHub({
               className={`genre-chip ${genre === g.id ? 'active' : ''}`}
               onClick={() => onGenreChange && onGenreChange(g.id)}
             >
-              {g.label}
+              {t(`architect.genres.${g.id}`, g.label)}
             </button>
           ))}
         </div>
@@ -190,18 +191,6 @@ export default function BrainstormHub({
             </div>
           </div>
         )}
-
-        <div style={{ marginTop: 'auto', textAlign: 'center', paddingTop: '14px' }}>
-          <button
-            type="button"
-            onClick={onNext}
-            className={totalCount > 0 ? 'forge-cta amber' : 'forge-cta ghost'}
-          >
-            {totalCount > 0
-              ? t('brainstorm.continueWithSparks', 'Continue to World Systems →')
-              : t('brainstorm.skipToNext', 'Skip to next step →')}
-          </button>
-        </div>
       </div>
 
       {/* ── Right column: the Sigil Stage ── */}
@@ -254,9 +243,9 @@ export default function BrainstormHub({
                       }`}
                     >
                       {r.kind === 'character'
-                        ? `${r.role} · ${t('brainstorm.ageShort', 'Age')} ${r.age}`
+                        ? `${roleLabels[r.role] || r.role} · ${t('brainstorm.ageShort', 'Age')} ${r.age}`
                         : r.kind === 'location'
-                          ? r.siteType
+                          ? siteLabels[r.siteType] || r.siteType
                           : t('brainstorm.noteMeta', 'Becomes a Quick Note')}
                     </div>
                     <div className="sigil-tooltip-desc">

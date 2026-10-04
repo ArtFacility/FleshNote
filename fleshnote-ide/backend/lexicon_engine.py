@@ -2,7 +2,7 @@
 FleshNote — Janitor lexicon engine.
 
 Loads the base word library shipped in backend/lexicons/{lang}/{kind}.json
-(schema: docs/JANITOR_LEXICON_AND_INTENSITY_PLAN.md §1.2) and serves it to the
+(one JSON list of entries per language and kind) and serves it to the
 language analyzers in routes/janitor.py, hun_janitor.py and pol_janitor.py.
 
 Entries whose `source` starts with "migrated:" are the word lists the analyzers

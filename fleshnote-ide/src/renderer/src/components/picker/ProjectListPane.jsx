@@ -55,7 +55,7 @@ export default function ProjectListPane({
     e.preventDefault()
     setDropActive(false)
     const file = e.dataTransfer?.files?.[0]
-    const path = file?.path
+    const path = file ? window.api.getPathForFile(file) : ''
     if (path && path.toLowerCase().endsWith('.flnote')) {
       onDropFlnote(path)
     }

@@ -17,10 +17,11 @@ export default function ProjectPicker({
   onSelectProject,
   onCreateNew,
   onOpenReviewer,
-  onOpenCollect,
+  onImportReviews,
+  initialSection = 'projects',
 }) {
   const { t, i18n } = useTranslation()
-  const [section, setSection] = useState('projects')
+  const [section, setSection] = useState(initialSection)
   const [projects, setProjects] = useState([])
   const [loading, setLoading] = useState(false)
   const [downloadProgress, setDownloadProgress] = useState(null)
@@ -263,13 +264,13 @@ export default function ProjectPicker({
           />
         )}
         {section === 'reviewer' && (
-          <ReviewerHome onOpenPackage={onOpenReviewer} />
+          <ReviewerHome onOpenReview={onOpenReviewer} />
         )}
         {section === 'collect' && (
           <CollectHome
             projects={projects}
             workspacePath={workspacePath}
-            onCollect={onOpenCollect}
+            onImport={onImportReviews}
           />
         )}
 

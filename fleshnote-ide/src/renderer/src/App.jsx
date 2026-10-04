@@ -1,11 +1,11 @@
-import { useState, useEffect, useCallback } from 'react'
+import { useState, useEffect, useCallback, useRef } from 'react'
 import ProjectPicker from './components/ProjectPicker'
-import ProjectQuestionnaire from './components/ProjectQuestionnaire'
-import ProjectSetup from './components/ProjectSetup'
+import ProjectStart from './components/ProjectStart'
 import StoryArchitectSuite from './components/StoryArchitectSuite'
 import NewProjectChoiceModal from './components/NewProjectChoiceModal'
 import FleshNoteIDE from './components/FleshNoteIDE'
 import ReviewerIDE from './components/ReviewerIDE'
+import IncomingReviewModal from './components/IncomingReviewModal'
 import TitleBar from './components/TitleBar'
 import { applyToProject } from './utils/pentimentoVerification'
 import { useTranslation } from 'react-i18next'
@@ -13,12 +13,21 @@ import { useTranslation } from 'react-i18next'
 import './index.css'
 
 export default function App() {
-  const [currentView, setCurrentView] = useState('picker') // picker | questionnaire | setup | ide | reviewer
+  const [currentView, setCurrentView] = useState('picker') // picker | start | architect | ide | reviewer
   const [activeProject, setActiveProject] = useState(null)
   const [workspacePath, setWorkspacePath] = useState(null)
   const [projectConfig, setProjectConfig] = useState(null)
+  const [startMode, setStartMode] = useState('write') // 'write' | 'import' (the new-book flow)
   const [showChoiceModal, setShowChoiceModal] = useState(false)
   const [reviewSession, setReviewSession] = useState(null)
+  // the start screen reopens on the Reviewer tab after a review is closed
+  const [pickerSection, setPickerSection] = useState('projects')
+  // returned review files to import into the project being opened: { paths, key }
+  const [incomingReviews, setIncomingReviews] = useState(null)
+  // a review file FleshNote was opened with, waiting for the user to choose what to do
+  const [incomingFile, setIncomingFile] = useState(null)
+  const viewRef = useRef({ currentView, activeProject, workspacePath })
+  viewRef.current = { currentView, activeProject, workspacePath }
   const { i18n } = useTranslation()
 
   useEffect(() => {
@@ -70,13 +79,7 @@ export default function App() {
       setProjectConfig(data.config)
       setActiveProject(projectPath)
 
-      // Check if project has chapters — if not, show setup wizard
-      const chaptersData = await window.api.getChapters(projectPath)
-      if (!chaptersData.chapters || chaptersData.chapters.length === 0) {
-        setCurrentView('setup')
-      } else {
-        setCurrentView('ide')
-      }
+      setCurrentView('ide')
     } catch (err) {
       alert('Failed to load project DB: ' + err.message)
     }
@@ -94,22 +97,23 @@ export default function App() {
 
   const handleChoiceSelect = (choice) => {
     setShowChoiceModal(false)
-    if (choice === 'quick') {
-      setCurrentView('questionnaire')
+    if (choice === 'write' || choice === 'import') {
+      setStartMode(choice)
+      setCurrentView('start')
     } else if (choice === 'architect') {
       setCurrentView('architect')
     }
   }
 
-  // ── After questionnaire creates the DB (Fast-track flow) ──
-  const handleCompleteQuestionnaire = async (projectPath) => {
+  // ── After the new-book flow created the project ──
+  const handleOpenNewProject = async (projectPath) => {
     try {
       const data = await window.api.loadProject(projectPath)
       setProjectConfig(data.config)
       setActiveProject(projectPath)
       // carry the app-level Sealed Pentimento choice into the new project
       applyToProject(projectPath).catch(() => { })
-      setCurrentView('setup') // Go to project setup wizard for existing manuscripts/imports
+      setCurrentView('ide')
     } catch (err) {
       alert('Failed to load new project: ' + err.message)
     }
@@ -129,36 +133,73 @@ export default function App() {
     }
   }
 
-  // ── After project setup wizard completes ────────────
-  const handleSetupComplete = () => {
-    setCurrentView('ide')
-  }
-
   // ── Close project and return to picker ──────────────
   const handleCloseProject = () => {
+    setPickerSection('projects')
     setActiveProject(null)
     setProjectConfig(null)
     setCurrentView('picker')
   }
 
-  const handleOpenReviewer = (session) => {
-    setReviewSession({ ...session, mode: 'reviewer' })
+  // res: what window.api.startReview returned (the working copy to review in)
+  const handleOpenReviewer = (res) => {
+    setReviewSession({ path: res.path, pkg: res.package, resumed: !!res.resumed })
     setCurrentView('reviewer')
   }
 
-  const handleOpenCollect = (session) => {
-    setReviewSession({ ...session, mode: 'collect' })
-    setCurrentView('reviewer')
+  // Returned review files go into a project; it opens with the Reviews panel
+  const handleImportReviews = async ({ projectPath, paths }) => {
+    const { currentView: view, activeProject: open } = viewRef.current
+    if (!(view === 'ide' && open === projectPath)) await handleSelectProject(projectPath)
+    setIncomingReviews({ paths, key: Date.now() })
   }
+
+  // A .flreview file double-clicked (or opened with FleshNote): a review someone
+  // sent to read, or one coming back to the author of a project on this machine
+  const handleLaunchFile = async (path) => {
+    const res = await window.api.openReviewPackage({ path })
+    if (res?.status !== 'ok') {
+      setIncomingFile({ path, error: res?.message || 'unreadable' })
+      return
+    }
+    const peek = res.peek || {}
+    const desktopId = peek.desktop_id
+    const ws = viewRef.current.workspacePath
+    let match = null
+    if (desktopId && ws) {
+      try {
+        const data = await window.api.getProjects(ws)
+        match = (data.projects || []).find((p) => p.project_id === desktopId) || null
+      } catch { match = null }
+    }
+    const returned = (peek.notes || 0) > 0 || !!peek.finished_at
+    if (!(returned && match) && viewRef.current.currentView === 'picker') {
+      const started = await window.api.startReview({ path })
+      if (started?.status === 'ok') handleOpenReviewer(started)
+      else setIncomingFile({ path, problem: started })
+      return
+    }
+    setIncomingFile({ path, peek, match: returned ? match : null })
+  }
+
+  useEffect(() => {
+    const take = async () => {
+      const file = await window.api.takeLaunchFile?.()
+      if (file) handleLaunchFile(file)
+    }
+    take()
+    return window.api.onLaunchFile?.(take)
+  }, [])
 
   const handleCloseReviewer = () => {
     setReviewSession(null)
+    setPickerSection('reviewer')
     setCurrentView('picker')
   }
 
   return (
     <div className="ide-root">
-      <TitleBar projectName={projectConfig?.project_name || reviewSession?.pkg?.snapshot?.project?.title || reviewSession?.data?.snapshot?.project?.title} />
+      <TitleBar projectName={projectConfig?.project_name || reviewSession?.pkg?.snapshot?.project?.title} />
       {currentView === 'picker' && (
         <>
           <ProjectPicker
@@ -167,7 +208,8 @@ export default function App() {
             onSelectProject={handleSelectProject}
             onCreateNew={handleCreateNew}
             onOpenReviewer={handleOpenReviewer}
-            onOpenCollect={handleOpenCollect}
+            onImportReviews={handleImportReviews}
+            initialSection={pickerSection}
           />
           {showChoiceModal && (
             <NewProjectChoiceModal
@@ -178,11 +220,12 @@ export default function App() {
         </>
       )}
 
-      {currentView === 'questionnaire' && (
-        <ProjectQuestionnaire
+      {currentView === 'start' && (
+        <ProjectStart
           workspacePath={workspacePath}
-          onComplete={handleCompleteQuestionnaire}
+          mode={startMode}
           onCancel={() => setCurrentView('picker')}
+          onOpenProject={handleOpenNewProject}
         />
       )}
 
@@ -194,28 +237,45 @@ export default function App() {
         />
       )}
 
-      {currentView === 'setup' && (
-        <ProjectSetup
-          projectPath={activeProject}
-          projectConfig={projectConfig}
-          onComplete={handleSetupComplete}
-          onSkip={handleSetupComplete}
-        />
-      )}
-
       {currentView === 'ide' && (
         <FleshNoteIDE
           projectConfig={projectConfig}
           projectPath={activeProject}
           onCloseProject={handleCloseProject}
           onConfigUpdate={setProjectConfig}
+          incomingReviews={incomingReviews}
         />
       )}
 
       {currentView === 'reviewer' && reviewSession && (
         <ReviewerIDE
+          key={reviewSession.path}
           session={reviewSession}
           onClose={handleCloseReviewer}
+        />
+      )}
+
+      {incomingFile && (
+        <IncomingReviewModal
+          file={incomingFile}
+          onClose={() => setIncomingFile(null)}
+          onImport={() => {
+            const { path, match } = incomingFile
+            setIncomingFile(null)
+            handleImportReviews({ projectPath: match.path, paths: [path] })
+          }}
+          onReview={async () => {
+            const { path } = incomingFile
+            setIncomingFile(null)
+            const started = await window.api.startReview({ path })
+            if (started?.status !== 'ok') {
+              setIncomingFile({ path, problem: started })
+              return
+            }
+            setActiveProject(null)
+            setProjectConfig(null)
+            handleOpenReviewer(started)
+          }}
         />
       )}
     </div>

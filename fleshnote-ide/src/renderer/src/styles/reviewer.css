@@ -108,6 +108,8 @@
   opacity: 0.92;
   overflow-wrap: break-word;
   word-break: break-word;
+  /* the app body is unselectable; notes start from a text selection */
+  user-select: text;
 }
 
 .reviewer-prose p {
@@ -167,6 +169,7 @@
 
 .review-note-mark {
   background: transparent;
+  color: inherit;
   border-block-end: 2px solid var(--text-tertiary);
   padding: 0;
 }

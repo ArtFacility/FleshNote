@@ -23,6 +23,9 @@ import StatsDashboard from './StatsDashboard'
 import EntityManager from './EntityManager'
 import WorldbuildAndHistory from './WorldbuildAndHistory'
 import JanitorPanel from './JanitorPanel'
+import ReviewsPanel from './ReviewsPanel'
+import SendForReviewModal from './SendForReviewModal'
+import ReviewImportSummary from './ReviewImportSummary'
 import HistoryPanel from './HistoryPanel'
 import changelogData from '../changelog.json'
 import WelcomeBackPrompt from './WelcomeBackPrompt'
@@ -298,7 +301,7 @@ const Icons = {
 
 // ─── MAIN IDE SHELL ─────────────────────────────────────────────────────────
 
-export default function FleshNoteIDE({ projectConfig, projectPath, onCloseProject, onConfigUpdate }) {
+export default function FleshNoteIDE({ projectConfig, projectPath, onCloseProject, onConfigUpdate, incomingReviews }) {
   const { t } = useTranslation()
   const [mainView, setMainView] = useState('editor') // 'editor' | 'planner' | 'calendar'
   const [focusMode, setFocusMode] = useState(null)
@@ -331,6 +334,7 @@ export default function FleshNoteIDE({ projectConfig, projectPath, onCloseProjec
   const [showSettings, setShowSettings] = useState(false)
   const [showExportModal, setShowExportModal] = useState(false)
   const [showExportChooser, setShowExportChooser] = useState(false)
+  const [showSendReview, setShowSendReview] = useState(false)
   const [showImportModal, setShowImportModal] = useState(false)
   const [showSyncModal, setShowSyncModal] = useState(false)
   const [showRemoteSyncModal, setShowRemoteSyncModal] = useState(false)
@@ -372,11 +376,14 @@ export default function FleshNoteIDE({ projectConfig, projectPath, onCloseProjec
   const [historyCollapsed, setHistoryCollapsed] = useState(
     () => localStorage.getItem('fn_historyCollapsed') !== 'false' // default closed
   )
+  // Reviews handed back by beta readers; the panel only shows up once there are some
+  const [reviewsCollapsed, setReviewsCollapsed] = useState(true)
+  const [reviewsData, setReviewsData] = useState({ reviews: [], notes: [], copies: [] })
   const toggleJanitorPanel = useCallback(() => {
     setJanitorCollapsed(prev => {
       const next = !prev
       localStorage.setItem('fn_janitorCollapsed', next)
-      if (!next) { setHistoryCollapsed(true); localStorage.setItem('fn_historyCollapsed', 'true') }
+      if (!next) { setHistoryCollapsed(true); localStorage.setItem('fn_historyCollapsed', 'true'); setReviewsCollapsed(true) }
       return next
     })
   }, [])
@@ -384,10 +391,31 @@ export default function FleshNoteIDE({ projectConfig, projectPath, onCloseProjec
     setHistoryCollapsed(prev => {
       const next = !prev
       localStorage.setItem('fn_historyCollapsed', next)
-      if (!next) { setJanitorCollapsed(true); localStorage.setItem('fn_janitorCollapsed', 'true') }
+      if (!next) { setJanitorCollapsed(true); localStorage.setItem('fn_janitorCollapsed', 'true'); setReviewsCollapsed(true) }
       return next
     })
   }, [])
+  const openReviewsPanel = useCallback((open = true) => {
+    setReviewsCollapsed(!open)
+    if (open) {
+      setJanitorCollapsed(true); localStorage.setItem('fn_janitorCollapsed', 'true')
+      setHistoryCollapsed(true); localStorage.setItem('fn_historyCollapsed', 'true')
+    }
+  }, [])
+  const refreshReviews = useCallback(async () => {
+    if (!projectPath) return
+    try {
+      const [res, sent] = await Promise.all([
+        window.api.reviewNotes({ project_path: projectPath }),
+        window.api.reviewCopies({ project_path: projectPath }),
+      ])
+      if (res?.status === 'ok') setReviewsData({ reviews: res.reviews || [], notes: res.notes || [], copies: sent?.copies || [] })
+    } catch (err) {
+      console.error('Failed to load reviews', err)
+    }
+  }, [projectPath])
+  useEffect(() => { refreshReviews() }, [refreshReviews])
+  const [reviewImportResults, setReviewImportResults] = useState(null)
   const handleHistoryRestored = useCallback((contentHtml, wordCount, chapId) => {
     const cid = chapId || activeChapter?.id
     if (!cid) return
@@ -737,6 +765,56 @@ export default function FleshNoteIDE({ projectConfig, projectPath, onCloseProjec
   )
   const clearCharTarget = useCallback(() => setScrollToCharTarget(null), [])
 
+  // ── Review notes ───────────────────────────────────
+  const handleOpenReviewNote = useCallback(async (note) => {
+    const target = chapters.find(ch => String(ch.id) === String(note.chapter_id))
+    if (!target) return
+    setMainView('editor')
+    if (!activeChapter || String(activeChapter.id) !== String(note.chapter_id)) await loadChapter(target)
+    setScrollToCharTarget({
+      chapterId: note.chapter_id,
+      passage: { texts: [note.anchor_text, note.quote_text], hint: note.anchor_hint || 0 },
+      timestamp: Date.now(),
+    })
+  }, [chapters, activeChapter])
+  const handleReviewNoteStatus = useCallback(async (note, status) => {
+    setReviewsData(d => ({ ...d, notes: d.notes.map(n => n.id === note.id ? { ...n, status } : n) }))
+    try {
+      await window.api.setReviewNoteStatus({ project_path: projectPath, id: note.id, status })
+    } finally {
+      refreshReviews()
+    }
+  }, [projectPath, refreshReviews])
+  const handleApplyReviewSuggestion = useCallback((note) => {
+    const replacement = note.category === 'remove' ? '' : (note.suggestion || '')
+    const done = janitorActionsRef.current?.replacePassage?.([note.anchor_text, note.quote_text], note.anchor_hint || 0, replacement)
+    if (done) handleReviewNoteStatus(note, 'resolved')
+    return done
+  }, [handleReviewNoteStatus])
+  // paths: files opened from outside (double-click, the start screen); none = ask
+  const handleImportReviews = useCallback(async (paths) => {
+    const res = await window.api.importReviews({ project_path: projectPath, paths: Array.isArray(paths) ? paths : [] })
+    if (res?.status === 'cancelled') return
+    await refreshReviews()
+    if ((res?.results || []).some(r => r.status === 'ok')) openReviewsPanel(true)
+    setReviewImportResults(res?.status === 'ok' ? res.results : [{ status: 'error', path: '', message: res?.message }])
+  }, [projectPath, refreshReviews, openReviewsPanel])
+  // App hands over returned review files it was opened with
+  useEffect(() => {
+    if (incomingReviews?.paths?.length) handleImportReviews(incomingReviews.paths)
+  }, [incomingReviews?.key])
+  // Withdraw a locked review copy: it stops opening for everyone who has it
+  const handleRevokeCopy = useCallback(async (copy) => {
+    const res = await window.api.revokeReviewCopy({ project_path: projectPath, id: copy.id })
+    await refreshReviews()
+    return res?.status === 'ok'
+  }, [projectPath, refreshReviews])
+  const handleDeleteReceivedReview = useCallback(async (review) => {
+    await window.api.deleteReceivedReview({ project_path: projectPath, id: review.id })
+    refreshReviews()
+  }, [projectPath, refreshReviews])
+  const openReviewNotes = reviewsData.notes.filter(n => n.status === 'open').length
+
   // ── Refresh entities (after creating new ones) ─────
   const handleEntitiesChanged = useCallback(async () => {
     if (!projectPath) return
@@ -916,6 +994,7 @@ export default function FleshNoteIDE({ projectConfig, projectPath, onCloseProjec
           localStorage.setItem('fn_janitorCollapsed', 'false')
           setHistoryCollapsed(true)
           localStorage.setItem('fn_historyCollapsed', 'true')
+          setReviewsCollapsed(true)
           setJanitorFocusSignal(s => s + 1)
         } else {
           setJanitorCollapsed(true)
@@ -1043,6 +1122,25 @@ export default function FleshNoteIDE({ projectConfig, projectPath, onCloseProjec
               </span>
             </button>
           )}
+          {!focusMode && mainView === 'editor' && (reviewsData.reviews.length > 0 || reviewsData.copies.length > 0) && (
+            <button
+              className="ide-header-btn"
+              title={t('reviews.toggleTitle', 'Toggle Reviews Panel')}
+              onClick={() => openReviewsPanel(reviewsCollapsed)}
+              style={{
+                display: 'flex',
+                alignItems: 'center',
+                gap: 6,
+                padding: '0 12px',
+                color: !reviewsCollapsed ? 'var(--accent-amber)' : 'inherit'
+              }}
+            >
+              <span style={{ fontSize: 11, fontFamily: 'var(--font-mono)', textTransform: 'uppercase', letterSpacing: '0.1em' }}>
+                {t('reviews.title', 'Reviews')}
+              </span>
+              {openReviewNotes > 0 && <span className="janitor-badge">{openReviewNotes}</span>}
+            </button>
+          )}
 
           <button
             className="ide-header-btn"
@@ -1098,6 +1196,24 @@ export default function FleshNoteIDE({ projectConfig, projectPath, onCloseProjec
                 >
                   <Icons.Upload /> {t('ide.import', 'Import...')}
                 </button>
+                <div style={{ height: 1, background: 'var(--border-subtle)', margin: '6px 0' }} />
+                <button
+                  onClick={() => { setShowHeaderMenu(false); setShowSendReview(true); }}
+                  style={{ display: 'flex', alignItems: 'center', gap: 12, padding: '8px 16px', paddingInlineStart: 42, background: 'transparent', border: 'none', color: 'var(--text-primary)', fontFamily: 'var(--font-mono)', fontSize: 12, cursor: 'pointer', textAlign: 'start', width: '100%' }}
+                  onMouseEnter={e => e.currentTarget.style.background = 'var(--bg-surface)'}
+                  onMouseLeave={e => e.currentTarget.style.background = 'transparent'}
+                >
+                  {t('ide.sendForReview', 'Send for review…')}
+                </button>
+                <button
+                  onClick={() => { setShowHeaderMenu(false); handleImportReviews(); }}
+                  style={{ display: 'flex', alignItems: 'center', gap: 12, padding: '8px 16px', paddingInlineStart: 42, background: 'transparent', border: 'none', color: 'var(--text-primary)', fontFamily: 'var(--font-mono)', fontSize: 12, cursor: 'pointer', textAlign: 'start', width: '100%' }}
+                  onMouseEnter={e => e.currentTarget.style.background = 'var(--bg-surface)'}
+                  onMouseLeave={e => e.currentTarget.style.background = 'transparent'}
+                >
+                  {t('ide.importReviews', 'Import reviews…')}
+                </button>
+                <div style={{ height: 1, background: 'var(--border-subtle)', margin: '6px 0' }} />
                 <button
                   onClick={() => { setShowHeaderMenu(false); setShowSyncChooser(true); }}
                   style={{ display: 'flex', alignItems: 'center', gap: 12, padding: '8px 16px', background: 'transparent', border: 'none', color: 'var(--text-primary)', fontFamily: 'var(--font-mono)', fontSize: 12, cursor: 'pointer', textAlign: 'left', width: '100%' }}
@@ -1702,6 +1818,23 @@ export default function FleshNoteIDE({ projectConfig, projectPath, onCloseProjec
                     onRestored={handleHistoryRestored}
                     onBeforeSnapshot={async () => { try { await janitorActionsRef.current?.flushSave?.() } catch { /* noop */ } }}
                   />
+                  {(reviewsData.reviews.length > 0 || reviewsData.copies.length > 0) && (
+                    <ReviewsPanel
+                      data={reviewsData}
+                      chapters={chapters}
+                      activeChapterId={activeChapter?.id}
+                      isCollapsed={reviewsCollapsed}
+                      onToggle={() => openReviewsPanel(reviewsCollapsed)}
+                      onOpenNote={handleOpenReviewNote}
+                      onStatus={handleReviewNoteStatus}
+                      onApply={handleApplyReviewSuggestion}
+                      canApplyNote={(note) => !!janitorActionsRef.current?.canReplacePassage?.([note.anchor_text, note.quote_text], note.anchor_hint || 0)}
+                      onOpenChapter={(ch) => { setMainView('editor'); loadChapter(ch) }}
+                      onImport={handleImportReviews}
+                      onDeleteReview={handleDeleteReceivedReview}
+                      onRevokeCopy={handleRevokeCopy}
+                    />
+                  )}
                   </>
                 )}
               </>
@@ -1830,11 +1963,24 @@ export default function FleshNoteIDE({ projectConfig, projectPath, onCloseProjec
         entities={entities}
       />
 
+      {reviewImportResults && (
+        <ReviewImportSummary results={reviewImportResults} onClose={() => setReviewImportResults(null)} />
+      )}
+
+      <SendForReviewModal
+        isOpen={showSendReview}
+        onClose={() => { setShowSendReview(false); refreshReviews() }}
+        projectPath={projectPath}
+        projectConfig={projectConfig}
+        chapters={chapters}
+      />
+
       <ExportChooserModal
         isOpen={showExportChooser}
         onClose={() => setShowExportChooser(false)}
         projectPath={projectPath}
-        onPickManuscript={() => setShowExportModal(true)}
+        onPickManuscript={() => { setShowExportChooser(false); setShowExportModal(true) }}
+        onPickReview={() => { setShowExportChooser(false); setShowSendReview(true) }}
       />
 
       <ImportModal

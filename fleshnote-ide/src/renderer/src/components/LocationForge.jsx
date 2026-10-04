@@ -3,9 +3,11 @@ import { useTranslation } from 'react-i18next'
 import {
   generateLocationSpark,
   rollLocationDescription,
-  getLocationMetadata
+  getLocationMetadata,
+  appendSensoryTag
 } from '../utils/madlibs'
 import { generateLocationCandidates } from '../utils/namegen'
+import AutoTextarea from './AutoTextarea'
 
 const GEO_SUGGESTIONS = [
   'peaks', 'crags', 'canyon', 'caldera', 'glacier', 'sunken reef',
@@ -18,31 +20,6 @@ const HISTORY_SUGGESTIONS = [
   'ancient siege', 'fallen dynasty', 'dragon fire', 'astral collision',
   'forgotten treaty', 'exile colony', 'curse of shadows'
 ]
-
-const LANDMARK_TAGS = [
-  'Obsidian Pillars', 'Perpetual Fog', 'Crumbling Aqueducts', 'Runic Monoliths',
-  'Howling Chasm', 'Sunken Crypts', 'Iron Ramparts'
-]
-
-function AutoTextarea({ value, onChange, className, ...rest }) {
-  const ref = useRef(null)
-  useEffect(() => {
-    if (ref.current) {
-      ref.current.style.height = 'auto'
-      ref.current.style.height = `${ref.current.scrollHeight}px`
-    }
-  }, [value])
-  return (
-    <textarea
-      ref={ref}
-      rows={1}
-      className={className}
-      value={value}
-      onChange={(e) => onChange(e.target.value)}
-      {...rest}
-    />
-  )
-}
 
 const shapeFor = (siteType) => {
   const s = String(siteType || '').toLowerCase()
@@ -96,6 +73,10 @@ function PlaceShape({ shape }) {
 export default function LocationForge({ entity, language = 'en', onSave, onBack, onDelete }) {
   const { t } = useTranslation()
   const locMeta = getLocationMetadata(language)
+  const optionLabel = (list, id) => {
+    const o = list.find((x) => x.id === id)
+    return o ? o.badge || o.label : id
+  }
 
   const boot = useMemo(() => {
     if (entity) {
@@ -196,7 +177,17 @@ export default function LocationForge({ entity, language = 'en', onSave, onBack,
       climate,
       scale,
       description: desc,
-      notes: `Type: ${type} | Scale: ${scale} | Climate: ${climate} | Population: ${pop} | Geo: ${geoKeyword}`
+      notes: t(
+        'brainstorm.locationNotes',
+        'Type: {{type}} | Scale: {{scale}} | Climate: {{climate}} | Population: {{population}} | Geo: {{geo}}',
+        {
+          type: optionLabel(locMeta.siteTypes, type),
+          scale: optionLabel(locMeta.scales, scale),
+          climate: optionLabel(locMeta.climates, climate),
+          population: optionLabel(locMeta.populations, pop),
+          geo: geoKeyword
+        }
+      )
     })
   }
 
@@ -229,7 +220,6 @@ export default function LocationForge({ entity, language = 'en', onSave, onBack,
         </div>
 
         <button type="button" className="forge-reimagine blue" onClick={handleReimagine}>
-          <span className="rune-inline">𐲉</span>
           {t('brainstorm.reimagine', 'Re-imagine')}
         </button>
       </header>
@@ -294,8 +284,8 @@ export default function LocationForge({ entity, language = 'en', onSave, onBack,
                 }}
               >
                 {locMeta.siteTypes.map((st) => (
-                  <option key={st} value={st}>
-                    {st}
+                  <option key={st.id} value={st.id}>
+                    {st.label}
                   </option>
                 ))}
               </select>
@@ -305,7 +295,8 @@ export default function LocationForge({ entity, language = 'en', onSave, onBack,
                   label: t('brainstorm.populationLabel', 'POPULATION DENSITY'),
                   value: pop,
                   setValue: setPop,
-                  options: locMeta.populations.map((p) => (typeof p === 'string' ? p : p.id)),
+                  options: locMeta.populations.map((p) => p.id),
+                  display: (v) => optionLabel(locMeta.populations, v),
                   accent: 'var(--accent-blue, #5c8ec4)'
                 },
                 {
@@ -317,14 +308,16 @@ export default function LocationForge({ entity, language = 'en', onSave, onBack,
                     setGeoKeyword(g)
                     rollCandidates({ geography: g })
                   },
-                  options: locMeta.climates.map((c) => (typeof c === 'string' ? c : c.id)),
+                  options: locMeta.climates.map((c) => c.id),
+                  display: (v) => optionLabel(locMeta.climates, v),
                   accent: '#10b981'
                 },
                 {
                   label: t('brainstorm.scaleLabel', 'GEOGRAPHIC SCALE'),
                   value: scale,
                   setValue: setScale,
-                  options: locMeta.scales.map((s) => (typeof s === 'string' ? s : s.id)),
+                  options: locMeta.scales.map((s) => s.id),
+                  display: (v) => optionLabel(locMeta.scales, v),
                   accent: 'var(--accent-amber, #d4a052)'
                 }
               ].map((sl) => (
@@ -332,7 +325,7 @@ export default function LocationForge({ entity, language = 'en', onSave, onBack,
                   <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
                     <label className="forge-label">{sl.label}</label>
                     <span className="slider-badge" style={{ color: sl.accent }}>
-                      {sl.value}
+                      {sl.display(sl.value)}
                     </span>
                   </div>
                   <input
@@ -561,14 +554,12 @@ export default function LocationForge({ entity, language = 'en', onSave, onBack,
               {t('brainstorm.landmarks', 'LANDMARKS & SENSORY TAGS')}
             </div>
             <div className="vault-tags">
-              {LANDMARK_TAGS.map((tag) => (
+              {locMeta.sensoryTags.map((tag) => (
                 <button
                   key={tag}
                   type="button"
                   className="vault-tag blue"
-                  onClick={() => {
-                    setDesc((prev) => (prev ? `${prev.trim()} Features ${tag.toLowerCase()}.` : `${tag}.`))
-                  }}
+                  onClick={() => setDesc((prev) => appendSensoryTag(language, prev, tag))}
                 >
                   + {tag}
                 </button>

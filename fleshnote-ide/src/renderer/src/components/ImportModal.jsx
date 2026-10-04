@@ -1,6 +1,7 @@
 import { useState, useCallback } from 'react'
 import { useTranslation } from 'react-i18next'
-import ImportManuscript from './ImportManuscript'
+import ManuscriptImporter from './manuscript/ManuscriptImporter'
+import { toPayload } from '../utils/manuscriptSplits'
 import EntityExtractor from './EntityExtractor'
 import EntityExtractorLoading from './EntityExtractorLoading'
 
@@ -249,6 +250,7 @@ export default function ImportModal({ isOpen, onClose, projectPath, projectConfi
   const [view, setView] = useState('landing')
   const [splits, setSplits] = useState([])
   const [confirmLoading, setConfirmLoading] = useState(false)
+  const [insertAfter, setInsertAfter] = useState('end') // 'end' | chapter number (0 = before chapter 1)
   const [chapterTexts, setChapterTexts] = useState(null)
   const [loadingChapters, setLoadingChapters] = useState(false)
 
@@ -272,7 +274,8 @@ export default function ImportModal({ isOpen, onClose, projectPath, projectConfi
     try {
       await window.api.importConfirmSplits({
         project_path: projectPath,
-        splits: splits.map(s => ({ title: s.title, content: s.content })),
+        splits: toPayload(splits),
+        insert_after: insertAfter === 'end' ? null : Number(insertAfter),
       })
       onDataChanged()
       handleBack()
@@ -312,6 +315,70 @@ export default function ImportModal({ isOpen, onClose, projectPath, projectConfi
   }, [onDataChanged, handleBack])
 
   if (!isOpen) return null
+
+  // Finding characters and places also takes the whole window.
+  if (view === 'extract-existing' || view === 'extract-manual') {
+    return (
+      <div className="start-shell">
+        <header className="start-header">
+          <span className="start-header-title">{t('finder.header', 'Characters & places')}</span>
+        </header>
+        <div className="start-stage">
+          {view === 'extract-existing' && (loadingChapters || !chapterTexts) ? (
+            <EntityExtractorLoading subtitle={t('importModal.loadingChapterContent', 'Loading chapter content for analysis...')} />
+          ) : (
+            <EntityExtractor
+              projectPath={projectPath}
+              projectConfig={projectConfig}
+              chapterTexts={view === 'extract-existing' ? chapterTexts : undefined}
+              onDone={handleEntityExtractDone}
+              onBack={handleBack}
+            />
+          )}
+        </div>
+      </div>
+    )
+  }
+
+  // Importing chapters takes the whole window: the review needs the room.
+  if (view === 'chapters') {
+    const ordered = [...(chapters || [])].sort((a, b) => a.chapter_number - b.chapter_number)
+    return (
+      <div className="start-shell">
+        <header className="start-header">
+          <span className="start-header-title">{t('importModal.importChapters', 'Import Chapters')}</span>
+        </header>
+        <ManuscriptImporter
+          splits={splits}
+          setSplits={setSplits}
+          onBack={handleBack}
+          onConfirm={handleConfirmSplits}
+          busy={confirmLoading}
+          confirmLabel={(n) =>
+            confirmLoading
+              ? t('importModal.importing', 'Importing...')
+              : t('manuscript.importN', 'Import {{count}} chapters', { count: n })
+          }
+          footerExtra={
+            ordered.length > 0 ? (
+              <label className="ms-insert">
+                <span>{t('manuscript.insertLabel', 'Place them')}</span>
+                <select className="start-input" value={insertAfter} onChange={(e) => setInsertAfter(e.target.value)}>
+                  <option value="end">{t('manuscript.insertEnd', 'After the last chapter')}</option>
+                  <option value="0">{t('manuscript.insertStart', 'Before chapter 1')}</option>
+                  {ordered.slice(0, -1).map((ch) => (
+                    <option key={ch.id} value={ch.chapter_number}>
+                      {t('manuscript.insertAfter', 'After {{n}}. {{title}}', { n: ch.chapter_number, title: ch.title })}
+                    </option>
+                  ))}
+                </select>
+              </label>
+            ) : null
+          }
+        />
+      </div>
+    )
+  }
 
   const headerTitle = {
     landing: t('importModal.title', 'Import'),
@@ -402,43 +469,6 @@ export default function ImportModal({ isOpen, onClose, projectPath, projectConfi
                 </button>
               </div>
             </div>
-          )}
-
-          {/* Import Chapters */}
-          {view === 'chapters' && (
-            <ImportManuscript
-              projectPath={projectPath}
-              splits={splits}
-              setSplits={setSplits}
-              onCancel={handleBack}
-              onConfirm={handleConfirmSplits}
-              loading={confirmLoading}
-            />
-          )}
-
-          {/* Extract from Existing Chapters */}
-          {view === 'extract-existing' && (
-            loadingChapters ? (
-              <EntityExtractorLoading subtitle={t('importModal.loadingChapterContent', 'Loading chapter content for analysis...')} />
-            ) : chapterTexts ? (
-              <EntityExtractor
-                projectPath={projectPath}
-                projectConfig={projectConfig}
-                chapterTexts={chapterTexts}
-                onDone={handleEntityExtractDone}
-                onBack={handleBack}
-              />
-            ) : null
-          )}
-
-          {/* Extract from Pasted Text */}
-          {view === 'extract-manual' && (
-            <EntityExtractor
-              projectPath={projectPath}
-              projectConfig={projectConfig}
-              onDone={handleEntityExtractDone}
-              onBack={handleBack}
-            />
           )}
 
           {/* Import from External Project */}

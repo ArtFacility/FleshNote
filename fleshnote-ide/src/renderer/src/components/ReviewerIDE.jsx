@@ -1,6 +1,7 @@
 import { useEffect, useMemo, useRef, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import { getPersonalDefaults } from '../utils/personalDefaults'
+import { daysLeft, fmtExpiry } from '../utils/reviewProblems'
 
 export const NOTE_CATEGORIES = ['typo', 'rewrite', 'remove', 'praise', 'question', 'comment']
 const SCORE_KEYS = ['pacing', 'prose', 'dialogue', 'characters', 'plot', 'engagement', 'overall']
@@ -302,6 +303,7 @@ function NoteProse({ raw, chapterId, notes, activeNote, entityIndex, onEntityCli
   return (
     <div
       className="reviewer-prose"
+      dir="auto"
       ref={proseRef}
       data-text={rawText}
       onMouseUp={() => {
@@ -325,44 +327,70 @@ function NoteProse({ raw, chapterId, notes, activeNote, entityIndex, onEntityCli
   )
 }
 
-function ComposerBody({ t, category, busy, onSubmit, onCancel, onCancelAll }) {
-  const [body, setBody] = useState('')
+// A raw quote (TipTap HTML with entity markers) as the words the reader saw
+function editorPlain(raw) {
+  return decodeHtml((raw || '')
+    .replace(/\{\{[a-z]+:[^|]+\|([^}]+)\}\}/g, '$1')
+    .replace(/<[^>]*>/g, ' '))
+    .replace(/\s+/g, ' ')
+    .trim()
+}
+
+const SUGGEST_CATEGORIES = new Set(['typo', 'rewrite'])
+
+// Note editor, used for a new note (after picking its kind) and for editing one.
+// Typos and rewrites get a "suggested text" box, pre-filled with the passage.
+function NoteEditor({ t, initial, quotePlain, busy, onSave, onCancel }) {
+  const [category, setCategory] = useState(initial.category)
+  const [body, setBody] = useState(initial.body || '')
+  const [suggestion, setSuggestion] = useState(initial.suggestion ?? '')
+  const wantsSuggestion = SUGGEST_CATEGORIES.has(category)
+  useEffect(() => {
+    if (wantsSuggestion && !suggestion && quotePlain) setSuggestion(quotePlain)
+  }, [wantsSuggestion])
+  const canSave = !busy && (body.trim() || (wantsSuggestion && suggestion.trim() && suggestion.trim() !== (quotePlain || '').trim()) || category === 'remove')
+  const save = () => canSave && onSave({ category, body: body.trim(), suggestion: wantsSuggestion ? suggestion.trim() : '' })
   return (
     <>
+      <div className="cat-picker">
+        {NOTE_CATEGORIES.map((c) => (
+          <button key={c} type="button" className={`review-chip cat-${c} ${category === c ? 'on' : ''}`} onClick={() => setCategory(c)}>
+            {t(`review.cat.${c}`, c)}
+          </button>
+        ))}
+      </div>
+      {wantsSuggestion && (
+        <label className="note-field">
+          <span>{t('review.suggestionLabel', 'Suggested text')}</span>
+          <textarea className="note-body note-suggestion" rows={2} value={suggestion} onChange={(e) => setSuggestion(e.target.value)} />
+        </label>
+      )}
       <textarea
         className="note-body"
         rows={3}
-        autoFocus
+        autoFocus={!wantsSuggestion}
         value={body}
         onChange={(e) => setBody(e.target.value)}
-        placeholder={t('review.composerPlaceholder', 'Leave a note for the author…')}
-        onKeyDown={(e) => {
-          if (e.key === 'Enter' && (e.ctrlKey || e.metaKey) && body.trim()) onSubmit(body.trim())
-        }}
+        placeholder={category === 'praise'
+          ? t('review.praisePlaceholder', 'What worked for you here?')
+          : t('review.composerPlaceholder', 'Leave a note for the author…')}
+        onKeyDown={(e) => { if (e.key === 'Enter' && (e.ctrlKey || e.metaKey)) save() }}
       />
-      <div style={{ display: 'flex', gap: 8, justifyContent: 'flex-end' }}>
-        <button type="button" className="picker-ghost-btn" onClick={onCancelAll}>
-          {t('review.cancel', 'Cancel')}
-        </button>
-        <button
-          type="button"
-          className="picker-primary"
-          disabled={busy || !body.trim()}
-          onClick={() => onSubmit(body.trim())}
-        >
-          {t('review.saveNote', 'Save note')}
-        </button>
+      <div className="note-editor-actions">
+        <button type="button" className="picker-ghost-btn" onClick={onCancel}>{t('review.cancel', 'Cancel')}</button>
+        <button type="button" className="picker-primary" disabled={!canSave} onClick={save}>{t('review.saveNote', 'Save note')}</button>
       </div>
     </>
   )
 }
 
-function ScoreBlock({ t, chapter, scores, onChange, readOnly }) {
+function ScoreBlock({ t, chapter, scores, onChange }) {
   if (!chapter) return null
   const current = scores.find((s) => s.chapter_id === chapter.id) || { chapter_id: chapter.id }
   return (
     <div className="score-block">
       <span className="picker-kicker">{t('review.scores', 'Chapter scores')}</span>
+      <span className="score-hint">{t('review.scoresHint', 'Optional. 1 = weak, 5 = strong.')}</span>
       {SCORE_KEYS.map((key) => (
         <div key={key} className="score-row">
           <span>{t(`review.score.${key}`, key)}</span>
@@ -371,9 +399,9 @@ function ScoreBlock({ t, chapter, scores, onChange, readOnly }) {
               <button
                 key={n}
                 type="button"
+                aria-label={`${t(`review.score.${key}`, key)} ${n}`}
                 className={`score-pip ${(current[key] || 0) >= n ? 'on' : ''}`}
-                disabled={readOnly}
-                onClick={() => onChange({ ...current, chapter_id: chapter.id, [key]: n })}
+                onClick={() => onChange({ ...current, chapter_id: chapter.id, [key]: current[key] === n ? 0 : n })}
               />
             ))}
           </div>
@@ -393,53 +421,62 @@ const TYPE_KEYS = {
   annotation: 'annotation',
 }
 
+/**
+ * The reviewer's side of a review: reads the chapters the author sent, leaves
+ * notes on selected passages and scores chapters. Everything saves to the
+ * working copy as it changes; "Send back to author" writes the copy that goes
+ * back. session: { path (working copy), pkg, resumed }.
+ */
 export default function ReviewerIDE({ session, onClose }) {
   const { t } = useTranslation()
-  const collect = session?.mode === 'collect'
   const pkg = session?.pkg
-  const snapshot = collect ? session.data?.snapshot : pkg?.snapshot
-  const [notes, setNotes] = useState(() => {
-    if (collect) {
-      return (session.data?.reviews || []).flatMap((r) => r.notes || [])
-    }
-    return pkg?.notes || []
-  })
-  const [scores, setScores] = useState(() => {
-    if (collect) return (session.data?.reviews || []).flatMap((r) => r.scores || [])
-    return pkg?.scores || []
-  })
+  const snapshot = pkg?.snapshot
+  const [notes, setNotes] = useState(() => pkg?.notes || [])
+  const [scores, setScores] = useState(() => pkg?.scores || [])
+  const [label, setLabel] = useState(pkg?.reviewer_label || '')
   const [chapterIdx, setChapterIdx] = useState(0)
   const [selectedEntity, setSelectedEntity] = useState(null)
   const [popup, setPopup] = useState(null)
   const [activeNote, setActiveNote] = useState(null)
-  const [busy, setBusy] = useState(false)
-  const [dirty, setDirty] = useState(false)
-  const [label, setLabel] = useState(pkg?.reviewer_label || '')
+  const [editingId, setEditingId] = useState(null)
+  const [saveState, setSaveState] = useState('saved') // saved | saving | error | expired
+  const [showIntro, setShowIntro] = useState(() => !session?.resumed)
+  const [finished, setFinished] = useState(null) // path of the copy sent back
   const proseRef = useRef(null)
   const popupRef = useRef(null)
+  const latest = useRef({ notes, scores, label })
+  latest.current = { notes, scores, label }
 
   // Pre-fill the reviewer name from personal defaults when the package has none
   useEffect(() => {
-    if (collect || (pkg?.reviewer_label || '').trim()) return
+    if ((pkg?.reviewer_label || '').trim()) return
     let cancelled = false
     getPersonalDefaults().then((d) => {
       if (cancelled || !d.reviewer_name) return
       setLabel((prev) => prev || d.reviewer_name)
     }).catch(() => { })
     return () => { cancelled = true }
-  }, [collect, pkg?.reviewer_label])
+  }, [pkg?.reviewer_label])
 
   const chapters = snapshot?.chapters || []
   const chapter = chapters[chapterIdx] || null
   const entities = snapshot?.entities
   const idx = useMemo(() => entityIndexMap(entities), [entities])
   const inspected = selectedEntity ? idx.get(selectedEntity) : null
-  const chapterNotes = notes.filter((n) => chapter && n.chapter_id === chapter.id)
+  const chapterNotes = notes
+    .filter((n) => chapter && n.chapter_id === chapter.id)
+    .sort((a, b) => a.anchor_start - b.anchor_start)
   const title = snapshot?.project?.title || t('review.untitled', 'Untitled')
+  const author = pkg?.author_label || ''
+  // a locked copy stops opening on this date, for the reviewer's notes too
+  const expiresAt = pkg?.crypto?.expires_at || ''
+  const left = daysLeft(expiresAt)
+  const notesIn = (id) => notes.filter((n) => n.chapter_id === id).length
 
   useEffect(() => {
     setPopup(null)
     setSelectedEntity(null)
+    setEditingId(null)
   }, [chapterIdx])
 
   useEffect(() => {
@@ -461,63 +498,88 @@ export default function ReviewerIDE({ session, onClose }) {
     }
   }, [popup, inspected])
 
-  const persist = async (nextNotes, nextScores, nextLabel) => {
-    if (collect || !session?.path) return
-    setBusy(true)
+  // Every change is written to the working copy straight away
+  const persist = async (patch = {}) => {
+    if (!session?.path) return false
+    const next = { ...latest.current, ...patch }
+    setSaveState('saving')
     try {
-      const next = {
-        ...pkg,
-        reviewer_label: nextLabel ?? label,
-        notes: nextNotes ?? notes,
-        scores: nextScores ?? scores,
+      const res = await window.api.saveReviewPackage({
+        path: session.path,
+        package: { reviewer_label: next.label, notes: next.notes, scores: next.scores },
+      })
+      if (res?.status === 'expired') {
+        setSaveState('expired')
+        return false
       }
-      const res = await window.api.saveReviewPackage({ path: session.path, package: next })
       if (res?.status !== 'ok') throw new Error(res?.message || 'Save failed')
-      setDirty(false)
+      setSaveState('saved')
+      return true
     } catch (err) {
       console.error(err)
-    } finally {
-      setBusy(false)
+      setSaveState('error')
+      return false
     }
   }
 
-  const submitNote = async (category, body) => {
+  const addNote = async ({ category, body, suggestion }) => {
     if (!popup || !chapter) return
+    const now = new Date().toISOString()
     const note = {
       id: newId(),
       chapter_id: chapter.id,
       category,
       body,
+      suggestion,
       anchor_start: popup.start,
       anchor_end: popup.end,
       anchor_quote: popup.quote,
-      created_at: new Date().toISOString(),
+      created_at: now,
+      updated_at: now,
     }
     const next = [...notes, note]
     setNotes(next)
     setPopup(null)
-    setDirty(true)
-    await persist(next, scores, label)
+    window.getSelection()?.removeAllRanges()
+    await persist({ notes: next })
+  }
+
+  const updateNote = async (id, patch) => {
+    const next = notes.map((n) => (n.id === id ? { ...n, ...patch, updated_at: new Date().toISOString() } : n))
+    setNotes(next)
+    setEditingId(null)
+    await persist({ notes: next })
   }
 
   const removeNote = async (id) => {
     const next = notes.filter((n) => n.id !== id)
     setNotes(next)
     setActiveNote(null)
-    setDirty(true)
-    await persist(next, scores, label)
+    setEditingId(null)
+    await persist({ notes: next })
   }
 
   const changeScore = async (nextScore) => {
     const next = scores.filter((s) => s.chapter_id !== nextScore.chapter_id).concat(nextScore)
     setScores(next)
-    setDirty(true)
-    await persist(notes, next, label)
+    await persist({ scores: next })
+  }
+
+  const sendBack = async () => {
+    if (saveState === 'error' && !(await persist())) return
+    const name = label.trim()
+    const res = await window.api.finishReview({
+      path: session.path,
+      defaultName: name ? `${title} - review by ${name}` : `${title} - review`,
+    })
+    if (res?.status === 'ok') setFinished(res.path)
+    else if (res?.status === 'expired') setSaveState('expired')
+    else if (res?.status !== 'cancelled') setSaveState('error')
   }
 
   const popupStyle = popup?.rect
     ? {
-        left: Math.max(8, Math.min(popup.rect.x - 150, window.innerWidth - 316)),
+        left: Math.max(8, Math.min(popup.rect.x - 160, window.innerWidth - 336)),
         top: popup.rect.above ? popup.rect.y - 8 : popup.rect.y + 8,
         transform: popup.rect.above ? 'translateY(-100%)' : undefined,
       }
@@ -527,26 +589,38 @@ export default function ReviewerIDE({ session, onClose }) {
     <div className="reviewer-shell">
       <div className="reviewer-bar">
         <div className="reviewer-bar-title">
-          {collect ? t('review.collectTitle', 'Collected reviews') : t('review.modeTitle', 'Reviewer mode')}
-          {' — '}
-          {title}
+          {t('review.reviewing', 'Reviewing')} <strong>{title}</strong>
+          {author && <span className="reviewer-bar-author">{t('review.fromAuthor', 'for {{author}}', { author })}</span>}
+          {expiresAt && (
+            <span className={`reviewer-bar-expiry ${left !== null && left <= 2 ? 'is-soon' : ''}`}>
+              {left !== null && left <= 2
+                ? t('review.expiresSoon', 'Stops opening {{date}}: send it back soon', { date: fmtExpiry(expiresAt) })
+                : t('review.readableUntil', 'Readable until {{date}}', { date: fmtExpiry(expiresAt) })}
+            </span>
+          )}
         </div>
         <div className="reviewer-bar-actions">
-          {!collect && (
-            <input
-              className="picker-workspace-path"
-              style={{ width: 180, padding: '6px 10px' }}
-              value={label}
-              placeholder={t('review.yourName', 'Your name')}
-              onChange={(e) => { setLabel(e.target.value); setDirty(true) }}
-              onBlur={() => persist(notes, scores, label)}
-            />
+          <span className={`reviewer-save-state is-${saveState}`}>
+            {saveState === 'saving' && t('review.saving', 'Saving…')}
+            {saveState === 'saved' && t('review.savedAll', 'Saved')}
+            {saveState === 'error' && t('review.saveFailed', 'Not saved')}
+            {saveState === 'expired' && t('review.copyExpired', 'This copy has expired')}
+          </span>
+          {saveState === 'error' && (
+            <button type="button" className="picker-ghost-btn" onClick={() => persist()}>{t('review.retry', 'Retry')}</button>
           )}
-          {!collect && (
-            <button type="button" className="picker-ghost-btn" disabled={busy || !dirty} onClick={() => persist()}>
-              {busy ? t('review.saving', 'Saving…') : t('review.save', 'Save')}
-            </button>
-          )}
+          <input
+            className="picker-workspace-path reviewer-name"
+            value={label}
+            maxLength={120}
+            placeholder={t('review.yourName', 'Your name')}
+            aria-label={t('review.yourName', 'Your name')}
+            onChange={(e) => setLabel(e.target.value)}
+            onBlur={() => persist()}
+          />
+          <button type="button" className="picker-primary reviewer-send" onClick={sendBack}>
+            {t('review.sendBack', 'Send back to author')}
+          </button>
           <button type="button" className="picker-ghost-btn" onClick={onClose}>
             {t('review.close', 'Close')}
           </button>
@@ -568,6 +642,7 @@ export default function ReviewerIDE({ session, onClose }) {
                   <div className="chapter-title">{ch.title || t('review.untitledChapter', 'Untitled')}</div>
                   <div className="chapter-meta">
                     {(ch.word_count || 0).toLocaleString()} {t('ide.words', 'words')}
+                    {notesIn(ch.id) > 0 && <> · {t('review.noteCount', '{{n}} notes', { n: notesIn(ch.id) })}</>}
                   </div>
                 </div>
               </div>
@@ -576,11 +651,33 @@ export default function ReviewerIDE({ session, onClose }) {
         </aside>
 
         <main className="reviewer-main">
+          {showIntro && (
+            <div className="reviewer-intro">
+              <div className="reviewer-intro-title">
+                {author
+                  ? t('review.introFrom', '{{author}} asked you to read {{title}}', { author, title })
+                  : t('review.introNoAuthor', 'You were asked to read {{title}}', { title })}
+              </div>
+              {pkg?.message && <blockquote className="reviewer-intro-message">{pkg.message}</blockquote>}
+              {expiresAt && (
+                <div className="reviewer-intro-expiry">
+                  {t('review.introExpiry', 'This copy stops opening on {{date}}, and your notes with it. Send them back before then.', { date: fmtExpiry(expiresAt) })}
+                </div>
+              )}
+              <ul className="reviewer-intro-steps">
+                <li>{t('review.introSelect', 'Select any passage to leave a note: a typo, a better wording, a question, or what you liked.')}</li>
+                <li>{t('review.introSaves', 'Your notes save as you go. You can close FleshNote and pick up later from the Reviewer screen.')}</li>
+                <li>{t('review.introFinish', 'When you are done, press "Send back to author" and send them the file it saves.')}</li>
+              </ul>
+              <button type="button" className="picker-primary" onClick={() => setShowIntro(false)}>
+                {t('review.introStart', 'Start reading')}
+              </button>
+            </div>
+          )}
           {chapter ? (
             <>
               <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'baseline', marginBottom: 12 }}>
                 <h2 className="reviewer-chapter-title">{chapter.number}. {chapter.title || t('review.untitledChapter', 'Untitled')}</h2>
-                <span className="picker-kicker">{chapter.word_count}</span>
               </div>
               <NoteProse
                 raw={chapter.text_md}
@@ -589,12 +686,18 @@ export default function ReviewerIDE({ session, onClose }) {
                 activeNote={activeNote}
                 entityIndex={idx}
                 onEntityClick={(id) => { if (idx.has(id)) setSelectedEntity(id) }}
-                onSelection={(off) => setPopup(off ? { step: 'type', category: 'comment', ...off } : null)}
+                onSelection={(off) => setPopup(off
+                  ? { step: 'type', ...off, plain: String(window.getSelection() || '').replace(/\s+/g, ' ').trim() }
+                  : null)}
                 proseRef={proseRef}
-                readOnly={collect}
               />
               <div className="reviewer-scores-end">
-                <ScoreBlock t={t} chapter={chapter} scores={scores} onChange={changeScore} readOnly={collect} />
+                <ScoreBlock t={t} chapter={chapter} scores={scores} onChange={changeScore} />
+                {chapterIdx < chapters.length - 1 && (
+                  <button type="button" className="picker-ghost-btn" onClick={() => { setChapterIdx(chapterIdx + 1); proseRef.current?.closest('.reviewer-main')?.scrollTo?.(0, 0) }}>
+                    {t('review.nextChapter', 'Next chapter')}
+                  </button>
+                )}
               </div>
             </>
           ) : (
@@ -638,57 +741,114 @@ export default function ReviewerIDE({ session, onClose }) {
             <div className="reviewer-selection-popup" ref={popupRef} style={popupStyle}>
               {popup.quote && (
                 <blockquote className="note-quote">
-                  {popup.quote.length > 120 ? popup.quote.slice(0, 120) + '…' : popup.quote}
+                  {popup.plain.length > 120 ? popup.plain.slice(0, 120) + '…' : popup.plain}
                 </blockquote>
               )}
               {popup.step === 'type' ? (
-                <div className="cat-picker">
-                  {NOTE_CATEGORIES.map((c) => (
-                    <button
-                      key={c}
-                      type="button"
-                      className={`review-chip cat-${c} ${popup.category === c ? 'on' : ''}`}
-                      onClick={() => setPopup((p) => ({ ...p, step: 'body', category: c }))}
-                    >
-                      {t(`review.cat.${c}`, c)}
-                    </button>
-                  ))}
-                </div>
+                <>
+                  <span className="note-step-hint">{t('review.pickKind', 'What kind of note?')}</span>
+                  <div className="cat-picker">
+                    {NOTE_CATEGORIES.map((c) => (
+                      <button
+                        key={c}
+                        type="button"
+                        className={`review-chip cat-${c}`}
+                        onClick={() => setPopup((p) => ({ ...p, step: 'body', category: c }))}
+                      >
+                        {t(`review.cat.${c}`, c)}
+                      </button>
+                    ))}
+                  </div>
+                </>
               ) : (
-                <ComposerBody
+                <NoteEditor
                   t={t}
-                  category={popup.category}
-                  busy={busy}
-                  onSubmit={(body) => submitNote(popup.category, body)}
-                  onCancelAll={() => setPopup(null)}
+                  initial={{ category: popup.category }}
+                  quotePlain={popup.plain}
+                  busy={saveState === 'saving'}
+                  onSave={addNote}
+                  onCancel={() => setPopup(null)}
                 />
               )}
             </div>
           )}
-          {chapterNotes.map((n) => (
-            <div
-              key={n.id}
-              className={`note-card cat-${n.category} ${activeNote === n.id ? 'active' : ''}`}
-              onClick={() => setActiveNote(n.id)}
-            >
-              <div style={{ display: 'flex', justifyContent: 'space-between', gap: 8 }}>
-                <span className={`review-chip cat-${n.category} on`}>{t(`review.cat.${n.category}`, n.category)}</span>
-                {n.reviewer_label && <span className="note-card-label">{n.reviewer_label}</span>}
-              </div>
-              <div className="note-card-body">{n.body}</div>
-              {!collect && (
-                <button
-                  type="button"
-                  className="picker-ghost-btn"
-                  onClick={(e) => { e.stopPropagation(); removeNote(n.id) }}
-                >
-                  {t('review.deleteNote', 'Delete')}
-                </button>
-              )}
+          {chapterNotes.length === 0 && !popup && (
+            <div className="reviewer-rail-empty">
+              {t('review.railEmpty', 'Select a passage in the chapter to leave a note.')}
             </div>
+          )}
+          {chapterNotes.map((n) => (
+            editingId === n.id ? (
+              <div key={n.id} className={`note-card cat-${n.category} note-card-editing`}>
+                <NoteEditor
+                  t={t}
+                  initial={n}
+                  quotePlain={editorPlain(n.anchor_quote)}
+                  busy={saveState === 'saving'}
+                  onSave={(patch) => updateNote(n.id, patch)}
+                  onCancel={() => setEditingId(null)}
+                />
+              </div>
+            ) : (
+              <div
+                key={n.id}
+                className={`note-card cat-${n.category} ${activeNote === n.id ? 'active' : ''}`}
+                onClick={() => setActiveNote(n.id)}
+              >
+                <div style={{ display: 'flex', justifyContent: 'space-between', gap: 8 }}>
+                  <span className={`review-chip cat-${n.category} on`}>{t(`review.cat.${n.category}`, n.category)}</span>
+                </div>
+                <div className="note-card-quote">“{(() => { const q = editorPlain(n.anchor_quote); return q.length > 90 ? q.slice(0, 90) + '…' : q })()}”</div>
+                {n.suggestion && (
+                  <div className="note-card-suggestion">
+                    <span>{t('review.suggestionLabel', 'Suggested text')}</span>
+                    {n.suggestion}
+                  </div>
+                )}
+                {n.body && <div className="note-card-body">{n.body}</div>}
+                <div className="note-card-actions">
+                  <button type="button" className="picker-ghost-btn" onClick={(e) => { e.stopPropagation(); setEditingId(n.id) }}>
+                    {t('review.editNote', 'Edit')}
+                  </button>
+                  <button type="button" className="picker-ghost-btn" onClick={(e) => { e.stopPropagation(); removeNote(n.id) }}>
+                    {t('review.deleteNote', 'Delete')}
+                  </button>
+                </div>
+              </div>
+            )
           ))}
         </aside>
       </div>
+
+      {finished && (
+        <div className="popup-overlay" style={{ zIndex: 9999 }}>
+          <div className="popup-panel reviewer-finished" onClick={(e) => e.stopPropagation()}>
+            <div className="popup-header" style={{ marginBottom: 12 }}>
+              <span style={{ color: 'var(--accent-amber)' }}>{t('review.finishedTitle', 'Your review is ready to send')}</span>
+              <button className="popup-close" onClick={() => setFinished(null)}>&times;</button>
+            </div>
+            <div className="reviewer-finished-body">
+              <p>
+                {author
+                  ? t('review.finishedSendTo', 'Send this file to {{author}}, for example as a reply to the message the review came with:', { author })
+                  : t('review.finishedSend', 'Send this file back to the author, for example as a reply to the message the review came with:')}
+              </p>
+              <div className="reviewer-finished-path">{finished}</div>
+              <p className="reviewer-finished-note">
+                {t('review.finishedKeep', 'Your notes stay on this computer too. You can reopen the review later and send an updated copy.')}
+              </p>
+              <div className="reviewer-finished-actions">
+                <button type="button" className="picker-ghost-btn" onClick={() => window.api.showItemInFolder(finished)}>
+                  {t('review.showInFolder', 'Show in folder')}
+                </button>
+                <button type="button" className="picker-primary" onClick={onClose}>
+                  {t('review.finishedDone', 'Done')}
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   )
 }

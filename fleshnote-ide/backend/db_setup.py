@@ -220,7 +220,7 @@ def run_onboarding() -> dict:
 
 
 def ensure_pulse_corrections(cursor) -> None:
-    """Story Pulse corrections (plan §5.6): the writer's own intensity / valence
+    """Story Pulse corrections: the writer's own intensity / valence
     for a paragraph, anchored by its content key (story_pulse.paragraph_key) and
     re-anchored by similarity after edits. Authored intent, so synced via
     change_log. Created for new projects, on project open, on demand by the
@@ -244,6 +244,85 @@ def ensure_pulse_corrections(cursor) -> None:
                    "ON paragraph_intensity_corrections(chapter_id, deleted)")
 
 
+def ensure_review_tables(cursor) -> None:
+    """Review copies the author sent (.flreview files), and the reviews handed
+    back by beta readers with their notes, imported into the project so the
+    author can work through them, resolve them, and see them on every synced
+    device. Created for new projects, on
+    project open, on demand by the import route, and before a sync merge (a
+    missing table would drop remote rows)."""
+    cursor.execute("""
+        CREATE TABLE IF NOT EXISTS received_reviews (
+            id             TEXT PRIMARY KEY,
+            review_id      TEXT,
+            reviewer_label TEXT,
+            finished_at    TEXT,
+            imported_at    TEXT,
+            scores         TEXT,
+            updated_at     TEXT,
+            deleted        INTEGER DEFAULT 0,
+            deleted_at     TEXT,
+            created_at     TEXT DEFAULT (datetime('now'))
+        )
+    """)
+    cursor.execute("""
+        CREATE TABLE IF NOT EXISTS review_notes (
+            id                 TEXT PRIMARY KEY,
+            received_review_id TEXT NOT NULL,
+            chapter_id         TEXT NOT NULL,
+            category           TEXT NOT NULL,
+            body               TEXT,
+            suggestion         TEXT,
+            quote_text         TEXT,
+            anchor_text        TEXT,
+            anchor_hint        INTEGER,
+            anchored           INTEGER DEFAULT 0,
+            status             TEXT DEFAULT 'open',
+            reviewer_label     TEXT,
+            noted_at           TEXT,
+            updated_at         TEXT,
+            deleted            INTEGER DEFAULT 0,
+            deleted_at         TEXT,
+            created_at         TEXT DEFAULT (datetime('now'))
+        )
+    """)
+    cursor.execute("CREATE INDEX IF NOT EXISTS idx_review_notes_chapter "
+                   "ON review_notes(chapter_id, deleted)")
+    cursor.execute("CREATE INDEX IF NOT EXISTS idx_review_notes_review "
+                   "ON review_notes(received_review_id)")
+    # Review copies the author sent. For a locked copy this holds the server's
+    # key half (so returned copies always open for the author, even after the
+    # copy expired for the reviewer) and the token that revokes it early.
+    cursor.execute("""
+        CREATE TABLE IF NOT EXISTS review_copies (
+            id             TEXT PRIMARY KEY,
+            reviewer_label TEXT,
+            chapter_count  INTEGER,
+            key_id         TEXT,
+            server         TEXT,
+            server_half    TEXT,
+            revoke_token   TEXT,
+            expires_at     TEXT,
+            revoked_at     TEXT,
+            updated_at     TEXT,
+            deleted        INTEGER DEFAULT 0,
+            deleted_at     TEXT,
+            created_at     TEXT DEFAULT (datetime('now'))
+        )
+    """)
+    cursor.execute("CREATE INDEX IF NOT EXISTS idx_review_copies_key ON review_copies(key_id)")
+
+
+def with_genre_defaults(answers: dict) -> dict:
+    """Fills every setting the caller left out from the genre's preset. Explicit answers win."""
+    filled = dict(answers)
+    preset = GENRE_PRESETS.get(filled.get("genre") or "custom", GENRE_PRESETS["custom"])
+    for key, value in preset.items():
+        target = "lore_categories" if key == "default_lore_categories" else key
+        filled.setdefault(target, list(value) if isinstance(value, list) else value)
+    return filled
+
+
 def generate_project_db(project_path: str, answers: dict) -> str:
     """
     Builds the SQLite database with a kitchen-sink schema.
@@ -260,6 +339,7 @@ def generate_project_db(project_path: str, answers: dict) -> str:
     """
     if not answers:
         raise ValueError("No onboarding answers provided.")
+    answers = with_genre_defaults(answers)
 
     os.makedirs(project_path, exist_ok=True)
     os.makedirs(os.path.join(project_path, "assets"), exist_ok=True)
@@ -767,6 +847,7 @@ def generate_project_db(project_path: str, answers: dict) -> str:
     """)
 
     ensure_pulse_corrections(cursor)
+    ensure_review_tables(cursor)
 
     # ══════════════════════════════════════════════════════════
     # SKETCHBOARDS: boards, board_items, item_connections
@@ -1236,7 +1317,7 @@ def generate_project_db(project_path: str, answers: dict) -> str:
             ),
             chapter_id TEXT NOT NULL,
             created_at TEXT NOT NULL,
-            kind TEXT NOT NULL,              -- 'session' | 'manual' | 'pre_restore'
+            kind TEXT NOT NULL,              -- 'session' | 'manual' | 'pre_restore' | 'pre_link'
             label TEXT,
             word_count INTEGER DEFAULT 0,
             prose_hash TEXT NOT NULL,        -- sha256 of the md content (dedup + ancestry)
@@ -1845,6 +1926,7 @@ def apply_migrations(db_path: str):
         cursor.execute("CREATE INDEX IF NOT EXISTS idx_imgref_icon ON image_references(entity_type, entity_id, is_icon);")
 
         ensure_pulse_corrections(cursor)
+        ensure_review_tables(cursor)
 
         # Ensure assets directory exists for existing projects
         project_dir = os.path.dirname(db_path)

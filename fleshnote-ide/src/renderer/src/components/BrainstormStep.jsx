@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useCallback } from 'react'
+import React, { useState, useEffect, useCallback, useRef } from 'react'
 import { rollStoryIdea } from '../utils/madlibs'
 import BrainstormHub from './BrainstormHub'
 import CharacterForge from './CharacterForge'
@@ -7,7 +7,6 @@ import LocationForge from './LocationForge'
 export default function BrainstormStep({
   entities,
   onUpdateEntities,
-  onNext,
   language = 'en',
   genre = 'fantasy',
   onGenreChange,
@@ -28,6 +27,12 @@ export default function BrainstormStep({
       })
   )
 
+  // Once the writer has typed into the summary it is theirs: saving or deleting
+  // a character or place, or switching genre, no longer re-rolls it. Only the
+  // re-roll button replaces it. A summary carried over from an earlier visit
+  // to this step counts as theirs too.
+  const ideaOwnedByWriter = useRef(Boolean(storySummary))
+
   const pushSummary = useCallback(
     (idea) => {
       setStoryIdea(idea)
@@ -36,30 +41,43 @@ export default function BrainstormStep({
     [onStorySummary]
   )
 
+  const editIdea = useCallback(
+    (idea) => {
+      ideaOwnedByWriter.current = true
+      pushSummary(idea)
+    },
+    [pushSummary]
+  )
+
   const regenerateIdea = useCallback(
-    (list) => {
-      const source = list || entities
+    (list = entities) => {
+      ideaOwnedByWriter.current = false
       pushSummary(
         rollStoryIdea({
           lang: language,
           genre,
-          characters: source.characters || [],
-          locations: source.locations || []
+          characters: list.characters || [],
+          locations: list.locations || []
         })
       )
     },
     [language, genre, entities, pushSummary]
   )
 
+  /** Re-rolls only while the summary is still a generated one. */
+  const refreshIdea = (list) => {
+    if (!ideaOwnedByWriter.current) regenerateIdea(list)
+  }
+
+  // Language or genre changed: re-flavor the idea. Skipped on mount, where the
+  // initial state already holds either the carried-over or a fresh idea.
+  const mounted = useRef(false)
   useEffect(() => {
-    pushSummary(
-      rollStoryIdea({
-        lang: language,
-        genre,
-        characters: entities.characters || [],
-        locations: entities.locations || []
-      })
-    )
+    if (!mounted.current) {
+      mounted.current = true
+      return
+    }
+    refreshIdea(entities)
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [language, genre])
 
@@ -88,7 +106,7 @@ export default function BrainstormStep({
     }
     onUpdateEntities(updated)
     closeForge()
-    regenerateIdea(updated)
+    refreshIdea(updated)
   }
 
   const handleSaveLocation = (entity) => {
@@ -101,7 +119,7 @@ export default function BrainstormStep({
     }
     onUpdateEntities(updated)
     closeForge()
-    regenerateIdea(updated)
+    refreshIdea(updated)
   }
 
   const handleDeleteCharacter = () => {
@@ -111,7 +129,7 @@ export default function BrainstormStep({
     }
     onUpdateEntities(updated)
     closeForge()
-    regenerateIdea(updated)
+    refreshIdea(updated)
   }
 
   const handleDeleteLocation = () => {
@@ -121,7 +139,7 @@ export default function BrainstormStep({
     }
     onUpdateEntities(updated)
     closeForge()
-    regenerateIdea(updated)
+    refreshIdea(updated)
   }
 
   const handleAddNote = (text) => {
@@ -189,14 +207,14 @@ export default function BrainstormStep({
       genre={genre}
       onGenreChange={onGenreChange}
       storyIdea={storyIdea}
-      onEditIdea={pushSummary}
-      onRerollIdea={regenerateIdea}
+      onEditIdea={editIdea}
+      onRerollIdea={() => regenerateIdea()}
       onOpenCharacter={openCharacter}
       onOpenLocation={openLocation}
       onAddNote={handleAddNote}
       onUpdateNote={handleUpdateNote}
       onDeleteNote={handleDeleteNote}
-      onNext={onNext}
+      language={language}
     />
   )
 }

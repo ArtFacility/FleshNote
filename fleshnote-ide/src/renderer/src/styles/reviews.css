@@ -1,0 +1,413 @@
+/* Reviews: the reviewer's screens, sending a review copy, and the author's
+   Reviews panel for notes that came back. */
+
+/* A review note's passage, flashed for a moment when its note is opened.
+   Drawn over the text; the document is never marked up. */
+::highlight(fn-review-passage) {
+  background-color: rgba(212, 160, 82, 0.35);
+}
+
+/* ── Reviewer: top bar ─────────────────────────────── */
+.reviewer-bar-title {
+  display: flex;
+  align-items: baseline;
+  gap: 8px;
+  min-width: 0;
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+  font-size: 13px;
+  color: var(--text-secondary);
+}
+.reviewer-bar-title strong { color: var(--text-primary); font-weight: 600; }
+.reviewer-bar-author { font-size: 12px; color: var(--text-tertiary); }
+.reviewer-bar-expiry {
+  font-family: var(--font-mono);
+  font-size: 10px;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: var(--text-tertiary);
+  padding-inline-start: 10px;
+  border-inline-start: 1px solid var(--border-subtle);
+}
+.reviewer-bar-expiry.is-soon { color: var(--accent-amber); }
+.reviewer-intro-expiry {
+  font-size: 13px;
+  color: var(--accent-amber);
+}
+.reviewer-bar-actions { display: flex; align-items: center; gap: 8px; flex-shrink: 0; }
+.reviewer-bar-actions .picker-ghost-btn,
+.reviewer-bar-actions .picker-primary { padding: 6px 12px; font-size: 11px; }
+.reviewer-name { width: 160px; padding: 6px 10px !important; }
+.reviewer-save-state {
+  font-family: var(--font-mono);
+  font-size: 10px;
+  letter-spacing: 1px;
+  text-transform: uppercase;
+  color: var(--text-tertiary);
+  min-width: 56px;
+  text-align: end;
+}
+.reviewer-save-state.is-error,
+.reviewer-save-state.is-expired { color: var(--accent-red); }
+
+/* ── Reviewer: welcome card ────────────────────────── */
+.reviewer-intro {
+  margin-bottom: 28px;
+  padding: 18px 20px;
+  background: var(--bg-surface);
+  border: 1px solid var(--border-default);
+  border-inline-start: 3px solid var(--accent-amber);
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  align-items: flex-start;
+  font-family: var(--font-sans);
+}
+.reviewer-intro-title { font-size: 16px; font-weight: 600; color: var(--text-primary); }
+.reviewer-intro-message {
+  margin: 0;
+  font-family: var(--font-serif);
+  font-size: 16px;
+  font-style: italic;
+  color: var(--text-secondary);
+  white-space: pre-wrap;
+  border-inline-start: 2px solid var(--border-default);
+  padding-inline-start: 12px;
+}
+.reviewer-intro-steps {
+  margin: 0;
+  padding-inline-start: 18px;
+  font-size: 13px;
+  line-height: 1.6;
+  color: var(--text-secondary);
+}
+
+/* ── Reviewer: notes rail ──────────────────────────── */
+.reviewer-rail-empty {
+  font-size: 12px;
+  line-height: 1.5;
+  color: var(--text-tertiary);
+  padding: 8px 2px;
+}
+.note-step-hint { font-size: 11px; color: var(--text-tertiary); }
+.note-field { display: flex; flex-direction: column; gap: 4px; }
+.note-field > span,
+.note-card-suggestion > span {
+  font-family: var(--font-mono);
+  font-size: 9px;
+  letter-spacing: 1px;
+  text-transform: uppercase;
+  color: var(--text-tertiary);
+}
+.note-suggestion { font-family: var(--font-serif); font-size: 14px; min-height: 44px; }
+.note-editor-actions { display: flex; gap: 8px; justify-content: flex-end; }
+.note-editor-actions .picker-ghost-btn,
+.note-editor-actions .picker-primary,
+.note-card-actions .picker-ghost-btn { padding: 5px 10px; font-size: 10px; }
+.note-card-editing { cursor: default; gap: 8px; }
+.note-card-suggestion {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  font-family: var(--font-serif);
+  font-size: 14px;
+  color: var(--text-primary);
+}
+.note-card-actions { display: flex; gap: 6px; justify-content: flex-end; }
+.note-card-quote {
+  font-family: var(--font-serif);
+  font-size: 13px;
+  font-style: italic;
+  line-height: 1.4;
+  color: var(--text-tertiary);
+}
+.score-hint { font-size: 11px; color: var(--text-tertiary); }
+.reviewer-scores-end { display: flex; flex-direction: column; gap: 12px; align-items: flex-start; }
+
+/* ── Reviewer: sent back ───────────────────────────── */
+.reviewer-finished { position: relative; width: 480px; display: flex; flex-direction: column; }
+.reviewer-finished-body {
+  padding: 0 20px 20px;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  font-size: 13px;
+  line-height: 1.5;
+  color: var(--text-secondary);
+}
+.reviewer-finished-body p { margin: 0; }
+.reviewer-finished-path,
+.send-review-path {
+  font-family: var(--font-mono);
+  font-size: 11px;
+  color: var(--text-primary);
+  background: var(--bg-deep);
+  border: 1px solid var(--border-subtle);
+  padding: 8px 10px;
+  overflow-wrap: anywhere;
+}
+.reviewer-finished-note { font-size: 12px; color: var(--text-tertiary); }
+.reviewer-finished-actions { display: flex; gap: 8px; justify-content: flex-end; margin-top: 4px; }
+
+/* ── Start screen: reviews in progress / returned ──── */
+.reviewer-home-drop { flex: 0 0 auto; min-height: 180px; }
+.reviewer-home-list { display: flex; flex-direction: column; gap: 8px; margin-top: 24px; }
+.reviewer-home-row {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 10px 12px;
+  background: var(--bg-surface);
+  border: 1px solid var(--border-subtle);
+}
+.reviewer-home-row .picker-ghost-btn { padding: 6px 10px; font-size: 10px; }
+.reviewer-home-open {
+  flex: 1;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+  background: none;
+  border: none;
+  padding: 0;
+  text-align: start;
+  color: inherit;
+  cursor: pointer;
+}
+.reviewer-home-title { font-size: 14px; font-weight: 600; color: var(--text-primary); }
+.reviewer-home-open:hover .reviewer-home-title { color: var(--accent-amber); }
+.reviewer-home-meta { font-family: var(--font-mono); font-size: 11px; color: var(--text-tertiary); }
+.reviewer-home-confirm { display: flex; align-items: center; gap: 6px; font-size: 12px; color: var(--text-secondary); }
+.picker-ghost-btn.danger { color: var(--accent-red); border-color: var(--accent-red); }
+.collect-drop { flex: 0 0 auto; min-height: 140px; }
+.collect-files { display: flex; flex-direction: column; gap: 8px; }
+
+/* ── Send for review ───────────────────────────────── */
+.send-review {
+  width: 92vw;
+  max-width: 520px;
+  height: auto;
+  min-height: 0;
+  max-height: 88vh;
+  padding: 0;
+  overflow: hidden;
+  border-radius: 8px;
+  display: flex;
+  flex-direction: column;
+}
+.send-review-head {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 16px 24px;
+  border-bottom: 1px solid var(--border-subtle);
+}
+.send-review-head h2 { flex: 1; margin: 0; font-size: 16px; font-weight: 600; color: var(--text-primary); }
+.send-review-close { background: transparent; border: none; color: var(--text-tertiary); cursor: pointer; padding: 4px; display: flex; }
+.send-review-body { padding: 20px 24px 24px; display: flex; flex-direction: column; gap: 16px; overflow-y: auto; }
+.send-review-field { display: flex; flex-direction: column; gap: 6px; }
+.send-review-field > span {
+  font-family: var(--font-mono);
+  font-size: 10px;
+  letter-spacing: 1px;
+  text-transform: uppercase;
+  color: var(--text-tertiary);
+}
+.send-review-field input:not([type='checkbox']),
+.send-review-field textarea {
+  background: var(--bg-surface);
+  border: 1px solid var(--border-subtle);
+  color: var(--text-primary);
+  font-family: var(--font-sans);
+  font-size: 13px;
+  padding: 8px 10px;
+  outline: none;
+  resize: vertical;
+}
+.send-review-field input:focus,
+.send-review-field textarea:focus { border-color: var(--accent-amber); }
+.send-review-seg { display: flex; gap: 6px; }
+.send-review-seg button {
+  flex: 1;
+  padding: 7px 10px;
+  background: var(--bg-surface);
+  border: 1px solid var(--border-subtle);
+  color: var(--text-secondary);
+  font-family: var(--font-mono);
+  font-size: 11px;
+  cursor: pointer;
+}
+.send-review-seg button.on { border-color: var(--accent-amber); color: var(--accent-amber); background: var(--accent-amber-dim); }
+.send-review-chapters {
+  max-height: 180px;
+  overflow-y: auto;
+  border: 1px solid var(--border-subtle);
+  background: var(--bg-surface);
+  padding: 6px 10px;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+.send-review-chapters label,
+.send-review-check {
+  display: flex;
+  align-items: flex-start;
+  gap: 8px;
+  font-size: 13px;
+  color: var(--text-primary);
+  cursor: pointer;
+}
+.send-review-check input,
+.send-review-chapters input { accent-color: var(--accent-amber); margin-top: 3px; }
+.send-review-check.is-off { opacity: 0.4; cursor: not-allowed; }
+.send-review-hint { font-size: 11px; color: var(--text-tertiary); font-family: var(--font-mono); }
+.send-review-error { font-size: 12px; color: var(--accent-red); }
+.send-review-actions { display: flex; gap: 8px; justify-content: flex-end; }
+.send-review-done { font-size: 15px; font-weight: 600; color: var(--accent-green); }
+.send-review-expiry { font-size: 13px; color: var(--accent-amber); line-height: 1.5; }
+.send-review-steps { margin: 0; padding-inline-start: 18px; font-size: 13px; line-height: 1.6; color: var(--text-secondary); }
+
+/* ── Author: Reviews panel ─────────────────────────── */
+.reviews-title {
+  font-family: var(--font-mono);
+  font-size: 11px;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  color: var(--text-secondary);
+}
+.reviews-panel { display: flex; flex-direction: column; gap: 8px; }
+.reviews-toolbar { display: flex; justify-content: flex-end; }
+.reviews-text-btn {
+  background: none;
+  border: none;
+  padding: 2px 4px;
+  font-family: var(--font-mono);
+  font-size: 10px;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: var(--text-tertiary);
+  cursor: pointer;
+}
+.reviews-text-btn:hover { color: var(--text-primary); }
+.reviews-text-btn.accent { color: var(--accent-amber); }
+.reviews-text-btn.danger { color: var(--accent-red); }
+.reviews-empty { font-size: 12px; line-height: 1.5; color: var(--text-tertiary); padding: 4px 2px 8px; }
+.reviews-section-head {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-top: 6px;
+  font-family: var(--font-mono);
+  font-size: 9px;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--text-tertiary);
+}
+.reviews-card { cursor: default; padding: 0; gap: 0; }
+.reviews-card.is-closed { opacity: 0.6; }
+.reviews-card-open {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  width: 100%;
+  padding: 10px 10px 6px;
+  background: none;
+  border: none;
+  color: inherit;
+  text-align: start;
+  cursor: pointer;
+}
+.reviews-card-open:hover .reviews-card-quote { color: var(--text-primary); }
+.reviews-card-head { display: flex; justify-content: space-between; align-items: center; gap: 8px; }
+.reviews-card-quote {
+  font-family: var(--font-serif);
+  font-size: 13px;
+  font-style: italic;
+  line-height: 1.4;
+  color: var(--text-secondary);
+}
+.reviews-card-moved { font-size: 11px; color: var(--accent-amber); }
+.reviews-card-suggestion {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  font-family: var(--font-serif);
+  font-size: 14px;
+  color: var(--text-primary);
+  padding: 6px 8px;
+  background: var(--bg-deep);
+  border: 1px solid var(--border-subtle);
+}
+.reviews-card-suggestion-label {
+  font-family: var(--font-mono);
+  font-size: 9px;
+  letter-spacing: 1px;
+  text-transform: uppercase;
+  color: var(--text-tertiary);
+}
+.reviews-card-actions {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: flex-end;
+  gap: 4px;
+  padding: 0 6px 6px;
+}
+.reviews-card-state { font-size: 11px; color: var(--text-tertiary); margin-inline-end: auto; padding-inline-start: 4px; }
+.reviews-chapter-row {
+  display: flex;
+  justify-content: space-between;
+  gap: 8px;
+  padding: 7px 10px;
+  background: var(--bg-surface);
+  border: 1px solid var(--border-subtle);
+  color: var(--text-secondary);
+  font-size: 12px;
+  text-align: start;
+  cursor: pointer;
+}
+.reviews-chapter-row:hover { border-color: var(--border-default); color: var(--text-primary); }
+.reviews-chapter-name { min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.reviews-chapter-count { font-family: var(--font-mono); font-size: 10px; color: var(--accent-amber); flex-shrink: 0; }
+.reviews-reviewer {
+  padding: 8px 10px 2px;
+  background: var(--bg-surface);
+  border: 1px solid var(--border-subtle);
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+.reviews-reviewer .reviews-card-actions,
+.reviews-copy .reviews-card-actions { padding: 0 0 4px; }
+.reviews-copy {
+  padding: 8px 10px 4px;
+  background: var(--bg-surface);
+  border: 1px solid var(--border-subtle);
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+.reviews-copy-state { font-family: var(--font-mono); font-size: 10px; color: var(--text-tertiary); }
+.reviews-card-state.is-error { color: var(--accent-red); }
+.reviews-reviewer-head { display: flex; justify-content: space-between; gap: 8px; }
+.reviews-reviewer-name { font-size: 13px; font-weight: 600; color: var(--text-primary); }
+.reviews-reviewer-date { font-family: var(--font-mono); font-size: 10px; color: var(--text-tertiary); }
+.reviews-scores { display: flex; flex-direction: column; gap: 4px; }
+.reviews-scores .score-pip { width: 10px; height: 10px; cursor: default; }
+
+/* ── Import summary / opened-file prompt ───────────── */
+.review-import-list,
+.incoming-review-body {
+  padding: 0 20px 20px;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+.review-import-row { padding: 10px 12px; background: var(--bg-surface); border: 1px solid var(--border-subtle); }
+.review-import-row.is-error { border-color: var(--accent-red); }
+.review-import-name { font-size: 13px; font-weight: 600; color: var(--text-primary); margin-bottom: 2px; }
+.review-import-detail { font-size: 12px; color: var(--text-secondary); line-height: 1.5; }
+.incoming-review { position: relative; width: 460px; display: flex; flex-direction: column; }
+.incoming-review-body p { margin: 0; font-size: 13px; line-height: 1.5; color: var(--text-secondary); }
+.incoming-review-actions { display: flex; gap: 8px; justify-content: flex-end; }

@@ -1,75 +1,42 @@
-import React, { useState, useMemo, useEffect, useRef } from 'react'
+import React, { useState, useMemo, useEffect } from 'react'
 import { useTranslation } from 'react-i18next'
 import {
   getTraitPools,
   generateCharacterSpark,
   rollCharacterDescription,
-  pickRandomN,
-  DEFAULT_ROLES
+  pickRandomN
 } from '../utils/madlibs'
 import { generateCharacterName } from '../utils/namegen'
+import AutoTextarea from './AutoTextarea'
+import CharacterFigure, { nextMark, rollMarks } from './CharacterFigure'
 
+// Floating trait tags sit in two columns beside the figure, never on it,
+// so they don't cover the clickable body parts.
 const TRAIT_SLOTS = [
-  { top: '-6%', left: '50%' },
-  { top: '16%', left: '-16%' },
-  { top: '16%', right: '-16%' },
-  { top: '44%', left: '-22%' },
-  { top: '44%', right: '-22%' },
-  { top: '2%', left: '2%' },
-  { top: '2%', right: '2%' },
-  { bottom: '12%', left: '50%' }
+  { top: '6%', left: '-30%' },
+  { top: '6%', left: '130%' },
+  { top: '30%', left: '-34%' },
+  { top: '30%', left: '134%' },
+  { top: '54%', left: '-34%' },
+  { top: '54%', left: '134%' },
+  { top: '78%', left: '-30%' },
+  { top: '78%', left: '130%' }
 ]
 
 const getAgeBracket = (age) => {
-  if (age <= 12) return { label: 'Child', color: '#60a5fa' }
-  if (age <= 19) return { label: 'Teenager', color: '#38bdf8' }
-  if (age <= 29) return { label: 'Young Adult', color: '#34d399' }
-  if (age <= 49) return { label: 'Prime Adult', color: '#fbbf24' }
-  if (age <= 69) return { label: 'Middle-Aged', color: '#f97316' }
-  if (age <= 85) return { label: 'Elder', color: '#f43f5e' }
-  return { label: 'Venerable', color: '#a855f7' }
-}
-
-function AutoTextarea({ value, onChange, className, ...rest }) {
-  const ref = useRef(null)
-  useEffect(() => {
-    if (ref.current) {
-      ref.current.style.height = 'auto'
-      ref.current.style.height = `${ref.current.scrollHeight}px`
-    }
-  }, [value])
-  return (
-    <textarea
-      ref={ref}
-      rows={1}
-      className={className}
-      value={value}
-      onChange={(e) => onChange(e.target.value)}
-      {...rest}
-    />
-  )
-}
-
-/* PLACEHOLDER FIGURE — user will replace with custom art once available */
-function Silhouette() {  return (
-    <svg width="220" height="340" viewBox="0 0 220 340" fill="none">
-      <g stroke="var(--accent-amber, #d4a052)" strokeWidth="2.5" fill="rgba(212, 160, 82, 0.06)" strokeLinejoin="miter">
-        <circle cx="110" cy="52" r="30" />
-        <rect x="100" y="80" width="20" height="16" />
-        <polygon points="58,126 88,96 132,96 162,126 154,238 66,238" />
-        <polygon points="58,126 30,212 44,218 66,142" />
-        <polygon points="162,126 190,212 176,218 154,142" />
-        <polygon points="72,238 58,324 82,324 94,238" />
-        <polygon points="148,238 162,324 138,324 126,238" />
-      </g>
-    </svg>
-  )
+  if (age <= 12) return { id: 'child', label: 'Child', color: '#60a5fa' }
+  if (age <= 19) return { id: 'teenager', label: 'Teenager', color: '#38bdf8' }
+  if (age <= 29) return { id: 'youngAdult', label: 'Young Adult', color: '#34d399' }
+  if (age <= 49) return { id: 'primeAdult', label: 'Prime Adult', color: '#fbbf24' }
+  if (age <= 69) return { id: 'middleAged', label: 'Middle-Aged', color: '#f97316' }
+  if (age <= 85) return { id: 'elder', label: 'Elder', color: '#f43f5e' }
+  return { id: 'venerable', label: 'Venerable', color: '#a855f7' }
 }
 
 export default function CharacterForge({ entity, language = 'en', onSave, onBack, onDelete }) {
   const { t } = useTranslation()
   const traitPools = getTraitPools(language)
-  const rolesList = traitPools?.roles || DEFAULT_ROLES
+  const rolesList = traitPools.roles
 
   const boot = useMemo(() => {
     if (entity) {
@@ -79,7 +46,9 @@ export default function CharacterForge({ entity, language = 'en', onSave, onBack
         age: typeof entity.age === 'number' ? entity.age : 28,
         positive: entity.positiveTraits || [],
         negative: entity.negativeTraits || [],
-        desc: entity.description || ''
+        desc: entity.description || '',
+        gender: entity.gender || 'any',
+        marks: entity.figureMarks || {}
       }
     }
     return null
@@ -91,13 +60,14 @@ export default function CharacterForge({ entity, language = 'en', onSave, onBack
   const [positive, setPositive] = useState(boot ? boot.positive : [])
   const [negative, setNegative] = useState(boot ? boot.negative : [])
   const [desc, setDesc] = useState(boot ? boot.desc : '')
+  const [marks, setMarks] = useState(boot ? boot.marks : {})
 
   const [nameMode, setNameMode] = useState('real')
   const [realOrigin, setRealOrigin] = useState(
     language === 'hu' ? 'hungarian' : language === 'pl' ? 'polish' : 'english'
   )
   const [preset, setPreset] = useState('elvish')
-  const [gender, setGender] = useState('any')
+  const [gender, setGender] = useState(boot ? boot.gender : 'any')
   const [isRollingName, setIsRollingName] = useState(false)
 
   const [traitFilter, setTraitFilter] = useState('')
@@ -149,7 +119,16 @@ export default function CharacterForge({ entity, language = 'en', onSave, onBack
     setPositive(spark.positiveTraits)
     setNegative(spark.negativeTraits)
     setDesc(spark.description)
+    setMarks(rollMarks())
     await rollName()
+  }
+
+  const handlePartClick = (part) => {
+    setMarks((prev) => {
+      const next = { ...prev, [part]: nextMark(part, prev[part]) }
+      if (!next[part]) delete next[part]
+      return next
+    })
   }
 
   const handleToggleTrait = (trait, isPos) => {
@@ -177,7 +156,13 @@ export default function CharacterForge({ entity, language = 'en', onSave, onBack
       positiveTraits: positive,
       negativeTraits: negative,
       description: desc,
-      notes: `Age: ${age} | Strengths: ${positive.join(', ')} | Flaws: ${negative.join(', ')}`
+      gender,
+      figureMarks: marks,
+      notes: t('brainstorm.characterNotes', 'Age: {{age}} | Strengths: {{strengths}} | Flaws: {{flaws}}', {
+        age,
+        strengths: positive.join(', '),
+        flaws: negative.join(', ')
+      })
     })
   }
 
@@ -218,7 +203,6 @@ export default function CharacterForge({ entity, language = 'en', onSave, onBack
         </div>
 
         <button type="button" className="forge-reimagine" onClick={handleReimagine}>
-          <span className="rune-inline">𐲉</span>
           {t('brainstorm.reimagine', 'Re-imagine')}
         </button>
       </header>
@@ -226,7 +210,11 @@ export default function CharacterForge({ entity, language = 'en', onSave, onBack
       <div className="forge-stage">
         <div className="forge-figure">
           <div className="forge-figure-glow" />
-          <Silhouette />
+          <CharacterFigure
+            marks={marks}
+            onPartClick={handlePartClick}
+            hint={t('brainstorm.markHint', 'Click to scar, mark or change this part — click again for another')}
+          />
           {activeTags.map((tag, i) => {
             const slot = TRAIT_SLOTS[i % TRAIT_SLOTS.length]
             const style = { ...slot, animationDelay: `-${(i * 0.7).toFixed(1)}s`, animationDuration: `${5 + (i % 3)}s` }
@@ -291,8 +279,8 @@ export default function CharacterForge({ entity, language = 'en', onSave, onBack
               <label className="forge-label">{t('brainstorm.roleLabel', 'NARRATIVE ROLE')}</label>
               <select className="forge-select" value={role} onChange={(e) => setRole(e.target.value)}>
                 {rolesList.map((r) => (
-                  <option key={r} value={r}>
-                    {r}
+                  <option key={r.id} value={r.id}>
+                    {r.label}
                   </option>
                 ))}
               </select>
@@ -303,7 +291,7 @@ export default function CharacterForge({ entity, language = 'en', onSave, onBack
                   className="age-bracket-badge"
                   style={{ backgroundColor: `${ageBracket.color}22`, color: ageBracket.color }}
                 >
-                  {ageBracket.label} ({age})
+                  {t(`brainstorm.ageBrackets.${ageBracket.id}`, ageBracket.label)} ({age})
                 </span>
               </div>
               <input
@@ -319,18 +307,18 @@ export default function CharacterForge({ entity, language = 'en', onSave, onBack
                 {t('brainstorm.genderLabel', 'GENDER (FOR NAME ROLLS)')}
               </label>
               <select className="forge-select" value={gender} onChange={(e) => setGender(e.target.value)}>
-                <option value="any">Any</option>
-                <option value="female">Female</option>
-                <option value="male">Male</option>
+                <option value="any">{t('brainstorm.genderAny', 'Any')}</option>
+                <option value="female">{t('brainstorm.genderFemale', 'Female')}</option>
+                <option value="male">{t('brainstorm.genderMale', 'Male')}</option>
               </select>
             </>
           ) : (
             <>
               <div className="notch-subtabs">
                 {[
-                  { id: 'real', label: 'Realistic' },
-                  { id: 'preset', label: 'Preset' },
-                  { id: 'procedural', label: 'Procedural' }
+                  { id: 'real', label: t('brainstorm.nameModeReal', 'Realistic') },
+                  { id: 'preset', label: t('brainstorm.nameModePreset', 'Preset') },
+                  { id: 'procedural', label: t('brainstorm.nameModeProcedural', 'Procedural') }
                 ].map((m) => (
                   <button
                     key={m.id}
@@ -491,7 +479,7 @@ export default function CharacterForge({ entity, language = 'en', onSave, onBack
           ) : (
             <span className="forge-footer-hint">
               {positive.length + negative.length > 0
-                ? t('brainstorm.traitsBound', `${positive.length + negative.length} traits bound`)
+                ? t('brainstorm.traitsBound', '{{count}} traits bound', { count: positive.length + negative.length })
                 : t('brainstorm.noTraitsBound', 'No traits bound yet')}
             </span>
           )}

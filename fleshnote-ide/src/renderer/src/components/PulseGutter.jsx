@@ -5,7 +5,7 @@ import { paragraphKey, gutterBlocks, combineSegments } from '../utils/pulseGutte
 import { NEUTRAL_BAND, columnColor } from '../utils/pulseColors'
 
 /*
- * Story Pulse gutter (plan §5.6).
+ * Story Pulse gutter.
  *
  * Sits on the inline-end side of the text column (the left in Arabic) and
  * shows each paragraph's intensity as a gently moving line, colored by its

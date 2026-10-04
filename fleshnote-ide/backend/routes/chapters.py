@@ -11,6 +11,7 @@ from fastapi import APIRouter, HTTPException, BackgroundTasks
 from pydantic import BaseModel
 from project_io import safe_md_path
 from routes.imports import _plain_text_to_html
+from chapter_numbers import park_deleted_chapter_numbers, retire_chapter
 
 router = APIRouter()
 
@@ -481,6 +482,7 @@ def create_chapter(req: ChapterCreate):
     conn = _get_db(req.project_path)
     cursor = conn.cursor()
 
+    park_deleted_chapter_numbers(cursor)
     # Auto-determine chapter number if not provided
     if req.chapter_number is None:
         cursor.execute("SELECT COALESCE(MAX(chapter_number), 0) + 1 FROM chapters WHERE deleted = 0")
@@ -629,6 +631,7 @@ def bulk_create_chapters(req: BulkChapterCreate):
     conn = _get_db(req.project_path)
     cursor = conn.cursor()
 
+    park_deleted_chapter_numbers(cursor)
     cursor.execute("SELECT COALESCE(MAX(chapter_number), 0) FROM chapters WHERE deleted = 0")
     start_num = cursor.fetchone()[0] + 1
 
@@ -884,13 +887,11 @@ def delete_chapter(req: ChapterDelete):
             
         chap_num = row["chapter_number"]
         
-        # 2. Soft delete chapter (do NOT delete file from disk so we can restore/sync it!)
-        import datetime
-        from sync_core import log_soft_delete, log_change
-        now = datetime.datetime.utcnow().isoformat() + "Z"
-
-        cursor.execute("UPDATE chapters SET deleted = 1, deleted_at = ? WHERE id = ?", (now, req.chapter_id))
-        log_soft_delete(cursor, "chapters", req.chapter_id)
+        # 2. Soft delete chapter (do NOT delete file from disk so we can restore/sync it!).
+        #    Its number is freed so the chapters after it can move down.
+        from sync_core import log_change
+        park_deleted_chapter_numbers(cursor)
+        retire_chapter(cursor, req.chapter_id)
         
         # 3. Shift all subsequent chapters' numbering down by 1 in sequential order
         cursor.execute("SELECT id, chapter_number FROM chapters WHERE chapter_number > ? AND deleted = 0 ORDER BY chapter_number ASC", (chap_num,))
@@ -925,7 +926,8 @@ def insert_chapter(req: ChapterInsert):
             raise HTTPException(status_code=404, detail="Anchor chapter not found")
             
         anchor_num = row["chapter_number"]
-        
+        park_deleted_chapter_numbers(cursor)
+
         # Calculate new chapter number based on direction
         new_num = anchor_num if req.direction == "above" else anchor_num + 1
         

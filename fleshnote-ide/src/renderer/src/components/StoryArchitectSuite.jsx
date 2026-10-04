@@ -363,7 +363,8 @@ export default function StoryArchitectSuite({ workspacePath, onComplete, onCance
     <div
       style={{
         position: 'fixed',
-        inset: 0,
+        // Below the window title bar: its OS drag region would swallow clicks.
+        inset: 'var(--titlebar-h, 38px) 0 0 0',
         backgroundColor: 'var(--bg-deep, #0c0c0e)',
         color: 'var(--text-primary, #eee)',
         zIndex: 9999,
@@ -563,7 +564,6 @@ export default function StoryArchitectSuite({ workspacePath, onComplete, onCance
             <BrainstormStep
               entities={brainstormEntities}
               onUpdateEntities={setBrainstormEntities}
-              onNext={() => setStep(3)}
               language={formData.story_language || 'en'}
               genre={formData.compass_genre}
               onGenreChange={(g) => updateField('compass_genre', g)}
@@ -818,7 +818,7 @@ export default function StoryArchitectSuite({ workspacePath, onComplete, onCance
                         onChange={(e) => updateField('compass_genre', e.target.value)}
                       >
                         {GENRES.map((g) => (
-                          <option key={g.id} value={g.id}>{g.label}</option>
+                          <option key={g.id} value={g.id}>{t(`architect.genres.${g.id}`, g.label)}</option>
                         ))}
                       </select>
                     </div>
@@ -956,7 +956,7 @@ export default function StoryArchitectSuite({ workspacePath, onComplete, onCance
                   >
                     {GENRES.map((g) => (
                       <option key={g.id} value={g.id}>
-                        {g.label}
+                        {t(`architect.genres.${g.id}`, g.label)}
                       </option>
                     ))}
                   </select>
@@ -1581,9 +1581,11 @@ export default function StoryArchitectSuite({ workspacePath, onComplete, onCance
                 fontFamily: 'var(--font-mono, monospace)'
               }}
             >
-              {step === 2 && brainstormEntities.characters.length === 0 && brainstormEntities.locations.length === 0
-                ? 'Skip to World Systems →'
-                : 'Continue →'}
+              {step === 2
+                ? brainstormEntities.characters.length === 0 && brainstormEntities.locations.length === 0
+                  ? t('architect.skipToWorld', 'Skip to World Systems →')
+                  : t('brainstorm.continueWithSparks', 'Continue to World Systems →')
+                : t('architect.continueStep', 'Continue →')}
             </button>
           ) : (
             <button
@@ -1603,7 +1605,9 @@ export default function StoryArchitectSuite({ workspacePath, onComplete, onCance
                 boxShadow: '0 0 16px rgba(217, 119, 6, 0.4)'
               }}
             >
-              {loading ? 'Generating Blueprint...' : 'Initialize Project & Launch'}
+              {loading
+                ? t('architect.generatingBlueprint', 'Generating Blueprint...')
+                : t('architect.initializeLaunch', 'Initialize Project & Launch')}
             </button>
           )}
         </div>

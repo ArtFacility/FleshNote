@@ -19,7 +19,7 @@ function fmtDateTime(iso) {
   } catch { return '' }
 }
 
-const KIND_ACCENT = { session: '#3fa093', manual: 'var(--accent-amber)', pre_restore: 'var(--text-tertiary)' }
+const KIND_ACCENT = { session: '#3fa093', manual: 'var(--accent-amber)', pre_restore: 'var(--text-tertiary)', pre_link: 'var(--text-tertiary)' }
 
 export default function HistoryPanel({
   projectPath, activeChapter, isCollapsed, onToggle, onRestored, onBeforeSnapshot,
@@ -101,6 +101,7 @@ export default function HistoryPanel({
   const kindLabel = useCallback((s) => {
     if (s.kind === 'manual') return s.label ? `${t('history.pinned', 'Pinned')} · ${s.label}` : t('history.pinned', 'Pinned')
     if (s.kind === 'pre_restore') return t('history.beforeRestore', 'Before restore')
+    if (s.kind === 'pre_link') return t('history.beforeLinking', 'Before names were linked')
     return s.session_num
       ? t('history.session', 'Session {{n}}', { n: s.session_num })
       : t('history.autosnapshot', 'Session')

@@ -8,7 +8,7 @@
 /* ── Hub: story idea bar & genre chips ── */
 .story-idea-bar {
     display: flex;
-    align-items: center;
+    align-items: flex-start;
     gap: 14px;
     padding: 14px 18px;
     background: var(--bg-surface);
@@ -26,6 +26,7 @@
 }
 
 .story-idea-reroll {
+    align-self: flex-start;
     width: 34px;
     height: 34px;
     flex-shrink: 0;
@@ -59,8 +60,7 @@
     resize: none;
     overflow: hidden;
     display: block;
-    align-self: center;
-    padding: 0;
+    padding: 4px 0;
 }
 
 .genre-chip-row {
@@ -485,9 +485,12 @@
 }
 
 /* ── Forge shell ── */
+/* Starts below the window title bar: the title bar is an OS drag region, and
+   Electron drag regions swallow clicks even when another element is painted
+   on top of them, so anything overlapping it would be unclickable. */
 .forge-overlay {
     position: fixed;
-    inset: 0;
+    inset: var(--titlebar-h, 38px) 0 0 0;
     z-index: 10000;
     display: flex;
     flex-direction: column;
@@ -642,6 +645,81 @@
 
 .forge-figure-glow.blue {
     background: radial-gradient(circle, rgba(92, 142, 196, 0.12) 0%, transparent 62%);
+}
+
+/* ── Character figure: clickable parts and marks ── */
+.character-figure {
+    display: block;
+    overflow: visible;
+}
+
+.figure-part {
+    cursor: pointer;
+    outline: none;
+}
+
+.figure-shape {
+    stroke: var(--accent-amber);
+    stroke-width: 2.5;
+    stroke-linejoin: round;
+    /* Solid (not translucent) so overlapping body parts hide each other's outlines. */
+    fill: color-mix(in srgb, var(--accent-amber) 7%, var(--bg-deep));
+    transition: fill 0.2s ease, stroke 0.2s ease;
+}
+
+.figure-part:hover .figure-shape,
+.figure-part:focus-visible .figure-shape {
+    fill: color-mix(in srgb, var(--accent-amber) 18%, var(--bg-deep));
+    stroke: var(--accent-amber-hover, #e8b866);
+}
+
+/* Invisible, wider-than-drawn click target so thin limbs are easy to hit. */
+.figure-hit {
+    fill: transparent;
+    stroke: transparent;
+    stroke-width: 14;
+    pointer-events: all;
+}
+
+.figure-mark {
+    stroke: var(--accent-amber);
+    stroke-width: 2;
+    stroke-linejoin: miter;
+    fill: rgba(212, 160, 82, 0.28);
+    animation: figure-mark-in 0.35s ease-out;
+}
+
+.figure-mark .ghost {
+    fill: rgba(212, 160, 82, 0.08);
+    stroke-dasharray: 5 4;
+}
+
+.figure-mark .figure-mark-line {
+    fill: none;
+    stroke-width: 2;
+}
+
+.figure-mark .figure-mark-line.wide {
+    stroke-width: 3.5;
+}
+
+.figure-mark .figure-mark-dark {
+    fill: rgba(12, 12, 17, 0.75);
+}
+
+.figure-mark .figure-mark-ember {
+    fill: #f97316;
+    stroke: #f97316;
+}
+
+@keyframes figure-mark-in {
+    from {
+        opacity: 0;
+    }
+
+    to {
+        opacity: 1;
+    }
 }
 
 .forge-float-tag {
@@ -1199,6 +1277,7 @@
     .sigil-orbiter,
     .sigil-counter,
     .forge-float-tag,
+    .figure-mark,
     .sigil-center {
         animation: none;
     }

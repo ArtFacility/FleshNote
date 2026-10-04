@@ -26,6 +26,10 @@ MAX_ATTEMPT_MS = 8000
 MAX_RESPONSE_BYTES = 64 * 1024   # Go receipts are ~300 B; freetsa TSRs a few KB
 _READ_CHUNK = 8192
 
+# Cloudflare (in front of api.fleshnote.org) rejects urllib's default
+# "Python-urllib/x.y" agent with a 403, so every request names the app.
+USER_AGENT = "FleshNote/2.0 (+https://fleshnote.org)"
+
 SHA256_OID = bytes([0x06, 0x09, 0x60, 0x86, 0x48, 0x01, 0x65, 0x03, 0x04, 0x02, 0x01])
 
 
@@ -88,7 +92,7 @@ def anchor_hash(anchored_hash, previous_hash=None, tsa_url=None):
     }).encode("utf-8")
     req = urllib.request.Request(
         base + "/anchor", data=payload,
-        headers={"Content-Type": "application/json"}, method="POST")
+        headers={"Content-Type": "application/json", "User-Agent": USER_AGENT}, method="POST")
     started = time.time()
     with urllib.request.urlopen(req, timeout=ANCHOR_TIMEOUT) as resp:
         data = json.loads(_read_capped(resp, MAX_ATTEMPT_MS / 1000).decode("utf-8"))
@@ -162,7 +166,7 @@ def external_tsa_token(anchored_hash, url=None):
     req = urllib.request.Request(
         base, data=req_der,
         headers={"Content-Type": "application/timestamp-query",
-                 "Accept": "application/timestamp-reply"},
+                 "Accept": "application/timestamp-reply", "User-Agent": USER_AGENT},
         method="POST")
     with urllib.request.urlopen(req, timeout=EXTERNAL_TIMEOUT) as resp:
         resp_der = _read_capped(resp, EXTERNAL_TIMEOUT + 3)
