@@ -76,8 +76,9 @@ export default function RemoteSyncModal({ isOpen, onClose, projectPath, onSyncCo
         const data = await window.api.remoteSyncStart({ project_path: projectPath })
         setSession(data)
         const payload = JSON.stringify({
-          v: 1,
+          v: data.protocol,
           token: data.token,
+          key: data.key, // the session's encryption key; it leaves this machine only inside the QR code
           hosts: data.hosts,
           port: data.port,
           project_id: data.project_id,

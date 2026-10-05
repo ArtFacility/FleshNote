@@ -275,8 +275,8 @@ def initialize_project(request: ProjectCreateRequest):
       json.dump({
         "project_name": project_io.sanitize_project_name(request.project_name),
         "schema_version": 2,
-        "created_version": "2.1.0",
-        "last_opened_version": "2.1.0",
+        "created_version": project_io.app_version(),
+        "last_opened_version": project_io.app_version(),
         "project_id": str(uuid.uuid4())
       }, f, indent=2)
 

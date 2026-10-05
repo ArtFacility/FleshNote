@@ -16,6 +16,12 @@ Two FastAPI apps are involved:
   early would trip the Windows Firewall prompt before the user asked for
   sync). Every route on it requires the session's token.
 
+Everything with project content is encrypted with the session's key, which the
+phone only gets from the QR code (see sync_crypto.py). The token, the session
+status and the timing of requests are not secret. A request that doesn't
+decrypt never changes the session's state, so someone who only sniffed the
+token can't read the project, replace it, or end the session.
+
 Download-back contract: the zip returned by /remote-sync/download is a full
 project folder (fleshnote.db + md/ + fleshnote_project.json), the same shape
 sync_apply already expects as a `remote_path`. The companion app MUST feed it
@@ -36,14 +42,16 @@ import threading
 from typing import Optional
 
 import uvicorn
-from fastapi import FastAPI, HTTPException, UploadFile, File, Query
-from fastapi.responses import FileResponse
+from fastapi import FastAPI, HTTPException, UploadFile, File, Query, Request
+from fastapi.responses import Response
 
 import project_io
-from project_io import zip_project as _zip_project  # hardened + WAL-safe
+import sync_crypto
 
 SESSION_TTL_SECONDS = 10 * 60
-MAX_UPLOAD_BYTES = 200 * 1024 * 1024
+MAX_UPLOAD_BYTES = 200 * 1024 * 1024 + sync_crypto.OVERHEAD
+OUTDATED_PHONE = ("The phone's upload could not be decrypted. Update the FleshNote "
+                  "Companion app and scan the code again.")
 PORT_CANDIDATES = list(range(8420, 8430))
 
 
@@ -51,6 +59,7 @@ class RemoteSyncSession:
     def __init__(self, project_path: Optional[str], project_id: str, project_name: str,
                  mode: str = "merge", workspace_path: Optional[str] = None):
         self.token = secrets.token_urlsafe(24)
+        self.key = sync_crypto.new_key()  # shared with the phone only through the QR code
         self.project_path = project_path
         self.project_id = project_id
         self.project_name = project_name
@@ -183,14 +192,18 @@ def _register_cloned_project(extract_dir: str, workspace_path: Optional[str]) ->
     return target
 
 
+def _zip_project(project_path: str) -> str:
+    """Zip the project (hardened, WAL-safe) into its own temp folder for the
+    phone to download. Returns the zip's path."""
+    tmp = tempfile.mkdtemp(prefix="fleshnote_remote_dl_")
+    return project_io.zip_project(project_path, os.path.join(tmp, "project.zip"))
+
+
 def _cleanup_session(session: RemoteSyncSession):
     if session.remote_tmp_root and os.path.isdir(session.remote_tmp_root):
         shutil.rmtree(session.remote_tmp_root, ignore_errors=True)
-    if session.download_zip_path and os.path.isfile(session.download_zip_path):
-        try:
-            os.remove(session.download_zip_path)
-        except OSError:
-            pass
+    if session.download_zip_path:
+        shutil.rmtree(os.path.dirname(session.download_zip_path), ignore_errors=True)
 
 
 def _pick_port() -> int:
@@ -211,6 +224,11 @@ def _pick_port() -> int:
 remote_app = FastAPI(title="FleshNote Remote Sync")
 
 
+def _sealed(session: RemoteSyncSession, purpose: str, data: bytes) -> Response:
+    return Response(content=sync_crypto.seal(session.key, purpose, session.token, data),
+                    media_type="application/octet-stream")
+
+
 def _session_for_token(token: str) -> RemoteSyncSession:
     session = _active_session
     if not session or session.token != token:
@@ -224,13 +242,33 @@ def _session_for_token(token: str) -> RemoteSyncSession:
 
 @remote_app.get("/remote-sync/pair")
 def remote_pair(token: str = Query(...)):
+    # Sealed, so the phone also learns that it reached the desktop holding the key.
     session = _session_for_token(token)
-    return {"status": "ok", "project_id": session.project_id, "project_name": session.project_name}
+    body = json.dumps({"status": "ok", "project_id": session.project_id,
+                       "project_name": session.project_name}).encode("utf-8")
+    return _sealed(session, "pair", body)
 
 
 @remote_app.post("/remote-sync/upload")
 async def remote_upload(token: str = Query(...), file: UploadFile = File(...)):
     session = _session_for_token(token)
+
+    # Read and decrypt before touching the session: a body that doesn't decrypt
+    # leaves the session waiting for the real phone.
+    blob = bytearray()
+    while True:
+        chunk = await file.read(1024 * 1024)
+        if not chunk:
+            break
+        blob += chunk
+        if len(blob) > MAX_UPLOAD_BYTES:
+            raise HTTPException(status_code=413, detail="Upload too large")
+    try:
+        data = sync_crypto.open_sealed(session.key, "upload", session.token, bytes(blob))
+    except sync_crypto.SealError:
+        raise HTTPException(status_code=400, detail=OUTDATED_PHONE)
+    del blob
+
     with _session_lock:
         if session.status != "waiting":
             raise HTTPException(status_code=409, detail=f"Session not accepting uploads (status={session.status})")
@@ -240,16 +278,9 @@ async def remote_upload(token: str = Query(...), file: UploadFile = File(...)):
     zip_path = os.path.join(tmp_root, "upload.zip")
     extract_dir = os.path.join(tmp_root, "project")
     try:
-        size = 0
         with open(zip_path, "wb") as f:
-            while True:
-                chunk = await file.read(1024 * 1024)
-                if not chunk:
-                    break
-                size += len(chunk)
-                if size > MAX_UPLOAD_BYTES:
-                    raise HTTPException(status_code=413, detail="Upload too large")
-                f.write(chunk)
+            f.write(data)
+        del data
 
         os.makedirs(extract_dir, exist_ok=True)
         try:
@@ -318,12 +349,18 @@ def remote_download(token: str = Query(...)):
         session.mode == "clone_send" or session.status == "applied")
     if not ready:
         raise HTTPException(status_code=409, detail="Project not ready for download yet")
-    return FileResponse(session.download_zip_path, media_type="application/zip", filename="fleshnote_project.zip")
+    with open(session.download_zip_path, "rb") as f:
+        return _sealed(session, "download", f.read())
 
 
 @remote_app.post("/remote-sync/complete")
-def remote_complete(token: str = Query(...)):
+async def remote_complete(request: Request, token: str = Query(...)):
+    # The phone proves it holds the key, so a sniffed token can't end the session.
     session = _session_for_token(token)
+    try:
+        sync_crypto.open_sealed(session.key, "complete", session.token, await request.body())
+    except sync_crypto.SealError:
+        raise HTTPException(status_code=400, detail=OUTDATED_PHONE)
     session.status = "downloaded"
     return {"status": "ok"}
 
@@ -360,7 +397,9 @@ def start_session(project_path: Optional[str], project_id: str, project_name: st
         _server_port = port
 
         return {
+            "protocol": sync_crypto.VERSION,
             "token": session.token,
+            "key": session.key.hex(),
             "port": port,
             "hosts": _get_local_ips(),
             "project_id": project_id,

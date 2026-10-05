@@ -46,7 +46,7 @@ export default function CloneModal({ isOpen, onClose, mode, projectPath, workspa
           : await window.api.cloneReceiveStart({ workspace_path: workspacePath })
         setSession(data)
         const payload = JSON.stringify({
-          v: 1, token: data.token, hosts: data.hosts, port: data.port,
+          v: data.protocol, token: data.token, key: data.key, hosts: data.hosts, port: data.port,
           project_id: data.project_id, project_name: data.project_name, mode: data.mode,
         })
         setQrDataUrl(await QRCode.toDataURL(payload, { margin: 1, width: 260 }))

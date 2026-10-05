@@ -24,20 +24,31 @@ Two independent `project_config` toggles gate it (both default **on**):
 ## 1. Capture — coalesced ops, not keystrokes
 
 The frontend recorder (`utils/pentimentoRecorder.js`) hooks TipTap transactions and
-**coalesces** them: consecutive typing in the same paragraph becomes a single *run* with a
+**coalesces** them: consecutive typing at one place becomes a single *run* with a
 `duration_ms`, rather than one row per key. Op types:
 
 - `insert` — typing / added text
-- `delete` — backspace / delete (text may be stored **reversed** for backspace runs)
-- `paste` — a bulk insertion (large single change)
-- `pause` — an idle gap above the threshold (marks thinking time)
+- `delete` — backspace / delete (backspace and forward-delete runs both store the removed
+  text in document order)
+- `paste` — a bulk insertion (a single change of more than 40 characters)
+- `pause` — an idle gap above 2.5 s (marks thinking time, capped at 10 min)
 
-Runs are flushed to the backend and stored in **`pentimento_ops`**, keyed by
-`para_index` + `char_offset`. This keeps a full novel's process history in the low tens of MB.
+**Coordinates.** Ops address a flat text model of the chapter: top-level blocks joined with
+`\n`, inline leaf nodes (hard breaks, images) as U+FFFC. `para_index` + `char_offset` is
+where the op starts, `text_content` is exactly what was inserted or removed (`\n` = a
+paragraph break, so splits, merges and cross-paragraph deletions are ordinary ops) and
+`length` is that text's length. Each ProseMirror step is diffed against the doc it applied
+to, plugin-appended transactions are included, and a change that reached the doc without
+an update event is recorded as a `machine` op. So **applying a session's ops in order
+(timestamp, then rowid) to the text it started from reproduces the text it ended with.**
+A run only continues at the exact position the last edit ended (typing elsewhere in the
+same paragraph starts a new run). Sessions recorded before this format used ProseMirror
+positions and are not reconstructable this way.
 
-> **Coalescing artifact:** each word-run tends to append a trailing `\xa0` (nbsp) then delete
-> it as a 0-duration bookkeeping op. Consumers should strip those toggles and use the
-> `duration_ms` / ordering, not the literal nbsp.
+Runs are flushed to the backend every 12 s (or every 40 ops) and stored in
+**`pentimento_ops`**. This keeps a full novel's process history in the low tens of MB.
+`scripts/check_pentimento_recorder.mjs` fuzzes the recorder with random edits and checks
+the reconstruction; `.claude/skills/run-app/pentimento_sim.mjs` drives the real app.
 
 ### Input provenance
 
@@ -45,10 +56,13 @@ Every op carries a `source`: **`human`** (hardware keyboard / IME / undo-restore
 **`paste`** (paste or drop), or **`machine`** (programmatic inserts — entity chips, AI
 text, IDE features). The editor's `beforeinput` DOM handler maps the real input type to
 a hint (`insertText`/`insertCompositionText` → human, `insertFromPaste`/`insertFromDrop`
-→ paste, `historyUndo`/`historyRedo` → human, `insertReplacementText` → machine); the
-recorder consumes one hint per transaction, falls back to the transaction's own meta
-(`history$`, `uiEvent`), and classifies everything with a hint but no DOM input as
-`machine`. Runs of different sources are never merged. The replay shows a per-paragraph
+→ paste, `historyUndo`/`historyRedo` → human, `insertReplacementText` → machine). Enter,
+Backspace and Delete never reach `beforeinput` (ProseMirror handles them on keydown), so
+a keydown hint covers them: it marks paragraph breaks and deletions as human, while text
+inserted on Enter (a suggestion menu picking a name) stays machine. A hint only explains
+a transaction within 500 ms. The recorder consumes one hint per transaction, falls back to
+the transaction's own meta (`history$`, `uiEvent` paste/drop/cut), and classifies
+everything else as `machine`. Runs of different sources are never merged. The replay shows a per-paragraph
 rune cluster (Old Hungarian glyphs, right of each line) with the live typed/pasted/
 assisted mix, appearing as paragraphs are written and vanishing when they're deleted.
 
@@ -60,13 +74,28 @@ and a SHA-256 chain (`previous_session_hash` -> `session_hash`) so the process l
 tamper-evident. Old sessions can be **compacted** — their raw ops are pruned and replaced by
 aggregate totals in `summary_json`.
 
+Switching chapters, closing the project and closing the app all save the chapter first
+and then seal its session, so the closing snapshot holds the last keystrokes. Closing the
+window waits (up to 3 s) for the renderer to do this before the backend is stopped. Each
+session keeps its own recorder state, so the old one is sealed in the background while
+typing in the new chapter already goes to the next session.
+
+**Crashes.** Ops the backend hasn't confirmed are mirrored about once a second to
+`userData/pentimento-stash.json` (written by the main process, so a killed renderer or
+app loses about a second). The next start delivers them with `recovery: true` (ops whose
+fingerprint the session already holds are skipped) and seals the session. If that never
+happens, `session/start` seals the chapter's latest unsealed session from the ops it has,
+closed at its last op, and chains the new one onto it. Older unsealed sessions are left
+alone: they already have a successor. A flush into a sealed session is refused (409), and
+ending a sealed session again changes nothing.
+
 Each session also carries a **`wpm_trace`** — a JSON array of `[para, word_offset, wpm]`
 triples (wpm clamped 10–300), one per completed word the recorder saw being typed. The
 offsets are read live from the TipTap doc at typing time, so a deletion mid-sentence
 requires no bookkeeping — the next word's offset simply self-corrects. Deletions and
 pauses restart the word clock so their dead time never deflates the next words' speed,
 and pastes emit cap-speed (300) samples. The recorder is authoritative: every flush
-**replaces** the stored trace (crash loses ≤12s of it), and the replay matches its diffed
+**replaces** the stored trace, and the replay matches its diffed
 words to samples by `(para, word_offset)` — so even messy sessions with rewrites stay
 aligned. The trace lives on the session row, so it survives compaction and never syncs
 (device-local, like all pentimento data).
@@ -84,10 +113,10 @@ paints each paragraph by effort, so heavily-reworked passages stand out.
 
 ## 3. Prose snapshots (the ground truth)
 
-**Key constraint:** past prose is **not** reconstructable from `pentimento_ops`. The ops are
-deltas with no baseline anchor, backspace runs are stored reversed, paragraph merges/splits
-aren't tracked, and compaction deletes ops outright. So anything that needs *actual old text*
-(rollback, replay) must rely on real snapshots.
+**Key constraint:** snapshots are the ground truth for past prose. A session's ops lead
+exactly from its starting text to its ending text (see the coordinates above), but only
+for sessions recorded in the current format, and compaction deletes ops outright. So
+anything that needs *actual old text* (rollback, replay frames) relies on real snapshots.
 
 That's **`chapter_snapshots`**: the chapter's markdown, zlib-compressed, captured at natural
 checkpoints. `kind` is one of:
@@ -101,6 +130,8 @@ checkpoints. `kind` is one of:
   that to label the starting frame).
 - `manual` — a version the writer explicitly pinned (optional `label`). Always kept.
 - `pre_restore` — a safety copy taken just before a restore, so restores are undoable.
+- `pre_link` — a copy taken before the name finder linked character and place names in the
+  chapter.
 
 The auto-capture hooks live in `pentimento.py` `session/start` + `session/end`; the latest
 editor save is flushed to the `md/` file before the session-end snapshot is taken so it

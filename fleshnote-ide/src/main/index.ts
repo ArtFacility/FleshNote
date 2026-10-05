@@ -45,7 +45,7 @@ async function startPythonBackend() {
     }
   }
 
-  const env = { ...process.env, FLESHNOTE_DEVICE_ID: deviceId }
+  const env = { ...process.env, FLESHNOTE_DEVICE_ID: deviceId, FLESHNOTE_APP_VERSION: app.getVersion() }
 
   if (app.isPackaged) {
     // In production, the backend binary is placed inside resources/backend-dist

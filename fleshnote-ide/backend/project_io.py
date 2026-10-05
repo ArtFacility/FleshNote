@@ -52,6 +52,24 @@ MAX_ARCHIVE_SINGLE_FILE = 256 * 1024 * 1024    # 256 MB per file
 
 # ── .flnote naming ──────────────────────────────────────────────────────────
 
+def app_version() -> str:
+    """The running FleshNote version, recorded in project descriptors.
+
+    Electron passes it as FLESHNOTE_APP_VERSION. A backend started by hand
+    (development, tests) reads it from package.json instead.
+    """
+    version = os.environ.get("FLESHNOTE_APP_VERSION", "").strip()
+    if version:
+        return version
+    try:
+        import json
+        package = os.path.join(os.path.dirname(os.path.abspath(__file__)), "..", "package.json")
+        with open(package, encoding="utf-8") as f:
+            return str(json.load(f).get("version") or "unknown")
+    except (OSError, ValueError):
+        return "unknown"
+
+
 def sanitize_project_name(name: str) -> str:
     """Make a user-supplied project name safe as a folder name on Windows/macOS/Linux.
     Strips an existing .flnote suffix so 'Foo.flnote' never becomes 'Foo.flnote.flnote'."""

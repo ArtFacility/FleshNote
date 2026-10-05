@@ -8,14 +8,17 @@ An advanced, no-bullshit writing tool for novelists and world builders who actua
 
 ### What's New in v2.0
 
-* **Factions & Groups**: Organize characters into factions, alliances, and guilds with temporal membership tracking, role ordering, milestones, and World History integration.
-* **Manuscript Integration**: Create groups, link groups, add members, or record milestones directly from selected text in the editor.
-* **Cross-Device Syncing**: Sync your novel with the mobile companion app.
-* **Database Rework**: Complete UUID & tombstone architecture preserving full edit history without collision.
-* **Pentimento System**: Replay and simulate your writing process over time.
-* **History Rewind**: Revert chapters to previous states with visual diffing.
-* **Enhanced World Calendar**: Day-level precision across character inspectors, world times, and timeline marks.
-* **Startup Loader & Migrator**: Smooth startup splash screen and automatic legacy project migration.
+* **History Rewind**: Revert chapters to previous states with non-destructive session snapshots, visual inline diffing, and instant rollbacks.
+* **Sync Projects Across Devices (with upcoming mobile app)**: Local-first cross-device sync over Wi-Fi / LAN powered by Hybrid Logical Clocks (HLC) and conflict-free 3-way merges, built for the upcoming mobile companion app.
+* **Pentimento (Proof of Process)**: Complete writing telemetry with process replay simulation, paragraph effort heatmaps, typing speed traces, input provenance (human vs. paste/machine), and cryptographic sealing with RFC 3161 timestamps to prove authentic human authorship.
+* **Reviewer Mode (.flreview)**: Send out lightweight, stripped-down review copies of your novel with optional self-expiring encryption, allowing beta readers and editors to leave inline annotations and merge all feedback files seamlessly back into your master manuscript.
+* **Story Architect**: Comprehensive 5-step narrative planning suite ("Write First, Note Second") spanning seed premise questions, cast & relationship dynamics, story arc beat-sheets, automatic chapter scaffolding, and a deterministic non-AI brainstorm generator.
+* **Story Intensity Pulse**: Real-time chapter intensity curves and narrative pulse tracking built into the Plot Planner to visualize tension, emotional stakes, and pacing across your manuscript.
+* **Smarter Janitor**: Upgraded local linguistic analysis with customizable audit intensity, "Show, Don't Tell" confidence grading, sensory balance tracking, and expanded grammatical rules for English, Hungarian, and Polish.
+* **New Group System (Factions & Guilds)**: Group characters into factions, alliances, and guilds with temporal membership tracking, role hierarchies, group milestones, and World History timeline integration.
+* **Export Projects to Plain Text & Obsidian**: Seamless vault export converting `.flnote` projects into clean Markdown vaults or `.txt` archives, fully compatible with Obsidian while preserving wikilinks and metadata.
+* **Cover Art Maker & Rebuilt Book Export**: Design print wraps and dust jackets with automated spine thickness calculations based on page count and paper caliper; print-ready PDF export via Chromium (Printed Book and Submission layouts), DOCX, and validated EPUB with live preview.
+* **Dozens of Bugfixes & Polish**: SQLite WAL performance tuning, UUID v4 database architecture, hardened `.flnote` container format, safe legacy project migration, and numerous UI refinements.
 
 ---
 
@@ -64,13 +67,17 @@ Dumping lore into your project is easy. Managing it is easier. The codebase feat
 
 ![Entity Manager](assets/entity_manager.png)
 
-### 📚 Professional Book Export
-Export straight to industry-standard formatting. Generates print-ready PDFs, standard DOCX files, and EPUBs with a WYSIWYG  live preview.
+### 📚 Professional Book Export & Cover Art
+Export straight to industry-standard formatting. Generates print-ready PDFs (Printed Book & Submission layouts via Chromium), standard DOCX files, and EPUBs with a real-pages live preview, plus a flat-wrap **Cover Art Maker** with automatic spine width calculation.
 
 ![File Export](assets/file_export.png)
 
 ### Other Features
 
+- **Story Architect & Brainstorm Generator**: 5-step narrative planning suite from seed premise to cast dynamics, story arc beat-sheets, chapter scaffolding, and combinatorial brainstorming.
+- **Pentimento Process Telemetry**: Record keystroke telemetry, replay writing sessions, visualize edit effort heatmaps, and cryptographically seal drafts with RFC 3161 TSA receipts.
+- **Reviewer Mode & .flreview Bundles**: Export lightweight, stripped-down review archives with optional self-expiring encryption, letting beta readers annotate chapters in standalone reviewer mode before merging feedback back into the author's copy.
+- **Vault Export (Obsidian & Plain Text)**: Export projects into clean Markdown vaults or `.txt` archives, fully compatible with Obsidian while preserving internal links and metadata.
 - **Chapter Time Overrides**: Track flashbacks and timeskips at the paragraph level so your entities and relationship dynamics remain chronologically accurate.
 - **Environment & Weather System**: Define weather states per location with **Hierarchical Inheritance** (sub-locations automatically pull weather from parents).
 - **7 Total Sprint Modes**: Let it be Rewarding or Punishing, there is a mode for every writer.

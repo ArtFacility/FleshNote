@@ -39,6 +39,16 @@ MyNovel.flnote/
 - Old (pre-2.1) app versions still *find* `Name.flnote` folders — project discovery
   is marker-based (`fleshnote.db` / `fleshnote_project.json`), not name-based — so
   downgrading is safe.
+- **Vault export** (`POST /api/project/export-vault`, `{project_path, dest_dir, fmt}`):
+  leaves-FleshNote export in `backend/export/vault.py`. `fmt: "obsidian"` writes a
+  folder tree of Markdown (Manuscript/, Characters/, Locations/, Groups & Factions/,
+  Lore/<category>/, Quick Notes/, Twists & Secrets/, attachments/ with copied entity
+  images, Project Overview.md) with YAML frontmatter and Obsidian wiki links;
+  `fmt: "txt"` writes the same tree as plain `.txt` without frontmatter or images.
+  Chapter markers (`{{char:...}}`, `{knows:...}`) are converted (wiki links and
+  `[!info]` callouts); planner/Pentimento/world history/sketchboards/stats are
+  intentionally not exported. The vault folder is named `<Project> (Obsidian)` /
+  `<Project> (Plain Text)` inside `dest_dir` and must not pre-exist.
 
 ---
 
@@ -51,6 +61,8 @@ Key-value store for all project settings and UI toggles.
 | `config_key`   | TEXT PRIMARY KEY | Setting identifier                        |
 | `config_value` | TEXT             | Setting value (stringified)               |
 | `config_type`  | TEXT             | One of: `toggle`, `label`, `meta`, `json` |
+
+**`cover`** (`json`): the book cover made in the cover editor (alpha), or `null`. Faces `front`, `spine`, `back`, each with a background colour, an optional image and text fields; `render.front` / `render.spine` are the drawn PNGs used by the bookshelf, the export window and the EPUB cover. Images live in `assets/cover/` under unique names. Format and validation: `backend/routes/cover.py`.
 
 ---
 
@@ -618,6 +630,102 @@ Single-row (`id = 1`) local sync state for the planned companion app.
 | `id` | INTEGER | PRIMARY KEY, CHECK (`id = 1`) | Enforces a single row |
 | `last_hlc` | TEXT | | Highest Hybrid Logical Clock stamp seen locally |
 | `version_vector` | TEXT | DEFAULT `'{}'` | Per-device version vector (JSON) |
+
+---
+
+## 32. `paragraph_intensity_corrections` (Story Pulse)
+
+The writer's own intensity and mood for a paragraph, set in the editor's Pulse gutter.
+- **Synced** through `change_log`: it's authored intent, unlike the derived paragraph cache in `fleshnote_cache.db`.
+- **Created by** `db_setup.ensure_pulse_corrections`: for new projects, on project open, on demand by `routes/story_pulse.py`, and before a sync merge.
+- **Re-anchoring:** when the paragraph is edited, `story_pulse` re-anchors the row to the most similar nearby paragraph (ratio ≥ 0.70, one correction per paragraph). If none matches, it reports the row as stale and never applies it to other text.
+
+| Column | Type | Constraints | Description |
+| :--- | :--- | :--- | :--- |
+| `id` | TEXT | PRIMARY KEY (UUID v4) | |
+| `chapter_id` | TEXT | NOT NULL | Chapter the paragraph is in |
+| `para_hash` | TEXT | NOT NULL | Content key: sha1 (first 20 hex) of the NFC text with whitespace collapsed (`story_pulse.paragraph_key`) |
+| `para_idx` | INTEGER | | Position among the chapter's plotted paragraphs (tie-breaker for re-anchoring) |
+| `anchor_text` | TEXT | | The paragraph text the correction was last anchored to |
+| `intensity` | REAL | NOT NULL | 0..1, on the book-relative scale the writer saw |
+| `valence` | REAL | NOT NULL | −1 (darker) .. +1 (brighter) |
+| `updated_at` | TEXT | | |
+| `deleted` | INTEGER | DEFAULT 0 | Soft delete flag ("Reset to measured", Discard) |
+| `deleted_at` | TEXT | | Soft delete timestamp |
+| `created_at` | TEXT | DEFAULT (datetime('now')) | |
+
+Indexed by `idx_pulse_corr_chapter` on `(chapter_id, deleted)`.
+
+---
+
+## 33. `received_reviews`, `review_notes` and `review_copies` (beta-reader reviews)
+
+Reviews that came back from beta readers as `.flreview` files, imported into the project with `POST /api/review/import`.
+- **Synced** through `change_log`: the author resolves notes on one device and sees it on the others.
+- **Created by** `db_setup.ensure_review_tables`: for new projects, on project open, on demand by `routes/review_notes.py`, and before a sync merge.
+- **Row ids are stable** (UUID v5 of the reviewer's copy and the reviewer's note id), so importing the same returned file again updates its rows instead of duplicating them. A re-import never changes `status`, so notes the author resolved stay resolved.
+- **Anchoring:** each note's quote is looked up in the chapter's current text when it is imported (exact match nearest its old position, else a ≥ 0.70 similarity match). A note whose passage has been rewritten is still imported with `anchored = 0`, so nothing is lost silently.
+
+### `received_reviews`: one row per reviewer's copy
+
+| Column | Type | Constraints | Description |
+| :--- | :--- | :--- | :--- |
+| `id` | TEXT | PRIMARY KEY (UUID v5) | One reviewer's copy of one review round |
+| `review_id` | TEXT | | The export it came from (`review_id` in the file) |
+| `reviewer_label` | TEXT | | Reviewer's name as they entered it |
+| `finished_at` | TEXT | | When the reviewer pressed "Send back to author" |
+| `imported_at` | TEXT | | Last import |
+| `scores` | TEXT | | JSON `[{chapter_id, pacing, prose, dialogue, characters, plot, engagement, overall}]`, each 1–5, all optional |
+| `updated_at` | TEXT | | |
+| `deleted` | INTEGER | DEFAULT 0 | Soft delete ("Remove review") |
+| `deleted_at` | TEXT | | |
+| `created_at` | TEXT | DEFAULT (datetime('now')) | |
+
+### `review_notes`: one row per note
+
+| Column | Type | Constraints | Description |
+| :--- | :--- | :--- | :--- |
+| `id` | TEXT | PRIMARY KEY (UUID v5) | |
+| `received_review_id` | TEXT | NOT NULL | → `received_reviews.id` |
+| `chapter_id` | TEXT | NOT NULL | Must exist when imported; notes on deleted chapters are skipped |
+| `category` | TEXT | NOT NULL | `typo`, `rewrite`, `remove`, `praise`, `question` or `comment` |
+| `body` | TEXT | | The note (≤ 4000 chars) |
+| `suggestion` | TEXT | | Suggested replacement text, for `typo` and `rewrite` |
+| `quote_text` | TEXT | | The passage as the reviewer saw it (plain text) |
+| `anchor_text` | TEXT | | The passage as found in the current chapter at import |
+| `anchor_hint` | INTEGER | | Plain-text offset (UTF-16 units, as the editor counts) of the passage, used to pick between repeated phrases |
+| `anchored` | INTEGER | DEFAULT 0 | 1 when the passage was found; 0 when it has been rewritten since |
+| `status` | TEXT | DEFAULT 'open' | `open`, `resolved` or `dismissed`; only the author changes it |
+| `reviewer_label` | TEXT | | Copied from the review for display |
+| `noted_at` | TEXT | | When the reviewer wrote or last edited the note |
+| `updated_at` | TEXT | | |
+| `deleted` | INTEGER | DEFAULT 0 | Soft delete (set when its review is removed) |
+| `deleted_at` | TEXT | | |
+| `created_at` | TEXT | DEFAULT (datetime('now')) | |
+
+Indexed by `idx_review_notes_chapter` on `(chapter_id, deleted)` and `idx_review_notes_review` on `(received_review_id)`.
+
+### `review_copies`: one row per review copy the author sent
+
+For a locked copy (one that expires), this row holds the server's key half, so returned copies always open for the author, even after the copy stopped opening for the reviewer. It also holds the token that withdraws the copy early. The table is synced, so the author's other devices can import returns too. It also travels inside `.flnote` exports: anyone handed the whole project can read and withdraw its review copies.
+
+| Column | Type | Constraints | Description |
+| :--- | :--- | :--- | :--- |
+| `id` | TEXT | PRIMARY KEY | The copy's `review_id` |
+| `reviewer_label` | TEXT | | Who it was for |
+| `chapter_count` | INTEGER | | |
+| `key_id` | TEXT | | Key server id; NULL for a copy that never expires |
+| `server` | TEXT | | Key server base URL |
+| `server_half` | TEXT | | Base64 32 bytes: the half the key server holds |
+| `revoke_token` | TEXT | | Proves to the key server that the author may withdraw the copy |
+| `expires_at` | TEXT | | When the copy stops opening (UTC) |
+| `revoked_at` | TEXT | | When the author withdrew it |
+| `updated_at` | TEXT | | |
+| `deleted` | INTEGER | DEFAULT 0 | |
+| `deleted_at` | TEXT | | |
+| `created_at` | TEXT | DEFAULT (datetime('now')) | |
+
+Indexed by `idx_review_copies_key` on `(key_id)`.
 
 ---
 

@@ -1247,9 +1247,9 @@ Used by `ImageGallery.jsx` to clean up the temporary full-resolution upload afte
 Defined in `backend/routes/pentimento.py`. Records coalesced writing ops into sealed,
 hash-chained sessions and aggregates them. See `backend/docs/PENTIMENTO.md`.
 
-- `POST /api/project/pentimento/session/start`: Opens a writing session for a chapter (returns `session_id`, `session_num`); best-effort captures a baseline `session` prose snapshot of the pre-session state (deduped, gated by `prose_history`) so the replay can interpolate from it.
-- `POST /api/project/pentimento/flush`: Ingests a batch of coalesced ops (runs, not keystrokes, each tagged with an input-provenance `source`) and optionally stores `wpm_trace` ([para, word_offset, wpm] triples, recorder-authoritative full replacement).
-- `POST /api/project/pentimento/session/end`: Seals the session with a SHA-256 chain hash; auto-creates a `session` prose snapshot when `prose_history` is on.
+- `POST /api/project/pentimento/session/start`: Opens a writing session for a chapter (returns `session_id`, `session_num`, `previous_session_hash`). If the chapter's latest session was never sealed (a crash), seals it first and chains onto it. Best-effort captures a baseline `session` prose snapshot of the pre-session state (deduped, gated by `prose_history`) so the replay can interpolate from it.
+- `POST /api/project/pentimento/flush`: Ingests a batch of coalesced ops (runs, not keystrokes, each tagged with an input-provenance `source`) and optionally stores `wpm_trace` ([para, word_offset, wpm] triples, recorder-authoritative full replacement). `recovery: true` (ops from a crash backup) skips ops the session already holds. 404 for an unknown session, 409 once it is sealed.
+- `POST /api/project/pentimento/session/end`: Seals the session with a SHA-256 chain hash; auto-creates a `session` prose snapshot when `prose_history` is on. Ending an already sealed session returns its hash with `already_sealed: true` and changes nothing.
 - `POST /api/project/pentimento/heatmap`: Returns per-paragraph effort metrics (time, inserted/deleted, churn, night ratio, normalized `heat`) + `session_count`.
 - `POST /api/project/pentimento/ops`: Returns raw ops for a chapter grouped by `session_id`, plus `wpm_by_session` (per-word typing-speed traces) — used to pace the replay simulation.
 - `POST /api/project/pentimento/summary`: Whole-project totals (typed/deleted/kept words, time, day/night split, chain head hash).
@@ -1331,3 +1331,92 @@ backup on any error**.
 
 **Response:** `{ "status": "ok" }` (or HTTP 400/500 on a rejected/failed sync — local DB is rolled back and restored).
 
+
+## Manuscript export (`routes/export.py`, `export/`)
+
+### `POST /api/project/export`
+Exports the selected chapters to a new file in the project's `exports/` folder: `{ project_path, content_mode: "prose" | "notes" | "full", format: "txt" | "md" | "html" | "docx" | "pdf" | "epub", book_ready, trim: "pocket" | "standard" | "large", font_size, gutter, outer, chapter_ids }` → `{ status, filepath, warnings? }`.
+- `book_ready` applies to PDF and DOCX: a trim-size book (mirrored margins with `gutter` on the binding side, page numbers) when true, standard manuscript format (US Letter, 1-inch margins, 12 pt double-spaced, "Surname / TITLE / page" header) when false.
+- Deleted chapters are never exported. `chapter_ids: null` means all chapters.
+- File names are `{Title}_{mode}_{timestamp}.{ext}` and never overwrite an earlier export.
+- **PDF:** the backend writes nothing. It answers `{ status: "print", filepath, html }`; the Electron main process prints `html` with Chromium (`printToPDF`, `preferCSSPageSize`) to `filepath` and returns `status: "success"` to the renderer.
+- `warnings` reports how many `#TODO` notes were left out.
+
+### `POST /api/project/export/print-preview`
+Same body; `{ status, html }`: the PDF print document for the selected chapters, nothing written. The main process (`api:exportPrintPreview`) prints it in memory and hands the PDF bytes to the export window, which draws the real pages with pdf.js.
+
+### `POST /api/project/export/preview`
+Same body; `{ status, html }` showing the first selected chapter (HTML formats as the reading view, TXT and MD as plain text).
+
+## Book cover, alpha (`routes/cover.py`)
+
+The cover document lives in `project_config` under `cover` (it syncs like other settings); its images are in `assets/cover/`. Documents are validated on every read and write (they can come from shared projects): only `assets/cover/(img|front|spine)_<hex>.<ext>` paths that exist, hex colours, known fonts, capped text and field counts.
+
+### `POST /api/project/cover/get`
+`{ project_path }` → `{ status, cover }` (`null` when the book has no cover).
+
+### `POST /api/project/cover/add-image`
+`{ project_path, source_path }` → `{ status, path }`. Copies a PNG, JPEG, WebP, GIF or BMP image (≤ 40 MB) into `assets/cover/`.
+
+### `POST /api/project/cover/save`
+`{ project_path, cover, front_png, spine_png }` → `{ status, cover }`. `front_png` / `spine_png` are PNG data URLs the editor drew; they are stored under new names and set as `cover.render`. Cover files no longer referenced are removed. `cover: null` removes the cover. The project list (`/api/projects`) reports `cover_image` (absolute path of the front render) for the bookshelf, and EPUB exports use it as the cover image.
+
+## Reviews (`.flreview` files for beta readers)
+
+A review file (`format: "fleshnote-review/1"`, JSON) carries a pruned snapshot of the chosen chapters plus the reviewer's notes and scores. The author makes one, a reviewer reads it in FleshNote and leaves notes, and the author imports the copy that comes back. All fields added after the first version (`review_id`, `copy_id`, `author_label`, `message`, `created_at`, `finished_at`, note `suggestion` / `updated_at`) are optional, so older files still open.
+
+The reviewer never writes to the file they were sent: notes go to a working copy in `<userData>/reviews/`. Electron passes that folder as `store_dir`, and the save, finish and discard routes refuse any path outside it.
+
+**Locked copies** (`format: "fleshnote-review-sealed/1"`) stop opening after a date. See `backend/review_crypto.py`.
+- **How the lock works:** the content is AES-256-GCM encrypted under `HKDF(file half + server half)`.
+  - The file half is in `crypto.file_half`.
+  - The server half is stored on a FleshNote key server until `crypto.expires_at`.
+  - The header fields that never change are authenticated as additional data.
+- **What stays readable without the key:** `format`, `crypto`, `review_id`, `created_at`, `title`, `author_label`, `desktop_id`, `copy_id`, `finished_at`. Everything else, including the author's message and the reviewer's notes, is encrypted.
+- **Which servers are contacted:** only the default server (`FLESHNOTE_REVIEW_KEY_SERVER`, default `https://api.fleshnote.org/tsa`) and any listed in `FLESHNOTE_REVIEW_KEY_SERVERS`. The server named in a file is never trusted on its own.
+- **Reviewer caching:** the reviewer's app caches the server half in `store_dir/keys.json` until the expiry the server reported, so reviews read offline. A 404 from the server deletes the cached half.
+
+### `POST /api/review/export`
+Writes a review file. `{ project_path, dest_path, scope: { entities, with_secrets, plot, chapter_ids }, reviewer_label, author_label, message, expires_days, key_server }` → `{ status, path, review_id, expires_at }`.
+- The manuscript is always included. Author-only fields need `entities` and `with_secrets`, and plot twists need `plot`.
+- With `expires_days` 1–365 the copy is locked: a key is created on the key server (with proof-of-work) and the copy is recorded in `review_copies`. If the server can't be reached, the response is `{ status: "error", error: "key_server_unreachable" }` and no file is written.
+- With `expires_days` 0 you get a plain copy that never expires.
+
+### `POST /api/review/open`
+What a review file shows without its key: `{ path }` → `{ status, path, peek: { sealed, title, desktop_id, author_label, reviewer_label, notes, finished_at, expires_at } }`. For locked copies, `reviewer_label` is `""` and `notes` is `null`.
+
+### `POST /api/review/start`
+Starts or resumes reviewing: `{ path, store_dir }` → `{ status, path, package, resumed }`.
+- The first open copies the file into `store_dir` with a new `copy_id`. Opening the same file again (same `review_id`) returns the existing working copy.
+- For locked copies the key server is asked first, so an expired or withdrawn copy stops opening. The cached half is used only when the server can't be reached.
+- Other statuses: `expired`, `offline` (never opened, and the server is unreachable), `untrusted` (the file names an unknown server), and `error` (the file was altered).
+
+### `POST /api/review/list`
+Reviews in progress: `{ store_dir }` → `{ reviews: [{ path, review_id, title, author_label, reviewer_label, chapters, notes, finished_at, updated_at }] }`.
+
+### `POST /api/review/save`
+Saves the reviewer's fields into a working copy: `{ path, package: { reviewer_label, notes, scores }, store_dir }`. The snapshot is never replaced. Notes are cleaned: known fields only, known categories, capped lengths.
+
+### `POST /api/review/finish`
+Writes the copy that goes back to the author and stamps `finished_at`: `{ path, dest_path, store_dir }` → `{ status, path }`.
+
+### `POST /api/review/discard`
+Deletes a working copy: `{ path, store_dir }`.
+
+### `POST /api/review/import`
+Imports returned files into a project: `{ project_path, package_paths }` → `{ results: [{ path, status, id, reviewer_label, added, updated, unanchored, skipped }] }`. A file made from another project returns `status: "error", error: "wrong_project"` and imports nothing. See `received_reviews` / `review_notes` in DATABASE_SCHEMA.md.
+
+### `POST /api/review/notes`
+`{ project_path }` → `{ reviews: [{ id, reviewer_label, finished_at, imported_at, scores }], notes: [...] }` (not deleted).
+
+### `POST /api/review/note/status`
+`{ project_path, id, status }`, where status is `open`, `resolved` or `dismissed`.
+
+### `POST /api/review/copies`
+Copies sent from this project: `{ project_path }` → `{ copies: [{ id, reviewer_label, chapter_count, key_id, expires_at, revoked_at, created_at, locked }] }`.
+
+### `POST /api/review/copy/revoke`
+Withdraws a locked copy on the key server, so it stops opening for everyone: `{ project_path, id }` → `{ status, revoked_at }`, or `{ status: "error", error: "key_server_unreachable" }`. Returned copies still import, because the project keeps the server half.
+
+### `POST /api/review/received/delete`
+Removes one returned review and its notes (soft delete, synced): `{ project_path, id }`.

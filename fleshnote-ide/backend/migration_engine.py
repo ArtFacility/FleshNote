@@ -6,7 +6,7 @@ import shutil
 import re
 from datetime import datetime
 from db_setup import generate_project_db
-from project_io import backup_db_file, display_name, restore_db_file
+from project_io import app_version, backup_db_file, display_name, restore_db_file
 
 # Reference columns copy_table() remaps and that fall back to the old id on a miss.
 # Covers polymorphic entity_id columns AND direct FKs whose target can go missing
@@ -451,7 +451,7 @@ def migrate_project(project_path: str) -> dict:
                     "project_name": os.path.basename(project_path),
                     "schema_version": 2,
                     "created_version": "1.2.0",
-                    "last_opened_version": "2.0.0",
+                    "last_opened_version": app_version(),
                     "project_id": str(uuid.uuid4())
                 }, f, indent=2)
         except Exception:

@@ -193,12 +193,14 @@ Firewall prompt only fires when the user actually opens "Sync with companion app
 ### Flow
 
 1. **Start** — `POST /api/project/remote-sync/start` (loopback, called from Electron) mints a
-   session: a random token, picks a free port, discovers the desktop's LAN IP(s), and starts
-   `remote_app`. Returns `{token, hosts, port, project_id, project_name, expires_at}`
-   (10-minute TTL for the whole exchange).
-2. **QR** — `RemoteSyncModal.jsx` encodes that payload as JSON into a QR code (`qrcode` npm
-   package). The phone scans it and tries each host until one answers
-   `GET /remote-sync/pair?token=...` on the LAN port.
+   session: a random token, a random 256-bit encryption key, picks a free port, discovers the
+   desktop's LAN IP(s), and starts `remote_app`. Returns
+   `{protocol, token, key, hosts, port, project_id, project_name, expires_at}` (10-minute TTL
+   for the whole exchange).
+2. **QR** — `RemoteSyncModal.jsx` (and `CloneModal.jsx`) encodes that payload as JSON into a
+   QR code (`qrcode` npm package), `v` = protocol, `key` as 64 hex characters. The phone scans
+   it and tries each host until one answers `GET /remote-sync/pair?token=...` on the LAN port
+   with a reply sealed under the key.
 3. **Upload** — phone `POST`s a zip of its project folder (`fleshnote.db` + `md/` +
    `fleshnote_project.json`) to `POST /remote-sync/upload?token=...`. The desktop extracts it
    to a temp dir (zip-slip guarded, size-capped) and immediately calls
@@ -212,6 +214,34 @@ Firewall prompt only fires when the user actually opens "Sync with companion app
    makes it available at `GET /remote-sync/download?token=...`. The phone calls
    `POST /remote-sync/complete?token=...` once it has it, which is what lets the desktop-side
    status flip to `downloaded` and the session close out.
+
+### Encryption (protocol 2)
+
+Everything with project content is sealed with AES-256-GCM under the session key
+(`backend/sync_crypto.py`, mirrored by the companion's `lib/services/sync/sync_crypto.dart`):
+
+    blob = 0x02 || nonce (12 bytes) || ciphertext || tag (16 bytes)
+    aad  = "fleshnote-sync/2|<purpose>|<token>"
+
+| Purpose | Direction | Body |
+| ------- | --------- | ---- |
+| `pair` | desktop → phone | JSON `{status, project_id, project_name}` |
+| `upload` | phone → desktop | the phone's project zip (multipart field `file`) |
+| `download` | desktop → phone | the merged (or cloned) project zip |
+| `complete` | phone → desktop | `done` |
+
+- The key only leaves the desktop inside the QR code. The token travels in the clear and only
+  names the session; the status poll (`/result`) is unencrypted.
+- The desktop decrypts an upload **before** changing any session state, and `/complete` must
+  carry a sealed body, so someone who sniffed the token can't replace the upload or close the
+  session. A reply the phone can't open means it reached a desktop that didn't show the code
+  (or an outdated one), and the phone stops.
+- Both sides require protocol 2; there is no unencrypted fallback. An outdated phone gets
+  "update the companion app" (HTTP 400 on upload); a v1 QR code gets "update FleshNote
+  desktop" on the phone.
+- Tests: `backend/test_remote_sync_crypto.py` (including a fixed vector the Dart test also
+  checks) and the companion's `test/sync_crypto_test.dart`; `test/remote_sync_lan_e2e_test.dart`
+  runs a full sync against a live desktop server when `FN_E2E_DIR` is set.
 
 ### The download-back contract (read this before implementing the companion side)
 
@@ -246,13 +276,13 @@ running sync twice by hand.
 
 | Endpoint | Purpose |
 | -------- | ------- |
-| `GET /remote-sync/pair?token=` | Confirm the token and project identity before upload |
-| `POST /remote-sync/upload?token=` | Upload the phone's project zip; triggers `sync_preview` |
-| `GET /remote-sync/result?token=` | Poll for `ready`/`error` |
-| `GET /remote-sync/download?token=` | Download the merged project zip after apply |
-| `POST /remote-sync/complete?token=` | Ack download; flips status to `downloaded` |
+| `GET /remote-sync/pair?token=` | Sealed reply with the project identity; proves the desktop holds the key |
+| `POST /remote-sync/upload?token=` | Sealed project zip; decrypted, then triggers `sync_preview` |
+| `GET /remote-sync/result?token=` | Poll for `ready`/`error` (not encrypted) |
+| `GET /remote-sync/download?token=` | Sealed merged project zip after apply |
+| `POST /remote-sync/complete?token=` | Sealed ack; flips status to `downloaded` |
 
-### Known limits (scaffolding, not yet used by a real companion build)
+### Known limits
 
 - Single global session — starting a new one cancels any prior one. Fine for a one-window
   desktop app; would need to key sessions per-project if that assumption ever changes.
@@ -263,11 +293,14 @@ running sync twice by hand.
   `waiting`, only recoverable by cancelling and re-pairing.
 - The 10-minute TTL covers the whole exchange including how long the desktop user takes to
   review conflicts — generous for a fast pairing, but a slow reviewer could hit it.
+- Each zip is sealed in one piece, so both sides hold it in memory (up to the 200 MB cap).
+- Anyone who can see the QR code while the session is open can join it.
 
 ## 10. Key files (remote transport)
 
 | File | Role |
 | ---- | ---- |
 | `backend/remote_sync_session.py` | Session state machine, on-demand `remote_app`, zip pack/extract, IP discovery |
+| `backend/sync_crypto.py` | AES-256-GCM sealing for the LAN messages (protocol 2) |
 | `backend/routes/remote_sync.py` | Loopback routes; reuses `routes/sync.py`'s `sync_preview`/`sync_apply` verbatim |
 | `src/renderer/src/components/RemoteSyncModal.jsx` | QR display → poll → `SyncDiffView` → apply → wait for phone download |

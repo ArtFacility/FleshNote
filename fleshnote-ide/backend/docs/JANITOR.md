@@ -160,3 +160,11 @@ Each suggestion type can be toggled on/off independently. When Show, Don't Tell 
 TipTap calculates node distances without accounting for raw `\n` characters between paragraphs, so Python's `plain_text` char offsets drift slightly from TipTap's internal positions as paragraph count grows.
 
 **Solution**: The frontend actions (`navigateToCharOffset`, `replaceAtOffset`, `linkEntityAtOffset`) perform a **fuzzy radius search**. They use the backend's `char_offset` as a starting coordinate, scan neighboring text nodes within a safe radius, and perform a literal string search for `matched_text` to re-anchor the highlight precisely.
+
+---
+
+## Heavy-Duty Laya Upgrade (FleshNote 2.0 Roadmap)
+
+For the technical specification and architectural plan covering the optional neural upgrade (Laya System 1 decision engine, calibrated SDT probability, and the Plot Planner emotional intensity graph), see:
+👉 [fleshnote-ide/docs/LAYA_INTEGRATION.md](../../docs/LAYA_INTEGRATION.md)
+
