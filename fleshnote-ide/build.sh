@@ -75,7 +75,12 @@ fi
 
 if [ ! -d ".venv" ]; then
     echo "Python venv not found — creating backend/.venv ..."
-    python3 -m venv .venv
+    # The pins target Python 3.13; prefer it over whatever python3 is.
+    if command -v python3.13 >/dev/null 2>&1; then
+        python3.13 -m venv .venv
+    else
+        python3 -m venv .venv
+    fi
 fi
 
 source .venv/bin/activate

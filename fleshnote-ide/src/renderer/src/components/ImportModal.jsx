@@ -390,7 +390,7 @@ export default function ImportModal({ isOpen, onClose, projectPath, projectConfi
 
   return (
     <div className="settings-modal-overlay">
-      <div className="settings-modal" style={{ width: '95vw', maxWidth: '1280px', height: '85vh', display: 'flex', flexDirection: 'column', padding: 0, overflow: 'hidden', position: 'relative', borderRadius: 8 }}>
+      <div className="settings-modal" style={{ width: '95vw', maxWidth: '1280px', height: '85vh', display: 'flex', flexDirection: 'column', padding: 0, overflow: 'hidden', position: 'relative' }}>
 
         {/* ── Header ── */}
         <div style={{ display: 'flex', alignItems: 'center', gap: 12, padding: '16px 24px', borderBottom: '1px solid var(--border-subtle)', flexShrink: 0 }}>

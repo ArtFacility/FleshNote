@@ -1,5 +1,6 @@
 import React, { useEffect } from 'react'
 import { useTranslation } from 'react-i18next'
+import OptionCard, { OptionIcons } from './OptionCard'
 
 /** The three ways to start a book: write now, bring in a manuscript, or plan it with the Architect. */
 export default function NewProjectChoiceModal({ onSelect, onClose }) {
@@ -16,13 +17,13 @@ export default function NewProjectChoiceModal({ onSelect, onClose }) {
   const choices = [
     {
       id: 'write',
-      accent: 'amber',
+      icon: OptionIcons.pen,
       title: t('choiceModal.writeTitle', 'Start writing now'),
       desc: t('choiceModal.writeDesc', 'Name your book and go straight to a blank first chapter. Everything else can wait.')
     },
     {
       id: 'import',
-      accent: 'blue',
+      icon: OptionIcons.importFile,
       title: t('choiceModal.importTitle', 'Bring in my manuscript'),
       desc: t(
         'choiceModal.importDesc',
@@ -31,7 +32,7 @@ export default function NewProjectChoiceModal({ onSelect, onClose }) {
     },
     {
       id: 'architect',
-      accent: 'purple',
+      icon: OptionIcons.compass,
       title: t('choiceModal.planTitle', 'Brainstorm a new idea'),
       desc: t(
         'choiceModal.planDesc',
@@ -60,16 +61,8 @@ export default function NewProjectChoiceModal({ onSelect, onClose }) {
 
         <div className="choice-cards">
           {choices.map((c, i) => (
-            <button
-              key={c.id}
-              type="button"
-              className={`choice-card ${c.accent}`}
-              onClick={() => onSelect(c.id)}
-              autoFocus={i === 0}
-            >
-              <span className="choice-card-title">{c.title}</span>
-              <span className="choice-card-desc">{c.desc}</span>
-            </button>
+            <OptionCard key={c.id} icon={c.icon} title={c.title} desc={c.desc}
+              onClick={() => onSelect(c.id)} autoFocus={i === 0} />
           ))}
         </div>
       </div>

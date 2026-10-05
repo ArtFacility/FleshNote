@@ -39,6 +39,15 @@ const api = {
     ipcRenderer.on('launch-file', listener)
     return () => ipcRenderer.removeListener('launch-file', listener)
   },
+  // The window is about to close: finish saving, then call closeReady().
+  onBeforeClose: (callback) => {
+    const listener = () => callback()
+    ipcRenderer.on('app:before-close', listener)
+    return () => ipcRenderer.removeListener('app:before-close', listener)
+  },
+  closeReady: () => ipcRenderer.send('app:close-ready'),
+  pentimentoStashRead: () => ipcRenderer.invoke('pentimento:stash-read'),
+  pentimentoStashWrite: (json) => ipcRenderer.send('pentimento:stash-write', json),
   syncPreview: (payload) => ipcRenderer.invoke('api:syncPreview', payload),
   syncApply: (payload) => ipcRenderer.invoke('api:syncApply', payload),
   remoteSyncStart: (payload) => ipcRenderer.invoke('api:remoteSyncStart', payload),
@@ -76,6 +85,7 @@ const api = {
   loadTranslations: (lang) => ipcRenderer.invoke('api:loadTranslations', lang),
   exportProject: (payload) => ipcRenderer.invoke('api:exportProject', payload),
   exportPreview: (payload) => ipcRenderer.invoke('api:exportPreview', payload),
+  exportPrintPreview: (payload) => ipcRenderer.invoke('api:exportPrintPreview', payload),
   showItemInFolder: (filepath) => ipcRenderer.invoke('api:showItemInFolder', filepath),
 
   // ── Chapters ───────────────────────────────────────
@@ -215,6 +225,11 @@ const api = {
   // ── Image References ────────────────────────────────
   openImage: () => ipcRenderer.invoke('dialog:openImage'),
   uploadImageRef: (payload) => ipcRenderer.invoke('api:uploadImageRef', payload),
+  coverGet: (payload) => ipcRenderer.invoke('api:coverGet', payload),
+  coverAddImage: (payload) => ipcRenderer.invoke('api:coverAddImage', payload),
+  coverSave: (payload) => ipcRenderer.invoke('api:coverSave', payload),
+  coverCleanup: (payload) => ipcRenderer.invoke('api:coverCleanup', payload),
+  coverReadImage: (payload) => ipcRenderer.invoke('api:coverReadImage', payload),
   createImageRef: (payload) => ipcRenderer.invoke('api:createImageRef', payload),
   saveIconCrop: (payload) => ipcRenderer.invoke('api:saveIconCrop', payload),
   updateImageRef: (payload) => ipcRenderer.invoke('api:updateImageRef', payload),

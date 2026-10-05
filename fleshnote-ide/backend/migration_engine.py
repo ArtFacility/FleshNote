@@ -6,7 +6,7 @@ import shutil
 import re
 from datetime import datetime
 from db_setup import generate_project_db
-from project_io import backup_db_file, display_name
+from project_io import backup_db_file, display_name, restore_db_file
 
 # Reference columns copy_table() remaps and that fall back to the old id on a miss.
 # Covers polymorphic entity_id columns AND direct FKs whose target can go missing
@@ -22,6 +22,71 @@ REMAPPED_REF_COLUMNS = [
     ("entity_mentions", "entity_id"),
     ("foreshadowings", "twist_id"),
 ]
+
+
+# Marker kinds 1.2 wrote into chapter files and the table each id belongs to.
+# A {{foreshadow:N}} marker carries the id of the TWIST it foreshadows (chapters.py
+# _update_foreshadowings stores it as foreshadowings.twist_id), so it maps to twists.
+_MARKER_TABLES = {
+    "char": "characters", "loc": "locations", "item": "lore_entities", "lore": "lore_entities",
+    "group": "groups", "quicknote": "quick_notes", "annotation": "annotations",
+    "twist": "twists", "foreshadow": "twists",
+}
+# Markers with two ids: {{knowledge:FACT:CHARACTER|…}} and {{relationship:REL:CHARACTER|…}}
+_PAIR_MARKER_TABLES = {
+    "knowledge": ("knowledge_states", "characters"),
+    "relationship": ("character_relationships", "characters"),
+}
+_MARKER = re.compile(r"\{\{(\w+):([^|}]+)\|([^}]*)\}\}")
+
+# entity_type values in polymorphic columns -> the table their id belongs to. Covers the
+# long names (board_items, knowledge_states, history_entries, entity_appearances,
+# entity_mentions), the short codes image_references stores (char/loc/item/group), and
+# the quick notes and annotations the editor links like entities.
+_POLYMORPHIC_TABLES = {
+    "character": "characters", "char": "characters",
+    "location": "locations", "loc": "locations",
+    "lore": "lore_entities", "item": "lore_entities",
+    "group": "groups",
+    "quicknote": "quick_notes", "annotation": "annotations",
+}
+
+
+def remap_markers(text: str, mappings: dict) -> str:
+    """A chapter file with every 1.2 marker's integer ids replaced by the new UUIDs.
+    Markers whose ids are unknown (or already UUIDs) are left as they are."""
+    def new_id(table, old):
+        return mappings.get(table, {}).get(int(old)) if old.isdigit() else None
+
+    def repl(m):
+        kind, ids, inner = m.group(1), m.group(2), m.group(3)
+        parts = ids.split(":")
+        if kind in _MARKER_TABLES and len(parts) == 1:
+            new = new_id(_MARKER_TABLES[kind], ids)
+            if new:
+                return "{{%s:%s|%s}}" % (kind, new, inner)
+        elif kind in _PAIR_MARKER_TABLES and len(parts) == 2:
+            first = new_id(_PAIR_MARKER_TABLES[kind][0], parts[0])
+            second = new_id(_PAIR_MARKER_TABLES[kind][1], parts[1])
+            if first and second:
+                return "{{%s:%s:%s|%s}}" % (kind, first, second, inner)
+        elif kind == "time" and len(parts) == 2:
+            # {{time:WORLD_TIME:COLOUR|…}}: the colour index is not an id
+            new = new_id("world_times", parts[0])
+            if new:
+                return "{{time:%s:%s|%s}}" % (new, parts[1], inner)
+        return m.group(0)
+
+    return _MARKER.sub(repl, text)
+
+
+def _swap_database(temp_db_path: str, db_path: str):
+    """Moves the migrated database over the old one. Stale -wal/-shm files of the
+    old database go first: SQLite would replay them into the new file."""
+    for suffix in ("-wal", "-shm"):
+        if os.path.exists(db_path + suffix):
+            os.remove(db_path + suffix)
+    shutil.move(temp_db_path, db_path)
 
 
 def _verify_polymorphic_integrity(cursor) -> list[dict]:
@@ -94,6 +159,7 @@ def migrate_project(project_path: str) -> dict:
         shutil.rmtree(temp_project_dir)
     os.makedirs(temp_project_dir)
 
+    swapped = False
     try:
         # 2. Open old DB to extract configs for initialization
         old_conn = sqlite3.connect(db_path)
@@ -224,13 +290,7 @@ def migrate_project(project_path: str) -> dict:
                                 # image_references (entityTypeToDbCode: char/loc/item/group).
                                 # Missing char/loc here previously orphaned all character
                                 # and location image references on migration.
-                                table_map = {
-                                    "character": "characters", "char": "characters",
-                                    "location": "locations", "loc": "locations",
-                                    "lore": "lore_entities", "item": "lore_entities",
-                                    "group": "groups"
-                                }
-                                ref_table_mapped = table_map.get(entity_type)
+                                ref_table_mapped = _POLYMORPHIC_TABLES.get(entity_type)
                                 if ref_table_mapped and ref_table_mapped in mappings:
                                     row_dict[field] = mappings[ref_table_mapped].get(old_ref, old_ref)
                                 else:
@@ -337,6 +397,20 @@ def migrate_project(project_path: str) -> dict:
             for r in stats_rows:
                 new_cursor.execute("INSERT OR REPLACE INTO stats (stat_key, stat_value) VALUES (?, ?)", (r["stat_key"], r["stat_value"]))
 
+        # The new database starts from defaults built out of the old settings; the
+        # old rows themselves win, so every 1.2 setting (and the project's original
+        # creation date) is kept exactly.
+        for row in config_rows:
+            new_cursor.execute(
+                "INSERT OR REPLACE INTO project_config (config_key, config_value, config_type) VALUES (?, ?, ?)",
+                (row["config_key"], row["config_value"], row["config_type"]))
+        # the same for a custom world calendar (month names and lengths, seasons, week days)
+        old_cursor.execute("SELECT name FROM sqlite_master WHERE type='table' AND name='calendar_config'")
+        if old_cursor.fetchone():
+            for row in old_cursor.execute("SELECT config_key, config_value FROM calendar_config").fetchall():
+                new_cursor.execute("INSERT OR REPLACE INTO calendar_config (config_key, config_value) VALUES (?, ?)",
+                                   (row["config_key"], row["config_value"]))
+
         # 5b. Integrity sweep: assert no polymorphic entity_id kept an old integer id.
         # Warn + report (does not abort) so one stray row never blocks a good migration.
         integrity_orphans = _verify_polymorphic_integrity(new_cursor)
@@ -345,74 +419,52 @@ def migrate_project(project_path: str) -> dict:
         new_conn.close()
         old_conn.close()
 
-        # 6. Refactor markdown files with the new UUID entity tags
+        # 6. The chapter files with new ids, prepared in memory: nothing on disk
+        # changes until the new database is in place.
         md_dir = os.path.join(project_path, "md")
+        originals, rewritten = {}, {}
         if os.path.exists(md_dir):
             for file_name in os.listdir(md_dir):
                 if not file_name.endswith(".md"):
                     continue
                 file_path = os.path.join(md_dir, file_name)
-                try:
-                    with open(file_path, "r", encoding="utf-8") as f:
-                        md_content = f.read()
+                with open(file_path, "r", encoding="utf-8", newline="") as f:
+                    text = f.read()
+                new_text = remap_markers(text, mappings)
+                if new_text != text:
+                    originals[file_path] = text
+                    rewritten[file_path] = new_text
 
-                    # Regex matching tags: {{type:id|text}}
-                    # Group 1 = type, Group 2 = id, Group 3 = text
-                    pattern = r"\{\{(char|loc|item|lore|group|foreshadow|twist|quicknote|time|relationship):([^|]+)\|([^}]+)\}\}"
-                    
-                    def replacer(match):
-                        tag_type = match.group(1)
-                        old_id_str = match.group(2)
-                        text = match.group(3)
-
-                        # Match tag types to the table whose id the tag actually carries.
-                        # NOTE: a {{foreshadow:N}} tag's N is the TWIST id it foreshadows
-                        # (see chapters.py _update_foreshadowings, which inserts it as
-                        # foreshadowings.twist_id) — NOT a foreshadowings row id. So it must
-                        # remap against 'twists', same as {{twist:N}}. Mapping it to
-                        # 'foreshadowings' silently mis-converted foreshadow markers.
-                        table_map = {
-                            "char": "characters",
-                            "loc": "locations",
-                            "item": "lore_entities",
-                            "lore": "lore_entities",
-                            "group": "groups",
-                            "foreshadow": "twists",
-                            "twist": "twists"
-                        }
-                        
-                        table_key = table_map.get(tag_type)
-                        
-                        # Only convert if the ID is purely digits (meaning it's an old integer key)
-                        if old_id_str.isdigit() and table_key:
-                            old_id = int(old_id_str)
-                            new_uuid = mappings.get(table_key, {}).get(old_id)
-                            if new_uuid:
-                                return f"{{{{{tag_type}:{new_uuid}|{text}}}}}"
-                        
-                        # Return original if not remapped
-                        return match.group(0)
-
-                    new_md_content = re.sub(pattern, replacer, md_content)
-                    
-                    with open(file_path, "w", encoding="utf-8") as f:
-                        f.write(new_md_content)
-                except Exception as e:
-                    print(f"Warning: Failed to update entity tags in markdown file {file_name}: {e}")
-
-        # 7. Finalize database swap
-        shutil.move(temp_db_path, db_path)
+        # 7. Swap in the new database, then write the files and the descriptor.
+        # If any of it fails, the files and the database are put back.
+        _swap_database(temp_db_path, db_path)
+        swapped = True
+        written = []
+        try:
+            for file_path, text in rewritten.items():
+                with open(file_path + ".mig", "w", encoding="utf-8", newline="") as f:
+                    f.write(text)
+                os.replace(file_path + ".mig", file_path)
+                written.append(file_path)
+            with open(json_path, "w", encoding="utf-8") as f:
+                json.dump({
+                    "project_name": os.path.basename(project_path),
+                    "schema_version": 2,
+                    "created_version": "1.2.0",
+                    "last_opened_version": "2.0.0",
+                    "project_id": str(uuid.uuid4())
+                }, f, indent=2)
+        except Exception:
+            for file_path in written:
+                with open(file_path, "w", encoding="utf-8", newline="") as f:
+                    f.write(originals[file_path])
+            for file_path in rewritten:
+                if os.path.exists(file_path + ".mig"):
+                    os.remove(file_path + ".mig")
+            if os.path.exists(json_path):
+                os.remove(json_path)
+            raise
         shutil.rmtree(temp_project_dir)
-
-        # 8. Create fleshnote_project.json descriptor file
-        with open(json_path, "w", encoding="utf-8") as f:
-            json.dump({
-                "project_name": os.path.basename(project_path),
-                "schema_version": 2,
-                "created_version": "1.2.0",
-                "last_opened_version": "2.0.0",
-                "project_id": str(uuid.uuid4())
-            }, f, indent=2)
 
         result = {"status": "ok", "message": "Project database and markdown files migrated successfully to Schema version 2."}
         if integrity_orphans:
@@ -433,12 +485,13 @@ def migrate_project(project_path: str) -> dict:
             old_conn.close()
         except:
             pass
-        # Rollback: restore backup
-        if os.path.exists(db_backup_path):
+        # Rollback: the old database is untouched unless the new one was already
+        # swapped in; then the backup goes back (stale WAL files purged first).
+        if swapped and os.path.exists(db_backup_path):
             try:
-                shutil.copy2(db_backup_path, db_path)
-            except:
-                pass
+                restore_db_file(project_path, db_backup_path)
+            except Exception as restore_err:
+                print(f"Warning: Failed to restore the database backup: {restore_err}")
         if os.path.exists(temp_project_dir):
             try:
                 shutil.rmtree(temp_project_dir)

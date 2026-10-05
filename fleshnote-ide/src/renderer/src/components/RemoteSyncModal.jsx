@@ -178,7 +178,7 @@ export default function RemoteSyncModal({ isOpen, onClose, projectPath, onSyncCo
 
   return (
     <div className="settings-modal-overlay">
-      <div className="settings-modal" style={{ width: '92vw', maxWidth: 1080, height: '85vh', display: 'flex', flexDirection: 'column', padding: 0, overflow: 'hidden', borderRadius: 8 }}>
+      <div className="settings-modal" style={{ width: '92vw', maxWidth: 1080, height: '85vh', display: 'flex', flexDirection: 'column', padding: 0, overflow: 'hidden' }}>
 
         {/* Header */}
         <div style={{ display: 'flex', alignItems: 'center', gap: 12, padding: '16px 24px', borderBottom: '1px solid var(--border-subtle)', flexShrink: 0 }}>
@@ -204,7 +204,7 @@ export default function RemoteSyncModal({ isOpen, onClose, projectPath, onSyncCo
             <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', flex: 1, gap: 16 }}>
               {qrDataUrl && (
                 <img src={qrDataUrl} alt="QR pairing code" width={260} height={260}
-                  style={{ borderRadius: 8, border: '1px solid var(--border-subtle)', background: '#fff', padding: 8 }} />
+                  style={{ border: '1px solid var(--border-subtle)', background: '#fff', padding: 8 }} />
               )}
               <div style={{ fontSize: 14, color: 'var(--text-primary)', textAlign: 'center' }}>
                 {t('remoteSyncModal.scanPrompt', 'Scan this with the FleshNote companion app on your phone.')}
@@ -268,7 +268,7 @@ export default function RemoteSyncModal({ isOpen, onClose, projectPath, onSyncCo
           )}
 
           {phase === 'error' && (
-            <div style={{ display: 'flex', gap: 12, background: 'rgba(255,82,82,0.1)', border: '1px solid #ff5252', borderRadius: 6, padding: 14, color: '#ff8a80', fontSize: 13, alignItems: 'center' }}>
+            <div style={{ display: 'flex', gap: 12, background: 'rgba(255,82,82,0.1)', border: '1px solid #ff5252', padding: 14, color: '#ff8a80', fontSize: 13, alignItems: 'center' }}>
               <Icons.Alert /><div>{error}</div>
             </div>
           )}

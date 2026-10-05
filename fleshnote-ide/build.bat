@@ -22,7 +22,13 @@ if exist "venv" (
 
 if not exist ".venv\Scripts\activate.bat" (
     echo Python venv not found - creating backend\.venv ...
-    python -m venv .venv
+    REM The pins target Python 3.13; prefer it over whatever "python" is on PATH.
+    py -3.13 -c "" >nul 2>&1
+    if !ERRORLEVEL! equ 0 (
+        py -3.13 -m venv .venv
+    ) else (
+        python -m venv .venv
+    )
     if !ERRORLEVEL! neq 0 (
         echo ERROR: Failed to create venv. Is Python 3.13 on PATH?
         popd

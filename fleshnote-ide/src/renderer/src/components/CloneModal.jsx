@@ -99,7 +99,7 @@ export default function CloneModal({ isOpen, onClose, mode, projectPath, workspa
 
   return (
     <div className="settings-modal-overlay">
-      <div className="settings-modal" style={{ width: '92vw', maxWidth: 520, display: 'flex', flexDirection: 'column', padding: 0, overflow: 'hidden', borderRadius: 8 }}>
+      <div className="settings-modal" style={{ width: '92vw', maxWidth: 520, display: 'flex', flexDirection: 'column', padding: 0, overflow: 'hidden' }}>
         <div style={{ display: 'flex', alignItems: 'center', gap: 12, padding: '16px 24px', borderBottom: '1px solid var(--border-subtle)' }}>
           <h2 style={{ fontSize: 16, fontWeight: 600, color: 'var(--text-primary)', margin: 0, flex: 1 }}>{title}</h2>
           <button onClick={() => handleClose(phase === 'done')} style={{ background: 'transparent', border: 'none', color: 'var(--text-tertiary)', cursor: 'pointer', padding: 4, display: 'flex' }}>
@@ -114,7 +114,7 @@ export default function CloneModal({ isOpen, onClose, mode, projectPath, workspa
 
           {phase === 'waiting' && (
             <>
-              {qrDataUrl && <img src={qrDataUrl} alt="QR pairing code" width={260} height={260} style={{ borderRadius: 8, border: '1px solid var(--border-subtle)', background: '#fff', padding: 8 }} />}
+              {qrDataUrl && <img src={qrDataUrl} alt="QR pairing code" width={260} height={260} style={{ border: '1px solid var(--border-subtle)', background: '#fff', padding: 8 }} />}
               <div style={{ fontSize: 14, color: 'var(--text-primary)', textAlign: 'center' }}>{scanPrompt}</div>
               <div style={{ fontSize: 12, color: 'var(--text-tertiary)', textAlign: 'center' }}>{t('cloneModal.sameNetwork', 'Both devices need to be on the same Wi-Fi network.')}</div>
               {session?.hosts?.length > 0 && (
@@ -136,7 +136,7 @@ export default function CloneModal({ isOpen, onClose, mode, projectPath, workspa
           )}
 
           {phase === 'error' && (
-            <div style={{ display: 'flex', gap: 12, background: 'rgba(255,82,82,0.1)', border: '1px solid #ff5252', borderRadius: 6, padding: 14, color: '#ff8a80', fontSize: 13, alignItems: 'center' }}>{error}</div>
+            <div style={{ display: 'flex', gap: 12, background: 'rgba(255,82,82,0.1)', border: '1px solid #ff5252', padding: 14, color: '#ff8a80', fontSize: 13, alignItems: 'center' }}>{error}</div>
           )}
         </div>
 

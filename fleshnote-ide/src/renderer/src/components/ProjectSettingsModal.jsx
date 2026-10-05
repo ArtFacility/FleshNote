@@ -10,8 +10,10 @@ const SupportBadge = ({ level }) => {
     return null;
 };
 
+// Rows with `group` start a section of the table.
 const NLP_FEATURE_MATRIX = [
     { key: 'humanUi', label: 'Human-translated UI', en: 'full', hu: 'full', pl: 'partial', ar: 'none' },
+    { group: 'analysis', label: 'Analysis' },
     { key: 'ner', label: 'Entity name recognition (NER)', en: 'full', hu: 'full', pl: 'partial', ar: 'partial' },
     { key: 'sensory', label: 'Sensory check', en: 'full', hu: 'full', pl: 'none', ar: 'none' },
     { key: 'typo', label: 'Typo check', en: 'full', hu: 'full', pl: 'full', ar: 'full' },
@@ -19,8 +21,11 @@ const NLP_FEATURE_MATRIX = [
     { key: 'flesch', label: 'Flesch-Kincaid readability', en: 'full', hu: 'partial', pl: 'partial', ar: 'partial' },
     { key: 'passive', label: 'Janitor: Passive voice check', en: 'full', hu: 'full', pl: 'none', ar: 'none' },
     { key: 'showDontTell', label: "Janitor: Show don't tell check", en: 'full', hu: 'full', pl: 'none', ar: 'none' },
-    { key: 'locgen', label: 'Location name generation', en: 'full', hu: 'full', pl: 'full', ar: 'none' },
     { key: 'voiceConsist', label: 'Character voice consistency', en: 'soon', hu: 'soon', pl: 'soon', ar: 'soon' },
+    { group: 'generators', label: 'Generators' },
+    // the Story Architect's idea sparks (utils/madlibs): language packs with their own grammar
+    { key: 'brainstorm', label: 'Brainstorm engine (story ideas, characters, places)', en: 'full', hu: 'full', pl: 'full', ar: 'none' },
+    { key: 'locgen', label: 'Location name generation', en: 'full', hu: 'full', pl: 'full', ar: 'none' },
 ];
 
 const EditableHotkeyRow = ({ hotkeyKey, action, hotkeys, editingHotkey, pendingKey, setEditingHotkey, setPendingKey, onSave }) => (
@@ -508,7 +513,13 @@ export default function ProjectSettingsModal({ isOpen, onClose, projectPath, onC
                                             </tr>
                                         </thead>
                                         <tbody>
-                                            {NLP_FEATURE_MATRIX.map(row => (
+                                            {NLP_FEATURE_MATRIX.map(row => row.group ? (
+                                                <tr key={row.group}>
+                                                    <td colSpan={5} style={{ padding: '12px 4px 4px', fontSize: 10, fontFamily: 'var(--font-mono)', letterSpacing: '0.08em', textTransform: 'uppercase', color: 'var(--text-tertiary)', borderBottom: '1px solid var(--border-subtle)' }}>
+                                                        {t(`settings.nlpGroups.${row.group}`, row.label)}
+                                                    </td>
+                                                </tr>
+                                            ) : (
                                                 <tr key={row.key}>
                                                     <td className="nlp-matrix" style={{ padding: '5px 4px', color: 'var(--text-primary)' }}>{t(`settings.nlpFeatures.${row.key}`, row.label)}</td>
                                                     {['en', 'hu', 'pl', 'ar'].map(lang => (

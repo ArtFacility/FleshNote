@@ -30,6 +30,9 @@ fileAssociations:
     name: FleshNote Review
     description: FleshNote review file
     role: Editor
+    # Linux packages (deb, snap, flatpak) register the type through this; an AppImage
+    # registers nothing on its own
+    mimeType: application/x-fleshnote-review
 win:
   executableName: fleshnote-ide
   icon: build/icon.png

@@ -28,6 +28,7 @@
   "dependencies": {
     "@electron-toolkit/preload": "^3.0.2",
     "@electron-toolkit/utils": "^4.0.0",
+    "@floating-ui/dom": "^1.8.0",
     "@tiptap/extension-character-count": "^3.20.0",
     "@tiptap/extension-mention": "^3.20.0",
     "@tiptap/extension-placeholder": "^3.20.0",
@@ -38,6 +39,7 @@
     "electron-updater": "^6.3.9",
     "i18next": "^25.8.13",
     "kill-port": "^2.0.1",
+    "pdfjs-dist": "^6.4.299",
     "qrcode": "^1.5.4",
     "react-i18next": "^16.5.4",
     "recharts": "^3.8.0",

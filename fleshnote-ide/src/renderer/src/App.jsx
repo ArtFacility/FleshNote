@@ -8,6 +8,7 @@ import ReviewerIDE from './components/ReviewerIDE'
 import IncomingReviewModal from './components/IncomingReviewModal'
 import TitleBar from './components/TitleBar'
 import { applyToProject } from './utils/pentimentoVerification'
+import { installCloseGuard } from './utils/closeGuard'
 import { useTranslation } from 'react-i18next'
 
 import './index.css'
@@ -29,6 +30,8 @@ export default function App() {
   const viewRef = useRef({ currentView, activeProject, workspacePath })
   viewRef.current = { currentView, activeProject, workspacePath }
   const { i18n } = useTranslation()
+
+  useEffect(() => installCloseGuard(), [])
 
   useEffect(() => {
     window.api.getGlobalConfig().then((config) => {

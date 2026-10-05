@@ -19,6 +19,7 @@ hidden_imports = [
     'routes.annotations',
     'routes.settings',
     'routes.export',
+    'routes.cover',
     'routes.sync',
     'routes.remote_sync',
     'remote_sync_session',
@@ -44,20 +45,9 @@ hidden_imports = [
     'uvicorn.protocols.websockets.auto',
     'uvicorn.lifespan',
     'uvicorn.lifespan.on',
-    # reportlab barcode submodules — dynamically imported, PyInstaller can't trace them
-    'reportlab.graphics.barcode.code128',
-    'reportlab.graphics.barcode.code39',
-    'reportlab.graphics.barcode.code93',
-    'reportlab.graphics.barcode.common',
-    'reportlab.graphics.barcode.eanbc',
-    'reportlab.graphics.barcode.qr',
-    'reportlab.graphics.barcode.widgets',
-    'reportlab.graphics.barcode.dmtx',
-    'reportlab.graphics.barcode.ecc200datamatrix',
-    'reportlab.graphics.barcode.fourstate',
-    'reportlab.graphics.barcode.lto',
-    'reportlab.graphics.barcode.usps',
-    'reportlab.graphics.barcode.usps4s',
+    'export.document',
+    # Hyphenation for print exports (dictionaries are collected below)
+    'pyphen',
     # NLTK synonyms
     'routes.synonyms',
     'nltk_manager',
@@ -74,7 +64,8 @@ hidden_imports = [
 ]
 
 datas = [
-    ('export/templates/manuscript.css', 'export/templates'),
+    # Crimson Pro, embedded in HTML and PDF exports
+    ('export/templates/fonts', 'export/templates/fonts'),
     # Bundled NLTK WordNet data — English synonyms available offline
     ('nltk_data', 'nltk_data'),
     # Name generator datasets (presets and real name lists)
@@ -93,6 +84,7 @@ hidden_imports.extend(collect_submodules('numpy'))
 
 # Bundle phunspell Hunspell dictionaries (.dic/.aff files)
 datas += collect_data_files('phunspell')
+datas += collect_data_files('pyphen')
 hidden_imports.extend(collect_submodules('spacy'))
 hidden_imports.extend(collect_submodules('thinc'))
 

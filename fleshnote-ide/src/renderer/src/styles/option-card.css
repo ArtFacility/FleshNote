@@ -1,0 +1,172 @@
+/* Choice cards in "which kind?" popups (export, sync, new book): OptionCard.jsx */
+
+.option-card {
+  display: flex;
+  align-items: flex-start;
+  gap: 14px;
+  width: 100%;
+  padding: 16px 18px;
+  text-align: start;
+  background: var(--bg-surface);
+  border: 1px solid var(--border-subtle);
+  border-radius: 0;
+  color: var(--text-primary);
+  cursor: pointer;
+  transition: border-color 0.15s ease, background 0.15s ease;
+}
+
+.option-card:hover:not(:disabled),
+.option-card:focus-visible {
+  background: var(--bg-elevated);
+  border-color: var(--accent-amber);
+  outline: none;
+}
+
+.option-card:disabled {
+  opacity: 0.55;
+  cursor: wait;
+}
+
+.option-card-icon {
+  flex-shrink: 0;
+  margin-top: 2px;
+  display: flex;
+  color: var(--accent-amber);
+}
+
+.option-card-text {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  min-width: 0;
+}
+
+.option-card-title {
+  font-family: var(--font-sans);
+  font-size: 14px;
+  font-weight: 600;
+}
+
+.option-card-desc {
+  font-family: var(--font-sans);
+  font-size: 12px;
+  line-height: 1.5;
+  color: var(--text-tertiary);
+}
+
+/* the chooser popups that hold option cards: hard edges, never taller than the window */
+.settings-modal.option-popup {
+  width: 92vw;
+  max-width: 480px;
+  height: auto;
+  max-height: calc(100vh - 96px);
+  display: flex;
+  flex-direction: column;
+  padding: 0 !important;
+  overflow: hidden;
+  border-radius: 0 !important;
+}
+
+.option-popup-head {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 16px 24px;
+  border-bottom: 1px solid var(--border-subtle);
+  flex-shrink: 0;
+}
+
+.option-popup-head h2 {
+  flex: 1;
+  margin: 0;
+  font-size: 16px;
+  font-weight: 600;
+  color: var(--text-primary);
+}
+
+.option-popup-icon-btn {
+  display: flex;
+  padding: 4px;
+  background: transparent;
+  border: none;
+  color: var(--text-tertiary);
+  cursor: pointer;
+}
+
+.option-popup-icon-btn:hover {
+  color: var(--text-primary);
+}
+
+.option-popup-body {
+  padding: 20px 24px 24px;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  overflow-y: auto;
+}
+
+.option-popup-group {
+  margin-top: 6px;
+  padding-top: 12px;
+  border-top: 1px solid var(--border-subtle);
+  font-family: var(--font-mono);
+  font-size: 10px;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--text-tertiary);
+}
+
+.option-popup-status {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  padding: 14px;
+  border: 1px solid var(--border-default);
+  font-size: 12px;
+  color: var(--text-secondary);
+}
+
+.option-popup-status.is-done {
+  border-color: var(--accent-green);
+  background: var(--accent-green-dim);
+}
+
+.option-popup-status.is-error {
+  border-color: var(--accent-red);
+  background: var(--accent-red-dim);
+  color: var(--accent-red);
+}
+
+.option-popup-path {
+  font-family: var(--font-mono);
+  font-size: 11px;
+  color: var(--text-tertiary);
+  word-break: break-all;
+}
+
+.option-popup-working {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  padding-top: 6px;
+  font-size: 12px;
+  color: var(--text-tertiary);
+}
+
+.option-popup-spinner {
+  width: 16px;
+  height: 16px;
+  border: 2px solid var(--border-subtle);
+  border-top-color: var(--accent-amber);
+  border-radius: 50%;
+  animation: option-spin 1s linear infinite;
+}
+
+@keyframes option-spin {
+  to { transform: rotate(360deg); }
+}
+
+[dir='rtl'] .option-popup-icon-btn.is-back svg {
+  transform: scaleX(-1);
+}

@@ -114,7 +114,7 @@ export default function SyncModal({ isOpen, onClose, projectPath, onSyncComplete
 
   return (
     <div className="settings-modal-overlay">
-      <div className="settings-modal" style={{ width: '92vw', maxWidth: 1080, height: '85vh', display: 'flex', flexDirection: 'column', padding: 0, overflow: 'hidden', borderRadius: 8 }}>
+      <div className="settings-modal" style={{ width: '92vw', maxWidth: 1080, height: '85vh', display: 'flex', flexDirection: 'column', padding: 0, overflow: 'hidden' }}>
 
         {/* Header */}
         <div style={{ display: 'flex', alignItems: 'center', gap: 12, padding: '16px 24px', borderBottom: '1px solid var(--border-subtle)', flexShrink: 0 }}>
@@ -155,7 +155,7 @@ export default function SyncModal({ isOpen, onClose, projectPath, onSyncComplete
           )}
 
           {error && preview && (
-            <div style={{ display: 'flex', gap: 12, background: 'rgba(255,82,82,0.1)', border: '1px solid #ff5252', borderRadius: 6, padding: 14, color: '#ff8a80', fontSize: 13 }}>
+            <div style={{ display: 'flex', gap: 12, background: 'rgba(255,82,82,0.1)', border: '1px solid #ff5252', padding: 14, color: '#ff8a80', fontSize: 13 }}>
               <Icons.Alert /><div>{error}</div>
             </div>
           )}

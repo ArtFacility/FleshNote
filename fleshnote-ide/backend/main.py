@@ -46,6 +46,7 @@ from routes.chapter_history import router as chapter_history_router
 from routes.review_export import router as review_export_router
 from routes.review_notes import router as review_notes_router
 from routes.vault_export import router as vault_export_router
+from routes.cover import router as cover_router, front_render_path as cover_front_render
 
 app = FastAPI(title="FleshNote API")
 
@@ -85,6 +86,7 @@ app.include_router(chapter_history_router)
 app.include_router(review_export_router)
 app.include_router(review_notes_router)
 app.include_router(vault_export_router)
+app.include_router(cover_router)
 
 # Define our data models so FastAPI knows what to expect
 class WorkspaceRequest(BaseModel):
@@ -155,6 +157,7 @@ def _get_book_stats(project_path: str) -> dict:
     "finished": False,
     "book_color": None,
     "book_rune": None,
+    "cover_image": None,
   }
   db_path = os.path.join(project_path, "fleshnote.db")
   if not os.path.exists(db_path):
@@ -187,6 +190,8 @@ def _get_book_stats(project_path: str) -> dict:
   except Exception:
     pass
   stats["finished"] = stats["chapter_count"] > 0 and stats["final_count"] == stats["chapter_count"]
+  # the drawn front cover (validated: only our own file inside assets/cover)
+  stats["cover_image"] = cover_front_render(project_path)
   return stats
 
 
@@ -571,6 +576,13 @@ def get_project_config(request: ProjectConfigRequest):
           config[key] = value
       else:
         config[key] = value
+
+    # the project's id from its descriptor (the bookshelf colours an uncustomised book by it)
+    try:
+      with open(os.path.join(request.project_path, "fleshnote_project.json"), "r", encoding="utf-8") as f:
+        config.setdefault("project_id", json.load(f).get("project_id"))
+    except Exception:
+      pass
 
     return {"status": "success", "config": config}
   except Exception as e:

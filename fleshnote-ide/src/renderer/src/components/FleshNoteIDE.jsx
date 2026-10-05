@@ -570,23 +570,25 @@ export default function FleshNoteIDE({ projectConfig, projectPath, onCloseProjec
   }
 
   // ── Save chapter content ────────────────────────────
+  // chapterId is the chapter the editor was showing when the text was typed: right
+  // after a click on another chapter, activeChapter already points at that one.
   const handleEditorUpdate = useCallback(
-    async (html, wordCount) => {
-      if (!activeChapter || !projectPath) return
+    async (html, wordCount, chapterId = activeChapter?.id) => {
+      if (!chapterId || !projectPath) return
       setIsSaving(true)
       try {
         await window.api.saveChapterContent({
           project_path: projectPath,
-          chapter_id: activeChapter.id,
+          chapter_id: chapterId,
           content: html,
           word_count: wordCount
         })
         setChapters((prev) =>
-          prev.map((ch) => (ch.id === activeChapter.id ? { ...ch, word_count: wordCount } : ch))
+          prev.map((ch) => (ch.id === chapterId ? { ...ch, word_count: wordCount } : ch))
         )
         // CRITICAL: Sync the local state so navigating back and forth doesn't revert to stale data
         setChapterContent((prev) =>
-          (prev && prev.id === activeChapter.id) ? { ...prev, content: html, word_count: wordCount } : prev
+          (prev && prev.id === chapterId) ? { ...prev, content: html, word_count: wordCount } : prev
         )
       } catch (err) {
         console.error('Failed to save chapter:', err)

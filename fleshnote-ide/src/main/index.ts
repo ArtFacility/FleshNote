@@ -288,6 +288,37 @@ function destroySplash(): void {
 // ── Window ───────────────────────────────────────────────────────────────────
 
 let mainWindowRef: BrowserWindow | null = null
+// Close handshake (see createWindow): webContents id → finish the close.
+const CLOSE_GRACE_MS = 3000
+const closeWaiters = new Map<number, () => void>()
+let appQuitting = false
+app.on('before-quit', () => { appQuitting = true })
+ipcMain.on('app:close-ready', (event) => closeWaiters.get(event.sender.id)?.())
+
+// Pentimento crash backup: writing ops the backend hasn't confirmed yet, kept on disk
+// so a crash or a killed process loses about a second of the writing record.
+// Written whole each time (temp file + rename, so a kill mid-write can't corrupt it).
+const pentimentoStashPath = join(app.getPath('userData'), 'pentimento-stash.json')
+ipcMain.on('pentimento:stash-write', (_event, json) => {
+  try {
+    if (typeof json !== 'string' || json.length > 5_000_000) return
+    if (json === '{}') {
+      if (fs.existsSync(pentimentoStashPath)) fs.unlinkSync(pentimentoStashPath)
+      return
+    }
+    fs.writeFileSync(pentimentoStashPath + '.tmp', json)
+    fs.renameSync(pentimentoStashPath + '.tmp', pentimentoStashPath)
+  } catch (err) {
+    console.error('Pentimento stash write failed:', err)
+  }
+})
+ipcMain.handle('pentimento:stash-read', () => {
+  try {
+    return JSON.parse(fs.readFileSync(pentimentoStashPath, 'utf-8'))
+  } catch {
+    return {}
+  }
+})
 
 function createWindow(): void {
   const mainWindow = new BrowserWindow({
@@ -305,6 +336,26 @@ function createWindow(): void {
 
   mainWindowRef = mainWindow
   mainWindow.on('closed', () => { if (mainWindowRef === mainWindow) mainWindowRef = null })
+
+  // The backend is killed as soon as the last window closes, so give the renderer a
+  // moment to save the open chapter and seal its writing session first.
+  let closeReady = false
+  mainWindow.on('close', (event) => {
+    const wc = mainWindow.webContents
+    if (closeReady || wc.isDestroyed() || wc.isCrashed()) return
+    event.preventDefault()
+    if (closeWaiters.has(wc.id)) return
+    const finish = (): void => {
+      if (!closeWaiters.has(wc.id)) return
+      closeWaiters.delete(wc.id)
+      closeReady = true
+      if (appQuitting) app.quit()
+      else if (!mainWindow.isDestroyed()) mainWindow.close()
+    }
+    closeWaiters.set(wc.id, finish)
+    setTimeout(finish, CLOSE_GRACE_MS)
+    wc.send('app:before-close')
+  })
   mainWindow.on('ready-to-show', () => {
     mainWindow.show()
     destroySplash()
@@ -538,6 +589,12 @@ app.whenReady().then(async () => {
         console.error('Failed to copy tutorial to userData:', err)
         return sourcePath // fallback to read-only, though it might fail
       }
+    }
+    // The bundled Tutorial is a 1.x project: the user's copy is brought to the
+    // current schema before it opens (backup and rollback as for any project).
+    // Once it carries a v2 descriptor this is skipped.
+    if (!fs.existsSync(join(userDataTutorial, 'fleshnote_project.json'))) {
+      await backendPost('/api/project/migrate', { project_path: userDataTutorial })
     }
     return userDataTutorial
   })
@@ -872,8 +929,53 @@ app.whenReady().then(async () => {
     }
   })
 
+  // The backend lays a PDF out as a print document (page size, mirrored margins and
+  // page numbers in its @page CSS); Chromium prints it here.
+  async function printHtmlToPdf(html: string): Promise<Buffer> {
+    const tmp = join(app.getPath('temp'), `fleshnote-print-${crypto.randomUUID()}.html`)
+    const win = new BrowserWindow({
+      show: false,
+      webPreferences: { javascript: false, sandbox: true, contextIsolation: true }
+    })
+    try {
+      fs.writeFileSync(tmp, html, 'utf8')
+      win.webContents.on('will-navigate', (e) => e.preventDefault())
+      await win.loadFile(tmp)
+      return await win.webContents.printToPDF({
+        preferCSSPageSize: true,
+        printBackground: true,
+        generateDocumentOutline: true,
+        generateTaggedPDF: true
+      })
+    } finally {
+      win.destroy()
+      fs.rm(tmp, { force: true }, () => {})
+    }
+  }
+
+  async function printToPdfFile(html: string, filepath: string): Promise<void> {
+    fs.writeFileSync(filepath, await printHtmlToPdf(html))
+  }
+
+  // The export window's page view: the same print document as the PDF export,
+  // printed in memory so the window can show the real pages.
+  ipcMain.handle('api:exportPrintPreview', async (_event, payload) => {
+    const res = await backendPost('/api/project/export/print-preview', payload)
+    const pdf = await printHtmlToPdf(res.html)
+    return { status: 'success', pdf: new Uint8Array(pdf) }
+  })
+
   ipcMain.handle('api:exportProject', async (_event, payload) => {
-    return await backendPost('/api/project/export', payload)
+    const res = await backendPost('/api/project/export', payload)
+    if (res?.status !== 'print') return res
+    try {
+      await printToPdfFile(res.html, res.filepath)
+    } catch (err: any) {
+      console.error('PDF printing failed:', err)
+      return { status: 'error', message: `PDF printing failed: ${err.message}` }
+    }
+    const { html: _html, ...rest } = res
+    return { ...rest, status: 'success' }
   })
 
   ipcMain.handle('api:exportPreview', async (_event, payload) => {
@@ -1249,6 +1351,23 @@ app.whenReady().then(async () => {
     return filePaths[0]
   })
   ipcMain.handle('api:uploadImageRef', async (_e, p) => backendPost('/api/project/image-ref/upload', p))
+
+  // ── Book cover ────────────────────────────────────
+  ipcMain.handle('api:coverGet', async (_e, p) => backendPost('/api/project/cover/get', p))
+  ipcMain.handle('api:coverAddImage', async (_e, p) => backendPost('/api/project/cover/add-image', p))
+  ipcMain.handle('api:coverSave', async (_e, p) => backendPost('/api/project/cover/save', p))
+  ipcMain.handle('api:coverCleanup', async (_e, p) => backendPost('/api/project/cover/cleanup', p))
+  // The cover editor draws images on a canvas it saves as PNG; images loaded from
+  // fleshnote-asset:// would taint that canvas, so it gets the bytes instead.
+  // Only the project's own cover assets can be read.
+  ipcMain.handle('api:coverReadImage', async (_e, { project_path, path: rel }) => {
+    const m = /^assets\/cover\/(?:img|front|spine)_[0-9a-f]{12}\.(png|jpe?g|webp|gif|bmp)$/.exec(rel || '')
+    if (!m || typeof project_path !== 'string') return null
+    const full = join(project_path, ...rel.split('/'))
+    if (!fs.existsSync(full) || fs.lstatSync(full).isSymbolicLink()) return null
+    const ext = m[1] === 'jpg' ? 'jpeg' : m[1]
+    return { mime: `image/${ext}`, data: new Uint8Array(fs.readFileSync(full)) }
+  })
   ipcMain.handle('api:createImageRef', async (_e, p) => backendPost('/api/project/image-ref/create', p))
   ipcMain.handle('api:saveIconCrop', async (_e, p) => backendPost('/api/project/image-ref/save-icon', p))
   ipcMain.handle('api:updateImageRef', async (_e, p) => backendPost('/api/project/image-ref/update', p))

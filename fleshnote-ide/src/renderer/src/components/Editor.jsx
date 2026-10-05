@@ -1,10 +1,10 @@
 import { useEditor, EditorContent } from '@tiptap/react'
 import { EditorState } from '@tiptap/pm/state'
 import PentimentoRecorder from '../utils/pentimentoRecorder'
+import { onBeforeClose } from '../utils/closeGuard'
 import StarterKit from '@tiptap/starter-kit'
 import Placeholder from '@tiptap/extension-placeholder'
 import CharacterCount from '@tiptap/extension-character-count'
-import Underline from '@tiptap/extension-underline'
 import Mention from '@tiptap/extension-mention'
 import { EntityLinkMark } from '../extensions/EntityLinkMark'
 import { TwistLinkMark } from '../extensions/TwistLinkMark'
@@ -194,9 +194,17 @@ export default function Editor({
 }) {
   const { t, i18n } = useTranslation()
   const saveTimeoutRef = useRef(null)
+  // The save waiting for its debounce, bound to the chapter it was typed in: when the
+  // chapter changes, the parent's save handler already targets the new one.
+  const pendingSaveRef = useRef(null)
 
-  const latestContentRef = useRef({ html: '', words: 0, isDirty: false })
-  const onUpdateRef = useRef(onUpdate)
+  // Run the waiting save now. Returns its promise (or undefined when nothing waits).
+  const flushPendingSave = () => {
+    const run = pendingSaveRef.current
+    if (!run) return undefined
+    clearTimeout(saveTimeoutRef.current)
+    return run()
+  }
 
   // ── Pentimento telemetry (writing-process capture) ──────────────────────
   const pentimentoRef = useRef(null)
@@ -204,26 +212,28 @@ export default function Editor({
   if (!pentimentoRef.current) pentimentoRef.current = new PentimentoRecorder(window.api)
   const pentiEnabled = projectConfig?.pentimento_capture !== false // default on
 
-  // Open/seal a chained session as the chapter (or capture toggle) changes.
+  // Open/seal a chained session as the chapter (or capture toggle) changes. The
+  // chapter being left is saved first, so its session's closing snapshot holds the
+  // last keystrokes.
   useEffect(() => {
     const rec = pentimentoRef.current
+    const saved = flushPendingSave()
     if (chapter?.id && projectPath && pentiEnabled) {
-      rec.start(projectPath, chapter.id, true)
+      rec.start(projectPath, chapter.id, true, { beforeSeal: saved })
     } else {
-      rec.stop()
+      rec.stop({ beforeSeal: saved })
     }
   }, [chapter?.id, projectPath, pentiEnabled])
 
-  // Seal the session on unmount.
+  // Unmount (closing the project): save, then seal the session.
   useEffect(() => {
-    return () => { pentimentoRef.current?.stop() }
+    return () => {
+      const saved = flushPendingSave()
+      pentimentoRef.current?.stop({ beforeSeal: saved })
+    }
   }, [])
   const lastJanitorWordCountRef = useRef(0)
   const janitorInactivityTimerRef = useRef(null)
-
-  useEffect(() => {
-    onUpdateRef.current = onUpdate
-  }, [onUpdate])
 
   // The Janitor triggers fire from timers set during typing; calling the prop
   // captured back then would analyze the chapter as it was when the timer was
@@ -239,32 +249,18 @@ export default function Editor({
       const prev = janitorActionsRef.current || {}
       janitorActionsRef.current = {
         ...prev,
-        flushSave: async () => {
-          if (saveTimeoutRef.current) {
-            clearTimeout(saveTimeoutRef.current)
-            saveTimeoutRef.current = null
-          }
-          if (latestContentRef.current.isDirty && onUpdateRef.current) {
-            await onUpdateRef.current(latestContentRef.current.html, latestContentRef.current.words)
-            latestContentRef.current.isDirty = false
-          }
-        }
+        flushSave: async () => { await flushPendingSave() }
       }
     }
   }, [janitorActionsRef])
 
-  useEffect(() => {
-    return () => {
-      // Flush any unsaved changes on unmount
-      if (saveTimeoutRef.current) {
-        clearTimeout(saveTimeoutRef.current)
-      }
-      if (latestContentRef.current.isDirty && onUpdateRef.current) {
-        onUpdateRef.current(latestContentRef.current.html, latestContentRef.current.words)
-        latestContentRef.current.isDirty = false
-      }
-    }
-  }, [])
+  // Closing the app: save, then seal the writing session (its closing snapshot
+  // reads the saved chapter).
+  useEffect(() => onBeforeClose(async () => {
+    const saved = flushPendingSave()
+    await pentimentoRef.current?.stop({ beforeSeal: saved })
+    await saved
+  }), [])
 
   // Search state: false | 'search' | 'replace'
   const [showSearch, setShowSearch] = useState(false)
@@ -446,7 +442,6 @@ export default function Editor({
         newGroupDelay: 500
       }
     }),
-    Underline,
     Placeholder.configure({
       placeholder: t('editor.beginWriting', 'Begin writing...'),
       emptyEditorClass: 'is-editor-empty'
@@ -481,6 +476,14 @@ export default function Editor({
           beforeinput: (_view, event) => {
             const src = PentimentoRecorder.sourceForInputType(event.inputType)
             if (src) pentimentoRef.current?.hint(src)
+            return false
+          },
+          // Enter, Backspace and Delete are handled on keydown and never reach
+          // beforeinput, so they'd otherwise count as machine edits.
+          keydown: (_view, event) => {
+            if (!event.isComposing && (event.key === 'Enter' || event.key === 'Backspace' || event.key === 'Delete')) {
+              pentimentoRef.current?.hint('key')
+            }
             return false
           },
           mouseover: (view, event) => {
@@ -682,23 +685,26 @@ export default function Editor({
         }
       }
     },
-    onUpdate: ({ editor, transaction }) => {
+    onUpdate: ({ editor, transaction, appendedTransactions }) => {
       // Capture the writing process — but never the programmatic content-load.
       if (!pentiLoadingRef.current) {
-        try { pentimentoRef.current?.onTransaction(transaction) } catch { /* telemetry must never break editing */ }
+        try { pentimentoRef.current?.onTransaction(transaction, appendedTransactions) } catch { /* telemetry must never break editing */ }
       }
       if (onUpdate) {
         if (saveTimeoutRef.current) clearTimeout(saveTimeoutRef.current)
 
         const html = editor.getHTML()
         const words = editor.storage.characterCount.words()
+        // the chapter on screen, which may no longer be the one selected
+        const chapterId = chapter?.id
 
-        latestContentRef.current = { html, words, isDirty: true }
-
-        saveTimeoutRef.current = setTimeout(() => {
-          onUpdate(html, words)
-          latestContentRef.current.isDirty = false
-        }, 500)
+        const save = () => {
+          saveTimeoutRef.current = null
+          if (pendingSaveRef.current === save) pendingSaveRef.current = null
+          return onUpdate(html, words, chapterId)
+        }
+        pendingSaveRef.current = save
+        saveTimeoutRef.current = setTimeout(save, 500)
 
         // Janitor: trigger at 100-word boundaries
         const prevBoundary = Math.floor(lastJanitorWordCountRef.current / 100)
@@ -870,7 +876,13 @@ export default function Editor({
       // Suppress pentimento capture for this programmatic replacement.
       pentiLoadingRef.current = true
       try {
-        editor.commands.setContent(chapter.content || '', false)
+        // preserveWhitespace keeps the spaces the writer typed: the default HTML parsing
+        // collapses runs of spaces and drops them at the start and end of paragraphs.
+        // Newlines inside text still read as spaces.
+        editor.commands.setContent(chapter.content || '', {
+          emitUpdate: false,
+          parseOptions: { preserveWhitespace: true }
+        })
         // Reset undo/redo history so loading content does not become an undo step that can wipe the chapter
         const cleanState = EditorState.create({
           schema: editor.state.schema,
@@ -884,9 +896,14 @@ export default function Editor({
       } finally {
         setTimeout(() => { pentiLoadingRef.current = false }, 0)
       }
-      // Loading content emits no update, so the Janitor would wait for the first
-      // keystroke. Run it now: opening a chapter, a history restore or a sync
-      // reload. Unchanged paragraphs come from the analysis cache.
+      // Loading content emits no update (an update would save the loaded text and
+      // cancel the previous chapter's waiting save), so do here what typing would:
+      // count words from this chapter, re-measure the gutters, and run the Janitor
+      // (opening a chapter, a history restore or a sync reload; unchanged
+      // paragraphs come from the analysis cache).
+      lastJanitorWordCountRef.current = editor.storage.characterCount.words()
+      if (gutterMeasureTimeoutRef.current) clearTimeout(gutterMeasureTimeoutRef.current)
+      gutterMeasureTimeoutRef.current = setTimeout(() => setGutterMeasureTick(t => t + 1), 100)
       setTimeout(() => {
         if (!editor.isDestroyed) onJanitorTriggerRef.current?.(editor.getHTML())
       }, 300)

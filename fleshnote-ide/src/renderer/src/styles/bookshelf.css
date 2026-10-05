@@ -718,3 +718,27 @@
   }
   .book-sparks { display: none; }
 }
+
+/* A cover made in the cover editor replaces the drawn binding */
+.book-cover-art {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  pointer-events: none;
+}
+
+.book.has-cover-art .book-words {
+  position: relative;
+  padding: 2px 6px;
+  background: rgba(0, 0, 0, 0.55);
+  color: rgba(240, 232, 215, 0.85);
+}
+
+.book.has-cover-art .book-frame,
+.book.has-cover-art .book-rune,
+.book.has-cover-art .book-ornament,
+.book.has-cover-art .book-title {
+  display: none;
+}

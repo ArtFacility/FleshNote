@@ -1,0 +1,1 @@
+<p>{{char:1|Mara}} turned. {{twist:1|The keeper had been Joss all along.}}</p><p>* * *</p><p>The {{loc:2|Old Light}} went dark.</p>

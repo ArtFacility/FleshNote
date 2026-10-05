@@ -53,7 +53,7 @@ _RFC3339_RE = re.compile(
 # ── Models ──────────────────────────────────────────────────────────────────
 
 class Op(BaseModel):
-    timestamp: str                 # ISO local time when the run ended
+    timestamp: str                 # ISO time (UTC, 'Z') when the run ended
     op_type: str                   # 'insert' | 'delete' | 'paste' | 'pause'
     para_index: int = 0
     char_offset: int = 0
@@ -77,6 +77,9 @@ class FlushRequest(BaseModel):
     # triples (wpm clamped 10-300). Replaces the stored trace on every flush so word
     # offsets always reflect the latest deletions.
     wpm_trace: Optional[List] = None
+    # Ops recovered from a crashed run's local backup: some may already be stored,
+    # so ops whose fingerprint the session already holds are skipped.
+    recovery: bool = False
 
 
 class SessionEnd(BaseModel):
@@ -359,8 +362,13 @@ def _spawn_anchor(project_path, receipt_id):
 
 
 def _hour(ts: str) -> Optional[int]:
+    """Local hour of an op timestamp. Ops are stamped in UTC ('Z'); a timestamp
+    without an offset is taken as local already."""
     try:
-        return datetime.datetime.fromisoformat(ts.replace("Z", "")).hour
+        dt = datetime.datetime.fromisoformat(ts.replace("Z", "+00:00"))
+        if dt.tzinfo is not None:
+            dt = dt.astimezone()
+        return dt.hour
     except Exception:
         return None
 
@@ -399,11 +407,21 @@ def session_start(req: SessionStart):
     conn = _get_db(req.project_path)
     cur = conn.cursor()
     cur.execute(
-        "SELECT session_num, session_hash FROM pentimento_sessions "
+        "SELECT id, session_num, session_hash FROM pentimento_sessions "
         "WHERE chapter_id=? ORDER BY session_num DESC LIMIT 1", (req.chapter_id,))
     last = cur.fetchone()
     session_num = (last["session_num"] + 1) if last else 1
     prev_hash = last["session_hash"] if last else None
+
+    # The chapter's latest session was never sealed (the app crashed or was killed):
+    # seal it now from the ops it got, so the new session chains onto a real hash.
+    # Only the latest one — an older unsealed session already has a successor.
+    dangling_receipt = None
+    if last and not last["session_hash"]:
+        cur.execute("SELECT MAX(timestamp) t FROM pentimento_ops WHERE session_id=?", (last["id"],))
+        last_op = cur.fetchone()["t"]
+        prev_hash, _snap, dangling_receipt = _seal_session(
+            cur, req.project_path, last["id"], _local_iso(last_op) if last_op else None)
 
     session_id = _new_uuid(cur)
     cur.execute(
@@ -431,6 +449,8 @@ def session_start(req: SessionStart):
 
     conn.commit()
     conn.close()
+    if dangling_receipt:
+        _spawn_anchor(req.project_path, dangling_receipt)
     return {"session_id": session_id, "session_num": session_num,
             "previous_session_hash": prev_hash}
 
@@ -447,12 +467,26 @@ def flush(req: FlushRequest):
     conn = _get_db(req.project_path)
     cur = conn.cursor()
     # Guard: session must exist (editor may have a stale id after a clear)
-    cur.execute("SELECT 1 FROM pentimento_sessions WHERE id=?", (req.session_id,))
-    if not cur.fetchone():
+    cur.execute("SELECT session_hash FROM pentimento_sessions WHERE id=?", (req.session_id,))
+    sess = cur.fetchone()
+    if not sess:
         conn.close()
         raise HTTPException(status_code=404, detail="Unknown session_id")
+    # A sealed session's hash covers exactly the ops it had; anything arriving later
+    # would make it fail verification.
+    if sess["session_hash"]:
+        conn.close()
+        raise HTTPException(status_code=409, detail="Session already sealed")
 
-    if req.ops:
+    ops = req.ops
+    if ops and req.recovery:
+        cur.execute(
+            "SELECT op_type, para_index, char_offset, length, text_content, timestamp "
+            "FROM pentimento_ops WHERE session_id=?", (req.session_id,))
+        have = {_op_fingerprint(r) for r in cur.fetchall()}
+        ops = [op for op in ops if _op_fingerprint(op.model_dump()) not in have]
+
+    if ops:
         def _norm_source(op):
             s = (op.source or "").lower()
             if s in ("human", "paste", "machine"):
@@ -461,7 +495,7 @@ def flush(req: FlushRequest):
         rows = [(req.session_id, req.chapter_id, op.timestamp, op.op_type, op.para_index,
                  op.char_offset, op.length, op.text_content, op.duration_ms, "desktop",
                  _norm_source(op))
-                for op in req.ops]
+                for op in ops]
         cur.executemany(
             "INSERT INTO pentimento_ops "
             "(session_id, chapter_id, timestamp, op_type, para_index, char_offset, length, "
@@ -484,34 +518,47 @@ def flush(req: FlushRequest):
 
     conn.commit()
     conn.close()
-    return {"status": "ok", "written": len(req.ops)}
+    return {"status": "ok", "written": len(ops)}
 
 
-@router.post("/api/project/pentimento/session/end")
-def session_end(req: SessionEnd):
-    conn = _get_db(req.project_path)
-    cur = conn.cursor()
-    cur.execute("SELECT previous_session_hash, chapter_id FROM pentimento_sessions WHERE id=?", (req.session_id,))
+def _op_fingerprint(o) -> str:
+    """One op's line in the session hash (the recorder computes the same string)."""
+    return (f"{o['op_type']}|{o['para_index']}|{o['char_offset']}|{o['length']}|"
+            f"{o['text_content'] or ''}|{o['timestamp']}")
+
+
+def _local_iso(ts: str) -> Optional[str]:
+    """An op timestamp (UTC) as the naive local time session rows use."""
+    try:
+        dt = datetime.datetime.fromisoformat(ts.replace("Z", "+00:00"))
+        if dt.tzinfo is not None:
+            dt = dt.astimezone().replace(tzinfo=None)
+        return dt.isoformat()
+    except Exception:
+        return None
+
+
+def _seal_session(cur, project_path: str, session_id: str, end_time: Optional[str] = None):
+    """Hash a session's ops onto its predecessor's hash, close it, snapshot the
+    chapter and queue a seal receipt. Returns (session_hash, snapshot_id, receipt_id);
+    the caller commits and then anchors the receipt."""
+    cur.execute("SELECT previous_session_hash, chapter_id FROM pentimento_sessions WHERE id=?",
+                (session_id,))
     sess = cur.fetchone()
-    if not sess:
-        conn.close()
-        raise HTTPException(status_code=404, detail="Unknown session_id")
-
     cur.execute(
         "SELECT op_type, para_index, char_offset, length, text_content, timestamp "
-        "FROM pentimento_ops WHERE session_id=? ORDER BY timestamp, rowid", (req.session_id,))
+        "FROM pentimento_ops WHERE session_id=? ORDER BY timestamp, rowid", (session_id,))
     ops = cur.fetchall()
 
     h = hashlib.sha256()
     h.update((sess["previous_session_hash"] or "").encode("utf-8"))
     for o in ops:
-        fp = f"{o['op_type']}|{o['para_index']}|{o['char_offset']}|{o['length']}|{o['text_content'] or ''}|{o['timestamp']}"
-        h.update(fp.encode("utf-8"))
+        h.update(_op_fingerprint(o).encode("utf-8"))
     session_hash = h.hexdigest()
 
     cur.execute(
         "UPDATE pentimento_sessions SET end_time=?, session_hash=? WHERE id=?",
-        (datetime.datetime.now().isoformat(), session_hash, req.session_id))
+        (end_time or datetime.datetime.now().isoformat(), session_hash, session_id))
 
     # Auto-snapshot the chapter's prose at this sealed session boundary (rollback / Edit
     # History), unless the writer turned prose_history off. Best-effort: a snapshot failure
@@ -524,26 +571,46 @@ def session_end(req: SessionEnd):
         if prose_history_on:
             from routes.chapter_history import _create_snapshot
             snapshot_id = _create_snapshot(
-                cur, req.project_path, sess["chapter_id"], "session",
-                session_id=req.session_id, session_hash=session_hash)
+                cur, project_path, sess["chapter_id"], "session",
+                session_id=session_id, session_hash=session_hash)
     except Exception:
         snapshot_id = None
 
-    # Sealed Pentimento: record a 'seal' receipt for this session's chain hash and
-    # anchor it in the background (never blocks the editor).
+    # Sealed Pentimento: record a 'seal' receipt for this session's chain hash, to be
+    # anchored in the background (never blocks the editor).
     receipt_id = None
     if _verification_enabled(cur):
         try:
-            receipt_id = _insert_receipt(cur, req.session_id, sess["chapter_id"], "seal",
+            receipt_id = _insert_receipt(cur, session_id, sess["chapter_id"], "seal",
                                          session_hash, sess["previous_session_hash"])
         except Exception:
             receipt_id = None
+    return session_hash, snapshot_id, receipt_id
+
+
+@router.post("/api/project/pentimento/session/end")
+def session_end(req: SessionEnd):
+    conn = _get_db(req.project_path)
+    cur = conn.cursor()
+    cur.execute("SELECT session_hash FROM pentimento_sessions WHERE id=?", (req.session_id,))
+    sess = cur.fetchone()
+    if not sess:
+        conn.close()
+        raise HTTPException(status_code=404, detail="Unknown session_id")
+    if sess["session_hash"]:
+        # already sealed (e.g. a recovered session the next start sealed first)
+        conn.close()
+        return {"status": "ok", "session_hash": sess["session_hash"], "already_sealed": True}
+
+    session_hash, snapshot_id, receipt_id = _seal_session(cur, req.project_path, req.session_id)
+    cur.execute("SELECT COUNT(*) c FROM pentimento_ops WHERE session_id=?", (req.session_id,))
+    op_count = cur.fetchone()["c"]
 
     conn.commit()
     conn.close()
     if receipt_id:
         _spawn_anchor(req.project_path, receipt_id)
-    return {"status": "ok", "session_hash": session_hash, "op_count": len(ops),
+    return {"status": "ok", "session_hash": session_hash, "op_count": op_count,
             "snapshot_id": snapshot_id, "receipt_id": receipt_id}
 
 

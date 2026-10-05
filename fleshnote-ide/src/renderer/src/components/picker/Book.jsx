@@ -20,6 +20,8 @@ export default function Book({
   const words = project.word_count || 0
   const finished = !!project.finished
   const migrate = !!project.needs_migration
+  // a cover made in the cover editor replaces the drawn binding
+  const coverArt = project.cover_image ? `fleshnote-asset://load/${project.cover_image.replace(/\\/g, '/')}` : null
   const wordsLabel = t('picker.shelf.words', '{{n}} words', { n: words.toLocaleString(i18n.language) })
 
   const title = [
@@ -33,7 +35,7 @@ export default function Book({
 
   return (
     <div
-      className={`book ${finished ? 'is-finished' : ''} ${migrate ? 'needs-migration' : ''} ${dragging ? 'is-dragging' : ''} ${preview ? 'is-preview' : ''}`}
+      className={`book ${coverArt ? 'has-cover-art' : ''} ${finished ? 'is-finished' : ''} ${migrate ? 'needs-migration' : ''} ${dragging ? 'is-dragging' : ''} ${preview ? 'is-preview' : ''}`}
       style={{
         '--book-color': bookColor(project),
         '--book-depth': `${bookDepth(words)}px`,
@@ -63,6 +65,7 @@ export default function Book({
     >
       <div className="book-body">
         <div className="book-cover">
+          {coverArt && <img className="book-cover-art" src={coverArt} alt="" draggable={false} />}
           <span className="book-hinge" />
           <span className="book-frame" />
           {project.book_rune

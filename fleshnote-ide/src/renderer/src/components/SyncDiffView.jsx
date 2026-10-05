@@ -87,7 +87,7 @@ export default function SyncDiffView({
               const res = resolutions[conflict.chapter_id]
               const isOpen = openConflict === conflict.chapter_id
               return (
-                <div key={conflict.chapter_id} style={{ border: `1px solid ${isOpen ? '#ffb300' : 'var(--border-subtle)'}`, borderRadius: 6, background: 'var(--bg-surface)', overflow: 'hidden' }}>
+                <div key={conflict.chapter_id} style={{ border: `1px solid ${isOpen ? '#ffb300' : 'var(--border-subtle)'}`, borderRadius: 0, background: 'var(--bg-surface)', overflow: 'hidden' }}>
                   <div style={{ display: 'flex', alignItems: 'center', gap: 12, padding: '12px 16px' }}>
                     <div style={{ flex: 1, minWidth: 0 }}>
                       <div style={{ fontSize: 14, fontWeight: 600, color: 'var(--text-primary)' }}>{conflict.title}</div>
@@ -155,7 +155,7 @@ export default function SyncDiffView({
                           <textarea
                             value={customTexts[conflict.chapter_id] ?? ''}
                             onChange={(e) => setCustom(conflict.chapter_id, e.target.value)}
-                            style={{ width: '100%', minHeight: 140, padding: 10, background: 'rgba(0,0,0,0.2)', border: '1px solid var(--border-subtle)', borderRadius: 4, color: 'var(--text-primary)', fontFamily: 'var(--font-mono)', fontSize: 12, resize: 'vertical', outline: 'none', lineHeight: 1.5 }}
+                            style={{ width: '100%', minHeight: 140, padding: 10, background: 'rgba(0,0,0,0.2)', border: '1px solid var(--border-subtle)', borderRadius: 0, color: 'var(--text-primary)', fontFamily: 'var(--font-mono)', fontSize: 12, resize: 'vertical', outline: 'none', lineHeight: 1.5 }}
                           />
                         </div>
                       )}
@@ -172,7 +172,7 @@ export default function SyncDiffView({
       {preview.prose_takes.filter(p => p.direction === 'remote_to_local').length > 0 && (
         <div style={{ display: 'flex', flexDirection: 'column', gap: 8 }}>
           <h3 style={{ fontSize: 13, color: 'var(--text-secondary)', margin: 0 }}>{t('syncModal.chapterUpdatesHead', 'Chapter updates from the other copy')}</h3>
-          <div style={{ background: 'var(--bg-surface)', border: '1px solid var(--border-subtle)', borderRadius: 6 }}>
+          <div style={{ background: 'var(--bg-surface)', border: '1px solid var(--border-subtle)', borderRadius: 0 }}>
             {preview.prose_takes.filter(p => p.direction === 'remote_to_local').map((take, idx, arr) => (
               <div key={take.chapter_id} style={{ display: 'flex', alignItems: 'center', gap: 10, padding: '10px 16px', borderBottom: idx < arr.length - 1 ? '1px solid var(--border-subtle)' : 'none', fontSize: 14, color: 'var(--text-primary)' }}>
                 {take.title}
@@ -186,7 +186,7 @@ export default function SyncDiffView({
       {groupedChanges.length > 0 && (
         <div style={{ display: 'flex', flexDirection: 'column', gap: 8 }}>
           <h3 style={{ fontSize: 13, color: 'var(--text-secondary)', margin: 0 }}>{t('syncModal.worldChangesHead', 'Character & world changes')}</h3>
-          <div style={{ background: 'var(--bg-surface)', border: '1px solid var(--border-subtle)', borderRadius: 6, maxHeight: 260, overflowY: 'auto' }}>
+          <div style={{ background: 'var(--bg-surface)', border: '1px solid var(--border-subtle)', borderRadius: 0, maxHeight: 260, overflowY: 'auto' }}>
             {groupedChanges.map((g, idx) => (
               <div key={g.key} style={{ display: 'flex', alignItems: 'center', gap: 10, padding: '9px 16px', borderBottom: idx < groupedChanges.length - 1 ? '1px solid var(--border-subtle)' : 'none', fontSize: 13.5 }}>
                 <span style={{ width: 7, height: 7, borderRadius: '50%', background: actionColor(g.action), flexShrink: 0 }} />

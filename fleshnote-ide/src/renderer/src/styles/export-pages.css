@@ -1,0 +1,269 @@
+/* Export window: the real printed pages, shown as book spreads (BookPages.jsx). */
+
+.xp-pages {
+  display: flex;
+  flex-direction: column;
+  flex: 1;
+  min-height: 0;
+  outline: none;
+}
+
+.xp-stage {
+  position: relative;
+  flex: 1;
+  min-height: 260px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background:
+    radial-gradient(ellipse at 50% 40%, rgba(255, 255, 255, 0.035), transparent 70%),
+    var(--bg-deep);
+  border: 1px solid var(--border-subtle);
+  overflow: hidden;
+}
+
+.xp-message {
+  color: var(--text-tertiary);
+  font-family: var(--font-mono);
+  font-size: 11px;
+  padding: 24px;
+  text-align: center;
+}
+
+.xp-busy {
+  position: absolute;
+  top: 10px;
+  inset-inline-start: 50%;
+  transform: translateX(-50%);
+  padding: 4px 10px;
+  background: var(--bg-elevated);
+  border: 1px solid var(--border-default);
+  color: var(--text-secondary);
+  font-family: var(--font-mono);
+  font-size: 10px;
+  letter-spacing: 0.05em;
+}
+
+.xp-spread {
+  position: relative;
+  display: flex;
+  /* pages are physical: a left page stays on the left in every UI direction */
+  direction: ltr;
+  transition: opacity 0.2s ease;
+}
+
+.xp-stage.is-loading .xp-spread {
+  opacity: 0.55;
+}
+
+.xp-page-slot {
+  position: relative;
+  flex: none;
+}
+
+.xp-page {
+  display: block;
+  background: #fff;
+}
+
+.xp-spread.is-book .xp-page-slot:has(.xp-page) {
+  box-shadow: 0 10px 28px rgba(0, 0, 0, 0.45), 0 2px 6px rgba(0, 0, 0, 0.35);
+}
+
+.xp-spread.is-sheets .xp-page-slot:has(.xp-page) {
+  box-shadow: 0 6px 18px rgba(0, 0, 0, 0.4);
+}
+
+/* the paper curving into the binding */
+.xp-spread.is-book .xp-page-slot.is-left:has(.xp-page)::after,
+.xp-spread.is-book .xp-page-slot.is-right:has(.xp-page)::after {
+  content: '';
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  width: 9%;
+  pointer-events: none;
+}
+
+.xp-spread.is-book .xp-page-slot.is-left::after {
+  right: 0;
+  background: linear-gradient(to left, rgba(0, 0, 0, 0.16), rgba(0, 0, 0, 0.04) 45%, transparent);
+}
+
+.xp-spread.is-book .xp-page-slot.is-right::after {
+  left: 0;
+  background: linear-gradient(to right, rgba(0, 0, 0, 0.16), rgba(0, 0, 0, 0.04) 45%, transparent);
+}
+
+.xp-spine {
+  position: absolute;
+  top: 0;
+  left: 50%;
+  width: 2px;
+  margin-left: -1px;
+  background: rgba(0, 0, 0, 0.28);
+  pointer-events: none;
+}
+
+/* text-block guides */
+.xp-guides {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+}
+
+.xp-textblock {
+  position: absolute;
+  outline: 1px dashed rgba(212, 160, 82, 0.85);
+  outline-offset: 0;
+}
+
+.xp-gutter {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  background: repeating-linear-gradient(
+    -45deg,
+    rgba(212, 160, 82, 0.13) 0 3px,
+    transparent 3px 7px
+  );
+}
+
+.xp-gutter.is-left { left: 0; }
+.xp-gutter.is-right { right: 0; }
+
+/* navigation */
+.xp-nav {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 12px 2px 0;
+}
+
+.xp-nav-btn {
+  flex: none;
+  width: 28px;
+  height: 28px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: transparent;
+  border: 1px solid var(--border-default);
+  color: var(--text-secondary);
+  cursor: pointer;
+}
+
+.xp-nav-btn:hover:not(:disabled) {
+  border-color: var(--accent-amber);
+  color: var(--accent-amber);
+}
+
+[dir='rtl'] .xp-nav-btn svg {
+  transform: scaleX(-1);
+}
+
+.xp-nav-btn:disabled {
+  opacity: 0.35;
+  cursor: default;
+}
+
+.xp-scrub {
+  position: relative;
+  flex: 1;
+  height: 28px;
+  display: flex;
+  align-items: center;
+}
+
+.xp-scrub input[type='range'] {
+  width: 100%;
+  margin: 0;
+  accent-color: var(--accent-amber);
+  cursor: pointer;
+}
+
+.xp-ticks {
+  position: absolute;
+  inset-inline: 7px;
+  top: 0;
+  height: 7px;
+}
+
+.xp-tick {
+  position: absolute;
+  top: 0;
+  width: 2px;
+  height: 7px;
+  margin-inline-start: -1px;
+  background: var(--text-tertiary);
+  cursor: pointer;
+}
+
+.xp-tick:hover {
+  background: var(--accent-amber);
+  height: 9px;
+}
+
+.xp-count {
+  flex: none;
+  min-width: 78px;
+  text-align: end;
+  color: var(--text-tertiary);
+  font-family: var(--font-mono);
+  font-size: 11px;
+}
+
+/* one-line specs under the pages */
+.xp-specs {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px 16px;
+  padding-top: 10px;
+  color: var(--text-tertiary);
+  font-family: var(--font-mono);
+  font-size: 10px;
+  letter-spacing: 0.03em;
+}
+
+.xp-specs b {
+  color: var(--text-secondary);
+  font-weight: 500;
+}
+
+.xp-specs .is-warn b {
+  color: var(--accent-red);
+}
+
+/* cover tab: the closed book opens the cover editor */
+.xp-cover-stage {
+  flex: 1;
+  min-height: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 24px;
+  background: transparent;
+  border: 1px solid var(--border-subtle);
+  cursor: pointer;
+  transition: border-color 0.15s ease;
+}
+
+.xp-cover-stage:hover {
+  border-color: var(--accent-amber);
+}
+
+.xp-cover-stage svg {
+  max-height: 100%;
+}
+
+.xp-cover-edit {
+  margin-inline-start: auto;
+  background: none;
+  border: none;
+  padding: 0;
+  color: var(--accent-amber);
+  font-family: var(--font-mono);
+  font-size: 11px;
+  text-decoration: underline;
+  cursor: pointer;
+}
