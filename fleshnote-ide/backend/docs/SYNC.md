@@ -124,14 +124,28 @@ into local** (run it on each machine with roles swapped to converge both ways). 
 3. **Entities**: apply each winning remote field change (UPDATE existing rows, or INSERT the
    remote row when it doesn't exist locally), and copy the winning remote `change_log` rows in
    (`INSERT OR IGNORE`) so they're marked seen.
-4. **Prose**: for each clean `remote_to_local` take, copy the remote `md` file over local and
-   copy its prose-hash log. For each conflict, write the resolved text (local / remote /
-   merged), record remote's hash as a seen ancestor, then `log_change` a **fresh** `prose_hash`
-   and update `word_count`.
-5. **Recompute derived data** for every touched chapter — `_update_entity_appearances`,
+   **Chapter numbers** are UNIQUE (deleted rows included), so they can't be applied row by row:
+   a reorder on the other device would collide. Deleted chapters are parked on negative numbers
+   first; incoming numbers go in at a temporary band; then `settle_chapter_numbers`
+   (`chapter_numbers.py`) numbers the live chapters 1..N. Chapters keep the numbers they were
+   given; when two want the same one (both devices added a chapter), the one that already held
+   it comes first. Numbers that end up differing from the merged log are logged, so the other
+   device receives them. The companion's engine does the same (`lib/services/chapter_numbers.dart`).
+4. **Writing-process history** (`process_history.py`, `PENTIMENTO.md` §8): import the other
+   side's sealed Pentimento sessions, their ops, snapshots and receipts from its database.
+   These tables never merge through the `change_log`; the import checks every hash it can
+   recompute, takes only other devices' rows, never deletes, and only moves receipts forward.
+5. **Prose**: first seal this device's open writing session on every chapter about to change.
+   For each clean `remote_to_local` take, copy the remote `md` file over local, copy its
+   prose-hash log, and add a `sync` snapshot if no snapshot holds that text yet. For each
+   conflict, write the resolved text (local / remote / merged), record remote's hash as a seen
+   ancestor, then `log_change` a **fresh** `prose_hash` and update `word_count`, and record a
+   **merge session** on this device's chain (one `merge` op naming the other devices' chain
+   heads and the merged text's hash, plus a `merge` snapshot), so the join is sealed.
+6. **Recompute derived data** for every touched chapter — `_update_entity_appearances`,
    `_update_foreshadowings`, `_update_knowledge_offsets`, `_update_relationship_offsets`
    (reused from `routes/chapters.py`).
-6. **Advance the version vector** and commit.
+7. **Advance the version vector** and commit, then anchor any receipts the sealing queued.
 
 **Safety:** the whole apply runs in one transaction. On any error it rolls back, **restores
 `fleshnote.db` from the `.bak`**, and raises; on success the `.bak` is removed. So a failed
@@ -251,9 +265,9 @@ over the phone's own `fleshnote.db`. **The companion must feed it into its own s
 project folders via its own connections") and pull it in the same directional way the desktop
 pulled the phone's upload in step 3. A raw overwrite of the phone's `fleshnote.db` would:
 
-- destroy the phone's device-local `pentimento_sessions` / `pentimento_ops` /
-  `chapter_snapshots` (never part of `change_log`, see `PENTIMENTO.md` §7 — they're local
-  history, not sync state), and
+- destroy the phone's own `pentimento_sessions` / `pentimento_ops` / `chapter_snapshots` /
+  `server_receipts` (never part of `change_log`; each side imports the other's with its own
+  checks, see `PENTIMENTO.md` §8), and
 - clobber the phone's own `sync_meta` (`last_hlc`, `version_vector`), breaking future syncs.
 
 So: desktop pulls phone in (steps 3-4), then phone pulls desktop in (step 5) — the same

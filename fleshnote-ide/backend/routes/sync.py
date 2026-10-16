@@ -25,6 +25,7 @@ from fastapi import APIRouter, HTTPException
 from pydantic import BaseModel
 from typing import Dict
 
+import sync_core
 from sync_core import log_change
 from project_io import md_filename_ok, safe_md_path
 
@@ -78,9 +79,11 @@ def _ensure_newer_tables(cursor) -> None:
     """Tables created on demand (not by every older schema) must exist locally
     before the allowlist is built, or remote rows for them would be skipped
     while the version vector still advances, i.e. lost for this peer."""
-    from db_setup import ensure_pulse_corrections, ensure_review_tables
+    from db_setup import (ensure_pulse_corrections, ensure_process_history_schema,
+                          ensure_review_tables)
     ensure_pulse_corrections(cursor)
     ensure_review_tables(cursor)
+    ensure_process_history_schema(cursor, sync_core.DEVICE_ID)
 
 
 def _schema_allowlist(conn) -> Dict[str, set]:
@@ -449,11 +452,16 @@ def sync_preview(req: SyncPreviewRequest):
         entity_changes, security_warnings = _compute_entity_changes(
             cl, cr, unseen_remote, unseen_local, allow)
         takes, conflicts = _compute_prose_plan(cl, cr, req.local_path, req.remote_path)
+        from process_history import import_process_history
+        _, _, remote_device = _load_meta(cr)
+        history = import_process_history(cl, cr, sync_core.DEVICE_ID, remote_device, dry_run=True)
 
         summary = _entity_summary(entity_changes)
         summary["prose_takes_remote"] = sum(1 for t in takes if t["direction"] == "remote_to_local")
         summary["prose_takes_local"] = sum(1 for t in takes if t["direction"] == "local_to_remote")
         summary["prose_conflicts"] = len(conflicts)
+        summary["history_sessions"] = history["sessions"] + history["replaced"]
+        summary["history_snapshots"] = history["snapshots"]
 
         return {
             "status": "ok",
@@ -464,6 +472,7 @@ def sync_preview(req: SyncPreviewRequest):
             "prose_conflicts": conflicts,
             "summary": summary,
             "security_warnings": security_warnings,
+            "process_history": history,
         }
     finally:
         local_conn.close()
@@ -513,8 +522,17 @@ def sync_apply(req: SyncApplyRequest):
         _repair_poisoned_md_filenames(cl, req.local_path)
         # Deleted chapters give up their numbers before incoming numbers land
         # (chapter_number is UNIQUE across deleted rows too).
-        from chapter_numbers import park_deleted_chapter_numbers
+        from chapter_numbers import (MERGE_NUMBER_BAND, park_deleted_chapter_numbers,
+                                     settle_chapter_numbers, wanted_number)
         park_deleted_chapter_numbers(cl)
+
+        # Incoming chapter numbers land in a temporary band and are settled once
+        # every row is in: a reorder applied row by row would collide on UNIQUE.
+        wanted_numbers = {}
+
+        def _number_in_band(row_id, value):
+            wanted_numbers[row_id] = wanted_number(value)
+            return MERGE_NUMBER_BAND + len(wanted_numbers)
 
         # group changes per row for clean insert/update
         rows_to_apply = {}
@@ -527,6 +545,8 @@ def sync_apply(req: SyncApplyRequest):
 
         for (table_name, row_id), field_vals in rows_to_apply.items():
             pk_col = _pk_col(table_name)
+            if table_name == "chapters" and "chapter_number" in field_vals:
+                field_vals["chapter_number"] = _number_in_band(row_id, field_vals["chapter_number"])
             cl.execute(f"SELECT 1 FROM {table_name} WHERE {pk_col} = ?", (row_id,))
             exists = cl.fetchone() is not None
             if exists:
@@ -551,6 +571,10 @@ def sync_apply(req: SyncApplyRequest):
                     for c, v in field_vals.items():
                         if c in cols:
                             vals[cols.index(c)] = v
+                    if table_name == "chapters" and "chapter_number" in cols \
+                            and "chapter_number" not in field_vals:
+                        idx = cols.index("chapter_number")
+                        vals[idx] = _number_in_band(row_id, vals[idx])
                     if not cols:
                         continue
                     cl.execute(
@@ -568,9 +592,30 @@ def sync_apply(req: SyncApplyRequest):
                         (lg["table_name"], lg["row_id"], lg["column_name"], lg["value"],
                          lg["hlc"], lg["device_id"], lg["origin"]))
 
+        if wanted_numbers:
+            park_deleted_chapter_numbers(cl)  # chapters this merge deleted
+            settle_chapter_numbers(cl, wanted_numbers)
+
+        # 1.6 Writing-process history: the other side's sealed sessions, their ops,
+        # snapshots and receipts (process_history.py). Before the prose so a merge
+        # below can name the chains it joins.
+        from process_history import (import_process_history, record_merge,
+                                     seal_own_dangling, snapshot_if_new)
+        device = sync_core.DEVICE_ID
+        history = import_process_history(cl, cr, device, remote_device)
+        receipts_to_anchor = []
+
         # 2. Prose plan (same open cursors — no nested endpoint call)
         takes, conflicts = _compute_prose_plan(cl, cr, req.local_path, req.remote_path)
         touched = set()
+
+        # A session this device still has open on a chapter the sync is about to
+        # change is sealed first, so its closing snapshot holds this device's text.
+        for chap_id in {t["chapter_id"] for t in takes if t["direction"] == "remote_to_local"}                 | {c["chapter_id"] for c in conflicts}:
+            rid = seal_own_dangling(cl, req.local_path, chap_id, device)
+            if rid:
+                receipts_to_anchor.append(rid)
+        remote_prose = _prose_history(cr)
 
         def _copy_remote_prose_log(chap_id):
             cr.execute(
@@ -596,6 +641,8 @@ def sync_apply(req: SyncApplyRequest):
                 shutil.copy2(rpath, lpath)
                 _copy_remote_prose_log(take["chapter_id"])
                 touched.add(take["chapter_id"])
+                # a replay frame for the text taken, unless one already holds it
+                snapshot_if_new(cl, req.local_path, take["chapter_id"], "sync")
 
         # Reference-image assets. image_references rows merge through the
         # change_log above, but the files live in assets/. Copy any remote asset
@@ -655,6 +702,14 @@ def sync_apply(req: SyncApplyRequest):
             log_change(cl, "chapters", chap_id, {"prose_hash": new_hash})
             touched.add(chap_id)
 
+            # Seal the join on this device's chain: a merge session naming the other
+            # devices' chain heads and the merged text.
+            _sid, merge_receipts = record_merge(
+                cl, req.local_path, chap_id, device,
+                choice if choice in ("local", "remote") else "merged", resolved,
+                theirs=(remote_prose.get(chap_id) or {}).get("latest"))
+            receipts_to_anchor.extend(merge_receipts)
+
         # 3. Recompute derived data for touched chapters
         from routes.chapters import (
             _update_entity_appearances, _update_foreshadowings,
@@ -683,7 +738,11 @@ def sync_apply(req: SyncApplyRequest):
         cl.execute("UPDATE sync_meta SET version_vector=? WHERE id=1", (json.dumps(local_vv),))
 
         local_conn.commit()
-        return {"status": "ok"}
+        if receipts_to_anchor:
+            from routes.pentimento import _spawn_anchor
+            for rid in receipts_to_anchor:
+                _spawn_anchor(req.local_path, rid)
+        return {"status": "ok", "process_history": history}
 
     except Exception as e:
         try:

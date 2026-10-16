@@ -24,7 +24,7 @@ const Icons = {
 
 const POLL_MS = 2000
 
-export default function RemoteSyncModal({ isOpen, onClose, projectPath, onSyncComplete }) {
+export default function RemoteSyncModal({ isOpen, onClose, projectPath, onSyncComplete, onBeforeSync }) {
   const { t } = useTranslation()
 
   // phase: starting | waiting | ready | applying | applied | done | error | expired
@@ -73,6 +73,9 @@ export default function RemoteSyncModal({ isOpen, onClose, projectPath, onSyncCo
 
     const start = async () => {
       try {
+        // the open chapter is saved and its writing session sealed before the
+        // phone's copy is compared with it
+        await onBeforeSync?.()
         const data = await window.api.remoteSyncStart({ project_path: projectPath })
         setSession(data)
         const payload = JSON.stringify({

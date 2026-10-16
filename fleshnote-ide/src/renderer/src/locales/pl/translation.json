@@ -1430,7 +1430,9 @@
     "restoreConfirm": "Zastąpić bieżący tekst tą wersją?",
     "restoreYes": "Przywróć",
     "cancel": "Anuluj",
-    "beforeLinking": "Przed połączeniem nazw"
+    "beforeLinking": "Przed połączeniem nazw",
+    "merged": "Wersje scalone",
+    "fromSync": "Z innego urządzenia"
   },
   "pentimento": {
     "untitled": "Bez tytułu",
@@ -1481,6 +1483,10 @@
     "thisDevice": "To urządzenie",
     "deviceLabel": "Urządzenie {{id}}",
     "deviceUnknown": "Nieznane urządzenie",
+    "deviceDesktop": "Komputer",
+    "devicePhone": "Telefon",
+    "mergeStep": "Wersje scalone",
+    "branchSwitch": "Od wcześniejszej wersji",
     "byDevice": "Według urządzenia",
     "sessionStart": "Sesja {{n}} — początek",
     "srcHuman": "Pisane",

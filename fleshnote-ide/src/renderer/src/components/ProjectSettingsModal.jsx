@@ -10,6 +10,12 @@ const SupportBadge = ({ level }) => {
     return null;
 };
 
+// Sealed Pentimento opt-ins are stored as 'true'/'false' strings (the same
+// convention as pentimentoVerification.applyToProject and the companion app).
+// Rows written earlier with the 'toggle' type come back from get_project_config
+// already parsed to booleans, so accept both when reading.
+const optInOn = (value) => value === true || String(value).toLowerCase() === 'true'
+
 // Rows with `group` start a section of the table.
 const NLP_FEATURE_MATRIX = [
     { key: 'humanUi', label: 'Human-translated UI', en: 'full', hu: 'full', pl: 'partial', ar: 'none' },
@@ -432,10 +438,10 @@ export default function ProjectSettingsModal({ isOpen, onClose, projectPath, onC
                                     onToggleCapture={() => handleUpdate('pentimento_capture', config.pentimento_capture === false, 'toggle')}
                                     historyOn={config.prose_history !== false}
                                     onToggleHistory={() => handleUpdate('prose_history', config.prose_history === false, 'toggle')}
-                                    verificationOn={config.pentimento_verification === 'true'}
-                                    onToggleVerification={() => handleUpdate('pentimento_verification', config.pentimento_verification !== 'true', 'toggle')}
-                                    externalTsaOn={config.pentimento_external_tsa === 'true'}
-                                    onToggleExternalTsa={() => handleUpdate('pentimento_external_tsa', config.pentimento_external_tsa !== 'true', 'toggle')}
+                                    verificationOn={optInOn(config.pentimento_verification)}
+                                    onToggleVerification={() => handleUpdate('pentimento_verification', optInOn(config.pentimento_verification) ? 'false' : 'true', 'string')}
+                                    externalTsaOn={optInOn(config.pentimento_external_tsa)}
+                                    onToggleExternalTsa={() => handleUpdate('pentimento_external_tsa', optInOn(config.pentimento_external_tsa) ? 'false' : 'true', 'string')}
                                 />
                             </div>
                         )}

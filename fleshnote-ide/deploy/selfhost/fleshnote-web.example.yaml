@@ -1,0 +1,25 @@
+# FleshNote in a browser on your own server (VPS_DEPLOY.md). Copy to
+# /etc/fleshnote-web/fleshnote-web.yaml, then set the account with:
+#   sudo /opt/fleshnote/fleshnote-ide/backend/.venv/bin/python \
+#        /opt/fleshnote/fleshnote-ide/backend/web_main.py set-password --config /etc/fleshnote-web/fleshnote-web.yaml
+
+# Where you open it. A path works too (https://example.com/fleshnote/), see the Caddyfile.
+public_url: https://write.example.com/
+
+# The loopback port your reverse proxy passes to.
+port: 8100
+
+# Your projects, uploads and exports. Back this folder up.
+data_dir: /var/lib/fleshnote-web
+
+# The built pages (npm run build:web).
+web_dir: /opt/fleshnote/fleshnote-ide/out/web
+
+# How long a sign-in lasts, in days.
+session_days: 30
+
+# Written by set-password: the name, the password's hash, and the key that signs sessions.
+# Keep this file private (root:fleshnote, mode 640).
+username:
+password_hash:
+session_secret:

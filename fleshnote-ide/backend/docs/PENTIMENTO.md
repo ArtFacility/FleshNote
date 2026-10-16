@@ -69,10 +69,11 @@ assisted mix, appearing as paragraphs are written and vanishing when they're del
 ### Sessions
 
 A writing session opens when you start editing a chapter and is **sealed** at session end
-into **`pentimento_sessions`**: `session_num` (per-chapter ordinal), `start_time`/`end_time`,
-and a SHA-256 chain (`previous_session_hash` -> `session_hash`) so the process log is
-tamper-evident. Old sessions can be **compacted** — their raw ops are pruned and replaced by
-aggregate totals in `summary_json`.
+into **`pentimento_sessions`**: `session_num` (chapter-wide ordinal over all devices),
+`start_time`/`end_time`, `device_id` + `device_kind` (`desktop` | `mobile`), and a SHA-256
+chain (`previous_session_hash` -> `session_hash`) so the process log is tamper-evident. Each
+device has its own chain per chapter (see §8). Old sessions can be **compacted** — their raw
+ops are pruned and replaced by aggregate totals in `summary_json` (merge sessions never are).
 
 Switching chapters, closing the project and closing the app all save the chapter first
 and then seal its session, so the closing snapshot holds the last keystrokes. Closing the
@@ -84,8 +85,9 @@ typing in the new chapter already goes to the next session.
 `userData/pentimento-stash.json` (written by the main process, so a killed renderer or
 app loses about a second). The next start delivers them with `recovery: true` (ops whose
 fingerprint the session already holds are skipped) and seals the session. If that never
-happens, `session/start` seals the chapter's latest unsealed session from the ops it has,
-closed at its last op, and chains the new one onto it. Older unsealed sessions are left
+happens, `session/start` seals this device's latest unsealed session on the chapter from the
+ops it has, closed at its last op, and chains the new one onto it. Another device's session
+is never sealed here. Older unsealed sessions are left
 alone: they already have a successor. A flush into a sealed session is refused (409), and
 ending a sealed session again changes nothing.
 
@@ -97,8 +99,8 @@ pauses restart the word clock so their dead time never deflates the next words' 
 and pastes emit cap-speed (300) samples. The recorder is authoritative: every flush
 **replaces** the stored trace, and the replay matches its diffed
 words to samples by `(para, word_offset)` — so even messy sessions with rewrites stay
-aligned. The trace lives on the session row, so it survives compaction and never syncs
-(device-local, like all pentimento data).
+aligned. The trace lives on the session row, so it survives compaction and travels with the
+session when a sync imports it (§8).
 
 ---
 
@@ -121,8 +123,8 @@ anything that needs *actual old text* (rollback, replay frames) relies on real s
 That's **`chapter_snapshots`**: the chapter's markdown, zlib-compressed, captured at natural
 checkpoints. `kind` is one of:
 
-- `session` — auto-captured at session end (deduped on `prose_hash` so idle sessions don't
-  create duplicates). Gated by `prose_history`. The same hook also fires at **session start**
+- `session` — auto-captured at session end (deduped on `prose_hash` against this device's
+  latest snapshot, so idle sessions don't create duplicates). Gated by `prose_history`. The same hook also fires at **session start**
   (`pentimento.py` `session_start`), giving every session a baseline "before" frame: a fresh
   chapter snapshots as an empty page, so its first writing session replays as typed text
   instead of appearing at once, and old chapters get an honest pre-session state to diff
@@ -132,6 +134,10 @@ checkpoints. `kind` is one of:
 - `pre_restore` — a safety copy taken just before a restore, so restores are undoable.
 - `pre_link` — a copy taken before the name finder linked character and place names in the
   chapter.
+- `merge` — the merged text, taken by the merge session a sync records after resolving a
+  prose conflict (§8).
+- `sync` — text a sync took from another device, when no snapshot (this device's or an
+  imported one) already holds it.
 
 The auto-capture hooks live in `pentimento.py` `session/start` + `session/end`; the latest
 editor save is flushed to the `md/` file before the session-end snapshot is taken so it
@@ -161,12 +167,21 @@ op-paced overlay*:
 1. **Base — snapshots.** The session snapshots (oldest -> newest, then the live chapter as the
    final frame) are the timeline. Because content always comes from real snapshots, the replay
    is guaranteed to converge on the exact current chapter text.
-2. **Inline diff.** Consecutive snapshots are diffed at the paragraph level
+2. **Parent frames.** Devices write in parallel, so each frame is diffed against the frame it
+   was written from, not simply the previous one (`replayParents` in `PentimentoTab.jsx`):
+   another device's frame with exactly this text (a sync brought it in), else the session's
+   own start frame, else the latest frame of the session its chain continues from
+   (`previous_session_hash`), else the device's own previous frame. When that parent isn't
+   what's on screen, the replay switches copies first ("Phone · From an earlier version").
+   Each stretch shows a desktop or phone icon with the device's name (Desktop, Desktop 2,
+   Phone, Phone 2 — numbered per kind by first session), the timeline gets a tick wherever
+   the writing moves to another device, and merge frames play as "Copies merged".
+3. **Inline diff.** Each frame is diffed against its parent at the paragraph level
    (`diffParagraphs`), and *modified* paragraphs are further reduced to their minimal changed
    span via common prefix/suffix trimming (`diffInline`, in `utils/proseDiff.js`). The
    animation deletes just the old span and types just the new one, leaving the rest of the
    paragraph steady — so a one-word edit reads as a one-word edit, not a full-line rewrite.
-3. **Pacing overlay.** For each transition, the typing rhythm comes from the originating
+4. **Pacing overlay.** For each transition, the typing rhythm comes from the originating
     session with a three-tier fallback: the session's `wpm_trace` (per-word speeds, via
     `pentimentoOps`' `wpm_by_session`; words past the trace default to 40 WPM) → the raw
     `pentimento_ops` cadence (per-run `duration_ms`, when the volumes match the diffed
@@ -268,13 +283,73 @@ ships alongside it.
 
 ---
 
-## 8. Related tables
+## 8. Several devices
+
+Writing done on any device (desktop, phone, a second desktop) ends up in the project on
+every device, and every receipt already issued stays valid. Code: `backend/process_history.py`.
+
+**One chain per device per chapter.** A new session links to this device's latest session on
+the chapter. A device's first session there links to the newest sealed session any device
+left (the text it started from), or to nothing on a fresh chapter. Nothing else is hashed, so
+existing data already fits: sessions are never rehashed. Two devices can share a
+`session_num` after a merge; nothing relies on it being unique.
+
+**Sync imports process history.** `pentimento_*`, `chapter_snapshots` and `server_receipts`
+never merge through the `change_log` (a forged log row can't touch them). Instead, after the
+entity merge and before the prose, `sync_apply` imports the other side's history from its
+database (`import_process_history`):
+
+| Rows | Rule |
+| --- | --- |
+| Sessions | Sealed, from another device, inserted when absent. The hash is recomputed from the incoming ops (a session that never had ops hashes its predecessor alone; a compacted one is taken as is) and must match. A copy this device holds is replaced only when it is unsealed, or when the owning device sends its own version (older phones sealed the desktop's open session themselves) and none of the owner's sessions held here already continues from the copy. |
+| Ops | Only for sessions inserted or replaced, in the sender's `(timestamp, rowid)` order so the hash recomputes here too. |
+| Snapshots | Other devices' snapshots, inserted when absent, after checking `prose_hash` against the decompressed text (64 MB cap). |
+| Receipts | For sessions held here, inserted when absent. An existing one only moves forward: `pending`/`failed` -> `anchored` (shape-checked). `forked` is never touched. |
+
+Nothing is deleted. Ids this device removed on purpose (Clear history, Prune, Clear process
+data) go into `process_history_tombstones` and are never imported again. The preview counts
+what would come in (`summary.history_sessions`, `summary.history_snapshots`).
+
+**Anchoring.** The TSA is idempotent per `(hash, previous_hash)`, so either device may anchor
+the other's pending receipts; the owner later gets the identical receipt back.
+
+**Before a sync.** The desktop saves the open chapter and seals its writing session when a
+sync or clone opens, and starts a new session after the sync (and the reload) is done, so
+text a sync brings in is never recorded as typed here. As a backstop, `sync_apply` seals this
+device's open session on every chapter whose prose it is about to change.
+
+**Concurrent edits: merge sessions.** When a sync resolves a prose conflict (both devices
+changed the chapter), the applying device records a **merge session** on its own chain: one
+op of type `merge` (`length` 0, `source` `machine`) whose text is JSON —
+`{"merge":1,"heads":[other devices' chain head hashes],"prose_hash":<merged text>,"resolution":"local"|"remote"|"merged","theirs":<other side's prose hash>}` —
+plus a `merge` snapshot of the merged text. The session hash covers that op, so the join of
+the chains is sealed and anchored like any other session. A clean take (only one side
+changed) needs no merge session: the other device's frames already show the text, and a
+`sync` snapshot is added only if none does. Merge ops are left out of the heatmap, word
+totals and replay pacing.
+
+**Verification.** Both verifiers group sessions by `(chapter, device)` and follow links by
+hash: a session must link to its device's previous session, or (first on the chapter) to
+nothing or another device's sealed session. If that starting point isn't in the project
+(projects cloned by phone builds from before 2026-10-07, which sealed a desktop session left
+open in the clone themselves), it is a warning, not a failure: the device's own chain is
+intact. A merge naming a head that isn't in the project is reported. Output lists one line
+per device chain.
+
+**Known gaps.**
+- Phone ops number list paragraphs one by one; desktop ops count a list as one block. Until
+  they're translated, phone ops (and phone compacted aggregates) stay out of the heatmap and
+  the replay's op pacing. Snapshot frames are unaffected.
+- `start_time` and snapshot `created_at` are local times without a zone on both sides, so
+  frames from devices in different time zones can be ordered slightly wrong.
+
+## 9. Related tables
 
 See `DATABASE_SCHEMA.md` §28 `pentimento_sessions`, §29 `pentimento_ops`,
 §30 `chapter_snapshots`, and §27 `change_log` / §31 `sync_meta` (the sync ancestry that
 restore writes into).
 
-## 9. Key files
+## 10. Key files
 
 | File | Role |
 | ---- | ---- |
@@ -285,3 +360,4 @@ restore writes into).
 | `src/renderer/src/components/PentimentoSettings.jsx` | Toggles, storage, compaction UI |
 | `backend/routes/pentimento.py` | Sessions, ops, heatmap, summary, compaction |
 | `backend/routes/chapter_history.py` | Snapshots: list/preview/pin/restore/prune |
+| `backend/process_history.py` | Chain rules, sync import of other devices' history, merge sessions |

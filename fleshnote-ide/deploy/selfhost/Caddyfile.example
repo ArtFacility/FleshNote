@@ -1,0 +1,14 @@
+# Caddy gets and renews the HTTPS certificate by itself. Use one of the two blocks.
+
+# FleshNote on a subdomain of its own (public_url: https://write.example.com/)
+write.example.com {
+	reverse_proxy 127.0.0.1:8100
+}
+
+# Or under a path of a site you already have (public_url: https://example.com/fleshnote/)
+# example.com {
+# 	redir /fleshnote /fleshnote/
+# 	handle_path /fleshnote/* {
+# 		reverse_proxy 127.0.0.1:8100
+# 	}
+# }

@@ -82,8 +82,19 @@ from PyInstaller.utils.hooks import collect_submodules, collect_data_files
 
 hidden_imports.extend(collect_submodules('numpy'))
 
-# Bundle phunspell Hunspell dictionaries (.dic/.aff files)
-datas += collect_data_files('phunspell')
+# Bundle the Hunspell dictionaries (.dic/.aff files) of the languages FleshNote spell-checks
+# (LANG_MAP in routes/spellcheck.py and routes/janitor.py); phunspell ships 56, about 200 MB.
+SPELL_DICTIONARIES = {'en', 'ar', 'hu_HU', 'pl_PL'}
+
+
+def _wanted_phunspell_file(dest):
+    parts = dest.replace(os.sep, '/').split('/')
+    if 'dictionary' not in parts or parts[-1] == 'dictionary':
+        return True
+    return parts[parts.index('dictionary') + 1] in SPELL_DICTIONARIES
+
+
+datas += [(src, dest) for src, dest in collect_data_files('phunspell') if _wanted_phunspell_file(dest)]
 datas += collect_data_files('pyphen')
 hidden_imports.extend(collect_submodules('spacy'))
 hidden_imports.extend(collect_submodules('thinc'))
@@ -94,7 +105,7 @@ a = Analysis(
     binaries=[],
     datas=datas,
     hiddenimports=hidden_imports,
-    hookspath=[],
+    hookspath=['pyinstaller_hooks'],  # hook-nltk.py: no build-machine NLTK data in the bundle
     hooksconfig={},
     runtime_hooks=[],
     excludes=[

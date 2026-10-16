@@ -1,0 +1,7 @@
+# FleshNote in a browser, on Seneschal Labs (the seneschal repo: docs/MULTI_DEVICE.md, "Labs").
+# scripts/deploy-labs.mjs puts this folder on the home server as /srv/labs/fleshnote/, with the
+# browser build in web/ and the backend in backend/; ./run starts the backend.
+title: FleshNote
+description: the IDE in a browser, backend on the home server
+backend: 127.0.0.1:8100
+backend_paths: [/api/]

@@ -1375,7 +1375,9 @@
     "restoreConfirm": "استبدال النص الحالي بهذا الإصدار؟",
     "restoreYes": "استعادة",
     "cancel": "إلغاء",
-    "beforeLinking": "قبل ربط الأسماء"
+    "beforeLinking": "قبل ربط الأسماء",
+    "merged": "دُمجت النسخ",
+    "fromSync": "من جهاز آخر"
   },
   "pentimento": {
     "untitled": "بدون عنوان",
@@ -1426,6 +1428,10 @@
     "thisDevice": "هذا الجهاز",
     "deviceLabel": "الجهاز {{id}}",
     "deviceUnknown": "جهاز غير معروف",
+    "deviceDesktop": "الحاسوب",
+    "devicePhone": "الهاتف",
+    "mergeStep": "دُمجت النسخ",
+    "branchSwitch": "من نسخة سابقة",
     "byDevice": "حسب الجهاز",
     "sessionStart": "الجلسة {{n}} — البداية",
     "srcHuman": "مكتوب",

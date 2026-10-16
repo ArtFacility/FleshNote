@@ -5,24 +5,65 @@ import fs from 'fs'
 import { electronApp, optimizer, is } from '@electron-toolkit/utils'
 import icon from '../../resources/icon.png?asset'
 import { spawn, ChildProcessWithoutNullStreams } from 'child_process'
-import killPort from 'kill-port'
+import { createServer, AddressInfo } from 'net'
 import { autoUpdater } from 'electron-updater'
 
 let pythonProcess: ChildProcessWithoutNullStreams | null = null
 let backendStderr = ''
+let backendPort = 8000
+let backendUrl = `http://127.0.0.1:${backendPort}`
 const globalConfigPath = join(app.getPath('userData'), 'fleshnote_config.json')
-const BACKEND_URL = 'http://127.0.0.1:8000'
+
+function isPortAvailable(port: number, host = '127.0.0.1'): Promise<boolean> {
+  return new Promise((resolve) => {
+    const server = createServer()
+    server.unref()
+    server.once('error', () => {
+      resolve(false)
+    })
+    server.listen(port, host, () => {
+      server.close(() => resolve(true))
+    })
+  })
+}
+
+async function findAvailablePort(preferredPort = 8000, host = '127.0.0.1'): Promise<number> {
+  if (process.env.FLESHNOTE_PORT) {
+    const envPort = parseInt(process.env.FLESHNOTE_PORT, 10)
+    if (!isNaN(envPort) && envPort > 0) {
+      if (await isPortAvailable(envPort, host)) {
+        return envPort
+      }
+      console.warn(`FLESHNOTE_PORT (${envPort}) is busy, searching for an available port...`)
+    }
+  }
+
+  // Try preferred port (default 8000) and consecutive ports in a small pool
+  for (let port = preferredPort; port < preferredPort + 20; port++) {
+    if (await isPortAvailable(port, host)) {
+      return port
+    }
+  }
+
+  // Fallback to any OS-assigned ephemeral port
+  return new Promise((resolve, reject) => {
+    const server = createServer()
+    server.unref()
+    server.once('error', reject)
+    server.listen(0, host, () => {
+      const address = server.address() as AddressInfo
+      const port = address.port
+      server.close(() => resolve(port))
+    })
+  })
+}
 
 import crypto from 'crypto'
 
 async function startPythonBackend() {
-  try {
-    // Attempt to kill any dangling process on port 8000 before starting
-    await killPort(8000, 'tcp')
-    console.log('Cleared port 8000 for backend startup.')
-  } catch (err) {
-    // kill-port throws an error if no process is running, which is fine
-  }
+  backendPort = await findAvailablePort(8000)
+  backendUrl = `http://127.0.0.1:${backendPort}`
+  console.log(`Allocated backend port: ${backendPort}`)
 
   // Load or generate device ID
   const deviceJsonPath = join(app.getPath('userData'), 'device.json')
@@ -45,14 +86,19 @@ async function startPythonBackend() {
     }
   }
 
-  const env = { ...process.env, FLESHNOTE_DEVICE_ID: deviceId, FLESHNOTE_APP_VERSION: app.getVersion() }
+  const env = {
+    ...process.env,
+    FLESHNOTE_DEVICE_ID: deviceId,
+    FLESHNOTE_APP_VERSION: app.getVersion(),
+    FLESHNOTE_PORT: String(backendPort)
+  }
 
   if (app.isPackaged) {
     // In production, the backend binary is placed inside resources/backend-dist
     const isWin = process.platform === 'win32'
     const backendExeName = isWin ? 'backend.exe' : 'backend'
     const backendExe = join(process.resourcesPath, 'backend-dist', backendExeName)
-    pythonProcess = spawn(backendExe, { env, windowsHide: true })
+    pythonProcess = spawn(backendExe, ['--port', String(backendPort)], { env, windowsHide: true })
   } else {
     // In development, run the python script from the virtual environment
     const isWinDev = process.platform === 'win32'
@@ -60,7 +106,7 @@ async function startPythonBackend() {
       ? join(__dirname, '../../backend/.venv/Scripts/python.exe')
       : join(__dirname, '../../backend/.venv/bin/python')
     const scriptPath = join(__dirname, '../../backend/main.py')
-    pythonProcess = spawn(pythonExe, [scriptPath], { env, windowsHide: true })
+    pythonProcess = spawn(pythonExe, [scriptPath, '--port', String(backendPort)], { env, windowsHide: true })
   }
 
   pythonProcess.stdout.on('data', (data) => {
@@ -95,13 +141,13 @@ async function startPythonBackend() {
 }
 
 async function waitForBackend(timeoutMs = 30000) {
-  console.log('Waiting for Python backend to wake up...')
+  console.log(`Waiting for Python backend to wake up on port ${backendPort}...`)
   const deadline = Date.now() + timeoutMs
   while (Date.now() < deadline) {
     try {
-      const response = await net.fetch(`${BACKEND_URL}/`)
+      const response = await net.fetch(`${backendUrl}/`)
       if (response.ok) {
-        console.log('Backend is online.')
+        console.log(`Backend is online on port ${backendPort}.`)
         return
       }
     } catch (e: any) {
@@ -110,7 +156,7 @@ async function waitForBackend(timeoutMs = 30000) {
     await new Promise((resolve) => setTimeout(resolve, 200))
   }
   throw new Error(
-    `Backend did not respond within ${timeoutMs / 1000} seconds.\n\n` +
+    `Backend did not respond on port ${backendPort} within ${timeoutMs / 1000} seconds.\n\n` +
     (backendStderr || 'No stderr output captured.')
   )
 }
@@ -155,7 +201,7 @@ function showBackendErrorWindow(details: string) {
 // ── Helper: POST to backend ──────────────────────────────────────────────────
 
 async function backendPost(path: string, body: object) {
-  const response = await net.fetch(`${BACKEND_URL}${path}`, {
+  const response = await net.fetch(`${backendUrl}${path}`, {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
     body: JSON.stringify(body)
@@ -166,7 +212,7 @@ async function backendPost(path: string, body: object) {
 }
 
 async function backendGet(path: string) {
-  const response = await net.fetch(`${BACKEND_URL}${path}`, {
+  const response = await net.fetch(`${backendUrl}${path}`, {
     method: 'GET',
     headers: { 'Content-Type': 'application/json' }
   })
@@ -416,7 +462,6 @@ protocol.registerSchemesAsPrivileged([
 // ── Opening review files ─────────────────────────────────────────────────────
 // Double-clicking a .flreview file launches FleshNote with its path (or, on
 // macOS, sends 'open-file'). Only one FleshNote runs at a time: a second launch
-// would start a second backend, which kills the first one's on port 8000, so it
 // hands its file to the running window and quits.
 const gotSingleInstanceLock = app.requestSingleInstanceLock()
 if (!gotSingleInstanceLock) app.quit()

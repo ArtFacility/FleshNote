@@ -42,10 +42,69 @@ function deviceColor(id) {
   return `hsl(${h}, 55%, 62%)`
 }
 
-function deviceLabel(id, currentDevice, t) {
+function deviceLabel(id, currentDevice, t, info) {
   if (id === 'unknown') return t('pentimento.deviceUnknown', 'Unknown device')
+  const named = deviceName(info, t)
+  if (named) return named
   if (id && id === currentDevice) return t('pentimento.thisDevice', 'This device')
   return t('pentimento.deviceLabel', 'Device {{id}}', { id: (id || '').slice(0, 8) })
+}
+
+// Desktop, Desktop 2, Phone, Phone 2: devices are numbered per kind by their first
+// session (the backend's device directory: { kind, ordinal }).
+function deviceName(info, t) {
+  if (!info || !info.ordinal) return null
+  const base = info.kind === 'mobile'
+    ? t('pentimento.devicePhone', 'Phone')
+    : t('pentimento.deviceDesktop', 'Desktop')
+  return info.ordinal > 1 ? `${base} ${info.ordinal}` : base
+}
+
+// Which earlier frame each replay frame was written from. Devices write in parallel,
+// so the chronologically previous frame is often another device's copy: diffing
+// against it would show one device "deleting" the other's work. Frames are oldest
+// first: { session_id, device_id, prose_hash, isLive }. Returns one index per frame
+// (-1 for the first). In order of preference:
+//   1. an earlier frame of ANOTHER device with exactly this text (a sync brought it in)
+//   2. the session's own start frame
+//   3. the latest frame of the session its chain continues from (previous_session_hash)
+//   4. the device's own previous frame (the live text belongs to this device)
+//   5. the previous frame
+export function replayParents(frames, sessions, currentDevice) {
+  const byId = new Map((sessions || []).map(s => [s.id, s]))
+  const byHash = new Map()
+  for (const s of sessions || []) if (s.session_hash) byHash.set(s.session_hash, s)
+  const latestBefore = (i, pred) => {
+    for (let j = i - 1; j >= 0; j--) if (pred(frames[j])) return j
+    return -1
+  }
+  return frames.map((f, i) => {
+    if (i === 0) return -1
+    const dev = f.isLive ? currentDevice : f.device_id
+    if (f.prose_hash) {
+      const j = latestBefore(i, g => g.prose_hash === f.prose_hash && g.device_id && g.device_id !== dev)
+      if (j >= 0) return j
+    }
+    if (f.session_id) {
+      const j = latestBefore(i, g => g.session_id === f.session_id)
+      if (j >= 0) return j
+      let s = byId.get(f.session_id)
+      const seen = new Set()
+      while (s && s.previous_session_hash && !seen.has(s.id)) {
+        seen.add(s.id)
+        const parent = byHash.get(s.previous_session_hash)
+        if (!parent) break
+        const k = latestBefore(i, g => g.session_id === parent.id)
+        if (k >= 0) return k
+        s = parent
+      }
+    }
+    if (dev) {
+      const j = latestBefore(i, g => g.device_id === dev)
+      if (j >= 0) return j
+    }
+    return i - 1
+  })
 }
 
 // Apply a full inlineChange edit list to a string (used for timeline scrubbing).
@@ -183,6 +242,7 @@ export default function PentimentoTab({ projectPath, chapters, projectConfig, ac
   // device's sessions too — filter the heatmap + replay by the recording device.
   const [deviceFilter, setDeviceFilter] = useState('all')
   const [hudDevice, setHudDevice] = useState(null)
+  const [hudDeviceInfo, setHudDeviceInfo] = useState(null)   // { kind, name }
 
   const [paras, setParas] = useState([])
   const [proseParas, setProseParas] = useState([])
@@ -213,12 +273,14 @@ export default function PentimentoTab({ projectPath, chapters, projectConfig, ac
     let deletedWords = 0
     let lastSessionLabel = '1'
     let lastSessionDevice = null
-    
+    let lastDeviceInfo = null
+
     for (let i = 0; i < targetIdx; i++) {
       const step = stepsList[i]
       if (step.type === 'session') {
         lastSessionLabel = step.label
         lastSessionDevice = step.deviceId || null
+        lastDeviceInfo = step.device || null
       } else if (step.type === 'set') {
         nextParas = [...step.paras]
       } else if (step.type === 'edit') {
@@ -238,6 +300,7 @@ export default function PentimentoTab({ projectPath, chapters, projectConfig, ac
     setSimDeleted(deletedWords)
     setHudSess(String(lastSessionLabel))
     setHudDevice(lastSessionDevice)
+    setHudDeviceInfo(lastDeviceInfo)
     setCaretPara(null)
   }, [])
 
@@ -256,6 +319,15 @@ export default function PentimentoTab({ projectPath, chapters, projectConfig, ac
       ])
 
       const snaps = list?.snapshots || []
+      const sessions = list?.sessions || []
+      const directory = list?.devices || {}
+      const currentDevice = list?.current_device || null
+      const sessionById = new Map(sessions.map(s => [s.id, s]))
+      const deviceOf = (devId) => {
+        if (!devId) return null
+        const info = directory[devId]
+        return { kind: info?.kind || 'desktop', name: deviceName(info, t) || deviceLabel(devId, currentDevice, t) }
+      }
       // Device filter: keep snapshots recorded by the chosen device (manual pins,
       // which have no session, always stay visible — they belong to the author).
       const visibleSnaps = deviceFilter === 'all'
@@ -275,14 +347,23 @@ export default function PentimentoTab({ projectPath, chapters, projectConfig, ac
       const states = []
       for (const s of sortedSnaps) {
         const res = await window.api.chapterHistoryPreview({ project_path: projectPath, snapshot_id: s.id })
-        states.push({ html: res?.content_html || '', session_num: s.session_num, session_id: s.session_id })
+        states.push({
+          html: res?.content_html || '', session_num: s.session_num, session_id: s.session_id,
+          device_id: s.device_id || s.snapshot_device_id || null, prose_hash: s.prose_hash,
+          isMerge: s.kind === 'merge' || !!sessionById.get(s.session_id)?.is_merge,
+        })
       }
-      states.push({ html: content?.content || '', session_num: null, session_id: null, isLive: true })
+      states.push({
+        html: content?.content || '', session_num: null, session_id: null, isLive: true,
+        device_id: currentDevice,
+      })
+      const parents = replayParents(states, sessions, currentDevice)
 
       // A session-start baseline snapshot shares its session_id with the end snapshot
       // that follows it — label it as the session's starting state, not a duplicate.
       const labelFor = (snap, ordinal, isStart) => {
         if (snap?.isLive) return t('pentimento.finalState', 'Final state')
+        if (snap?.isMerge) return t('pentimento.mergeStep', 'Copies merged')
         const n = (typeof snap?.session_num === 'number' ? snap.session_num : ordinal)
         return isStart
           ? t('pentimento.sessionStart', 'Session {{n}} — start', { n })
@@ -310,15 +391,41 @@ export default function PentimentoTab({ projectPath, chapters, projectConfig, ac
       const tallyFor = (sessionId, para) => srcTallyBySession.get(sessionId)?.[para] || null
 
       const steps = []
+      const parasOf = new Map()
+      const parasFor = (i) => {
+        if (!parasOf.has(i)) parasOf.set(i, cleanProse(states[i].html).split('\n'))
+        return parasOf.get(i)
+      }
+      let lastDevice = null
+      const sessionStep = (label, devId, extra = {}) => {
+        const device = deviceOf(devId)
+        steps.push({
+          type: 'session', label, deviceId: devId || null, device,
+          deviceChanged: !!devId && !!lastDevice && devId !== lastDevice, ...extra,
+        })
+        if (devId) lastDevice = devId
+      }
       if (states.length > 0) {
-        const firstParas = cleanProse(states[0].html).split('\n')
-        steps.push({ type: 'session', label: labelFor(states[0], 1, isStartFrame(states[0], states[1])), deviceId: visibleSnaps[0]?.device_id || null })
+        const firstParas = parasFor(0)
+        sessionStep(labelFor(states[0], 1, isStartFrame(states[0], states[1])), states[0].device_id)
         steps.push({ type: 'set', paras: firstParas })
         let currentParas = [...firstParas]
 
         for (let i = 1; i < states.length; i++) {
           const snap = states[i]
-          steps.push({ type: 'session', label: labelFor(snap, i + 1, isStartFrame(snap, states[i + 1])), deviceId: snap.device_id || null })
+          // Play this frame from the frame it was written from. When that isn't what's
+          // on screen (another device was writing in parallel), switch copies first.
+          const parent = parents[i]
+          if (parent >= 0 && parent !== i - 1) {
+            const parentParas = parasFor(parent)
+            if (parentParas.join('\n') !== currentParas.join('\n')) {
+              sessionStep(t('pentimento.branchSwitch', 'From an earlier version'), snap.device_id, { branch: true })
+              steps.push({ type: 'set', paras: [...parentParas] })
+              currentParas = [...parentParas]
+            }
+          }
+          sessionStep(labelFor(snap, i + 1, isStartFrame(snap, states[i + 1])), snap.device_id,
+            { merge: !!snap.isMerge })
 
           // Snapshot-anchored: diff full paragraph text, patch only what changed.
           const chunks = diffParagraphs(currentParas.join('\n'), cleanProse(snap.html))
@@ -392,7 +499,7 @@ export default function PentimentoTab({ projectPath, chapters, projectConfig, ac
     } finally {
       setSimLoading(false)
     }
-  }, [projectPath, chapterId, t])
+  }, [projectPath, chapterId, deviceFilter, t])
 
   const handleDeviceChange = useCallback((id) => {
     setDeviceFilter(id)
@@ -417,6 +524,7 @@ export default function PentimentoTab({ projectPath, chapters, projectConfig, ac
     setSimDeleted(0)
     setHudSess('1')
     setHudDevice(null)
+    setHudDeviceInfo(null)
     setEventText('')
     setCaretPara(null)
     setCaretOffset(0)
@@ -429,6 +537,19 @@ export default function PentimentoTab({ projectPath, chapters, projectConfig, ac
   const togglePlay = useCallback(() => {
     setIsPlaying(prev => !prev)
   }, [])
+
+  // Timeline ticks where the writing moves to another device (or merges).
+  const deviceMarks = useMemo(() => {
+    if (!simSteps || !simSteps.length) return []
+    return simSteps.map((st, index) => ({ st, index }))
+      .filter(({ st }) => st.type === 'session' && (st.deviceChanged || st.branch || st.merge))
+      .map(({ st, index }) => ({
+        index,
+        percent: (index / simSteps.length) * 100,
+        color: st.merge ? 'var(--accent-purple)' : deviceColor(st.deviceId),
+        title: st.device ? `${st.device.name} · ${st.label}` : st.label,
+      }))
+  }, [simSteps])
 
   const progressPercent = useMemo(() => {
     if (!simSteps || simSteps.length === 0) return 0
@@ -512,9 +633,11 @@ export default function PentimentoTab({ projectPath, chapters, projectConfig, ac
     const step = simSteps[currentStepIndex]
 
     if (step.type === 'session') {
-      setEventText(step.label)
+      setEventText(step.device && (step.deviceChanged || step.branch || step.merge)
+        ? `${step.device.name} · ${step.label}` : step.label)
       setHudSess(step.label)
       setHudDevice(step.deviceId || null)
+      setHudDeviceInfo(step.device || null)
       setCaretPara(null)
       simTimerRef.current = setTimeout(() => {
         setEventText('')
@@ -642,6 +765,8 @@ export default function PentimentoTab({ projectPath, chapters, projectConfig, ac
               <span style={{ flex: 1 }} />
               <span style={{ fontSize: 11, fontFamily: 'var(--font-mono)', color: 'var(--text-secondary)', background: 'var(--bg-surface)', padding: '4px 8px', borderRadius: 4, display: 'inline-flex', alignItems: 'center', gap: 6 }}>
                 <DeviceDot deviceId={deviceFilter !== 'all' ? deviceFilter : hudDevice} />
+                {hudDeviceInfo && <DeviceIcon kind={hudDeviceInfo.kind} title={hudDeviceInfo.name} />}
+                {hudDeviceInfo && <span>{hudDeviceInfo.name}</span>}
                 {hudSess}
               </span>
             </div>
@@ -754,6 +879,10 @@ export default function PentimentoTab({ projectPath, chapters, projectConfig, ac
                 </div>
                 <div style={{ height: 6, background: 'var(--line-soft, #1b2030)', borderRadius: 3, position: 'relative', overflow: 'hidden', cursor: 'pointer' }} onClick={handleTimelineScrub}>
                   <div style={{ position: 'absolute', top: 0, left: 0, bottom: 0, background: 'var(--accent-amber)', width: `${progressPercent}%`, transition: 'width 0.1s linear' }} />
+                  {deviceMarks.map(m => (
+                    <span key={m.index} title={m.title}
+                      style={{ position: 'absolute', top: 0, bottom: 0, width: 2, left: `${m.percent}%`, background: m.color }} />
+                  ))}
                 </div>
               </div>
 
@@ -856,7 +985,7 @@ export default function PentimentoTab({ projectPath, chapters, projectConfig, ac
                     <div key={id} style={{ display: 'flex', alignItems: 'center', gap: 8, fontSize: 11, fontFamily: 'var(--font-mono)' }}>
                       <span style={{ width: 8, height: 8, borderRadius: 2, background: deviceColor(id), flexShrink: 0 }} />
                       <span style={{ color: 'var(--text-secondary)', flex: 1, overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>
-                        {deviceLabel(id, S.current_device, t)}
+                        {deviceLabel(id, S.current_device, t, S.devices?.[id])}
                       </span>
                       <span style={{ color: 'var(--text-tertiary)' }}>{d.sessions} · {fmtDuration(d.time_ms)}</span>
                     </div>
@@ -893,6 +1022,27 @@ function SectionLabel({ children }) {
   return <div style={{ fontSize: 10, fontFamily: 'var(--font-mono)', letterSpacing: '.1em', textTransform: 'uppercase', color: 'var(--text-tertiary)', marginBottom: 12 }}>{children}</div>
 }
 
+// Desktop or phone glyph for a device.
+function DeviceIcon({ kind, title, size = 12 }) {
+  const common = { width: size, height: size, viewBox: '0 0 24 24', fill: 'none', stroke: 'currentColor', strokeWidth: 2, strokeLinecap: 'round', strokeLinejoin: 'round', style: { flexShrink: 0 } }
+  return kind === 'mobile'
+    ? (
+      <svg {...common} aria-label={title} role="img">
+        {title && <title>{title}</title>}
+        <rect x="6" y="2" width="12" height="20" rx="2" />
+        <line x1="11" y1="18" x2="13" y2="18" />
+      </svg>
+    )
+    : (
+      <svg {...common} aria-label={title} role="img">
+        {title && <title>{title}</title>}
+        <rect x="2" y="4" width="20" height="13" rx="1" />
+        <line x1="8" y1="21" x2="16" y2="21" />
+        <line x1="12" y1="17" x2="12" y2="21" />
+      </svg>
+    )
+}
+
 function DeviceDot({ deviceId }) {
   if (!deviceId) return null
   return <span style={{ width: 8, height: 8, borderRadius: 2, background: deviceColor(deviceId), display: 'inline-block', flexShrink: 0 }} />
@@ -912,7 +1062,7 @@ function DeviceFilterChips({ summary, deviceFilter, onChange }) {
         const active = deviceFilter === id
         const label = id === 'all'
           ? t('pentimento.allDevices', 'All devices')
-          : deviceLabel(id, summary?.current_device, t)
+          : deviceLabel(id, summary?.current_device, t, devices[id])
         return (
           <button key={id} onClick={() => onChange(id)} title={id === 'all' ? null : id}
             style={{

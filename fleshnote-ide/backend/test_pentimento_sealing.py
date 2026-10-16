@@ -83,12 +83,14 @@ class TestPentimentoSealing(unittest.TestCase):
     def test_older_unsealed_session_is_not_backfilled(self):
         s1 = self._start()["session_id"]
         conn = sqlite3.connect(self.db_path)
-        # a successor that chained to nothing, as older versions did after a crash
+        # a successor on the same device that chained to nothing, as older versions
+        # did after a crash
         s2 = str(uuid.uuid4())
         conn.execute(
             "INSERT INTO pentimento_sessions (id, chapter_id, device_id, session_num, start_time, "
             "end_time, session_hash) VALUES (?,?,?,?,?,?,?)",
-            (s2, self.ch, "d", 2, "2026-10-04T09:00:00", "2026-10-04T09:10:00", "ab" * 32))
+            (s2, self.ch, pent.sync_core.DEVICE_ID, 2, "2026-10-04T09:00:00",
+             "2026-10-04T09:10:00", "ab" * 32))
         conn.commit()
         conn.close()
         self._start()

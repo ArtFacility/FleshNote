@@ -1430,7 +1430,9 @@
     "restoreConfirm": "Lecseréled a jelenlegi szöveget erre a verzióra?",
     "restoreYes": "Visszaállítás",
     "cancel": "Mégse",
-    "beforeLinking": "A nevek összekapcsolása előtt"
+    "beforeLinking": "A nevek összekapcsolása előtt",
+    "merged": "Változatok összefésülve",
+    "fromSync": "Másik eszközről"
   },
   "pentimento": {
     "untitled": "Névtelen",
@@ -1481,6 +1483,10 @@
     "thisDevice": "Ez az eszköz",
     "deviceLabel": "Eszköz {{id}}",
     "deviceUnknown": "Ismeretlen eszköz",
+    "deviceDesktop": "Számítógép",
+    "devicePhone": "Telefon",
+    "mergeStep": "Változatok összefésülve",
+    "branchSwitch": "Egy korábbi változatból",
     "byDevice": "Eszköz szerint",
     "sessionStart": "{{n}}. írásmunka — eleje",
     "srcHuman": "Gépelve",

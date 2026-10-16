@@ -550,21 +550,27 @@ row per changed column, storing the **new value** stamped with a Hybrid Logical 
 
 One row per writing session for a chapter (the "Process" tab telemetry). Sessions are
 sealed with a SHA-256 chain hash (`previous_session_hash` -> `session_hash`) for a
-tamper-evident receipt, and their ops may later be compacted into `summary_json`.
+tamper-evident receipt, and their ops may later be compacted into `summary_json`. Each
+device has its own chain per chapter; a sync imports other devices' sealed sessions
+(`PENTIMENTO.md` §8).
 
 | Column | Type | Constraints | Description |
 | :--- | :--- | :--- | :--- |
 | `id` | TEXT | PRIMARY KEY (UUID v4) | Session ID |
 | `chapter_id` | TEXT | NOT NULL, FK -> chapters(id) ON DELETE CASCADE | |
 | `device_id` | TEXT | NOT NULL | Device the session was written on |
-| `session_num` | INTEGER | NOT NULL | Per-chapter ordinal (1, 2, 3, …) |
+| `session_num` | INTEGER | NOT NULL | Chapter-wide ordinal over all devices (1, 2, 3, …); can repeat across devices after a merge |
 | `start_time` | TEXT | NOT NULL | ISO timestamp when the session opened |
 | `end_time` | TEXT | | ISO timestamp when the session was sealed |
-| `previous_session_hash` | TEXT | | Prior session's `session_hash` (chain link) |
+| `previous_session_hash` | TEXT | | The same device's previous session's `session_hash` (chain link); for a device's first session on the chapter, the newest sealed session of any device, or NULL |
 | `session_hash` | TEXT | | SHA-256 sealing this session's ops |
 | `summary_json` | TEXT | | Compacted aggregate totals once raw ops are pruned |
 | `wpm_trace` | TEXT | | JSON array of `[para, word_offset, wpm]` triples (wpm clamped 10–300), one per completed word typed — replay matches diffed words by `(para, word_offset)` for per-word pacing |
+| `device_kind` | TEXT | | `desktop` \| `mobile` (not hashed). Each device labels its own rows; imported rows bring theirs |
 | `created_at` | TEXT | DEFAULT `datetime('now')` | |
+
+`process_history_tombstones (table_name, row_id, removed_at)` remembers the sessions and
+snapshots this device cleared or pruned, so a sync never imports them again.
 
 ---
 
@@ -607,7 +613,7 @@ snapshots are always kept.
 | `id` | TEXT | PRIMARY KEY (UUID v4) | Snapshot ID |
 | `chapter_id` | TEXT | NOT NULL, FK -> chapters(id) ON DELETE CASCADE | |
 | `created_at` | TEXT | NOT NULL | ISO timestamp |
-| `kind` | TEXT | NOT NULL | `session` (auto), `manual` (pinned), `pre_restore` (undo safety) |
+| `kind` | TEXT | NOT NULL | `session` (auto), `manual` (pinned), `pre_restore` (undo safety), `pre_link` (before the name finder), `merge` (a sync's merged text), `sync` (text a sync took from another device) |
 | `label` | TEXT | | Optional user label for a manual pin |
 | `word_count` | INTEGER | DEFAULT 0 | Word count at snapshot time |
 | `prose_hash` | TEXT | NOT NULL | SHA-256 of the markdown (dedup + ancestry) |

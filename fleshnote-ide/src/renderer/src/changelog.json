@@ -11,6 +11,9 @@
                 "Session History — Chapter version history rollback and visual diffing",
                 "Cross-Device Sync — Sync novel projects with companion apps",
                 "World Calendar — Day-level calendar tracking in inspectors and manuscript",
+                "Dynamic Backend Port — Allocates an available local port on launch instead of colliding on static port 8000",
+                "Self-Hosted VPS Browser Mode — Run FleshNote in a web browser hosted on your own server",
+                "Optimized App Bundle — Drastically reduced installer and installed footprint",
                 "More details on the website (artfacility.xyz)"
             ]
         },

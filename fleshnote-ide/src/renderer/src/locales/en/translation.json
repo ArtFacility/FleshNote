@@ -1443,7 +1443,9 @@
     "restoreConfirm": "Replace the current text with this version?",
     "restoreYes": "Restore",
     "cancel": "Cancel",
-    "beforeLinking": "Before names were linked"
+    "beforeLinking": "Before names were linked",
+    "merged": "Copies merged",
+    "fromSync": "From another device"
   },
   "pentimento": {
     "untitled": "Untitled",
@@ -1494,6 +1496,10 @@
     "thisDevice": "This device",
     "deviceLabel": "Device {{id}}",
     "deviceUnknown": "Unknown device",
+    "deviceDesktop": "Desktop",
+    "devicePhone": "Phone",
+    "mergeStep": "Copies merged",
+    "branchSwitch": "From an earlier version",
     "byDevice": "By device",
     "sessionStart": "Session {{n}} — start",
     "srcHuman": "Typed",

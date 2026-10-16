@@ -26,7 +26,7 @@ const Icons = {
   ),
 }
 
-export default function SyncModal({ isOpen, onClose, projectPath, onSyncComplete }) {
+export default function SyncModal({ isOpen, onClose, projectPath, onSyncComplete, onBeforeSync }) {
   const { t } = useTranslation()
   const [remotePath, setRemotePath] = useState(null)
   const [loading, setLoading] = useState(false)
@@ -61,6 +61,8 @@ export default function SyncModal({ isOpen, onClose, projectPath, onSyncComplete
     setRemotePath(folderPath)
     setLoading(true)
     try {
+      // the open chapter is saved and its writing session sealed before comparing
+      await onBeforeSync?.()
       const data = await window.api.syncPreview({ local_path: projectPath, remote_path: folderPath })
       if (data.status === 'error') {
         setError(data.message)

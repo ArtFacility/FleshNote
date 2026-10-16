@@ -18,7 +18,10 @@ An advanced, no-bullshit writing tool for novelists and world builders who actua
 * **New Group System (Factions & Guilds)**: Group characters into factions, alliances, and guilds with temporal membership tracking, role hierarchies, group milestones, and World History timeline integration.
 * **Export Projects to Plain Text & Obsidian**: Seamless vault export converting `.flnote` projects into clean Markdown vaults or `.txt` archives, fully compatible with Obsidian while preserving wikilinks and metadata.
 * **Cover Art Maker & Rebuilt Book Export**: Design print wraps and dust jackets with automated spine thickness calculations based on page count and paper caliper; print-ready PDF export via Chromium (Printed Book and Submission layouts), DOCX, and validated EPUB with live preview.
-* **Dozens of Bugfixes & Polish**: SQLite WAL performance tuning, UUID v4 database architecture, hardened `.flnote` container format, safe legacy project migration, and numerous UI refinements.
+* **Self-Hosted VPS Browser Mode**: Run FleshNote directly in your browser served from your own Linux VPS with Caddy HTTPS and password authentication (see [VPS_DEPLOY.md](VPS_DEPLOY.md)).
+* **Optimized App Bundle & Installer Size**: Drastically reduced installer and installed footprint by trimming unused spellcheck dictionaries, excluding dev dependencies, and strictly packaging production runtime assets.
+* **Dynamic Backend Port**: The backend now dynamically finds an available local port on startup instead of conflicting on static port 8000.
+* **Dozens of Bugfixes & Polish**: Multi-device writing-process telemetry synchronization, SQLite WAL performance tuning, UUID v4 database architecture, hardened `.flnote` container format, safe legacy project migration, and numerous UI refinements.
 
 ---
 
@@ -174,6 +177,30 @@ npm run build:linux
 ```bash
 npm run build:flatpak
 ```
+
+## 🌐 Running it in a browser on your own server
+
+FleshNote can also run in a browser, served from a VPS you own, behind a sign-in page: one account
+per server, your projects stored there, HTTPS through Caddy. It's a free self-hosted option for
+people comfortable with a Linux shell, separate from FleshNote's own services. The step-by-step
+guide is **[VPS_DEPLOY.md](VPS_DEPLOY.md)**.
+
+### For developers: the browser build
+
+The browser build is the same renderer and preload, built with `npm run build:web` (into
+`fleshnote-ide/out/web`); none of it is part of the desktop app or `npm run dev`.
+
+- `src/web/` stands in for Electron. Most IPC handlers in `src/main/index.ts` only pass their
+  arguments on to the backend; the build lifts those into the browser as they are. A handler
+  that uses Electron itself, the file system or main's own state needs a browser version in
+  `src/web/handlers.ts`, or `npm run build:web` fails and names it. The desktop build doesn't
+  care either way.
+- `backend/web_main.py` starts the backend for the browser: with `--config` it serves the pages
+  behind a login (`backend/web_standalone.py`, the VPS setup); without it, it expects Seneschal
+  Labs (the author's own server) to do that. Its extra routes (`backend/routes/web_host.py`:
+  uploads, downloads, files) are only safe behind a login: never expose `web_main.py` without one.
+- `labs/` and `scripts/deploy-labs.mjs` deploy to the author's home server and are of no use
+  elsewhere; `deploy/selfhost/` holds the VPS guide's systemd unit, config and Caddyfile.
 
 ## 🛠️ Recommended Setup
 

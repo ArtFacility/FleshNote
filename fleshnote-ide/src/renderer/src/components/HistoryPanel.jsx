@@ -19,7 +19,7 @@ function fmtDateTime(iso) {
   } catch { return '' }
 }
 
-const KIND_ACCENT = { session: '#3fa093', manual: 'var(--accent-amber)', pre_restore: 'var(--text-tertiary)', pre_link: 'var(--text-tertiary)' }
+const KIND_ACCENT = { session: '#3fa093', manual: 'var(--accent-amber)', pre_restore: 'var(--text-tertiary)', pre_link: 'var(--text-tertiary)', merge: 'var(--accent-purple)', sync: 'var(--text-tertiary)' }
 
 export default function HistoryPanel({
   projectPath, activeChapter, isCollapsed, onToggle, onRestored, onBeforeSnapshot,
@@ -28,6 +28,7 @@ export default function HistoryPanel({
   const chapterId = activeChapter?.id || null
 
   const [snapshots, setSnapshots] = useState([])
+  const [devices, setDevices] = useState({})          // device_id -> { kind, ordinal }
   const [loading, setLoading] = useState(false)
   const [currentHtml, setCurrentHtml] = useState('')
   const [openId, setOpenId] = useState(null)          // snapshot being previewed
@@ -84,6 +85,7 @@ export default function HistoryPanel({
         window.api.loadChapterContent(projectPath, chapterId),
       ])
       setSnapshots(list?.snapshots || [])
+      setDevices(list?.devices || {})
       setCurrentHtml(content?.content || '')
     } catch {
       setSnapshots([])
@@ -102,10 +104,17 @@ export default function HistoryPanel({
     if (s.kind === 'manual') return s.label ? `${t('history.pinned', 'Pinned')} · ${s.label}` : t('history.pinned', 'Pinned')
     if (s.kind === 'pre_restore') return t('history.beforeRestore', 'Before restore')
     if (s.kind === 'pre_link') return t('history.beforeLinking', 'Before names were linked')
-    return s.session_num
+    if (s.kind === 'merge') return t('history.merged', 'Copies merged')
+    if (s.kind === 'sync') return t('history.fromSync', 'From another device')
+    const base = s.session_num
       ? t('history.session', 'Session {{n}}', { n: s.session_num })
       : t('history.autosnapshot', 'Session')
-  }, [t])
+    // name the device once the chapter was written on more than one
+    const info = Object.keys(devices).length > 1 ? devices[s.device_id] : null
+    if (!info) return base
+    const name = info.kind === 'mobile' ? t('pentimento.devicePhone', 'Phone') : t('pentimento.deviceDesktop', 'Desktop')
+    return `${base} · ${info.ordinal > 1 ? `${name} ${info.ordinal}` : name}`
+  }, [t, devices])
 
   const handlePreview = useCallback(async (s) => {
     if (openId === s.id) { setOpenId(null); setPreviewHtml(null); return }

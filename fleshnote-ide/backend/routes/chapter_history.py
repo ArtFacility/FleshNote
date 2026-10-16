@@ -26,8 +26,10 @@ from fastapi import APIRouter, HTTPException
 from pydantic import BaseModel
 from typing import List, Optional
 
-from sync_core import DEVICE_ID, log_change
+import sync_core
+from sync_core import log_change
 from project_io import safe_md_path
+from process_history import remember_removed
 from routes.chapters import (
     _get_db,
     _entity_md_to_html, _twist_md_to_html, _knowledge_md_to_html,
@@ -116,13 +118,16 @@ def _create_snapshot(cursor, project_path: str, chapter_id: str, kind: str,
     md = _read_chapter_md(project_path, row["md_filename"])
     prose_hash = hashlib.sha256(md.encode("utf-8")).hexdigest()
 
-    # Dedup only auto session snapshots that match the most recent one, so idle sessions
-    # don't pile up dupes. Manual pins (writer asked) and pre_restore safety copies (must
-    # give Undo a deterministic target) are always kept.
+    # Dedup only auto session snapshots that match this device's most recent one, so
+    # idle sessions don't pile up dupes. Manual pins (writer asked) and pre_restore
+    # safety copies (must give Undo a deterministic target) are always kept. Frames
+    # from other devices (imported by a sync) don't count: a session that starts from
+    # text a sync brought in still gets its own start frame, which the replay needs
+    # to tell where that session picked up.
     if kind == "session":
         cursor.execute(
-            "SELECT prose_hash FROM chapter_snapshots WHERE chapter_id=? "
-            "ORDER BY created_at DESC, rowid DESC LIMIT 1", (chapter_id,))
+            "SELECT prose_hash FROM chapter_snapshots WHERE chapter_id=? AND device_id=? "
+            "ORDER BY created_at DESC, rowid DESC LIMIT 1", (chapter_id, sync_core.DEVICE_ID))
         last = cursor.fetchone()
         if last and last["prose_hash"] == prose_hash:
             return None
@@ -135,7 +140,8 @@ def _create_snapshot(cursor, project_path: str, chapter_id: str, kind: str,
         " byte_size, session_id, session_hash, device_id) "
         "VALUES (?,?,?,?,?,?,?,?,?,?,?,?)",
         (snap_id, str(chapter_id), datetime.datetime.now().isoformat(), kind, label,
-         row["word_count"] or 0, prose_hash, gz, len(gz), session_id, session_hash, DEVICE_ID))
+         row["word_count"] or 0, prose_hash, gz, len(gz), session_id, session_hash,
+         sync_core.DEVICE_ID))
     return snap_id
 
 
@@ -143,11 +149,17 @@ def _create_snapshot(cursor, project_path: str, chapter_id: str, kind: str,
 
 @router.post("/api/project/chapter/history/list")
 def history_list(req: ChapterScoped):
-    conn = _get_db(req.project_path)
+    """Snapshot timeline for one chapter, newest first, plus the chapter's sessions
+    (every device's chain, linked by previous_session_hash) and the device list, so
+    the replay can play each session from the frame it actually started from."""
+    from routes.pentimento import _get_db as _pentimento_db
+    from process_history import device_directory
+    conn = _pentimento_db(req.project_path)
     cur = conn.cursor()
     cur.execute(
         "SELECT s.id, s.created_at, s.kind, s.label, s.word_count, s.byte_size, "
-        "       s.prose_hash, s.session_id, ps.session_num AS session_num, ps.device_id AS device_id "
+        "       s.prose_hash, s.session_id, s.session_hash, s.device_id AS snapshot_device_id, "
+        "       ps.session_num AS session_num, ps.device_id AS device_id "
         "FROM chapter_snapshots s "
         "LEFT JOIN pentimento_sessions ps ON ps.id = s.session_id "
         "WHERE s.chapter_id=? ORDER BY s.created_at DESC, s.rowid DESC", (req.chapter_id,))
@@ -156,10 +168,26 @@ def history_list(req: ChapterScoped):
         "label": r["label"], "word_count": r["word_count"] or 0,
         "byte_size": r["byte_size"] or 0, "prose_hash": r["prose_hash"],
         "session_id": r["session_id"], "session_num": r["session_num"],
-        "device_id": r["device_id"],
+        "session_hash": r["session_hash"],
+        "device_id": r["device_id"], "snapshot_device_id": r["snapshot_device_id"],
     } for r in cur.fetchall()]
+    cur.execute(
+        "SELECT ps.id, ps.device_id, ps.device_kind, ps.session_num, ps.start_time, ps.end_time, "
+        "       ps.session_hash, ps.previous_session_hash, "
+        "       EXISTS(SELECT 1 FROM pentimento_ops o WHERE o.session_id = ps.id "
+        "              AND o.op_type='merge') AS is_merge "
+        "FROM pentimento_sessions ps WHERE ps.chapter_id=? "
+        "ORDER BY ps.session_num, ps.start_time", (req.chapter_id,))
+    sessions = [{
+        "id": r["id"], "device_id": r["device_id"], "device_kind": r["device_kind"],
+        "session_num": r["session_num"], "start_time": r["start_time"],
+        "end_time": r["end_time"], "session_hash": r["session_hash"],
+        "previous_session_hash": r["previous_session_hash"], "is_merge": bool(r["is_merge"]),
+    } for r in cur.fetchall()]
+    devices = device_directory(cur)
     conn.close()
-    return {"snapshots": snaps}
+    return {"snapshots": snaps, "sessions": sessions, "devices": devices,
+            "current_device": sync_core.DEVICE_ID}
 
 
 @router.post("/api/project/chapter/history/preview")
@@ -271,6 +299,8 @@ def history_prune(req: PruneRequest):
             "SELECT id FROM chapter_snapshots WHERE chapter_id=? AND kind!='manual' "
             "ORDER BY created_at DESC, rowid DESC", (cid,))
         ids = [r["id"] for r in cur.fetchall()]
+        # pruned snapshots stay pruned: a sync never imports them again
+        remember_removed(cur, "chapter_snapshots", ids[keep:])
         for sid in ids[keep:]:
             cur.execute("DELETE FROM chapter_snapshots WHERE id=?", (sid,))
             removed += 1
@@ -283,6 +313,12 @@ def history_prune(req: PruneRequest):
 def history_clear(req: ClearRequest):
     conn = _get_db(req.project_path)
     cur = conn.cursor()
+    # cleared snapshots stay cleared: a sync never imports them again
+    if req.chapter_id:
+        cur.execute("SELECT id FROM chapter_snapshots WHERE chapter_id=?", (req.chapter_id,))
+    else:
+        cur.execute("SELECT id FROM chapter_snapshots")
+    remember_removed(cur, "chapter_snapshots", [r["id"] for r in cur.fetchall()])
     if req.chapter_id:
         cur.execute("DELETE FROM chapter_snapshots WHERE chapter_id=?", (req.chapter_id,))
     else:

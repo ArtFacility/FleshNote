@@ -839,6 +839,27 @@ export default function FleshNoteIDE({ projectConfig, projectPath, onCloseProjec
     }
   }, [projectPath])
 
+  // While a sync or a clone is open, the editor records nothing: its session is
+  // sealed with this device's text first, and a new one starts after the sync
+  // (and the reload of the open chapter) is done.
+  const syncPauseRef = useRef(null)
+  const pauseRecordingForSync = useCallback(() => {
+    if (!syncPauseRef.current) {
+      syncPauseRef.current = Promise.resolve(janitorActionsRef.current?.pauseRecording?.()).catch(() => {})
+    }
+    return syncPauseRef.current
+  }, [])
+  const syncOpen = showSyncModal || showRemoteSyncModal || cloneMode === 'send'
+  useEffect(() => {
+    if (syncOpen) {
+      pauseRecordingForSync()
+    } else if (syncPauseRef.current) {
+      const paused = syncPauseRef.current
+      syncPauseRef.current = null
+      paused.then(() => janitorActionsRef.current?.resumeRecording?.())
+    }
+  }, [syncOpen, pauseRecordingForSync])
+
   const handleImportDataChanged = useCallback(async () => {
     await Promise.all([reloadChaptersList(), handleEntitiesChanged()])
     // A sync can change the open chapter's prose on disk. Reload it, or the
@@ -2000,6 +2021,7 @@ export default function FleshNoteIDE({ projectConfig, projectPath, onCloseProjec
         onClose={() => setShowSyncModal(false)}
         projectPath={projectPath}
         onSyncComplete={handleImportDataChanged}
+        onBeforeSync={pauseRecordingForSync}
       />
 
       <RemoteSyncModal
@@ -2007,6 +2029,7 @@ export default function FleshNoteIDE({ projectConfig, projectPath, onCloseProjec
         onClose={() => setShowRemoteSyncModal(false)}
         projectPath={projectPath}
         onSyncComplete={handleImportDataChanged}
+        onBeforeSync={pauseRecordingForSync}
       />
 
       <SyncChooserModal

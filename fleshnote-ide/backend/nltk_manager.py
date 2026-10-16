@@ -16,7 +16,8 @@ _cmudict_ready = False
 def _get_bundled_nltk_path() -> str | None:
     """Return the bundled NLTK data path (PyInstaller frozen builds), or None."""
     if getattr(sys, 'frozen', False):
-        return os.path.join(os.path.dirname(sys.executable), 'nltk_data')
+        # PyInstaller puts bundled data in sys._MEIPASS (the _internal folder next to the exe)
+        return os.path.join(getattr(sys, '_MEIPASS', os.path.dirname(sys.executable)), 'nltk_data')
     return None
 
 

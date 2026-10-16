@@ -636,6 +636,22 @@ def update_project_config(request: ProjectConfigUpdateRequest):
 
 if __name__ == "__main__":
   import uvicorn
+  import argparse
 
-  # Run the server on port 8000
-  uvicorn.run(app, host="127.0.0.1", port=8000)
+  parser = argparse.ArgumentParser(description="FleshNote API Server")
+  parser.add_argument(
+    "--port",
+    type=int,
+    default=int(os.environ.get("FLESHNOTE_PORT", 8000)),
+    help="Port to run the backend server on"
+  )
+  parser.add_argument(
+    "--host",
+    type=str,
+    default="127.0.0.1",
+    help="Host to bind the backend server on"
+  )
+  args, _ = parser.parse_known_args()
+
+  # Run the server on the configured port
+  uvicorn.run(app, host=args.host, port=args.port)

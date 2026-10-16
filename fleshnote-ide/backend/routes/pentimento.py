@@ -18,7 +18,6 @@ Endpoints:
 import os
 import json
 import hashlib
-import json
 import base64
 import re
 import sqlite3
@@ -30,7 +29,9 @@ from fastapi import APIRouter, HTTPException
 from pydantic import BaseModel
 from typing import List, Optional
 
-from sync_core import DEVICE_ID
+import sync_core
+from process_history import (MERGE_OP, chain_hash, chain_head, device_directory,
+                             fork_point, next_session_num, op_fingerprint, remember_removed)
 
 router = APIRouter()
 
@@ -122,52 +123,26 @@ class HeadAnchorRequest(BaseModel):
 
 # ── Helpers ─────────────────────────────────────────────────────────────────
 
+_SCHEMA_READY = set()   # databases already brought up to date in this process
+
+
 def _get_db(project_path: str):
     db_path = os.path.join(project_path, "fleshnote.db")
     if not os.path.exists(db_path):
         raise HTTPException(status_code=404, detail="Database not found")
     conn = sqlite3.connect(db_path)
     conn.row_factory = sqlite3.Row
-    # summary_json / wpm_trace were added after these tables first shipped — patch older dev DBs.
-    try:
-        cols = [c[1] for c in conn.execute("PRAGMA table_info(pentimento_sessions)").fetchall()]
-        if "summary_json" not in cols:
-            conn.execute("ALTER TABLE pentimento_sessions ADD COLUMN summary_json TEXT")
-        if "wpm_trace" not in cols:
-            conn.execute("ALTER TABLE pentimento_sessions ADD COLUMN wpm_trace TEXT")
-        op_cols = [c[1] for c in conn.execute("PRAGMA table_info(pentimento_ops)").fetchall()]
-        if "source" not in op_cols:
-            conn.execute("ALTER TABLE pentimento_ops ADD COLUMN source TEXT")
-        conn.commit()
-    except Exception:
-        pass
-    # server_receipts (Sealed Pentimento) — created on demand for legacy projects.
-    try:
-        conn.execute("""
-            CREATE TABLE IF NOT EXISTS server_receipts (
-                id TEXT PRIMARY KEY,
-                session_id TEXT,
-                chapter_id TEXT,
-                kind TEXT NOT NULL DEFAULT 'seal',
-                anchored_hash TEXT NOT NULL,
-                previous_hash TEXT,
-                client_time TEXT NOT NULL,
-                server_time TEXT,
-                server_signature TEXT,
-                key_id TEXT,
-                tsa_token TEXT,
-                status TEXT NOT NULL DEFAULT 'pending',
-                failure_reason TEXT,
-                attempts INTEGER DEFAULT 0,
-                created_at TEXT DEFAULT (datetime('now')),
-                updated_at TEXT DEFAULT (datetime('now'))
-            )
-        """)
-        conn.execute("CREATE INDEX IF NOT EXISTS idx_server_receipts_hash ON server_receipts(anchored_hash);")
-        conn.execute("CREATE INDEX IF NOT EXISTS idx_server_receipts_session ON server_receipts(session_id);")
-        conn.commit()
-    except Exception:
-        pass
+    # Columns and tables added after these tables first shipped (older projects,
+    # databases from other devices), plus this device's own device_kind backfill.
+    key = (os.path.realpath(db_path), sync_core.DEVICE_ID)
+    if key not in _SCHEMA_READY:
+        try:
+            from db_setup import ensure_process_history_schema
+            ensure_process_history_schema(conn.cursor(), sync_core.DEVICE_ID)
+            conn.commit()
+            _SCHEMA_READY.add(key)
+        except Exception:
+            pass
     return conn
 
 
@@ -406,14 +381,16 @@ def _word_count(text: Optional[str]) -> int:
 def session_start(req: SessionStart):
     conn = _get_db(req.project_path)
     cur = conn.cursor()
-    cur.execute(
-        "SELECT id, session_num, session_hash FROM pentimento_sessions "
-        "WHERE chapter_id=? ORDER BY session_num DESC LIMIT 1", (req.chapter_id,))
-    last = cur.fetchone()
-    session_num = (last["session_num"] + 1) if last else 1
-    prev_hash = last["session_hash"] if last else None
+    device = sync_core.DEVICE_ID
+    # Each device keeps its own hash chain per chapter: the new session links to this
+    # device's latest session there. A device's first session on the chapter links to
+    # the newest sealed session any device left (the state it starts writing from).
+    # Other devices' sessions (imported by a sync) are never extended or sealed here.
+    last = chain_head(cur, req.chapter_id, device)
+    session_num = next_session_num(cur, req.chapter_id)
+    prev_hash = last["session_hash"] if last else fork_point(cur, req.chapter_id)
 
-    # The chapter's latest session was never sealed (the app crashed or was killed):
+    # This device's latest session was never sealed (the app crashed or was killed):
     # seal it now from the ops it got, so the new session chains onto a real hash.
     # Only the latest one — an older unsealed session already has a successor.
     dangling_receipt = None
@@ -426,9 +403,9 @@ def session_start(req: SessionStart):
     session_id = _new_uuid(cur)
     cur.execute(
         "INSERT INTO pentimento_sessions "
-        "(id, chapter_id, device_id, session_num, start_time, previous_session_hash) "
-        "VALUES (?,?,?,?,?,?)",
-        (session_id, req.chapter_id, DEVICE_ID, session_num,
+        "(id, chapter_id, device_id, session_num, start_time, previous_session_hash, device_kind) "
+        "VALUES (?,?,?,?,?,?,'desktop')",
+        (session_id, req.chapter_id, device, session_num,
          datetime.datetime.now().isoformat(), prev_hash))
 
     # Baseline snapshot: capture the chapter's state BEFORE this session writes, so the
@@ -521,10 +498,7 @@ def flush(req: FlushRequest):
     return {"status": "ok", "written": len(ops)}
 
 
-def _op_fingerprint(o) -> str:
-    """One op's line in the session hash (the recorder computes the same string)."""
-    return (f"{o['op_type']}|{o['para_index']}|{o['char_offset']}|{o['length']}|"
-            f"{o['text_content'] or ''}|{o['timestamp']}")
+_op_fingerprint = op_fingerprint   # one op's line in the session hash
 
 
 def _local_iso(ts: str) -> Optional[str]:
@@ -538,7 +512,8 @@ def _local_iso(ts: str) -> Optional[str]:
         return None
 
 
-def _seal_session(cur, project_path: str, session_id: str, end_time: Optional[str] = None):
+def _seal_session(cur, project_path: str, session_id: str, end_time: Optional[str] = None,
+                  snapshot_kind: str = "session"):
     """Hash a session's ops onto its predecessor's hash, close it, snapshot the
     chapter and queue a seal receipt. Returns (session_hash, snapshot_id, receipt_id);
     the caller commits and then anchors the receipt."""
@@ -550,11 +525,7 @@ def _seal_session(cur, project_path: str, session_id: str, end_time: Optional[st
         "FROM pentimento_ops WHERE session_id=? ORDER BY timestamp, rowid", (session_id,))
     ops = cur.fetchall()
 
-    h = hashlib.sha256()
-    h.update((sess["previous_session_hash"] or "").encode("utf-8"))
-    for o in ops:
-        h.update(_op_fingerprint(o).encode("utf-8"))
-    session_hash = h.hexdigest()
+    session_hash = chain_hash(sess["previous_session_hash"], ops)
 
     cur.execute(
         "UPDATE pentimento_sessions SET end_time=?, session_hash=? WHERE id=?",
@@ -571,7 +542,7 @@ def _seal_session(cur, project_path: str, session_id: str, end_time: Optional[st
         if prose_history_on:
             from routes.chapter_history import _create_snapshot
             snapshot_id = _create_snapshot(
-                cur, project_path, sess["chapter_id"], "session",
+                cur, project_path, sess["chapter_id"], snapshot_kind,
                 session_id=session_id, session_hash=session_hash)
     except Exception:
         snapshot_id = None
@@ -686,17 +657,22 @@ def heatmap(req: ChapterDeviceScoped):
     paras: dict = {}
     session_ids = set()
 
-    # 1. live ops (device filter joins through the session row)
+    # 1. live ops (device filter joins through the session row). Paragraph indices
+    # are only comparable for desktop ops: the phone numbers list paragraphs one by
+    # one, so its ops (and its compacted aggregates below) stay out of the
+    # per-paragraph map until they are translated. Merge markers carry no writing.
     if device:
         cur.execute(
             "SELECT o.session_id AS session_id, o.op_type AS op_type, o.para_index AS para_index, "
             "       o.length AS length, o.duration_ms AS duration_ms, o.timestamp AS timestamp "
             "FROM pentimento_ops o JOIN pentimento_sessions ps ON ps.id = o.session_id "
-            "WHERE o.chapter_id=? AND ps.device_id=?", (req.chapter_id, device))
+            "WHERE o.chapter_id=? AND ps.device_id=? AND o.origin!='mobile' AND o.op_type!=?",
+            (req.chapter_id, device, MERGE_OP))
     else:
         cur.execute(
             "SELECT session_id, op_type, para_index, length, duration_ms, timestamp "
-            "FROM pentimento_ops WHERE chapter_id=?", (req.chapter_id,))
+            "FROM pentimento_ops WHERE chapter_id=? AND origin!='mobile' AND op_type!=?",
+            (req.chapter_id, MERGE_OP))
     for o in cur.fetchall():
         _accumulate(paras, o["para_index"], o["op_type"], o["length"] or 0,
                     o["duration_ms"] or 0, _is_night(o["timestamp"]))
@@ -706,12 +682,14 @@ def heatmap(req: ChapterDeviceScoped):
     if device:
         cur.execute(
             "SELECT id, summary_json FROM pentimento_sessions "
-            "WHERE chapter_id=? AND summary_json IS NOT NULL AND device_id=?",
+            "WHERE chapter_id=? AND summary_json IS NOT NULL AND device_id=? "
+            "AND COALESCE(device_kind, '')!='mobile'",
             (req.chapter_id, device))
     else:
         cur.execute(
             "SELECT id, summary_json FROM pentimento_sessions "
-            "WHERE chapter_id=? AND summary_json IS NOT NULL", (req.chapter_id,))
+            "WHERE chapter_id=? AND summary_json IS NOT NULL "
+            "AND COALESCE(device_kind, '')!='mobile'", (req.chapter_id,))
     for s in cur.fetchall():
         session_ids.add(s["id"])
         try:
@@ -754,12 +732,16 @@ def get_ops(req: ChapterDeviceScoped):
         device_join = " JOIN pentimento_sessions ps ON ps.id = o.session_id "
         device_filter = " AND ps.device_id=? "
         params.append(req.device_id)
+    # Desktop ops only: the replay reads their paragraph coordinates, and the phone
+    # numbers paragraphs differently. Merge markers carry no writing.
+    params.append(MERGE_OP)
     cur.execute(
         "SELECT o.session_id AS session_id, o.op_type AS op_type, o.para_index AS para_index, "
         "       o.char_offset AS char_offset, o.length AS length, o.text_content AS text_content, "
         "       o.duration_ms AS duration_ms, o.timestamp AS timestamp, o.source AS source "
         f"FROM pentimento_ops o {device_join}"
-        f" WHERE o.chapter_id=? {device_filter} ORDER BY o.timestamp, o.rowid",
+        f" WHERE o.chapter_id=? {device_filter} AND o.origin!='mobile' AND o.op_type!=?"
+        " ORDER BY o.timestamp, o.rowid",
         params)
     ops = [{
         "session_id": r["session_id"],
@@ -811,7 +793,8 @@ def summary(req: ProjectScoped):
         SELECT ps.device_id AS device_id, o.op_type AS op_type, o.length AS length,
                o.text_content AS text_content, o.duration_ms AS duration_ms, o.timestamp AS timestamp
         FROM pentimento_ops o JOIN pentimento_sessions ps ON ps.id = o.session_id
-    """)
+        WHERE o.op_type != ?
+    """, (MERGE_OP,))
     device_totals: dict = {}
     for o in cur.fetchall():
         dur = o["duration_ms"] or 0
@@ -858,10 +841,15 @@ def summary(req: ProjectScoped):
 
     cur.execute("SELECT COUNT(*) c, MIN(start_time) a, MAX(start_time) b FROM pentimento_sessions")
     srow = cur.fetchone()
-    cur.execute("SELECT session_hash FROM pentimento_sessions WHERE session_hash IS NOT NULL "
-                "ORDER BY session_num DESC LIMIT 1")
+    # This device's newest sealed session (each device has its own chains).
+    cur.execute("SELECT session_hash FROM pentimento_sessions "
+                "WHERE session_hash IS NOT NULL AND device_id=? "
+                "ORDER BY end_time DESC, rowid DESC LIMIT 1", (sync_core.DEVICE_ID,))
     head = cur.fetchone()
+    directory = device_directory(cur)
     conn.close()
+    for dev_id, totals in device_totals.items():
+        totals.update(directory.get(dev_id, {"kind": "desktop", "ordinal": 0}))
 
     return {
         "typed_words": typed_words,
@@ -874,7 +862,7 @@ def summary(req: ProjectScoped):
         "first_session": srow["a"] if srow else None,
         "last_session": srow["b"] if srow else None,
         "chain_head_hash": head["session_hash"] if head else None,
-        "current_device": DEVICE_ID,
+        "current_device": sync_core.DEVICE_ID,
         "devices": device_totals,
     }
 
@@ -888,9 +876,11 @@ def compact(req: CompactRequest):
     cutoff = (datetime.datetime.now() - datetime.timedelta(days=req.older_than_days)).isoformat()
     conn = _get_db(req.project_path)
     cur = conn.cursor()
+    # Merge sessions are one marker op whose text is the record itself: never compacted.
     cur.execute(
-        "SELECT id FROM pentimento_sessions WHERE start_time < ? AND summary_json IS NULL",
-        (cutoff,))
+        "SELECT id FROM pentimento_sessions WHERE start_time < ? AND summary_json IS NULL "
+        "AND id NOT IN (SELECT session_id FROM pentimento_ops WHERE op_type=?)",
+        (cutoff, MERGE_OP))
     session_ids = [r["id"] for r in cur.fetchall()]
 
     compacted = 0
@@ -927,6 +917,12 @@ def compact(req: CompactRequest):
 def clear(req: ClearRequest):
     conn = _get_db(req.project_path)
     cur = conn.cursor()
+    # Cleared sessions stay cleared: a sync never imports them again.
+    if req.chapter_id:
+        cur.execute("SELECT id FROM pentimento_sessions WHERE chapter_id=?", (req.chapter_id,))
+    else:
+        cur.execute("SELECT id FROM pentimento_sessions")
+    remember_removed(cur, "pentimento_sessions", [r["id"] for r in cur.fetchall()])
     if req.chapter_id:
         cur.execute("DELETE FROM pentimento_ops WHERE chapter_id=?", (req.chapter_id,))
         cur.execute("DELETE FROM pentimento_sessions WHERE chapter_id=?", (req.chapter_id,))

@@ -243,13 +243,34 @@ export default function Editor({
     onJanitorTriggerRef.current = onJanitorTrigger
   }, [onJanitorTrigger])
 
+  // What the recorder should be recording right now (read by resumeRecording).
+  const recordTargetRef = useRef(null)
+  recordTargetRef.current = { projectPath, chapterId: chapter?.id, enabled: pentiEnabled }
+  // once unmounted, resumeRecording must not restart this editor's recorder
+  useEffect(() => () => { recordTargetRef.current = null }, [])
+
   // Expose flush method via janitorActionsRef (shared ref for editor actions)
   useEffect(() => {
     if (janitorActionsRef) {
       const prev = janitorActionsRef.current || {}
       janitorActionsRef.current = {
         ...prev,
-        flushSave: async () => { await flushPendingSave() }
+        flushSave: async () => { await flushPendingSave() },
+        // A sync is about to read and rewrite chapters: save, seal the writing
+        // session (its closing snapshot holds this device's text) and record
+        // nothing until resumeRecording, so text a sync brings in is never
+        // recorded as typed here.
+        pauseRecording: async () => {
+          const saved = flushPendingSave()
+          await pentimentoRef.current?.stop({ beforeSeal: saved })
+          await saved
+        },
+        resumeRecording: () => {
+          const target = recordTargetRef.current
+          if (target?.chapterId && target.projectPath && target.enabled) {
+            pentimentoRef.current?.start(target.projectPath, target.chapterId, true)
+          }
+        },
       }
     }
   }, [janitorActionsRef])
@@ -1072,6 +1093,8 @@ export default function Editor({
     const inOneBlock = (hit) => editor.state.doc.resolve(hit.from).sameParent(editor.state.doc.resolve(hit.to))
 
     janitorActionsRef.current = {
+      // keep flushSave / pauseRecording / resumeRecording set by the effect above
+      ...(janitorActionsRef.current || {}),
       // Show a review note's passage: caret at its start (never a selection the
       // next keystroke would replace) and a brief highlight drawn over the text
       // without touching the document. False when the text is gone.

@@ -313,6 +313,76 @@ def ensure_review_tables(cursor) -> None:
     cursor.execute("CREATE INDEX IF NOT EXISTS idx_review_copies_key ON review_copies(key_id)")
 
 
+DEVICE_KINDS = ("desktop", "mobile")
+
+
+def ensure_process_history_schema(cursor, device_id=None) -> None:
+    """Columns and tables the writing-process history gained after it first
+    shipped, so older projects (and databases arriving from other devices) can
+    be read, written and merged the same way:
+      - pentimento_sessions.summary_json / wpm_trace / device_kind
+      - pentimento_ops.source
+      - server_receipts (Sealed Pentimento receipts)
+      - process_history_tombstones: ids of sessions and snapshots this device
+        removed on purpose (clear / prune), so a sync never brings them back.
+    device_kind ('desktop' | 'mobile') is not part of any hash. With
+    `device_id`, that device's own sessions are labelled 'desktop', and other
+    devices' unlabelled sessions take the kind recorded on their ops."""
+    tables = {r[0] for r in cursor.execute(
+        "SELECT name FROM sqlite_master WHERE type='table'").fetchall()}
+    if "pentimento_sessions" in tables:
+        cols = {c[1] for c in cursor.execute("PRAGMA table_info(pentimento_sessions)").fetchall()}
+        for col in ("summary_json", "wpm_trace", "device_kind"):
+            if col not in cols:
+                cursor.execute(f"ALTER TABLE pentimento_sessions ADD COLUMN {col} TEXT")
+        cursor.execute("CREATE INDEX IF NOT EXISTS idx_pent_sessions_chapter_device "
+                       "ON pentimento_sessions(chapter_id, device_id)")
+    if "pentimento_ops" in tables:
+        op_cols = {c[1] for c in cursor.execute("PRAGMA table_info(pentimento_ops)").fetchall()}
+        if "source" not in op_cols:
+            cursor.execute("ALTER TABLE pentimento_ops ADD COLUMN source TEXT")
+    cursor.execute("""
+        CREATE TABLE IF NOT EXISTS server_receipts (
+            id TEXT PRIMARY KEY,
+            session_id TEXT,
+            chapter_id TEXT,
+            kind TEXT NOT NULL DEFAULT 'seal',
+            anchored_hash TEXT NOT NULL,
+            previous_hash TEXT,
+            client_time TEXT NOT NULL,
+            server_time TEXT,
+            server_signature TEXT,
+            key_id TEXT,
+            tsa_token TEXT,
+            status TEXT NOT NULL DEFAULT 'pending',
+            failure_reason TEXT,
+            attempts INTEGER DEFAULT 0,
+            created_at TEXT DEFAULT (datetime('now')),
+            updated_at TEXT DEFAULT (datetime('now'))
+        )
+    """)
+    cursor.execute("CREATE INDEX IF NOT EXISTS idx_server_receipts_hash ON server_receipts(anchored_hash);")
+    cursor.execute("CREATE INDEX IF NOT EXISTS idx_server_receipts_session ON server_receipts(session_id);")
+    cursor.execute("""
+        CREATE TABLE IF NOT EXISTS process_history_tombstones (
+            table_name TEXT NOT NULL,
+            row_id     TEXT NOT NULL,
+            removed_at TEXT DEFAULT (datetime('now')),
+            PRIMARY KEY (table_name, row_id)
+        )
+    """)
+    if device_id and "pentimento_sessions" in tables:
+        cursor.execute(
+            "UPDATE pentimento_sessions SET device_kind='desktop' "
+            "WHERE device_id=? AND device_kind IS NULL", (device_id,))
+        if "pentimento_ops" in tables:
+            cursor.execute(
+                "UPDATE pentimento_sessions SET device_kind=("
+                "  SELECT o.origin FROM pentimento_ops o WHERE o.session_id=pentimento_sessions.id"
+                "  AND o.origin IN ('desktop','mobile') LIMIT 1) "
+                "WHERE device_kind IS NULL AND device_id!=?", (device_id,))
+
+
 def with_genre_defaults(answers: dict) -> dict:
     """Fills every setting the caller left out from the genre's preset. Explicit answers win."""
     filled = dict(answers)
@@ -1229,6 +1299,7 @@ def generate_project_db(project_path: str, answers: dict) -> str:
             session_hash TEXT,
             summary_json TEXT,
             wpm_trace TEXT,
+            device_kind TEXT,                -- 'desktop' | 'mobile' (not hashed)
             created_at TEXT DEFAULT (datetime('now')),
             FOREIGN KEY (chapter_id) REFERENCES chapters(id) ON DELETE CASCADE
         )
@@ -1317,7 +1388,7 @@ def generate_project_db(project_path: str, answers: dict) -> str:
             ),
             chapter_id TEXT NOT NULL,
             created_at TEXT NOT NULL,
-            kind TEXT NOT NULL,              -- 'session' | 'manual' | 'pre_restore' | 'pre_link'
+            kind TEXT NOT NULL,              -- 'session' | 'manual' | 'pre_restore' | 'pre_link' | 'merge' | 'sync'
             label TEXT,
             word_count INTEGER DEFAULT 0,
             prose_hash TEXT NOT NULL,        -- sha256 of the md content (dedup + ancestry)
@@ -1927,6 +1998,8 @@ def apply_migrations(db_path: str):
 
         ensure_pulse_corrections(cursor)
         ensure_review_tables(cursor)
+        from sync_core import DEVICE_ID
+        ensure_process_history_schema(cursor, DEVICE_ID)
 
         # Ensure assets directory exists for existing projects
         project_dir = os.path.dirname(db_path)
