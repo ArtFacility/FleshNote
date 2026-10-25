@@ -1,0 +1,850 @@
+{
+  "lang": "pl",
+  "kind": "telling_cue",
+  "version": 1,
+  "entries": [
+    {
+      "id": "pl.cue.ku_mój_zaskoczenie",
+      "phrase": [
+        "ku",
+        "mój",
+        "zaskoczenie"
+      ],
+      "kind": "telling_cue",
+      "strength": "strong",
+      "valence": 0.5,
+      "arousal": 0.72,
+      "emotions": {
+        "surprise": 0.9
+      },
+      "source": "curated:gemini-2026-09",
+      "version": 1,
+      "alt_lemmas": [
+        "zaskoczeć"
+      ],
+      "lemma_evidence": "carrier",
+      "example": "Ku mojemu zaskoczeniu drzwi do skarbca okazały się otwarte na oścież."
+    },
+    {
+      "id": "pl.cue.ku_wielkiy_zdumienie",
+      "phrase": [
+        "ku",
+        "wielki",
+        "zdumienie"
+      ],
+      "kind": "telling_cue",
+      "strength": "strong",
+      "valence": 0.6,
+      "arousal": 0.82,
+      "emotions": {
+        "surprise": 0.9
+      },
+      "source": "curated:gemini-2026-09",
+      "version": 1,
+      "example": "Ku wielkiemu zdumieniu zebranych uczonych eksperyment zakończył się sukcesem."
+    },
+    {
+      "id": "pl.cue.ku_ogólny_zdumienie",
+      "phrase": [
+        "ku",
+        "ogólny",
+        "zdumienie"
+      ],
+      "kind": "telling_cue",
+      "strength": "strong",
+      "valence": 0.5,
+      "arousal": 0.72,
+      "emotions": {
+        "surprise": 0.9
+      },
+      "source": "curated:gemini-2026-09",
+      "version": 1,
+      "example": "Ku ogólnemu zdumieniu cichy paź pokonał mistrza turnieju."
+    },
+    {
+      "id": "pl.cue.z_zachwyt",
+      "phrase": [
+        "z",
+        "zachwyt"
+      ],
+      "kind": "telling_cue",
+      "strength": "strong",
+      "valence": 0.82,
+      "arousal": 0.72,
+      "emotions": {
+        "joy": 0.9
+      },
+      "source": "curated:gemini-2026-09",
+      "version": 1,
+      "example": "Podróżnik krzyknął z zachwytu na widok wodospadu."
+    },
+    {
+      "id": "pl.cue.z_zdumienie",
+      "phrase": [
+        "z",
+        "zdumienie"
+      ],
+      "kind": "telling_cue",
+      "strength": "strong",
+      "valence": 0.52,
+      "arousal": 0.62,
+      "emotions": {
+        "surprise": 0.9
+      },
+      "source": "curated:gemini-2026-09",
+      "version": 1,
+      "example": "Odkrywca przetarł oczy ze zdumienia nad niezwykłym odkryciem."
+    },
+    {
+      "id": "pl.cue.z_zgrozą",
+      "phrase": [
+        "z",
+        "zgroza"
+      ],
+      "kind": "telling_cue",
+      "strength": "strong",
+      "valence": -0.92,
+      "arousal": 0.82,
+      "emotions": {
+        "fear": 0.9
+      },
+      "source": "curated:gemini-2026-09",
+      "version": 1,
+      "example": "Świadek spojrzał ze zgrozą na zgliszcza spalonej wioski."
+    },
+    {
+      "id": "pl.cue.z_strach_w_oko",
+      "phrase": [
+        "z",
+        "strach",
+        "w",
+        "oko"
+      ],
+      "kind": "telling_cue",
+      "strength": "strong",
+      "valence": -0.82,
+      "arousal": 0.82,
+      "emotions": {
+        "fear": 0.9
+      },
+      "source": "curated:gemini-2026-09",
+      "version": 1,
+      "example": "Młody giermek spojrzał ze strachem w oczach na potężnego smoka."
+    },
+    {
+      "id": "pl.cue.z_przerażenie",
+      "phrase": [
+        "z",
+        "przerażenie"
+      ],
+      "kind": "telling_cue",
+      "strength": "strong",
+      "valence": -0.92,
+      "arousal": 0.92,
+      "emotions": {
+        "fear": 0.9
+      },
+      "source": "curated:gemini-2026-09",
+      "version": 1,
+      "example": "Świadek z przerażeniem patrzył na płonący budynek."
+    },
+    {
+      "id": "pl.cue.z_lęk_w_serce",
+      "phrase": [
+        "z",
+        "lęk",
+        "w",
+        "serce"
+      ],
+      "kind": "telling_cue",
+      "strength": "strong",
+      "valence": -0.82,
+      "arousal": 0.72,
+      "emotions": {
+        "fear": 0.9
+      },
+      "source": "curated:gemini-2026-09",
+      "version": 1,
+      "example": "Więzień czekał z lękiem w sercu na ogłoszenie ostatecznego wyroku."
+    },
+    {
+      "id": "pl.cue.w_przerażeniu",
+      "phrase": [
+        "w",
+        "przerażenie"
+      ],
+      "kind": "telling_cue",
+      "strength": "strong",
+      "valence": -0.92,
+      "arousal": 0.92,
+      "emotions": {
+        "fear": 0.9
+      },
+      "source": "curated:gemini-2026-09",
+      "version": 1,
+      "example": "Mieszkańcy uciekali w przerażeniu przed nadciągającą lawiną."
+    },
+    {
+      "id": "pl.cue.w_rozpacz",
+      "phrase": [
+        "w",
+        "rozpacz"
+      ],
+      "kind": "telling_cue",
+      "strength": "strong",
+      "valence": -0.92,
+      "arousal": 0.82,
+      "emotions": {
+        "sadness": 0.9
+      },
+      "source": "curated:gemini-2026-09",
+      "version": 1,
+      "example": "Kobieta załamała ręce w rozpaczy po stracie ukochanego syna."
+    },
+    {
+      "id": "pl.cue.w_uniesieć",
+      "phrase": [
+        "w",
+        "uniesienie"
+      ],
+      "kind": "telling_cue",
+      "strength": "strong",
+      "valence": 0.82,
+      "arousal": 0.72,
+      "emotions": {
+        "joy": 0.9
+      },
+      "source": "curated:gemini-2026-09",
+      "version": 1,
+      "example": "W jej czystym sercu uniesienie trwało przez wiele dni.",
+      "contiguous": false
+    },
+    {
+      "id": "pl.cue.w_gniewie",
+      "phrase": [
+        "w",
+        "gniew"
+      ],
+      "kind": "telling_cue",
+      "strength": "strong",
+      "valence": -0.92,
+      "arousal": 0.92,
+      "emotions": {
+        "anger": 0.9
+      },
+      "source": "curated:gemini-2026-09",
+      "version": 1,
+      "example": "Powiedział to w gniewie podczas kłótni."
+    },
+    {
+      "id": "pl.cue.w_wściekłość",
+      "phrase": [
+        "w",
+        "wściekłość"
+      ],
+      "kind": "telling_cue",
+      "strength": "strong",
+      "valence": -0.92,
+      "arousal": 0.92,
+      "emotions": {
+        "anger": 0.9
+      },
+      "source": "curated:gemini-2026-09",
+      "version": 1,
+      "example": "Tyran wpadł w wściekłość po otrzymaniu odmownego listu."
+    },
+    {
+      "id": "pl.cue.z_gniew",
+      "phrase": [
+        "z",
+        "gniew"
+      ],
+      "kind": "telling_cue",
+      "strength": "strong",
+      "valence": -0.82,
+      "arousal": 0.82,
+      "emotions": {
+        "anger": 0.9
+      },
+      "source": "curated:gemini-2026-09",
+      "version": 1,
+      "example": "Rycerz zacisnął zęby z gniewu na bezczelnego zdrajcę."
+    },
+    {
+      "id": "pl.cue.z_wściekłość",
+      "phrase": [
+        "z",
+        "wściekłość"
+      ],
+      "kind": "telling_cue",
+      "strength": "strong",
+      "valence": -0.92,
+      "arousal": 0.92,
+      "emotions": {
+        "anger": 0.9
+      },
+      "source": "curated:gemini-2026-09",
+      "version": 1,
+      "example": "Wódz zawył z wściekłości po utracie strategicznej twierdzy."
+    },
+    {
+      "id": "pl.cue.z_ból_serce",
+      "phrase": [
+        "z",
+        "ból",
+        "serce"
+      ],
+      "kind": "telling_cue",
+      "strength": "strong",
+      "valence": -0.82,
+      "arousal": 0.52,
+      "emotions": {
+        "sadness": 0.9
+      },
+      "source": "curated:gemini-2026-09",
+      "version": 1,
+      "example": "Starzec westchnął z bólem serca nad nieszczęsnym losem swojej ojczyzny."
+    },
+    {
+      "id": "pl.cue.z_ciężki_serce",
+      "phrase": [
+        "z",
+        "ciężki",
+        "serce"
+      ],
+      "kind": "telling_cue",
+      "strength": "strong",
+      "valence": -0.72,
+      "arousal": 0.42,
+      "emotions": {
+        "sadness": 0.9
+      },
+      "source": "curated:gemini-2026-09",
+      "version": 1,
+      "alt_lemmas": [
+        "ciężka"
+      ],
+      "lemma_evidence": "carrier",
+      "example": "Król z ciężkim sercem podjął trudną decyzję o podniesieniu podatków."
+    },
+    {
+      "id": "pl.cue.z_radość_w_serce",
+      "phrase": [
+        "z",
+        "radość",
+        "w",
+        "serce"
+      ],
+      "kind": "telling_cue",
+      "strength": "strong",
+      "valence": 0.92,
+      "arousal": 0.72,
+      "emotions": {
+        "joy": 0.9
+      },
+      "source": "curated:gemini-2026-09",
+      "version": 1,
+      "example": "Wygnańcy wracali z radością w sercu do rodzinnej ziemi."
+    },
+    {
+      "id": "pl.cue.z_duma_w_głos",
+      "phrase": [
+        "z",
+        "duma",
+        "w",
+        "głos"
+      ],
+      "kind": "telling_cue",
+      "strength": "strong",
+      "valence": 0.82,
+      "arousal": 0.62,
+      "emotions": {
+        "joy": 0.9
+      },
+      "source": "curated:gemini-2026-09",
+      "version": 1,
+      "example": "Weteran przemawiał z dumą w głosie o dawnych zwycięstwach pułku."
+    },
+    {
+      "id": "pl.cue.z_troska",
+      "phrase": [
+        "z",
+        "troska"
+      ],
+      "kind": "telling_cue",
+      "strength": "strong",
+      "valence": -0.52,
+      "arousal": 0.42,
+      "emotions": {
+        "sadness": 0.9
+      },
+      "source": "curated:gemini-2026-09",
+      "version": 1,
+      "alt_lemmas": [
+        "troski"
+      ],
+      "lemma_evidence": "carrier",
+      "example": "Pielęgniarka zapytała z troską o samopoczucie rannego żołnierza."
+    },
+    {
+      "id": "pl.cue.z_poczucie_wina",
+      "phrase": [
+        "z",
+        "poczucie",
+        "wina"
+      ],
+      "kind": "telling_cue",
+      "strength": "strong",
+      "valence": -0.72,
+      "arousal": 0.52,
+      "emotions": {
+        "sadness": 0.9
+      },
+      "source": "curated:gemini-2026-09",
+      "version": 1,
+      "alt_lemmas": [
+        "wino"
+      ],
+      "lemma_evidence": "carrier",
+      "example": "Chłopiec spuścił głowę z poczuciem winy za rozbitą wazę."
+    },
+    {
+      "id": "pl.cue.uczucie_lęk",
+      "phrase": [
+        "uczucie",
+        "lęk"
+      ],
+      "kind": "telling_cue",
+      "strength": "strong",
+      "valence": -0.72,
+      "arousal": 0.62,
+      "emotions": {
+        "fear": 0.9
+      },
+      "source": "curated:gemini-2026-09",
+      "version": 1,
+      "example": "Opanowało go paraliżujące uczucie lęku przed wejściem do podziemi."
+    },
+    {
+      "id": "pl.cue.uczucie_ulga",
+      "phrase": [
+        "uczucie",
+        "ulga"
+      ],
+      "kind": "telling_cue",
+      "strength": "strong",
+      "valence": 0.82,
+      "arousal": 0.32,
+      "emotions": {
+        "joy": 0.9
+      },
+      "source": "curated:gemini-2026-09",
+      "version": 1,
+      "example": "Pasażerowie poczuli głębokie uczucie ulgi po bezpiecznym lądowaniu."
+    },
+    {
+      "id": "pl.cue.fala_gniew",
+      "phrase": [
+        "fala",
+        "gniew"
+      ],
+      "kind": "telling_cue",
+      "strength": "strong",
+      "valence": -0.92,
+      "arousal": 0.92,
+      "emotions": {
+        "anger": 0.9
+      },
+      "source": "curated:gemini-2026-09",
+      "version": 1,
+      "example": "Zalała go nagła fala gniewu wobec aroganckiego urzędnika."
+    },
+    {
+      "id": "pl.cue.fala_gorący",
+      "phrase": [
+        "fala",
+        "gorący"
+      ],
+      "kind": "telling_cue",
+      "strength": "strong",
+      "valence": -0.62,
+      "arousal": 0.72,
+      "emotions": {
+        "anger": 0.9
+      },
+      "source": "curated:gemini-2026-09",
+      "version": 1,
+      "example": "Uderzyła w niego duszna fala gorąca z otwartego pieca hutniczego."
+    },
+    {
+      "id": "pl.cue.dreszcz_emocja",
+      "phrase": [
+        "dreszcz",
+        "emocja"
+      ],
+      "kind": "telling_cue",
+      "strength": "strong",
+      "valence": 0.52,
+      "arousal": 0.72,
+      "emotions": {
+        "anticipation": 0.9
+      },
+      "source": "curated:gemini-2026-09",
+      "version": 1,
+      "example": "Widzów przeszedł przyjemny dreszcz emocji przed kulminacją spektaklu."
+    },
+    {
+      "id": "pl.cue.dreszcz_przerażeć",
+      "phrase": [
+        "dreszcz",
+        "przerażenie"
+      ],
+      "kind": "telling_cue",
+      "strength": "strong",
+      "valence": -0.92,
+      "arousal": 0.92,
+      "emotions": {
+        "fear": 0.9
+      },
+      "source": "curated:gemini-2026-09",
+      "version": 1,
+      "example": "Nagły dreszcz i bezgraniczne przerażenie sparaliżowały jego ruchy.",
+      "contiguous": false
+    },
+    {
+      "id": "pl.cue.krew_zastygła_w_żyła",
+      "phrase": [
+        "krew",
+        "zastygła",
+        "w",
+        "żyła"
+      ],
+      "kind": "telling_cue",
+      "strength": "strong",
+      "valence": -0.92,
+      "arousal": 0.92,
+      "emotions": {
+        "fear": 0.9
+      },
+      "source": "curated:gemini-2026-09",
+      "version": 1,
+      "alt_lemmas": [
+        "żyć"
+      ],
+      "lemma_evidence": "carrier",
+      "example": "Na ten potworny widok krew zastygła w żyłach odważnego myśliwego."
+    },
+    {
+      "id": "pl.cue.krew_zagotować_się_w_on",
+      "phrase": [
+        "krew",
+        "zagotować",
+        "się",
+        "w",
+        "on"
+      ],
+      "kind": "telling_cue",
+      "strength": "strong",
+      "valence": -0.92,
+      "arousal": 0.92,
+      "emotions": {
+        "anger": 0.9
+      },
+      "source": "curated:gemini-2026-09",
+      "version": 1,
+      "example": "Niesprawiedliwa obelga sprawiła, że krew zagotowała się w nim z siłą ognia."
+    },
+    {
+      "id": "pl.cue.serce_zabić_mocno",
+      "phrase": [
+        "serce",
+        "zabić",
+        "mocno"
+      ],
+      "kind": "telling_cue",
+      "strength": "strong",
+      "valence": 0.42,
+      "arousal": 0.72,
+      "emotions": {
+        "anticipation": 0.9
+      },
+      "source": "curated:gemini-2026-09",
+      "version": 1,
+      "example": "Jego serce zabiło mocno ze strachu przed zbliżającym się niebezpieczeństwem."
+    },
+    {
+      "id": "pl.cue.serce_zamorło_w_pierś",
+      "phrase": [
+        "serce",
+        "zamrzeć",
+        "w",
+        "pierś"
+      ],
+      "kind": "telling_cue",
+      "strength": "strong",
+      "valence": -0.82,
+      "arousal": 0.82,
+      "emotions": {
+        "fear": 0.9
+      },
+      "source": "curated:gemini-2026-09",
+      "version": 1,
+      "example": "Z przerażenia jego serce zamarło w piersi, gdy rozległ się krzyk."
+    },
+    {
+      "id": "pl.cue.odebrać_on_mowa",
+      "phrase": [
+        "odebrać",
+        "on",
+        "mowa"
+      ],
+      "kind": "telling_cue",
+      "strength": "strong",
+      "valence": -0.32,
+      "arousal": 0.72,
+      "emotions": {
+        "surprise": 0.9
+      },
+      "source": "curated:gemini-2026-09",
+      "version": 1,
+      "example": "Niewiarygodna wieść natychmiast odebrała mu mowę ze zdumienia."
+    },
+    {
+      "id": "pl.cue.stanąć_jak_wryć",
+      "phrase": [
+        "stanąć",
+        "jak",
+        "wryć"
+      ],
+      "kind": "telling_cue",
+      "strength": "strong",
+      "valence": -0.22,
+      "arousal": 0.72,
+      "emotions": {
+        "surprise": 0.9
+      },
+      "source": "curated:gemini-2026-09",
+      "version": 1,
+      "example": "Na widok tajemniczego gościa stanął jak wryty na samym środku korytarza."
+    },
+    {
+      "id": "pl.cue.zaniemówić_z_wrażenie",
+      "phrase": [
+        "zaniemówić",
+        "z",
+        "wrażenie"
+      ],
+      "kind": "telling_cue",
+      "strength": "strong",
+      "valence": 0.22,
+      "arousal": 0.62,
+      "emotions": {
+        "surprise": 0.9
+      },
+      "source": "curated:gemini-2026-09",
+      "version": 1,
+      "example": "Świadek zdołał zaniemówić z wrażenia po ujrzeniu komety."
+    },
+    {
+      "id": "pl.cue.kamień_spaść_z_serce",
+      "phrase": [
+        "kamień",
+        "spaść",
+        "z",
+        "serce"
+      ],
+      "kind": "telling_cue",
+      "strength": "strong",
+      "valence": 0.82,
+      "arousal": 0.32,
+      "emotions": {
+        "joy": 0.9
+      },
+      "source": "curated:gemini-2026-09",
+      "version": 1,
+      "example": "Czuł, jakby ciężki kamień spadł z serca po oczyszczeniu z zarzutów."
+    },
+    {
+      "id": "pl.cue.twarz_ściągnąć_się_gniew",
+      "phrase": [
+        "twarz",
+        "ściągnąć",
+        "się",
+        "gniew"
+      ],
+      "kind": "telling_cue",
+      "strength": "strong",
+      "valence": -0.82,
+      "arousal": 0.82,
+      "emotions": {
+        "anger": 0.9
+      },
+      "source": "curated:gemini-2026-09",
+      "version": 1,
+      "example": "Jego surowa twarz ściągnęła się gniewem na wieść o zdradzie."
+    },
+    {
+      "id": "pl.cue.łza_stanąć_w_oko",
+      "phrase": [
+        "łza",
+        "stanąć",
+        "w",
+        "oko"
+      ],
+      "kind": "telling_cue",
+      "strength": "strong",
+      "valence": -0.72,
+      "arousal": 0.52,
+      "emotions": {
+        "sadness": 0.9
+      },
+      "source": "curated:gemini-2026-09",
+      "version": 1,
+      "example": "Gorzkie łzy stanęły w oczach starego wygi na wieść o poległych towarzyszach."
+    },
+    {
+      "id": "pl.cue.wybuchnąć_płacz",
+      "phrase": [
+        "wybuchnąć",
+        "płacz"
+      ],
+      "kind": "telling_cue",
+      "strength": "strong",
+      "valence": -0.82,
+      "arousal": 0.72,
+      "emotions": {
+        "sadness": 0.9
+      },
+      "source": "curated:gemini-2026-09",
+      "version": 1,
+      "example": "Zrozpaczona dziewczyna nie potrafiła powstrzymać łez i musiała wybuchnąć płaczem."
+    },
+    {
+      "id": "pl.cue.wybuchnąć_śmiech",
+      "phrase": [
+        "wybuchnąć",
+        "śmiech"
+      ],
+      "kind": "telling_cue",
+      "strength": "strong",
+      "valence": 0.82,
+      "arousal": 0.72,
+      "emotions": {
+        "joy": 0.9
+      },
+      "source": "curated:gemini-2026-09",
+      "version": 1,
+      "example": "Cała sala biesiadna musiała wybuchnąć śmiechem po zabawnym dowcipie błazna."
+    },
+    {
+      "id": "pl.cue.ogarnąć_on_wściekłość",
+      "phrase": [
+        "ogarnąć",
+        "on",
+        "wściekłość"
+      ],
+      "kind": "telling_cue",
+      "strength": "strong",
+      "valence": -0.92,
+      "arousal": 0.92,
+      "emotions": {
+        "anger": 0.9
+      },
+      "source": "curated:gemini-2026-09",
+      "version": 1,
+      "example": "Nagle ogarnęła go wściekłość na fałszywych pochlebców."
+    },
+    {
+      "id": "pl.cue.ogarnąć_on_strach",
+      "phrase": [
+        "ogarnąć",
+        "on",
+        "strach"
+      ],
+      "kind": "telling_cue",
+      "strength": "strong",
+      "valence": -0.82,
+      "arousal": 0.82,
+      "emotions": {
+        "fear": 0.9
+      },
+      "source": "curated:gemini-2026-09",
+      "version": 1,
+      "example": "W ciemnym lochu ogarnął go strach przed nieuchronną karą."
+    },
+    {
+      "id": "pl.cue.ogarnąć_on_rozpacz",
+      "phrase": [
+        "ogarnąć",
+        "on",
+        "rozpacz"
+      ],
+      "kind": "telling_cue",
+      "strength": "strong",
+      "valence": -0.92,
+      "arousal": 0.82,
+      "emotions": {
+        "sadness": 0.9
+      },
+      "source": "curated:gemini-2026-09",
+      "version": 1,
+      "example": "Po druzgocącej przegranej ogarnęła go rozpacz granicząca z rezygnacją."
+    },
+    {
+      "id": "pl.cue.ogarnąć_on_litość",
+      "phrase": [
+        "ogarnąć",
+        "on",
+        "litość"
+      ],
+      "kind": "telling_cue",
+      "strength": "strong",
+      "valence": -0.32,
+      "arousal": 0.32,
+      "emotions": {
+        "sadness": 0.9
+      },
+      "source": "curated:gemini-2026-09",
+      "version": 1,
+      "example": "Widząc cierpienie bezdomnego, ogarnęła go litość i postanowił mu pomóc."
+    },
+    {
+      "id": "pl.cue.przeszyć_on_lęk",
+      "phrase": [
+        "przeszyć",
+        "on",
+        "lęk"
+      ],
+      "kind": "telling_cue",
+      "strength": "strong",
+      "valence": -0.82,
+      "arousal": 0.82,
+      "emotions": {
+        "fear": 0.9
+      },
+      "source": "curated:gemini-2026-09",
+      "version": 1,
+      "example": "Nagły zgrzyt żelaza przeszył go lękiem aż do szpiku kości."
+    },
+    {
+      "id": "pl.cue.nie_posiadać_się_z_radość",
+      "phrase": [
+        "nie",
+        "posiadać",
+        "się",
+        "z",
+        "radość"
+      ],
+      "kind": "telling_cue",
+      "strength": "strong",
+      "valence": 0.92,
+      "arousal": 0.82,
+      "emotions": {
+        "joy": 0.9
+      },
+      "source": "curated:gemini-2026-09",
+      "version": 1,
+      "example": "Zwycięski wódz nie posiadał się z radości po udanej obronie twierdzy."
+    }
+  ]
+}

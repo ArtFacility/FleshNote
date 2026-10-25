@@ -12,6 +12,8 @@ __pycache__/
 backend/build/
 backend/dist/
 backend/nltk_data/
+backend/temp_test_*/
+backend/tools/janitor_eval/.features_cache.json
 # *.spec (removed to allow tracking backend.spec)
 .venv
 env/

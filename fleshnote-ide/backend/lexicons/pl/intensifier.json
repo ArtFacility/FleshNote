@@ -1,0 +1,236 @@
+{
+  "lang": "pl",
+  "kind": "intensifier",
+  "version": 1,
+  "entries": [
+    {
+      "id": "pl.intens.bardzo",
+      "lemma": "bardzo",
+      "kind": "intensifier",
+      "strength": "strong",
+      "factor": 1.35,
+      "source": "migrated:pol_janitor.py",
+      "version": 1
+    },
+    {
+      "id": "pl.intens.niezwykle",
+      "lemma": "niezwykle",
+      "kind": "intensifier",
+      "strength": "strong",
+      "factor": 1.35,
+      "source": "curated:gemini-2026-09",
+      "version": 1
+    },
+    {
+      "id": "pl.intens.niezmiernie",
+      "lemma": "niezmiernie",
+      "kind": "intensifier",
+      "strength": "strong",
+      "factor": 1.35,
+      "source": "curated:gemini-2026-09",
+      "version": 1
+    },
+    {
+      "id": "pl.intens.szalenie",
+      "lemma": "szalenie",
+      "kind": "intensifier",
+      "strength": "strong",
+      "factor": 1.35,
+      "source": "curated:gemini-2026-09",
+      "version": 1
+    },
+    {
+      "id": "pl.intens.wściekl",
+      "lemma": "wściekle",
+      "kind": "intensifier",
+      "strength": "strong",
+      "factor": 1.35,
+      "source": "curated:gemini-2026-09",
+      "version": 1
+    },
+    {
+      "id": "pl.intens.okropnie",
+      "lemma": "okropnie",
+      "kind": "intensifier",
+      "strength": "strong",
+      "factor": 1.35,
+      "source": "curated:gemini-2026-09",
+      "version": 1
+    },
+    {
+      "id": "pl.intens.strasznie",
+      "lemma": "strasznie",
+      "kind": "intensifier",
+      "strength": "strong",
+      "factor": 1.35,
+      "source": "curated:gemini-2026-09",
+      "version": 1
+    },
+    {
+      "id": "pl.intens.ogromnie",
+      "lemma": "ogromnie",
+      "kind": "intensifier",
+      "strength": "strong",
+      "factor": 1.35,
+      "source": "curated:gemini-2026-09",
+      "version": 1
+    },
+    {
+      "id": "pl.intens.wyjątkowo",
+      "lemma": "wyjątkowo",
+      "kind": "intensifier",
+      "strength": "strong",
+      "factor": 1.35,
+      "source": "curated:gemini-2026-09",
+      "version": 1
+    },
+    {
+      "id": "pl.intens.nadzwyczaj",
+      "lemma": "nadzwyczaj",
+      "kind": "intensifier",
+      "strength": "strong",
+      "factor": 1.35,
+      "source": "curated:gemini-2026-09",
+      "version": 1
+    },
+    {
+      "id": "pl.intens.wielce",
+      "lemma": "wielce",
+      "kind": "intensifier",
+      "strength": "strong",
+      "factor": 1.35,
+      "source": "curated:gemini-2026-09",
+      "version": 1
+    },
+    {
+      "id": "pl.intens.niesamowit",
+      "lemma": "niesamowicie",
+      "kind": "intensifier",
+      "strength": "strong",
+      "factor": 1.35,
+      "source": "curated:gemini-2026-09",
+      "version": 1
+    },
+    {
+      "id": "pl.intens.potężnie",
+      "lemma": "potężnie",
+      "kind": "intensifier",
+      "strength": "strong",
+      "factor": 1.35,
+      "source": "curated:gemini-2026-09",
+      "version": 1
+    },
+    {
+      "id": "pl.intens.głęboko",
+      "lemma": "głęboko",
+      "kind": "intensifier",
+      "strength": "strong",
+      "factor": 1.35,
+      "source": "curated:gemini-2026-09",
+      "version": 1
+    },
+    {
+      "id": "pl.intens.całkowicie",
+      "lemma": "całkowicie",
+      "kind": "intensifier",
+      "strength": "strong",
+      "factor": 1.35,
+      "source": "curated:gemini-2026-09",
+      "version": 1
+    },
+    {
+      "id": "pl.intens.zupełnie",
+      "lemma": "zupełnie",
+      "kind": "intensifier",
+      "strength": "strong",
+      "factor": 1.35,
+      "source": "curated:gemini-2026-09",
+      "version": 1
+    },
+    {
+      "id": "pl.intens.bezwzględnie",
+      "lemma": "bezwzględnie",
+      "kind": "intensifier",
+      "strength": "strong",
+      "factor": 1.35,
+      "source": "curated:gemini-2026-09",
+      "version": 1
+    },
+    {
+      "id": "pl.intens.wprost",
+      "lemma": "wprost",
+      "kind": "intensifier",
+      "strength": "strong",
+      "factor": 1.35,
+      "source": "curated:gemini-2026-09",
+      "version": 1
+    },
+    {
+      "id": "pl.intens.dosłownie",
+      "lemma": "dosłownie",
+      "kind": "intensifier",
+      "strength": "strong",
+      "factor": 1.35,
+      "source": "curated:gemini-2026-09",
+      "version": 1
+    },
+    {
+      "id": "pl.intens.absolutnie",
+      "lemma": "absolutnie",
+      "kind": "intensifier",
+      "strength": "strong",
+      "factor": 1.35,
+      "source": "curated:gemini-2026-09",
+      "version": 1
+    },
+    {
+      "id": "pl.intens.szczególnie",
+      "lemma": "szczególnie",
+      "kind": "intensifier",
+      "strength": "strong",
+      "factor": 1.35,
+      "source": "migrated:pol_janitor.py",
+      "version": 1
+    },
+    {
+      "id": "pl.intens.nad_wyraz",
+      "phrase": [
+        "nad",
+        "wyraz"
+      ],
+      "kind": "intensifier",
+      "strength": "strong",
+      "factor": 1.35,
+      "source": "curated:gemini-2026-09",
+      "version": 1,
+      "example": "Był to młodzieniec nad wyraz uprzejmy i pracowity."
+    },
+    {
+      "id": "pl.intens.piekielnie",
+      "lemma": "piekielnie",
+      "kind": "intensifier",
+      "strength": "strong",
+      "factor": 1.35,
+      "source": "curated:gemini-2026-09",
+      "version": 1
+    },
+    {
+      "id": "pl.intens.diabelć",
+      "lemma": "diabelnie",
+      "kind": "intensifier",
+      "strength": "strong",
+      "factor": 1.35,
+      "source": "curated:gemini-2026-09",
+      "version": 1
+    },
+    {
+      "id": "pl.intens.śmiertelnie",
+      "lemma": "śmiertelnie",
+      "kind": "intensifier",
+      "strength": "strong",
+      "factor": 1.35,
+      "source": "curated:gemini-2026-09",
+      "version": 1
+    }
+  ]
+}

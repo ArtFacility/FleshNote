@@ -909,19 +909,20 @@ Delete an annotation by ID.
 
 ## Sketchboards
 
-Defined in `backend/routes/boards.py`. Provides endpoints for creating node-graph maps.
+Defined in `backend/routes/boards.py`. See `backend/docs/SKETCHBOARDS.md` for the model.
 
-- `POST /api/project/boards/list`: Returns list of all sketchboards.
-- `POST /api/project/boards/create`: Creates a new board `{ "name": "...", "board_type": "custom" }`.
-- `POST /api/project/boards/update`: Updates board metadata (name, focus, zoom).
-- `POST /api/project/boards/delete`: Deletes a board.
-- `POST /api/project/boards/get`: Returns full board state `{ "board": {...}, "items": [...], "connections": [...] }`.
-- `POST /api/project/boards/items/create`: Creates a node on a board.
-- `POST /api/project/boards/items/update`: Updates a node's position, size, text, or color.
-- `POST /api/project/boards/items/delete`: Deletes a node.
-- `POST /api/project/boards/connections/create`: Creates a connecting line between two nodes.
-- `POST /api/project/boards/connections/update`: Modifies a connection (curve offset, color, label).
-- `POST /api/project/boards/connections/delete`: Removes a connection line.
+- `POST /api/project/boards/list`: every board, with `settings` parsed.
+- `POST /api/project/boards/create`: `{ name, board_type, icon }`. `board_type` is `custom`, a template id (`magic_system`, `tech_tree`, `power_structure`, `economy`) or a live board (`gen_relationships`, `gen_factions`).
+- `POST /api/project/boards/update`: name, icon, board type, `settings` (synced); zoom and pan (this device only).
+- `POST /api/project/boards/delete`: deletes the board and everything on it, legend included.
+- `POST /api/project/boards/load`: `{ board, items, connections, types, kinds }`. Nodes carry `entity_name` and `entity_missing` (live) and `first_chapter_id` (the first chapter that mentions a linked entity). A type or kind deleted elsewhere reads as `null`.
+- `POST /api/project/boards/batch`: `{ board_id, ops: [{ op, id, fields }] }`, applied in order, all or nothing (at most 2000 ops).
+  - Ops: `put_node`, `put_edge`, `put_type`, `put_kind` (create, update or revive) and `del_node`, `del_edge`, `del_type`, `del_kind`.
+  - A connection's ends, `type_id` and a node's `kind_id` must be live rows of the same board.
+- `POST /api/project/boards/for-entity`: `{ entity_type, entity_id }` → `{ boards: [{ board_id, name, icon, node_ids }] }`.
+- `POST /api/project/boards/generated`: `{ board_id }` for a live board.
+  - Relationships: `{ kind: "relationships", entities, pairs: [{ from, to, history }] }`. `history` is the relationship tracker's turning points per direction, in its order, each with its chapter number and world day.
+  - Factions: `{ kind: "factions", entities, links, parents }`. `links` are memberships with joined/left dates and days; `parents` says which faction is part of which.
 
 ---
 
@@ -1240,3 +1241,183 @@ Used by `ImageGallery.jsx` to clean up the temporary full-resolution upload afte
 { "status": "error", "msg": "File not found" }
 ```
 
+---
+
+## Pentimento (Writing Process Telemetry)
+
+Defined in `backend/routes/pentimento.py`. Records coalesced writing ops into sealed,
+hash-chained sessions and aggregates them. See `backend/docs/PENTIMENTO.md`.
+
+- `POST /api/project/pentimento/session/start`: Opens a writing session for a chapter (returns `session_id`, `session_num`, `previous_session_hash`). If the chapter's latest session was never sealed (a crash), seals it first and chains onto it. Best-effort captures a baseline `session` prose snapshot of the pre-session state (deduped, gated by `prose_history`) so the replay can interpolate from it.
+- `POST /api/project/pentimento/flush`: Ingests a batch of coalesced ops (runs, not keystrokes, each tagged with an input-provenance `source`) and optionally stores `wpm_trace` ([para, word_offset, wpm] triples, recorder-authoritative full replacement). `recovery: true` (ops from a crash backup) skips ops the session already holds. 404 for an unknown session, 409 once it is sealed.
+- `POST /api/project/pentimento/session/end`: Seals the session with a SHA-256 chain hash; auto-creates a `session` prose snapshot when `prose_history` is on. Ending an already sealed session returns its hash with `already_sealed: true` and changes nothing.
+- `POST /api/project/pentimento/heatmap`: Returns per-paragraph effort metrics (time, inserted/deleted, churn, night ratio, normalized `heat`) + `session_count`.
+- `POST /api/project/pentimento/ops`: Returns raw ops for a chapter grouped by `session_id`, plus `wpm_by_session` (per-word typing-speed traces) — used to pace the replay simulation.
+- `POST /api/project/pentimento/summary`: Whole-project totals (typed/deleted/kept words, time, day/night split, chain head hash).
+- `POST /api/project/pentimento/compact`: Prunes old raw ops into per-session `summary_json` aggregates.
+- `POST /api/project/pentimento/clear`: Deletes all telemetry (sessions + ops).
+- `POST /api/project/pentimento/storage`: Telemetry storage accounting.
+
+---
+
+## Chapter History (Prose Snapshots & Rollback)
+
+Defined in `backend/routes/chapter_history.py`. Full-text prose snapshots powering the
+History panel and the replay base. See `backend/docs/PENTIMENTO.md`.
+
+- `POST /api/project/chapter/history/list`: Snapshots for a chapter (metadata only, newest first) — `id`, `created_at`, `kind` (`session`/`manual`/`pre_restore`), `label`, `word_count`, `byte_size`, `prose_hash`, `session_num`, `session_id`.
+- `POST /api/project/chapter/history/preview`: Decompresses one snapshot `{ snapshot_id }` → `{ content_html, word_count }`.
+- `POST /api/project/chapter/history/pin`: Creates a `manual` snapshot of the current prose (optional `label`).
+- `POST /api/project/chapter/history/restore`: Restores a snapshot — takes a `pre_restore` safety copy, rewrites the `md/` file, re-runs entity/foreshadow/knowledge trackers, logs `prose_hash` to `change_log`, returns `{ content_html }`.
+- `POST /api/project/chapter/history/storage`: Snapshot count + total bytes for the settings UI.
+- `POST /api/project/chapter/history/prune`: Keeps the last N `session` snapshots per chapter; never prunes `manual` pins.
+- `POST /api/project/chapter/history/clear`: Deletes a chapter's snapshots.
+
+---
+
+## Sync Engine (Local Cross-Device Merge)
+
+Defined in `backend/routes/sync.py` (with primitives in `backend/sync_core.py`). Serverless,
+user-initiated merge between two copies of the same project. See `backend/docs/SYNC.md`.
+
+### `POST /api/project/sync/preview`
+
+Read-only. Compares a local and a remote copy and reports what a sync would change. Guards
+that both folders share the same `project_id` (from `fleshnote_project.json`).
+
+**Request:** `{ "local_path": "...", "remote_path": "..." }`
+
+**Response:**
+
+```json
+{
+  "status": "ok",
+  "project_id": "...",
+  "project_name": "My Novel",
+  "entity_changes": [
+    { "table": "characters", "row_id": "...", "column": "bio",
+      "display_name": "Sophia", "action": "update", "value": "..." }
+  ],
+  "prose_takes": [
+    { "chapter_id": "...", "title": "Chapter 5", "direction": "remote_to_local", "md_filename": "ch_005_....md" }
+  ],
+  "prose_conflicts": [
+    { "chapter_id": "...", "title": "...", "md_filename": "...", "local_text": "...", "remote_text": "..." }
+  ],
+  "summary": {
+    "entity_creates": 0, "entity_updates": 3, "entity_deletes": 1,
+    "prose_takes_remote": 2, "prose_takes_local": 0, "prose_conflicts": 1
+  }
+}
+```
+
+Returns `{ "status": "error", "message": "..." }` if the two folders are different projects.
+
+### `POST /api/project/sync/apply`
+
+Pulls the remote changes into the local project. Backs up `fleshnote.db` → `.bak` first,
+applies entity field changes + prose takes + conflict resolutions in one transaction,
+recomputes derived data for touched chapters, advances the version vector, and **restores the
+backup on any error**.
+
+**Request:**
+
+```json
+{
+  "local_path": "...",
+  "remote_path": "...",
+  "resolutions": { "<chapter_id>": "local | remote | <merged text>" }
+}
+```
+
+**Response:** `{ "status": "ok" }` (or HTTP 400/500 on a rejected/failed sync — local DB is rolled back and restored).
+
+
+## Manuscript export (`routes/export.py`, `export/`)
+
+### `POST /api/project/export`
+Exports the selected chapters to a new file in the project's `exports/` folder: `{ project_path, content_mode: "prose" | "notes" | "full", format: "txt" | "md" | "html" | "docx" | "pdf" | "epub", book_ready, trim: "pocket" | "standard" | "large", font_size, gutter, outer, chapter_ids }` → `{ status, filepath, warnings? }`.
+- `book_ready` applies to PDF and DOCX: a trim-size book (mirrored margins with `gutter` on the binding side, page numbers) when true, standard manuscript format (US Letter, 1-inch margins, 12 pt double-spaced, "Surname / TITLE / page" header) when false.
+- Deleted chapters are never exported. `chapter_ids: null` means all chapters.
+- File names are `{Title}_{mode}_{timestamp}.{ext}` and never overwrite an earlier export.
+- **PDF:** the backend writes nothing. It answers `{ status: "print", filepath, html }`; the Electron main process prints `html` with Chromium (`printToPDF`, `preferCSSPageSize`) to `filepath` and returns `status: "success"` to the renderer.
+- `warnings` reports how many `#TODO` notes were left out.
+
+### `POST /api/project/export/print-preview`
+Same body; `{ status, html }`: the PDF print document for the selected chapters, nothing written. The main process (`api:exportPrintPreview`) prints it in memory and hands the PDF bytes to the export window, which draws the real pages with pdf.js.
+
+### `POST /api/project/export/preview`
+Same body; `{ status, html }` showing the first selected chapter (HTML formats as the reading view, TXT and MD as plain text).
+
+## Book cover, alpha (`routes/cover.py`)
+
+The cover document lives in `project_config` under `cover` (it syncs like other settings); its images are in `assets/cover/`. Documents are validated on every read and write (they can come from shared projects): only `assets/cover/(img|front|spine)_<hex>.<ext>` paths that exist, hex colours, known fonts, capped text and field counts.
+
+### `POST /api/project/cover/get`
+`{ project_path }` → `{ status, cover }` (`null` when the book has no cover).
+
+### `POST /api/project/cover/add-image`
+`{ project_path, source_path }` → `{ status, path }`. Copies a PNG, JPEG, WebP, GIF or BMP image (≤ 40 MB) into `assets/cover/`.
+
+### `POST /api/project/cover/save`
+`{ project_path, cover, front_png, spine_png }` → `{ status, cover }`. `front_png` / `spine_png` are PNG data URLs the editor drew; they are stored under new names and set as `cover.render`. Cover files no longer referenced are removed. `cover: null` removes the cover. The project list (`/api/projects`) reports `cover_image` (absolute path of the front render) for the bookshelf, and EPUB exports use it as the cover image.
+
+## Reviews (`.flreview` files for beta readers)
+
+A review file (`format: "fleshnote-review/1"`, JSON) carries a pruned snapshot of the chosen chapters plus the reviewer's notes and scores. The author makes one, a reviewer reads it in FleshNote and leaves notes, and the author imports the copy that comes back. All fields added after the first version (`review_id`, `copy_id`, `author_label`, `message`, `created_at`, `finished_at`, note `suggestion` / `updated_at`) are optional, so older files still open.
+
+The reviewer never writes to the file they were sent: notes go to a working copy in `<userData>/reviews/`. Electron passes that folder as `store_dir`, and the save, finish and discard routes refuse any path outside it.
+
+**Locked copies** (`format: "fleshnote-review-sealed/1"`) stop opening after a date. See `backend/review_crypto.py`.
+- **How the lock works:** the content is AES-256-GCM encrypted under `HKDF(file half + server half)`.
+  - The file half is in `crypto.file_half`.
+  - The server half is stored on a FleshNote key server until `crypto.expires_at`.
+  - The header fields that never change are authenticated as additional data.
+- **What stays readable without the key:** `format`, `crypto`, `review_id`, `created_at`, `title`, `author_label`, `desktop_id`, `copy_id`, `finished_at`. Everything else, including the author's message and the reviewer's notes, is encrypted.
+- **Which servers are contacted:** only the default server (`FLESHNOTE_REVIEW_KEY_SERVER`, default `https://api.fleshnote.org/tsa`) and any listed in `FLESHNOTE_REVIEW_KEY_SERVERS`. The server named in a file is never trusted on its own.
+- **Reviewer caching:** the reviewer's app caches the server half in `store_dir/keys.json` until the expiry the server reported, so reviews read offline. A 404 from the server deletes the cached half.
+
+### `POST /api/review/export`
+Writes a review file. `{ project_path, dest_path, scope: { entities, with_secrets, plot, chapter_ids }, reviewer_label, author_label, message, expires_days, key_server }` → `{ status, path, review_id, expires_at }`.
+- The manuscript is always included. Author-only fields need `entities` and `with_secrets`, and plot twists need `plot`.
+- With `expires_days` 1–365 the copy is locked: a key is created on the key server (with proof-of-work) and the copy is recorded in `review_copies`. If the server can't be reached, the response is `{ status: "error", error: "key_server_unreachable" }` and no file is written.
+- With `expires_days` 0 you get a plain copy that never expires.
+
+### `POST /api/review/open`
+What a review file shows without its key: `{ path }` → `{ status, path, peek: { sealed, title, desktop_id, author_label, reviewer_label, notes, finished_at, expires_at } }`. For locked copies, `reviewer_label` is `""` and `notes` is `null`.
+
+### `POST /api/review/start`
+Starts or resumes reviewing: `{ path, store_dir }` → `{ status, path, package, resumed }`.
+- The first open copies the file into `store_dir` with a new `copy_id`. Opening the same file again (same `review_id`) returns the existing working copy.
+- For locked copies the key server is asked first, so an expired or withdrawn copy stops opening. The cached half is used only when the server can't be reached.
+- Other statuses: `expired`, `offline` (never opened, and the server is unreachable), `untrusted` (the file names an unknown server), and `error` (the file was altered).
+
+### `POST /api/review/list`
+Reviews in progress: `{ store_dir }` → `{ reviews: [{ path, review_id, title, author_label, reviewer_label, chapters, notes, finished_at, updated_at }] }`.
+
+### `POST /api/review/save`
+Saves the reviewer's fields into a working copy: `{ path, package: { reviewer_label, notes, scores }, store_dir }`. The snapshot is never replaced. Notes are cleaned: known fields only, known categories, capped lengths.
+
+### `POST /api/review/finish`
+Writes the copy that goes back to the author and stamps `finished_at`: `{ path, dest_path, store_dir }` → `{ status, path }`.
+
+### `POST /api/review/discard`
+Deletes a working copy: `{ path, store_dir }`.
+
+### `POST /api/review/import`
+Imports returned files into a project: `{ project_path, package_paths }` → `{ results: [{ path, status, id, reviewer_label, added, updated, unanchored, skipped }] }`. A file made from another project returns `status: "error", error: "wrong_project"` and imports nothing. See `received_reviews` / `review_notes` in DATABASE_SCHEMA.md.
+
+### `POST /api/review/notes`
+`{ project_path }` → `{ reviews: [{ id, reviewer_label, finished_at, imported_at, scores }], notes: [...] }` (not deleted).
+
+### `POST /api/review/note/status`
+`{ project_path, id, status }`, where status is `open`, `resolved` or `dismissed`.
+
+### `POST /api/review/copies`
+Copies sent from this project: `{ project_path }` → `{ copies: [{ id, reviewer_label, chapter_count, key_id, expires_at, revoked_at, created_at, locked }] }`.
+
+### `POST /api/review/copy/revoke`
+Withdraws a locked copy on the key server, so it stops opening for everyone: `{ project_path, id }` → `{ status, revoked_at }`, or `{ status: "error", error: "key_server_unreachable" }`. Returned copies still import, because the project keeps the server half.
+
+### `POST /api/review/received/delete`
+Removes one returned review and its notes (soft delete, synced): `{ project_path, id }`.

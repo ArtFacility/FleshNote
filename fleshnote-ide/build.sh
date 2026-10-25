@@ -66,13 +66,38 @@ echo ""
 
 cd backend
 
+# FleshNote standardizes on backend/.venv. Clean up stale dot-less variants
+# (e.g. created by other tooling) so there is exactly one environment.
+if [ -d "venv" ]; then
+    echo "Removing stale backend/venv (FleshNote uses backend/.venv)"
+    rm -rf venv
+fi
+
 if [ ! -d ".venv" ]; then
-    echo "ERROR: Python venv not found at backend/.venv"
-    echo "Run: cd backend && python3 -m venv .venv && source .venv/bin/activate && pip install -r requirements_build.txt"
-    exit 1
+    echo "Python venv not found — creating backend/.venv ..."
+    # The pins target Python 3.13; prefer it over whatever python3 is.
+    if command -v python3.13 >/dev/null 2>&1; then
+        python3.13 -m venv .venv
+    else
+        python3 -m venv .venv
+    fi
 fi
 
 source .venv/bin/activate
+
+# The pins (huspacy above all) don't install on Python 3.14 yet.
+if ! python -c 'import sys; sys.exit(0 if sys.version_info[:2] == (3, 13) else 1)'; then
+    echo "ERROR: backend/.venv runs Python $(python -c 'import platform; print(platform.python_version())'), the build needs 3.13."
+    echo "Install Python 3.13, delete backend/.venv and run this script again."
+    exit 1
+fi
+
+# Sync the environment to the pinned versions on every build
+# (fast no-op when already satisfied; protects against silent drift).
+python -m pip install -r requirements_build.txt
+# huspacy's packaging<22 cap conflicts with pyinstaller>=6 — see requirements_build.txt
+python -m pip install --no-deps huspacy==0.12.1
+
 python build_backend.py
 
 cd ..

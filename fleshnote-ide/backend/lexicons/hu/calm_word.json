@@ -1,0 +1,1275 @@
+{
+ "lang": "hu",
+ "kind": "calm_word",
+ "version": 1,
+ "entries": [
+  {
+   "id": "hu.calm.suttogás",
+   "lemma": "suttogás",
+   "kind": "calm_word",
+   "strength": "strong",
+   "valence": 0.45,
+   "arousal": 0.15,
+   "emotions": {
+    "trust": 0.4
+   },
+   "source": "curated:gemini-2026-09",
+   "version": 1
+  },
+  {
+   "id": "hu.calm.szellő",
+   "lemma": "szellő",
+   "kind": "calm_word",
+   "strength": "strong",
+   "valence": 0.5,
+   "arousal": 0.15,
+   "emotions": {
+    "joy": 0.4
+   },
+   "source": "curated:gemini-2026-09",
+   "version": 1
+  },
+  {
+   "id": "hu.calm.morajlás",
+   "lemma": "morajlás",
+   "kind": "calm_word",
+   "strength": "strong",
+   "valence": 0.35,
+   "arousal": 0.15,
+   "emotions": null,
+   "source": "curated:gemini-2026-09",
+   "version": 1
+  },
+  {
+   "id": "hu.calm.alkony",
+   "lemma": "alkony",
+   "kind": "calm_word",
+   "strength": "weak",
+   "valence": 0.35,
+   "arousal": 0.12,
+   "emotions": null,
+   "source": "curated:gemini-2026-09",
+   "version": 1
+  },
+  {
+   "id": "hu.calm.alkonyat",
+   "lemma": "alkonyat",
+   "kind": "calm_word",
+   "strength": "strong",
+   "valence": 0.35,
+   "arousal": 0.12,
+   "emotions": null,
+   "source": "curated:gemini-2026-09",
+   "version": 1
+  },
+  {
+   "id": "hu.calm.csendesség",
+   "lemma": "csendesség",
+   "kind": "calm_word",
+   "strength": "strong",
+   "valence": 0.5,
+   "arousal": 0.1,
+   "emotions": {
+    "trust": 0.4
+   },
+   "source": "curated:gemini-2026-09",
+   "version": 1
+  },
+  {
+   "id": "hu.calm.mozdulatlanság",
+   "lemma": "mozdulatlanság",
+   "kind": "calm_word",
+   "strength": "strong",
+   "valence": 0.4,
+   "arousal": 0.08,
+   "emotions": {
+    "trust": 0.3
+   },
+   "source": "curated:gemini-2026-09",
+   "version": 1
+  },
+  {
+   "id": "hu.calm.nesztelenség",
+   "lemma": "nesztelenség",
+   "kind": "calm_word",
+   "strength": "strong",
+   "valence": 0.45,
+   "arousal": 0.08,
+   "emotions": {
+    "trust": 0.4
+   },
+   "source": "curated:gemini-2026-09",
+   "version": 1
+  },
+  {
+   "id": "hu.calm.szürkület",
+   "lemma": "szürkület",
+   "kind": "calm_word",
+   "strength": "weak",
+   "valence": 0.3,
+   "arousal": 0.12,
+   "emotions": null,
+   "source": "curated:gemini-2026-09",
+   "version": 1
+  },
+  {
+   "id": "hu.calm.susogás",
+   "lemma": "susogás",
+   "kind": "calm_word",
+   "strength": "strong",
+   "valence": 0.4,
+   "arousal": 0.15,
+   "emotions": null,
+   "source": "curated:gemini-2026-09",
+   "version": 1
+  },
+  {
+   "id": "hu.calm.sóhajtás",
+   "lemma": "sóhajtás",
+   "kind": "calm_word",
+   "strength": "strong",
+   "valence": 0.3,
+   "arousal": 0.15,
+   "emotions": null,
+   "source": "curated:gemini-2026-09",
+   "version": 1
+  },
+  {
+   "id": "hu.calm.béke",
+   "lemma": "béke",
+   "kind": "calm_word",
+   "strength": "strong",
+   "valence": 0.85,
+   "arousal": 0.05,
+   "emotions": {
+    "joy": 0.7,
+    "trust": 0.8
+   },
+   "source": "curated:gemini-2026-09",
+   "version": 1
+  },
+  {
+   "id": "hu.calm.békesség",
+   "lemma": "békesség",
+   "kind": "calm_word",
+   "strength": "strong",
+   "valence": 0.85,
+   "arousal": 0.05,
+   "emotions": {
+    "trust": 0.8
+   },
+   "source": "curated:gemini-2026-09",
+   "version": 1
+  },
+  {
+   "id": "hu.calm.nyugalom",
+   "lemma": "nyugalom",
+   "kind": "calm_word",
+   "strength": "strong",
+   "valence": 0.8,
+   "arousal": 0.05,
+   "emotions": {
+    "trust": 0.8
+   },
+   "source": "curated:gemini-2026-09",
+   "version": 1
+  },
+  {
+   "id": "hu.calm.csend",
+   "lemma": "csend",
+   "kind": "calm_word",
+   "strength": "strong",
+   "valence": 0.6,
+   "arousal": 0.06,
+   "emotions": {
+    "trust": 0.5
+   },
+   "source": "curated:gemini-2026-09",
+   "version": 1
+  },
+  {
+   "id": "hu.calm.halkság",
+   "lemma": "halkság",
+   "kind": "calm_word",
+   "strength": "strong",
+   "valence": 0.5,
+   "arousal": 0.08,
+   "emotions": {
+    "trust": 0.4
+   },
+   "source": "curated:gemini-2026-09",
+   "version": 1
+  },
+  {
+   "id": "hu.calm.megnyugvás",
+   "lemma": "megnyugvás",
+   "kind": "calm_word",
+   "strength": "strong",
+   "valence": 0.8,
+   "arousal": 0.08,
+   "emotions": {
+    "trust": 0.8
+   },
+   "source": "curated:gemini-2026-09",
+   "version": 1
+  },
+  {
+   "id": "hu.calm.pihenés",
+   "lemma": "pihenés",
+   "kind": "calm_word",
+   "strength": "strong",
+   "valence": 0.7,
+   "arousal": 0.06,
+   "emotions": {
+    "trust": 0.6
+   },
+   "source": "curated:gemini-2026-09",
+   "version": 1
+  },
+  {
+   "id": "hu.calm.pihenő",
+   "lemma": "pihenő",
+   "kind": "calm_word",
+   "strength": "strong",
+   "valence": 0.65,
+   "arousal": 0.08,
+   "emotions": {
+    "trust": 0.6
+   },
+   "source": "curated:gemini-2026-09",
+   "version": 1
+  },
+  {
+   "id": "hu.calm.alvás",
+   "lemma": "alvás",
+   "kind": "calm_word",
+   "strength": "strong",
+   "valence": 0.6,
+   "arousal": 0.05,
+   "emotions": null,
+   "source": "curated:gemini-2026-09",
+   "version": 1
+  },
+  {
+   "id": "hu.calm.álom",
+   "lemma": "álom",
+   "kind": "calm_word",
+   "strength": "strong",
+   "valence": 0.6,
+   "arousal": 0.08,
+   "emotions": null,
+   "source": "curated:gemini-2026-09",
+   "version": 1
+  },
+  {
+   "id": "hu.calm.szundikálás",
+   "lemma": "szundikálás",
+   "kind": "calm_word",
+   "strength": "strong",
+   "valence": 0.55,
+   "arousal": 0.06,
+   "emotions": null,
+   "source": "curated:gemini-2026-09",
+   "version": 1
+  },
+  {
+   "id": "hu.calm.szendergés",
+   "lemma": "szendergés",
+   "kind": "calm_word",
+   "strength": "strong",
+   "valence": 0.55,
+   "arousal": 0.06,
+   "emotions": null,
+   "source": "curated:gemini-2026-09",
+   "version": 1
+  },
+  {
+   "id": "hu.calm.enyhülés",
+   "lemma": "enyhülés",
+   "kind": "calm_word",
+   "strength": "strong",
+   "valence": 0.65,
+   "arousal": 0.1,
+   "emotions": {
+    "trust": 0.6
+   },
+   "source": "curated:gemini-2026-09",
+   "version": 1
+  },
+  {
+   "id": "hu.calm.megbékélés",
+   "lemma": "megbékélés",
+   "kind": "calm_word",
+   "strength": "strong",
+   "valence": 0.75,
+   "arousal": 0.1,
+   "emotions": {
+    "trust": 0.7
+   },
+   "source": "curated:gemini-2026-09",
+   "version": 1
+  },
+  {
+   "id": "hu.calm.derű",
+   "lemma": "derű",
+   "kind": "calm_word",
+   "strength": "strong",
+   "valence": 0.7,
+   "arousal": 0.15,
+   "emotions": {
+    "joy": 0.6
+   },
+   "source": "curated:gemini-2026-09",
+   "version": 1
+  },
+  {
+   "id": "hu.calm.szelídség",
+   "lemma": "szelídség",
+   "kind": "calm_word",
+   "strength": "strong",
+   "valence": 0.7,
+   "arousal": 0.1,
+   "emotions": {
+    "trust": 0.6
+   },
+   "source": "curated:gemini-2026-09",
+   "version": 1
+  },
+  {
+   "id": "hu.calm.lágyság",
+   "lemma": "lágyság",
+   "kind": "calm_word",
+   "strength": "weak",
+   "valence": 0.6,
+   "arousal": 0.1,
+   "emotions": null,
+   "source": "curated:gemini-2026-09",
+   "version": 1
+  },
+  {
+   "id": "hu.calm.simaság",
+   "lemma": "simaság",
+   "kind": "calm_word",
+   "strength": "weak",
+   "valence": 0.55,
+   "arousal": 0.1,
+   "emotions": null,
+   "source": "curated:gemini-2026-09",
+   "version": 1
+  },
+  {
+   "id": "hu.calm.menedék",
+   "lemma": "menedék",
+   "kind": "calm_word",
+   "strength": "strong",
+   "valence": 0.75,
+   "arousal": 0.2,
+   "emotions": {
+    "trust": 0.8
+   },
+   "source": "curated:gemini-2026-09",
+   "version": 1
+  },
+  {
+   "id": "hu.calm.menhely",
+   "lemma": "menhely",
+   "kind": "calm_word",
+   "strength": "strong",
+   "valence": 0.7,
+   "arousal": 0.2,
+   "emotions": {
+    "trust": 0.7
+   },
+   "source": "curated:gemini-2026-09",
+   "version": 1
+  },
+  {
+   "id": "hu.calm.oltalom",
+   "lemma": "oltalom",
+   "kind": "calm_word",
+   "strength": "strong",
+   "valence": 0.75,
+   "arousal": 0.18,
+   "emotions": {
+    "trust": 0.8
+   },
+   "source": "curated:gemini-2026-09",
+   "version": 1
+  },
+  {
+   "id": "hu.calm.biztonság",
+   "lemma": "biztonság",
+   "kind": "calm_word",
+   "strength": "strong",
+   "valence": 0.8,
+   "arousal": 0.15,
+   "emotions": {
+    "trust": 0.8
+   },
+   "source": "curated:gemini-2026-09",
+   "version": 1
+  },
+  {
+   "id": "hu.calm.kikötő",
+   "lemma": "kikötő",
+   "kind": "calm_word",
+   "strength": "strong",
+   "valence": 0.65,
+   "arousal": 0.18,
+   "emotions": {
+    "trust": 0.7
+   },
+   "source": "curated:gemini-2026-09",
+   "version": 1
+  },
+  {
+   "id": "hu.calm.rév",
+   "lemma": "rév",
+   "kind": "calm_word",
+   "strength": "strong",
+   "valence": 0.65,
+   "arousal": 0.18,
+   "emotions": {
+    "trust": 0.7
+   },
+   "source": "curated:gemini-2026-09",
+   "version": 1
+  },
+  {
+   "id": "hu.calm.oázis",
+   "lemma": "oázis",
+   "kind": "calm_word",
+   "strength": "strong",
+   "valence": 0.8,
+   "arousal": 0.22,
+   "emotions": {
+    "joy": 0.7,
+    "trust": 0.7
+   },
+   "source": "curated:gemini-2026-09",
+   "version": 1
+  },
+  {
+   "id": "hu.calm.otthon",
+   "lemma": "otthon",
+   "kind": "calm_word",
+   "strength": "strong",
+   "valence": 0.8,
+   "arousal": 0.15,
+   "emotions": {
+    "joy": 0.7,
+    "trust": 0.8
+   },
+   "source": "curated:gemini-2026-09",
+   "version": 1
+  },
+  {
+   "id": "hu.calm.fésez",
+   "lemma": "fészek",
+   "kind": "calm_word",
+   "strength": "strong",
+   "valence": 0.65,
+   "arousal": 0.15,
+   "emotions": {
+    "trust": 0.6
+   },
+   "source": "curated:gemini-2026-09",
+   "version": 1
+  },
+  {
+   "id": "hu.calm.odú",
+   "lemma": "odú",
+   "kind": "calm_word",
+   "strength": "strong",
+   "valence": 0.55,
+   "arousal": 0.15,
+   "emotions": null,
+   "source": "curated:gemini-2026-09",
+   "version": 1
+  },
+  {
+   "id": "hu.calm.szentély",
+   "lemma": "szentély",
+   "kind": "calm_word",
+   "strength": "strong",
+   "valence": 0.75,
+   "arousal": 0.18,
+   "emotions": {
+    "trust": 0.7
+   },
+   "source": "curated:gemini-2026-09",
+   "version": 1
+  },
+  {
+   "id": "hu.calm.védelem",
+   "lemma": "védelem",
+   "kind": "calm_word",
+   "strength": "strong",
+   "valence": 0.7,
+   "arousal": 0.2,
+   "emotions": {
+    "trust": 0.7
+   },
+   "source": "curated:gemini-2026-09",
+   "version": 1
+  },
+  {
+   "id": "hu.calm.vigasztalás",
+   "lemma": "vigasztalás",
+   "kind": "calm_word",
+   "strength": "strong",
+   "valence": 0.7,
+   "arousal": 0.15,
+   "emotions": {
+    "trust": 0.6
+   },
+   "source": "curated:gemini-2026-09",
+   "version": 1
+  },
+  {
+   "id": "hu.calm.nyugodtság",
+   "lemma": "nyugodtság",
+   "kind": "calm_word",
+   "strength": "strong",
+   "valence": 0.71,
+   "arousal": 0.08,
+   "emotions": {
+    "trust": 0.7
+   },
+   "source": "curated:gemini-2026-09",
+   "version": 1
+  },
+  {
+   "id": "hu.calm.háborítatlanság",
+   "lemma": "háborítatlanság",
+   "kind": "calm_word",
+   "strength": "strong",
+   "valence": 0.76,
+   "arousal": 0.06,
+   "emotions": {
+    "trust": 0.7
+   },
+   "source": "curated:gemini-2026-09",
+   "version": 1
+  },
+  {
+   "id": "hu.calm.csendes",
+   "lemma": "csendes",
+   "kind": "calm_word",
+   "strength": "strong",
+   "valence": 0.66,
+   "arousal": 0.06,
+   "emotions": null,
+   "source": "curated:gemini-2026-09",
+   "version": 1
+  },
+  {
+   "id": "hu.calm.nyugodt",
+   "lemma": "nyugodt",
+   "kind": "calm_word",
+   "strength": "strong",
+   "valence": 0.71,
+   "arousal": 0.08,
+   "emotions": {
+    "trust": 0.7
+   },
+   "source": "curated:gemini-2026-09",
+   "version": 1
+  },
+  {
+   "id": "hu.calm.békés",
+   "lemma": "békés",
+   "kind": "calm_word",
+   "strength": "strong",
+   "valence": 0.76,
+   "arousal": 0.08,
+   "emotions": {
+    "trust": 0.8
+   },
+   "source": "curated:gemini-2026-09",
+   "version": 1
+  },
+  {
+   "id": "hu.calm.zavartalan",
+   "lemma": "zavartalan",
+   "kind": "calm_word",
+   "strength": "strong",
+   "valence": 0.71,
+   "arousal": 0.06,
+   "emotions": {
+    "trust": 0.7
+   },
+   "source": "curated:gemini-2026-09",
+   "version": 1
+  },
+  {
+   "id": "hu.calm.higgadt",
+   "lemma": "higgadt",
+   "kind": "calm_word",
+   "strength": "strong",
+   "valence": 0.66,
+   "arousal": 0.1,
+   "emotions": {
+    "trust": 0.7
+   },
+   "source": "curated:gemini-2026-09",
+   "version": 1
+  },
+  {
+   "id": "hu.calm.megnyugtató",
+   "lemma": "megnyugtató",
+   "kind": "calm_word",
+   "strength": "strong",
+   "valence": 0.71,
+   "arousal": 0.1,
+   "emotions": {
+    "trust": 0.7
+   },
+   "source": "curated:gemini-2026-09",
+   "version": 1
+  },
+  {
+   "id": "hu.calm.pihentető",
+   "lemma": "pihentető",
+   "kind": "calm_word",
+   "strength": "strong",
+   "valence": 0.71,
+   "arousal": 0.08,
+   "emotions": {
+    "joy": 0.5
+   },
+   "source": "curated:gemini-2026-09",
+   "version": 1
+  },
+  {
+   "id": "hu.calm.andalító",
+   "lemma": "andalító",
+   "kind": "calm_word",
+   "strength": "strong",
+   "valence": 0.66,
+   "arousal": 0.08,
+   "emotions": {
+    "joy": 0.5
+   },
+   "source": "curated:gemini-2026-09",
+   "version": 1
+  },
+  {
+   "id": "hu.calm.altató",
+   "lemma": "altató",
+   "kind": "calm_word",
+   "strength": "strong",
+   "valence": 0.61,
+   "arousal": 0.06,
+   "emotions": null,
+   "source": "curated:gemini-2026-09",
+   "version": 1
+  },
+  {
+   "id": "hu.calm.ringató",
+   "lemma": "ringató",
+   "kind": "calm_word",
+   "strength": "strong",
+   "valence": 0.66,
+   "arousal": 0.08,
+   "emotions": null,
+   "source": "curated:gemini-2026-09",
+   "version": 1
+  },
+  {
+   "id": "hu.calm.szelíd",
+   "lemma": "szelíd",
+   "kind": "calm_word",
+   "strength": "strong",
+   "valence": 0.71,
+   "arousal": 0.1,
+   "emotions": {
+    "trust": 0.6
+   },
+   "source": "curated:gemini-2026-09",
+   "version": 1
+  },
+  {
+   "id": "hu.calm.enyhe",
+   "lemma": "enyhe",
+   "kind": "calm_word",
+   "strength": "strong",
+   "valence": 0.56,
+   "arousal": 0.1,
+   "emotions": null,
+   "source": "curated:gemini-2026-09",
+   "version": 1
+  },
+  {
+   "id": "hu.calm.kellemes",
+   "lemma": "kellemes",
+   "kind": "calm_word",
+   "strength": "strong",
+   "valence": 0.71,
+   "arousal": 0.15,
+   "emotions": {
+    "joy": 0.6
+   },
+   "source": "curated:gemini-2026-09",
+   "version": 1
+  },
+  {
+   "id": "hu.calm.békítő",
+   "lemma": "békítő",
+   "kind": "calm_word",
+   "strength": "strong",
+   "valence": 0.66,
+   "arousal": 0.12,
+   "emotions": {
+    "trust": 0.6
+   },
+   "source": "curated:gemini-2026-09",
+   "version": 1
+  },
+  {
+   "id": "hu.calm.csillapító",
+   "lemma": "csillapító",
+   "kind": "calm_word",
+   "strength": "strong",
+   "valence": 0.66,
+   "arousal": 0.1,
+   "emotions": {
+    "trust": 0.6
+   },
+   "source": "curated:gemini-2026-09",
+   "version": 1
+  },
+  {
+   "id": "hu.calm.csillapulás",
+   "lemma": "csillapulás",
+   "kind": "calm_word",
+   "strength": "strong",
+   "valence": 0.66,
+   "arousal": 0.1,
+   "emotions": null,
+   "source": "curated:gemini-2026-09",
+   "version": 1
+  },
+  {
+   "id": "hu.calm.elcsendesedés",
+   "lemma": "elcsendesedés",
+   "kind": "calm_word",
+   "strength": "strong",
+   "valence": 0.71,
+   "arousal": 0.06,
+   "emotions": null,
+   "source": "curated:gemini-2026-09",
+   "version": 1
+  },
+  {
+   "id": "hu.calm.szundítás",
+   "lemma": "szundítás",
+   "kind": "calm_word",
+   "strength": "strong",
+   "valence": 0.61,
+   "arousal": 0.06,
+   "emotions": null,
+   "source": "curated:gemini-2026-09",
+   "version": 1
+  },
+  {
+   "id": "hu.calm.szunyókálás",
+   "lemma": "szunyókálás",
+   "kind": "calm_word",
+   "strength": "strong",
+   "valence": 0.61,
+   "arousal": 0.06,
+   "emotions": null,
+   "source": "curated:gemini-2026-09",
+   "version": 1
+  },
+  {
+   "id": "hu.calm.álmodozás",
+   "lemma": "álmodozás",
+   "kind": "calm_word",
+   "strength": "strong",
+   "valence": 0.66,
+   "arousal": 0.12,
+   "emotions": {
+    "joy": 0.5
+   },
+   "source": "curated:gemini-2026-09",
+   "version": 1
+  },
+  {
+   "id": "hu.calm.ábrándozás",
+   "lemma": "ábrándozás",
+   "kind": "calm_word",
+   "strength": "strong",
+   "valence": 0.61,
+   "arousal": 0.12,
+   "emotions": null,
+   "source": "curated:gemini-2026-09",
+   "version": 1
+  },
+  {
+   "id": "hu.calm.bóbiskolás",
+   "lemma": "bóbiskolás",
+   "kind": "calm_word",
+   "strength": "strong",
+   "valence": 0.56,
+   "arousal": 0.06,
+   "emotions": null,
+   "source": "curated:gemini-2026-09",
+   "version": 1
+  },
+  {
+   "id": "hu.calm.heverészés",
+   "lemma": "heverészés",
+   "kind": "calm_word",
+   "strength": "strong",
+   "valence": 0.61,
+   "arousal": 0.08,
+   "emotions": null,
+   "source": "curated:gemini-2026-09",
+   "version": 1
+  },
+  {
+   "id": "hu.calm.lustálkodás",
+   "lemma": "lustálkodás",
+   "kind": "calm_word",
+   "strength": "strong",
+   "valence": 0.56,
+   "arousal": 0.08,
+   "emotions": null,
+   "source": "curated:gemini-2026-09",
+   "version": 1
+  },
+  {
+   "id": "hu.calm.leheveredés",
+   "lemma": "leheveredés",
+   "kind": "calm_word",
+   "strength": "strong",
+   "valence": 0.61,
+   "arousal": 0.08,
+   "emotions": null,
+   "source": "curated:gemini-2026-09",
+   "version": 1
+  },
+  {
+   "id": "hu.calm.elnyújtózás",
+   "lemma": "elnyújtózás",
+   "kind": "calm_word",
+   "strength": "strong",
+   "valence": 0.66,
+   "arousal": 0.08,
+   "emotions": null,
+   "source": "curated:gemini-2026-09",
+   "version": 1
+  },
+  {
+   "id": "hu.calm.nyújtózkodás",
+   "lemma": "nyújtózkodás",
+   "kind": "calm_word",
+   "strength": "strong",
+   "valence": 0.61,
+   "arousal": 0.1,
+   "emotions": null,
+   "source": "curated:gemini-2026-09",
+   "version": 1
+  },
+  {
+   "id": "hu.calm.séta",
+   "lemma": "séta",
+   "kind": "calm_word",
+   "strength": "strong",
+   "valence": 0.61,
+   "arousal": 0.12,
+   "emotions": {
+    "joy": 0.5
+   },
+   "source": "curated:gemini-2026-09",
+   "version": 1
+  },
+  {
+   "id": "hu.calm.sétálgatás",
+   "lemma": "sétálgatás",
+   "kind": "calm_word",
+   "strength": "strong",
+   "valence": 0.61,
+   "arousal": 0.1,
+   "emotions": null,
+   "source": "curated:gemini-2026-09",
+   "version": 1
+  },
+  {
+   "id": "hu.calm.andalongás",
+   "lemma": "andalgás",
+   "kind": "calm_word",
+   "strength": "strong",
+   "valence": 0.66,
+   "arousal": 0.1,
+   "emotions": {
+    "joy": 0.5
+   },
+   "source": "curated:gemini-2026-09",
+   "version": 1
+  },
+  {
+   "id": "hu.calm.kikötőhely",
+   "lemma": "kikötőhely",
+   "kind": "calm_word",
+   "strength": "strong",
+   "valence": 0.66,
+   "arousal": 0.15,
+   "emotions": {
+    "trust": 0.6
+   },
+   "source": "curated:gemini-2026-09",
+   "version": 1
+  },
+  {
+   "id": "hu.calm.szélcsend",
+   "lemma": "szélcsend",
+   "kind": "calm_word",
+   "strength": "strong",
+   "valence": 0.66,
+   "arousal": 0.06,
+   "emotions": null,
+   "source": "curated:gemini-2026-09",
+   "version": 1
+  },
+  {
+   "id": "hu.calm.naplemente",
+   "lemma": "naplemente",
+   "kind": "calm_word",
+   "strength": "strong",
+   "valence": 0.71,
+   "arousal": 0.12,
+   "emotions": {
+    "joy": 0.6
+   },
+   "source": "curated:gemini-2026-09",
+   "version": 1
+  },
+  {
+   "id": "hu.calm.napnyugta",
+   "lemma": "napnyugta",
+   "kind": "calm_word",
+   "strength": "strong",
+   "valence": 0.71,
+   "arousal": 0.12,
+   "emotions": {
+    "joy": 0.6
+   },
+   "source": "curated:gemini-2026-09",
+   "version": 1
+  },
+  {
+   "id": "hu.calm.holdvilág",
+   "lemma": "holdvilág",
+   "kind": "calm_word",
+   "strength": "strong",
+   "valence": 0.66,
+   "arousal": 0.1,
+   "emotions": null,
+   "source": "curated:gemini-2026-09",
+   "version": 1
+  },
+  {
+   "id": "hu.calm.csillagfény",
+   "lemma": "csillagfény",
+   "kind": "calm_word",
+   "strength": "strong",
+   "valence": 0.71,
+   "arousal": 0.12,
+   "emotions": {
+    "joy": 0.5
+   },
+   "source": "curated:gemini-2026-09",
+   "version": 1
+  },
+  {
+   "id": "hu.calm.pásztoró",
+   "lemma": "pásztoróra",
+   "kind": "calm_word",
+   "strength": "strong",
+   "valence": 0.76,
+   "arousal": 0.15,
+   "emotions": {
+    "joy": 0.7
+   },
+   "source": "curated:gemini-2026-09",
+   "version": 1
+  },
+  {
+   "id": "hu.calm.idill",
+   "lemma": "idill",
+   "kind": "calm_word",
+   "strength": "strong",
+   "valence": 0.81,
+   "arousal": 0.12,
+   "emotions": {
+    "joy": 0.8
+   },
+   "source": "curated:gemini-2026-09",
+   "version": 1
+  },
+  {
+   "id": "hu.calm.harmónia",
+   "lemma": "harmónia",
+   "kind": "calm_word",
+   "strength": "strong",
+   "valence": 0.81,
+   "arousal": 0.12,
+   "emotions": {
+    "joy": 0.7,
+    "trust": 0.8
+   },
+   "source": "curated:gemini-2026-09",
+   "version": 1
+  },
+  {
+   "id": "hu.calm.összhang",
+   "lemma": "összhang",
+   "kind": "calm_word",
+   "strength": "strong",
+   "valence": 0.76,
+   "arousal": 0.12,
+   "emotions": {
+    "trust": 0.7
+   },
+   "source": "curated:gemini-2026-09",
+   "version": 1
+  },
+  {
+   "id": "hu.calm.egyetértés",
+   "lemma": "egyetértés",
+   "kind": "calm_word",
+   "strength": "strong",
+   "valence": 0.76,
+   "arousal": 0.15,
+   "emotions": {
+    "trust": 0.8
+   },
+   "source": "curated:gemini-2026-09",
+   "version": 1
+  },
+  {
+   "id": "hu.calm.megbékél",
+   "lemma": "megbékél",
+   "kind": "calm_word",
+   "strength": "strong",
+   "valence": 0.71,
+   "arousal": 0.12,
+   "emotions": {
+    "trust": 0.7
+   },
+   "source": "curated:gemini-2026-09",
+   "version": 1
+  },
+  {
+   "id": "hu.calm.megnyugszik",
+   "lemma": "megnyugszik",
+   "kind": "calm_word",
+   "strength": "strong",
+   "valence": 0.76,
+   "arousal": 0.1,
+   "emotions": {
+    "trust": 0.7
+   },
+   "source": "curated:gemini-2026-09",
+   "version": 1
+  },
+  {
+   "id": "hu.calm.elcsendesedik",
+   "lemma": "elcsendesedik",
+   "kind": "calm_word",
+   "strength": "strong",
+   "valence": 0.71,
+   "arousal": 0.06,
+   "emotions": null,
+   "source": "curated:gemini-2026-09",
+   "version": 1
+  },
+  {
+   "id": "hu.calm.lecsillapodik",
+   "lemma": "lecsillapodik",
+   "kind": "calm_word",
+   "strength": "strong",
+   "valence": 0.71,
+   "arousal": 0.08,
+   "emotions": null,
+   "source": "curated:gemini-2026-09",
+   "version": 1
+  },
+  {
+   "id": "hu.calm.elpihen",
+   "lemma": "elpihen",
+   "kind": "calm_word",
+   "strength": "strong",
+   "valence": 0.71,
+   "arousal": 0.06,
+   "emotions": null,
+   "source": "curated:gemini-2026-09",
+   "version": 1
+  },
+  {
+   "id": "hu.calm.megpihen",
+   "lemma": "megpihen",
+   "kind": "calm_word",
+   "strength": "strong",
+   "valence": 0.71,
+   "arousal": 0.08,
+   "emotions": null,
+   "source": "curated:gemini-2026-09",
+   "version": 1
+  },
+  {
+   "id": "hu.calm.szundít",
+   "lemma": "szundít",
+   "kind": "calm_word",
+   "strength": "strong",
+   "valence": 0.61,
+   "arousal": 0.06,
+   "emotions": null,
+   "source": "curated:gemini-2026-09",
+   "version": 1
+  },
+  {
+   "id": "hu.calm.szendereg",
+   "lemma": "szendereg",
+   "kind": "calm_word",
+   "strength": "strong",
+   "valence": 0.66,
+   "arousal": 0.06,
+   "emotions": null,
+   "source": "curated:gemini-2026-09",
+   "version": 1
+  },
+  {
+   "id": "hu.calm.álmodik",
+   "lemma": "álmodik",
+   "kind": "calm_word",
+   "strength": "strong",
+   "valence": 0.61,
+   "arousal": 0.08,
+   "emotions": null,
+   "source": "curated:gemini-2026-09",
+   "version": 1
+  },
+  {
+   "id": "hu.calm.hallgatás",
+   "lemma": "hallgatás",
+   "kind": "calm_word",
+   "strength": "strong",
+   "valence": 0.6,
+   "arousal": 0.05,
+   "emotions": null,
+   "source": "curated:gemini-2026-09",
+   "version": 1
+  },
+  {
+   "id": "hu.calm.némultság",
+   "lemma": "némultság",
+   "kind": "calm_word",
+   "strength": "strong",
+   "valence": 0.55,
+   "arousal": 0.05,
+   "emotions": null,
+   "source": "curated:gemini-2026-09",
+   "version": 1
+  },
+  {
+   "id": "hu.calm.szótlan",
+   "lemma": "szótlan",
+   "kind": "calm_word",
+   "strength": "strong",
+   "valence": 0.6,
+   "arousal": 0.06,
+   "emotions": null,
+   "source": "curated:gemini-2026-09",
+   "version": 1
+  },
+  {
+   "id": "hu.calm.szótlanság",
+   "lemma": "szótlanság",
+   "kind": "calm_word",
+   "strength": "strong",
+   "valence": 0.6,
+   "arousal": 0.06,
+   "emotions": null,
+   "source": "curated:gemini-2026-09",
+   "version": 1
+  },
+  {
+   "id": "hu.calm.nyugovás",
+   "lemma": "nyugovás",
+   "kind": "calm_word",
+   "strength": "strong",
+   "valence": 0.7,
+   "arousal": 0.06,
+   "emotions": {
+    "trust": 0.7
+   },
+   "source": "curated:gemini-2026-09",
+   "version": 1
+  },
+  {
+   "id": "hu.calm.álomvilág",
+   "lemma": "álomvilág",
+   "kind": "calm_word",
+   "strength": "strong",
+   "valence": 0.65,
+   "arousal": 0.1,
+   "emotions": {
+    "joy": 0.5
+   },
+   "source": "curated:gemini-2026-09",
+   "version": 1
+  },
+  {
+   "id": "hu.calm.pihenőhely",
+   "lemma": "pihenőhely",
+   "kind": "calm_word",
+   "strength": "strong",
+   "valence": 0.7,
+   "arousal": 0.08,
+   "emotions": null,
+   "source": "curated:gemini-2026-09",
+   "version": 1
+  },
+  {
+   "id": "hu.calm.menedékhely",
+   "lemma": "menedékhely",
+   "kind": "calm_word",
+   "strength": "strong",
+   "valence": 0.75,
+   "arousal": 0.15,
+   "emotions": {
+    "trust": 0.8
+   },
+   "source": "curated:gemini-2026-09",
+   "version": 1
+  },
+  {
+   "id": "hu.calm.hálókamra",
+   "lemma": "hálókamra",
+   "kind": "calm_word",
+   "strength": "strong",
+   "valence": 0.65,
+   "arousal": 0.08,
+   "emotions": null,
+   "source": "curated:gemini-2026-09",
+   "version": 1
+  },
+  {
+   "id": "hu.calm.kandalló",
+   "lemma": "kandalló",
+   "kind": "calm_word",
+   "strength": "strong",
+   "valence": 0.7,
+   "arousal": 0.12,
+   "emotions": {
+    "joy": 0.6
+   },
+   "source": "curated:gemini-2026-09",
+   "version": 1
+  }
+ ]
+}

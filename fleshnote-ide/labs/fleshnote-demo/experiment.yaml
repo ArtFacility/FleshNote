@@ -1,0 +1,9 @@
+# The demo copy of FleshNote on Seneschal Labs: the same build as labs/fleshnote, its own backend and
+# data, for guests invited from Seneschal's Labs tab. Wiped (reset:) when the last invite expires.
+#   node scripts/deploy-labs.mjs --id fleshnote-demo
+title: FleshNote demo
+description: shared demo space for invited guests
+backend: 127.0.0.1:8101
+backend_paths: [/api/]
+demo: true
+reset: /api/web/reset

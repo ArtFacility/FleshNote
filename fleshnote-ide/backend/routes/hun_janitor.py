@@ -1,30 +1,50 @@
 import re
-from routes.janitor import _build_context, _make_id
+from routes.janitor import _build_context, _make_id, _speech_spans, _in_speech, _touches_speech, _narration_segments
+from lexicon_engine import get_lexicon
 
 # --- Hungarian SDT lexicons ---
+# Word lists live in backend/lexicons/hu/*.json; legacy tier = the tuned lists
+# (see the note in routes/janitor.py).
+_LEX_HU = get_lexicon("hu")
+
 LINKING_VERBS_HU = {"van", "volt", "lesz", "lett", "marad", "tűnik", "látszik"}
 
-SPEECH_VERBS_HU = {
-    "mond", "kérdez", "kiált", "suttog", "mormol", "felel",
-    "válaszol", "szól", "ordít", "morog", "könyörög", "gondol", "töpreng", "tűnődik"
+SPEECH_VERBS_HU = _LEX_HU.lemmas("conflict_speech", legacy_only=True)
+
+FILTER_VERBS_HU = _LEX_HU.lemmas("filter_verb", legacy_only=True)
+
+# Knowing/deciding is plot information, not a stated emotion — not flagged.
+REALIZE_VERBS_HU = _LEX_HU.lemmas("realize_verb", legacy_only=True)
+
+# Original tuned list plus every strong entry; weak ones (hideg, feszült, sápadt…)
+# are only evidence in the right company.
+EMOTION_LEXICON_HU = ((_LEX_HU.lemmas("emotion_label", legacy_only=True)
+                       | _LEX_HU.lemmas("emotion_label", strength="strong"))
+                      & _LEX_HU.lemmas("emotion_label", felt="state"))
+
+# On a face, look or voice a trait word shows the moment's state too ('félénk
+# hang', 'szelíd tekintet'); only evaluative words ('félelmetes') stay out.
+FACE_ADJECTIVES_HU = EMOTION_LEXICON_HU | _LEX_HU.lemmas("emotion_label", felt="trait")
+
+EMOTION_NOUNS_HU = _LEX_HU.lemmas("emotion_noun", felt="state")
+ALL_EMOTION_ADVERBS_HU = _LEX_HU.lemmas("emotion_adverb", felt="state")
+
+# Face/look/voice nouns: an emotion adjective on them tells the feeling
+# ('dühös pillantást vetett', 'ijedt arccal').
+FACE_NOUNS_HU = {
+    "arc", "arckifejezés", "tekintet", "pillantás", "szem", "hang", "hanghordozás",
+    "hangszín", "mosoly", "fintor",
 }
 
-FILTER_VERBS_HU = {"lát", "hall", "érez", "észrevesz", "figyel", "megfigyel", "szagol"}
+# Emotion verbs whose subject feels the emotion ('megijedt', 'örült'); behaviors
+# (kacag, zokog, pirul) show rather than tell.
+EXPERIENCER_VERBS_HU = _LEX_HU.lemmas("emotion_verb", role="experiencer")
 
-REALIZE_VERBS_HU = {"rájön", "megért", "tud", "felismer", "érez", "dönt", "belát"}
+# Case frames that make an emotion noun a stated feeling: dühében (Ine),
+# meglepetésére (Sbl), örömmel (Ins), félelemből (Ela).
+EMOTION_NOUN_CASES_HU = {"Ine", "Sbl", "Ins", "Ela"}
 
-EMOTION_LEXICON_HU = {
-    "dühös", "mérges", "szomorú", "boldog", "félős", "ijedt", "aggódó", "ideges",
-    "féltékeny", "izgatott", "lehangolt", "magányos", "kétségbeesett", "reménykedő",
-    "büszke", "csalódott", "zavart", "szégyenlős", "undorodó", "elkeseredett",
-    "szorongó", "rettegő", "bosszús", "elégedett", "bűntudatos", "borús",
-    "boldogtalan", "nyugtalan", "reménytelen", "megtört",
-}
-
-EMOTION_ADVERBS_HU = {
-    "dühösen", "szomorúan", "boldogan", "idegesen", "szorongva", "keserűen",
-    "féltékenyen", "kétségbeesetten", "büszkén", "haragosan", "örömmel", "nyomorultul",
-}
+EMOTION_ADVERBS_HU = _LEX_HU.lemmas("emotion_adverb", legacy_only=True)
 
 STATE_EXEMPTIONS_HU = {
     "magas", "alacsony", "öreg", "fiatal", "nyitott", "zárt", "halott", "élő",
@@ -51,6 +71,8 @@ PASSIVE_EXEMPTIONS_HU = {"kivéve", "beleszámítva", "figyelembe"}
 
 # --- Five Senses Lexicons (Hungarian) ---
 # Uses word stems — Hungarian is agglutinative, so matching is prefix-based in _count_senses_hu.
+# Only the fallback for text with no parse; sense evidence comes from the
+# lexicon's sensory entries (routes/janitor_senses.py).
 SIGHT_STEMS_HU = (
     "lát", "néz", "pillant", "szemlél", "megfigyel", "fény", "sötét", "szín",
     "ragyog", "csillog", "villog", "halvány", "látható", "homályos", "bámul",
@@ -93,40 +115,14 @@ def _count_senses_hu(plain_text: str) -> dict:
     return result
 
 
-def _analyze_five_senses_hu(plain_text: str, language: str) -> list[dict]:
-    """Flag senses completely absent from the chapter text (Hungarian)."""
-    if language != "hu":
-        return []
-    counts = _count_senses_hu(plain_text)
-    missing = [sense for sense, count in counts.items() if count == 0]
-    if not missing:
-        return []
-    label = ", ".join(missing)
-    context = plain_text[:120].strip()
-    return [{
-        "id": _make_id("five_senses", label, 0),
-        "type": "five_senses",
-        "entity_type": label,
-        "entity_id": None,
-        "entity_name": None,
-        "matched_text": label,
-        "context": context,
-        "context_highlight_start": 0,
-        "context_highlight_end": 0,
-        "char_offset": 0,
-        "replacement": None,
-    }]
-
-
 def _analyze_weak_adverbs_hu(plain_text: str, language: str, cap: int = 5) -> list[dict]:
     """Detect weak adverbs modifying verbs in Hungarian text."""
     if language != "hu":
         return []
     suggestions = []
     try:
-        from nlp_manager import get_nlp
-        nlp = get_nlp(language)
-        doc = nlp(plain_text[:10000])
+        from nlp_manager import parse_cached
+        doc = parse_cached(language, plain_text[:10000])
     except Exception:
         return []
 
@@ -175,14 +171,18 @@ def _analyze_weak_adverbs_hu(plain_text: str, language: str, cap: int = 5) -> li
 
 
 def _analyze_passive_voice_hu(plain_text: str, language: str, cap: int = 3) -> list[dict]:
-    """Detect passive-like participle constructions (-va/-ve suffix) in Hungarian."""
+    """Detect -va/-ve participles whose doer is named with 'által'.
+
+    A bare -va/-ve form is usually a manner participle ('sírva', 'futva') or a
+    deliberate stative ('be van zárva'); only the 'X által ...-va' form has an
+    obvious active rewrite.
+    """
     if language != "hu":
         return []
     suggestions = []
     try:
-        from nlp_manager import get_nlp
-        nlp = get_nlp(language)
-        doc = nlp(plain_text[:10000])
+        from nlp_manager import parse_cached
+        doc = parse_cached(language, plain_text[:10000])
     except Exception:
         return []
 
@@ -196,6 +196,8 @@ def _analyze_passive_voice_hu(plain_text: str, language: str, cap: int = 3) -> l
         if lower_text in PASSIVE_EXEMPTIONS_HU:
             continue
         if token.pos_ not in ("ADV", "VERB"):
+            continue
+        if not any(t.lower_ == "által" for t in token.sent):
             continue
         start_char = token.idx
         end_char = token.idx + len(token.text)
@@ -234,6 +236,9 @@ def _is_dialogue_hu(sent) -> bool:
     return False
 
 
+_THING_PRONOUNS_HU = {"az", "ez", "ami", "amely", "mi", "minden", "semmi"}
+
+
 def _detect_emotion_label_hu(sent) -> dict | None:
     """Detect: linking verb + emotion adj, or zero-copula adj as ROOT."""
     # Path 1: Linking verb + ADJ child
@@ -253,18 +258,26 @@ def _detect_emotion_label_hu(sent) -> dict | None:
                             "entity_type": "emotion_label",
                             "confidence": 0.75,
                         }
-    # Path 2: Zero copula — ADJ as ROOT with nsubj child
-    root_tokens = [t for t in sent if t.dep_ == "ROOT"]
-    if root_tokens and root_tokens[0].pos_ == "ADJ":
-        adj = root_tokens[0]
-        if any(c.dep_ == "nsubj" for c in adj.children):
-            if adj.lemma_.lower() in EMOTION_LEXICON_HU:
-                return {
-                    "start_char": adj.idx,
-                    "end_char": adj.idx + len(adj.text),
-                    "entity_type": "emotion_label",
-                    "confidence": 0.65,
-                }
+    # Path 2: UD parse — the ADJ is the predicate head and 'volt/van' hangs off
+    # it as `cop` (or zero copula with a subject). Subjects are usually dropped
+    # ('Nagyon dühös volt'), so a cop child alone is enough.
+    for adj in sent:
+        if adj.pos_ != "ADJ" or adj.lemma_.lower() not in EMOTION_LEXICON_HU:
+            continue
+        # 'boldogabb, mint az ember' compares, it doesn't state a feeling.
+        if "Cmp" in adj.morph.get("Degree"):
+            continue
+        # 'az volt a dologban szomorú' — the subject is a thing, not a character.
+        if any(c.dep_ == "nsubj" and c.pos_ == "PRON" and c.lemma_.lower() in _THING_PRONOUNS_HU
+               for c in adj.children):
+            continue
+        if any(c.dep_ in ("cop", "nsubj") for c in adj.children):
+            return {
+                "start_char": adj.idx,
+                "end_char": adj.idx + len(adj.text),
+                "entity_type": "emotion_label",
+                "confidence": 0.65,
+            }
     return None
 
 
@@ -294,7 +307,7 @@ def _detect_realize_verb_hu(sent) -> dict | None:
                     "start_char": token.idx,
                     "end_char": token.idx + len(token.text),
                     "entity_type": "realize_verb",
-                    "confidence": 0.55,
+                    "confidence": 0.45,
                 }
     return None
 
@@ -316,55 +329,166 @@ def _detect_adverb_emotion_hu(sent) -> dict | None:
     return None
 
 
+def _detect_emotion_manner_hu(sent) -> dict | None:
+    """Detect an emotion told as the manner of an action: 'zavartan állt',
+    'izgatottan siettek', 'csodálkozva néztek'. HuSpaCy parses -an/-en/-ul
+    adverbs as the adjective in essive case, so the label list covers them."""
+    for tok in sent:
+        # AUX too: around dash dialogue the parser can hang the adverb on a
+        # copula inside the speech ('mondta zavartan a fiú – … voltam').
+        if tok.head.pos_ not in ("VERB", "AUX") or tok.head is tok:
+            continue
+        # 'boldogan élhetne' — a hypothetical, not how anyone feels.
+        if "Cnd" in tok.head.morph.get("Mood"):
+            continue
+        lemma = tok.lemma_.lower()
+        is_manner_adj = (tok.pos_ == "ADJ" and "Ess" in tok.morph.get("Case")
+                         and lemma in EMOTION_LEXICON_HU and lemma not in STATE_EXEMPTIONS_HU)
+        is_adverb = tok.dep_.startswith("advmod") and (
+            lemma in ALL_EMOTION_ADVERBS_HU or tok.lower_ in ALL_EMOTION_ADVERBS_HU)
+        is_converb = ("Conv" in tok.morph.get("VerbForm")
+                      and lemma in EXPERIENCER_VERBS_HU)
+        if is_manner_adj or is_adverb or is_converb:
+            return {
+                "start_char": tok.idx,
+                "end_char": tok.idx + len(tok.text),
+                "entity_type": "emotion_manner",
+                "confidence": 0.7,
+            }
+    return None
+
+
+def _detect_emotion_attribute_hu(sent) -> dict | None:
+    """Detect an emotion adjective on a face/look/voice noun or on a manner phrase
+    in instrumental case: 'dühös pillantást vetett', 'aggódó arccal fordult',
+    'izgatott kukucskálással ment'."""
+    for tok in sent:
+        if tok.pos_ != "ADJ" or not tok.dep_.startswith("amod"):
+            continue
+        lemma = tok.lemma_.lower()
+        if lemma in STATE_EXEMPTIONS_HU:
+            continue
+        noun = tok.head
+        if noun.pos_ != "NOUN":
+            continue
+        on_face = noun.lemma_.lower() in FACE_NOUNS_HU and lemma in FACE_ADJECTIVES_HU
+        manner = "Ins" in noun.morph.get("Case") and lemma in EMOTION_LEXICON_HU
+        if on_face or manner:
+            return {
+                "start_char": tok.idx,
+                "end_char": noun.idx + len(noun.text),
+                "entity_type": "emotion_attribute",
+                "confidence": 0.7,
+            }
+    return None
+
+
+def _detect_emotion_noun_frame_hu(sent) -> dict | None:
+    """Detect an emotion noun in a case frame: 'felkiált örömében',
+    'meglepetésemre', 'félelemből hallgatott'."""
+    for tok in sent:
+        if tok.pos_ not in ("NOUN", "PROPN") or tok.lemma_.lower() not in EMOTION_NOUNS_HU:
+            continue
+        if not EMOTION_NOUN_CASES_HU.intersection(tok.morph.get("Case")):
+            continue
+        if tok.head.pos_ in ("VERB", "ADJ") or tok.dep_ == "ROOT" or tok.head is tok:
+            return {
+                "start_char": tok.idx,
+                "end_char": tok.idx + len(tok.text),
+                "entity_type": "emotion_noun_frame",
+                "confidence": 0.7,
+            }
+    return None
+
+
+def _detect_emotion_verb_hu(sent) -> dict | None:
+    """Detect an emotion stated as a finite verb: 'Nemecsek megijedt', 'örült'."""
+    for tok in sent:
+        if tok.pos_ != "VERB" or "Fin" not in tok.morph.get("VerbForm"):
+            continue
+        # 'megijedt volna' — a hypothetical, not a feeling anyone had.
+        if "Cnd" in tok.morph.get("Mood") or any(c.lower_ == "volna" for c in tok.children):
+            continue
+        if tok.lemma_.lower() in EXPERIENCER_VERBS_HU:
+            return {
+                "start_char": tok.idx,
+                "end_char": tok.idx + len(tok.text),
+                "entity_type": "emotion_verb",
+                "confidence": 0.7,
+            }
+    return None
+
+
 def _analyze_show_dont_tell_hu(
     plain_text: str,
     language: str,
     confidence_threshold: float = 0.5,
     cap: int = 5
 ) -> list[dict]:
-    """4-detector show-don't-tell pipeline for Hungarian with em-dash dialogue exclusion."""
+    """Show-don't-tell pipeline for Hungarian with em-dash dialogue exclusion.
+
+    The filter-verb detector is kept but not run (perception verbs are mostly
+    sensory showing; it produced only false positives in evaluation).
+    """
     if language != "hu":
         return []
     suggestions = []
     try:
-        from nlp_manager import get_nlp
-        nlp = get_nlp(language)
-        doc = nlp(plain_text[:10000])
+        from nlp_manager import parse_cached
+        doc = parse_cached(language, plain_text[:10000])
     except Exception:
         return []
 
     detectors = [
         _detect_emotion_label_hu,
-        _detect_filter_verb_hu,
         _detect_realize_verb_hu,
         _detect_adverb_emotion_hu,
+        _detect_emotion_manner_hu,
+        _detect_emotion_attribute_hu,
+        _detect_emotion_noun_frame_hu,
+        _detect_emotion_verb_hu,
     ]
 
+    speech = _speech_spans(plain_text, dash_dialogue=True)
+    flagged_spans: list[tuple[int, int]] = []
     seen_offsets: set = set()
     for sent in doc.sents:
         if len(suggestions) >= cap:
             break
-        if _is_dialogue_hu(sent):
+        # Marked dialogue is handled per flag below; the sentence-level check is
+        # for dialogue the marks can't delimit.
+        if not _touches_speech(sent, speech) and _is_dialogue_hu(sent):
             continue
-        for detector in detectors:
+        for detector, segment in ((d, seg) for d in detectors
+                                  for seg in _narration_segments(sent, speech)):
             if len(suggestions) >= cap:
                 break
-            result = detector(sent)
+            result = detector(segment)
             if result is None:
                 continue
             if result["confidence"] < confidence_threshold:
                 continue
             start_char = result["start_char"]
-            if start_char in seen_offsets:
+            end_char = result["end_char"]
+            if (start_char in seen_offsets or _in_speech(start_char, speech)
+                    or _in_speech(end_char - 1, speech)):
+                continue
+            # One card per spot: two rules can flag the same words ('Sophia
+            # worried' as a verb and as a fragment).
+            if any(start_char < e and s < end_char for s, e in flagged_spans):
+                continue
+            # A missing full stop can merge paragraphs into one parsed sentence.
+            if "\n" in plain_text[start_char:end_char]:
                 continue
             seen_offsets.add(start_char)
-            end_char = result["end_char"]
+            flagged_spans.append((start_char, end_char))
             matched_text = plain_text[start_char:end_char]
             context, hl_start, hl_end = _build_context(plain_text, start_char, end_char)
             suggestions.append({
                 "id": _make_id("show_dont_tell", matched_text, start_char),
                 "type": "show_dont_tell",
                 "entity_type": result["entity_type"],
+                "confidence": result["confidence"],
                 "matched_text": matched_text,
                 "context": context,
                 "context_highlight_start": hl_start,
@@ -384,9 +508,8 @@ def _analyze_pacing_hu(
         return []
     suggestions = []
     try:
-        from nlp_manager import get_nlp
-        nlp = get_nlp(language)
-        doc = nlp(plain_text[:10000])
+        from nlp_manager import parse_cached
+        doc = parse_cached(language, plain_text[:10000])
     except Exception:
         return []
 

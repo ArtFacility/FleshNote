@@ -16,7 +16,7 @@ import { parseWorldDate, dateToLinear } from '../utils/calendarUtils'
  * Enriched details per type:
  *   character  → icon + age at scene time (via api:calculateAge)
  *   location   → icon + current weather (via entity.current_weather field)
- *   lore/item  → icon + category + classification
+ *   lore/item  → icon + category-as-type-label + classification
  *   quicknote  → note type chip + content (no duplicate name)
  *   annotation → content only (no duplicate name)
  *   twist      → title + description + foreshadow count
@@ -32,8 +32,10 @@ const NOTE_TYPE_COLORS = {
   Idea:       '#4ade80',
 }
 
-// Map entity type → prefix used in the bulk-icon map
-const ICON_PREFIX = { character: 'char', location: 'loc', lore: 'lore', item: 'lore' }
+// Map entity type → prefix used in the bulk-icon map. Must match the entity_type codes
+// image_references actually stores (entityTypeToDbCode / _ENTITY_TYPE_TO_SHORT): lore
+// entities save their images under 'item', so both 'lore' and 'item' resolve to 'item'.
+const ICON_PREFIX = { character: 'char', location: 'loc', lore: 'item', item: 'item' }
 
 export default function EntityHoverCard({ data, position, entities, projectPath, effectiveWorldTime, calConfig }) {
   const { t } = useTranslation()
@@ -355,11 +357,14 @@ export default function EntityHoverCard({ data, position, entities, projectPath,
 
   // ── Lore / Item ──────────────────────────────────────────────────────────
   if (enriched.kind === 'lore' || enriched.kind === 'item') {
+    // Writers set a category ("Item", "Spell", "Artifact"…); it reads far clearer as the
+    // type label than the generic "Lore", so use it as the title and fall back only when
+    // the entity has no category yet. (CSS uppercases it.)
+    const typeLabel = entity.category
+      || (enriched.kind === 'item' ? t('hover.item', 'Item') : t('hover.lore', 'Lore'))
     return (
       <div className="entity-hover-card" style={{ left: position.x, top: position.y }}>
-        <div className={`hover-card-type ${enriched.kind}`}>
-          {enriched.kind === 'item' ? t('hover.item', 'Item') : t('hover.lore', 'Lore')}
-        </div>
+        <div className={`hover-card-type ${enriched.kind}`}>{typeLabel}</div>
 
         <div style={{ display: 'flex', gap: 10, alignItems: 'flex-start', marginBottom: 4 }}>
           {iconUrl && (
@@ -371,7 +376,6 @@ export default function EntityHoverCard({ data, position, entities, projectPath,
           )}
           <div style={{ minWidth: 0 }}>
             <div className="hover-card-name" style={{ marginBottom: 2 }}>{entity.name}</div>
-            {entity.category && <div className="hover-card-detail">{entity.category}</div>}
           </div>
         </div>
         {entity.classification && (

@@ -1,0 +1,937 @@
+{
+  "lang": "hu",
+  "kind": "emotion_adverb",
+  "version": 1,
+  "entries": [
+    {
+      "id": "hu.emoadv.dühösen",
+      "lemma": "dühösen",
+      "alt_lemmas": [
+        "dühös"
+      ],
+      "pos": [
+        "ADV"
+      ],
+      "kind": "emotion_adverb",
+      "strength": "strong",
+      "valence": -0.8,
+      "arousal": 0.8,
+      "emotions": {
+        "anger": 0.85
+      },
+      "lemma_evidence": "carrier",
+      "source": "migrated:hun_janitor.py",
+      "version": 1,
+      "felt": "state"
+    },
+    {
+      "id": "hu.emoadv.szomorúan",
+      "lemma": "szomorúan",
+      "alt_lemmas": [
+        "szomorú"
+      ],
+      "pos": [
+        "ADV"
+      ],
+      "kind": "emotion_adverb",
+      "strength": "strong",
+      "valence": -0.75,
+      "arousal": 0.35,
+      "emotions": {
+        "sadness": 0.8
+      },
+      "lemma_evidence": "carrier",
+      "source": "migrated:hun_janitor.py",
+      "version": 1,
+      "felt": "state"
+    },
+    {
+      "id": "hu.emoadv.boldogan",
+      "lemma": "boldogan",
+      "alt_lemmas": [
+        "boldog"
+      ],
+      "pos": [
+        "ADV"
+      ],
+      "kind": "emotion_adverb",
+      "strength": "strong",
+      "valence": 0.85,
+      "arousal": 0.65,
+      "emotions": {
+        "joy": 0.85
+      },
+      "lemma_evidence": "carrier",
+      "source": "migrated:hun_janitor.py",
+      "version": 1,
+      "felt": "state"
+    },
+    {
+      "id": "hu.emoadv.idegesen",
+      "lemma": "idegesen",
+      "alt_lemmas": [
+        "ideges"
+      ],
+      "pos": [
+        "ADV"
+      ],
+      "kind": "emotion_adverb",
+      "strength": "strong",
+      "valence": -0.6,
+      "arousal": 0.7,
+      "emotions": {
+        "fear": 0.6,
+        "anger": 0.6
+      },
+      "lemma_evidence": "carrier",
+      "source": "migrated:hun_janitor.py",
+      "version": 1,
+      "felt": "state"
+    },
+    {
+      "id": "hu.emoadv.szorongva",
+      "lemma": "szorongva",
+      "alt_lemmas": [
+        "szorong"
+      ],
+      "pos": [
+        "ADV"
+      ],
+      "kind": "emotion_adverb",
+      "strength": "strong",
+      "valence": -0.75,
+      "arousal": 0.75,
+      "emotions": {
+        "fear": 0.85
+      },
+      "lemma_evidence": "carrier",
+      "source": "migrated:hun_janitor.py",
+      "version": 1,
+      "felt": "state"
+    },
+    {
+      "id": "hu.emoadv.keserűen",
+      "lemma": "keserűen",
+      "alt_lemmas": [
+        "keserű"
+      ],
+      "pos": [
+        "ADV"
+      ],
+      "kind": "emotion_adverb",
+      "strength": "strong",
+      "valence": -0.7,
+      "arousal": 0.55,
+      "emotions": {
+        "anger": 0.7,
+        "sadness": 0.5
+      },
+      "lemma_evidence": "carrier",
+      "source": "migrated:hun_janitor.py",
+      "version": 1,
+      "felt": "state"
+    },
+    {
+      "id": "hu.emoadv.féltékenyen",
+      "lemma": "féltékenyen",
+      "alt_lemmas": [
+        "féltékeny"
+      ],
+      "pos": [
+        "ADV"
+      ],
+      "kind": "emotion_adverb",
+      "strength": "strong",
+      "valence": -0.7,
+      "arousal": 0.65,
+      "emotions": {
+        "disgust": 0.7,
+        "anger": 0.6
+      },
+      "lemma_evidence": "carrier",
+      "source": "migrated:hun_janitor.py",
+      "version": 1,
+      "felt": "state"
+    },
+    {
+      "id": "hu.emoadv.kétségbeesetten",
+      "lemma": "kétségbeesetten",
+      "alt_lemmas": [
+        "kétségbeesett"
+      ],
+      "pos": [
+        "ADV"
+      ],
+      "kind": "emotion_adverb",
+      "strength": "strong",
+      "valence": -0.9,
+      "arousal": 0.85,
+      "emotions": {
+        "fear": 0.85,
+        "sadness": 0.85
+      },
+      "lemma_evidence": "carrier",
+      "source": "migrated:hun_janitor.py",
+      "version": 1,
+      "felt": "state"
+    },
+    {
+      "id": "hu.emoadv.büszkén",
+      "lemma": "büszkén",
+      "alt_lemmas": [
+        "büszke"
+      ],
+      "pos": [
+        "ADV"
+      ],
+      "kind": "emotion_adverb",
+      "strength": "strong",
+      "valence": 0.7,
+      "arousal": 0.6,
+      "emotions": {
+        "joy": 0.7,
+        "trust": 0.6
+      },
+      "lemma_evidence": "carrier",
+      "source": "migrated:hun_janitor.py",
+      "version": 1,
+      "felt": "state",
+      "note": "also trait reading"
+    },
+    {
+      "id": "hu.emoadv.haragosan",
+      "lemma": "haragosan",
+      "alt_lemmas": [
+        "haragos"
+      ],
+      "pos": [
+        "ADV"
+      ],
+      "kind": "emotion_adverb",
+      "strength": "strong",
+      "valence": -0.85,
+      "arousal": 0.85,
+      "emotions": {
+        "anger": 0.9
+      },
+      "lemma_evidence": "carrier",
+      "source": "migrated:hun_janitor.py",
+      "version": 1,
+      "felt": "state"
+    },
+    {
+      "id": "hu.emoadv.örömmel",
+      "lemma": "örömmel",
+      "alt_lemmas": [
+        "öröm"
+      ],
+      "pos": [
+        "ADV"
+      ],
+      "kind": "emotion_adverb",
+      "strength": "strong",
+      "valence": 0.85,
+      "arousal": 0.7,
+      "emotions": {
+        "joy": 0.85
+      },
+      "lemma_evidence": "carrier",
+      "source": "migrated:hun_janitor.py",
+      "version": 1,
+      "felt": "state"
+    },
+    {
+      "id": "hu.emoadv.nyomorultul",
+      "lemma": "nyomorultul",
+      "alt_lemmas": [
+        "nyomorult"
+      ],
+      "pos": [
+        "ADV"
+      ],
+      "kind": "emotion_adverb",
+      "strength": "strong",
+      "valence": -0.85,
+      "arousal": 0.35,
+      "emotions": {
+        "sadness": 0.85
+      },
+      "lemma_evidence": "carrier",
+      "source": "migrated:hun_janitor.py",
+      "version": 1,
+      "felt": "state"
+    },
+    {
+      "id": "hu.emoadv.vidáman",
+      "lemma": "vidáman",
+      "alt_lemmas": [
+        "vidám"
+      ],
+      "pos": [
+        "ADV"
+      ],
+      "kind": "emotion_adverb",
+      "strength": "strong",
+      "valence": 0.8,
+      "arousal": 0.6,
+      "emotions": {
+        "joy": 0.8
+      },
+      "lemma_evidence": "carrier",
+      "source": "curated:gemini-2026-09",
+      "version": 1,
+      "felt": "state"
+    },
+    {
+      "id": "hu.emoadv.ujjongva",
+      "lemma": "ujjongva",
+      "alt_lemmas": [
+        "ujjong"
+      ],
+      "pos": [
+        "ADV"
+      ],
+      "kind": "emotion_adverb",
+      "strength": "strong",
+      "valence": 0.9,
+      "arousal": 0.8,
+      "emotions": {
+        "joy": 0.8
+      },
+      "lemma_evidence": "carrier",
+      "source": "curated:gemini-2026-09",
+      "version": 1,
+      "felt": "state"
+    },
+    {
+      "id": "hu.emoadv.bánatosan",
+      "lemma": "bánatosan",
+      "alt_lemmas": [
+        "bánatos"
+      ],
+      "pos": [
+        "ADV"
+      ],
+      "kind": "emotion_adverb",
+      "strength": "strong",
+      "valence": -0.75,
+      "arousal": 0.4,
+      "emotions": {
+        "sadness": 0.8
+      },
+      "lemma_evidence": "carrier",
+      "source": "curated:gemini-2026-09",
+      "version": 1,
+      "felt": "state"
+    },
+    {
+      "id": "hu.emoadv.búsan",
+      "lemma": "búsan",
+      "alt_lemmas": [
+        "bús"
+      ],
+      "pos": [
+        "ADV"
+      ],
+      "kind": "emotion_adverb",
+      "strength": "strong",
+      "valence": -0.7,
+      "arousal": 0.3,
+      "emotions": {
+        "sadness": 0.8
+      },
+      "lemma_evidence": "carrier",
+      "source": "curated:gemini-2026-09",
+      "version": 1,
+      "felt": "state"
+    },
+    {
+      "id": "hu.emoadv.rémülten",
+      "lemma": "rémülten",
+      "alt_lemmas": [
+        "rémült"
+      ],
+      "pos": [
+        "ADV"
+      ],
+      "kind": "emotion_adverb",
+      "strength": "strong",
+      "valence": -0.8,
+      "arousal": 0.8,
+      "emotions": {
+        "fear": 0.8
+      },
+      "lemma_evidence": "carrier",
+      "source": "curated:gemini-2026-09",
+      "version": 1,
+      "felt": "state"
+    },
+    {
+      "id": "hu.emoadv.ijedten",
+      "lemma": "ijedten",
+      "alt_lemmas": [
+        "ijedt"
+      ],
+      "pos": [
+        "ADV"
+      ],
+      "kind": "emotion_adverb",
+      "strength": "strong",
+      "valence": -0.75,
+      "arousal": 0.75,
+      "emotions": {
+        "fear": 0.8
+      },
+      "lemma_evidence": "carrier",
+      "source": "curated:gemini-2026-09",
+      "version": 1,
+      "felt": "state"
+    },
+    {
+      "id": "hu.emoadv.rettegve",
+      "lemma": "rettegve",
+      "alt_lemmas": [
+        "retteg"
+      ],
+      "pos": [
+        "ADV"
+      ],
+      "kind": "emotion_adverb",
+      "strength": "strong",
+      "valence": -0.9,
+      "arousal": 0.9,
+      "emotions": {
+        "fear": 0.8
+      },
+      "lemma_evidence": "carrier",
+      "source": "curated:gemini-2026-09",
+      "version": 1,
+      "felt": "state"
+    },
+    {
+      "id": "hu.emoadv.félve",
+      "lemma": "félve",
+      "alt_lemmas": [
+        "fél"
+      ],
+      "pos": [
+        "ADV"
+      ],
+      "kind": "emotion_adverb",
+      "strength": "strong",
+      "valence": -0.65,
+      "arousal": 0.5,
+      "emotions": {
+        "fear": 0.8
+      },
+      "lemma_evidence": "carrier",
+      "source": "curated:gemini-2026-09",
+      "version": 1,
+      "felt": "state"
+    },
+    {
+      "id": "hu.emoadv.reszketve",
+      "lemma": "reszketve",
+      "alt_lemmas": [
+        "reszket"
+      ],
+      "pos": [
+        "ADV"
+      ],
+      "kind": "emotion_adverb",
+      "strength": "strong",
+      "valence": -0.7,
+      "arousal": 0.7,
+      "emotions": {
+        "fear": 0.8
+      },
+      "lemma_evidence": "carrier",
+      "source": "curated:gemini-2026-09",
+      "version": 1,
+      "felt": "state"
+    },
+    {
+      "id": "hu.emoadv.gyűlölettel",
+      "lemma": "gyűlölettel",
+      "alt_lemmas": [
+        "gyűlölet"
+      ],
+      "pos": [
+        "ADV"
+      ],
+      "kind": "emotion_adverb",
+      "strength": "strong",
+      "valence": -0.9,
+      "arousal": 0.8,
+      "emotions": {
+        "disgust": 0.8
+      },
+      "lemma_evidence": "carrier",
+      "source": "curated:gemini-2026-09",
+      "version": 1,
+      "felt": "state"
+    },
+    {
+      "id": "hu.emoadv.megvetően",
+      "lemma": "megvetően",
+      "alt_lemmas": [
+        "megvető"
+      ],
+      "pos": [
+        "ADV"
+      ],
+      "kind": "emotion_adverb",
+      "strength": "strong",
+      "valence": -0.8,
+      "arousal": 0.6,
+      "emotions": {
+        "disgust": 0.8
+      },
+      "lemma_evidence": "carrier",
+      "source": "curated:gemini-2026-09",
+      "version": 1,
+      "felt": "state"
+    },
+    {
+      "id": "hu.emoadv.gúnyosan",
+      "lemma": "gúnyosan",
+      "alt_lemmas": [
+        "gúnyos"
+      ],
+      "pos": [
+        "ADV"
+      ],
+      "kind": "emotion_adverb",
+      "strength": "strong",
+      "valence": -0.65,
+      "arousal": 0.6,
+      "emotions": {
+        "disgust": 0.8
+      },
+      "lemma_evidence": "carrier",
+      "source": "curated:gemini-2026-09",
+      "version": 1,
+      "felt": "state"
+    },
+    {
+      "id": "hu.emoadv.ingerülten",
+      "lemma": "ingerülten",
+      "alt_lemmas": [
+        "ingerült"
+      ],
+      "pos": [
+        "ADV"
+      ],
+      "kind": "emotion_adverb",
+      "strength": "strong",
+      "valence": -0.65,
+      "arousal": 0.7,
+      "emotions": {
+        "anger": 0.8
+      },
+      "lemma_evidence": "carrier",
+      "source": "curated:gemini-2026-09",
+      "version": 1,
+      "felt": "state"
+    },
+    {
+      "id": "hu.emoadv.bosszúsan",
+      "lemma": "bosszúsan",
+      "alt_lemmas": [
+        "bosszús"
+      ],
+      "pos": [
+        "ADV"
+      ],
+      "kind": "emotion_adverb",
+      "strength": "strong",
+      "valence": -0.6,
+      "arousal": 0.6,
+      "emotions": {
+        "anger": 0.8
+      },
+      "lemma_evidence": "carrier",
+      "source": "curated:gemini-2026-09",
+      "version": 1,
+      "felt": "state"
+    },
+    {
+      "id": "hu.emoadv.lehangoltan",
+      "lemma": "lehangoltan",
+      "alt_lemmas": [
+        "lehangolt"
+      ],
+      "pos": [
+        "ADV"
+      ],
+      "kind": "emotion_adverb",
+      "strength": "strong",
+      "valence": -0.7,
+      "arousal": 0.3,
+      "emotions": {
+        "sadness": 0.8
+      },
+      "lemma_evidence": "carrier",
+      "source": "curated:gemini-2026-09",
+      "version": 1,
+      "felt": "state"
+    },
+    {
+      "id": "hu.emoadv.csüggedten",
+      "lemma": "csüggedten",
+      "alt_lemmas": [
+        "csüggedt"
+      ],
+      "pos": [
+        "ADV"
+      ],
+      "kind": "emotion_adverb",
+      "strength": "strong",
+      "valence": -0.7,
+      "arousal": 0.3,
+      "emotions": {
+        "sadness": 0.8
+      },
+      "lemma_evidence": "carrier",
+      "source": "curated:gemini-2026-09",
+      "version": 1,
+      "felt": "state"
+    },
+    {
+      "id": "hu.emoadv.lelkesen",
+      "lemma": "lelkesen",
+      "alt_lemmas": [
+        "lelkes"
+      ],
+      "pos": [
+        "ADV"
+      ],
+      "kind": "emotion_adverb",
+      "strength": "strong",
+      "valence": 0.8,
+      "arousal": 0.7,
+      "emotions": {
+        "anticipation": 0.8
+      },
+      "lemma_evidence": "carrier",
+      "source": "curated:gemini-2026-09",
+      "version": 1,
+      "felt": "state"
+    },
+    {
+      "id": "hu.emoadv.hálásan",
+      "lemma": "hálásan",
+      "alt_lemmas": [
+        "hálás"
+      ],
+      "pos": [
+        "ADV"
+      ],
+      "kind": "emotion_adverb",
+      "strength": "strong",
+      "valence": 0.8,
+      "arousal": 0.4,
+      "emotions": {
+        "trust": 0.8
+      },
+      "lemma_evidence": "carrier",
+      "source": "curated:gemini-2026-09",
+      "version": 1,
+      "felt": "state"
+    },
+    {
+      "id": "hu.emoadv.bizakodva",
+      "lemma": "bizakodva",
+      "alt_lemmas": [
+        "bizakodó"
+      ],
+      "pos": [
+        "ADV"
+      ],
+      "kind": "emotion_adverb",
+      "strength": "strong",
+      "valence": 0.7,
+      "arousal": 0.5,
+      "emotions": {
+        "anticipation": 0.8
+      },
+      "lemma_evidence": "carrier",
+      "source": "curated:gemini-2026-09",
+      "version": 1,
+      "felt": "state"
+    },
+    {
+      "id": "hu.emoadv.nyugodtan",
+      "lemma": "nyugodtan",
+      "alt_lemmas": [
+        "nyugodt"
+      ],
+      "pos": [
+        "ADV"
+      ],
+      "kind": "emotion_adverb",
+      "strength": "strong",
+      "valence": 0.7,
+      "arousal": 0.2,
+      "emotions": {
+        "trust": 0.8
+      },
+      "lemma_evidence": "carrier",
+      "source": "curated:gemini-2026-09",
+      "version": 1,
+      "felt": "state"
+    },
+    {
+      "id": "hu.emoadv.békésen",
+      "lemma": "békésen",
+      "alt_lemmas": [
+        "békés"
+      ],
+      "pos": [
+        "ADV"
+      ],
+      "kind": "emotion_adverb",
+      "strength": "strong",
+      "valence": 0.7,
+      "arousal": 0.2,
+      "emotions": {
+        "trust": 0.8
+      },
+      "lemma_evidence": "carrier",
+      "source": "curated:gemini-2026-09",
+      "version": 1,
+      "felt": "state"
+    },
+    {
+      "id": "hu.emoadv.szelíden",
+      "lemma": "szelíden",
+      "alt_lemmas": [
+        "szelíd"
+      ],
+      "pos": [
+        "ADV"
+      ],
+      "kind": "emotion_adverb",
+      "strength": "strong",
+      "valence": 0.7,
+      "arousal": 0.3,
+      "emotions": {
+        "trust": 0.8
+      },
+      "lemma_evidence": "carrier",
+      "source": "curated:gemini-2026-09",
+      "version": 1,
+      "felt": "trait"
+    },
+    {
+      "id": "hu.emoadv.meghatottan",
+      "lemma": "meghatottan",
+      "alt_lemmas": [
+        "meghatott"
+      ],
+      "pos": [
+        "ADV"
+      ],
+      "kind": "emotion_adverb",
+      "strength": "strong",
+      "valence": 0.7,
+      "arousal": 0.5,
+      "emotions": {
+        "joy": 0.8
+      },
+      "lemma_evidence": "carrier",
+      "source": "curated:gemini-2026-09",
+      "version": 1,
+      "felt": "state"
+    },
+    {
+      "id": "hu.emoadv.gyengéden",
+      "lemma": "gyengéden",
+      "alt_lemmas": [
+        "gyengéd"
+      ],
+      "pos": [
+        "ADV"
+      ],
+      "kind": "emotion_adverb",
+      "strength": "strong",
+      "valence": 0.8,
+      "arousal": 0.3,
+      "emotions": {
+        "joy": 0.8
+      },
+      "lemma_evidence": "carrier",
+      "source": "curated:gemini-2026-09",
+      "version": 1,
+      "felt": "state"
+    },
+    {
+      "id": "hu.emoadv.szeretettel",
+      "lemma": "szeretettel",
+      "alt_lemmas": [
+        "szeretet"
+      ],
+      "pos": [
+        "ADV"
+      ],
+      "kind": "emotion_adverb",
+      "strength": "strong",
+      "valence": 0.9,
+      "arousal": 0.4,
+      "emotions": {
+        "joy": 0.8
+      },
+      "lemma_evidence": "carrier",
+      "source": "curated:gemini-2026-09",
+      "version": 1,
+      "felt": "state"
+    },
+    {
+      "id": "hu.emoadv.rajongva",
+      "lemma": "rajongva",
+      "alt_lemmas": [
+        "rajong"
+      ],
+      "pos": [
+        "ADV"
+      ],
+      "kind": "emotion_adverb",
+      "strength": "strong",
+      "valence": 0.8,
+      "arousal": 0.7,
+      "emotions": {
+        "joy": 0.8
+      },
+      "lemma_evidence": "carrier",
+      "source": "curated:gemini-2026-09",
+      "version": 1,
+      "felt": "state"
+    },
+    {
+      "id": "hu.emoadv.csodálkozva",
+      "lemma": "csodálkozva",
+      "alt_lemmas": [
+        "csodálkozó"
+      ],
+      "pos": [
+        "ADV"
+      ],
+      "kind": "emotion_adverb",
+      "strength": "strong",
+      "valence": 0.4,
+      "arousal": 0.6,
+      "emotions": {
+        "surprise": 0.8
+      },
+      "lemma_evidence": "carrier",
+      "source": "curated:gemini-2026-09",
+      "version": 1,
+      "felt": "state"
+    },
+    {
+      "id": "hu.emoadv.ámulva",
+      "lemma": "ámulva",
+      "alt_lemmas": [
+        "ámuló"
+      ],
+      "pos": [
+        "ADV"
+      ],
+      "kind": "emotion_adverb",
+      "strength": "strong",
+      "valence": 0.6,
+      "arousal": 0.7,
+      "emotions": {
+        "surprise": 0.8
+      },
+      "lemma_evidence": "carrier",
+      "source": "curated:gemini-2026-09",
+      "version": 1,
+      "felt": "state"
+    },
+    {
+      "id": "hu.emoadv.bámulva",
+      "lemma": "bámulva",
+      "alt_lemmas": [
+        "bámuló"
+      ],
+      "pos": [
+        "ADV"
+      ],
+      "kind": "emotion_adverb",
+      "strength": "strong",
+      "valence": 0.3,
+      "arousal": 0.5,
+      "emotions": {
+        "surprise": 0.8
+      },
+      "lemma_evidence": "carrier",
+      "source": "curated:gemini-2026-09",
+      "version": 1,
+      "felt": "state"
+    },
+    {
+      "id": "hu.emoadv.döbbenten",
+      "lemma": "döbbenten",
+      "alt_lemmas": [
+        "döbbent"
+      ],
+      "pos": [
+        "ADV"
+      ],
+      "kind": "emotion_adverb",
+      "strength": "strong",
+      "valence": -0.3,
+      "arousal": 0.7,
+      "emotions": {
+        "surprise": 0.8
+      },
+      "lemma_evidence": "carrier",
+      "source": "curated:gemini-2026-09",
+      "version": 1,
+      "felt": "state"
+    },
+    {
+      "id": "hu.emoadv.kíváncsian",
+      "lemma": "kíváncsian",
+      "alt_lemmas": [
+        "kíváncsi"
+      ],
+      "pos": [
+        "ADV"
+      ],
+      "kind": "emotion_adverb",
+      "strength": "strong",
+      "valence": 0.5,
+      "arousal": 0.5,
+      "emotions": {
+        "anticipation": 0.8
+      },
+      "lemma_evidence": "carrier",
+      "source": "curated:gemini-2026-09",
+      "version": 1,
+      "felt": "state"
+    },
+    {
+      "id": "hu.emoadv.türelmetlenül",
+      "lemma": "türelmetlenül",
+      "alt_lemmas": [
+        "türelmetlen"
+      ],
+      "pos": [
+        "ADV"
+      ],
+      "kind": "emotion_adverb",
+      "strength": "strong",
+      "valence": -0.3,
+      "arousal": 0.7,
+      "emotions": {
+        "anticipation": 0.8
+      },
+      "lemma_evidence": "carrier",
+      "source": "curated:gemini-2026-09",
+      "version": 1,
+      "felt": "state"
+    }
+  ]
+}

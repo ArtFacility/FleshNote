@@ -108,8 +108,8 @@ async def bulk_delete_entities(req: BulkDeleteRequest):
 class MergeRequest(BaseModel):
     project_path: str
     entity_type: str       # "character" | "location" | "group" | "lore"
-    keep_id: int           # The entity to keep
-    merge_ids: list[int]   # The entities to absorb and delete
+    keep_id: str | int     # The entity to keep
+    merge_ids: list[str | int]   # The entities to absorb and delete
 
 
 def _append_field(existing: str, addition: str, source_name: str) -> str:
@@ -162,7 +162,7 @@ def _merge_aliases(kept_aliases: list, merged_entities: list) -> list:
     return original
 
 
-def _rewrite_markdown_links(project_path: str, short_type: str, keep_id: int, merge_ids: list[int]):
+def _rewrite_markdown_links(project_path: str, short_type: str, keep_id: str | int, merge_ids: list[str | int]):
     """Scan all chapter markdown files and rewrite entity links from merge_ids to keep_id."""
     md_dir = os.path.join(project_path, "md")
     if not os.path.isdir(md_dir):

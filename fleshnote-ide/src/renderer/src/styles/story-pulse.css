@@ -1,0 +1,468 @@
+/* Story Pulse: planner lane + the Experimental badge (settings and lane). */
+
+.experimental-badge {
+    display: inline-block;
+    margin-inline-start: 8px;
+    padding: 1px 6px;
+    border: 1px solid var(--accent-purple);
+    border-radius: 2px;
+    color: var(--accent-purple);
+    background: var(--accent-purple-dim);
+    font-family: var(--font-mono);
+    font-size: 9px;
+    letter-spacing: 0.6px;
+    text-transform: uppercase;
+    vertical-align: middle;
+    white-space: nowrap;
+}
+
+/* The planner positions everything with pixel offsets from the left of its
+   canvas (it does not mirror in RTL); the lane follows the same axis. */
+.pulse-lane {
+    position: absolute;
+    left: 0;
+    pointer-events: none;
+}
+
+.pulse-lane-header {
+    position: absolute;
+    top: 0;
+    height: 26px;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    pointer-events: auto;
+    font-family: var(--font-mono);
+    font-size: 10px;
+    color: var(--text-tertiary);
+    white-space: nowrap;
+    overflow: hidden;
+}
+
+.pulse-lane-header .experimental-badge { margin-inline-start: 0; }
+
+.pulse-lane-title {
+    color: var(--text-secondary);
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    font-weight: 600;
+}
+
+.pulse-lane-note { opacity: 0.8; }
+.pulse-lane-status { color: var(--accent-amber); }
+
+.pulse-lane-provisional {
+    color: var(--accent-amber);
+    border: 1px dashed var(--accent-amber);
+    border-radius: 2px;
+    padding: 0 5px;
+    text-transform: uppercase;
+    font-size: 9px;
+    letter-spacing: 0.5px;
+}
+
+.pulse-lane-spacer { flex: 1; }
+
+.pulse-seg {
+    display: inline-flex;
+    border: 1px solid var(--border-subtle);
+    border-radius: 2px;
+    overflow: hidden;
+}
+
+.pulse-seg button {
+    background: var(--bg-surface);
+    border: none;
+    border-inline-end: 1px solid var(--border-subtle);
+    color: var(--text-tertiary);
+    font-family: var(--font-mono);
+    font-size: 10px;
+    padding: 3px 8px;
+    cursor: pointer;
+}
+
+.pulse-seg button:last-child { border-inline-end: none; }
+.pulse-seg button.active { background: var(--bg-elevated); color: var(--text-primary); }
+.pulse-seg button:disabled { opacity: 0.4; cursor: default; }
+
+.pulse-icon-btn {
+    background: var(--bg-surface);
+    border: 1px solid var(--border-subtle);
+    border-radius: 2px;
+    color: var(--text-tertiary);
+    font-size: 12px;
+    line-height: 1;
+    padding: 3px 7px;
+    cursor: pointer;
+}
+
+.pulse-icon-btn:hover, .pulse-seg button:not(:disabled):hover { color: var(--text-primary); }
+
+.pulse-lane-svg {
+    position: absolute;
+    left: 0;
+    pointer-events: auto;
+    cursor: pointer;
+}
+
+.pulse-lane-plot {
+    position: absolute;
+    z-index: 2;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    pointer-events: none;
+}
+
+.pulse-lane-message {
+    pointer-events: auto;
+    max-width: 70%;
+    padding: 6px 12px;
+    background: var(--bg-surface);
+    border: 1px solid var(--border-subtle);
+    border-radius: 3px;
+    color: var(--text-secondary);
+    font-family: var(--font-sans);
+    font-size: 12px;
+    text-align: center;
+}
+
+.pulse-lane-message-corner {
+    position: absolute;
+    top: 4px;
+    inset-inline-end: 4px;
+}
+
+.pulse-lane-detail { color: var(--text-tertiary); font-size: 11px; }
+
+.pulse-link-btn {
+    background: none;
+    border: none;
+    padding: 0;
+    color: var(--accent-amber);
+    font: inherit;
+    text-decoration: underline;
+    cursor: pointer;
+}
+
+.pulse-lane-legend {
+    position: absolute;
+    display: flex;
+    gap: 18px;
+    font-family: var(--font-mono);
+    font-size: 9px;
+    color: var(--text-tertiary);
+    white-space: nowrap;
+}
+
+.pulse-swatch {
+    display: inline-block;
+    width: 14px;
+    height: 3px;
+    margin-inline-end: 6px;
+    vertical-align: middle;
+    border-radius: 1px;
+}
+
+.pulse-swatch-line { background: var(--text-primary); opacity: 0.7; }
+
+.pulse-tooltip {
+    position: absolute;
+    z-index: 30;
+    pointer-events: none;
+    padding: 10px 12px;
+    background: var(--bg-elevated);
+    border: 1px solid var(--border-default);
+    border-radius: 4px;
+    box-shadow: 0 6px 18px rgba(0, 0, 0, 0.45);
+    font-family: var(--font-sans);
+    font-size: 12px;
+    color: var(--text-primary);
+    text-align: start;
+}
+
+.pulse-tip-head {
+    font-family: var(--font-mono);
+    font-size: 10px;
+    color: var(--accent-amber);
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    margin-bottom: 6px;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.pulse-tip-excerpt {
+    font-family: var(--font-serif);
+    font-style: italic;
+    font-size: 13px;
+    color: var(--text-secondary);
+    margin-bottom: 6px;
+    display: -webkit-box;
+    -webkit-line-clamp: 3;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+}
+
+.pulse-tip-row { margin-top: 2px; }
+.pulse-tip-dim { color: var(--text-tertiary); }
+
+.pulse-tip-hint {
+    margin-top: 6px;
+    font-family: var(--font-mono);
+    font-size: 9px;
+    color: var(--text-tertiary);
+}
+
+/* Text-only and icon-only buttons (never both, to keep the lane quiet) */
+.pulse-text-btn {
+    background: var(--bg-surface);
+    border: 1px solid var(--border-subtle);
+    border-radius: 2px;
+    color: var(--text-secondary);
+    font-family: var(--font-mono);
+    font-size: 10px;
+    padding: 3px 9px;
+    cursor: pointer;
+}
+
+.pulse-text-btn:hover { color: var(--text-primary); border-color: var(--border-default); }
+
+.pulse-text-btn-primary {
+    color: var(--accent-amber);
+    border-color: var(--accent-amber);
+    background: var(--accent-amber-dim);
+}
+
+.pulse-icon-btn { display: inline-flex; align-items: center; justify-content: center; }
+.pulse-icon-btn.active { color: var(--accent-purple); border-color: var(--accent-purple); background: var(--accent-purple-dim); }
+
+.pulse-lane-svg.editing { cursor: crosshair; }
+
+.pulse-target-handle {
+    fill: var(--bg-deep);
+    stroke: var(--accent-amber);
+    stroke-width: 2;
+    cursor: grab;
+}
+
+.pulse-target-handle:hover { fill: var(--accent-amber); }
+
+.pulse-swatch-target {
+    background: repeating-linear-gradient(90deg, var(--accent-amber) 0 5px, transparent 5px 8px);
+}
+
+.pulse-swatch-gap { margin-inline-start: 10px; }
+
+/* ── Editor Pulse gutter (inline-end of the text column) ───────────── */
+.pulse-gutter {
+    position: relative;
+    flex-shrink: 0;
+    width: 22px;
+    border-inline-start: 1px solid var(--border-subtle);
+    user-select: none;
+}
+
+.pulse-gutter-bar {
+    position: absolute;
+    inset-inline-start: 5px;
+    width: 12px;
+    border-radius: 3px;
+    overflow: hidden;
+}
+
+.pulse-gutter-bar svg {
+    display: block;
+}
+
+.pulse-gutter-bar.pending {
+    display: flex;
+    justify-content: center;
+}
+
+.pulse-gutter-rest {
+    width: 2px;
+    height: 100%;
+    border-radius: 1px;
+    background: var(--border-subtle);
+}
+
+.pulse-gutter-wave {
+    animation: pulse-gutter-drift var(--dur, 5s) linear infinite;
+    will-change: transform;
+}
+
+@keyframes pulse-gutter-drift {
+    to {
+        transform: translateY(calc(-1 * var(--wl, 20px)));
+    }
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .pulse-gutter-wave {
+        animation: none;
+    }
+}
+
+.pulse-gutter-tip {
+    inset-inline-end: calc(100% + 6px);
+    width: 240px;
+}
+
+.pulse-gutter-bar {
+    cursor: grab;
+}
+
+/* corrected by the writer: a small amber pin on the text side of the bar */
+.pulse-gutter-pin {
+    position: absolute;
+    inset-inline-start: 1px;
+    width: 4px;
+    height: 4px;
+    border-radius: 50%;
+    background: var(--accent-amber);
+    pointer-events: none;
+}
+
+/* corrections whose paragraph is gone (rewritten beyond recognition) */
+.pulse-gutter-stale {
+    position: absolute;
+    top: 6px;
+    inset-inline-start: 3px;
+    width: 16px;
+    height: 16px;
+    padding: 0;
+    border: 1px dashed var(--accent-amber);
+    border-radius: 50%;
+    background: transparent;
+    color: var(--accent-amber);
+    font-family: var(--font-mono);
+    font-size: 9px;
+    line-height: 14px;
+    cursor: pointer;
+}
+
+.pulse-gutter-stale-list {
+    top: 4px;
+    width: 280px;
+    pointer-events: auto;
+}
+
+.pulse-stale-item {
+    display: flex;
+    align-items: flex-start;
+    gap: 8px;
+    padding-top: 6px;
+    border-top: 1px solid var(--border-subtle);
+    margin-top: 6px;
+}
+
+.pulse-stale-item .pulse-tip-excerpt {
+    flex: 1;
+    margin: 0;
+}
+
+/* ── Correction pad (press-and-hold on a gutter bar) ───────────────── */
+.pulse-pad {
+    position: fixed;
+    z-index: 1000;
+    box-sizing: border-box;
+    padding: 12px;
+    background: var(--bg-elevated);
+    border: 1px solid var(--border-default);
+    border-radius: 4px;
+    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.5);
+    font-family: var(--font-mono);
+    font-size: 10px;
+    color: var(--text-secondary);
+    user-select: none;
+}
+
+.pulse-pad-plot {
+    position: relative;
+    box-sizing: border-box;
+    border: 1px solid var(--border-subtle);
+    border-radius: 2px;
+    overflow: hidden;
+}
+
+.pulse-pad-field {
+    position: absolute;
+    inset: 0;
+    display: block;
+}
+
+.pulse-pad.sticky .pulse-pad-plot {
+    cursor: crosshair;
+}
+
+.pulse-pad-label {
+    position: absolute;
+    inset-inline-start: 6px;
+    font-size: 9px;
+    color: rgba(255, 255, 255, 0.7);
+    text-shadow: 0 1px 2px rgba(0, 0, 0, 0.6);
+    pointer-events: none;
+}
+
+.pulse-pad-label.top { top: 4px; }
+.pulse-pad-label.bottom { bottom: 4px; }
+
+.pulse-pad-dot,
+.pulse-pad-ring {
+    position: absolute;
+    width: 12px;
+    height: 12px;
+    margin: -6px 0 0 -6px;
+    border-radius: 50%;
+    pointer-events: none;
+}
+
+.pulse-pad-dot {
+    box-shadow: 0 0 0 2px var(--bg-elevated), 0 0 0 3px var(--text-primary);
+}
+
+.pulse-pad-ring {
+    border: 1px dashed var(--text-tertiary);
+}
+
+.pulse-pad-xaxis {
+    display: flex;
+    justify-content: space-between;
+    margin-top: 4px;
+    font-size: 9px;
+    color: var(--text-tertiary);
+}
+
+/* the axis words take the ends of the mood gradient they name */
+.pulse-pad-xaxis .cold { color: rgb(110, 150, 220); }
+.pulse-pad-xaxis .warm { color: rgb(217, 164, 65); }
+
+.pulse-pad-readout {
+    margin-top: 8px;
+    color: var(--text-primary);
+}
+
+.pulse-pad-hint {
+    color: var(--text-tertiary);
+    font-size: 9px;
+}
+
+.pulse-pad > .pulse-pad-hint {
+    margin-top: 4px;
+}
+
+.pulse-pad-actions {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    margin-top: 8px;
+    flex-wrap: wrap;
+}
+
+.pulse-gutter-stale-list .pulse-tip-head {
+    white-space: normal;
+    overflow: visible;
+    text-overflow: clip;
+}

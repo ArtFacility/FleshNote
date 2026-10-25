@@ -1,10 +1,55 @@
-# FleshNote Database Schema
+# FleshNote Database Schema (Version 2)
 
 SQLite database at `{project_path}/fleshnote.db`. WAL mode enabled for concurrent reads.
 
-All ~24 tables are always created regardless of feature toggles. Features are enabled/disabled via `project_config` entries, not schema changes. This allows retroactive feature enabling without migrations.
+All tables are always created regardless of feature toggles. Features are enabled/disabled via `project_config` entries, not schema changes.
 
 Defined in `backend/db_setup.py`.
+
+---
+
+## On-disk project format (`.flnote`)
+
+A project is an **extensioned directory** named `{Name}.flnote` — it behaves like a
+single file for users (share/backup = one ZIP artifact with the same name) but
+stays a plain folder on disk. All path handling lives in `backend/project_io.py`:
+
+```
+MyNovel.flnote/
+  fleshnote.db            SQLite, WAL mode
+  fleshnote_project.json  descriptor: project_name (NO extension), schema_version,
+                          created_version, last_opened_version, project_id (UUID)
+  md/                     chapter markdown (ch_NNN_slug.md)
+  assets/                 entity reference images
+  exports/                export pipeline output (never included in .flnote zips)
+```
+
+- **Display name** = folder name with the `.flnote` suffix stripped (`scan_workspace`
+  returns the stripped `name` plus an `is_legacy` flag for pre-2.1 folders).
+- **Share/export format** (`POST /api/project/export-flnote`): a ZIP of
+  `fleshnote.db` (snapshotted via the SQLite backup API — never the live WAL file),
+  `fleshnote_project.json`, `md/`, `assets/`. `desktop.ini`/`Thumbs.db`/`*.bak`
+  junk is excluded.
+- **Import** (`POST /api/project/import-flnote`) validates hard before extracting:
+  zip-slip paths, uncompressed-size caps, symlink entries, duplicate/absolute
+  paths, and a top-level allowlist (`fleshnote.db`, `fleshnote_project.json`,
+  `md/`, `assets/` only). See `project_io.safe_extract_zip`.
+- **Modernization** (`POST /api/projects/modernize`): renames legacy plain folders
+  to `Name.flnote` and auto-runs the v1→v2 schema migration where needed.
+- Old (pre-2.1) app versions still *find* `Name.flnote` folders — project discovery
+  is marker-based (`fleshnote.db` / `fleshnote_project.json`), not name-based — so
+  downgrading is safe.
+- **Vault export** (`POST /api/project/export-vault`, `{project_path, dest_dir, fmt}`):
+  leaves-FleshNote export in `backend/export/vault.py`. `fmt: "obsidian"` writes a
+  folder tree of Markdown (Manuscript/, Characters/, Locations/, Groups & Factions/,
+  Lore/<category>/, Quick Notes/, Twists & Secrets/, Sketchboards/ as `.canvas`
+  files whose linked nodes show the entity's note, attachments/ with copied entity
+  images, Project Overview.md) with YAML frontmatter and Obsidian wiki links;
+  `fmt: "txt"` writes the same tree as plain `.txt` without frontmatter, images or
+  boards. Chapter markers (`{{char:...}}`, `{knows:...}`) are converted (wiki links
+  and `[!info]` callouts); planner/Pentimento/world history/stats are
+  intentionally not exported. The vault folder is named `<Project> (Obsidian)` /
+  `<Project> (Plain Text)` inside `dest_dir` and must not pre-exist.
 
 ---
 
@@ -18,24 +63,7 @@ Key-value store for all project settings and UI toggles.
 | `config_value` | TEXT             | Setting value (stringified)               |
 | `config_type`  | TEXT             | One of: `toggle`, `label`, `meta`, `json` |
 
-**Key entries:**
-
-| Key                      | Type   | Example                          | Description                           |
-| ------------------------ | ------ | -------------------------------- | ------------------------------------- |
-| `project_name`           | meta   | `"My Novel"`                     | Display name                          |
-| `author_name`            | meta   | `"Author"`                       | Author display name                   |
-| `genre`                  | meta   | `"fantasy"`                      | Genre baseline                        |
-| `track_species`          | toggle | `"true"`                         | Enable species field on characters    |
-| `track_groups`           | toggle | `"true"`                         | Enable groups/factions                |
-| `track_knowledge`        | toggle | `"true"`                         | Enable epistemic filtering            |
-| `track_dual_timeline`    | toggle | `"true"`                         | Enable world_time + narrative_time    |
-| `species_label`          | label  | `"Species"`                      | UI label for species field            |
-| `mechanic_label`         | label  | `"Magic System"`                 | UI label for core mechanic            |
-| `group_label`            | label  | `"Faction"`                      | UI label for groups                   |
-| `core_mechanic`          | meta   | `"magic"`                        | One of: `magic`, `tech`, `none`       |
-| `lore_categories`        | json   | `["mechanic","item","artifact"]` | Available lore entity categories      |
-| `default_chapter_target` | meta   | `"4000"`                         | Default word count target per chapter |
-| `created_at`             | meta   | `"2026-02-20T..."`               | Project creation timestamp            |
+**`cover`** (`json`): the book cover made in the cover editor (alpha), or `null`. Faces `front`, `spine`, `back`, each with a background colour, an optional image and text fields; `render.front` / `render.spine` are the drawn PNGs used by the bookshelf, the export window and the EPUB cover. Images live in `assets/cover/` under unique names. Format and validation: `backend/routes/cover.py`.
 
 ---
 
@@ -45,24 +73,24 @@ Core table for chapter management. Each chapter corresponds to a markdown file o
 
 | Column              | Type      | Constraints                             | Description                                                |
 | ------------------- | --------- | --------------------------------------- | ---------------------------------------------------------- |
-| `id`                | INTEGER   | PRIMARY KEY AUTOINCREMENT               |                                                            |
+| `id`                | TEXT      | PRIMARY KEY (UUID v4)                   | Generated automatically or via Python                      |
 | `chapter_number`    | INTEGER   | NOT NULL UNIQUE                         | Display/sort order                                         |
 | `title`             | TEXT      |                                         | Chapter title                                              |
 | `status`            | TEXT      |                                         | `planned`, `writing`, `draft`, `revised`, `final`          |
-| `pov_character_id`  | INTEGER   | FK -> characters(id) ON DELETE SET NULL | POV character for this chapter                             |
-| `world_time`        | TEXT      |                                         | In-universe date (e.g. `"4E-314, 3rd Moon, Day 17"`)       |
-| `narrative_time`    | INTEGER   |                                         | Ordinal reading order position                             |
+| `pov_character_id`  | TEXT      | FK -> characters(id) ON DELETE SET NULL | POV character for this chapter                             |
+| `world_time`        | TEXT      |                                         | In-universe date (e.g. `"4E-314, Day 17"`)                 |
+| `narrative_time`    | INTEGER   |                                         | Reading order position                                     |
 | `word_count`        | INTEGER   | DEFAULT 0                               | Current word count                                         |
 | `target_word_count` | INTEGER   | DEFAULT 4000                            | Target word count                                          |
 | `md_filename`       | TEXT      |                                         | Filename in `md/` directory (e.g. `ch_004_the_arrival.md`) |
 | `synopsis`          | TEXT      |                                         | Brief summary for author reference                         |
 | `notes`             | TEXT      |                                         | Freeform author notes                                      |
+| `deleted`           | INTEGER   | DEFAULT 0                               | Soft delete flag (1 = deleted)                             |
+| `deleted_at`        | TEXT      |                                         | Soft delete timestamp                                      |
 | `created_at`        | TIMESTAMP | DEFAULT CURRENT_TIMESTAMP               |                                                            |
 | `updated_at`        | TIMESTAMP | DEFAULT CURRENT_TIMESTAMP               | Updated on every save                                      |
 
-**Indexes:** `idx_chapter_number`, `idx_chapter_status`, `idx_chapter_pov`
-
-**Markdown files** stored at `{project_path}/md/{md_filename}`. Files contain entity markers in the format `{{char:5|Sophia}}`.
+**Markdown files** stored at `{project_path}/md/{md_filename}`. Files contain entity markers in the format `{{char:uuid-string|Sophia}}`.
 
 ---
 
@@ -72,22 +100,22 @@ Character profiles. All fields always present; optional fields toggled via `proj
 
 | Column         | Type      | Constraints                         | Description                                          |
 | -------------- | --------- | ----------------------------------- | ---------------------------------------------------- |
-| `id`           | INTEGER   | PRIMARY KEY AUTOINCREMENT           |                                                      |
+| `id`           | TEXT      | PRIMARY KEY (UUID v4)               |                                                      |
 | `name`         | TEXT      | NOT NULL                            | Display name                                         |
 | `aliases`      | TEXT      |                                     | JSON array: `["the Magistra", "Vael"]`               |
 | `role`         | TEXT      |                                     | `Protagonist`, `Antagonist`, `Supporting`, or custom |
 | `status`       | TEXT      |                                     | `Alive`, `Dead`, `Unknown`                           |
 | `species`      | TEXT      |                                     | Toggled by `track_species` config                    |
-| `group_id`     | INTEGER   | FK -> groups(id) ON DELETE SET NULL | Toggled by `track_groups` config                     |
+| `group_id`     | TEXT      | FK -> groups(id) ON DELETE SET NULL | Toggled by `track_groups` config                     |
 | `surface_goal` | TEXT      |                                     | Public-facing goal (visible to readers)              |
 | `true_goal`    | TEXT      |                                     | Hidden goal (author-only, shown in Author View)      |
 | `bio`          | TEXT      |                                     | Character biography                                  |
 | `notes`        | TEXT      |                                     | Author's private notes                               |
 | `birth_date`   | TEXT      |                                     | In-universe birth date (custom calendar string)      |
+| `deleted`      | INTEGER   | DEFAULT 0                               | Soft delete flag                                     |
+| `deleted_at`   | TEXT      |                                     | Soft delete timestamp                                |
 | `created_at`   | TIMESTAMP | DEFAULT CURRENT_TIMESTAMP           |                                                      |
 | `updated_at`   | TIMESTAMP | DEFAULT CURRENT_TIMESTAMP           |                                                      |
-
-**Index:** `idx_char_name`
 
 ---
 
@@ -97,7 +125,7 @@ Factions, organizations, noble houses, crews, etc. UI label controlled by `proje
 
 | Column           | Type      | Constraints               | Description                               |
 | ---------------- | --------- | ------------------------- | ----------------------------------------- |
-| `id`             | INTEGER   | PRIMARY KEY AUTOINCREMENT |                                           |
+| `id`             | TEXT      | PRIMARY KEY (UUID v4)     |                                           |
 | `name`           | TEXT      | NOT NULL                  | Display name                              |
 | `aliases`        | TEXT      |                           | JSON array                                |
 | `group_type`     | TEXT      |                           | e.g. `military`, `religious`, `political` |
@@ -105,9 +133,9 @@ Factions, organizations, noble houses, crews, etc. UI label controlled by `proje
 | `surface_agenda` | TEXT      |                           | Public-facing goal                        |
 | `true_agenda`    | TEXT      |                           | Hidden goal (author-only)                 |
 | `notes`          | TEXT      |                           |                                           |
+| `deleted`        | INTEGER   | DEFAULT 0                 | Soft delete flag                          |
+| `deleted_at`     | TEXT      |                           | Soft delete timestamp                     |
 | `created_at`     | TIMESTAMP | DEFAULT CURRENT_TIMESTAMP |                                           |
-
-**Index:** `idx_group_name`
 
 ---
 
@@ -117,7 +145,7 @@ Catch-all for items, magic systems, technology, artifacts, creatures, materials.
 
 | Column           | Type      | Constraints               | Description                                                 |
 | ---------------- | --------- | ------------------------- | ----------------------------------------------------------- |
-| `id`             | INTEGER   | PRIMARY KEY AUTOINCREMENT |                                                             |
+| `id`             | TEXT      | PRIMARY KEY (UUID v4)     |                                                             |
 | `name`           | TEXT      | NOT NULL                  | Display name                                                |
 | `aliases`        | TEXT      |                           | JSON array                                                  |
 | `category`       | TEXT      | NOT NULL                  | e.g. `mechanic`, `item`, `artifact`, `creature`, `material` |
@@ -127,10 +155,10 @@ Catch-all for items, magic systems, technology, artifacts, creatures, materials.
 | `limitations`    | TEXT      |                           | What it cannot do                                           |
 | `origin`         | TEXT      |                           | Where it comes from                                         |
 | `notes`          | TEXT      |                           |                                                             |
+| `deleted`        | INTEGER   | DEFAULT 0                 | Soft delete flag                          |
+| `deleted_at`     | TEXT      |                           | Soft delete timestamp                     |
 | `created_at`     | TIMESTAMP | DEFAULT CURRENT_TIMESTAMP |                                                             |
 | `updated_at`     | TIMESTAMP | DEFAULT CURRENT_TIMESTAMP |                                                             |
-
-**Indexes:** `idx_lore_name`, `idx_lore_category`
 
 ---
 
@@ -140,31 +168,33 @@ Hierarchical location tree via self-referencing foreign key.
 
 | Column               | Type      | Constraints                            | Description                 |
 | -------------------- | --------- | -------------------------------------- | --------------------------- |
-| `id`                 | INTEGER   | PRIMARY KEY AUTOINCREMENT              |                             |
+| `id`                 | TEXT      | PRIMARY KEY (UUID v4)                  |                             |
 | `name`               | TEXT      | NOT NULL                               | Display name                |
 | `aliases`            | TEXT      |                                        | JSON array                  |
 | `region`             | TEXT      |                                        | Broad geographic area       |
-| `parent_location_id` | INTEGER   | FK -> locations(id) ON DELETE SET NULL | Parent location for nesting |
+| `parent_location_id` | TEXT      | FK -> locations(id) ON DELETE SET NULL | Parent location for nesting |
 | `description`        | TEXT      |                                        |                             |
 | `notes`              | TEXT      |                                        |                             |
+| `deleted`            | INTEGER   | DEFAULT 0                              | Soft delete flag            |
+| `deleted_at`         | TEXT      |                                        | Soft delete timestamp       |
 | `created_at`         | TIMESTAMP | DEFAULT CURRENT_TIMESTAMP              |                             |
-
-**Indexes:** `idx_location_name`, `idx_location_parent`
 
 ---
 
 ## 6.5. `location_weather_states`
 
-Tracks weather, temperature, and moisture for specific locations at specific world times. Supports inheritance (children locations check parent locations for weather if no state is defined for the child).
+Tracks weather, temperature, and moisture for specific locations at specific world times.
 
 | Column        | Type      | Constraints                          | Description                               |
 | ------------- | --------- | ------------------------------------ | ----------------------------------------- |
-| `id`          | INTEGER   | PRIMARY KEY AUTOINCREMENT            |                                           |
-| `location_id` | INTEGER   | NOT NULL, FK -> locations(id) CASCADE | The location this weather state applies to |
+| `id`          | TEXT      | PRIMARY KEY (UUID v4)                |                                           |
+| `location_id` | TEXT      | NOT NULL, FK -> locations(id) CASCADE | The location this weather state applies to |
 | `world_time`  | TEXT      | NOT NULL                             | In-universe date (e.g. `"4E-314, Day 17"`) |
 | `weather`     | TEXT      |                                      | Current weather (e.g. `"Sunny"`, `"Rainy"`) |
 | `temperature` | TEXT      |                                      | e.g. `"24°C"`, `"Cold"`                   |
 | `moisture`    | TEXT      |                                      | e.g. `"Humid"`, `"Dry"`                   |
+| `deleted`     | INTEGER   | DEFAULT 0                            | Soft delete flag                          |
+| `deleted_at`  | TEXT      |                                      | Soft delete timestamp                     |
 | `created_at`  | TIMESTAMP | DEFAULT CURRENT_TIMESTAMP            |                                           |
 | `updated_at`  | TIMESTAMP | DEFAULT CURRENT_TIMESTAMP            |                                           |
 
@@ -172,88 +202,74 @@ Tracks weather, temperature, and moisture for specific locations at specific wor
 
 ## 7. `entity_appearances`
 
-Junction table tracking which entities appear in which chapters. Auto-populated on chapter save by scanning markdown for `{{type:id|text}}` markers.
+Junction table tracking which entities appear in which chapters. Auto-populated on chapter save.
 
 | Column                 | Type    | Constraints                                    | Description                              |
 | ---------------------- | ------- | ---------------------------------------------- | ---------------------------------------- |
-| `id`                   | INTEGER | PRIMARY KEY AUTOINCREMENT                      |                                          |
+| `id`                   | TEXT    | PRIMARY KEY (UUID v4)                          |                                          |
 | `entity_type`          | TEXT    |                                                | `character`, `lore`, `location`, `group` |
-| `entity_id`            | INTEGER | NOT NULL                                       | FK to the respective entity table        |
-| `chapter_id`           | INTEGER | NOT NULL, FK -> chapters(id) ON DELETE CASCADE |                                          |
+| `entity_id`            | TEXT    | NOT NULL                                       | FK to the respective entity table        |
+| `chapter_id`           | TEXT    | NOT NULL, FK -> chapters(id) ON DELETE CASCADE |                                          |
 | `first_mention_offset` | INTEGER |                                                | Character position in markdown file      |
-
-**Constraints:** `UNIQUE(entity_type, entity_id, chapter_id)` prevents duplicates.
-**Indexes:** `idx_appearances_entity`, `idx_appearances_chapter`
 
 ---
 
 ## 8. `knowledge_states`
 
-Epistemic filtering system. Tracks what each character knows and when they learned it. Used by the Entity Inspector's POV Filter mode to hide unknown details.
+Epistemic filtering system. Tracks what each character knows and when they learned it.
 
 | Column               | Type      | Constraints                                      | Description                                   |
 | -------------------- | --------- | ------------------------------------------------ | --------------------------------------------- |
-| `id`                 | INTEGER   | PRIMARY KEY AUTOINCREMENT                        |                                               |
-| `character_id`       | INTEGER   | NOT NULL, FK -> characters(id) ON DELETE CASCADE | Who knows this fact                           |
+| `id`                 | TEXT      | PRIMARY KEY (UUID v4)                            |                                               |
+| `character_id`       | TEXT      | NOT NULL, FK -> characters(id) ON DELETE CASCADE | Who knows this fact                           |
 | `fact`               | TEXT      | NOT NULL                                         | The piece of knowledge                        |
 | `source_entity_type` | TEXT      |                                                  | What entity this fact is about                |
-| `source_entity_id`   | INTEGER   |                                                  | FK to the source entity                       |
-| `learned_in_chapter` | INTEGER   | FK -> chapters(id) ON DELETE SET NULL            | `NULL` = knows from the start                 |
+| `source_entity_id`   | TEXT      |                                                  | FK to the source entity                       |
+| `learned_in_chapter` | TEXT      | FK -> chapters(id) ON DELETE SET NULL            | `NULL` = knows from the start                 |
 | `world_time`         | TEXT      |                                                  | In-universe time when character learned this  |
 | `is_secret`          | INTEGER   | DEFAULT 0                                        | `1` = author-only, character cannot know this |
-| `reveal_in_chapter`  | INTEGER   | FK -> chapters(id) ON DELETE SET NULL            | Planned reveal chapter                        |
+| `reveal_in_chapter`  | TEXT      | FK -> chapters(id) ON DELETE SET NULL            | Planned reveal chapter                        |
 | `notes`              | TEXT      |                                                  |                                               |
 | `word_offset`        | INTEGER   |                                                  | Links fact to a textual position              |
 | `created_at`         | TIMESTAMP | DEFAULT CURRENT_TIMESTAMP                        |                                               |
-
-**POV filtering query:**
-
-```sql
-SELECT fact FROM knowledge_states
-WHERE character_id = :pov_id
-  AND (learned_in_chapter <= :current_chapter OR learned_in_chapter IS NULL)
-  AND is_secret = 0
-```
-
-**Indexes:** `idx_knowledge_char`, `idx_knowledge_chapter`, `idx_knowledge_source`
 
 ---
 
 ## 10. `twists`
 
-Major plot reveals or secrets. Used in conjunction with foreshadowings to track narrative payoff on the timeline.
+Major plot reveals or secrets. Used in conjunction with foreshadowings to track narrative payoff on the planner.
 
 | Column                | Type      | Constraints                           | Description                                              |
 | --------------------- | --------- | ------------------------------------- | -------------------------------------------------------- |
-| `id`                  | INTEGER   | PRIMARY KEY AUTOINCREMENT             |                                                          |
+| `id`                  | TEXT      | PRIMARY KEY (UUID v4)                 | Twist ID                                                 |
 | `title`               | TEXT      | NOT NULL                              | Twist title / name                                       |
 | `description`         | TEXT      |                                       | Explanation                                              |
 | `twist_type`          | TEXT      |                                       | Category or type of twist                                |
-| `reveal_chapter_id`   | INTEGER   | FK -> chapters(id) ON DELETE SET NULL | The chapter where the reveal happens                     |
+| `reveal_chapter_id`   | TEXT      | FK -> chapters(id) ON DELETE SET NULL | The chapter where the reveal happens                     |
 | `reveal_word_offset`  | INTEGER   |                                       | Precise word offset in the chapter                       |
-| `characters_who_know` | TEXT      |                                       | JSON array of characters aware                           |
+| `characters_who_know` | TEXT      |                                       | JSON array of character UUIDs                            |
 | `status`              | TEXT      | DEFAULT 'planned'                     | `planned`, `hinted`, `revealed`                          |
 | `notes`               | TEXT      |                                       | Freeform notes                                           |
+| `deleted`             | INTEGER   | DEFAULT 0                             | Soft delete flag                                         |
+| `deleted_at`          | TEXT      |                                       | Soft delete timestamp                                    |
 | `created_at`          | TIMESTAMP | DEFAULT CURRENT_TIMESTAMP             |                                                          |
-
-**Indexes:** `idx_twist_reveal`, `idx_twist_status`
 
 ---
 
 ## 11. `foreshadowings`
 
-Precise markers linking a specific word offset in a chapter to a Twist. This powers the visual lines on the planner.
+Precise markers linking a specific word offset in a chapter to a Twist.
 
 | Column          | Type      | Constraints                                 | Description                                              |
 | --------------- | --------- | ------------------------------------------- | -------------------------------------------------------- |
-| `id`            | INTEGER   | PRIMARY KEY AUTOINCREMENT                   |                                                          |
-| `twist_id`      | INTEGER   | NOT NULL, FK -> twists(id) ON DELETE CASCADE | Twist this clues to                                      |
-| `chapter_id`    | INTEGER   | NOT NULL, FK -> chapters(id) ON DELETE CASCADE | Chapter where clue is placed                             |
+| `id`            | TEXT      | PRIMARY KEY (UUID v4)                       |                                                          |
+| `twist_id`      | TEXT      | NOT NULL, FK -> twists(id) ON DELETE CASCADE | Twist this clues to                                      |
+| `chapter_id`    | TEXT      | NOT NULL, FK -> chapters(id) ON DELETE CASCADE | Chapter where clue is placed                             |
 | `word_offset`   | INTEGER   | NOT NULL                                    | Spot in the chapter                                      |
 | `selected_text` | TEXT      |                                             | The actual clue text                                     |
+| `deleted`       | INTEGER   | DEFAULT 0                                   | Soft delete flag                                         |
+| `deleted_at`    | TEXT      |                                             | Soft delete timestamp                                    |
 | `created_at`    | TIMESTAMP | DEFAULT CURRENT_TIMESTAMP                   |                                                          |
-
-**Indexes:** `idx_foreshadow_twist`, `idx_foreshadow_chapter`
 
 ---
 
@@ -284,18 +300,18 @@ Plot milestones and story beats in the planner.
 | `label`                | TEXT    | DEFAULT ''                            | Max length 50                             |
 | `pct`                  | REAL    | NOT NULL                              | Horizontal position %                     |
 | `lane`                 | INTEGER | DEFAULT 0                             | Vertical lane (0, 1, 2)                   |
-| `chapter_id`           | INTEGER | FK -> chapters(id) ON DELETE SET NULL | Linked chapter                            |
+| `chapter_id`           | TEXT    | FK -> chapters(id) ON DELETE SET NULL | Linked chapter                            |
 | `chapter_status`       | TEXT    |                                       | Tracks chapter status                     |
 | `added_during_writing` | INTEGER | DEFAULT 0                             |                                           |
 | `sort_order`           | INTEGER | DEFAULT 0                             |                                           |
 | `created_at`           | TEXT    | DEFAULT CURRENT_TIMESTAMP             |                                           |
 | `updated_at`           | TEXT    | DEFAULT CURRENT_TIMESTAMP             |                                           |
 
-**Indexes:** `idx_blocks_layer`, `idx_blocks_chapter`
-
 ---
 
 ## 14. `planner_arcs`
+
+Visual arc representations on the planner.
 
 | Column        | Type    | Constraints                | Description                |
 | ------------- | ------- | -------------------------- | -------------------------- |
@@ -310,8 +326,6 @@ Plot milestones and story beats in the planner.
 | `created_at`  | TEXT    | DEFAULT CURRENT_TIMESTAMP  |                            |
 | `updated_at`  | TEXT    | DEFAULT CURRENT_TIMESTAMP  |                            |
 
-**Indexes:** `idx_arcs_layer`
-
 ---
 
 ## 15. `character_relationships`
@@ -320,15 +334,17 @@ Tracks evolving dynamics between characters.
 
 | Column | Type | Constraints | Description |
 | :--- | :--- | :--- | :--- |
-| `id` | INTEGER | PRIMARY KEY AUTOINCREMENT | |
-| `character_id` | INTEGER | NOT NULL, FK -> characters(id) | Source character |
-| `target_character_id` | INTEGER | NOT NULL, FK -> characters(id) | Target character |
+| `id` | TEXT | PRIMARY KEY (UUID v4) | |
+| `character_id` | TEXT | NOT NULL, FK -> characters(id) | Source character |
+| `target_character_id` | TEXT | NOT NULL, FK -> characters(id) | Target character |
 | `rel_type` | TEXT | NOT NULL | Dynamic labels |
 | `notes` | TEXT | | Author context |
-| `chapter_id` | INTEGER | FK -> chapters(id) | Where the shift happened |
+| `chapter_id` | TEXT | FK -> chapters(id) | Where the shift happened |
 | `word_offset` | INTEGER | | Precise position |
 | `world_time` | TEXT | | Custom world date |
 | `is_one_sided` | INTEGER | DEFAULT 1 | 1=Unidirectional, 0=Mutual |
+| `deleted` | INTEGER | DEFAULT 0 | Soft delete flag |
+| `deleted_at` | TEXT | | Soft delete timestamp |
 | `created_at` | TIMESTAMP | DEFAULT CURRENT_TIMESTAMP | |
 
 ---
@@ -351,7 +367,8 @@ Stores custom world-building calendar definitions.
 - `stat_value` (TEXT)
 
 **`stat_logs`**: Daily activity feed.
-- `timestamp`: AUTO PK
+- `id` (TEXT PK UUID)
+- `timestamp`: TIMESTAMP
 - `new_words`, `deleted_words`, `new_entities`, `deleted_entities`, `new_twists`
 - `event_context`: Origin of the log (e.g., `chapter_save`)
 
@@ -363,10 +380,10 @@ Precise tracking of entity markers within chapters. Powers the Entity Auditor.
 
 | Column | Type | Constraints | Description |
 | :--- | :--- | :--- | :--- |
-| `id` | INTEGER | PRIMARY KEY | |
+| `id` | TEXT | PRIMARY KEY (UUID v4) | |
 | `entity_type` | TEXT | | `character`, `lore`, etc |
-| `entity_id` | INTEGER | | |
-| `chapter_id` | INTEGER | FK -> chapters(id) | |
+| `entity_id` | TEXT | | Target entity ID |
+| `chapter_id` | TEXT | FK -> chapters(id) | Chapter ID |
 | `word_offset` | INTEGER | | Precise location |
 
 ---
@@ -386,29 +403,33 @@ Timeline events for the world-building visualization.
 
 | Column | Type | Description |
 | :--- | :--- | :--- |
-| `id` | INTEGER | PRIMARY KEY |
+| `id` | TEXT | PRIMARY KEY (UUID v4) |
 | `entity_type` | TEXT | |
-| `entity_id` | INTEGER | |
+| `entity_id` | TEXT | |
 | `title` | TEXT | |
 | `event_type` | TEXT | |
 | `date_year` | INTEGER | |
 | `date_month` | INTEGER | |
 | `date_day` | INTEGER | |
 | `date_precise`| INTEGER | Boolean check |
+| `related_entity_type`| TEXT | Polymorphic type |
+| `related_entity_id`| TEXT | Polymorphic ID |
 
 ---
 
 ## 21. `world_times` (Time Overrides)
 
-Lets writers mark paragraph ranges as flashbacks, timeskips, or memories with a different in-universe date.
+Paragraph ranges marked as flashbacks, timeskips, or memories.
 
 | Column | Type | Constraints | Description |
 | :--- | :--- | :--- | :--- |
-| `id` | INTEGER | PRIMARY KEY AUTOINCREMENT | |
-| `chapter_id` | INTEGER | NOT NULL, FK -> chapters(id) ON DELETE CASCADE | |
+| `id` | TEXT | PRIMARY KEY (UUID v4) | |
+| `chapter_id` | TEXT | NOT NULL, FK -> chapters(id) ON DELETE CASCADE | |
 | `world_date` | TEXT | NOT NULL | Custom world date string |
 | `label` | TEXT | | User description |
-| `color_index` | INTEGER | NOT NULL DEFAULT 0 | Color for the time gutter |
+| `color_index` | INTEGER | NOT NULL DEFAULT 0 | Color index |
+| `deleted` | INTEGER | DEFAULT 0 | Soft delete flag |
+| `deleted_at` | TEXT | | Soft delete timestamp |
 | `created_at` | TEXT | DEFAULT CURRENT_TIMESTAMP | |
 
 ---
@@ -419,13 +440,15 @@ Visual node-graph boards for mapping systems and relationships.
 
 | Column | Type | Constraints | Description |
 | :--- | :--- | :--- | :--- |
-| `id` | INTEGER | PRIMARY KEY AUTOINCREMENT | |
+| `id` | TEXT | PRIMARY KEY (UUID v4) | |
 | `name` | TEXT | NOT NULL DEFAULT 'New Board' | |
 | `board_type` | TEXT | NOT NULL DEFAULT 'custom' | |
-| `icon` | TEXT | DEFAULT '✦' | Clickable to pick symbols |
+| `icon` | TEXT | DEFAULT '✦' | |
 | `zoom` | REAL | DEFAULT 1.0 | |
 | `pan_x` | REAL | DEFAULT 0.0 | |
 | `pan_y` | REAL | DEFAULT 0.0 | |
+| `deleted` | INTEGER | DEFAULT 0 | Soft delete flag |
+| `deleted_at` | TEXT | | Soft delete timestamp |
 | `created_at` | TEXT | DEFAULT CURRENT_TIMESTAMP | |
 | `updated_at` | TEXT | DEFAULT CURRENT_TIMESTAMP | |
 
@@ -437,11 +460,11 @@ Nodes placed on a Sketchboard.
 
 | Column | Type | Constraints | Description |
 | :--- | :--- | :--- | :--- |
-| `id` | INTEGER | PRIMARY KEY AUTOINCREMENT | |
-| `board_id` | INTEGER | NOT NULL, FK -> boards(id) ON DELETE CASCADE | |
+| `id` | TEXT | PRIMARY KEY (UUID v4) | |
+| `board_id` | TEXT | NOT NULL, FK -> boards(id) ON DELETE CASCADE | |
 | `name` | TEXT | NOT NULL | |
 | `item_type` | TEXT | NOT NULL DEFAULT 'concept' | |
-| `entity_id` | INTEGER | DEFAULT NULL | FK to entities if linked |
+| `entity_id` | TEXT | DEFAULT NULL | Linked entity ID |
 | `entity_type` | TEXT | DEFAULT NULL | |
 | `description` | TEXT | DEFAULT '' | |
 | `pos_x` | REAL | NOT NULL DEFAULT 0 | |
@@ -450,8 +473,8 @@ Nodes placed on a Sketchboard.
 | `size_y` | REAL | NOT NULL DEFAULT 60 | |
 | `color` | TEXT | NOT NULL DEFAULT '#888888' | |
 | `z_index` | INTEGER | NOT NULL DEFAULT 0 | |
-
-**Index:** `idx_board_items_board`
+| `deleted` | INTEGER | DEFAULT 0 | Soft delete flag |
+| `deleted_at` | TEXT | | Soft delete timestamp |
 
 ---
 
@@ -461,59 +484,255 @@ Lines drawn between Sketchboard nodes.
 
 | Column | Type | Constraints | Description |
 | :--- | :--- | :--- | :--- |
-| `id` | INTEGER | PRIMARY KEY AUTOINCREMENT | |
-| `board_id` | INTEGER | NOT NULL, FK -> boards(id) ON DELETE CASCADE | |
-| `item_start_id` | INTEGER | NOT NULL, FK -> board_items(id) ON DELETE CASCADE | |
-| `item_end_id` | INTEGER | NOT NULL, FK -> board_items(id) ON DELETE CASCADE | |
+| `id` | TEXT | PRIMARY KEY (UUID v4) | |
+| `board_id` | TEXT | NOT NULL, FK -> boards(id) ON DELETE CASCADE | |
+| `item_start_id` | TEXT | NOT NULL, FK -> board_items(id) ON DELETE CASCADE | |
+| `item_end_id` | TEXT | NOT NULL, FK -> board_items(id) ON DELETE CASCADE | |
 | `conn_type` | TEXT | NOT NULL DEFAULT 'solid' | |
 | `conn_color` | TEXT | NOT NULL DEFAULT '#888888' | |
 | `title` | TEXT | DEFAULT '' | |
-| `directed` | INTEGER | NOT NULL DEFAULT 1 | 0 = bidirectional |
+| `directed` | INTEGER | NOT NULL DEFAULT 1 | |
 | `curve_offset` | REAL | NOT NULL DEFAULT 0.0 | |
-
-**Index:** `idx_connections_board`
+| `deleted` | INTEGER | DEFAULT 0 | Soft delete flag |
+| `deleted_at` | TEXT | | Soft delete timestamp |
 
 ---
 
 ## 25. `quick_notes`
 
-Short, contextual text notes attached to the project.
+Short, contextual text notes.
 
 | Column | Type | Constraints | Description |
 | :--- | :--- | :--- | :--- |
-| `id` | INTEGER | PRIMARY KEY AUTOINCREMENT | |
+| `id` | TEXT | PRIMARY KEY (UUID v4) | |
 | `content` | TEXT | NOT NULL | The text content |
 | `note_type` | TEXT | NOT NULL DEFAULT 'Note' | |
+| `deleted` | INTEGER | DEFAULT 0 | Soft delete flag |
+| `deleted_at` | TEXT | | Soft delete timestamp |
 | `created_at` | TIMESTAMP | DEFAULT CURRENT_TIMESTAMP | |
 | `updated_at` | TIMESTAMP | DEFAULT CURRENT_TIMESTAMP | |
 
 ---
 
-## Entity Relationship Diagram
+## 26. `annotations`
 
-```
-project_config (standalone key-value store)
-planner_settings (standalone singleton)
+Short inline review comments / notes.
 
-chapters ──FK──> characters (pov_character_id)
-characters ──FK──> groups (group_id)
-locations ──FK──> locations (parent_location_id, self-referencing)
-locations ──FK──> location_weather_states (location_id, CASCADE)
+| Column | Type | Constraints | Description |
+| :--- | :--- | :--- | :--- |
+| `id` | TEXT | PRIMARY KEY (UUID v4) | |
+| `content` | TEXT | NOT NULL | |
+| `deleted` | INTEGER | DEFAULT 0 | Soft delete flag |
+| `deleted_at` | TEXT | | Soft delete timestamp |
+| `created_at` | TIMESTAMP | DEFAULT CURRENT_TIMESTAMP | |
+| `updated_at` | TIMESTAMP | DEFAULT CURRENT_TIMESTAMP | |
 
-entity_appearances ──FK──> chapters (chapter_id, CASCADE)
-  links to: characters | lore_entities | locations | groups (via entity_type + entity_id)
+---
 
-knowledge_states ──FK──> characters (character_id, CASCADE)
-knowledge_states ──FK──> chapters (learned_in_chapter, reveal_in_chapter)
+## 27. `change_log`
 
-secrets ──FK──> chapters (reveal_chapter_id)
+Offline-sync audit log for the planned companion app. Column-level Last-Writer-Wins: one
+row per changed column, storing the **new value** stamped with a Hybrid Logical Clock.
 
-twists ──FK──> chapters (reveal_chapter_id)
-foreshadowings ──FK──> chapters (chapter_id)
-foreshadowings ──FK──> twists (twist_id)
+| Column | Type | Constraints | Description |
+| :--- | :--- | :--- | :--- |
+| `id` | TEXT | PRIMARY KEY (UUID v4) | |
+| `table_name` | TEXT | NOT NULL | Target table name |
+| `row_id` | TEXT | NOT NULL | ID of the modified row |
+| `column_name` | TEXT | NOT NULL | Which column changed |
+| `value` | TEXT | | New value (stringified; `NULL` for tombstoned/cleared) |
+| `hlc` | TEXT | NOT NULL | Hybrid Logical Clock stamp — LWW ordering key |
+| `device_id` | TEXT | NOT NULL | Origin device that made the change |
+| `origin` | TEXT | NOT NULL | Change source (e.g. `desktop`) |
 
-planner_blocks ──FK──> chapters (chapter_id)
-```
+---
+
+## 28. `pentimento_sessions`
+
+One row per writing session for a chapter (the "Process" tab telemetry). Sessions are
+sealed with a SHA-256 chain hash (`previous_session_hash` -> `session_hash`) for a
+tamper-evident receipt, and their ops may later be compacted into `summary_json`. Each
+device has its own chain per chapter; a sync imports other devices' sealed sessions
+(`PENTIMENTO.md` §8).
+
+| Column | Type | Constraints | Description |
+| :--- | :--- | :--- | :--- |
+| `id` | TEXT | PRIMARY KEY (UUID v4) | Session ID |
+| `chapter_id` | TEXT | NOT NULL, FK -> chapters(id) ON DELETE CASCADE | |
+| `device_id` | TEXT | NOT NULL | Device the session was written on |
+| `session_num` | INTEGER | NOT NULL | Chapter-wide ordinal over all devices (1, 2, 3, …); can repeat across devices after a merge |
+| `start_time` | TEXT | NOT NULL | ISO timestamp when the session opened |
+| `end_time` | TEXT | | ISO timestamp when the session was sealed |
+| `previous_session_hash` | TEXT | | The same device's previous session's `session_hash` (chain link); for a device's first session on the chapter, the newest sealed session of any device, or NULL |
+| `session_hash` | TEXT | | SHA-256 sealing this session's ops |
+| `summary_json` | TEXT | | Compacted aggregate totals once raw ops are pruned |
+| `wpm_trace` | TEXT | | JSON array of `[para, word_offset, wpm]` triples (wpm clamped 10–300), one per completed word typed — replay matches diffed words by `(para, word_offset)` for per-word pacing |
+| `device_kind` | TEXT | | `desktop` \| `mobile` (not hashed). Each device labels its own rows; imported rows bring theirs |
+| `created_at` | TEXT | DEFAULT `datetime('now')` | |
+
+`process_history_tombstones (table_name, row_id, removed_at)` remembers the sessions and
+snapshots this device cleared or pruned, so a sync never imports them again.
+
+---
+
+## 29. `pentimento_ops`
+
+Coalesced writing operations — **runs**, not raw keystrokes (consecutive typing in one
+paragraph is merged into a single op with a `duration_ms`). Drives the per-paragraph
+heatmap and the replay pacing overlay. Deleted for compacted sessions (see `summary_json`).
+
+> Note: ops are deltas only, with no baseline text, so past prose is **not** reconstructable
+> from this table — the replay reconstructs content from `chapter_snapshots` and uses ops
+> purely for typing rhythm. See `docs/PENTIMENTO.md`.
+
+| Column | Type | Constraints | Description |
+| :--- | :--- | :--- | :--- |
+| `id` | TEXT | PRIMARY KEY (UUID v4) | Op ID |
+| `session_id` | TEXT | NOT NULL, FK -> pentimento_sessions(id) ON DELETE CASCADE | |
+| `chapter_id` | TEXT | NOT NULL, FK -> chapters(id) ON DELETE CASCADE | |
+| `timestamp` | TEXT | NOT NULL | ISO timestamp of the run |
+| `op_type` | TEXT | NOT NULL | `insert`, `delete`, `paste`, `pause` |
+| `para_index` | INTEGER | NOT NULL | Paragraph index within the chapter |
+| `char_offset` | INTEGER | NOT NULL | Character offset within that paragraph |
+| `length` | INTEGER | DEFAULT 0 | Characters affected |
+| `text_content` | TEXT | | Text inserted/deleted (deletes may be stored reversed) |
+| `duration_ms` | INTEGER | DEFAULT 0 | Time spent on this coalesced run |
+| `origin` | TEXT | NOT NULL | Capture source (e.g. `desktop`) |
+| `source` | TEXT | | Input provenance: `human` (keyboard/IME/undo), `paste` (paste/drop), `machine` (entity chips, AI, IDE features) |
+
+---
+
+## 30. `chapter_snapshots`
+
+Full-text prose snapshots — the ground truth for history rollback and replay. Stores the
+chapter's markdown (zlib-compressed) at each session boundary, plus manual pins and
+pre-restore safety copies. Session snapshots dedup on `prose_hash`; manual/pre-restore
+snapshots are always kept.
+
+| Column | Type | Constraints | Description |
+| :--- | :--- | :--- | :--- |
+| `id` | TEXT | PRIMARY KEY (UUID v4) | Snapshot ID |
+| `chapter_id` | TEXT | NOT NULL, FK -> chapters(id) ON DELETE CASCADE | |
+| `created_at` | TEXT | NOT NULL | ISO timestamp |
+| `kind` | TEXT | NOT NULL | `session` (auto), `manual` (pinned), `pre_restore` (undo safety), `pre_link` (before the name finder), `merge` (a sync's merged text), `sync` (text a sync took from another device) |
+| `label` | TEXT | | Optional user label for a manual pin |
+| `word_count` | INTEGER | DEFAULT 0 | Word count at snapshot time |
+| `prose_hash` | TEXT | NOT NULL | SHA-256 of the markdown (dedup + ancestry) |
+| `content_gz` | BLOB | NOT NULL | zlib-compressed markdown (canonical on-disk form) |
+| `byte_size` | INTEGER | DEFAULT 0 | `len(content_gz)`, for storage accounting |
+| `session_id` | TEXT | | Linked sealed session (session snapshots only; nullable) |
+| `session_hash` | TEXT | | Receipt linkage (nullable) |
+| `device_id` | TEXT | NOT NULL | Device that created the snapshot |
+
+Indexed by `idx_chapter_snapshots_chapter` on `(chapter_id, created_at)`.
+
+---
+
+## 31. `sync_meta`
+
+Single-row (`id = 1`) local sync state for the planned companion app.
+
+| Column | Type | Constraints | Description |
+| :--- | :--- | :--- | :--- |
+| `id` | INTEGER | PRIMARY KEY, CHECK (`id = 1`) | Enforces a single row |
+| `last_hlc` | TEXT | | Highest Hybrid Logical Clock stamp seen locally |
+| `version_vector` | TEXT | DEFAULT `'{}'` | Per-device version vector (JSON) |
+
+---
+
+## 32. `paragraph_intensity_corrections` (Story Pulse)
+
+The writer's own intensity and mood for a paragraph, set in the editor's Pulse gutter.
+- **Synced** through `change_log`: it's authored intent, unlike the derived paragraph cache in `fleshnote_cache.db`.
+- **Created by** `db_setup.ensure_pulse_corrections`: for new projects, on project open, on demand by `routes/story_pulse.py`, and before a sync merge.
+- **Re-anchoring:** when the paragraph is edited, `story_pulse` re-anchors the row to the most similar nearby paragraph (ratio ≥ 0.70, one correction per paragraph). If none matches, it reports the row as stale and never applies it to other text.
+
+| Column | Type | Constraints | Description |
+| :--- | :--- | :--- | :--- |
+| `id` | TEXT | PRIMARY KEY (UUID v4) | |
+| `chapter_id` | TEXT | NOT NULL | Chapter the paragraph is in |
+| `para_hash` | TEXT | NOT NULL | Content key: sha1 (first 20 hex) of the NFC text with whitespace collapsed (`story_pulse.paragraph_key`) |
+| `para_idx` | INTEGER | | Position among the chapter's plotted paragraphs (tie-breaker for re-anchoring) |
+| `anchor_text` | TEXT | | The paragraph text the correction was last anchored to |
+| `intensity` | REAL | NOT NULL | 0..1, on the book-relative scale the writer saw |
+| `valence` | REAL | NOT NULL | −1 (darker) .. +1 (brighter) |
+| `updated_at` | TEXT | | |
+| `deleted` | INTEGER | DEFAULT 0 | Soft delete flag ("Reset to measured", Discard) |
+| `deleted_at` | TEXT | | Soft delete timestamp |
+| `created_at` | TEXT | DEFAULT (datetime('now')) | |
+
+Indexed by `idx_pulse_corr_chapter` on `(chapter_id, deleted)`.
+
+---
+
+## 33. `received_reviews`, `review_notes` and `review_copies` (beta-reader reviews)
+
+Reviews that came back from beta readers as `.flreview` files, imported into the project with `POST /api/review/import`.
+- **Synced** through `change_log`: the author resolves notes on one device and sees it on the others.
+- **Created by** `db_setup.ensure_review_tables`: for new projects, on project open, on demand by `routes/review_notes.py`, and before a sync merge.
+- **Row ids are stable** (UUID v5 of the reviewer's copy and the reviewer's note id), so importing the same returned file again updates its rows instead of duplicating them. A re-import never changes `status`, so notes the author resolved stay resolved.
+- **Anchoring:** each note's quote is looked up in the chapter's current text when it is imported (exact match nearest its old position, else a ≥ 0.70 similarity match). A note whose passage has been rewritten is still imported with `anchored = 0`, so nothing is lost silently.
+
+### `received_reviews`: one row per reviewer's copy
+
+| Column | Type | Constraints | Description |
+| :--- | :--- | :--- | :--- |
+| `id` | TEXT | PRIMARY KEY (UUID v5) | One reviewer's copy of one review round |
+| `review_id` | TEXT | | The export it came from (`review_id` in the file) |
+| `reviewer_label` | TEXT | | Reviewer's name as they entered it |
+| `finished_at` | TEXT | | When the reviewer pressed "Send back to author" |
+| `imported_at` | TEXT | | Last import |
+| `scores` | TEXT | | JSON `[{chapter_id, pacing, prose, dialogue, characters, plot, engagement, overall}]`, each 1–5, all optional |
+| `updated_at` | TEXT | | |
+| `deleted` | INTEGER | DEFAULT 0 | Soft delete ("Remove review") |
+| `deleted_at` | TEXT | | |
+| `created_at` | TEXT | DEFAULT (datetime('now')) | |
+
+### `review_notes`: one row per note
+
+| Column | Type | Constraints | Description |
+| :--- | :--- | :--- | :--- |
+| `id` | TEXT | PRIMARY KEY (UUID v5) | |
+| `received_review_id` | TEXT | NOT NULL | → `received_reviews.id` |
+| `chapter_id` | TEXT | NOT NULL | Must exist when imported; notes on deleted chapters are skipped |
+| `category` | TEXT | NOT NULL | `typo`, `rewrite`, `remove`, `praise`, `question` or `comment` |
+| `body` | TEXT | | The note (≤ 4000 chars) |
+| `suggestion` | TEXT | | Suggested replacement text, for `typo` and `rewrite` |
+| `quote_text` | TEXT | | The passage as the reviewer saw it (plain text) |
+| `anchor_text` | TEXT | | The passage as found in the current chapter at import |
+| `anchor_hint` | INTEGER | | Plain-text offset (UTF-16 units, as the editor counts) of the passage, used to pick between repeated phrases |
+| `anchored` | INTEGER | DEFAULT 0 | 1 when the passage was found; 0 when it has been rewritten since |
+| `status` | TEXT | DEFAULT 'open' | `open`, `resolved` or `dismissed`; only the author changes it |
+| `reviewer_label` | TEXT | | Copied from the review for display |
+| `noted_at` | TEXT | | When the reviewer wrote or last edited the note |
+| `updated_at` | TEXT | | |
+| `deleted` | INTEGER | DEFAULT 0 | Soft delete (set when its review is removed) |
+| `deleted_at` | TEXT | | |
+| `created_at` | TEXT | DEFAULT (datetime('now')) | |
+
+Indexed by `idx_review_notes_chapter` on `(chapter_id, deleted)` and `idx_review_notes_review` on `(received_review_id)`.
+
+### `review_copies`: one row per review copy the author sent
+
+For a locked copy (one that expires), this row holds the server's key half, so returned copies always open for the author, even after the copy stopped opening for the reviewer. It also holds the token that withdraws the copy early. The table is synced, so the author's other devices can import returns too. It also travels inside `.flnote` exports: anyone handed the whole project can read and withdraw its review copies.
+
+| Column | Type | Constraints | Description |
+| :--- | :--- | :--- | :--- |
+| `id` | TEXT | PRIMARY KEY | The copy's `review_id` |
+| `reviewer_label` | TEXT | | Who it was for |
+| `chapter_count` | INTEGER | | |
+| `key_id` | TEXT | | Key server id; NULL for a copy that never expires |
+| `server` | TEXT | | Key server base URL |
+| `server_half` | TEXT | | Base64 32 bytes: the half the key server holds |
+| `revoke_token` | TEXT | | Proves to the key server that the author may withdraw the copy |
+| `expires_at` | TEXT | | When the copy stops opening (UTC) |
+| `revoked_at` | TEXT | | When the author withdrew it |
+| `updated_at` | TEXT | | |
+| `deleted` | INTEGER | DEFAULT 0 | |
+| `deleted_at` | TEXT | | |
+| `created_at` | TEXT | DEFAULT (datetime('now')) | |
+
+Indexed by `idx_review_copies_key` on `(key_id)`.
 
 ---
 
@@ -527,9 +746,7 @@ Several tables use TEXT columns to store JSON arrays:
 | groups         | aliases             | `["High Council"]`                 |
 | lore_entities  | aliases             | `["the Compass"]`                  |
 | locations      | aliases             | `["Academis Arcana"]`              |
-| secrets        | characters_who_know | `[1, 3, 7]` (character IDs)        |
-| secrets        | danger_phrases      | `["his true name"]`                |
-| twists         | characters_who_know | `[1, 3, 7]` (character IDs)        |
+| twists         | characters_who_know | `["uuid1", "uuid2"]` (char UUIDs)  |
 | project_config | lore_categories     | `["mechanic", "item", "artifact"]` |
 
 All JSON fields are stored with `json.dumps()` and parsed with `json.loads()` in the Python backend.

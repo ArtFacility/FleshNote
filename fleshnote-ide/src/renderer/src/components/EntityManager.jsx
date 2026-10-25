@@ -4,6 +4,7 @@ import EntityInspectorPanel from "./ide-panels/EntityInspectorPanel";
 import TwistInspectorPanel from "./ide-panels/TwistInspectorPanel";
 import CharacterInspectorPanel from "./ide-panels/CharacterInspectorPanel";
 import LocationInspectorPanel from "./ide-panels/LocationInspectorPanel";
+import GroupInspectorPanel from "./ide-panels/GroupInspectorPanel";
 import QuickNoteInspectorPanel from "./ide-panels/QuickNoteInspectorPanel";
 import AnnotationInspectorPanel from "./ide-panels/AnnotationInspectorPanel";
 import NameGeneratorModal from "./NameGeneratorModal";
@@ -61,7 +62,7 @@ function getEntityColor(type) {
     switch (type) {
         case "character": return "var(--entity-character)";
         case "location": return "var(--entity-location)";
-        case "group": return "var(--entity-item)";
+        case "group": return "var(--accent-amber)";
         case "twist": return "var(--accent-purple)";
         case "quicknote":
         case "quick_note": return "var(--entity-quicknote)";
@@ -143,16 +144,17 @@ function entityTypeToDbCode(type) {
 }
 
 // ─── ENTITY CARD (grid view) ─────────────────────────────────────────────────
-function EntityCard({ entity, color, selected, inspecting, onClick, onCheckbox, mentionCount, onMentionClick, iconSrc }) {
+function EntityCard({ entity, color, selected, inspecting, onClick, onCheckbox, mentionCount, onMentionClick, iconSrc, allEntities }) {
     const { t } = useTranslation();
+    const effectiveBorderColor = entity.faction_color || color;
     return (
         <div
             onClick={onClick}
             style={{
                 position: 'relative',
                 background: selected ? T.amberDim : (inspecting ? T.bg2 : T.bg1),
-                border: `1px solid ${inspecting ? T.amber : T.bg3}`,
-                borderTop: `2px solid ${color}`,
+                border: `1px solid ${inspecting ? (entity.faction_color || T.amber) : T.bg3}`,
+                borderTop: `2px solid ${effectiveBorderColor}`,
                 padding: '12px',
                 cursor: 'pointer',
                 transition: 'background 0.15s',
@@ -166,7 +168,7 @@ function EntityCard({ entity, color, selected, inspecting, onClick, onCheckbox, 
                 {iconSrc ? (
                     <img src={iconSrc} alt="" style={{ width: 44, height: 44, borderRadius: 4, objectFit: 'cover' }} />
                 ) : (
-                    <span style={{ color, opacity: 0.85 }}><EntityTypeIcon type={entity.type} /></span>
+                    <span style={{ color: effectiveBorderColor, opacity: 0.85 }}><EntityTypeIcon type={entity.type} /></span>
                 )}
                 <Checkbox checked={selected} onToggle={onCheckbox} />
             </div>
@@ -185,6 +187,35 @@ function EntityCard({ entity, color, selected, inspecting, onClick, onCheckbox, 
             {entity.richChar?.role && (
                 <div style={{ fontFamily: T.mono, fontSize: 10, color: T.textDim, textTransform: 'capitalize' }}>
                     {entity.richChar.role}
+                </div>
+            )}
+            {entity.type === 'group' && (
+                <div style={{ display: 'flex', flexDirection: 'column', gap: 3, marginTop: 2 }}>
+                    <div style={{ display: 'flex', alignItems: 'center', gap: 6, flexWrap: 'wrap' }}>
+                        {entity.group_type && (
+                            <span style={{
+                                fontFamily: T.mono, fontSize: 9, textTransform: 'uppercase',
+                                letterSpacing: '0.05em', padding: '1px 5px',
+                                background: T.bg0, border: `1px solid ${entity.faction_color || T.amber}40`,
+                                color: entity.faction_color || T.amber
+                            }}>
+                                {entity.group_type}
+                            </span>
+                        )}
+                        {entity.member_count !== undefined && (
+                            <span style={{ fontFamily: T.mono, fontSize: 10, color: T.textDim }}>
+                                {entity.member_count} {entity.member_count === 1 ? t('groups.member', 'member') : t('groups.members', 'members')}
+                            </span>
+                        )}
+                    </div>
+                    {entity.parent_group_id && (() => {
+                        const parent = (allEntities || []).find(e => String(e.id) === String(entity.parent_group_id));
+                        return parent ? (
+                            <div style={{ fontFamily: T.mono, fontSize: 10, color: T.textDim, display: 'flex', alignItems: 'center', gap: 3 }}>
+                                <span style={{ opacity: 0.6 }}>↳</span> {parent.name}
+                            </div>
+                        ) : null;
+                    })()}
                 </div>
             )}
             {entity.aliases?.length > 0 && (
@@ -243,13 +274,27 @@ function CreationCard({ tabType, loreCategories, onConfirm, onCancel, projectPat
     const [name, setName] = useState('');
     const [category, setCategory] = useState(loreCategories?.[0] || 'item');
     const [showNameGen, setShowNameGen] = useState(false);
+    const [submitting, setSubmitting] = useState(false);
     const inputRef = useRef(null);
 
     useEffect(() => { inputRef.current?.focus(); }, []);
 
+    const handleSubmit = async () => {
+        if (!name.trim() || submitting) return;
+        setSubmitting(true);
+        try {
+            await onConfirm(name.trim(), category);
+        } finally {
+            setSubmitting(false);
+        }
+    };
+
     const handleKeyDown = (e) => {
-        if (e.key === 'Enter' && name.trim()) onConfirm(name.trim(), category);
-        if (e.key === 'Escape') onCancel();
+        if (e.key === 'Enter' && name.trim() && !submitting) {
+            e.preventDefault();
+            handleSubmit();
+        }
+        if (e.key === 'Escape' && !submitting) onCancel();
     };
 
     const isLore = tabType === 'lore';
@@ -275,21 +320,25 @@ function CreationCard({ tabType, loreCategories, onConfirm, onCancel, projectPat
                 <input
                     ref={inputRef}
                     value={name}
+                    disabled={submitting}
                     onChange={e => setName(e.target.value)}
                     onKeyDown={handleKeyDown}
                     placeholder={placeholder}
                     style={{
                         flex: 1, minWidth: 120, background: T.bg0, border: `1px solid ${T.bg3}`,
                         color: T.text, padding: '6px 10px', fontFamily: T.sans, fontSize: 13, outline: 'none',
+                        opacity: submitting ? 0.6 : 1,
                     }}
                 />
                 {isLore && (
                     <select
                         value={category}
+                        disabled={submitting}
                         onChange={e => setCategory(e.target.value)}
                         style={{
                             background: T.bg0, border: `1px solid ${T.bg3}`, color: T.text,
-                            padding: '6px 8px', fontFamily: T.mono, fontSize: 11, outline: 'none', cursor: 'pointer',
+                            padding: '6px 8px', fontFamily: T.mono, fontSize: 11, outline: 'none', cursor: submitting ? 'default' : 'pointer',
+                            opacity: submitting ? 0.6 : 1,
                         }}
                     >
                         {(loreCategories?.length ? loreCategories : ['item', 'concept', 'creature', 'artifact', 'magic system', 'organization', 'document', 'technology']).map(cat => (
@@ -298,22 +347,25 @@ function CreationCard({ tabType, loreCategories, onConfirm, onCancel, projectPat
                     </select>
                 )}
                 <button
-                    onClick={() => name.trim() && onConfirm(name.trim(), category)}
-                    disabled={!name.trim()}
+                    onClick={handleSubmit}
+                    disabled={!name.trim() || submitting}
                     style={{
-                        background: name.trim() ? T.amber : T.bg3, border: 'none',
-                        color: name.trim() ? T.bg0 : T.textDim,
+                        background: name.trim() && !submitting ? T.amber : T.bg3, border: 'none',
+                        color: name.trim() && !submitting ? T.bg0 : T.textDim,
                         padding: '6px 14px', fontFamily: T.mono, fontSize: 11, fontWeight: 600,
-                        cursor: name.trim() ? 'pointer' : 'default',
+                        cursor: name.trim() && !submitting ? 'pointer' : 'default',
+                        opacity: submitting ? 0.7 : 1,
                     }}
                 >
-                    {t('stats.emCreate', 'Create')}
+                    {submitting ? t('stats.emCreating', 'Creating...') : t('stats.emCreate', 'Create')}
                 </button>
                 <button
                     onClick={onCancel}
+                    disabled={submitting}
                     style={{
                         background: 'none', border: `1px solid ${T.bg3}`, color: T.textDim,
-                        padding: '6px 10px', fontFamily: T.mono, fontSize: 11, cursor: 'pointer',
+                        padding: '6px 10px', fontFamily: T.mono, fontSize: 11, cursor: submitting ? 'default' : 'pointer',
+                        opacity: submitting ? 0.5 : 1,
                     }}
                 >
                     {t('stats.cancel', 'Cancel')}
@@ -321,10 +373,12 @@ function CreationCard({ tabType, loreCategories, onConfirm, onCancel, projectPat
                 {tabType === 'characters' && (
                     <button
                         onClick={() => setShowNameGen(true)}
+                        disabled={submitting}
                         style={{
                             background: 'none', border: `1px solid ${T.amber}`, color: T.amber,
-                            padding: '6px 10px', fontFamily: T.mono, fontSize: 11, cursor: 'pointer',
-                            display: 'flex', alignItems: 'center', gap: '4px'
+                            padding: '6px 10px', fontFamily: T.mono, fontSize: 11, cursor: submitting ? 'default' : 'pointer',
+                            display: 'flex', alignItems: 'center', gap: '4px',
+                            opacity: submitting ? 0.5 : 1,
                         }}
                         title={t('namegen.generate_tooltip', 'Generate Name')}
                     >
@@ -334,10 +388,12 @@ function CreationCard({ tabType, loreCategories, onConfirm, onCancel, projectPat
                 {tabType === 'locations' && (
                     <button
                         onClick={() => setShowNameGen(true)}
+                        disabled={submitting}
                         style={{
                             background: 'none', border: `1px solid ${T.amber}`, color: T.amber,
-                            padding: '6px 10px', fontFamily: T.mono, fontSize: 11, cursor: 'pointer',
-                            display: 'flex', alignItems: 'center', gap: '4px'
+                            padding: '6px 10px', fontFamily: T.mono, fontSize: 11, cursor: submitting ? 'default' : 'pointer',
+                            display: 'flex', alignItems: 'center', gap: '4px',
+                            opacity: submitting ? 0.5 : 1,
                         }}
                         title={t('namegen.generate_tooltip', 'Generate Location Name')}
                     >
@@ -528,7 +584,7 @@ function LocationTreeView({ entities, inspectedEntity, selectedIds, setInspected
 }
 
 // ─── MAIN COMPONENT ──────────────────────────────────────────────────────────
-export default function EntityManager({ entities, characters, chapters, projectPath, projectConfig, onEntityUpdated, onConfigUpdate, onNavigate }) {
+export default function EntityManager({ entities, characters, chapters, projectPath, projectConfig, calConfig, onEntityUpdated, onConfigUpdate, onNavigate }) {
     const { t } = useTranslation();
     const [activeTab, setActiveTab] = useState("characters");
     const [selectedIds, setSelectedIds] = useState(new Set());
@@ -731,8 +787,11 @@ export default function EntityManager({ entities, characters, chapters, projectP
         loadEntityIcons();
     }, [onEntityUpdated, loadExtraData, loadEntityIcons]);
 
+    const isCreatingRef = useRef(false);
+
     const handleCreate = useCallback(async (name, category, description = "") => {
-        if (!name.trim()) return;
+        if (!name.trim() || isCreatingRef.current) return;
+        isCreatingRef.current = true;
         try {
             let created = null;
             if (activeTab === 'characters') {
@@ -762,6 +821,8 @@ export default function EntityManager({ entities, characters, chapters, projectP
             }
         } catch (e) {
             console.error('Failed to create entity:', e);
+        } finally {
+            isCreatingRef.current = false;
         }
     }, [activeTab, projectPath, handleInspectorUpdated]);
     const handleReparentLocation = async (draggedLocationId, targetParentId) => {
@@ -930,6 +991,10 @@ export default function EntityManager({ entities, characters, chapters, projectP
                                         chapters={chapters}
                                         onEntityUpdated={handleInspectorUpdated}
                                         onIconChanged={loadEntityIcons}
+                                        onNavigateToEntity={(entRef) => {
+                                            const target = entities.find(e => String(e.id) === String(entRef.id) && e.type === entRef.type);
+                                            if (target) setInspectedEntity(target);
+                                        }}
                                     />
                                 ) : inspectedEntity.type === 'location' ? (
                                     <LocationInspectorPanel
@@ -962,6 +1027,20 @@ export default function EntityManager({ entities, characters, chapters, projectP
                                         chapters={chapters}
                                         onNavigateChapter={(ch) => onNavigate?.(ch.id, 0)}
                                         onTwistDeleted={() => { setInspectedEntity(null); handleInspectorUpdated(); }}
+                                    />
+                                ) : inspectedEntity.type === 'group' ? (
+                                    <GroupInspectorPanel
+                                        group={inspectedEntity}
+                                        characters={characters}
+                                        entities={entities}
+                                        chapters={chapters}
+                                        projectPath={projectPath}
+                                        projectConfig={projectConfig}
+                                        calConfig={calConfig || projectConfig?.calendar_config}
+                                        onEntityUpdated={handleInspectorUpdated}
+                                        onConfigUpdate={onConfigUpdate}
+                                        onIconChanged={loadEntityIcons}
+                                        onNavigateToMark={({ chapterId, wordOffset }) => onNavigate?.(chapterId, wordOffset || 0)}
                                     />
                                 ) : (
                                     <EntityInspectorPanel
@@ -1178,6 +1257,7 @@ export default function EntityManager({ entities, characters, chapters, projectP
                                             if (fa) onNavigate?.(fa.chapter_id, fa.word_offset);
                                         }}
                                         iconSrc={entityIcons[`${entityTypeToDbCode(ent.type)}:${ent.id}`] ? `fleshnote-asset://load/${projectPath.replace(/\\/g, '/')}/${entityIcons[`${entityTypeToDbCode(ent.type)}:${ent.id}`]}` : null}
+                                        allEntities={entities}
                                     />
                                 );
                             })}

@@ -1,0 +1,1124 @@
+{
+  "lang": "pl",
+  "kind": "emotion_adverb",
+  "version": 1,
+  "entries": [
+    {
+      "id": "pl.emoadv.boleśnie",
+      "lemma": "boleśnie",
+      "alt_lemmas": [
+        "boleść",
+        "bolesny"
+      ],
+      "pos": [
+        "ADV"
+      ],
+      "kind": "emotion_adverb",
+      "strength": "strong",
+      "valence": -0.75,
+      "arousal": 0.6,
+      "emotions": {
+        "sadness": 0.8,
+        "fear": 0.5
+      },
+      "lemma_evidence": "carrier",
+      "source": "migrated:pol_janitor.py",
+      "version": 1,
+      "felt": "evaluative"
+    },
+    {
+      "id": "pl.emoadv.desperacko",
+      "lemma": "desperacko",
+      "alt_lemmas": [
+        "desperacki"
+      ],
+      "pos": [
+        "ADV"
+      ],
+      "kind": "emotion_adverb",
+      "strength": "strong",
+      "valence": -0.82,
+      "arousal": 0.84,
+      "emotions": {
+        "fear": 0.8,
+        "sadness": 0.8
+      },
+      "lemma_evidence": "carrier",
+      "source": "migrated:pol_janitor.py",
+      "version": 1,
+      "felt": "state"
+    },
+    {
+      "id": "pl.emoadv.dumnie",
+      "lemma": "dumnie",
+      "alt_lemmas": [
+        "dumny"
+      ],
+      "pos": [
+        "ADV"
+      ],
+      "kind": "emotion_adverb",
+      "strength": "strong",
+      "valence": 0.72,
+      "arousal": 0.58,
+      "emotions": {
+        "joy": 0.7,
+        "trust": 0.6
+      },
+      "lemma_evidence": "carrier",
+      "source": "migrated:pol_janitor.py",
+      "version": 1,
+      "felt": "state",
+      "note": "also trait reading"
+    },
+    {
+      "id": "pl.emoadv.gniewnie",
+      "lemma": "gniewnie",
+      "alt_lemmas": [
+        "gniewny"
+      ],
+      "pos": [
+        "ADV"
+      ],
+      "kind": "emotion_adverb",
+      "strength": "strong",
+      "valence": -0.82,
+      "arousal": 0.82,
+      "emotions": {
+        "anger": 0.9
+      },
+      "lemma_evidence": "carrier",
+      "source": "migrated:pol_janitor.py",
+      "version": 1,
+      "felt": "state"
+    },
+    {
+      "id": "pl.emoadv.nerwowo",
+      "lemma": "nerwowo",
+      "alt_lemmas": [
+        "nerwowy"
+      ],
+      "pos": [
+        "ADV"
+      ],
+      "kind": "emotion_adverb",
+      "strength": "strong",
+      "valence": -0.56,
+      "arousal": 0.68,
+      "emotions": {
+        "fear": 0.7,
+        "anger": 0.5
+      },
+      "lemma_evidence": "carrier",
+      "source": "migrated:pol_janitor.py",
+      "version": 1,
+      "felt": "state"
+    },
+    {
+      "id": "pl.emoadv.ponuro",
+      "lemma": "ponuro",
+      "alt_lemmas": [
+        "ponury"
+      ],
+      "pos": [
+        "ADV"
+      ],
+      "kind": "emotion_adverb",
+      "strength": "strong",
+      "valence": -0.66,
+      "arousal": 0.32,
+      "emotions": {
+        "sadness": 0.8
+      },
+      "lemma_evidence": "carrier",
+      "source": "migrated:pol_janitor.py",
+      "version": 1,
+      "felt": "state"
+    },
+    {
+      "id": "pl.emoadv.radośnie",
+      "lemma": "radośnie",
+      "alt_lemmas": [
+        "radosny"
+      ],
+      "pos": [
+        "ADV"
+      ],
+      "kind": "emotion_adverb",
+      "strength": "strong",
+      "valence": 0.86,
+      "arousal": 0.72,
+      "emotions": {
+        "joy": 0.9
+      },
+      "lemma_evidence": "carrier",
+      "source": "migrated:pol_janitor.py",
+      "version": 1,
+      "felt": "state"
+    },
+    {
+      "id": "pl.emoadv.smutnie",
+      "lemma": "smutnie",
+      "alt_lemmas": [
+        "smutć",
+        "smutny"
+      ],
+      "pos": [
+        "ADV"
+      ],
+      "kind": "emotion_adverb",
+      "strength": "strong",
+      "valence": -0.76,
+      "arousal": 0.36,
+      "emotions": {
+        "sadness": 0.85
+      },
+      "lemma_evidence": "carrier",
+      "source": "migrated:pol_janitor.py",
+      "version": 1,
+      "felt": "state"
+    },
+    {
+      "id": "pl.emoadv.szczęśliwie",
+      "lemma": "szczęśliwie",
+      "alt_lemmas": [
+        "szczęśliwy"
+      ],
+      "pos": [
+        "ADV"
+      ],
+      "kind": "emotion_adverb",
+      "strength": "strong",
+      "valence": 0.86,
+      "arousal": 0.66,
+      "emotions": {
+        "joy": 0.9
+      },
+      "lemma_evidence": "carrier",
+      "source": "migrated:pol_janitor.py",
+      "version": 1,
+      "felt": "state"
+    },
+    {
+      "id": "pl.emoadv.zazdrośnie",
+      "lemma": "zazdrośnie",
+      "alt_lemmas": [
+        "zazdrosny"
+      ],
+      "pos": [
+        "ADV"
+      ],
+      "kind": "emotion_adverb",
+      "strength": "strong",
+      "valence": -0.72,
+      "arousal": 0.64,
+      "emotions": {
+        "disgust": 0.7,
+        "anger": 0.6
+      },
+      "lemma_evidence": "carrier",
+      "source": "migrated:pol_janitor.py",
+      "version": 1,
+      "felt": "state"
+    },
+    {
+      "id": "pl.emoadv.złośliwie",
+      "lemma": "złośliwie",
+      "alt_lemmas": [
+        "złośliwy"
+      ],
+      "pos": [
+        "ADV"
+      ],
+      "kind": "emotion_adverb",
+      "strength": "strong",
+      "valence": -0.72,
+      "arousal": 0.66,
+      "emotions": {
+        "anger": 0.7,
+        "disgust": 0.7
+      },
+      "lemma_evidence": "carrier",
+      "source": "migrated:pol_janitor.py",
+      "version": 1,
+      "felt": "trait"
+    },
+    {
+      "id": "pl.emoadv.żałośnie",
+      "lemma": "żałośnie",
+      "alt_lemmas": [
+        "żałosny"
+      ],
+      "pos": [
+        "ADV"
+      ],
+      "kind": "emotion_adverb",
+      "strength": "strong",
+      "valence": -0.72,
+      "arousal": 0.42,
+      "emotions": {
+        "sadness": 0.85
+      },
+      "lemma_evidence": "carrier",
+      "source": "migrated:pol_janitor.py",
+      "version": 1,
+      "felt": "evaluative"
+    },
+    {
+      "id": "pl.emoadv.ze_złość",
+      "phrase": [
+        "z",
+        "złość"
+      ],
+      "alt_lemmas": [
+        "ze złością",
+        "z"
+      ],
+      "kind": "emotion_adverb",
+      "strength": "strong",
+      "valence": -0.78,
+      "arousal": 0.76,
+      "emotions": {
+        "anger": 0.85
+      },
+      "lemma_evidence": "carrier",
+      "source": "migrated:pol_janitor.py",
+      "version": 1,
+      "example": "Krzyknął ze złością na leniwego parobka.",
+      "felt": "state"
+    },
+    {
+      "id": "pl.emoadv.ze_smutek",
+      "phrase": [
+        "z",
+        "smutek"
+      ],
+      "alt_lemmas": [
+        "ze smutkiem",
+        "z"
+      ],
+      "kind": "emotion_adverb",
+      "strength": "strong",
+      "valence": -0.74,
+      "arousal": 0.36,
+      "emotions": {
+        "sadness": 0.85
+      },
+      "lemma_evidence": "carrier",
+      "source": "migrated:pol_janitor.py",
+      "version": 1,
+      "example": "Spojrzał ze smutkiem na zniszczony rodowy dwór.",
+      "felt": "state"
+    },
+    {
+      "id": "pl.emoadv.z_duma",
+      "phrase": [
+        "z",
+        "duma"
+      ],
+      "alt_lemmas": [
+        "z dumą"
+      ],
+      "kind": "emotion_adverb",
+      "strength": "strong",
+      "valence": 0.72,
+      "arousal": 0.58,
+      "emotions": {
+        "joy": 0.7,
+        "trust": 0.6
+      },
+      "lemma_evidence": "carrier",
+      "source": "migrated:pol_janitor.py",
+      "version": 1,
+      "example": "Ojciec mówił z dumą o wielkich sukcesach syna.",
+      "felt": "state",
+      "note": "also trait reading"
+    },
+    {
+      "id": "pl.emoadv.z_zazdrość",
+      "phrase": [
+        "z",
+        "zazdrość"
+      ],
+      "alt_lemmas": [
+        "z zazdrością"
+      ],
+      "kind": "emotion_adverb",
+      "strength": "strong",
+      "valence": -0.72,
+      "arousal": 0.64,
+      "emotions": {
+        "disgust": 0.7,
+        "anger": 0.6
+      },
+      "lemma_evidence": "carrier",
+      "source": "migrated:pol_janitor.py",
+      "version": 1,
+      "example": "Kupiec spoglądał z zazdrością na bogate kramy rywala.",
+      "felt": "state"
+    },
+    {
+      "id": "pl.emoadv.wściekl",
+      "lemma": "wściekle",
+      "pos": [
+        "ADV"
+      ],
+      "kind": "emotion_adverb",
+      "strength": "strong",
+      "valence": -0.92,
+      "arousal": 0.92,
+      "emotions": {
+        "anger": 0.8
+      },
+      "source": "curated:gemini-2026-09",
+      "version": 1,
+      "felt": "state"
+    },
+    {
+      "id": "pl.emoadv.oburzenie",
+      "kind": "emotion_adverb",
+      "strength": "strong",
+      "valence": -0.72,
+      "arousal": 0.72,
+      "emotions": {
+        "anger": 0.8
+      },
+      "source": "curated:gemini-2026-09",
+      "version": 1,
+      "phrase": [
+        "z",
+        "oburzenie"
+      ],
+      "example": "Krzyknął z oburzeniem na niesprawiedliwy wyrok.",
+      "felt": "state"
+    },
+    {
+      "id": "pl.emoadv.zajadle",
+      "lemma": "zajadle",
+      "pos": [
+        "ADV"
+      ],
+      "kind": "emotion_adverb",
+      "strength": "strong",
+      "valence": -0.82,
+      "arousal": 0.82,
+      "emotions": {
+        "anger": 0.8
+      },
+      "source": "curated:gemini-2026-09",
+      "version": 1,
+      "felt": "trait"
+    },
+    {
+      "id": "pl.emoadv.zawzięcie",
+      "lemma": "zawzięcie",
+      "pos": [
+        "ADV"
+      ],
+      "kind": "emotion_adverb",
+      "strength": "strong",
+      "valence": -0.72,
+      "arousal": 0.72,
+      "emotions": {
+        "anger": 0.8
+      },
+      "source": "curated:gemini-2026-09",
+      "version": 1,
+      "felt": "trait"
+    },
+    {
+      "id": "pl.emoadv.pogardliwie",
+      "lemma": "pogardliwie",
+      "pos": [
+        "ADV"
+      ],
+      "kind": "emotion_adverb",
+      "strength": "strong",
+      "valence": -0.82,
+      "arousal": 0.62,
+      "emotions": {
+        "disgust": 0.8
+      },
+      "source": "curated:gemini-2026-09",
+      "version": 1,
+      "felt": "state"
+    },
+    {
+      "id": "pl.emoadv.lekceważąco",
+      "lemma": "lekceważąco",
+      "pos": [
+        "ADV"
+      ],
+      "kind": "emotion_adverb",
+      "strength": "strong",
+      "valence": -0.62,
+      "arousal": 0.42,
+      "emotions": {
+        "disgust": 0.8
+      },
+      "source": "curated:gemini-2026-09",
+      "version": 1,
+      "felt": "state"
+    },
+    {
+      "id": "pl.emoadv.zuchwale",
+      "lemma": "zuchwale",
+      "pos": [
+        "ADV"
+      ],
+      "kind": "emotion_adverb",
+      "strength": "strong",
+      "valence": -0.52,
+      "arousal": 0.62,
+      "emotions": {
+        "anger": 0.8
+      },
+      "source": "curated:gemini-2026-09",
+      "version": 1,
+      "felt": "trait"
+    },
+    {
+      "id": "pl.emoadv.arogancko",
+      "lemma": "arogancko",
+      "pos": [
+        "ADV"
+      ],
+      "kind": "emotion_adverb",
+      "strength": "strong",
+      "valence": -0.64,
+      "arousal": 0.52,
+      "emotions": {
+        "disgust": 0.8
+      },
+      "source": "curated:gemini-2026-09",
+      "version": 1,
+      "felt": "trait"
+    },
+    {
+      "id": "pl.emoadv.wyniosł",
+      "lemma": "wyniośle",
+      "pos": [
+        "ADV"
+      ],
+      "kind": "emotion_adverb",
+      "strength": "strong",
+      "valence": -0.62,
+      "arousal": 0.52,
+      "emotions": {
+        "disgust": 0.8
+      },
+      "source": "curated:gemini-2026-09",
+      "version": 1,
+      "felt": "trait"
+    },
+    {
+      "id": "pl.emoadv.pysznie",
+      "lemma": "pysznie",
+      "pos": [
+        "ADV"
+      ],
+      "kind": "emotion_adverb",
+      "strength": "strong",
+      "valence": 0.72,
+      "arousal": 0.52,
+      "emotions": {
+        "joy": 0.8
+      },
+      "source": "curated:gemini-2026-09",
+      "version": 1,
+      "felt": "trait"
+    },
+    {
+      "id": "pl.emoadv.sromotnie",
+      "lemma": "sromotnie",
+      "pos": [
+        "ADV"
+      ],
+      "kind": "emotion_adverb",
+      "strength": "strong",
+      "valence": -0.82,
+      "arousal": 0.62,
+      "emotions": {
+        "disgust": 0.8
+      },
+      "source": "curated:gemini-2026-09",
+      "version": 1,
+      "felt": "evaluative"
+    },
+    {
+      "id": "pl.emoadv.okrutnie",
+      "lemma": "okrutnie",
+      "pos": [
+        "ADV"
+      ],
+      "kind": "emotion_adverb",
+      "strength": "strong",
+      "valence": -0.92,
+      "arousal": 0.82,
+      "emotions": {
+        "disgust": 0.8
+      },
+      "source": "curated:gemini-2026-09",
+      "version": 1,
+      "felt": "trait"
+    },
+    {
+      "id": "pl.emoadv.nienawistnie",
+      "lemma": "nienawistnie",
+      "pos": [
+        "ADV"
+      ],
+      "kind": "emotion_adverb",
+      "strength": "strong",
+      "valence": -0.92,
+      "arousal": 0.82,
+      "emotions": {
+        "disgust": 0.8
+      },
+      "source": "curated:gemini-2026-09",
+      "version": 1,
+      "felt": "state"
+    },
+    {
+      "id": "pl.emoadv.przeraźliwie",
+      "lemma": "przeraźliwie",
+      "pos": [
+        "ADV"
+      ],
+      "kind": "emotion_adverb",
+      "strength": "strong",
+      "valence": -0.84,
+      "arousal": 0.82,
+      "emotions": {
+        "fear": 0.8
+      },
+      "source": "curated:gemini-2026-09",
+      "version": 1,
+      "felt": "evaluative"
+    },
+    {
+      "id": "pl.emoadv.trwożliwa",
+      "lemma": "trwożliwie",
+      "pos": [
+        "ADV"
+      ],
+      "kind": "emotion_adverb",
+      "strength": "strong",
+      "valence": -0.82,
+      "arousal": 0.72,
+      "emotions": {
+        "fear": 0.8
+      },
+      "source": "curated:gemini-2026-09",
+      "version": 1,
+      "alt_lemmas": [
+        "trwożliwy"
+      ],
+      "lemma_evidence": "carrier",
+      "felt": "state"
+    },
+    {
+      "id": "pl.emoadv.lękliwa",
+      "lemma": "lękliwie",
+      "pos": [
+        "ADV"
+      ],
+      "kind": "emotion_adverb",
+      "strength": "strong",
+      "valence": -0.72,
+      "arousal": 0.62,
+      "emotions": {
+        "fear": 0.8
+      },
+      "source": "curated:gemini-2026-09",
+      "version": 1,
+      "alt_lemmas": [
+        "lękliwy"
+      ],
+      "lemma_evidence": "carrier",
+      "felt": "state"
+    },
+    {
+      "id": "pl.emoadv.bojaźliwie",
+      "lemma": "bojaźliwie",
+      "pos": [
+        "ADV"
+      ],
+      "kind": "emotion_adverb",
+      "strength": "strong",
+      "valence": -0.62,
+      "arousal": 0.52,
+      "emotions": {
+        "fear": 0.8
+      },
+      "source": "curated:gemini-2026-09",
+      "version": 1,
+      "felt": "trait"
+    },
+    {
+      "id": "pl.emoadv.niepewnie",
+      "lemma": "niepewnie",
+      "pos": [
+        "ADV"
+      ],
+      "kind": "emotion_adverb",
+      "strength": "strong",
+      "valence": -0.42,
+      "arousal": 0.42,
+      "emotions": {
+        "fear": 0.8
+      },
+      "source": "curated:gemini-2026-09",
+      "version": 1,
+      "felt": "state"
+    },
+    {
+      "id": "pl.emoadv.ostrożnie",
+      "lemma": "ostrożnie",
+      "pos": [
+        "ADV"
+      ],
+      "kind": "emotion_adverb",
+      "strength": "strong",
+      "valence": 0.32,
+      "arousal": 0.42,
+      "emotions": {
+        "anticipation": 0.8
+      },
+      "source": "curated:gemini-2026-09",
+      "version": 1,
+      "felt": "trait"
+    },
+    {
+      "id": "pl.emoadv.bacznie",
+      "lemma": "bacznie",
+      "pos": [
+        "ADV"
+      ],
+      "kind": "emotion_adverb",
+      "strength": "strong",
+      "valence": 0.42,
+      "arousal": 0.52,
+      "emotions": {
+        "anticipation": 0.8
+      },
+      "source": "curated:gemini-2026-09",
+      "version": 1,
+      "felt": "state"
+    },
+    {
+      "id": "pl.emoadv.czujnąć",
+      "lemma": "czujnie",
+      "pos": [
+        "ADV"
+      ],
+      "kind": "emotion_adverb",
+      "strength": "strong",
+      "valence": 0.42,
+      "arousal": 0.62,
+      "emotions": {
+        "anticipation": 0.8
+      },
+      "source": "curated:gemini-2026-09",
+      "version": 1,
+      "felt": "state"
+    },
+    {
+      "id": "pl.emoadv.ciekawie",
+      "lemma": "ciekawie",
+      "pos": [
+        "ADV"
+      ],
+      "kind": "emotion_adverb",
+      "strength": "strong",
+      "valence": 0.52,
+      "arousal": 0.52,
+      "emotions": {
+        "anticipation": 0.8
+      },
+      "source": "curated:gemini-2026-09",
+      "version": 1,
+      "felt": "state"
+    },
+    {
+      "id": "pl.emoadv.zniecierpliwien",
+      "kind": "emotion_adverb",
+      "strength": "strong",
+      "valence": -0.42,
+      "arousal": 0.72,
+      "emotions": {
+        "anticipation": 0.8
+      },
+      "source": "curated:gemini-2026-09",
+      "version": 1,
+      "alt_lemmas": [
+        "niecierpliwie"
+      ],
+      "phrase": [
+        "z",
+        "zniecierpliwienie"
+      ],
+      "example": "Z zniecierpliwienia tupał nogą na peronie.",
+      "felt": "state"
+    },
+    {
+      "id": "pl.emoadv.gorączkowo",
+      "lemma": "gorączkowo",
+      "pos": [
+        "ADV"
+      ],
+      "kind": "emotion_adverb",
+      "strength": "strong",
+      "valence": 0.22,
+      "arousal": 0.82,
+      "emotions": {
+        "anticipation": 0.8
+      },
+      "source": "curated:gemini-2026-09",
+      "version": 1,
+      "felt": "state"
+    },
+    {
+      "id": "pl.emoadv.namiętnie",
+      "lemma": "namiętnie",
+      "pos": [
+        "ADV"
+      ],
+      "kind": "emotion_adverb",
+      "strength": "strong",
+      "valence": 0.82,
+      "arousal": 0.82,
+      "emotions": {
+        "joy": 0.8
+      },
+      "source": "curated:gemini-2026-09",
+      "version": 1,
+      "felt": "state"
+    },
+    {
+      "id": "pl.emoadv.żarliw",
+      "lemma": "żarliwie",
+      "pos": [
+        "ADV"
+      ],
+      "kind": "emotion_adverb",
+      "strength": "strong",
+      "valence": 0.72,
+      "arousal": 0.72,
+      "emotions": {
+        "anticipation": 0.8
+      },
+      "source": "curated:gemini-2026-09",
+      "version": 1,
+      "felt": "state"
+    },
+    {
+      "id": "pl.emoadv.gorliwie",
+      "lemma": "gorliwie",
+      "pos": [
+        "ADV"
+      ],
+      "kind": "emotion_adverb",
+      "strength": "strong",
+      "valence": 0.62,
+      "arousal": 0.62,
+      "emotions": {
+        "anticipation": 0.8
+      },
+      "source": "curated:gemini-2026-09",
+      "version": 1,
+      "felt": "trait"
+    },
+    {
+      "id": "pl.emoadv.rozpaczliwie",
+      "lemma": "rozpaczliwie",
+      "pos": [
+        "ADV"
+      ],
+      "kind": "emotion_adverb",
+      "strength": "strong",
+      "valence": -0.92,
+      "arousal": 0.82,
+      "emotions": {
+        "sadness": 0.8
+      },
+      "source": "curated:gemini-2026-09",
+      "version": 1,
+      "felt": "state"
+    },
+    {
+      "id": "pl.emoadv.tęskć",
+      "lemma": "tęsknie",
+      "pos": [
+        "ADV"
+      ],
+      "kind": "emotion_adverb",
+      "strength": "strong",
+      "valence": -0.62,
+      "arousal": 0.42,
+      "emotions": {
+        "sadness": 0.8
+      },
+      "source": "curated:gemini-2026-09",
+      "version": 1,
+      "alt_lemmas": [
+        "tęskća"
+      ],
+      "lemma_evidence": "carrier",
+      "felt": "state"
+    },
+    {
+      "id": "pl.emoadv.posępnie",
+      "lemma": "posępnie",
+      "pos": [
+        "ADV"
+      ],
+      "kind": "emotion_adverb",
+      "strength": "strong",
+      "valence": -0.62,
+      "arousal": 0.32,
+      "emotions": {
+        "sadness": 0.8
+      },
+      "source": "curated:gemini-2026-09",
+      "version": 1,
+      "felt": "state"
+    },
+    {
+      "id": "pl.emoadv.markotnąć",
+      "lemma": "markotnie",
+      "pos": [
+        "ADV"
+      ],
+      "kind": "emotion_adverb",
+      "strength": "strong",
+      "valence": -0.52,
+      "arousal": 0.32,
+      "emotions": {
+        "sadness": 0.8
+      },
+      "source": "curated:gemini-2026-09",
+      "version": 1,
+      "felt": "state"
+    },
+    {
+      "id": "pl.emoadv.beznadziejnie",
+      "lemma": "beznadziejnie",
+      "pos": [
+        "ADV"
+      ],
+      "kind": "emotion_adverb",
+      "strength": "strong",
+      "valence": -0.82,
+      "arousal": 0.32,
+      "emotions": {
+        "sadness": 0.8
+      },
+      "source": "curated:gemini-2026-09",
+      "version": 1,
+      "felt": "evaluative"
+    },
+    {
+      "id": "pl.emoadv.wesoło",
+      "lemma": "wesoło",
+      "pos": [
+        "ADV"
+      ],
+      "kind": "emotion_adverb",
+      "strength": "strong",
+      "valence": 0.82,
+      "arousal": 0.62,
+      "emotions": {
+        "joy": 0.8
+      },
+      "source": "curated:gemini-2026-09",
+      "version": 1,
+      "felt": "state"
+    },
+    {
+      "id": "pl.emoadv.beztrosko",
+      "lemma": "beztrosko",
+      "pos": [
+        "ADV"
+      ],
+      "kind": "emotion_adverb",
+      "strength": "strong",
+      "valence": 0.82,
+      "arousal": 0.42,
+      "emotions": {
+        "joy": 0.8
+      },
+      "source": "curated:gemini-2026-09",
+      "version": 1,
+      "felt": "trait"
+    },
+    {
+      "id": "pl.emoadv.pogodnie",
+      "lemma": "pogodnie",
+      "pos": [
+        "ADV"
+      ],
+      "kind": "emotion_adverb",
+      "strength": "strong",
+      "valence": 0.82,
+      "arousal": 0.32,
+      "emotions": {
+        "joy": 0.8
+      },
+      "source": "curated:gemini-2026-09",
+      "version": 1,
+      "felt": "state"
+    },
+    {
+      "id": "pl.emoadv.serdecznie",
+      "lemma": "serdecznie",
+      "pos": [
+        "ADV"
+      ],
+      "kind": "emotion_adverb",
+      "strength": "strong",
+      "valence": 0.82,
+      "arousal": 0.42,
+      "emotions": {
+        "joy": 0.8
+      },
+      "source": "curated:gemini-2026-09",
+      "version": 1,
+      "felt": "trait"
+    },
+    {
+      "id": "pl.emoadv.życzliwie",
+      "lemma": "życzliwie",
+      "pos": [
+        "ADV"
+      ],
+      "kind": "emotion_adverb",
+      "strength": "strong",
+      "valence": 0.82,
+      "arousal": 0.42,
+      "emotions": {
+        "trust": 0.8
+      },
+      "source": "curated:gemini-2026-09",
+      "version": 1,
+      "felt": "trait"
+    },
+    {
+      "id": "pl.emoadv.czule",
+      "lemma": "czule",
+      "pos": [
+        "ADV"
+      ],
+      "kind": "emotion_adverb",
+      "strength": "strong",
+      "valence": 0.82,
+      "arousal": 0.32,
+      "emotions": {
+        "joy": 0.8
+      },
+      "source": "curated:gemini-2026-09",
+      "version": 1,
+      "felt": "state"
+    },
+    {
+      "id": "pl.emoadv.łagodnie",
+      "lemma": "łagodnie",
+      "pos": [
+        "ADV"
+      ],
+      "kind": "emotion_adverb",
+      "strength": "strong",
+      "valence": 0.82,
+      "arousal": 0.22,
+      "emotions": {
+        "trust": 0.8
+      },
+      "source": "curated:gemini-2026-09",
+      "version": 1,
+      "felt": "trait"
+    },
+    {
+      "id": "pl.emoadv.spokojnie",
+      "lemma": "spokojnie",
+      "pos": [
+        "ADV"
+      ],
+      "kind": "emotion_adverb",
+      "strength": "strong",
+      "valence": 0.82,
+      "arousal": 0.22,
+      "emotions": {
+        "trust": 0.8
+      },
+      "source": "curated:gemini-2026-09",
+      "version": 1,
+      "felt": "state"
+    },
+    {
+      "id": "pl.emoadv.ufnie",
+      "lemma": "ufnie",
+      "pos": [
+        "ADV"
+      ],
+      "kind": "emotion_adverb",
+      "strength": "strong",
+      "valence": 0.82,
+      "arousal": 0.32,
+      "emotions": {
+        "trust": 0.8
+      },
+      "source": "curated:gemini-2026-09",
+      "version": 1,
+      "felt": "state"
+    },
+    {
+      "id": "pl.emoadv.zdumiewająco",
+      "lemma": "zdumiewająco",
+      "pos": [
+        "ADV"
+      ],
+      "kind": "emotion_adverb",
+      "strength": "strong",
+      "valence": 0.32,
+      "arousal": 0.62,
+      "emotions": {
+        "surprise": 0.8
+      },
+      "source": "curated:gemini-2026-09",
+      "version": 1,
+      "felt": "evaluative"
+    },
+    {
+      "id": "pl.emoadv.zaskakująco",
+      "lemma": "zaskakująco",
+      "pos": [
+        "ADV"
+      ],
+      "kind": "emotion_adverb",
+      "strength": "strong",
+      "valence": 0.32,
+      "arousal": 0.62,
+      "emotions": {
+        "surprise": 0.8
+      },
+      "source": "curated:gemini-2026-09",
+      "version": 1,
+      "felt": "evaluative"
+    },
+    {
+      "id": "pl.emoadv.obojętnie",
+      "lemma": "obojętnie",
+      "pos": [
+        "ADV"
+      ],
+      "kind": "emotion_adverb",
+      "strength": "strong",
+      "valence": 0.0,
+      "arousal": 0.1,
+      "emotions": null,
+      "source": "curated:gemini-2026-09",
+      "version": 1,
+      "felt": "state"
+    }
+  ]
+}

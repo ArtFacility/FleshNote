@@ -1,0 +1,97 @@
+{
+ "lang": "pl",
+ "kind": "negator",
+ "version": 1,
+ "entries": [
+  {
+   "id": "pl.neg.nie",
+   "lemma": "nie",
+   "kind": "negator",
+   "strength": "strong",
+   "factor": -1.0,
+   "source": "migrated:pol_janitor.py",
+   "version": 1
+  },
+  {
+   "id": "pl.neg.ani",
+   "lemma": "ani",
+   "kind": "negator",
+   "strength": "strong",
+   "factor": -1.0,
+   "source": "curated:gemini-2026-09",
+   "version": 1
+  },
+  {
+   "id": "pl.neg.nigdy",
+   "lemma": "nigdy",
+   "kind": "negator",
+   "strength": "strong",
+   "factor": -1.0,
+   "source": "migrated:pol_janitor.py",
+   "version": 1
+  },
+  {
+   "id": "pl.neg.wcale",
+   "lemma": "wcale",
+   "kind": "negator",
+   "strength": "strong",
+   "factor": -1.0,
+   "source": "curated:gemini-2026-09",
+   "version": 1
+  },
+  {
+   "id": "pl.neg.\u017caden",
+   "lemma": "\u017caden",
+   "kind": "negator",
+   "strength": "strong",
+   "factor": -1.0,
+   "source": "curated:gemini-2026-09",
+   "version": 1
+  },
+  {
+   "id": "pl.neg.b\u0105d\u017a",
+   "lemma": "b\u0105d\u017a",
+   "kind": "negator",
+   "strength": "strong",
+   "factor": -1.0,
+   "source": "curated:gemini-2026-09",
+   "version": 1
+  },
+  {
+   "id": "pl.neg.przenigdy",
+   "lemma": "przenigdy",
+   "kind": "negator",
+   "strength": "strong",
+   "factor": -1.0,
+   "source": "curated:gemini-2026-09",
+   "version": 1
+  },
+  {
+   "id": "pl.neg.bynajmniej",
+   "lemma": "bynajmniej",
+   "kind": "negator",
+   "strength": "strong",
+   "factor": -1.0,
+   "source": "curated:gemini-2026-09",
+   "version": 1
+  },
+  {
+   "id": "pl.neg.nikt",
+   "lemma": "nikt",
+   "kind": "negator",
+   "strength": "strong",
+   "factor": -1.0,
+   "source": "curated:gemini-2026-09",
+   "version": 1
+  },
+  {
+   "id": "pl.neg.nic",
+   "lemma": "nic",
+   "kind": "negator",
+   "strength": "strong",
+   "factor": -1.0,
+   "source": "curated:gemini-2026-09",
+   "version": 1
+  }
+ ]
+}

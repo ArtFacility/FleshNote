@@ -6,6 +6,7 @@ import EntityInspectorPanel from './ide-panels/EntityInspectorPanel'
 import TwistInspectorPanel from './ide-panels/TwistInspectorPanel'
 import CharacterInspectorPanel from './ide-panels/CharacterInspectorPanel'
 import LocationInspectorPanel from './ide-panels/LocationInspectorPanel'
+import GroupInspectorPanel from './ide-panels/GroupInspectorPanel'
 import QuickNoteInspectorPanel from './ide-panels/QuickNoteInspectorPanel'
 import AnnotationInspectorPanel from './ide-panels/AnnotationInspectorPanel'
 import FleshNotePlannerDesktop from './FleshNotePlannerDesktop'
@@ -13,10 +14,19 @@ import ProjectSettingsModal from './ProjectSettingsModal'
 import { clearEntityHoverCaches } from '../utils/hoverCache'
 import ImportModal from './ImportModal'
 import ExportModal from './ExportModal'
+import SyncModal from './SyncModal'
+import RemoteSyncModal from './RemoteSyncModal'
+import SyncChooserModal from './SyncChooserModal'
+import ExportChooserModal from './ExportChooserModal'
+import CloneModal from './CloneModal'
 import StatsDashboard from './StatsDashboard'
 import EntityManager from './EntityManager'
 import WorldbuildAndHistory from './WorldbuildAndHistory'
 import JanitorPanel from './JanitorPanel'
+import ReviewsPanel from './ReviewsPanel'
+import SendForReviewModal from './SendForReviewModal'
+import ReviewImportSummary from './ReviewImportSummary'
+import HistoryPanel from './HistoryPanel'
 import changelogData from '../changelog.json'
 import WelcomeBackPrompt from './WelcomeBackPrompt'
 
@@ -115,6 +125,77 @@ const Icons = {
     >
       <circle cx="12" cy="12" r="3" />
       <path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z" />
+    </svg>
+  ),
+  Sync: () => (
+    <svg
+      width="14"
+      height="14"
+      viewBox="0 0 24 24"
+      fill="none"
+      stroke="currentColor"
+      strokeWidth="2"
+      strokeLinecap="round"
+      strokeLinejoin="round"
+    >
+      <path d="M21.5 2v6h-6M21.34 15.57a10 10 0 1 1-.57-8.38l5.67-5.67" />
+    </svg>
+  ),
+  FolderOpen: () => (
+    <svg
+      width="14"
+      height="14"
+      viewBox="0 0 24 24"
+      fill="none"
+      stroke="currentColor"
+      strokeWidth="2"
+      strokeLinecap="round"
+      strokeLinejoin="round"
+    >
+      <path d="M22 19a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h5l2 3h9a2 2 0 0 1 2 2z" />
+    </svg>
+  ),
+  ChevronDown: () => (
+    <svg
+      width="12"
+      height="12"
+      viewBox="0 0 24 24"
+      fill="none"
+      stroke="currentColor"
+      strokeWidth="2"
+      strokeLinecap="round"
+      strokeLinejoin="round"
+    >
+      <polyline points="6 9 12 15 18 9" />
+    </svg>
+  ),
+  ChevronRight: () => (
+    <svg
+      width="12"
+      height="12"
+      viewBox="0 0 24 24"
+      fill="none"
+      stroke="currentColor"
+      strokeWidth="2"
+      strokeLinecap="round"
+      strokeLinejoin="round"
+    >
+      <polyline points="9 18 15 12 9 6" />
+    </svg>
+  ),
+  Smartphone: () => (
+    <svg
+      width="14"
+      height="14"
+      viewBox="0 0 24 24"
+      fill="none"
+      stroke="currentColor"
+      strokeWidth="2"
+      strokeLinecap="round"
+      strokeLinejoin="round"
+    >
+      <rect x="5" y="2" width="14" height="20" rx="2" ry="2" />
+      <line x1="12" y1="18" x2="12.01" y2="18" />
     </svg>
   ),
   Download: () => (
@@ -220,7 +301,7 @@ const Icons = {
 
 // ─── MAIN IDE SHELL ─────────────────────────────────────────────────────────
 
-export default function FleshNoteIDE({ projectConfig, projectPath, onCloseProject, onConfigUpdate }) {
+export default function FleshNoteIDE({ projectConfig, projectPath, onCloseProject, onConfigUpdate, incomingReviews }) {
   const { t } = useTranslation()
   const [mainView, setMainView] = useState('editor') // 'editor' | 'planner' | 'calendar'
   const [focusMode, setFocusMode] = useState(null)
@@ -234,10 +315,13 @@ export default function FleshNoteIDE({ projectConfig, projectPath, onCloseProjec
   const [calConfig, setCalConfig] = useState(null)
 
   const [leftPanelMode, setLeftPanelMode] = useState('chapters')
+  // Sub-surface reported by composite views (e.g. worldinfo tabs) for time tracking
+  const [worldinfoSurface, setWorldinfoSurface] = useState('worldinfo_timeline')
   const [inspectedEntity, setInspectedEntity] = useState(null)
   const [inspectedTwistId, setInspectedTwistId] = useState(null)
   const [inspectorInitialTab, setInspectorInitialTab] = useState(null)
   const [scrollToWordOffset, setScrollToWordOffset] = useState(null)
+  const [scrollToCharTarget, setScrollToCharTarget] = useState(null)
   const [cursorWorldTime, setCursorWorldTime] = useState('')
 
   const [hoveredChapterId, setHoveredChapterId] = useState(null)
@@ -249,8 +333,15 @@ export default function FleshNoteIDE({ projectConfig, projectPath, onCloseProjec
   // Settings modal state
   const [showSettings, setShowSettings] = useState(false)
   const [showExportModal, setShowExportModal] = useState(false)
+  const [showExportChooser, setShowExportChooser] = useState(false)
+  const [showSendReview, setShowSendReview] = useState(false)
   const [showImportModal, setShowImportModal] = useState(false)
+  const [showSyncModal, setShowSyncModal] = useState(false)
+  const [showRemoteSyncModal, setShowRemoteSyncModal] = useState(false)
+  const [showSyncChooser, setShowSyncChooser] = useState(false)
+  const [cloneMode, setCloneMode] = useState(null) // 'send' | 'receive' | null
   const [isSaving, setIsSaving] = useState(false)
+  const [chapterFileWarning, setChapterFileWarning] = useState(false)
 
   // UI Toggles & Header Menu
   const [showHeaderMenu, setShowHeaderMenu] = useState(false)
@@ -273,9 +364,67 @@ export default function FleshNoteIDE({ projectConfig, projectPath, onCloseProjec
   )
   const [janitorSuggestions, setJanitorSuggestions] = useState([])
   const [janitorLoading, setJanitorLoading] = useState(false)
+  // Counts finished Janitor runs; each one has just filled the paragraph cache,
+  // so the editor's Story Pulse gutter refetches its scores then (never per keystroke)
+  const [janitorRuns, setJanitorRuns] = useState(0)
   const [janitorFocusSignal, setJanitorFocusSignal] = useState(0)
   const janitorActionsRef = useRef(null)
   const lastAnalyzedHtmlRef = useRef('')
+
+  // ── History (rollback) Panel State ──────────────────
+  // Shares the right rail with the Janitor: opening one collapses the other.
+  const [historyCollapsed, setHistoryCollapsed] = useState(
+    () => localStorage.getItem('fn_historyCollapsed') !== 'false' // default closed
+  )
+  // Reviews handed back by beta readers; the panel only shows up once there are some
+  const [reviewsCollapsed, setReviewsCollapsed] = useState(true)
+  const [reviewsData, setReviewsData] = useState({ reviews: [], notes: [], copies: [] })
+  const toggleJanitorPanel = useCallback(() => {
+    setJanitorCollapsed(prev => {
+      const next = !prev
+      localStorage.setItem('fn_janitorCollapsed', next)
+      if (!next) { setHistoryCollapsed(true); localStorage.setItem('fn_historyCollapsed', 'true'); setReviewsCollapsed(true) }
+      return next
+    })
+  }, [])
+  const toggleHistoryPanel = useCallback(() => {
+    setHistoryCollapsed(prev => {
+      const next = !prev
+      localStorage.setItem('fn_historyCollapsed', next)
+      if (!next) { setJanitorCollapsed(true); localStorage.setItem('fn_janitorCollapsed', 'true'); setReviewsCollapsed(true) }
+      return next
+    })
+  }, [])
+  const openReviewsPanel = useCallback((open = true) => {
+    setReviewsCollapsed(!open)
+    if (open) {
+      setJanitorCollapsed(true); localStorage.setItem('fn_janitorCollapsed', 'true')
+      setHistoryCollapsed(true); localStorage.setItem('fn_historyCollapsed', 'true')
+    }
+  }, [])
+  const refreshReviews = useCallback(async () => {
+    if (!projectPath) return
+    try {
+      const [res, sent] = await Promise.all([
+        window.api.reviewNotes({ project_path: projectPath }),
+        window.api.reviewCopies({ project_path: projectPath }),
+      ])
+      if (res?.status === 'ok') setReviewsData({ reviews: res.reviews || [], notes: res.notes || [], copies: sent?.copies || [] })
+    } catch (err) {
+      console.error('Failed to load reviews', err)
+    }
+  }, [projectPath])
+  useEffect(() => { refreshReviews() }, [refreshReviews])
+  const [reviewImportResults, setReviewImportResults] = useState(null)
+  const handleHistoryRestored = useCallback((contentHtml, wordCount, chapId) => {
+    const cid = chapId || activeChapter?.id
+    if (!cid) return
+    // Bump _rev so Editor's setContent effect reloads the restored prose.
+    setChapterContent(prev => (prev && prev.id === cid)
+      ? { ...prev, content: contentHtml, word_count: wordCount, _rev: Date.now() }
+      : prev)
+    setChapters(prev => prev.map(ch => (ch.id === cid ? { ...ch, word_count: wordCount } : ch)))
+  }, [activeChapter])
 
   // ── IDE-level configurable hotkeys ────────────────
   const [ideHotkeys, setIdeHotkeys] = useState({ janitor_open: 'Alt+j', focus_normal: 'Alt+f' })
@@ -314,7 +463,9 @@ export default function FleshNoteIDE({ projectConfig, projectPath, onCloseProjec
     }
   }, [loading, projectPath])
 
-  // 60-second time tracking tick
+  // 60-second time tracking tick — one row per day/surface in usage_daily, plus the
+  // legacy stats-table counters the dashboard already reads. Ticks only count while
+  // the window is focused, and >5 min gaps (system sleep) are skipped entirely.
   useEffect(() => {
     if (!projectPath) return
 
@@ -326,11 +477,20 @@ export default function FleshNoteIDE({ projectConfig, projectPath, onCloseProjec
       // If more than 5 minutes elapsed between ticks, the system probably slept.
       // Do not count that as active time.
       if (elapsedMs > 5 * 60 * 1000) return
+      // Unfocused window → not actively using the app
+      if (document.hasFocus && !document.hasFocus()) return
+
+      // Derived surface for usage_daily
+      const surface =
+        mainView === 'worldinfo' ? worldinfoSurface :
+        mainView === 'entities' ? 'entities' :
+        ['editor', 'planner', 'stats'].includes(mainView) ? mainView : 'app'
+      window.api.usageTick({ project_path: projectPath, surface, minutes: 1 }).catch(() => { })
 
       // Generic active time
       window.api.updateStat({ project_path: projectPath, stat_key: 'time_total_minutes', increment_by: 1 })
 
-      // Specific module time
+      // Specific module time (legacy keys, kept for dashboard compatibility)
       if (mainView === 'editor') {
         window.api.updateStat({ project_path: projectPath, stat_key: 'time_editor_minutes', increment_by: 1 })
       } else if (mainView === 'planner') {
@@ -343,7 +503,7 @@ export default function FleshNoteIDE({ projectConfig, projectPath, onCloseProjec
     }, 60000) // 1 minute
 
     return () => clearInterval(tickInterval)
-  }, [projectPath, mainView])
+  }, [projectPath, mainView, worldinfoSurface])
 
   const toggleFocus = useCallback((mode) => setFocusMode(mode), [])
 
@@ -396,6 +556,7 @@ export default function FleshNoteIDE({ projectConfig, projectPath, onCloseProjec
     setActiveChapter(chapter)
     try {
       const data = await window.api.loadChapterContent(projectPath, chapter.id)
+      setChapterFileWarning(Boolean(data.unsafe_file))
       setChapterContent({
         ...chapter,
         content: data.content || '',
@@ -403,31 +564,39 @@ export default function FleshNoteIDE({ projectConfig, projectPath, onCloseProjec
       })
     } catch (err) {
       console.error('Failed to load chapter content:', err)
+      setChapterFileWarning(false)
       setChapterContent({ ...chapter, content: '', _rev: Date.now() })
     }
   }
 
   // ── Save chapter content ────────────────────────────
+  // chapterId is the chapter the editor was showing when the text was typed: right
+  // after a click on another chapter, activeChapter already points at that one.
   const handleEditorUpdate = useCallback(
-    async (html, wordCount) => {
-      if (!activeChapter || !projectPath) return
+    async (html, wordCount, chapterId = activeChapter?.id) => {
+      if (!chapterId || !projectPath) return
       setIsSaving(true)
       try {
         await window.api.saveChapterContent({
           project_path: projectPath,
-          chapter_id: activeChapter.id,
+          chapter_id: chapterId,
           content: html,
           word_count: wordCount
         })
         setChapters((prev) =>
-          prev.map((ch) => (ch.id === activeChapter.id ? { ...ch, word_count: wordCount } : ch))
+          prev.map((ch) => (ch.id === chapterId ? { ...ch, word_count: wordCount } : ch))
         )
         // CRITICAL: Sync the local state so navigating back and forth doesn't revert to stale data
         setChapterContent((prev) =>
-          (prev && prev.id === activeChapter.id) ? { ...prev, content: html, word_count: wordCount } : prev
+          (prev && prev.id === chapterId) ? { ...prev, content: html, word_count: wordCount } : prev
         )
       } catch (err) {
         console.error('Failed to save chapter:', err)
+        // the backend refuses writes through poisoned filenames (409) —
+        // surface it in the status bar just like on load
+        if (String(err?.message || err).includes('unsafe filename')) {
+          setChapterFileWarning(true)
+        }
       } finally {
         // Just a small delay so it doesn't flicker too fast
         setTimeout(() => setIsSaving(false), 1000)
@@ -550,6 +719,17 @@ export default function FleshNoteIDE({ projectConfig, projectPath, onCloseProjec
     setInspectedTwistId(null)
   }, [])
 
+  // A board to open in World & History, focused on one node ({ boardId, nodeId, at }).
+  const [boardFocus, setBoardFocus] = useState(null)
+  useEffect(() => {
+    const onOpenBoard = (e) => {
+      setBoardFocus({ ...e.detail, at: Date.now() })
+      setMainView('worldinfo')
+    }
+    window.addEventListener('openSketchboard', onOpenBoard)
+    return () => window.removeEventListener('openSketchboard', onOpenBoard)
+  }, [])
+
   useEffect(() => {
     const onForceBack = () => handleBackToChapters()
     window.addEventListener('forceBackToChapters', onForceBack)
@@ -569,10 +749,10 @@ export default function FleshNoteIDE({ projectConfig, projectPath, onCloseProjec
   // ── Navigate to mark (from inspector click) ────────
   const handleNavigateToMark = useCallback(
     async ({ chapterId, wordOffset }) => {
-      const targetChapter = chapters.find(ch => ch.id === chapterId)
+      const targetChapter = chapters.find(ch => String(ch.id) === String(chapterId))
       if (!targetChapter) return
       // Load the chapter if it's not the current one
-      if (!activeChapter || activeChapter.id !== chapterId) {
+      if (!activeChapter || String(activeChapter.id) !== String(chapterId)) {
         await loadChapter(targetChapter)
       }
       // Signal editor to scroll to word offset
@@ -580,6 +760,86 @@ export default function FleshNoteIDE({ projectConfig, projectPath, onCloseProjec
     },
     [chapters, activeChapter]
   )
+
+  // Open an entity's inspector from elsewhere ({ type, id, tab?, mark? }), e.g. a live line on a
+  // sketchboard. Leaves the current view for the editor; mark scrolls the text to that spot.
+  useEffect(() => {
+    const onOpen = (e) => {
+      const { mark, ...ref } = e.detail || {}
+      setMainView('editor')
+      handleEntityClick(ref)
+      if (mark) handleNavigateToMark(mark)
+    }
+    window.addEventListener('openInInspector', onOpen)
+    return () => window.removeEventListener('openInInspector', onOpen)
+  }, [handleEntityClick, handleNavigateToMark])
+
+  // ── Open a paragraph from the planner's Story Pulse lane ──
+  // charOffset is the editor text coordinate the Janitor uses; the Editor
+  // applies the target once the chapter's content has loaded.
+  const handleOpenParagraph = useCallback(
+    async (chapterId, charOffset, snippet) => {
+      const targetChapter = chapters.find(ch => String(ch.id) === String(chapterId))
+      if (!targetChapter) return
+      setMainView('editor')
+      if (!activeChapter || String(activeChapter.id) !== String(chapterId)) {
+        await loadChapter(targetChapter)
+      }
+      setScrollToCharTarget({ chapterId, charOffset, snippet, showPulse: true, timestamp: Date.now() })
+    },
+    [chapters, activeChapter]
+  )
+  const clearCharTarget = useCallback(() => setScrollToCharTarget(null), [])
+
+  // ── Review notes ───────────────────────────────────
+  const handleOpenReviewNote = useCallback(async (note) => {
+    const target = chapters.find(ch => String(ch.id) === String(note.chapter_id))
+    if (!target) return
+    setMainView('editor')
+    if (!activeChapter || String(activeChapter.id) !== String(note.chapter_id)) await loadChapter(target)
+    setScrollToCharTarget({
+      chapterId: note.chapter_id,
+      passage: { texts: [note.anchor_text, note.quote_text], hint: note.anchor_hint || 0 },
+      timestamp: Date.now(),
+    })
+  }, [chapters, activeChapter])
+  const handleReviewNoteStatus = useCallback(async (note, status) => {
+    setReviewsData(d => ({ ...d, notes: d.notes.map(n => n.id === note.id ? { ...n, status } : n) }))
+    try {
+      await window.api.setReviewNoteStatus({ project_path: projectPath, id: note.id, status })
+    } finally {
+      refreshReviews()
+    }
+  }, [projectPath, refreshReviews])
+  const handleApplyReviewSuggestion = useCallback((note) => {
+    const replacement = note.category === 'remove' ? '' : (note.suggestion || '')
+    const done = janitorActionsRef.current?.replacePassage?.([note.anchor_text, note.quote_text], note.anchor_hint || 0, replacement)
+    if (done) handleReviewNoteStatus(note, 'resolved')
+    return done
+  }, [handleReviewNoteStatus])
+  // paths: files opened from outside (double-click, the start screen); none = ask
+  const handleImportReviews = useCallback(async (paths) => {
+    const res = await window.api.importReviews({ project_path: projectPath, paths: Array.isArray(paths) ? paths : [] })
+    if (res?.status === 'cancelled') return
+    await refreshReviews()
+    if ((res?.results || []).some(r => r.status === 'ok')) openReviewsPanel(true)
+    setReviewImportResults(res?.status === 'ok' ? res.results : [{ status: 'error', path: '', message: res?.message }])
+  }, [projectPath, refreshReviews, openReviewsPanel])
+  // App hands over returned review files it was opened with
+  useEffect(() => {
+    if (incomingReviews?.paths?.length) handleImportReviews(incomingReviews.paths)
+  }, [incomingReviews?.key])
+  // Withdraw a locked review copy: it stops opening for everyone who has it
+  const handleRevokeCopy = useCallback(async (copy) => {
+    const res = await window.api.revokeReviewCopy({ project_path: projectPath, id: copy.id })
+    await refreshReviews()
+    return res?.status === 'ok'
+  }, [projectPath, refreshReviews])
+  const handleDeleteReceivedReview = useCallback(async (review) => {
+    await window.api.deleteReceivedReview({ project_path: projectPath, id: review.id })
+    refreshReviews()
+  }, [projectPath, refreshReviews])
+  const openReviewNotes = reviewsData.notes.filter(n => n.status === 'open').length
 
   // ── Refresh entities (after creating new ones) ─────
   const handleEntitiesChanged = useCallback(async () => {
@@ -603,26 +863,68 @@ export default function FleshNoteIDE({ projectConfig, projectPath, onCloseProjec
     }
   }, [projectPath])
 
-  const handleImportDataChanged = useCallback(async () => {
-    await Promise.all([reloadChaptersList(), handleEntitiesChanged()])
+  // Entities made outside the entity manager (a sketchboard node made into one).
+  useEffect(() => {
+    const onChanged = () => handleEntitiesChanged()
+    window.addEventListener('entitiesChanged', onChanged)
+    return () => window.removeEventListener('entitiesChanged', onChanged)
   }, [handleEntitiesChanged])
 
+  // While a sync or a clone is open, the editor records nothing: its session is
+  // sealed with this device's text first, and a new one starts after the sync
+  // (and the reload of the open chapter) is done.
+  const syncPauseRef = useRef(null)
+  const pauseRecordingForSync = useCallback(() => {
+    if (!syncPauseRef.current) {
+      syncPauseRef.current = Promise.resolve(janitorActionsRef.current?.pauseRecording?.()).catch(() => {})
+    }
+    return syncPauseRef.current
+  }, [])
+  const syncOpen = showSyncModal || showRemoteSyncModal || cloneMode === 'send'
+  useEffect(() => {
+    if (syncOpen) {
+      pauseRecordingForSync()
+    } else if (syncPauseRef.current) {
+      const paused = syncPauseRef.current
+      syncPauseRef.current = null
+      paused.then(() => janitorActionsRef.current?.resumeRecording?.())
+    }
+  }, [syncOpen, pauseRecordingForSync])
+
+  const handleImportDataChanged = useCallback(async () => {
+    await Promise.all([reloadChaptersList(), handleEntitiesChanged()])
+    // A sync can change the open chapter's prose on disk. Reload it, or the
+    // editor keeps the old text and its next autosave writes it back.
+    if (!activeChapter || !projectPath) return
+    try {
+      const data = await window.api.loadChapterContent(projectPath, activeChapter.id)
+      const fresh = data?.content ?? ''
+      setChapterContent(prev => (prev && prev.id === activeChapter.id && prev.content !== fresh)
+        ? { ...prev, content: fresh, _rev: Date.now() }
+        : prev)
+    } catch (err) {
+      console.error('Failed to reload the open chapter after sync:', err)
+    }
+  }, [handleEntitiesChanged, activeChapter, projectPath])
+
   // ── Janitor Analysis ──────────────────────────────
-  const triggerJanitorAnalysis = useCallback(async () => {
+  // `latestHtml` is the editor's current HTML; chapterContent lags it by the
+  // save debounce, so without it the Janitor analyzed the previous version.
+  const triggerJanitorAnalysis = useCallback(async (latestHtml) => {
     if (focusMode) return
     if (!activeChapter || !projectPath) return
     if (mainView !== 'editor') return
-    if (!chapterContent?.content) return
+    const htmlToAnalyze = typeof latestHtml === 'string' ? latestHtml : chapterContent?.content
+    if (!htmlToAnalyze) return
     // Skip if content hasn't changed since last analysis (prevents 10s timer re-analyzing same text)
-    if (chapterContent.content === lastAnalyzedHtmlRef.current) return
+    if (htmlToAnalyze === lastAnalyzedHtmlRef.current) return
     // Don't refresh while user is actively browsing the panel — defer until they're done
     if (Date.now() - janitorPanelActivityRef.current < 8000) {
       if (janitorPendingRetryRef.current) clearTimeout(janitorPendingRetryRef.current)
-      janitorPendingRetryRef.current = setTimeout(() => triggerJanitorAnalysis(), 8000)
+      janitorPendingRetryRef.current = setTimeout(() => triggerJanitorAnalysis(htmlToAnalyze), 8000)
       return
     }
 
-    const htmlToAnalyze = chapterContent.content
     setJanitorLoading(true)
     try {
       const result = await window.api.janitorAnalyze({
@@ -640,6 +942,7 @@ export default function FleshNoteIDE({ projectConfig, projectPath, onCloseProjec
           JSON.parse(localStorage.getItem(dismissKey) || '[]').map(i => i.id)
         )
         setJanitorSuggestions((result.suggestions || []).filter(s => !dismissed.has(s.id)))
+        setJanitorRuns(n => n + 1)
       }
     } catch (err) {
       console.error('Janitor analysis failed:', err)
@@ -743,6 +1046,9 @@ export default function FleshNoteIDE({ projectConfig, projectPath, onCloseProjec
         if (janitorCollapsed) {
           setJanitorCollapsed(false)
           localStorage.setItem('fn_janitorCollapsed', 'false')
+          setHistoryCollapsed(true)
+          localStorage.setItem('fn_historyCollapsed', 'true')
+          setReviewsCollapsed(true)
           setJanitorFocusSignal(s => s + 1)
         } else {
           setJanitorCollapsed(true)
@@ -833,11 +1139,7 @@ export default function FleshNoteIDE({ projectConfig, projectPath, onCloseProjec
             <button
               className="ide-header-btn"
               title={t('janitor.toggleTitle', 'Toggle Janitor Panel')}
-              onClick={() => {
-                const next = !janitorCollapsed
-                setJanitorCollapsed(next)
-                localStorage.setItem('fn_janitorCollapsed', next)
-              }}
+              onClick={toggleJanitorPanel}
               style={{
                 display: 'flex',
                 alignItems: 'center',
@@ -853,6 +1155,44 @@ export default function FleshNoteIDE({ projectConfig, projectPath, onCloseProjec
               {janitorSuggestions.length > 0 && (
                 <span className="janitor-badge">{janitorSuggestions.length}</span>
               )}
+            </button>
+          )}
+          {!focusMode && mainView === 'editor' && (
+            <button
+              className="ide-header-btn"
+              title={t('history.toggleTitle', 'Toggle History Panel')}
+              onClick={toggleHistoryPanel}
+              style={{
+                display: 'flex',
+                alignItems: 'center',
+                gap: 6,
+                padding: '0 12px',
+                color: !historyCollapsed ? 'var(--accent-amber)' : 'inherit'
+              }}
+            >
+              <span style={{ fontFamily: 'var(--font-mono)', fontSize: 14 }}>◷</span>
+              <span style={{ fontSize: 11, fontFamily: 'var(--font-mono)', textTransform: 'uppercase', letterSpacing: '0.1em' }}>
+                {t('history.title', 'History')}
+              </span>
+            </button>
+          )}
+          {!focusMode && mainView === 'editor' && (reviewsData.reviews.length > 0 || reviewsData.copies.length > 0) && (
+            <button
+              className="ide-header-btn"
+              title={t('reviews.toggleTitle', 'Toggle Reviews Panel')}
+              onClick={() => openReviewsPanel(reviewsCollapsed)}
+              style={{
+                display: 'flex',
+                alignItems: 'center',
+                gap: 6,
+                padding: '0 12px',
+                color: !reviewsCollapsed ? 'var(--accent-amber)' : 'inherit'
+              }}
+            >
+              <span style={{ fontSize: 11, fontFamily: 'var(--font-mono)', textTransform: 'uppercase', letterSpacing: '0.1em' }}>
+                {t('reviews.title', 'Reviews')}
+              </span>
+              {openReviewNotes > 0 && <span className="janitor-badge">{openReviewNotes}</span>}
             </button>
           )}
 
@@ -895,7 +1235,7 @@ export default function FleshNoteIDE({ projectConfig, projectPath, onCloseProjec
                 flexDirection: 'column'
               }}>
                 <button
-                  onClick={() => { setShowHeaderMenu(false); setShowExportModal(true); }}
+                  onClick={() => { setShowHeaderMenu(false); setShowExportChooser(true); }}
                   style={{ display: 'flex', alignItems: 'center', gap: 12, padding: '8px 16px', background: 'transparent', border: 'none', color: 'var(--text-primary)', fontFamily: 'var(--font-mono)', fontSize: 12, cursor: 'pointer', textAlign: 'left', width: '100%' }}
                   onMouseEnter={e => e.currentTarget.style.background = 'var(--bg-surface)'}
                   onMouseLeave={e => e.currentTarget.style.background = 'transparent'}
@@ -909,6 +1249,32 @@ export default function FleshNoteIDE({ projectConfig, projectPath, onCloseProjec
                   onMouseLeave={e => e.currentTarget.style.background = 'transparent'}
                 >
                   <Icons.Upload /> {t('ide.import', 'Import...')}
+                </button>
+                <div style={{ height: 1, background: 'var(--border-subtle)', margin: '6px 0' }} />
+                <button
+                  onClick={() => { setShowHeaderMenu(false); setShowSendReview(true); }}
+                  style={{ display: 'flex', alignItems: 'center', gap: 12, padding: '8px 16px', paddingInlineStart: 42, background: 'transparent', border: 'none', color: 'var(--text-primary)', fontFamily: 'var(--font-mono)', fontSize: 12, cursor: 'pointer', textAlign: 'start', width: '100%' }}
+                  onMouseEnter={e => e.currentTarget.style.background = 'var(--bg-surface)'}
+                  onMouseLeave={e => e.currentTarget.style.background = 'transparent'}
+                >
+                  {t('ide.sendForReview', 'Send for review…')}
+                </button>
+                <button
+                  onClick={() => { setShowHeaderMenu(false); handleImportReviews(); }}
+                  style={{ display: 'flex', alignItems: 'center', gap: 12, padding: '8px 16px', paddingInlineStart: 42, background: 'transparent', border: 'none', color: 'var(--text-primary)', fontFamily: 'var(--font-mono)', fontSize: 12, cursor: 'pointer', textAlign: 'start', width: '100%' }}
+                  onMouseEnter={e => e.currentTarget.style.background = 'var(--bg-surface)'}
+                  onMouseLeave={e => e.currentTarget.style.background = 'transparent'}
+                >
+                  {t('ide.importReviews', 'Import reviews…')}
+                </button>
+                <div style={{ height: 1, background: 'var(--border-subtle)', margin: '6px 0' }} />
+                <button
+                  onClick={() => { setShowHeaderMenu(false); setShowSyncChooser(true); }}
+                  style={{ display: 'flex', alignItems: 'center', gap: 12, padding: '8px 16px', background: 'transparent', border: 'none', color: 'var(--text-primary)', fontFamily: 'var(--font-mono)', fontSize: 12, cursor: 'pointer', textAlign: 'left', width: '100%' }}
+                  onMouseEnter={e => e.currentTarget.style.background = 'var(--bg-surface)'}
+                  onMouseLeave={e => e.currentTarget.style.background = 'transparent'}
+                >
+                  <Icons.Sync /> {t('ide.sync', 'Sync...')}
                 </button>
                 <button
                   onClick={() => { setShowHeaderMenu(false); setShowSettings(true); }}
@@ -1030,6 +1396,9 @@ export default function FleshNoteIDE({ projectConfig, projectPath, onCloseProjec
             projectConfig={projectConfig}
             onConfigUpdate={onConfigUpdate}
             calConfig={calConfig}
+            activeChapterId={activeChapter?.id ?? null}
+            boardFocus={boardFocus}
+            onSurfaceChange={setWorldinfoSurface}
             onCalendarChanged={() => {
               window.api.getCalendarConfig(projectPath)
                 .then(res => setCalConfig(res.config || {}))
@@ -1043,6 +1412,7 @@ export default function FleshNoteIDE({ projectConfig, projectPath, onCloseProjec
             entities={entities}
             characters={characters}
             projectConfig={projectConfig}
+            calConfig={calConfig}
             onEntityUpdated={handleEntitiesChanged}
             onConfigUpdate={onConfigUpdate}
             onNavigate={(chapterId, wordOffset) => {
@@ -1057,6 +1427,7 @@ export default function FleshNoteIDE({ projectConfig, projectPath, onCloseProjec
             entities={entities}
             characters={characters}
             projectConfig={projectConfig}
+            activeChapter={activeChapter}
             onEntityUpdated={handleEntitiesChanged}
             onConfigUpdate={onConfigUpdate}
           />
@@ -1065,6 +1436,9 @@ export default function FleshNoteIDE({ projectConfig, projectPath, onCloseProjec
             projectPath={projectPath}
             chapters={chapters}
             activeChapter={activeChapter}
+            projectConfig={projectConfig}
+            onOpenParagraph={handleOpenParagraph}
+            onConfigUpdate={onConfigUpdate}
           />
         ) : (
           <>
@@ -1305,6 +1679,7 @@ export default function FleshNoteIDE({ projectConfig, projectPath, onCloseProjec
                       onFlushEditorSave={async () => { await janitorActionsRef.current?.flushSave?.() }}
                       initialTab={inspectorInitialTab}
                       onNavigateToMark={handleNavigateToMark}
+                      onNavigateToEntity={handleEntityClick}
                       onIconChanged={clearEntityHoverCaches}
                     />
                   ) : inspectedEntity.type === 'location' ? (
@@ -1336,6 +1711,24 @@ export default function FleshNoteIDE({ projectConfig, projectPath, onCloseProjec
                       entity={inspectedEntity}
                       projectPath={projectPath}
                       onEntityUpdated={handleEntitiesChanged}
+                    />
+                  ) : inspectedEntity.type === 'group' ? (
+                    <GroupInspectorPanel
+                      group={inspectedEntity}
+                      characters={characters}
+                      entities={entities}
+                      activeChapter={{ ...activeChapter, world_time: cursorWorldTime || activeChapter?.world_time }}
+                      projectPath={projectPath}
+                      projectConfig={projectConfig}
+                      calConfig={calConfig}
+                      chapters={chapters}
+                      onEntityUpdated={handleEntitiesChanged}
+                      onReloadCurrentChapter={() => { if (activeChapter) loadChapter(activeChapter) }}
+                      onFlushEditorSave={async () => { await janitorActionsRef.current?.flushSave?.() }}
+                      initialTab={inspectorInitialTab}
+                      onNavigateToMark={handleNavigateToMark}
+                      onNavigateToEntity={handleEntityClick}
+                      onIconChanged={clearEntityHoverCaches}
                     />
                   ) : (
                     <EntityInspectorPanel
@@ -1446,20 +1839,20 @@ export default function FleshNoteIDE({ projectConfig, projectPath, onCloseProjec
                   onEntitiesChanged={handleEntitiesChanged}
                   onConfigUpdate={onConfigUpdate}
                   scrollToWordOffset={scrollToWordOffset}
+                  scrollToCharTarget={scrollToCharTarget}
+                  onCharTargetConsumed={clearCharTarget}
                   janitorActionsRef={janitorActionsRef}
                   onJanitorTrigger={focusMode ? null : triggerJanitorAnalysis}
+                  pulseRefreshKey={janitorRuns}
                   onEffectiveTimeChange={setCursorWorldTime}
                 />
                 {!focusMode && (
+                  <>
                   <JanitorPanel
                     suggestions={janitorSuggestions}
                     isLoading={janitorLoading}
                     isCollapsed={janitorCollapsed}
-                    onToggle={() => {
-                      const next = !janitorCollapsed
-                      setJanitorCollapsed(next)
-                      localStorage.setItem('fn_janitorCollapsed', next)
-                    }}
+                    onToggle={toggleJanitorPanel}
                     onDismiss={handleJanitorDismiss}
                     onAccept={handleJanitorAccept}
                     onNavigate={(suggestion) => {
@@ -1473,6 +1866,32 @@ export default function FleshNoteIDE({ projectConfig, projectPath, onCloseProjec
                     onActivity={() => { janitorPanelActivityRef.current = Date.now() }}
                     hotkeys={ideHotkeys}
                   />
+                  <HistoryPanel
+                    projectPath={projectPath}
+                    activeChapter={activeChapter}
+                    isCollapsed={historyCollapsed}
+                    onToggle={toggleHistoryPanel}
+                    onRestored={handleHistoryRestored}
+                    onBeforeSnapshot={async () => { try { await janitorActionsRef.current?.flushSave?.() } catch { /* noop */ } }}
+                  />
+                  {(reviewsData.reviews.length > 0 || reviewsData.copies.length > 0) && (
+                    <ReviewsPanel
+                      data={reviewsData}
+                      chapters={chapters}
+                      activeChapterId={activeChapter?.id}
+                      isCollapsed={reviewsCollapsed}
+                      onToggle={() => openReviewsPanel(reviewsCollapsed)}
+                      onOpenNote={handleOpenReviewNote}
+                      onStatus={handleReviewNoteStatus}
+                      onApply={handleApplyReviewSuggestion}
+                      canApplyNote={(note) => !!janitorActionsRef.current?.canReplacePassage?.([note.anchor_text, note.quote_text], note.anchor_hint || 0)}
+                      onOpenChapter={(ch) => { setMainView('editor'); loadChapter(ch) }}
+                      onImport={handleImportReviews}
+                      onDeleteReview={handleDeleteReceivedReview}
+                      onRevokeCopy={handleRevokeCopy}
+                    />
+                  )}
+                  </>
                 )}
               </>
             )}
@@ -1493,6 +1912,13 @@ export default function FleshNoteIDE({ projectConfig, projectPath, onCloseProjec
               {t('ide.saving', 'Saving...')}
             </span>
           </div>
+          {chapterFileWarning && (
+            <div className="status-bar-item" title={t('ide.unsafeFileHint', 'This chapter has an unsafe filename. Its text cannot be read or saved until it is re-synced or renamed.')}>
+              <span style={{ color: 'var(--accent-red)', fontWeight: 'bold' }}>
+                {t('ide.unsafeFileWarning', '⚠ Unsafe chapter filename — content hidden')}
+              </span>
+            </div>
+          )}
           <div className="status-bar-right">
             <div className="status-bar-item">{t('ide.statusBarFormat', 'Markdown \u00b7 UTF-8')}</div>
           </div>
@@ -1593,6 +2019,26 @@ export default function FleshNoteIDE({ projectConfig, projectPath, onCloseProjec
         entities={entities}
       />
 
+      {reviewImportResults && (
+        <ReviewImportSummary results={reviewImportResults} onClose={() => setReviewImportResults(null)} />
+      )}
+
+      <SendForReviewModal
+        isOpen={showSendReview}
+        onClose={() => { setShowSendReview(false); refreshReviews() }}
+        projectPath={projectPath}
+        projectConfig={projectConfig}
+        chapters={chapters}
+      />
+
+      <ExportChooserModal
+        isOpen={showExportChooser}
+        onClose={() => setShowExportChooser(false)}
+        projectPath={projectPath}
+        onPickManuscript={() => { setShowExportChooser(false); setShowExportModal(true) }}
+        onPickReview={() => { setShowExportChooser(false); setShowSendReview(true) }}
+      />
+
       <ImportModal
         isOpen={showImportModal}
         onClose={() => setShowImportModal(false)}
@@ -1601,6 +2047,39 @@ export default function FleshNoteIDE({ projectConfig, projectPath, onCloseProjec
         chapters={chapters}
         entities={entities}
         onDataChanged={handleImportDataChanged}
+      />
+
+      <SyncModal
+        isOpen={showSyncModal}
+        onClose={() => setShowSyncModal(false)}
+        projectPath={projectPath}
+        onSyncComplete={handleImportDataChanged}
+        onBeforeSync={pauseRecordingForSync}
+      />
+
+      <RemoteSyncModal
+        isOpen={showRemoteSyncModal}
+        onClose={() => setShowRemoteSyncModal(false)}
+        projectPath={projectPath}
+        onSyncComplete={handleImportDataChanged}
+        onBeforeSync={pauseRecordingForSync}
+      />
+
+      <SyncChooserModal
+        isOpen={showSyncChooser}
+        onClose={() => setShowSyncChooser(false)}
+        onPickLocal={() => { setShowSyncChooser(false); setShowSyncModal(true); }}
+        onPickMobile={() => { setShowSyncChooser(false); setShowRemoteSyncModal(true); }}
+        onPickCloneSend={() => { setShowSyncChooser(false); setCloneMode('send'); }}
+        onPickCloneReceive={() => { setShowSyncChooser(false); setCloneMode('receive'); }}
+      />
+
+      <CloneModal
+        isOpen={cloneMode !== null}
+        mode={cloneMode || 'send'}
+        onClose={() => setCloneMode(null)}
+        projectPath={projectPath}
+        workspacePath={projectPath ? projectPath.replace(/[\\/][^\\/]+[\\/]?$/, '') : ''}
       />
     </>
   )

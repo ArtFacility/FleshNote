@@ -1,214 +1,255 @@
-from docx import Document
-from docx.shared import Pt, Inches, RGBColor
-from docx.enum.text import WD_ALIGN_PARAGRAPH, WD_LINE_SPACING
-from docx.oxml import OxmlElement
-import re
 import io
 
-_FOOTNOTE_REF_PATTERN = re.compile(r'\[\[FOOTNOTE_REF:(\d+)\]\]')
+from docx import Document
+from docx.enum.text import WD_ALIGN_PARAGRAPH, WD_BREAK, WD_LINE_SPACING, WD_TAB_ALIGNMENT
+from docx.oxml import OxmlElement
+from docx.oxml.ns import qn
+from docx.shared import Inches, Pt, RGBColor
 
-_TOKEN_PATTERN = re.compile(
-    r'(\[\[FOOTNOTE_REF:\d+\]\]'
-    r'|\[\[ENTITY_REF:[^:]+:[^\]]+\]\]'
-    r'|\[\[ENTITY_LINK:[^:]+:[^:]+:[^:]+:[^\]]*\]\]'
-    r'|\[\[TWIST_REF:[^:]+:[^\]]+\]\])'
-)
+from export.render_html import TRIM_SIZES
 
-_ENTITY_STYLES = {
-    'char':   (True,  False, None),
-    'loc':    (False, True,  None),
-    'item':   (False, True,  None),
-    'lore':   (False, True,  None),
-    'group':  (True,  False, None),
-    'secret': (False, False, '990000'),
+_FONT = "Times New Roman"
+
+# How visible links look in Full Annotated mode: (bold, italic, colour)
+_LINK_STYLES = {
+    "char": (True, False, None),
+    "group": (True, False, None),
+    "loc": (False, True, None),
+    "item": (False, True, None),
+    "lore": (False, True, None),
 }
 
-# top/bottom margins per trim size (industry standard)
-_TRIM_MARGINS = {
-    'pocket':   (0.60, 0.70),
-    'standard': (0.75, 0.85),
-    'large':    (0.75, 0.85),
-}
 
-def render(project_title, author_name, chapters, content_mode, overrides=None) -> bytes:
-    """
-    Renders chapters to a professional DOCX document.
-    Standard Manuscript Format (Double spaced, TNR 12pt, 1" margins)
-    or Book-Ready format based on overrides.
-    Returns bytes of the generated file.
-    """
+def _page_field(paragraph):
+    """Appends a PAGE field (the current page number)."""
+    field = OxmlElement("w:fldSimple")
+    field.set(qn("w:instr"), "PAGE")
+    run = OxmlElement("w:r")
+    text = OxmlElement("w:t")
+    text.text = "1"
+    run.append(text)
+    field.append(run)
+    paragraph._p.append(field)
+
+
+def _mirror_margins(doc):
+    """Turns on mirrored margins, so the inside (gutter) margin sits on the
+    binding side of both left and right pages. The switch lives in the
+    document settings, before defaultTabStop in the schema order."""
+    settings = doc.settings.element
+    if settings.find(qn("w:mirrorMargins")) is not None:
+        return
+    el = OxmlElement("w:mirrorMargins")
+    anchor = settings.find(qn("w:defaultTabStop"))
+    if anchor is not None:
+        anchor.addprevious(el)
+    else:
+        settings.insert(0, el)
+
+
+def _keep_break_lines_short(doc):
+    """Stops Word from stretching the line before a manual line break
+    (Shift+Enter) across the full width of a justified paragraph."""
+    compat = doc.settings.element.find(qn("w:compat"))
+    if compat is None:
+        compat = OxmlElement("w:compat")
+        doc.settings.element.append(compat)
+    if compat.find(qn("w:doNotExpandShiftReturn")) is None:
+        # comes before the compatSetting entries in the schema order
+        compat.insert(0, OxmlElement("w:doNotExpandShiftReturn"))
+
+
+def _add_runs(p, runs, note_ref, font_size, full):
+    for r in runs:
+        if r.kind == "br":
+            p.add_run().add_break(WD_BREAK.LINE)
+            continue
+        if r.kind == "fnref":
+            ref = p.add_run(note_ref(r.data.get("n", 0)))
+            ref.font.superscript = True
+            continue
+        if not r.text:
+            continue
+        run = p.add_run(r.text)
+        if "i" in r.marks:
+            run.italic = True
+        if "b" in r.marks:
+            run.bold = True
+        if "u" in r.marks or r.href:
+            run.underline = True
+        if "s" in r.marks:
+            run.font.strike = True
+        if "sup" in r.marks:
+            run.font.superscript = True
+        if "sub" in r.marks:
+            run.font.subscript = True
+        if "code" in r.marks:
+            run.font.name = "Consolas"
+        if full and r.kind == "entity":
+            bold, italic, colour = _LINK_STYLES.get(r.data.get("type"), (False, True, None))
+            run.bold = run.bold or bold
+            run.italic = run.italic or italic
+        elif full and r.kind == "twist":
+            foreshadow = r.data.get("type") == "foreshadow"
+            run.bold, run.italic = (None, True) if foreshadow else (True, None)
+            run.font.color.rgb = RGBColor(0x78, 0x55, 0x9A) if foreshadow else RGBColor(0x2E, 0x7D, 0x32)
+        elif full and r.kind == "epistemic":
+            run.italic = True
+            run.text = "[%s: %s]" % (r.data.get("type", ""), r.text)
+
+
+def _centered(doc, text, size=None, italic=False, space_before=0, space_after=0, small_caps=False):
+    p = doc.add_paragraph()
+    p.alignment = WD_ALIGN_PARAGRAPH.CENTER
+    pf = p.paragraph_format
+    pf.first_line_indent = Inches(0)
+    pf.space_before = Pt(space_before)
+    pf.space_after = Pt(space_after)
+    pf.keep_with_next = True
+    run = p.add_run(text)
+    run.italic = italic or None
+    run.font.small_caps = small_caps or None
+    if size:
+        run.font.size = Pt(size)
+    return p
+
+
+def render(project_title, author_name, chapters, content_mode, overrides=None, book_ready=True,
+           word_count=0) -> bytes:
+    """A Word document. book_ready gives a trim-size book (mirrored margins,
+    page numbers, justified text); otherwise standard manuscript format
+    (US Letter, 1-inch margins, 12 pt double-spaced, "Surname / TITLE / page"
+    header)."""
+    o = overrides or {}
+    full = content_mode == "full"
     doc = Document()
-    
-    # 0. Formatting Constants
-    # TRIM_SIZES: { key: (width_inches, height_inches) }
-    TRIM_SIZES = {
-        'pocket': (4.25, 6.87),
-        'standard': (5.0, 8.0),
-        'large': (6.0, 9.0)
-    }
-    
-    # Defaults
-    trim_key = overrides.get('trim', 'standard') if overrides else 'standard'
-    font_size = overrides.get('font_size', 12) if overrides else 12
-    # gutter/outer come pre-computed from the frontend (industry-accurate values)
-    gutter = overrides.get('gutter', 0.5) if overrides else 0.5
-    outer  = overrides.get('outer',  0.4) if overrides else 0.4
-    if gutter is None: gutter = 0.5
-    if outer  is None: outer  = 0.4
-
-    width, height = TRIM_SIZES.get(trim_key, TRIM_SIZES['standard'])
-    top_in, bottom_in = _TRIM_MARGINS.get(trim_key, (0.75, 0.85))
-
-    # 1. Setup Document Sections (Margins and Size)
     section = doc.sections[0]
-    section.page_width = Inches(width)
-    section.page_height = Inches(height)
 
-    # Inner (gutter) margin on left, outer margin on right.
-    # Mirror margins are enabled below so these alternate correctly for print.
-    section.top_margin    = Inches(top_in)
-    section.bottom_margin = Inches(bottom_in)
-    section.left_margin   = Inches(gutter)
-    section.right_margin  = Inches(outer)
+    if book_ready:
+        width, height, top, bottom = TRIM_SIZES.get(o.get("trim") or "standard", TRIM_SIZES["standard"])
+        font_size = o.get("font_size") or 11
+        section.page_width, section.page_height = Inches(width), Inches(height)
+        section.top_margin, section.bottom_margin = Inches(top), Inches(bottom)
+        section.left_margin = Inches(o.get("gutter") or 0.5)    # inside: the binding side
+        section.right_margin = Inches(o.get("outer") or 0.5)
+        _mirror_margins(doc)
+        _keep_break_lines_short(doc)
+        line_spacing, indent, align, scene = 1.15, Inches(0.25), WD_ALIGN_PARAGRAPH.JUSTIFY, "* * *"
+        sink = Pt(round(height * 72 * 0.14))
+    else:
+        width, height = 8.5, 11.0
+        font_size = 12
+        section.page_width, section.page_height = Inches(width), Inches(height)
+        for side in ("top_margin", "bottom_margin", "left_margin", "right_margin"):
+            setattr(section, side, Inches(1))
+        line_spacing, indent, align, scene = 2.0, Inches(0.5), WD_ALIGN_PARAGRAPH.LEFT, "#"
+        sink = Pt(2.2 * 72)
 
-    # Enable mirror margins so the gutter alternates to the binding edge on each page
-    section_props = section._sectPr
-    mirror = OxmlElement('w:mirrorMargins')
-    section_props.append(mirror)
-    
-    # 2. Setup Default Style (Normal)
-    style = doc.styles['Normal']
-    font = style.font
-    font.name = 'Times New Roman'
-    font.size = Pt(font_size)
-    
-    pf = style.paragraph_format
-    pf.line_spacing_rule = WD_LINE_SPACING.DOUBLE
-    pf.first_line_indent = Inches(0.5)
-    pf.alignment = WD_ALIGN_PARAGRAPH.LEFT
+    normal = doc.styles["Normal"]
+    normal.font.name = _FONT
+    normal.element.rPr.rFonts.set(qn("w:eastAsia"), _FONT)
+    normal.font.size = Pt(font_size)
+    pf = normal.paragraph_format
+    pf.line_spacing_rule = WD_LINE_SPACING.MULTIPLE
+    pf.line_spacing = line_spacing
+    pf.first_line_indent = indent
+    pf.alignment = align
     pf.space_after = Pt(0)
     pf.space_before = Pt(0)
+    pf.widow_control = True
 
-    # 3. Title Page (Optional but good for Stage 2)
-    # For now, let's just start with the content to keep it simple and clean.
-    
-    # 4. Chapters
-    for idx, chapter in enumerate(chapters):
-        # Chapter Heading
-        # We don't want indent for headings
-        h = doc.add_paragraph()
-        h_run = h.add_run(chapter.get('title', f"Chapter {idx+1}").upper())
-        h_run.bold = True
-        h.alignment = WD_ALIGN_PARAGRAPH.CENTER
-        h.paragraph_format.first_line_indent = Inches(0)
-        h.paragraph_format.space_before = Pt(24)
-        h.paragraph_format.space_after = Pt(12)
-        
-        text = chapter.get('text', '')
-        footnotes = chapter.get('footnotes', [])
+    # Title page
+    section.different_first_page_header_footer = True
+    if book_ready:
+        _centered(doc, project_title, size=font_size * 2, space_before=height * 72 * 0.3, space_after=12)
+        if author_name:
+            _centered(doc, author_name, italic=True)
+        footer = section.footer.paragraphs[0]
+        footer.alignment = WD_ALIGN_PARAGRAPH.CENTER
+        footer.paragraph_format.first_line_indent = Inches(0)
+        _page_field(footer)
+    else:
+        top = doc.add_paragraph()
+        top.paragraph_format.first_line_indent = Inches(0)
+        top.paragraph_format.line_spacing = 1.0
+        top.paragraph_format.tab_stops.add_tab_stop(Inches(6.5), WD_TAB_ALIGNMENT.RIGHT)
+        top.add_run(author_name or "")
+        top.add_run("\tabout %s words" % format(int(round(word_count, -2) if word_count >= 1000 else word_count), ","))
+        _centered(doc, (project_title or "").upper(), space_before=3 * 72)
+        if author_name:
+            _centered(doc, "by %s" % author_name)
+        header = section.header.paragraphs[0]
+        header.alignment = WD_ALIGN_PARAGRAPH.RIGHT
+        header.paragraph_format.first_line_indent = Inches(0)
+        surname = (author_name or "").split()[-1] if (author_name or "").split() else ""
+        header.add_run("%s / %s / " % (surname, (project_title or "").upper()) if surname
+                       else "%s / " % (project_title or "").upper())
+        _page_field(header)
 
-        text = re.sub(r'\{(secret|knows|believes):([^}]+)\}', r'', text)
+    for idx, ch in enumerate(chapters):
+        opener = None
+        if ch.label:
+            opener = _centered(doc, ch.label, space_before=sink.pt, small_caps=book_ready)
+        title = _centered(doc, ch.title, size=font_size * (1.5 if book_ready else 1),
+                          space_before=0 if ch.label else sink.pt, space_after=font_size * 1.5)
+        (opener or title).paragraph_format.page_break_before = True
 
-        def _add_styled_paragraph(doc, raw_text):
-            """Split raw_text on tokens and build a paragraph with mixed runs."""
-            tokens = _TOKEN_PATTERN.split(raw_text)
-            if len(tokens) == 1 and not _TOKEN_PATTERN.match(raw_text):
-                # No tokens — plain paragraph
-                doc.add_paragraph(raw_text)
-                return
+        def note_ref(n):
+            return str(n)
 
-            p = doc.add_paragraph()
-            for tok in tokens:
-                if not tok:
-                    continue
-
-                fn_m = re.fullmatch(r'\[\[FOOTNOTE_REF:(\d+)\]\]', tok)
-                if fn_m:
-                    ref_run = p.add_run(f"[{fn_m.group(1)}]")
-                    ref_run.font.superscript = True
-                    ref_run.font.bold = True
-                    ref_run.font.size = Pt(max(7, font_size - 3))
-                    continue
-
-                er_m = re.fullmatch(r'\[\[ENTITY_REF:([^:]+):([^\]]+)\]\]', tok)
-                if er_m:
-                    etype, name = er_m.group(1), er_m.group(2)
-                    bold, italic, color = _ENTITY_STYLES.get(etype, (False, False, None))
-                    run = p.add_run(name)
-                    run.bold = bold
-                    run.italic = italic
-                    if color:
-                        run.font.color.rgb = RGBColor.from_string(color)
-                    continue
-
-                el_m = re.fullmatch(r'\[\[ENTITY_LINK:([^:]+):([^:]+):([^:]+):([^\]]*)\]\]', tok)
-                if el_m:
-                    etype, eid, name, desc = el_m.group(1), el_m.group(2), el_m.group(3), el_m.group(4)
-                    bold, italic, color = _ENTITY_STYLES.get(etype, (False, True, None))
-                    run = p.add_run(name)
-                    run.bold = bold
-                    run.italic = italic
-                    if color:
-                        run.font.color.rgb = RGBColor.from_string(color)
-                    continue
-
-                tw_m = re.fullmatch(r'\[\[TWIST_REF:([^:]+):([^\]]+)\]\]', tok)
-                if tw_m:
-                    ttype, name = tw_m.group(1), tw_m.group(2)
-                    run = p.add_run(name)
-                    if ttype == 'twist':
-                        run.bold = True
-                        run.font.color.rgb = RGBColor(0x2E, 0x7D, 0x32)  # dark green
-                    else:  # foreshadow
-                        run.italic = True
-                        run.font.color.rgb = RGBColor(0x78, 0x55, 0x9A)  # muted purple
-                    continue
-
-                # Plain text segment
-                p.add_run(tok)
-
-        # Process paragraphs
-        paragraphs = text.split('\n')
-        for p_text in paragraphs:
-            p_text = p_text.strip()
-            if not p_text:
+        after_break = True
+        for b in ch.blocks:
+            if b.kind == "scene":
+                p = _centered(doc, scene, space_before=font_size * 0.5 if book_ready else 0,
+                              space_after=font_size * 0.5 if book_ready else 0)
+                p.paragraph_format.keep_with_next = True
+                after_break = True
                 continue
+            p = doc.add_paragraph()
+            if b.kind == "h":
+                p.alignment = WD_ALIGN_PARAGRAPH.CENTER
+                p.paragraph_format.first_line_indent = Inches(0)
+                p.paragraph_format.space_before = Pt(font_size)
+                p.paragraph_format.keep_with_next = True
+                _add_runs(p, b.runs, note_ref, font_size, full)
+                for run in p.runs:
+                    run.bold = True
+                after_break = True
+                continue
+            if b.kind == "li":
+                p.paragraph_format.first_line_indent = Inches(-0.2)
+                p.paragraph_format.left_indent = Inches(0.35 + 0.3 * b.level)
+                p.alignment = WD_ALIGN_PARAGRAPH.LEFT
+                p.add_run("%d. " % b.number if b.ordered else "• ")
+                after_break = True
+            elif b.kind == "quote":
+                p.paragraph_format.left_indent = Inches(0.4)
+                p.paragraph_format.right_indent = Inches(0.4)
+                p.paragraph_format.first_line_indent = Inches(0)
+                after_break = True
+            elif after_break:
+                # books set the first paragraph after a heading or break flush left;
+                # manuscript format indents every paragraph
+                if book_ready:
+                    p.paragraph_format.first_line_indent = Inches(0)
+                after_break = False
+            _add_runs(p, b.runs, note_ref, font_size, full)
 
-            if p_text in ('---', '***', '* * *'):
-                sb = doc.add_paragraph("* * *")
-                sb.alignment = WD_ALIGN_PARAGRAPH.CENTER
-                sb.paragraph_format.first_line_indent = Inches(0)
-            else:
-                _add_styled_paragraph(doc, p_text)
+        if ch.footnotes:
+            rule = doc.add_paragraph()
+            rule.paragraph_format.first_line_indent = Inches(0)
+            rule.paragraph_format.space_before = Pt(font_size)
+            rule.add_run("—" * 6)
+            for i, note in enumerate(ch.footnotes, 1):
+                p = doc.add_paragraph()
+                p.paragraph_format.first_line_indent = Inches(0)
+                p.paragraph_format.line_spacing = 1.0
+                p.alignment = WD_ALIGN_PARAGRAPH.LEFT
+                num = p.add_run("%d " % i)
+                num.font.superscript = True
+                body = p.add_run(note or "")
+                body.font.size = Pt(max(8, font_size - 2))
 
-        # Footnotes section at bottom of chapter (before page break)
-        if footnotes:
-            sep = doc.add_paragraph()
-            sep.add_run("─" * 32)
-            sep.paragraph_format.first_line_indent = Inches(0)
-            sep.paragraph_format.space_before = Pt(6)
-            sep.paragraph_format.space_after = Pt(4)
-
-            for fn_idx, fn_text in enumerate(footnotes):
-                fn_p = doc.add_paragraph()
-                fn_p.paragraph_format.first_line_indent = Inches(0)
-                fn_p.paragraph_format.line_spacing_rule = WD_LINE_SPACING.SINGLE
-                fn_p.paragraph_format.space_before = Pt(0)
-                fn_p.paragraph_format.space_after = Pt(2)
-
-                num_run = fn_p.add_run(f"[{fn_idx + 1}]  ")
-                num_run.font.superscript = True
-                num_run.font.bold = True
-                num_run.font.size = Pt(max(7, font_size - 3))
-
-                content_run = fn_p.add_run(fn_text or "")
-                content_run.font.size = Pt(max(8, font_size - 2))
-
-        # Chapter Break (Page Break)
-        if idx < len(chapters) - 1:
-            doc.add_page_break()
-
-    # Save to BytesIO
-    target_stream = io.BytesIO()
-    doc.save(target_stream)
-    return target_stream.getvalue()
+    stream = io.BytesIO()
+    doc.save(stream)
+    return stream.getvalue()

@@ -1,0 +1,4603 @@
+{
+ "lang": "pl",
+ "kind": "emotion_label",
+ "version": 1,
+ "entries": [
+  {
+   "id": "pl.emo.podekscytowany",
+   "lemma": "podekscytowany",
+   "pos": [
+    "ADJ"
+   ],
+   "kind": "emotion_label",
+   "strength": "strong",
+   "valence": 0.7,
+   "arousal": 0.85,
+   "emotions": {
+    "anticipation": 0.8,
+    "joy": 0.7
+   },
+   "source": "migrated:pol_janitor.py",
+   "version": 1,
+   "alt_lemmas": [
+    "podekscytować"
+   ],
+   "lemma_evidence": "carrier",
+   "felt": "state"
+  },
+  {
+   "id": "pl.emo.podniecony",
+   "lemma": "podniecony",
+   "pos": [
+    "ADJ"
+   ],
+   "kind": "emotion_label",
+   "strength": "strong",
+   "valence": 0.65,
+   "arousal": 0.85,
+   "emotions": {
+    "anticipation": 0.8,
+    "joy": 0.6
+   },
+   "source": "migrated:pol_janitor.py",
+   "version": 1,
+   "alt_lemmas": [
+    "podniecić",
+    "podniecć"
+   ],
+   "lemma_evidence": "carrier",
+   "felt": "state"
+  },
+  {
+   "id": "pl.emo.przerażony",
+   "lemma": "przerażony",
+   "pos": [
+    "ADJ"
+   ],
+   "kind": "emotion_label",
+   "strength": "strong",
+   "valence": -0.9,
+   "arousal": 0.9,
+   "emotions": {
+    "fear": 0.95
+   },
+   "source": "migrated:pol_janitor.py",
+   "version": 1,
+   "alt_lemmas": [
+    "przerażać",
+    "przerażyć"
+   ],
+   "lemma_evidence": "carrier",
+   "felt": "state"
+  },
+  {
+   "id": "pl.emo.przestraszony",
+   "lemma": "przestraszony",
+   "pos": [
+    "ADJ"
+   ],
+   "kind": "emotion_label",
+   "strength": "strong",
+   "valence": -0.75,
+   "arousal": 0.75,
+   "emotions": {
+    "fear": 0.85
+   },
+   "source": "migrated:pol_janitor.py",
+   "version": 1,
+   "alt_lemmas": [
+    "przestraszyć"
+   ],
+   "lemma_evidence": "carrier",
+   "felt": "state"
+  },
+  {
+   "id": "pl.emo.przygnębiony",
+   "lemma": "przygnębiony",
+   "pos": [
+    "ADJ"
+   ],
+   "kind": "emotion_label",
+   "strength": "strong",
+   "valence": -0.75,
+   "arousal": 0.3,
+   "emotions": {
+    "sadness": 0.85
+   },
+   "source": "migrated:pol_janitor.py",
+   "version": 1,
+   "alt_lemmas": [
+    "przygnębić"
+   ],
+   "lemma_evidence": "carrier",
+   "felt": "state"
+  },
+  {
+   "id": "pl.emo.rozczarowany",
+   "lemma": "rozczarowany",
+   "pos": [
+    "ADJ"
+   ],
+   "kind": "emotion_label",
+   "strength": "strong",
+   "valence": -0.7,
+   "arousal": 0.4,
+   "emotions": {
+    "sadness": 0.8
+   },
+   "source": "migrated:pol_janitor.py",
+   "version": 1,
+   "alt_lemmas": [
+    "rozczarować"
+   ],
+   "lemma_evidence": "carrier",
+   "felt": "state"
+  },
+  {
+   "id": "pl.emo.rozgoryczony",
+   "lemma": "rozgoryczony",
+   "pos": [
+    "ADJ"
+   ],
+   "kind": "emotion_label",
+   "strength": "strong",
+   "valence": -0.75,
+   "arousal": 0.45,
+   "emotions": {
+    "sadness": 0.8,
+    "anger": 0.5
+   },
+   "source": "migrated:pol_janitor.py",
+   "version": 1,
+   "alt_lemmas": [
+    "rozgoryczyć"
+   ],
+   "lemma_evidence": "carrier",
+   "felt": "state"
+  },
+  {
+   "id": "pl.emo.rozżalony",
+   "lemma": "rozżalony",
+   "pos": [
+    "ADJ"
+   ],
+   "kind": "emotion_label",
+   "strength": "strong",
+   "valence": -0.7,
+   "arousal": 0.45,
+   "emotions": {
+    "sadness": 0.8
+   },
+   "source": "migrated:pol_janitor.py",
+   "version": 1,
+   "alt_lemmas": [
+    "rozżalić"
+   ],
+   "lemma_evidence": "carrier",
+   "felt": "state"
+  },
+  {
+   "id": "pl.emo.sfrustrowany",
+   "lemma": "sfrustrowany",
+   "pos": [
+    "ADJ"
+   ],
+   "kind": "emotion_label",
+   "strength": "strong",
+   "valence": -0.65,
+   "arousal": 0.65,
+   "emotions": {
+    "anger": 0.75
+   },
+   "source": "migrated:pol_janitor.py",
+   "version": 1,
+   "alt_lemmas": [
+    "sfrustrować"
+   ],
+   "lemma_evidence": "carrier",
+   "felt": "state"
+  },
+  {
+   "id": "pl.emo.skrępowany",
+   "lemma": "skrępowany",
+   "pos": [
+    "ADJ"
+   ],
+   "kind": "emotion_label",
+   "strength": "weak",
+   "valence": -0.55,
+   "arousal": 0.5,
+   "emotions": {
+    "fear": 0.6,
+    "sadness": 0.4
+   },
+   "source": "migrated:pol_janitor.py",
+   "version": 1,
+   "alt_lemmas": [
+    "skrępować"
+   ],
+   "lemma_evidence": "carrier",
+   "note": "skrępowane ręce fizycznie vs skrępowanie psychiczne",
+   "felt": "state"
+  },
+  {
+   "id": "pl.emo.uradowany",
+   "lemma": "uradowany",
+   "pos": [
+    "ADJ"
+   ],
+   "kind": "emotion_label",
+   "strength": "strong",
+   "valence": 0.85,
+   "arousal": 0.75,
+   "emotions": {
+    "joy": 0.9
+   },
+   "source": "migrated:pol_janitor.py",
+   "version": 1,
+   "alt_lemmas": [
+    "uradować"
+   ],
+   "lemma_evidence": "carrier",
+   "felt": "state"
+  },
+  {
+   "id": "pl.emo.winny",
+   "lemma": "winny",
+   "pos": [
+    "ADJ"
+   ],
+   "kind": "emotion_label",
+   "strength": "weak",
+   "valence": -0.6,
+   "arousal": 0.5,
+   "emotions": {
+    "sadness": 0.7
+   },
+   "source": "migrated:pol_janitor.py",
+   "version": 1,
+   "note": "also legal guilt",
+   "alt_lemmas": [
+    "winien"
+   ],
+   "lemma_evidence": "carrier",
+   "felt": "state"
+  },
+  {
+   "id": "pl.emo.wzburzony",
+   "lemma": "wzburzony",
+   "pos": [
+    "ADJ"
+   ],
+   "kind": "emotion_label",
+   "strength": "strong",
+   "valence": -0.8,
+   "arousal": 0.85,
+   "emotions": {
+    "anger": 0.9
+   },
+   "source": "migrated:pol_janitor.py",
+   "version": 1,
+   "alt_lemmas": [
+    "wzburzyć"
+   ],
+   "lemma_evidence": "carrier",
+   "felt": "state"
+  },
+  {
+   "id": "pl.emo.zakłopotany",
+   "lemma": "zakłopotany",
+   "pos": [
+    "ADJ"
+   ],
+   "kind": "emotion_label",
+   "strength": "strong",
+   "valence": -0.45,
+   "arousal": 0.5,
+   "emotions": {
+    "surprise": 0.6,
+    "fear": 0.5
+   },
+   "source": "migrated:pol_janitor.py",
+   "version": 1,
+   "alt_lemmas": [
+    "zakłopotać"
+   ],
+   "lemma_evidence": "carrier",
+   "felt": "state"
+  },
+  {
+   "id": "pl.emo.zaniepokojony",
+   "lemma": "zaniepokojony",
+   "pos": [
+    "ADJ"
+   ],
+   "kind": "emotion_label",
+   "strength": "strong",
+   "valence": -0.65,
+   "arousal": 0.6,
+   "emotions": {
+    "fear": 0.8
+   },
+   "source": "migrated:pol_janitor.py",
+   "version": 1,
+   "alt_lemmas": [
+    "zaniepokoić"
+   ],
+   "lemma_evidence": "carrier",
+   "felt": "state"
+  },
+  {
+   "id": "pl.emo.zasmucony",
+   "lemma": "zasmucony",
+   "pos": [
+    "ADJ"
+   ],
+   "kind": "emotion_label",
+   "strength": "strong",
+   "valence": -0.75,
+   "arousal": 0.35,
+   "emotions": {
+    "sadness": 0.85
+   },
+   "source": "migrated:pol_janitor.py",
+   "version": 1,
+   "alt_lemmas": [
+    "zasmucić",
+    "zasmucyć"
+   ],
+   "lemma_evidence": "carrier",
+   "felt": "state"
+  },
+  {
+   "id": "pl.emo.zawstydzony",
+   "lemma": "zawstydzony",
+   "pos": [
+    "ADJ"
+   ],
+   "kind": "emotion_label",
+   "strength": "strong",
+   "valence": -0.65,
+   "arousal": 0.5,
+   "emotions": {
+    "sadness": 0.7,
+    "fear": 0.5
+   },
+   "source": "migrated:pol_janitor.py",
+   "version": 1,
+   "alt_lemmas": [
+    "zawstydzić"
+   ],
+   "lemma_evidence": "carrier",
+   "felt": "state"
+  },
+  {
+   "id": "pl.emo.zbulwersowany",
+   "lemma": "zbulwersowany",
+   "pos": [
+    "ADJ"
+   ],
+   "kind": "emotion_label",
+   "strength": "strong",
+   "valence": -0.75,
+   "arousal": 0.8,
+   "emotions": {
+    "anger": 0.8,
+    "disgust": 0.7
+   },
+   "source": "migrated:pol_janitor.py",
+   "version": 1,
+   "alt_lemmas": [
+    "zbulwersować"
+   ],
+   "lemma_evidence": "carrier",
+   "felt": "state"
+  },
+  {
+   "id": "pl.emo.zdenerwowany",
+   "lemma": "zdenerwowany",
+   "pos": [
+    "ADJ"
+   ],
+   "kind": "emotion_label",
+   "strength": "strong",
+   "valence": -0.65,
+   "arousal": 0.7,
+   "emotions": {
+    "fear": 0.6,
+    "anger": 0.6
+   },
+   "source": "migrated:pol_janitor.py",
+   "version": 1,
+   "alt_lemmas": [
+    "zdenerwować"
+   ],
+   "lemma_evidence": "carrier",
+   "felt": "state"
+  },
+  {
+   "id": "pl.emo.zirytowany",
+   "lemma": "zirytowany",
+   "pos": [
+    "ADJ"
+   ],
+   "kind": "emotion_label",
+   "strength": "strong",
+   "valence": -0.6,
+   "arousal": 0.6,
+   "emotions": {
+    "anger": 0.75
+   },
+   "source": "migrated:pol_janitor.py",
+   "version": 1,
+   "alt_lemmas": [
+    "zirytować"
+   ],
+   "lemma_evidence": "carrier",
+   "felt": "state"
+  },
+  {
+   "id": "pl.emo.zrozpaczony",
+   "lemma": "zrozpaczony",
+   "pos": [
+    "ADJ"
+   ],
+   "kind": "emotion_label",
+   "strength": "strong",
+   "valence": -0.9,
+   "arousal": 0.85,
+   "emotions": {
+    "sadness": 0.95,
+    "fear": 0.7
+   },
+   "source": "migrated:pol_janitor.py",
+   "version": 1,
+   "alt_lemmas": [
+    "zrozpaczyć",
+    "rozpaczać"
+   ],
+   "lemma_evidence": "carrier",
+   "felt": "state"
+  },
+  {
+   "id": "pl.emo.dumny",
+   "lemma": "dumny",
+   "pos": [
+    "ADJ"
+   ],
+   "kind": "emotion_label",
+   "strength": "strong",
+   "valence": 0.7,
+   "arousal": 0.6,
+   "emotions": {
+    "joy": 0.7,
+    "trust": 0.6
+   },
+   "source": "migrated:pol_janitor.py",
+   "version": 1,
+   "felt": "state",
+   "note": "also trait reading"
+  },
+  {
+   "id": "pl.emo.nerwowy",
+   "lemma": "nerwowy",
+   "pos": [
+    "ADJ"
+   ],
+   "kind": "emotion_label",
+   "strength": "strong",
+   "valence": -0.55,
+   "arousal": 0.65,
+   "emotions": {
+    "fear": 0.7
+   },
+   "source": "migrated:pol_janitor.py",
+   "version": 1,
+   "felt": "state",
+   "note": "also trait reading"
+  },
+  {
+   "id": "pl.emo.niespokojny",
+   "lemma": "niespokojny",
+   "pos": [
+    "ADJ"
+   ],
+   "kind": "emotion_label",
+   "strength": "strong",
+   "valence": -0.6,
+   "arousal": 0.65,
+   "emotions": {
+    "fear": 0.75
+   },
+   "source": "migrated:pol_janitor.py",
+   "version": 1,
+   "felt": "state",
+   "note": "also trait reading"
+  },
+  {
+   "id": "pl.emo.samotny",
+   "lemma": "samotny",
+   "pos": [
+    "ADJ"
+   ],
+   "kind": "emotion_label",
+   "strength": "strong",
+   "valence": -0.7,
+   "arousal": 0.3,
+   "emotions": {
+    "sadness": 0.8
+   },
+   "source": "migrated:pol_janitor.py",
+   "version": 1,
+   "felt": "state"
+  },
+  {
+   "id": "pl.emo.smutny",
+   "lemma": "smutny",
+   "pos": [
+    "ADJ"
+   ],
+   "kind": "emotion_label",
+   "strength": "strong",
+   "valence": -0.75,
+   "arousal": 0.35,
+   "emotions": {
+    "sadness": 0.85
+   },
+   "source": "migrated:pol_janitor.py",
+   "version": 1,
+   "felt": "state"
+  },
+  {
+   "id": "pl.emo.szczęśliwy",
+   "lemma": "szczęśliwy",
+   "pos": [
+    "ADJ"
+   ],
+   "kind": "emotion_label",
+   "strength": "strong",
+   "valence": 0.85,
+   "arousal": 0.7,
+   "emotions": {
+    "joy": 0.9
+   },
+   "source": "migrated:pol_janitor.py",
+   "version": 1,
+   "felt": "state"
+  },
+  {
+   "id": "pl.emo.wściekły",
+   "lemma": "wściekły",
+   "pos": [
+    "ADJ"
+   ],
+   "kind": "emotion_label",
+   "strength": "strong",
+   "valence": -0.85,
+   "arousal": 0.9,
+   "emotions": {
+    "anger": 0.95
+   },
+   "source": "migrated:pol_janitor.py",
+   "version": 1,
+   "felt": "state"
+  },
+  {
+   "id": "pl.emo.zazdrosny",
+   "lemma": "zazdrosny",
+   "pos": [
+    "ADJ"
+   ],
+   "kind": "emotion_label",
+   "strength": "strong",
+   "valence": -0.7,
+   "arousal": 0.65,
+   "emotions": {
+    "disgust": 0.7,
+    "anger": 0.6
+   },
+   "source": "migrated:pol_janitor.py",
+   "version": 1,
+   "felt": "state",
+   "note": "also trait reading"
+  },
+  {
+   "id": "pl.emo.zły",
+   "lemma": "zły",
+   "pos": [
+    "ADJ"
+   ],
+   "kind": "emotion_label",
+   "strength": "weak",
+   "valence": -0.7,
+   "arousal": 0.7,
+   "emotions": {
+    "anger": 0.8
+   },
+   "source": "migrated:pol_janitor.py",
+   "version": 1,
+   "note": "also trait reading (wicked)",
+   "felt": "state"
+  },
+  {
+   "id": "pl.emo.gniewny",
+   "lemma": "gniewny",
+   "pos": [
+    "ADJ"
+   ],
+   "kind": "emotion_label",
+   "strength": "strong",
+   "valence": -0.8,
+   "arousal": 0.8,
+   "emotions": {
+    "anger": 0.85
+   },
+   "source": "curated:gemini-2026-09",
+   "version": 1,
+   "felt": "state",
+   "note": "also trait reading"
+  },
+  {
+   "id": "pl.emo.rozgniewać",
+   "lemma": "rozgniewać",
+   "pos": [
+    "ADJ"
+   ],
+   "kind": "emotion_label",
+   "strength": "strong",
+   "valence": -0.82,
+   "arousal": 0.82,
+   "emotions": {
+    "anger": 0.85
+   },
+   "source": "curated:gemini-2026-09",
+   "version": 1,
+   "felt": "state"
+  },
+  {
+   "id": "pl.emo.rozjuszyć",
+   "lemma": "rozjuszyć",
+   "pos": [
+    "ADJ"
+   ],
+   "kind": "emotion_label",
+   "strength": "strong",
+   "valence": -0.9,
+   "arousal": 0.92,
+   "emotions": {
+    "anger": 0.85
+   },
+   "source": "curated:gemini-2026-09",
+   "version": 1,
+   "felt": "state"
+  },
+  {
+   "id": "pl.emo.rozwścieczona",
+   "lemma": "rozwścieczona",
+   "pos": [
+    "ADJ"
+   ],
+   "kind": "emotion_label",
+   "strength": "strong",
+   "valence": -0.92,
+   "arousal": 0.95,
+   "emotions": {
+    "anger": 0.85
+   },
+   "source": "curated:gemini-2026-09",
+   "version": 1,
+   "alt_lemmas": [
+    "rozwścieczć"
+   ],
+   "lemma_evidence": "carrier",
+   "felt": "state"
+  },
+  {
+   "id": "pl.emo.rozpłomieniić",
+   "lemma": "rozpłomieniony",
+   "pos": [
+    "ADJ"
+   ],
+   "kind": "emotion_label",
+   "strength": "strong",
+   "valence": -0.58,
+   "arousal": 0.72,
+   "emotions": {
+    "anger": 0.85
+   },
+   "source": "curated:gemini-2026-09",
+   "version": 1,
+   "alt_lemmas": [
+    "rozpłomienić"
+   ],
+   "felt": "state"
+  },
+  {
+   "id": "pl.emo.oburzć",
+   "lemma": "oburzony",
+   "pos": [
+    "ADJ"
+   ],
+   "kind": "emotion_label",
+   "strength": "strong",
+   "valence": -0.72,
+   "arousal": 0.72,
+   "emotions": {
+    "anger": 0.85
+   },
+   "source": "curated:gemini-2026-09",
+   "version": 1,
+   "alt_lemmas": [
+    "oburzyć"
+   ],
+   "felt": "state"
+  },
+  {
+   "id": "pl.emo.rozbić",
+   "lemma": "rozbić",
+   "pos": [
+    "ADJ"
+   ],
+   "kind": "emotion_label",
+   "strength": "weak",
+   "valence": -0.62,
+   "arousal": 0.32,
+   "emotions": {
+    "sadness": 0.85
+   },
+   "source": "curated:gemini-2026-09",
+   "version": 1,
+   "note": "rozbite naczynie vs rozbicie psychiczne",
+   "felt": "state"
+  },
+  {
+   "id": "pl.emo.zgorzkniać",
+   "lemma": "zgorzkniały",
+   "pos": [
+    "ADJ"
+   ],
+   "kind": "emotion_label",
+   "strength": "strong",
+   "valence": -0.68,
+   "arousal": 0.38,
+   "emotions": {
+    "sadness": 0.85
+   },
+   "source": "curated:gemini-2026-09",
+   "version": 1,
+   "alt_lemmas": [
+    "zgorzknieć"
+   ],
+   "felt": "trait",
+   "note": "also state reading"
+  },
+  {
+   "id": "pl.emo.zdołować",
+   "lemma": "zdołować",
+   "pos": [
+    "ADJ"
+   ],
+   "kind": "emotion_label",
+   "strength": "strong",
+   "valence": -0.72,
+   "arousal": 0.28,
+   "emotions": {
+    "sadness": 0.85
+   },
+   "source": "curated:gemini-2026-09",
+   "version": 1,
+   "felt": "state"
+  },
+  {
+   "id": "pl.emo.strapiić",
+   "lemma": "strapiony",
+   "pos": [
+    "ADJ"
+   ],
+   "kind": "emotion_label",
+   "strength": "strong",
+   "valence": -0.68,
+   "arousal": 0.38,
+   "emotions": {
+    "sadness": 0.85
+   },
+   "source": "curated:gemini-2026-09",
+   "version": 1,
+   "alt_lemmas": [
+    "strapić"
+   ],
+   "felt": "state"
+  },
+  {
+   "id": "pl.emo.przybić",
+   "lemma": "przybić",
+   "pos": [
+    "ADJ"
+   ],
+   "kind": "emotion_label",
+   "strength": "strong",
+   "valence": -0.72,
+   "arousal": 0.32,
+   "emotions": {
+    "sadness": 0.85
+   },
+   "source": "curated:gemini-2026-09",
+   "version": 1,
+   "felt": "state"
+  },
+  {
+   "id": "pl.emo.zatroskać",
+   "lemma": "zatroskać",
+   "pos": [
+    "ADJ"
+   ],
+   "kind": "emotion_label",
+   "strength": "strong",
+   "valence": -0.52,
+   "arousal": 0.42,
+   "emotions": {
+    "sadness": 0.85
+   },
+   "source": "curated:gemini-2026-09",
+   "version": 1,
+   "felt": "state"
+  },
+  {
+   "id": "pl.emo.zmartwiyć",
+   "lemma": "zmartwiony",
+   "pos": [
+    "ADJ"
+   ],
+   "kind": "emotion_label",
+   "strength": "strong",
+   "valence": -0.62,
+   "arousal": 0.42,
+   "emotions": {
+    "sadness": 0.85
+   },
+   "source": "curated:gemini-2026-09",
+   "version": 1,
+   "alt_lemmas": [
+    "zmartwić"
+   ],
+   "lemma_evidence": "carrier",
+   "felt": "state"
+  },
+  {
+   "id": "pl.emo.ubolewać",
+   "lemma": "ubolewać",
+   "pos": [
+    "ADJ"
+   ],
+   "kind": "emotion_label",
+   "strength": "strong",
+   "valence": -0.58,
+   "arousal": 0.32,
+   "emotions": {
+    "sadness": 0.85
+   },
+   "source": "curated:gemini-2026-09",
+   "version": 1,
+   "felt": "state"
+  },
+  {
+   "id": "pl.emo.nieszczęśliwy",
+   "lemma": "nieszczęśliwy",
+   "pos": [
+    "ADJ"
+   ],
+   "kind": "emotion_label",
+   "strength": "strong",
+   "valence": -0.82,
+   "arousal": 0.48,
+   "emotions": {
+    "sadness": 0.85
+   },
+   "source": "curated:gemini-2026-09",
+   "version": 1,
+   "felt": "state",
+   "note": "also evaluative 'unfortunate'"
+  },
+  {
+   "id": "pl.emo.nieszczęsny",
+   "lemma": "nieszczęsny",
+   "pos": [
+    "ADJ"
+   ],
+   "kind": "emotion_label",
+   "strength": "strong",
+   "valence": -0.72,
+   "arousal": 0.38,
+   "emotions": {
+    "sadness": 0.85
+   },
+   "source": "curated:gemini-2026-09",
+   "version": 1,
+   "felt": "evaluative"
+  },
+  {
+   "id": "pl.emo.żałosny",
+   "lemma": "żałosny",
+   "pos": [
+    "ADJ"
+   ],
+   "kind": "emotion_label",
+   "strength": "strong",
+   "valence": -0.64,
+   "arousal": 0.42,
+   "emotions": {
+    "sadness": 0.85
+   },
+   "source": "curated:gemini-2026-09",
+   "version": 1,
+   "felt": "evaluative"
+  },
+  {
+   "id": "pl.emo.melancholijny",
+   "lemma": "melancholijny",
+   "pos": [
+    "ADJ"
+   ],
+   "kind": "emotion_label",
+   "strength": "strong",
+   "valence": -0.48,
+   "arousal": 0.22,
+   "emotions": {
+    "sadness": 0.85
+   },
+   "source": "curated:gemini-2026-09",
+   "version": 1,
+   "felt": "state",
+   "note": "also trait reading"
+  },
+  {
+   "id": "pl.emo.posępny",
+   "lemma": "posępny",
+   "pos": [
+    "ADJ"
+   ],
+   "kind": "emotion_label",
+   "strength": "strong",
+   "valence": -0.62,
+   "arousal": 0.32,
+   "emotions": {
+    "sadness": 0.85
+   },
+   "source": "curated:gemini-2026-09",
+   "version": 1,
+   "felt": "state",
+   "note": "also trait reading or weather"
+  },
+  {
+   "id": "pl.emo.ponury",
+   "lemma": "ponury",
+   "pos": [
+    "ADJ"
+   ],
+   "kind": "emotion_label",
+   "strength": "strong",
+   "valence": -0.64,
+   "arousal": 0.32,
+   "emotions": {
+    "sadness": 0.85
+   },
+   "source": "curated:gemini-2026-09",
+   "version": 1,
+   "felt": "state",
+   "note": "also trait reading or weather"
+  },
+  {
+   "id": "pl.emo.zmarkotniać",
+   "lemma": "zmarkotniały",
+   "pos": [
+    "ADJ"
+   ],
+   "kind": "emotion_label",
+   "strength": "strong",
+   "valence": -0.52,
+   "arousal": 0.28,
+   "emotions": {
+    "sadness": 0.85
+   },
+   "source": "curated:gemini-2026-09",
+   "version": 1,
+   "alt_lemmas": [
+    "zmarkotnieć"
+   ],
+   "felt": "state"
+  },
+  {
+   "id": "pl.emo.markotny",
+   "lemma": "markotny",
+   "pos": [
+    "ADJ"
+   ],
+   "kind": "emotion_label",
+   "strength": "strong",
+   "valence": -0.5,
+   "arousal": 0.28,
+   "emotions": {
+    "sadness": 0.85
+   },
+   "source": "curated:gemini-2026-09",
+   "version": 1,
+   "felt": "state"
+  },
+  {
+   "id": "pl.emo.odrętwiać",
+   "lemma": "odrętwiać",
+   "pos": [
+    "ADJ"
+   ],
+   "kind": "emotion_label",
+   "strength": "weak",
+   "valence": -0.54,
+   "arousal": 0.22,
+   "emotions": {
+    "sadness": 0.85
+   },
+   "source": "curated:gemini-2026-09",
+   "version": 1,
+   "note": "odrętwiała kończyna vs odrętwienie z żalu",
+   "felt": "state"
+  },
+  {
+   "id": "pl.emo.otępiać",
+   "lemma": "otępiać",
+   "pos": [
+    "ADJ"
+   ],
+   "kind": "emotion_label",
+   "strength": "strong",
+   "valence": -0.52,
+   "arousal": 0.2,
+   "emotions": {
+    "sadness": 0.85
+   },
+   "source": "curated:gemini-2026-09",
+   "version": 1,
+   "felt": "state"
+  },
+  {
+   "id": "pl.emo.bezradny",
+   "lemma": "bezradny",
+   "pos": [
+    "ADJ"
+   ],
+   "kind": "emotion_label",
+   "strength": "strong",
+   "valence": -0.72,
+   "arousal": 0.38,
+   "emotions": {
+    "sadness": 0.85
+   },
+   "source": "curated:gemini-2026-09",
+   "version": 1,
+   "felt": "state",
+   "note": "also trait reading"
+  },
+  {
+   "id": "pl.emo.zagubiyć",
+   "lemma": "zagubiony",
+   "pos": [
+    "ADJ"
+   ],
+   "kind": "emotion_label",
+   "strength": "weak",
+   "valence": -0.52,
+   "arousal": 0.42,
+   "emotions": {
+    "fear": 0.85
+   },
+   "source": "curated:gemini-2026-09",
+   "version": 1,
+   "note": "zagubiony przedmiot vs zagubiony człowiek",
+   "alt_lemmas": [
+    "zagubić"
+   ],
+   "felt": "state"
+  },
+  {
+   "id": "pl.emo.osamotnić",
+   "lemma": "osamotnić",
+   "pos": [
+    "ADJ"
+   ],
+   "kind": "emotion_label",
+   "strength": "strong",
+   "valence": -0.72,
+   "arousal": 0.38,
+   "emotions": {
+    "sadness": 0.85
+   },
+   "source": "curated:gemini-2026-09",
+   "version": 1,
+   "felt": "state"
+  },
+  {
+   "id": "pl.emo.opuszczyć",
+   "lemma": "opuszczony",
+   "pos": [
+    "ADJ"
+   ],
+   "kind": "emotion_label",
+   "strength": "weak",
+   "valence": -0.7,
+   "arousal": 0.32,
+   "emotions": {
+    "sadness": 0.85
+   },
+   "source": "curated:gemini-2026-09",
+   "version": 1,
+   "note": "also physical 'abandoned'",
+   "alt_lemmas": [
+    "opuścić"
+   ],
+   "felt": "state"
+  },
+  {
+   "id": "pl.emo.odrzucić",
+   "lemma": "odrzucić",
+   "pos": [
+    "ADJ"
+   ],
+   "kind": "emotion_label",
+   "strength": "strong",
+   "valence": -0.72,
+   "arousal": 0.52,
+   "emotions": {
+    "sadness": 0.85
+   },
+   "source": "curated:gemini-2026-09",
+   "version": 1,
+   "felt": "state"
+  },
+  {
+   "id": "pl.emo.wzgardzć",
+   "lemma": "wzgardzony",
+   "pos": [
+    "ADJ"
+   ],
+   "kind": "emotion_label",
+   "strength": "strong",
+   "valence": -0.74,
+   "arousal": 0.52,
+   "emotions": {
+    "disgust": 0.85
+   },
+   "source": "curated:gemini-2026-09",
+   "version": 1,
+   "alt_lemmas": [
+    "wzgardzić"
+   ],
+   "felt": "state"
+  },
+  {
+   "id": "pl.emo.poniżyć",
+   "lemma": "poniżyć",
+   "pos": [
+    "ADJ"
+   ],
+   "kind": "emotion_label",
+   "strength": "strong",
+   "valence": -0.82,
+   "arousal": 0.62,
+   "emotions": {
+    "sadness": 0.85
+   },
+   "source": "curated:gemini-2026-09",
+   "version": 1,
+   "felt": "state"
+  },
+  {
+   "id": "pl.emo.upokorzyć",
+   "lemma": "upokorzyć",
+   "pos": [
+    "ADJ"
+   ],
+   "kind": "emotion_label",
+   "strength": "strong",
+   "valence": -0.82,
+   "arousal": 0.62,
+   "emotions": {
+    "sadness": 0.85
+   },
+   "source": "curated:gemini-2026-09",
+   "version": 1,
+   "felt": "state"
+  },
+  {
+   "id": "pl.emo.znieważć",
+   "lemma": "znieważony",
+   "pos": [
+    "ADJ"
+   ],
+   "kind": "emotion_label",
+   "strength": "strong",
+   "valence": -0.82,
+   "arousal": 0.72,
+   "emotions": {
+    "anger": 0.85
+   },
+   "source": "curated:gemini-2026-09",
+   "version": 1,
+   "alt_lemmas": [
+    "znieważyć"
+   ],
+   "felt": "state"
+  },
+  {
+   "id": "pl.emo.skrzywdzć",
+   "lemma": "skrzywdzony",
+   "pos": [
+    "ADJ"
+   ],
+   "kind": "emotion_label",
+   "strength": "strong",
+   "valence": -0.72,
+   "arousal": 0.52,
+   "emotions": {
+    "sadness": 0.85
+   },
+   "source": "curated:gemini-2026-09",
+   "version": 1,
+   "alt_lemmas": [
+    "skrzywdzić"
+   ],
+   "felt": "state"
+  },
+  {
+   "id": "pl.emo.dotknąć",
+   "lemma": "dotknąć",
+   "pos": [
+    "ADJ"
+   ],
+   "kind": "emotion_label",
+   "strength": "weak",
+   "valence": -0.52,
+   "arousal": 0.42,
+   "emotions": {
+    "sadness": 0.85
+   },
+   "source": "curated:gemini-2026-09",
+   "version": 1,
+   "note": "dotknięty fizycznie vs urażony",
+   "felt": "state"
+  },
+  {
+   "id": "pl.emo.urazić",
+   "lemma": "urazić",
+   "pos": [
+    "ADJ"
+   ],
+   "kind": "emotion_label",
+   "strength": "strong",
+   "valence": -0.62,
+   "arousal": 0.52,
+   "emotions": {
+    "anger": 0.85
+   },
+   "source": "curated:gemini-2026-09",
+   "version": 1,
+   "felt": "state"
+  },
+  {
+   "id": "pl.emo.obrażć",
+   "lemma": "obrażony",
+   "pos": [
+    "ADJ"
+   ],
+   "kind": "emotion_label",
+   "strength": "strong",
+   "valence": -0.64,
+   "arousal": 0.52,
+   "emotions": {
+    "anger": 0.85
+   },
+   "source": "curated:gemini-2026-09",
+   "version": 1,
+   "alt_lemmas": [
+    "obrazić"
+   ],
+   "lemma_evidence": "carrier",
+   "felt": "state"
+  },
+  {
+   "id": "pl.emo.obrażalski",
+   "lemma": "obrażalski",
+   "pos": [
+    "ADJ"
+   ],
+   "kind": "emotion_label",
+   "strength": "strong",
+   "valence": -0.52,
+   "arousal": 0.42,
+   "emotions": {
+    "anger": 0.85
+   },
+   "source": "curated:gemini-2026-09",
+   "version": 1,
+   "felt": "trait"
+  },
+  {
+   "id": "pl.emo.zajaść",
+   "lemma": "zajadły",
+   "pos": [
+    "ADJ"
+   ],
+   "kind": "emotion_label",
+   "strength": "strong",
+   "valence": -0.74,
+   "arousal": 0.82,
+   "emotions": {
+    "anger": 0.85
+   },
+   "source": "curated:gemini-2026-09",
+   "version": 1,
+   "felt": "trait"
+  },
+  {
+   "id": "pl.emo.zawząć",
+   "lemma": "zawzięty",
+   "pos": [
+    "ADJ"
+   ],
+   "kind": "emotion_label",
+   "strength": "strong",
+   "valence": -0.64,
+   "arousal": 0.72,
+   "emotions": {
+    "anger": 0.85
+   },
+   "source": "curated:gemini-2026-09",
+   "version": 1,
+   "felt": "trait"
+  },
+  {
+   "id": "pl.emo.mściwy",
+   "lemma": "mściwy",
+   "pos": [
+    "ADJ"
+   ],
+   "kind": "emotion_label",
+   "strength": "strong",
+   "valence": -0.82,
+   "arousal": 0.74,
+   "emotions": {
+    "anger": 0.85
+   },
+   "source": "curated:gemini-2026-09",
+   "version": 1,
+   "felt": "trait"
+  },
+  {
+   "id": "pl.emo.nieubłagany",
+   "lemma": "nieubłagany",
+   "pos": [
+    "ADJ"
+   ],
+   "kind": "emotion_label",
+   "strength": "strong",
+   "valence": -0.72,
+   "arousal": 0.62,
+   "emotions": {
+    "anger": 0.85
+   },
+   "source": "curated:gemini-2026-09",
+   "version": 1,
+   "felt": "trait",
+   "note": "also evaluative 'relentless'"
+  },
+  {
+   "id": "pl.emo.bezwzględny",
+   "lemma": "bezwzględny",
+   "pos": [
+    "ADJ"
+   ],
+   "kind": "emotion_label",
+   "strength": "strong",
+   "valence": -0.82,
+   "arousal": 0.72,
+   "emotions": {
+    "anger": 0.85
+   },
+   "source": "curated:gemini-2026-09",
+   "version": 1,
+   "felt": "trait"
+  },
+  {
+   "id": "pl.emo.okrutny",
+   "lemma": "okrutny",
+   "pos": [
+    "ADJ"
+   ],
+   "kind": "emotion_label",
+   "strength": "strong",
+   "valence": -0.88,
+   "arousal": 0.78,
+   "emotions": {
+    "disgust": 0.85
+   },
+   "source": "curated:gemini-2026-09",
+   "version": 1,
+   "felt": "trait"
+  },
+  {
+   "id": "pl.emo.nienawistny",
+   "lemma": "nienawistny",
+   "pos": [
+    "ADJ"
+   ],
+   "kind": "emotion_label",
+   "strength": "strong",
+   "valence": -0.9,
+   "arousal": 0.82,
+   "emotions": {
+    "disgust": 0.85
+   },
+   "source": "curated:gemini-2026-09",
+   "version": 1,
+   "felt": "trait",
+   "note": "also evaluative"
+  },
+  {
+   "id": "pl.emo.pogardliwy",
+   "lemma": "pogardliwy",
+   "pos": [
+    "ADJ"
+   ],
+   "kind": "emotion_label",
+   "strength": "strong",
+   "valence": -0.74,
+   "arousal": 0.62,
+   "emotions": {
+    "disgust": 0.85
+   },
+   "source": "curated:gemini-2026-09",
+   "version": 1,
+   "felt": "trait",
+   "note": "also state reading"
+  },
+  {
+   "id": "pl.emo.wzgardliwy",
+   "lemma": "wzgardliwy",
+   "pos": [
+    "ADJ"
+   ],
+   "kind": "emotion_label",
+   "strength": "strong",
+   "valence": -0.72,
+   "arousal": 0.6,
+   "emotions": {
+    "disgust": 0.85
+   },
+   "source": "curated:gemini-2026-09",
+   "version": 1,
+   "felt": "trait"
+  },
+  {
+   "id": "pl.emo.lekceważący",
+   "lemma": "lekceważący",
+   "pos": [
+    "ADJ"
+   ],
+   "kind": "emotion_label",
+   "strength": "strong",
+   "valence": -0.52,
+   "arousal": 0.42,
+   "emotions": {
+    "disgust": 0.85
+   },
+   "source": "curated:gemini-2026-09",
+   "version": 1,
+   "felt": "trait"
+  },
+  {
+   "id": "pl.emo.zuchwać",
+   "lemma": "zuchwały",
+   "pos": [
+    "ADJ"
+   ],
+   "kind": "emotion_label",
+   "strength": "strong",
+   "valence": -0.42,
+   "arousal": 0.62,
+   "emotions": {
+    "anger": 0.85
+   },
+   "source": "curated:gemini-2026-09",
+   "version": 1,
+   "felt": "trait"
+  },
+  {
+   "id": "pl.emo.arogancki",
+   "lemma": "arogancki",
+   "pos": [
+    "ADJ"
+   ],
+   "kind": "emotion_label",
+   "strength": "strong",
+   "valence": -0.64,
+   "arousal": 0.52,
+   "emotions": {
+    "disgust": 0.85
+   },
+   "source": "curated:gemini-2026-09",
+   "version": 1,
+   "felt": "trait"
+  },
+  {
+   "id": "pl.emo.wynieść",
+   "lemma": "wynieść",
+   "pos": [
+    "ADJ"
+   ],
+   "kind": "emotion_label",
+   "strength": "strong",
+   "valence": -0.62,
+   "arousal": 0.48,
+   "emotions": {
+    "disgust": 0.85
+   },
+   "source": "curated:gemini-2026-09",
+   "version": 1,
+   "felt": "trait"
+  },
+  {
+   "id": "pl.emo.pyszny",
+   "lemma": "pyszny",
+   "pos": [
+    "ADJ"
+   ],
+   "kind": "emotion_label",
+   "strength": "weak",
+   "valence": -0.54,
+   "arousal": 0.52,
+   "emotions": {
+    "disgust": 0.85
+   },
+   "source": "curated:gemini-2026-09",
+   "version": 1,
+   "note": "also delicious",
+   "felt": "trait"
+  },
+  {
+   "id": "pl.emo.zarozumiać",
+   "lemma": "zarozumiały",
+   "pos": [
+    "ADJ"
+   ],
+   "kind": "emotion_label",
+   "strength": "strong",
+   "valence": -0.58,
+   "arousal": 0.44,
+   "emotions": {
+    "disgust": 0.85
+   },
+   "source": "curated:gemini-2026-09",
+   "version": 1,
+   "felt": "trait"
+  },
+  {
+   "id": "pl.emo.próżny",
+   "lemma": "próżny",
+   "pos": [
+    "ADJ"
+   ],
+   "kind": "emotion_label",
+   "strength": "weak",
+   "valence": -0.42,
+   "arousal": 0.32,
+   "emotions": {
+    "disgust": 0.85
+   },
+   "source": "curated:gemini-2026-09",
+   "version": 1,
+   "note": "próżny trud vs próżna osoba",
+   "felt": "trait"
+  },
+  {
+   "id": "pl.emo.chełpliwy",
+   "lemma": "chełpliwy",
+   "pos": [
+    "ADJ"
+   ],
+   "kind": "emotion_label",
+   "strength": "strong",
+   "valence": -0.52,
+   "arousal": 0.48,
+   "emotions": {
+    "disgust": 0.85
+   },
+   "source": "curated:gemini-2026-09",
+   "version": 1,
+   "felt": "trait"
+  },
+  {
+   "id": "pl.emo.podejrzliwy",
+   "lemma": "podejrzliwy",
+   "pos": [
+    "ADJ"
+   ],
+   "kind": "emotion_label",
+   "strength": "strong",
+   "valence": -0.52,
+   "arousal": 0.52,
+   "emotions": {
+    "fear": 0.85
+   },
+   "source": "curated:gemini-2026-09",
+   "version": 1,
+   "felt": "trait",
+   "note": "also state reading"
+  },
+  {
+   "id": "pl.emo.nieufny",
+   "lemma": "nieufny",
+   "pos": [
+    "ADJ"
+   ],
+   "kind": "emotion_label",
+   "strength": "strong",
+   "valence": -0.54,
+   "arousal": 0.42,
+   "emotions": {
+    "fear": 0.85
+   },
+   "source": "curated:gemini-2026-09",
+   "version": 1,
+   "felt": "trait",
+   "note": "also state reading"
+  },
+  {
+   "id": "pl.emo.bojaźliwy",
+   "lemma": "bojaźliwy",
+   "pos": [
+    "ADJ"
+   ],
+   "kind": "emotion_label",
+   "strength": "strong",
+   "valence": -0.64,
+   "arousal": 0.52,
+   "emotions": {
+    "fear": 0.85
+   },
+   "source": "curated:gemini-2026-09",
+   "version": 1,
+   "felt": "trait"
+  },
+  {
+   "id": "pl.emo.lękliwy",
+   "lemma": "lękliwy",
+   "pos": [
+    "ADJ"
+   ],
+   "kind": "emotion_label",
+   "strength": "strong",
+   "valence": -0.66,
+   "arousal": 0.54,
+   "emotions": {
+    "fear": 0.85
+   },
+   "source": "curated:gemini-2026-09",
+   "version": 1,
+   "felt": "trait",
+   "note": "also state reading"
+  },
+  {
+   "id": "pl.emo.strachliwy",
+   "lemma": "strachliwy",
+   "pos": [
+    "ADJ"
+   ],
+   "kind": "emotion_label",
+   "strength": "strong",
+   "valence": -0.62,
+   "arousal": 0.5,
+   "emotions": {
+    "fear": 0.85
+   },
+   "source": "curated:gemini-2026-09",
+   "version": 1,
+   "felt": "trait"
+  },
+  {
+   "id": "pl.emo.tchórzliwy",
+   "lemma": "tchórzliwy",
+   "pos": [
+    "ADJ"
+   ],
+   "kind": "emotion_label",
+   "strength": "strong",
+   "valence": -0.78,
+   "arousal": 0.52,
+   "emotions": {
+    "fear": 0.85
+   },
+   "source": "curated:gemini-2026-09",
+   "version": 1,
+   "felt": "trait"
+  },
+  {
+   "id": "pl.emo.płochliwy",
+   "lemma": "płochliwy",
+   "pos": [
+    "ADJ"
+   ],
+   "kind": "emotion_label",
+   "strength": "strong",
+   "valence": -0.52,
+   "arousal": 0.5,
+   "emotions": {
+    "fear": 0.85
+   },
+   "source": "curated:gemini-2026-09",
+   "version": 1,
+   "felt": "trait"
+  },
+  {
+   "id": "pl.emo.zastraszć",
+   "lemma": "zastraszony",
+   "pos": [
+    "ADJ"
+   ],
+   "kind": "emotion_label",
+   "strength": "strong",
+   "valence": -0.82,
+   "arousal": 0.72,
+   "emotions": {
+    "fear": 0.85
+   },
+   "source": "curated:gemini-2026-09",
+   "version": 1,
+   "alt_lemmas": [
+    "zastraszyć"
+   ],
+   "felt": "state"
+  },
+  {
+   "id": "pl.emo.sparaliżować",
+   "lemma": "sparaliżować",
+   "pos": [
+    "ADJ"
+   ],
+   "kind": "emotion_label",
+   "strength": "weak",
+   "valence": -0.82,
+   "arousal": 0.72,
+   "emotions": {
+    "fear": 0.85
+   },
+   "source": "curated:gemini-2026-09",
+   "version": 1,
+   "note": "paraliż medyczny vs sparaliżowany strachem",
+   "felt": "state"
+  },
+  {
+   "id": "pl.emo.znieruchomiać",
+   "lemma": "znieruchomiały",
+   "pos": [
+    "ADJ"
+   ],
+   "kind": "emotion_label",
+   "strength": "strong",
+   "valence": -0.62,
+   "arousal": 0.62,
+   "emotions": {
+    "fear": 0.85
+   },
+   "source": "curated:gemini-2026-09",
+   "version": 1,
+   "alt_lemmas": [
+    "znieruchomieć"
+   ],
+   "felt": "state"
+  },
+  {
+   "id": "pl.emo.skamieniać",
+   "lemma": "skamieniały",
+   "pos": [
+    "ADJ"
+   ],
+   "kind": "emotion_label",
+   "strength": "weak",
+   "valence": -0.72,
+   "arousal": 0.72,
+   "emotions": {
+    "fear": 0.85
+   },
+   "source": "curated:gemini-2026-09",
+   "version": 1,
+   "note": "skamieniałe drewno vs skamieniały z przerażenia",
+   "alt_lemmas": [
+    "skamienieć"
+   ],
+   "felt": "state"
+  },
+  {
+   "id": "pl.emo.osłupiać",
+   "lemma": "osłupiać",
+   "pos": [
+    "ADJ"
+   ],
+   "kind": "emotion_label",
+   "strength": "strong",
+   "valence": 0.05,
+   "arousal": 0.72,
+   "emotions": {
+    "surprise": 0.85
+   },
+   "source": "curated:gemini-2026-09",
+   "version": 1,
+   "felt": "state"
+  },
+  {
+   "id": "pl.emo.zdumiyć",
+   "lemma": "zdumiony",
+   "pos": [
+    "ADJ"
+   ],
+   "kind": "emotion_label",
+   "strength": "strong",
+   "valence": 0.32,
+   "arousal": 0.62,
+   "emotions": {
+    "surprise": 0.85
+   },
+   "source": "curated:gemini-2026-09",
+   "version": 1,
+   "alt_lemmas": [
+    "zdumieć"
+   ],
+   "felt": "state"
+  },
+  {
+   "id": "pl.emo.zaskoczyć",
+   "lemma": "zaskoczyć",
+   "pos": [
+    "ADJ"
+   ],
+   "kind": "emotion_label",
+   "strength": "strong",
+   "valence": 0.22,
+   "arousal": 0.62,
+   "emotions": {
+    "surprise": 0.85
+   },
+   "source": "curated:gemini-2026-09",
+   "version": 1,
+   "felt": "state"
+  },
+  {
+   "id": "pl.emo.zszokować",
+   "lemma": "zszokować",
+   "pos": [
+    "ADJ"
+   ],
+   "kind": "emotion_label",
+   "strength": "strong",
+   "valence": -0.45,
+   "arousal": 0.82,
+   "emotions": {
+    "surprise": 0.85
+   },
+   "source": "curated:gemini-2026-09",
+   "version": 1,
+   "felt": "state"
+  },
+  {
+   "id": "pl.emo.wstrząśnięty",
+   "lemma": "wstrząśnięty",
+   "pos": [
+    "ADJ"
+   ],
+   "kind": "emotion_label",
+   "strength": "strong",
+   "valence": -0.62,
+   "arousal": 0.8,
+   "emotions": {
+    "surprise": 0.85
+   },
+   "source": "curated:gemini-2026-09",
+   "version": 1,
+   "felt": "state"
+  },
+  {
+   "id": "pl.emo.przejąć",
+   "lemma": "przejąć",
+   "pos": [
+    "ADJ"
+   ],
+   "kind": "emotion_label",
+   "strength": "strong",
+   "valence": -0.42,
+   "arousal": 0.62,
+   "emotions": {
+    "fear": 0.85
+   },
+   "source": "curated:gemini-2026-09",
+   "version": 1,
+   "felt": "state"
+  },
+  {
+   "id": "pl.emo.poruszć",
+   "lemma": "poruszony",
+   "pos": [
+    "ADJ"
+   ],
+   "kind": "emotion_label",
+   "strength": "weak",
+   "valence": 0.72,
+   "arousal": 0.52,
+   "emotions": {
+    "joy": 0.85
+   },
+   "source": "curated:gemini-2026-09",
+   "version": 1,
+   "note": "poruszony przedmiot vs poruszony emocjonalnie",
+   "alt_lemmas": [
+    "poruszyć"
+   ],
+   "lemma_evidence": "carrier",
+   "felt": "state"
+  },
+  {
+   "id": "pl.emo.rozczulona",
+   "lemma": "rozczulona",
+   "pos": [
+    "ADJ"
+   ],
+   "kind": "emotion_label",
+   "strength": "strong",
+   "valence": 0.64,
+   "arousal": 0.42,
+   "emotions": {
+    "joy": 0.85
+   },
+   "source": "curated:gemini-2026-09",
+   "version": 1,
+   "alt_lemmas": [
+    "rozczulyć"
+   ],
+   "lemma_evidence": "carrier",
+   "felt": "state"
+  },
+  {
+   "id": "pl.emo.wzruszyć",
+   "lemma": "wzruszyć",
+   "pos": [
+    "ADJ"
+   ],
+   "kind": "emotion_label",
+   "strength": "strong",
+   "valence": 0.72,
+   "arousal": 0.52,
+   "emotions": {
+    "joy": 0.85
+   },
+   "source": "curated:gemini-2026-09",
+   "version": 1,
+   "felt": "state"
+  },
+  {
+   "id": "pl.emo.rozpromieniić",
+   "lemma": "rozpromieniony",
+   "pos": [
+    "ADJ"
+   ],
+   "kind": "emotion_label",
+   "strength": "strong",
+   "valence": 0.82,
+   "arousal": 0.68,
+   "emotions": {
+    "joy": 0.85
+   },
+   "source": "curated:gemini-2026-09",
+   "version": 1,
+   "alt_lemmas": [
+    "rozpromienić"
+   ],
+   "felt": "state"
+  },
+  {
+   "id": "pl.emo.rozradować",
+   "lemma": "rozradować",
+   "pos": [
+    "ADJ"
+   ],
+   "kind": "emotion_label",
+   "strength": "strong",
+   "valence": 0.88,
+   "arousal": 0.78,
+   "emotions": {
+    "joy": 0.85
+   },
+   "source": "curated:gemini-2026-09",
+   "version": 1,
+   "felt": "state"
+  },
+  {
+   "id": "pl.emo.uszczęśliwić",
+   "lemma": "uszczęśliwić",
+   "pos": [
+    "ADJ"
+   ],
+   "kind": "emotion_label",
+   "strength": "strong",
+   "valence": 0.92,
+   "arousal": 0.78,
+   "emotions": {
+    "joy": 0.85
+   },
+   "source": "curated:gemini-2026-09",
+   "version": 1,
+   "felt": "state"
+  },
+  {
+   "id": "pl.emo.zachwycć",
+   "lemma": "zachwycony",
+   "pos": [
+    "ADJ"
+   ],
+   "kind": "emotion_label",
+   "strength": "strong",
+   "valence": 0.88,
+   "arousal": 0.72,
+   "emotions": {
+    "joy": 0.85
+   },
+   "source": "curated:gemini-2026-09",
+   "version": 1,
+   "alt_lemmas": [
+    "zachwycić"
+   ],
+   "felt": "state"
+  },
+  {
+   "id": "pl.emo.wniebowząć",
+   "lemma": "wniebowzięty",
+   "pos": [
+    "ADJ"
+   ],
+   "kind": "emotion_label",
+   "strength": "strong",
+   "valence": 0.94,
+   "arousal": 0.82,
+   "emotions": {
+    "joy": 0.85
+   },
+   "source": "curated:gemini-2026-09",
+   "version": 1,
+   "alt_lemmas": [
+    "wniebowziąć"
+   ],
+   "felt": "state"
+  },
+  {
+   "id": "pl.emo.rozemocjonować",
+   "lemma": "rozemocjonować",
+   "pos": [
+    "ADJ"
+   ],
+   "kind": "emotion_label",
+   "strength": "strong",
+   "valence": 0.62,
+   "arousal": 0.72,
+   "emotions": {
+    "anticipation": 0.85
+   },
+   "source": "curated:gemini-2026-09",
+   "version": 1,
+   "felt": "state"
+  },
+  {
+   "id": "pl.emo.zafascynować",
+   "lemma": "zafascynować",
+   "pos": [
+    "ADJ"
+   ],
+   "kind": "emotion_label",
+   "strength": "strong",
+   "valence": 0.82,
+   "arousal": 0.62,
+   "emotions": {
+    "trust": 0.85
+   },
+   "source": "curated:gemini-2026-09",
+   "version": 1,
+   "felt": "state"
+  },
+  {
+   "id": "pl.emo.zaabsorbować",
+   "lemma": "zaabsorbować",
+   "pos": [
+    "ADJ"
+   ],
+   "kind": "emotion_label",
+   "strength": "strong",
+   "valence": 0.42,
+   "arousal": 0.42,
+   "emotions": {
+    "anticipation": 0.85
+   },
+   "source": "curated:gemini-2026-09",
+   "version": 1,
+   "felt": "state"
+  },
+  {
+   "id": "pl.emo.pochłonięta",
+   "lemma": "pochłonięta",
+   "pos": [
+    "ADJ"
+   ],
+   "kind": "emotion_label",
+   "strength": "weak",
+   "valence": 0.44,
+   "arousal": 0.42,
+   "emotions": {
+    "anticipation": 0.85
+   },
+   "source": "curated:gemini-2026-09",
+   "version": 1,
+   "note": "pochłonięty przez płomienie vs pracą",
+   "alt_lemmas": [
+    "pochłoniąć"
+   ],
+   "lemma_evidence": "carrier",
+   "felt": "state"
+  },
+  {
+   "id": "pl.emo.zainteresować",
+   "lemma": "zainteresować",
+   "pos": [
+    "ADJ"
+   ],
+   "kind": "emotion_label",
+   "strength": "strong",
+   "valence": 0.52,
+   "arousal": 0.42,
+   "emotions": {
+    "anticipation": 0.85
+   },
+   "source": "curated:gemini-2026-09",
+   "version": 1,
+   "felt": "state"
+  },
+  {
+   "id": "pl.emo.ciekawy",
+   "lemma": "ciekawy",
+   "pos": [
+    "ADJ"
+   ],
+   "kind": "emotion_label",
+   "strength": "weak",
+   "valence": 0.52,
+   "arousal": 0.52,
+   "emotions": {
+    "anticipation": 0.85
+   },
+   "source": "curated:gemini-2026-09",
+   "version": 1,
+   "note": "usually state; also evaluative (interesting)",
+   "felt": "state"
+  },
+  {
+   "id": "pl.emo.zniecierpliwić",
+   "lemma": "zniecierpliwić",
+   "pos": [
+    "ADJ"
+   ],
+   "kind": "emotion_label",
+   "strength": "strong",
+   "valence": -0.38,
+   "arousal": 0.68,
+   "emotions": {
+    "anticipation": 0.85
+   },
+   "source": "curated:gemini-2026-09",
+   "version": 1,
+   "alt_lemmas": [
+    "zniecierpliwić"
+   ],
+   "lemma_evidence": "carrier",
+   "felt": "state"
+  },
+  {
+   "id": "pl.emo.podenerwować",
+   "lemma": "podenerwować",
+   "pos": [
+    "ADJ"
+   ],
+   "kind": "emotion_label",
+   "strength": "strong",
+   "valence": -0.52,
+   "arousal": 0.62,
+   "emotions": {
+    "fear": 0.85
+   },
+   "source": "curated:gemini-2026-09",
+   "version": 1,
+   "felt": "state"
+  },
+  {
+   "id": "pl.emo.rozgorączkować",
+   "lemma": "rozgorączkować",
+   "pos": [
+    "ADJ"
+   ],
+   "kind": "emotion_label",
+   "strength": "weak",
+   "valence": 0.22,
+   "arousal": 0.82,
+   "emotions": {
+    "anticipation": 0.85
+   },
+   "source": "curated:gemini-2026-09",
+   "version": 1,
+   "note": "gorączka chorobowa vs rozgorączkowanie",
+   "felt": "state"
+  },
+  {
+   "id": "pl.emo.zatrwożyć",
+   "lemma": "zatrwożyć",
+   "pos": [
+    "ADJ"
+   ],
+   "kind": "emotion_label",
+   "strength": "strong",
+   "valence": -0.82,
+   "arousal": 0.78,
+   "emotions": {
+    "fear": 0.85
+   },
+   "source": "curated:gemini-2026-09",
+   "version": 1,
+   "felt": "state"
+  },
+  {
+   "id": "pl.emo.strwożona",
+   "lemma": "strwożona",
+   "pos": [
+    "ADJ"
+   ],
+   "kind": "emotion_label",
+   "strength": "strong",
+   "valence": -0.8,
+   "arousal": 0.76,
+   "emotions": {
+    "fear": 0.85
+   },
+   "source": "curated:gemini-2026-09",
+   "version": 1,
+   "alt_lemmas": [
+    "strwożić"
+   ],
+   "lemma_evidence": "carrier",
+   "felt": "state"
+  },
+  {
+   "id": "pl.emo.przelękniić",
+   "lemma": "przelękniony",
+   "pos": [
+    "ADJ"
+   ],
+   "kind": "emotion_label",
+   "strength": "strong",
+   "valence": -0.72,
+   "arousal": 0.72,
+   "emotions": {
+    "fear": 0.85
+   },
+   "source": "curated:gemini-2026-09",
+   "version": 1,
+   "alt_lemmas": [
+    "przelęknąć"
+   ],
+   "felt": "state"
+  },
+  {
+   "id": "pl.emo.uspokojć",
+   "lemma": "uspokojony",
+   "pos": [
+    "ADJ"
+   ],
+   "kind": "emotion_label",
+   "strength": "strong",
+   "valence": 0.72,
+   "arousal": 0.22,
+   "emotions": {
+    "trust": 0.85
+   },
+   "source": "curated:gemini-2026-09",
+   "version": 1,
+   "alt_lemmas": [
+    "uspokoić"
+   ],
+   "felt": "state"
+  },
+  {
+   "id": "pl.emo.zrelaksować",
+   "lemma": "zrelaksować",
+   "pos": [
+    "ADJ"
+   ],
+   "kind": "emotion_label",
+   "strength": "strong",
+   "valence": 0.78,
+   "arousal": 0.18,
+   "emotions": {
+    "trust": 0.85
+   },
+   "source": "curated:gemini-2026-09",
+   "version": 1,
+   "felt": "state"
+  },
+  {
+   "id": "pl.emo.wyciszić",
+   "lemma": "wyciszony",
+   "pos": [
+    "ADJ"
+   ],
+   "kind": "emotion_label",
+   "strength": "strong",
+   "valence": 0.7,
+   "arousal": 0.16,
+   "emotions": {
+    "trust": 0.85
+   },
+   "source": "curated:gemini-2026-09",
+   "version": 1,
+   "alt_lemmas": [
+    "wyciszyć"
+   ],
+   "lemma_evidence": "carrier",
+   "felt": "state"
+  },
+  {
+   "id": "pl.emo.pogodny",
+   "lemma": "pogodny",
+   "pos": [
+    "ADJ"
+   ],
+   "kind": "emotion_label",
+   "strength": "weak",
+   "valence": 0.78,
+   "arousal": 0.38,
+   "emotions": {
+    "joy": 0.85
+   },
+   "source": "curated:gemini-2026-09",
+   "version": 1,
+   "note": "also state reading or weather",
+   "felt": "trait"
+  },
+  {
+   "id": "pl.emo.beztroski",
+   "lemma": "beztroski",
+   "pos": [
+    "ADJ"
+   ],
+   "kind": "emotion_label",
+   "strength": "strong",
+   "valence": 0.82,
+   "arousal": 0.38,
+   "emotions": {
+    "joy": 0.85
+   },
+   "source": "curated:gemini-2026-09",
+   "version": 1,
+   "felt": "trait",
+   "note": "also state reading"
+  },
+  {
+   "id": "pl.emo.swobodny",
+   "lemma": "swobodny",
+   "pos": [
+    "ADJ"
+   ],
+   "kind": "emotion_label",
+   "strength": "strong",
+   "valence": 0.72,
+   "arousal": 0.28,
+   "emotions": {
+    "joy": 0.85
+   },
+   "source": "curated:gemini-2026-09",
+   "version": 1,
+   "felt": "state",
+   "note": "also trait reading"
+  },
+  {
+   "id": "pl.emo.odprężć",
+   "lemma": "odprężony",
+   "pos": [
+    "ADJ"
+   ],
+   "kind": "emotion_label",
+   "strength": "strong",
+   "valence": 0.72,
+   "arousal": 0.18,
+   "emotions": {
+    "joy": 0.85
+   },
+   "source": "curated:gemini-2026-09",
+   "version": 1,
+   "alt_lemmas": [
+    "odprężyć"
+   ],
+   "lemma_evidence": "carrier",
+   "felt": "state"
+  },
+  {
+   "id": "pl.emo.zrównoważony",
+   "lemma": "zrównoważony",
+   "pos": [
+    "ADJ"
+   ],
+   "kind": "emotion_label",
+   "strength": "strong",
+   "valence": 0.72,
+   "arousal": 0.28,
+   "emotions": {
+    "trust": 0.85
+   },
+   "source": "curated:gemini-2026-09",
+   "version": 1,
+   "felt": "trait"
+  },
+  {
+   "id": "pl.emo.opanować",
+   "lemma": "opanować",
+   "pos": [
+    "ADJ"
+   ],
+   "kind": "emotion_label",
+   "strength": "strong",
+   "valence": 0.72,
+   "arousal": 0.28,
+   "emotions": {
+    "trust": 0.85
+   },
+   "source": "curated:gemini-2026-09",
+   "version": 1,
+   "felt": "trait",
+   "note": "also state reading"
+  },
+  {
+   "id": "pl.emo.niewzruszić",
+   "lemma": "niewzruszony",
+   "pos": [
+    "ADJ"
+   ],
+   "kind": "emotion_label",
+   "strength": "strong",
+   "valence": 0.62,
+   "arousal": 0.22,
+   "emotions": {
+    "trust": 0.85
+   },
+   "source": "curated:gemini-2026-09",
+   "version": 1,
+   "alt_lemmas": [
+    "niewzruszyć"
+   ],
+   "felt": "trait"
+  },
+  {
+   "id": "pl.emo.nieugiąć",
+   "lemma": "nieugięty",
+   "pos": [
+    "ADJ"
+   ],
+   "kind": "emotion_label",
+   "strength": "strong",
+   "valence": 0.72,
+   "arousal": 0.52,
+   "emotions": {
+    "trust": 0.85
+   },
+   "source": "curated:gemini-2026-09",
+   "version": 1,
+   "alt_lemmas": [
+    "nieugiąć"
+   ],
+   "felt": "trait"
+  },
+  {
+   "id": "pl.emo.stanowczy",
+   "lemma": "stanowczy",
+   "pos": [
+    "ADJ"
+   ],
+   "kind": "emotion_label",
+   "strength": "strong",
+   "valence": 0.64,
+   "arousal": 0.52,
+   "emotions": {
+    "trust": 0.85
+   },
+   "source": "curated:gemini-2026-09",
+   "version": 1,
+   "felt": "trait"
+  },
+  {
+   "id": "pl.emo.zdecydowany",
+   "lemma": "zdecydowany",
+   "pos": [
+    "ADJ"
+   ],
+   "kind": "emotion_label",
+   "strength": "strong",
+   "valence": 0.64,
+   "arousal": 0.52,
+   "emotions": {
+    "trust": 0.85
+   },
+   "source": "curated:gemini-2026-09",
+   "version": 1,
+   "felt": "trait",
+   "note": "also state reading"
+  },
+  {
+   "id": "pl.emo.pewny",
+   "lemma": "pewny",
+   "pos": [
+    "ADJ"
+   ],
+   "kind": "emotion_label",
+   "strength": "strong",
+   "valence": 0.72,
+   "arousal": 0.42,
+   "emotions": {
+    "trust": 0.85
+   },
+   "source": "curated:gemini-2026-09",
+   "version": 1,
+   "felt": "state",
+   "note": "also trait 'self-confident'"
+  },
+  {
+   "id": "pl.emo.ufny",
+   "lemma": "ufny",
+   "pos": [
+    "ADJ"
+   ],
+   "kind": "emotion_label",
+   "strength": "strong",
+   "valence": 0.82,
+   "arousal": 0.38,
+   "emotions": {
+    "trust": 0.85
+   },
+   "source": "curated:gemini-2026-09",
+   "version": 1,
+   "felt": "trait",
+   "note": "also state reading"
+  },
+  {
+   "id": "pl.emo.lojalny",
+   "lemma": "lojalny",
+   "pos": [
+    "ADJ"
+   ],
+   "kind": "emotion_label",
+   "strength": "strong",
+   "valence": 0.82,
+   "arousal": 0.42,
+   "emotions": {
+    "trust": 0.85
+   },
+   "source": "curated:gemini-2026-09",
+   "version": 1,
+   "felt": "trait"
+  },
+  {
+   "id": "pl.emo.wierny",
+   "lemma": "wierny",
+   "pos": [
+    "ADJ"
+   ],
+   "kind": "emotion_label",
+   "strength": "strong",
+   "valence": 0.84,
+   "arousal": 0.42,
+   "emotions": {
+    "trust": 0.85
+   },
+   "source": "curated:gemini-2026-09",
+   "version": 1,
+   "felt": "trait"
+  },
+  {
+   "id": "pl.emo.oddać",
+   "lemma": "oddać",
+   "pos": [
+    "ADJ"
+   ],
+   "kind": "emotion_label",
+   "strength": "strong",
+   "valence": 0.82,
+   "arousal": 0.42,
+   "emotions": {
+    "trust": 0.85
+   },
+   "source": "curated:gemini-2026-09",
+   "version": 1,
+   "felt": "trait"
+  },
+  {
+   "id": "pl.emo.wdzięczny",
+   "lemma": "wdzięczny",
+   "pos": [
+    "ADJ"
+   ],
+   "kind": "emotion_label",
+   "strength": "strong",
+   "valence": 0.84,
+   "arousal": 0.42,
+   "emotions": {
+    "trust": 0.85
+   },
+   "source": "curated:gemini-2026-09",
+   "version": 1,
+   "felt": "state",
+   "note": "also evaluative 'graceful'"
+  },
+  {
+   "id": "pl.emo.wielkoduszny",
+   "lemma": "wielkoduszny",
+   "pos": [
+    "ADJ"
+   ],
+   "kind": "emotion_label",
+   "strength": "strong",
+   "valence": 0.84,
+   "arousal": 0.42,
+   "emotions": {
+    "trust": 0.85
+   },
+   "source": "curated:gemini-2026-09",
+   "version": 1,
+   "felt": "trait"
+  },
+  {
+   "id": "pl.emo.szlachetny",
+   "lemma": "szlachetny",
+   "pos": [
+    "ADJ"
+   ],
+   "kind": "emotion_label",
+   "strength": "strong",
+   "valence": 0.84,
+   "arousal": 0.42,
+   "emotions": {
+    "trust": 0.85
+   },
+   "source": "curated:gemini-2026-09",
+   "version": 1,
+   "felt": "trait"
+  },
+  {
+   "id": "pl.emo.prawa",
+   "lemma": "prawa",
+   "pos": [
+    "ADJ"
+   ],
+   "kind": "emotion_label",
+   "strength": "weak",
+   "valence": 0.82,
+   "arousal": 0.38,
+   "emotions": {
+    "trust": 0.85
+   },
+   "source": "curated:gemini-2026-09",
+   "version": 1,
+   "note": "prawa strona vs prawy człowiek",
+   "alt_lemmas": [
+    "prawo"
+   ],
+   "lemma_evidence": "carrier",
+   "felt": "trait"
+  },
+  {
+   "id": "pl.emo.uczciwy",
+   "lemma": "uczciwy",
+   "pos": [
+    "ADJ"
+   ],
+   "kind": "emotion_label",
+   "strength": "strong",
+   "valence": 0.82,
+   "arousal": 0.32,
+   "emotions": {
+    "trust": 0.85
+   },
+   "source": "curated:gemini-2026-09",
+   "version": 1,
+   "felt": "trait"
+  },
+  {
+   "id": "pl.emo.życzliwy",
+   "lemma": "życzliwy",
+   "pos": [
+    "ADJ"
+   ],
+   "kind": "emotion_label",
+   "strength": "strong",
+   "valence": 0.82,
+   "arousal": 0.38,
+   "emotions": {
+    "trust": 0.85
+   },
+   "source": "curated:gemini-2026-09",
+   "version": 1,
+   "felt": "trait"
+  },
+  {
+   "id": "pl.emo.serdeczny",
+   "lemma": "serdeczny",
+   "pos": [
+    "ADJ"
+   ],
+   "kind": "emotion_label",
+   "strength": "strong",
+   "valence": 0.82,
+   "arousal": 0.42,
+   "emotions": {
+    "joy": 0.85
+   },
+   "source": "curated:gemini-2026-09",
+   "version": 1,
+   "felt": "trait",
+   "note": "also state reading"
+  },
+  {
+   "id": "pl.emo.ciepły",
+   "lemma": "ciepły",
+   "pos": [
+    "ADJ"
+   ],
+   "kind": "emotion_label",
+   "strength": "weak",
+   "valence": 0.65,
+   "arousal": 0.3,
+   "emotions": {
+    "joy": 0.85
+   },
+   "source": "curated:gemini-2026-09",
+   "version": 1,
+   "note": "also temperature",
+   "felt": "trait"
+  },
+  {
+   "id": "pl.emo.czuły",
+   "lemma": "czuły",
+   "pos": [
+    "ADJ"
+   ],
+   "kind": "emotion_label",
+   "strength": "weak",
+   "valence": 0.82,
+   "arousal": 0.38,
+   "emotions": {
+    "joy": 0.85
+   },
+   "source": "curated:gemini-2026-09",
+   "version": 1,
+   "note": "also state reading or sensitive",
+   "felt": "trait"
+  },
+  {
+   "id": "pl.emo.kochający",
+   "lemma": "kochający",
+   "pos": [
+    "ADJ"
+   ],
+   "kind": "emotion_label",
+   "strength": "strong",
+   "valence": 0.92,
+   "arousal": 0.52,
+   "emotions": {
+    "joy": 0.85
+   },
+   "source": "curated:gemini-2026-09",
+   "version": 1,
+   "felt": "trait"
+  },
+  {
+   "id": "pl.emo.zakochać",
+   "lemma": "zakochać",
+   "pos": [
+    "ADJ"
+   ],
+   "kind": "emotion_label",
+   "strength": "strong",
+   "valence": 0.92,
+   "arousal": 0.72,
+   "emotions": {
+    "joy": 0.85
+   },
+   "source": "curated:gemini-2026-09",
+   "version": 1,
+   "felt": "state"
+  },
+  {
+   "id": "pl.emo.stęskniić",
+   "lemma": "stęskniony",
+   "pos": [
+    "ADJ"
+   ],
+   "kind": "emotion_label",
+   "strength": "strong",
+   "valence": -0.52,
+   "arousal": 0.52,
+   "emotions": {
+    "sadness": 0.85
+   },
+   "source": "curated:gemini-2026-09",
+   "version": 1,
+   "alt_lemmas": [
+    "stęsknić"
+   ],
+   "felt": "state"
+  },
+  {
+   "id": "pl.emo.rozmarzić",
+   "lemma": "rozmarzony",
+   "pos": [
+    "ADJ"
+   ],
+   "kind": "emotion_label",
+   "strength": "strong",
+   "valence": 0.62,
+   "arousal": 0.28,
+   "emotions": {
+    "joy": 0.85
+   },
+   "source": "curated:gemini-2026-09",
+   "version": 1,
+   "alt_lemmas": [
+    "rozmarzyć"
+   ],
+   "felt": "state"
+  },
+  {
+   "id": "pl.emo.nostalgiczny",
+   "lemma": "nostalgiczny",
+   "pos": [
+    "ADJ"
+   ],
+   "kind": "emotion_label",
+   "strength": "strong",
+   "valence": -0.32,
+   "arousal": 0.28,
+   "emotions": {
+    "sadness": 0.85
+   },
+   "source": "curated:gemini-2026-09",
+   "version": 1,
+   "felt": "state",
+   "note": "also trait reading"
+  },
+  {
+   "id": "pl.emo.sentymentalny",
+   "lemma": "sentymentalny",
+   "pos": [
+    "ADJ"
+   ],
+   "kind": "emotion_label",
+   "strength": "strong",
+   "valence": 0.62,
+   "arousal": 0.28,
+   "emotions": {
+    "joy": 0.85
+   },
+   "source": "curated:gemini-2026-09",
+   "version": 1,
+   "felt": "trait",
+   "note": "also state reading"
+  },
+  {
+   "id": "pl.emo.chłodny",
+   "lemma": "chłodny",
+   "pos": [
+    "ADJ"
+   ],
+   "kind": "emotion_label",
+   "strength": "weak",
+   "valence": -0.32,
+   "arousal": 0.22,
+   "emotions": {
+    "disgust": 0.85
+   },
+   "source": "curated:gemini-2026-09",
+   "version": 1,
+   "note": "also temperature",
+   "felt": "trait"
+  },
+  {
+   "id": "pl.emo.oziębły",
+   "lemma": "oziębły",
+   "pos": [
+    "ADJ"
+   ],
+   "kind": "emotion_label",
+   "strength": "strong",
+   "valence": -0.42,
+   "arousal": 0.22,
+   "emotions": {
+    "disgust": 0.85
+   },
+   "source": "curated:gemini-2026-09",
+   "version": 1,
+   "felt": "trait"
+  },
+  {
+   "id": "pl.emo.oschły",
+   "lemma": "oschły",
+   "pos": [
+    "ADJ"
+   ],
+   "kind": "emotion_label",
+   "strength": "strong",
+   "valence": -0.44,
+   "arousal": 0.32,
+   "emotions": {
+    "disgust": 0.85
+   },
+   "source": "curated:gemini-2026-09",
+   "version": 1,
+   "felt": "trait"
+  },
+  {
+   "id": "pl.emo.bezduszny",
+   "lemma": "bezduszny",
+   "pos": [
+    "ADJ"
+   ],
+   "kind": "emotion_label",
+   "strength": "strong",
+   "valence": -0.74,
+   "arousal": 0.42,
+   "emotions": {
+    "disgust": 0.85
+   },
+   "source": "curated:gemini-2026-09",
+   "version": 1,
+   "felt": "trait"
+  },
+  {
+   "id": "pl.emo.nieludzek",
+   "lemma": "nieludzki",
+   "pos": [
+    "ADJ"
+   ],
+   "kind": "emotion_label",
+   "strength": "strong",
+   "valence": -0.88,
+   "arousal": 0.72,
+   "emotions": {
+    "disgust": 0.85
+   },
+   "source": "curated:gemini-2026-09",
+   "version": 1,
+   "felt": "trait",
+   "note": "also evaluative"
+  },
+  {
+   "id": "pl.emo.bezwstydny",
+   "lemma": "bezwstydny",
+   "pos": [
+    "ADJ"
+   ],
+   "kind": "emotion_label",
+   "strength": "strong",
+   "valence": -0.72,
+   "arousal": 0.52,
+   "emotions": {
+    "disgust": 0.85
+   },
+   "source": "curated:gemini-2026-09",
+   "version": 1,
+   "felt": "trait"
+  },
+  {
+   "id": "pl.emo.sromotny",
+   "lemma": "sromotny",
+   "pos": [
+    "ADJ"
+   ],
+   "kind": "emotion_label",
+   "strength": "strong",
+   "valence": -0.82,
+   "arousal": 0.62,
+   "emotions": {
+    "disgust": 0.85
+   },
+   "source": "curated:gemini-2026-09",
+   "version": 1,
+   "felt": "evaluative"
+  },
+  {
+   "id": "pl.emo.hańbiący",
+   "lemma": "hańbiący",
+   "pos": [
+    "ADJ"
+   ],
+   "kind": "emotion_label",
+   "strength": "strong",
+   "valence": -0.82,
+   "arousal": 0.62,
+   "emotions": {
+    "disgust": 0.85
+   },
+   "source": "curated:gemini-2026-09",
+   "version": 1,
+   "felt": "evaluative"
+  },
+  {
+   "id": "pl.emo.obmierzły",
+   "lemma": "obmierzły",
+   "pos": [
+    "ADJ"
+   ],
+   "kind": "emotion_label",
+   "strength": "strong",
+   "valence": -0.82,
+   "arousal": 0.62,
+   "emotions": {
+    "disgust": 0.85
+   },
+   "source": "curated:gemini-2026-09",
+   "version": 1,
+   "felt": "evaluative"
+  },
+  {
+   "id": "pl.emo.obrzydliwy",
+   "lemma": "obrzydliwy",
+   "pos": [
+    "ADJ"
+   ],
+   "kind": "emotion_label",
+   "strength": "strong",
+   "valence": -0.92,
+   "arousal": 0.72,
+   "emotions": {
+    "disgust": 0.85
+   },
+   "source": "curated:gemini-2026-09",
+   "version": 1,
+   "felt": "evaluative"
+  },
+  {
+   "id": "pl.emo.odrażający",
+   "lemma": "odrażający",
+   "pos": [
+    "ADJ"
+   ],
+   "kind": "emotion_label",
+   "strength": "strong",
+   "valence": -0.92,
+   "arousal": 0.72,
+   "emotions": {
+    "disgust": 0.85
+   },
+   "source": "curated:gemini-2026-09",
+   "version": 1,
+   "felt": "evaluative"
+  },
+  {
+   "id": "pl.emo.odpychać",
+   "lemma": "odpychać",
+   "pos": [
+    "ADJ"
+   ],
+   "kind": "emotion_label",
+   "strength": "strong",
+   "valence": -0.82,
+   "arousal": 0.62,
+   "emotions": {
+    "disgust": 0.85
+   },
+   "source": "curated:gemini-2026-09",
+   "version": 1,
+   "felt": "evaluative"
+  },
+  {
+   "id": "pl.emo.wstrętny",
+   "lemma": "wstrętny",
+   "pos": [
+    "ADJ"
+   ],
+   "kind": "emotion_label",
+   "strength": "strong",
+   "valence": -0.92,
+   "arousal": 0.72,
+   "emotions": {
+    "disgust": 0.85
+   },
+   "source": "curated:gemini-2026-09",
+   "version": 1,
+   "felt": "evaluative"
+  },
+  {
+   "id": "pl.emo.paskudny",
+   "lemma": "paskudny",
+   "pos": [
+    "ADJ"
+   ],
+   "kind": "emotion_label",
+   "strength": "strong",
+   "valence": -0.72,
+   "arousal": 0.52,
+   "emotions": {
+    "disgust": 0.85
+   },
+   "source": "curated:gemini-2026-09",
+   "version": 1,
+   "felt": "evaluative"
+  },
+  {
+   "id": "pl.emo.nikczemny",
+   "lemma": "nikczemny",
+   "pos": [
+    "ADJ"
+   ],
+   "kind": "emotion_label",
+   "strength": "strong",
+   "valence": -0.92,
+   "arousal": 0.72,
+   "emotions": {
+    "disgust": 0.85
+   },
+   "source": "curated:gemini-2026-09",
+   "version": 1,
+   "felt": "trait",
+   "note": "also evaluative"
+  },
+  {
+   "id": "pl.emo.pość",
+   "lemma": "pość",
+   "pos": [
+    "ADJ"
+   ],
+   "kind": "emotion_label",
+   "strength": "strong",
+   "valence": -0.82,
+   "arousal": 0.62,
+   "emotions": {
+    "disgust": 0.85
+   },
+   "source": "curated:gemini-2026-09",
+   "version": 1,
+   "felt": "evaluative",
+   "note": "curated entry, base/contemptible"
+  },
+  {
+   "id": "pl.emo.mizerny",
+   "lemma": "mizerny",
+   "pos": [
+    "ADJ"
+   ],
+   "kind": "emotion_label",
+   "strength": "strong",
+   "valence": -0.52,
+   "arousal": 0.22,
+   "emotions": {
+    "sadness": 0.85
+   },
+   "source": "curated:gemini-2026-09",
+   "version": 1,
+   "felt": "evaluative"
+  },
+  {
+   "id": "pl.emo.nędzny",
+   "lemma": "nędzny",
+   "pos": [
+    "ADJ"
+   ],
+   "kind": "emotion_label",
+   "strength": "strong",
+   "valence": -0.72,
+   "arousal": 0.32,
+   "emotions": {
+    "sadness": 0.85
+   },
+   "source": "curated:gemini-2026-09",
+   "version": 1,
+   "felt": "evaluative"
+  },
+  {
+   "id": "pl.emo.biedny",
+   "lemma": "biedny",
+   "pos": [
+    "ADJ"
+   ],
+   "kind": "emotion_label",
+   "strength": "weak",
+   "valence": -0.52,
+   "arousal": 0.32,
+   "emotions": {
+    "sadness": 0.85
+   },
+   "source": "curated:gemini-2026-09",
+   "version": 1,
+   "note": "also financial poverty",
+   "felt": "evaluative"
+  },
+  {
+   "id": "pl.emo.skruszić",
+   "lemma": "skruszony",
+   "pos": [
+    "ADJ"
+   ],
+   "kind": "emotion_label",
+   "strength": "strong",
+   "valence": -0.62,
+   "arousal": 0.42,
+   "emotions": {
+    "sadness": 0.85
+   },
+   "source": "curated:gemini-2026-09",
+   "version": 1,
+   "alt_lemmas": [
+    "skruszyć"
+   ],
+   "felt": "state"
+  },
+  {
+   "id": "pl.emo.pokorny",
+   "lemma": "pokorny",
+   "pos": [
+    "ADJ"
+   ],
+   "kind": "emotion_label",
+   "strength": "strong",
+   "valence": 0.52,
+   "arousal": 0.32,
+   "emotions": {
+    "trust": 0.85
+   },
+   "source": "curated:gemini-2026-09",
+   "version": 1,
+   "felt": "trait"
+  },
+  {
+   "id": "pl.emo.ulec",
+   "lemma": "ulec",
+   "pos": [
+    "ADJ"
+   ],
+   "kind": "emotion_label",
+   "strength": "strong",
+   "valence": 0.42,
+   "arousal": 0.32,
+   "emotions": {
+    "trust": 0.85
+   },
+   "source": "curated:gemini-2026-09",
+   "version": 1,
+   "felt": "trait"
+  },
+  {
+   "id": "pl.emo.posłuszny",
+   "lemma": "posłuszny",
+   "pos": [
+    "ADJ"
+   ],
+   "kind": "emotion_label",
+   "strength": "strong",
+   "valence": 0.62,
+   "arousal": 0.32,
+   "emotions": {
+    "trust": 0.85
+   },
+   "source": "curated:gemini-2026-09",
+   "version": 1,
+   "felt": "trait"
+  },
+  {
+   "id": "pl.emo.buntowniczy",
+   "lemma": "buntowniczy",
+   "pos": [
+    "ADJ"
+   ],
+   "kind": "emotion_label",
+   "strength": "strong",
+   "valence": -0.42,
+   "arousal": 0.72,
+   "emotions": {
+    "anger": 0.85
+   },
+   "source": "curated:gemini-2026-09",
+   "version": 1,
+   "felt": "trait"
+  },
+  {
+   "id": "pl.emo.krnąbrny",
+   "lemma": "krnąbrny",
+   "pos": [
+    "ADJ"
+   ],
+   "kind": "emotion_label",
+   "strength": "strong",
+   "valence": -0.52,
+   "arousal": 0.62,
+   "emotions": {
+    "anger": 0.85
+   },
+   "source": "curated:gemini-2026-09",
+   "version": 1,
+   "felt": "trait"
+  },
+  {
+   "id": "pl.emo.upart",
+   "lemma": "uparty",
+   "pos": [
+    "ADJ"
+   ],
+   "kind": "emotion_label",
+   "strength": "strong",
+   "valence": -0.42,
+   "arousal": 0.52,
+   "emotions": {
+    "anger": 0.85
+   },
+   "source": "curated:gemini-2026-09",
+   "version": 1,
+   "felt": "trait"
+  },
+  {
+   "id": "pl.emo.nieposłuszny",
+   "lemma": "nieposłuszny",
+   "pos": [
+    "ADJ"
+   ],
+   "kind": "emotion_label",
+   "strength": "strong",
+   "valence": -0.52,
+   "arousal": 0.52,
+   "emotions": {
+    "anger": 0.85
+   },
+   "source": "curated:gemini-2026-09",
+   "version": 1,
+   "felt": "trait"
+  },
+  {
+   "id": "pl.emo.niegodziwy",
+   "lemma": "niegodziwy",
+   "pos": [
+    "ADJ"
+   ],
+   "kind": "emotion_label",
+   "strength": "strong",
+   "valence": -0.82,
+   "arousal": 0.62,
+   "emotions": {
+    "disgust": 0.85
+   },
+   "source": "curated:gemini-2026-09",
+   "version": 1,
+   "felt": "trait",
+   "note": "also evaluative"
+  },
+  {
+   "id": "pl.emo.złowroga",
+   "lemma": "złowroga",
+   "pos": [
+    "ADJ"
+   ],
+   "kind": "emotion_label",
+   "strength": "strong",
+   "valence": -0.82,
+   "arousal": 0.82,
+   "emotions": {
+    "fear": 0.85
+   },
+   "source": "curated:gemini-2026-09",
+   "version": 1,
+   "felt": "evaluative"
+  },
+  {
+   "id": "pl.emo.groźny",
+   "lemma": "groźny",
+   "pos": [
+    "ADJ"
+   ],
+   "kind": "emotion_label",
+   "strength": "strong",
+   "valence": -0.72,
+   "arousal": 0.82,
+   "emotions": {
+    "fear": 0.85
+   },
+   "source": "curated:gemini-2026-09",
+   "version": 1,
+   "felt": "evaluative",
+   "note": "also trait 'fierce'"
+  },
+  {
+   "id": "pl.emo.złowieszczyć",
+   "lemma": "złowieszczy",
+   "pos": [
+    "ADJ"
+   ],
+   "kind": "emotion_label",
+   "strength": "strong",
+   "valence": -0.82,
+   "arousal": 0.82,
+   "emotions": {
+    "fear": 0.85
+   },
+   "source": "curated:gemini-2026-09",
+   "version": 1,
+   "felt": "evaluative"
+  },
+  {
+   "id": "pl.emo.okropny",
+   "lemma": "okropny",
+   "pos": [
+    "ADJ"
+   ],
+   "kind": "emotion_label",
+   "strength": "strong",
+   "valence": -0.82,
+   "arousal": 0.72,
+   "emotions": {
+    "fear": 0.85
+   },
+   "source": "curated:gemini-2026-09",
+   "version": 1,
+   "felt": "evaluative"
+  },
+  {
+   "id": "pl.emo.straszny",
+   "lemma": "straszny",
+   "pos": [
+    "ADJ"
+   ],
+   "kind": "emotion_label",
+   "strength": "strong",
+   "valence": -0.82,
+   "arousal": 0.82,
+   "emotions": {
+    "fear": 0.85
+   },
+   "source": "curated:gemini-2026-09",
+   "version": 1,
+   "felt": "evaluative"
+  },
+  {
+   "id": "pl.emo.potworny",
+   "lemma": "potworny",
+   "pos": [
+    "ADJ"
+   ],
+   "kind": "emotion_label",
+   "strength": "strong",
+   "valence": -0.92,
+   "arousal": 0.82,
+   "emotions": {
+    "fear": 0.85
+   },
+   "source": "curated:gemini-2026-09",
+   "version": 1,
+   "felt": "evaluative"
+  },
+  {
+   "id": "pl.emo.makabryczny",
+   "lemma": "makabryczny",
+   "pos": [
+    "ADJ"
+   ],
+   "kind": "emotion_label",
+   "strength": "strong",
+   "valence": -0.92,
+   "arousal": 0.82,
+   "emotions": {
+    "fear": 0.85
+   },
+   "source": "curated:gemini-2026-09",
+   "version": 1,
+   "felt": "evaluative"
+  },
+  {
+   "id": "pl.emo.upiorny",
+   "lemma": "upiorny",
+   "pos": [
+    "ADJ"
+   ],
+   "kind": "emotion_label",
+   "strength": "strong",
+   "valence": -0.82,
+   "arousal": 0.82,
+   "emotions": {
+    "fear": 0.85
+   },
+   "source": "curated:gemini-2026-09",
+   "version": 1,
+   "felt": "evaluative"
+  },
+  {
+   "id": "pl.emo.cudowny",
+   "lemma": "cudowny",
+   "pos": [
+    "ADJ"
+   ],
+   "kind": "emotion_label",
+   "strength": "strong",
+   "valence": 0.92,
+   "arousal": 0.62,
+   "emotions": {
+    "joy": 0.85
+   },
+   "source": "curated:gemini-2026-09",
+   "version": 1,
+   "felt": "evaluative"
+  },
+  {
+   "id": "pl.emo.wspaniały",
+   "lemma": "wspaniały",
+   "pos": [
+    "ADJ"
+   ],
+   "kind": "emotion_label",
+   "strength": "strong",
+   "valence": 0.92,
+   "arousal": 0.62,
+   "emotions": {
+    "joy": 0.85
+   },
+   "source": "curated:gemini-2026-09",
+   "version": 1,
+   "felt": "evaluative"
+  },
+  {
+   "id": "pl.emo.błoga",
+   "lemma": "błoga",
+   "pos": [
+    "ADJ"
+   ],
+   "kind": "emotion_label",
+   "strength": "strong",
+   "valence": 0.86,
+   "arousal": 0.16,
+   "emotions": {
+    "joy": 0.85
+   },
+   "source": "curated:gemini-2026-09",
+   "version": 1,
+   "alt_lemmas": [
+    "błoga",
+    "błóg"
+   ],
+   "lemma_evidence": "carrier",
+   "felt": "state",
+   "note": "also atmosphere"
+  },
+  {
+   "id": "pl.emo.gorliwy",
+   "lemma": "gorliwy",
+   "pos": [
+    "ADJ"
+   ],
+   "kind": "emotion_label",
+   "strength": "strong",
+   "valence": 0.62,
+   "arousal": 0.62,
+   "emotions": {
+    "anticipation": 0.85
+   },
+   "source": "curated:gemini-2026-09",
+   "version": 1,
+   "felt": "trait",
+   "note": "also state reading"
+  },
+  {
+   "id": "pl.emo.żarliwy",
+   "lemma": "żarliwy",
+   "pos": [
+    "ADJ"
+   ],
+   "kind": "emotion_label",
+   "strength": "strong",
+   "valence": 0.72,
+   "arousal": 0.72,
+   "emotions": {
+    "anticipation": 0.85
+   },
+   "source": "curated:gemini-2026-09",
+   "version": 1,
+   "felt": "trait",
+   "note": "also state reading"
+  },
+  {
+   "id": "pl.emo.namiętny",
+   "lemma": "namiętny",
+   "pos": [
+    "ADJ"
+   ],
+   "kind": "emotion_label",
+   "strength": "strong",
+   "valence": 0.82,
+   "arousal": 0.82,
+   "emotions": {
+    "joy": 0.85
+   },
+   "source": "curated:gemini-2026-09",
+   "version": 1,
+   "felt": "trait",
+   "note": "also state reading"
+  },
+  {
+   "id": "pl.emo.szalony",
+   "lemma": "szalony",
+   "pos": [
+    "ADJ"
+   ],
+   "kind": "emotion_label",
+   "strength": "weak",
+   "valence": -0.42,
+   "arousal": 0.82,
+   "emotions": {
+    "anger": 0.85
+   },
+   "source": "curated:gemini-2026-09",
+   "version": 1,
+   "note": "also trait 'insane'",
+   "felt": "state"
+  },
+  {
+   "id": "pl.emo.obłąkać",
+   "lemma": "obłąkany",
+   "pos": [
+    "ADJ"
+   ],
+   "kind": "emotion_label",
+   "strength": "strong",
+   "valence": -0.72,
+   "arousal": 0.82,
+   "emotions": {
+    "fear": 0.85
+   },
+   "source": "curated:gemini-2026-09",
+   "version": 1,
+   "alt_lemmas": [
+    "obłąkać"
+   ],
+   "felt": "state"
+  },
+  {
+   "id": "pl.emo.zrezygnować",
+   "lemma": "zrezygnować",
+   "pos": [
+    "ADJ"
+   ],
+   "kind": "emotion_label",
+   "strength": "strong",
+   "valence": -0.72,
+   "arousal": 0.22,
+   "emotions": {
+    "sadness": 0.85
+   },
+   "source": "curated:gemini-2026-09",
+   "version": 1,
+   "felt": "state"
+  },
+  {
+   "id": "pl.emo.wrażliwy",
+   "lemma": "wrażliwy",
+   "pos": [
+    "ADJ"
+   ],
+   "kind": "emotion_label",
+   "strength": "strong",
+   "valence": 0.52,
+   "arousal": 0.42,
+   "emotions": {
+    "trust": 0.85
+   },
+   "source": "curated:gemini-2026-09",
+   "version": 1,
+   "felt": "trait",
+   "note": "also physical sensitivity"
+  },
+  {
+   "id": "pl.emo.czujny",
+   "lemma": "czujny",
+   "pos": [
+    "ADJ"
+   ],
+   "kind": "emotion_label",
+   "strength": "strong",
+   "valence": 0.42,
+   "arousal": 0.62,
+   "emotions": {
+    "anticipation": 0.85
+   },
+   "source": "curated:gemini-2026-09",
+   "version": 1,
+   "felt": "state",
+   "note": "also trait"
+  },
+  {
+   "id": "pl.emo.baczny",
+   "lemma": "baczny",
+   "pos": [
+    "ADJ"
+   ],
+   "kind": "emotion_label",
+   "strength": "strong",
+   "valence": 0.42,
+   "arousal": 0.52,
+   "emotions": {
+    "anticipation": 0.85
+   },
+   "source": "curated:gemini-2026-09",
+   "version": 1,
+   "felt": "state",
+   "note": "also trait"
+  },
+  {
+   "id": "pl.emo.ostrożny",
+   "lemma": "ostrożny",
+   "pos": [
+    "ADJ"
+   ],
+   "kind": "emotion_label",
+   "strength": "strong",
+   "valence": 0.32,
+   "arousal": 0.42,
+   "emotions": {
+    "anticipation": 0.85
+   },
+   "source": "curated:gemini-2026-09",
+   "version": 1,
+   "felt": "trait",
+   "note": "also state reading"
+  },
+  {
+   "id": "pl.emo.przezorny",
+   "lemma": "przezorny",
+   "pos": [
+    "ADJ"
+   ],
+   "kind": "emotion_label",
+   "strength": "strong",
+   "valence": 0.42,
+   "arousal": 0.42,
+   "emotions": {
+    "anticipation": 0.85
+   },
+   "source": "curated:gemini-2026-09",
+   "version": 1,
+   "felt": "trait"
+  },
+  {
+   "id": "pl.emo.rozważny",
+   "lemma": "rozważny",
+   "pos": [
+    "ADJ"
+   ],
+   "kind": "emotion_label",
+   "strength": "strong",
+   "valence": 0.62,
+   "arousal": 0.32,
+   "emotions": {
+    "trust": 0.85
+   },
+   "source": "curated:gemini-2026-09",
+   "version": 1,
+   "felt": "trait"
+  },
+  {
+   "id": "pl.emo.mądry",
+   "lemma": "mądry",
+   "pos": [
+    "ADJ"
+   ],
+   "kind": "emotion_label",
+   "strength": "strong",
+   "valence": 0.82,
+   "arousal": 0.42,
+   "emotions": {
+    "trust": 0.85
+   },
+   "source": "curated:gemini-2026-09",
+   "version": 1,
+   "felt": "trait"
+  },
+  {
+   "id": "pl.emo.rozsądny",
+   "lemma": "rozsądny",
+   "pos": [
+    "ADJ"
+   ],
+   "kind": "emotion_label",
+   "strength": "strong",
+   "valence": 0.72,
+   "arousal": 0.32,
+   "emotions": {
+    "trust": 0.85
+   },
+   "source": "curated:gemini-2026-09",
+   "version": 1,
+   "felt": "trait"
+  },
+  {
+   "id": "pl.emo.sprawiedliwy",
+   "lemma": "sprawiedliwy",
+   "pos": [
+    "ADJ"
+   ],
+   "kind": "emotion_label",
+   "strength": "strong",
+   "valence": 0.82,
+   "arousal": 0.42,
+   "emotions": {
+    "trust": 0.85
+   },
+   "source": "curated:gemini-2026-09",
+   "version": 1,
+   "felt": "trait"
+  },
+  {
+   "id": "pl.emo.cierpliwy",
+   "lemma": "cierpliwy",
+   "pos": [
+    "ADJ"
+   ],
+   "kind": "emotion_label",
+   "strength": "strong",
+   "valence": 0.72,
+   "arousal": 0.22,
+   "emotions": {
+    "trust": 0.85
+   },
+   "source": "curated:gemini-2026-09",
+   "version": 1,
+   "felt": "trait",
+   "note": "also state reading"
+  },
+  {
+   "id": "pl.emo.wyrozumiać",
+   "lemma": "wyrozumiały",
+   "pos": [
+    "ADJ"
+   ],
+   "kind": "emotion_label",
+   "strength": "strong",
+   "valence": 0.82,
+   "arousal": 0.32,
+   "emotions": {
+    "trust": 0.85
+   },
+   "source": "curated:gemini-2026-09",
+   "version": 1,
+   "felt": "trait"
+  },
+  {
+   "id": "pl.emo.łagodny",
+   "lemma": "łagodny",
+   "pos": [
+    "ADJ"
+   ],
+   "kind": "emotion_label",
+   "strength": "strong",
+   "valence": 0.82,
+   "arousal": 0.22,
+   "emotions": {
+    "trust": 0.85
+   },
+   "source": "curated:gemini-2026-09",
+   "version": 1,
+   "felt": "trait"
+  },
+  {
+   "id": "pl.emo.miłosierny",
+   "lemma": "miłosierny",
+   "pos": [
+    "ADJ"
+   ],
+   "kind": "emotion_label",
+   "strength": "strong",
+   "valence": 0.92,
+   "arousal": 0.32,
+   "emotions": {
+    "trust": 0.85
+   },
+   "source": "curated:gemini-2026-09",
+   "version": 1,
+   "felt": "trait"
+  },
+  {
+   "id": "pl.emo.litościwy",
+   "lemma": "litościwy",
+   "pos": [
+    "ADJ"
+   ],
+   "kind": "emotion_label",
+   "strength": "strong",
+   "valence": 0.82,
+   "arousal": 0.32,
+   "emotions": {
+    "trust": 0.85
+   },
+   "source": "curated:gemini-2026-09",
+   "version": 1,
+   "felt": "trait"
+  },
+  {
+   "id": "pl.emo.współczuć",
+   "lemma": "współczuć",
+   "pos": [
+    "ADJ"
+   ],
+   "kind": "emotion_label",
+   "strength": "strong",
+   "valence": 0.82,
+   "arousal": 0.42,
+   "emotions": {
+    "trust": 0.85
+   },
+   "source": "curated:gemini-2026-09",
+   "version": 1,
+   "felt": "state",
+   "note": "also trait"
+  },
+  {
+   "id": "pl.emo.dzielny",
+   "lemma": "dzielny",
+   "pos": [
+    "ADJ"
+   ],
+   "kind": "emotion_label",
+   "strength": "strong",
+   "valence": 0.88,
+   "arousal": 0.68,
+   "emotions": {
+    "trust": 0.85
+   },
+   "source": "curated:gemini-2026-09",
+   "version": 1,
+   "felt": "trait"
+  },
+  {
+   "id": "pl.emo.mężny",
+   "lemma": "mężny",
+   "pos": [
+    "ADJ"
+   ],
+   "kind": "emotion_label",
+   "strength": "strong",
+   "valence": 0.9,
+   "arousal": 0.7,
+   "emotions": {
+    "trust": 0.85
+   },
+   "source": "curated:gemini-2026-09",
+   "version": 1,
+   "felt": "trait"
+  },
+  {
+   "id": "pl.emo.odważny",
+   "lemma": "odważny",
+   "pos": [
+    "ADJ"
+   ],
+   "kind": "emotion_label",
+   "strength": "strong",
+   "valence": 0.84,
+   "arousal": 0.68,
+   "emotions": {
+    "trust": 0.85
+   },
+   "source": "curated:gemini-2026-09",
+   "version": 1,
+   "felt": "trait"
+  },
+  {
+   "id": "pl.emo.śmiały",
+   "lemma": "śmiały",
+   "pos": [
+    "ADJ"
+   ],
+   "kind": "emotion_label",
+   "strength": "strong",
+   "valence": 0.8,
+   "arousal": 0.62,
+   "emotions": {
+    "trust": 0.85
+   },
+   "source": "curated:gemini-2026-09",
+   "version": 1,
+   "felt": "trait"
+  },
+  {
+   "id": "pl.emo.nieulękły",
+   "lemma": "nieulękły",
+   "pos": [
+    "ADJ"
+   ],
+   "kind": "emotion_label",
+   "strength": "strong",
+   "valence": 0.9,
+   "arousal": 0.72,
+   "emotions": {
+    "trust": 0.85
+   },
+   "source": "curated:gemini-2026-09",
+   "version": 1,
+   "felt": "trait"
+  },
+  {
+   "id": "pl.emo.niezłomny",
+   "lemma": "niezłomny",
+   "pos": [
+    "ADJ"
+   ],
+   "kind": "emotion_label",
+   "strength": "strong",
+   "valence": 0.9,
+   "arousal": 0.62,
+   "emotions": {
+    "trust": 0.85
+   },
+   "source": "curated:gemini-2026-09",
+   "version": 1,
+   "felt": "trait"
+  },
+  {
+   "id": "pl.emo.heroiczny",
+   "lemma": "heroiczny",
+   "pos": [
+    "ADJ"
+   ],
+   "kind": "emotion_label",
+   "strength": "strong",
+   "valence": 0.92,
+   "arousal": 0.82,
+   "emotions": {
+    "trust": 0.85
+   },
+   "source": "curated:gemini-2026-09",
+   "version": 1,
+   "felt": "trait",
+   "note": "also evaluative"
+  },
+  {
+   "id": "pl.emo.bohaterski",
+   "lemma": "bohaterski",
+   "pos": [
+    "ADJ"
+   ],
+   "kind": "emotion_label",
+   "strength": "strong",
+   "valence": 0.92,
+   "arousal": 0.82,
+   "emotions": {
+    "trust": 0.85
+   },
+   "source": "curated:gemini-2026-09",
+   "version": 1,
+   "felt": "trait"
+  },
+  {
+   "id": "pl.emo.urażyć",
+   "lemma": "urażony",
+   "pos": [
+    "ADJ"
+   ],
+   "kind": "emotion_label",
+   "strength": "strong",
+   "valence": -0.62,
+   "arousal": 0.52,
+   "emotions": {
+    "anger": 0.85
+   },
+   "source": "curated:gemini-2026-09",
+   "version": 1,
+   "alt_lemmas": [
+    "urazić"
+   ],
+   "lemma_evidence": "carrier",
+   "felt": "state"
+  },
+  {
+   "id": "pl.emo.wrogi",
+   "lemma": "wrogi",
+   "pos": [
+    "ADJ"
+   ],
+   "kind": "emotion_label",
+   "strength": "strong",
+   "valence": -0.72,
+   "arousal": 0.72,
+   "emotions": {
+    "anger": 0.85
+   },
+   "source": "curated:gemini-2026-09",
+   "version": 1,
+   "felt": "trait",
+   "note": "also state or evaluative"
+  },
+  {
+   "id": "pl.emo.zawistny",
+   "lemma": "zawistny",
+   "pos": [
+    "ADJ"
+   ],
+   "kind": "emotion_label",
+   "strength": "strong",
+   "valence": -0.82,
+   "arousal": 0.62,
+   "emotions": {
+    "disgust": 0.85
+   },
+   "source": "curated:gemini-2026-09",
+   "version": 1,
+   "felt": "trait"
+  },
+  {
+   "id": "pl.emo.zalękniony",
+   "lemma": "zalękniony",
+   "pos": [
+    "ADJ"
+   ],
+   "kind": "emotion_label",
+   "strength": "strong",
+   "valence": -0.72,
+   "arousal": 0.62,
+   "emotions": {
+    "fear": 0.85
+   },
+   "source": "curated:gemini-2026-09",
+   "version": 1,
+   "alt_lemmas": [
+    "zalęknąć"
+   ],
+   "lemma_evidence": "carrier",
+   "felt": "state"
+  },
+  {
+   "id": "pl.emo.przestraszyć",
+   "lemma": "przestraszyć",
+   "pos": [
+    "ADJ"
+   ],
+   "kind": "emotion_label",
+   "strength": "strong",
+   "valence": -0.82,
+   "arousal": 0.78,
+   "emotions": {
+    "fear": 0.85
+   },
+   "source": "curated:gemini-2026-09",
+   "version": 1,
+   "alt_lemmas": [
+    "przestraszyć"
+   ],
+   "lemma_evidence": "carrier",
+   "felt": "state"
+  },
+  {
+   "id": "pl.emo.onieśmielć",
+   "lemma": "onieśmielony",
+   "pos": [
+    "ADJ"
+   ],
+   "kind": "emotion_label",
+   "strength": "strong",
+   "valence": -0.32,
+   "arousal": 0.42,
+   "emotions": {
+    "fear": 0.85
+   },
+   "source": "curated:gemini-2026-09",
+   "version": 1,
+   "alt_lemmas": [
+    "onieśmielić"
+   ],
+   "lemma_evidence": "carrier",
+   "felt": "state"
+  },
+  {
+   "id": "pl.emo.wstydliwy",
+   "lemma": "wstydliwy",
+   "pos": [
+    "ADJ"
+   ],
+   "kind": "emotion_label",
+   "strength": "strong",
+   "valence": -0.52,
+   "arousal": 0.42,
+   "emotions": {
+    "sadness": 0.85
+   },
+   "source": "curated:gemini-2026-09",
+   "version": 1,
+   "felt": "trait",
+   "note": "also shameful"
+  },
+  {
+   "id": "pl.emo.uradować",
+   "lemma": "uradować",
+   "pos": [
+    "ADJ"
+   ],
+   "kind": "emotion_label",
+   "strength": "strong",
+   "valence": 0.92,
+   "arousal": 0.72,
+   "emotions": {
+    "joy": 0.85
+   },
+   "source": "curated:gemini-2026-09",
+   "version": 1,
+   "alt_lemmas": [
+    "uradować"
+   ],
+   "lemma_evidence": "carrier",
+   "felt": "state"
+  },
+  {
+   "id": "pl.emo.rozbawić",
+   "lemma": "rozbawić",
+   "pos": [
+    "ADJ"
+   ],
+   "kind": "emotion_label",
+   "strength": "strong",
+   "valence": 0.82,
+   "arousal": 0.62,
+   "emotions": {
+    "joy": 0.85
+   },
+   "source": "curated:gemini-2026-09",
+   "version": 1,
+   "alt_lemmas": [
+    "rozbawić"
+   ],
+   "lemma_evidence": "carrier",
+   "felt": "state"
+  },
+  {
+   "id": "pl.emo.rozanielć",
+   "lemma": "rozanielony",
+   "pos": [
+    "ADJ"
+   ],
+   "kind": "emotion_label",
+   "strength": "strong",
+   "valence": 0.92,
+   "arousal": 0.52,
+   "emotions": {
+    "joy": 0.85
+   },
+   "source": "curated:gemini-2026-09",
+   "version": 1,
+   "alt_lemmas": [
+    "rozanielić"
+   ],
+   "lemma_evidence": "carrier",
+   "felt": "state"
+  },
+  {
+   "id": "pl.emo.przerażać",
+   "lemma": "przerażać",
+   "pos": [
+    "ADJ"
+   ],
+   "kind": "emotion_label",
+   "strength": "strong",
+   "valence": -0.85,
+   "arousal": 0.85,
+   "emotions": {
+    "fear": 0.85
+   },
+   "source": "curated:gemini-2026-09",
+   "version": 1,
+   "felt": "evaluative"
+  },
+  {
+   "id": "pl.emo.zmieszać",
+   "lemma": "zmieszać",
+   "pos": [
+    "ADJ"
+   ],
+   "kind": "emotion_label",
+   "strength": "strong",
+   "valence": -0.3,
+   "arousal": 0.5,
+   "emotions": {
+    "surprise": 0.85
+   },
+   "source": "curated:gemini-2026-09",
+   "version": 1,
+   "alt_lemmas": [
+    "zmieszać"
+   ],
+   "lemma_evidence": "carrier",
+   "felt": "state"
+  },
+  {
+   "id": "pl.emo.skonsternować",
+   "lemma": "skonsternować",
+   "pos": [
+    "ADJ"
+   ],
+   "kind": "emotion_label",
+   "strength": "strong",
+   "valence": -0.4,
+   "arousal": 0.6,
+   "emotions": {
+    "surprise": 0.85
+   },
+   "source": "curated:gemini-2026-09",
+   "version": 1,
+   "alt_lemmas": [
+    "skonsternować"
+   ],
+   "lemma_evidence": "carrier",
+   "felt": "state"
+  },
+  {
+   "id": "pl.emo.zdezorientować",
+   "lemma": "zdezorientować",
+   "pos": [
+    "ADJ"
+   ],
+   "kind": "emotion_label",
+   "strength": "strong",
+   "valence": -0.4,
+   "arousal": 0.6,
+   "emotions": {
+    "surprise": 0.85
+   },
+   "source": "curated:gemini-2026-09",
+   "version": 1,
+   "alt_lemmas": [
+    "zdezorientować"
+   ],
+   "lemma_evidence": "carrier",
+   "felt": "state"
+  },
+  {
+   "id": "pl.emo.oszołomiyć",
+   "lemma": "oszołomiony",
+   "pos": [
+    "ADJ"
+   ],
+   "kind": "emotion_label",
+   "strength": "strong",
+   "valence": -0.3,
+   "arousal": 0.7,
+   "emotions": {
+    "surprise": 0.85
+   },
+   "source": "curated:gemini-2026-09",
+   "version": 1,
+   "alt_lemmas": [
+    "oszołomić"
+   ],
+   "lemma_evidence": "carrier",
+   "felt": "state"
+  },
+  {
+   "id": "pl.emo.otumaniyć",
+   "lemma": "otumaniony",
+   "pos": [
+    "ADJ"
+   ],
+   "kind": "emotion_label",
+   "strength": "strong",
+   "valence": -0.4,
+   "arousal": 0.6,
+   "emotions": {
+    "surprise": 0.85
+   },
+   "source": "curated:gemini-2026-09",
+   "version": 1,
+   "alt_lemmas": [
+    "otumanić"
+   ],
+   "lemma_evidence": "carrier",
+   "felt": "state"
+  },
+  {
+   "id": "pl.emo.zauroczć",
+   "lemma": "zauroczony",
+   "pos": [
+    "ADJ"
+   ],
+   "kind": "emotion_label",
+   "strength": "strong",
+   "valence": 0.8,
+   "arousal": 0.6,
+   "emotions": {
+    "joy": 0.85
+   },
+   "source": "curated:gemini-2026-09",
+   "version": 1,
+   "alt_lemmas": [
+    "zauroczyć"
+   ],
+   "lemma_evidence": "carrier",
+   "felt": "state"
+  },
+  {
+   "id": "pl.emo.oczarować",
+   "lemma": "oczarować",
+   "pos": [
+    "ADJ"
+   ],
+   "kind": "emotion_label",
+   "strength": "strong",
+   "valence": 0.85,
+   "arousal": 0.6,
+   "emotions": {
+    "joy": 0.85
+   },
+   "source": "curated:gemini-2026-09",
+   "version": 1,
+   "alt_lemmas": [
+    "oczarować"
+   ],
+   "lemma_evidence": "carrier",
+   "felt": "state"
+  },
+  {
+   "id": "pl.emo.zawiedzić",
+   "lemma": "zawiedziony",
+   "pos": [
+    "ADJ"
+   ],
+   "kind": "emotion_label",
+   "strength": "strong",
+   "valence": -0.7,
+   "arousal": 0.5,
+   "emotions": {
+    "sadness": 0.85
+   },
+   "source": "curated:gemini-2026-09",
+   "version": 1,
+   "alt_lemmas": [
+    "zawieść"
+   ],
+   "lemma_evidence": "carrier",
+   "felt": "state"
+  },
+  {
+   "id": "pl.emo.troskliwy",
+   "lemma": "troskliwy",
+   "pos": [
+    "ADJ"
+   ],
+   "kind": "emotion_label",
+   "strength": "strong",
+   "valence": 0.8,
+   "arousal": 0.4,
+   "emotions": {
+    "trust": 0.85
+   },
+   "source": "curated:gemini-2026-09",
+   "version": 1,
+   "felt": "trait",
+   "note": "also state reading"
+  },
+  {
+   "id": "pl.emo.opiekuńczyć",
+   "lemma": "opiekuńczy",
+   "pos": [
+    "ADJ"
+   ],
+   "kind": "emotion_label",
+   "strength": "strong",
+   "valence": 0.8,
+   "arousal": 0.4,
+   "emotions": {
+    "trust": 0.85
+   },
+   "source": "curated:gemini-2026-09",
+   "version": 1,
+   "felt": "trait"
+  },
+  {
+   "id": "pl.emo.nieczuła",
+   "lemma": "nieczuła",
+   "pos": [
+    "ADJ"
+   ],
+   "kind": "emotion_label",
+   "strength": "strong",
+   "valence": -0.7,
+   "arousal": 0.3,
+   "emotions": {
+    "disgust": 0.85
+   },
+   "source": "curated:gemini-2026-09",
+   "version": 1,
+   "alt_lemmas": [
+    "nieczuć"
+   ],
+   "lemma_evidence": "carrier",
+   "felt": "trait"
+  },
+  {
+   "id": "pl.emo.pobłażliwy",
+   "lemma": "pobłażliwy",
+   "pos": [
+    "ADJ"
+   ],
+   "kind": "emotion_label",
+   "strength": "strong",
+   "valence": 0.6,
+   "arousal": 0.3,
+   "emotions": {
+    "trust": 0.85
+   },
+   "source": "curated:gemini-2026-09",
+   "version": 1,
+   "felt": "trait"
+  },
+  {
+   "id": "pl.emo.łaskawa",
+   "lemma": "łaskawa",
+   "pos": [
+    "ADJ"
+   ],
+   "kind": "emotion_label",
+   "strength": "strong",
+   "valence": 0.75,
+   "arousal": 0.3,
+   "emotions": {
+    "trust": 0.85
+   },
+   "source": "curated:gemini-2026-09",
+   "version": 1,
+   "alt_lemmas": [
+    "łaskawy"
+   ],
+   "lemma_evidence": "carrier",
+   "felt": "trait"
+  },
+  {
+   "id": "pl.emo.dobrotliwy",
+   "lemma": "dobrotliwy",
+   "pos": [
+    "ADJ"
+   ],
+   "kind": "emotion_label",
+   "strength": "strong",
+   "valence": 0.8,
+   "arousal": 0.3,
+   "emotions": {
+    "trust": 0.85
+   },
+   "source": "curated:gemini-2026-09",
+   "version": 1,
+   "felt": "trait"
+  },
+  {
+   "id": "pl.emo.zaskoczony",
+   "lemma": "zaskoczony",
+   "pos": [
+    "ADJ"
+   ],
+   "kind": "emotion_label",
+   "strength": "strong",
+   "valence": 0.0,
+   "arousal": 0.7,
+   "emotions": {
+    "surprise": 0.9
+   },
+   "source": "curated:claude-2026-09",
+   "version": 1,
+   "alt_lemmas": [
+    "zaskoczyć"
+   ],
+   "felt": "state"
+  }
+ ]
+}

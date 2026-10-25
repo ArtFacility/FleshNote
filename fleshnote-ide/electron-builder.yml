@@ -7,13 +7,17 @@ publish:
   repo: FleshNote
 directories:
   buildResources: build
+# Only what the app runs: the built main, preload and renderer, its icons, and package.json.
+# electron-builder adds the runtime dependencies' node_modules itself; the renderer's libraries
+# are bundled by Vite and listed as devDependencies, so they aren't copied a second time.
+# A list of what to include (not what to leave out) keeps notes, docs, tools and the browser
+# build (out/web, VPS_DEPLOY.md) out of the installer without anyone having to remember.
 files:
-  - '!**/.vscode/*'
-  - '!src/*'
-  - '!electron.vite.config.{js,ts,mjs,cjs}'
-  - '!{.eslintcache,eslint.config.mjs,.prettierignore,.prettierrc.yaml,dev-app-update.yml,CHANGELOG.md,README.md}'
-  - '!{.env,.env.*,.npmrc,pnpm-lock.yaml}'
-  - '!{tsconfig.json,tsconfig.node.json,tsconfig.web.json}'
+  - out/main/**
+  - out/preload/**
+  - out/renderer/**
+  - resources/**
+  - package.json
 asarUnpack:
   - resources/**
 extraResources:
@@ -23,6 +27,15 @@ extraResources:
     to: Tutorial
   - from: src/renderer/src/locales
     to: locales
+# double-clicking a review file opens it in FleshNote
+fileAssociations:
+  - ext: flreview
+    name: FleshNote Review
+    description: FleshNote review file
+    role: Editor
+    # Linux packages (deb, snap, flatpak) register the type through this; an AppImage
+    # registers nothing on its own
+    mimeType: application/x-fleshnote-review
 win:
   executableName: fleshnote-ide
   icon: build/icon.png

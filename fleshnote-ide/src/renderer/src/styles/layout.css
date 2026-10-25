@@ -10,7 +10,7 @@
     display: flex;
     align-items: center;
     justify-content: space-between;
-    height: 38px;
+    height: var(--titlebar-h, 38px);
     padding: 0 16px;
     background: var(--bg-base);
     border-bottom: 1px solid var(--border-subtle);

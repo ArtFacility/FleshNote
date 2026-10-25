@@ -1,13 +1,16 @@
 import { useEditor, EditorContent } from '@tiptap/react'
+import { EditorState } from '@tiptap/pm/state'
+import PentimentoRecorder from '../utils/pentimentoRecorder'
+import { onBeforeClose } from '../utils/closeGuard'
 import StarterKit from '@tiptap/starter-kit'
 import Placeholder from '@tiptap/extension-placeholder'
 import CharacterCount from '@tiptap/extension-character-count'
-import Underline from '@tiptap/extension-underline'
 import Mention from '@tiptap/extension-mention'
 import { EntityLinkMark } from '../extensions/EntityLinkMark'
 import { TwistLinkMark } from '../extensions/TwistLinkMark'
 import { KnowledgeLinkMark } from '../extensions/KnowledgeLinkMark'
 import { RelationshipLinkMark } from '../extensions/RelationshipLinkMark'
+import { MilestoneLinkMark } from '../extensions/MilestoneLinkMark'
 import { TimeLinkMark } from '../extensions/TimeLinkMark'
 import { TodoHighlighter } from '../extensions/TodoHighlighter'
 import { SearchAndReplace } from '../extensions/SearchAndReplace'
@@ -16,6 +19,7 @@ import getSuggestionConfig from '../extensions/mentionSuggestion'
 import { useEffect, useRef, useState, useCallback, useMemo } from 'react'
 import { useTranslation } from 'react-i18next'
 import EntityContextMenu from './EntityContextMenu'
+import { addEntityToBoard, setAppearsFrom } from './sketchboard/boardActions'
 import AppendDescriptionPopup from './AppendDescriptionPopup'
 import MakeConnectionPopup from './MakeConnectionPopup'
 import CustomLorePopup from './CustomLorePopup'
@@ -23,6 +27,13 @@ import ForeshadowingPopup from './ForeshadowingPopup'
 import QuickNotePopup from './QuickNotePopup'
 import AnnotationPopup from './AnnotationPopup'
 import RelationshipTurningPointPopup from './RelationshipTurningPointPopup'
+import GroupActionPopup from './GroupActionPopup'
+
+const parseId = (val) => {
+  if (val === null || val === undefined || val === "") return null;
+  const num = Number(val);
+  return isNaN(num) ? String(val) : num;
+};
 import TimeOverridePopup from './TimeOverridePopup'
 import CalendarDatePicker from './CalendarDatePicker'
 import AddAliasPopup from './AddAliasPopup'
@@ -37,6 +48,7 @@ import FogMode from './focus-modes/FogMode'
 import MomentumMode from './focus-modes/MomentumMode'
 import SynonymPopup from './SynonymPopup'
 import TimeGutter from './TimeGutter'
+import PulseGutter from './PulseGutter'
 import { matchesHotkey } from '../utils/hotkeyMatcher'
 import KarolyEasterEgg from './KarolyEasterEgg'
 import EntityCommandPalette from './EntityCommandPalette'
@@ -137,6 +149,22 @@ function statusColor(status) {
   }
 }
 
+// Whether a project's language has Story Pulse weights, asked once per session
+const PULSE_SUPPORT = new Map()
+
+const DEFAULT_LINK_VISIBILITY = {
+  character: true,
+  location: true,
+  lore: true,
+  group: true,
+  twist: true,
+  quicknote: true,
+  annotation: true,
+  knowledge: true,
+  relationship: true,
+  milestone: true,
+  spellcheck: true
+}
 
 // ── Main Component ──────────────────────────────────────────────────────────
 
@@ -158,21 +186,69 @@ export default function Editor({
   calConfig,
   onConfigUpdate,
   scrollToWordOffset, // { wordOffset, timestamp } — triggers scroll to word position
+  scrollToCharTarget, // { chapterId, charOffset, snippet, timestamp } — caret to a paragraph (Story Pulse)
+  onCharTargetConsumed, // called once scrollToCharTarget has been applied
   janitorActionsRef,  // ref that receives { navigateToCharOffset, linkEntityAtOffset, replaceAtOffset }
   onJanitorTrigger,   // called when 100-word boundary crossed or 10s idle
+  pulseRefreshKey,    // bumps after each Janitor run: the Pulse gutter refetches its scores
   onEffectiveTimeChange // called when cursor time changes
 }) {
   const { t, i18n } = useTranslation()
   const saveTimeoutRef = useRef(null)
+  // The save waiting for its debounce, bound to the chapter it was typed in: when the
+  // chapter changes, the parent's save handler already targets the new one.
+  const pendingSaveRef = useRef(null)
 
-  const latestContentRef = useRef({ html: '', words: 0, isDirty: false })
-  const onUpdateRef = useRef(onUpdate)
+  // Run the waiting save now. Returns its promise (or undefined when nothing waits).
+  const flushPendingSave = () => {
+    const run = pendingSaveRef.current
+    if (!run) return undefined
+    clearTimeout(saveTimeoutRef.current)
+    return run()
+  }
+
+  // ── Pentimento telemetry (writing-process capture) ──────────────────────
+  const pentimentoRef = useRef(null)
+  const pentiLoadingRef = useRef(false) // true while content is being loaded programmatically
+  if (!pentimentoRef.current) pentimentoRef.current = new PentimentoRecorder(window.api)
+  const pentiEnabled = projectConfig?.pentimento_capture !== false // default on
+
+  // Open/seal a chained session as the chapter (or capture toggle) changes. The
+  // chapter being left is saved first, so its session's closing snapshot holds the
+  // last keystrokes.
+  useEffect(() => {
+    const rec = pentimentoRef.current
+    const saved = flushPendingSave()
+    if (chapter?.id && projectPath && pentiEnabled) {
+      rec.start(projectPath, chapter.id, true, { beforeSeal: saved })
+    } else {
+      rec.stop({ beforeSeal: saved })
+    }
+  }, [chapter?.id, projectPath, pentiEnabled])
+
+  // Unmount (closing the project): save, then seal the session.
+  useEffect(() => {
+    return () => {
+      const saved = flushPendingSave()
+      pentimentoRef.current?.stop({ beforeSeal: saved })
+    }
+  }, [])
   const lastJanitorWordCountRef = useRef(0)
   const janitorInactivityTimerRef = useRef(null)
 
+  // The Janitor triggers fire from timers set during typing; calling the prop
+  // captured back then would analyze the chapter as it was when the timer was
+  // set. Always call the latest callback, with the editor's current HTML.
+  const onJanitorTriggerRef = useRef(onJanitorTrigger)
   useEffect(() => {
-    onUpdateRef.current = onUpdate
-  }, [onUpdate])
+    onJanitorTriggerRef.current = onJanitorTrigger
+  }, [onJanitorTrigger])
+
+  // What the recorder should be recording right now (read by resumeRecording).
+  const recordTargetRef = useRef(null)
+  recordTargetRef.current = { projectPath, chapterId: chapter?.id, enabled: pentiEnabled }
+  // once unmounted, resumeRecording must not restart this editor's recorder
+  useEffect(() => () => { recordTargetRef.current = null }, [])
 
   // Expose flush method via janitorActionsRef (shared ref for editor actions)
   useEffect(() => {
@@ -180,32 +256,33 @@ export default function Editor({
       const prev = janitorActionsRef.current || {}
       janitorActionsRef.current = {
         ...prev,
-        flushSave: async () => {
-          if (saveTimeoutRef.current) {
-            clearTimeout(saveTimeoutRef.current)
-            saveTimeoutRef.current = null
+        flushSave: async () => { await flushPendingSave() },
+        // A sync is about to read and rewrite chapters: save, seal the writing
+        // session (its closing snapshot holds this device's text) and record
+        // nothing until resumeRecording, so text a sync brings in is never
+        // recorded as typed here.
+        pauseRecording: async () => {
+          const saved = flushPendingSave()
+          await pentimentoRef.current?.stop({ beforeSeal: saved })
+          await saved
+        },
+        resumeRecording: () => {
+          const target = recordTargetRef.current
+          if (target?.chapterId && target.projectPath && target.enabled) {
+            pentimentoRef.current?.start(target.projectPath, target.chapterId, true)
           }
-          if (latestContentRef.current.isDirty && onUpdateRef.current) {
-            await onUpdateRef.current(latestContentRef.current.html, latestContentRef.current.words)
-            latestContentRef.current.isDirty = false
-          }
-        }
+        },
       }
     }
   }, [janitorActionsRef])
 
-  useEffect(() => {
-    return () => {
-      // Flush any unsaved changes on unmount
-      if (saveTimeoutRef.current) {
-        clearTimeout(saveTimeoutRef.current)
-      }
-      if (latestContentRef.current.isDirty && onUpdateRef.current) {
-        onUpdateRef.current(latestContentRef.current.html, latestContentRef.current.words)
-        latestContentRef.current.isDirty = false
-      }
-    }
-  }, [])
+  // Closing the app: save, then seal the writing session (its closing snapshot
+  // reads the saved chapter).
+  useEffect(() => onBeforeClose(async () => {
+    const saved = flushPendingSave()
+    await pentimentoRef.current?.stop({ beforeSeal: saved })
+    await saved
+  }), [])
 
   // Search state: false | 'search' | 'replace'
   const [showSearch, setShowSearch] = useState(false)
@@ -213,29 +290,45 @@ export default function Editor({
   // Link visibility state
   const [showEyeDropdown, setShowEyeDropdown] = useState(false)
   const [linkVisibility, setLinkVisibility] = useState(() => {
-    return projectConfig?.link_visibility || {
-      character: true,
-      location: true,
-      lore: true,
-      twist: true,
-      quicknote: true,
-      annotation: true,
-      knowledge: true,
-      relationship: true,
-      spellcheck: true
+    let saved = null
+    try {
+      const local = localStorage.getItem(`fleshnote_link_visibility_${projectPath}`)
+      if (local) saved = JSON.parse(local)
+    } catch {}
+    if (!saved && projectConfig?.link_visibility) {
+      saved = projectConfig.link_visibility
     }
+    return { ...DEFAULT_LINK_VISIBILITY, ...(saved || {}) }
   })
 
+  const handleToggleLinkVisibility = useCallback((key, checked) => {
+    setLinkVisibility(prev => {
+      const next = { ...prev, [key]: checked }
+      try {
+        localStorage.setItem(`fleshnote_link_visibility_${projectPath}`, JSON.stringify(next))
+      } catch {}
+      onConfigUpdate?.(p => ({ ...p, link_visibility: next }))
+      if (projectPath) {
+        window.api.updateProjectConfig(projectPath, 'link_visibility', next, 'json')
+          .catch(err => console.error("Failed saving link visibility", err))
+      }
+      return next
+    })
+  }, [projectPath, onConfigUpdate])
+
   useEffect(() => {
-    if (projectPath && linkVisibility) {
-      window.api.updateProjectConfig(
-        projectPath,
-        'link_visibility',
-        linkVisibility,
-        'json'
-      ).catch(err => console.error("Failed saving link visibility", err))
+    let saved = null
+    try {
+      const local = localStorage.getItem(`fleshnote_link_visibility_${projectPath}`)
+      if (local) saved = JSON.parse(local)
+    } catch {}
+    if (!saved && projectConfig?.link_visibility) {
+      saved = projectConfig.link_visibility
     }
-  }, [linkVisibility, projectPath])
+    if (saved) {
+      setLinkVisibility(prev => ({ ...DEFAULT_LINK_VISIBILITY, ...prev, ...saved }))
+    }
+  }, [projectPath, projectConfig?.link_visibility])
 
   // Track latest entities for Mention suggestion
   const entitiesRef = useRef(entities)
@@ -252,6 +345,7 @@ export default function Editor({
   const [twistAtCursor, setTwistAtCursor] = useState(null)
   const [knowledgeAtCursor, setKnowledgeAtCursor] = useState(null)
   const [relationshipAtCursor, setRelationshipAtCursor] = useState(null)
+  const [milestoneAtCursor, setMilestoneAtCursor] = useState(null)
 
   // Popup state — only one popup active at a time
   const [activePopup, setActivePopup] = useState(null)
@@ -297,6 +391,14 @@ export default function Editor({
   const [timeMarkers, setTimeMarkers] = useState([])
   const [activeTimeMarkerId, setActiveTimeMarkerId] = useState(null)
   const [gutterMeasureTick, setGutterMeasureTick] = useState(0)
+  // Story Pulse gutter (inline-end side): only when the experimental setting is
+  // on and the project's language has intensity weights; off until toggled.
+  const pulseEnabled = projectConfig?.janitor_show_story_pulse === true
+  const pulseLanguage = projectConfig?.story_language || 'en'
+  const [pulseSupported, setPulseSupported] = useState(false)
+  const [pulseGutterVisible, setPulseGutterVisible] = useState(() => {
+    try { return localStorage.getItem('fleshnote.storyPulse.gutter') === 'true' } catch { return false }
+  })
   const editorColumnRef = useRef(null)
   const gutterMeasureTimeoutRef = useRef(null)
 
@@ -306,6 +408,36 @@ export default function Editor({
       .then(res => setTimeMarkers(res.markers || []))
       .catch(() => { })
   }, [projectPath, chapter?.id])
+
+  useEffect(() => {
+    if (!pulseEnabled || !projectPath) { setPulseSupported(false); return }
+    const key = `${projectPath}|${pulseLanguage}`
+    if (PULSE_SUPPORT.has(key)) { setPulseSupported(PULSE_SUPPORT.get(key)); return }
+    let live = true
+    window.api.storyPulse({ project_path: projectPath, language: pulseLanguage, cache_only: true })
+      .then(res => {
+        if (res?.status !== 'ok') return
+        PULSE_SUPPORT.set(key, res.supported === true)
+        if (live) setPulseSupported(res.supported === true)
+      })
+      .catch(() => { })
+    return () => { live = false }
+  }, [pulseEnabled, projectPath, pulseLanguage])
+
+  const togglePulseGutter = useCallback(() => {
+    setPulseGutterVisible(v => {
+      try { localStorage.setItem('fleshnote.storyPulse.gutter', String(!v)) } catch { /* per-viewer nicety only */ }
+      return !v
+    })
+  }, [])
+
+  // A short notice after a Sketchboard action from the context menu.
+  const [boardNotice, setBoardNotice] = useState(null)
+  useEffect(() => {
+    if (!boardNotice) return undefined
+    const timer = setTimeout(() => setBoardNotice(null), 5000)
+    return () => clearTimeout(timer)
+  }, [boardNotice])
 
   const effectiveWorldTime = useMemo(() => {
     if (activeTimeMarkerId) {
@@ -334,9 +466,12 @@ export default function Editor({
   const extensions = useMemo(() => [
     StarterKit.configure({
       codeBlock: false,
-      blockquote: false
+      blockquote: false,
+      undoRedo: {
+        depth: 500,
+        newGroupDelay: 500
+      }
     }),
-    Underline,
     Placeholder.configure({
       placeholder: t('editor.beginWriting', 'Begin writing...'),
       emptyEditorClass: 'is-editor-empty'
@@ -346,6 +481,7 @@ export default function Editor({
     TwistLinkMark,
     KnowledgeLinkMark,
     RelationshipLinkMark,
+    MilestoneLinkMark,
     TimeLinkMark,
     TodoHighlighter,
     SearchAndReplace,
@@ -363,6 +499,23 @@ export default function Editor({
         dir: i18n.dir()
       },
       handleDOMEvents: {
+          // Input provenance for Pentimento: classify how the upcoming transaction's
+          // text will arrive (hardware keyboard/IME vs paste vs undo vs spellcheck).
+          // Programmatic inserts (entity chips, AI, IDE features) never fire
+          // beforeinput and fall through to 'machine'.
+          beforeinput: (_view, event) => {
+            const src = PentimentoRecorder.sourceForInputType(event.inputType)
+            if (src) pentimentoRef.current?.hint(src)
+            return false
+          },
+          // Enter, Backspace and Delete are handled on keydown and never reach
+          // beforeinput, so they'd otherwise count as machine edits.
+          keydown: (_view, event) => {
+            if (!event.isComposing && (event.key === 'Enter' || event.key === 'Backspace' || event.key === 'Delete')) {
+              pentimentoRef.current?.hint('key')
+            }
+            return false
+          },
           mouseover: (view, event) => {
             const entityTarget = event.target.closest('[data-entity-type]')
             const twistTarget = event.target.closest('[data-twist-id]')
@@ -407,7 +560,7 @@ export default function Editor({
           if (knowledgeTarget) {
             const characterId = knowledgeTarget.getAttribute('data-character-id')
             if (characterId) {
-              onEntityClick?.({ type: 'character', id: parseInt(characterId), tab: 'knowledge' })
+              onEntityClick?.({ type: 'character', id: parseId(characterId), tab: 'knowledge' })
             }
             return true
           }
@@ -416,7 +569,17 @@ export default function Editor({
           if (relTarget) {
             const characterId = relTarget.getAttribute('data-character-id')
             if (characterId) {
-              onEntityClick?.({ type: 'character', id: parseInt(characterId), tab: 'relationships' })
+              onEntityClick?.({ type: 'character', id: parseId(characterId), tab: 'relationships' })
+            }
+            return true
+          }
+          // Check milestone links
+          const milestoneTarget = event.target.closest('[data-milestone-id]')
+          if (milestoneTarget) {
+            const groupId = milestoneTarget.getAttribute('data-group-id')
+            const milestoneId = milestoneTarget.getAttribute('data-milestone-id')
+            if (groupId) {
+              onEntityClick?.({ type: 'group', id: parseId(groupId), tab: 'history', highlightMilestoneId: milestoneId })
             }
             return true
           }
@@ -425,7 +588,7 @@ export default function Editor({
           if (twistTarget) {
             const twistType = twistTarget.getAttribute('data-twist-type')
             const twistId = twistTarget.getAttribute('data-twist-id')
-            onTwistClick?.({ twistType, twistId: parseInt(twistId) })
+            onTwistClick?.({ twistType, twistId: parseId(twistId) })
             return true
           }
           // Then entity links
@@ -444,7 +607,7 @@ export default function Editor({
               return true
             }
 
-            onEntityClick?.({ type: entityType, id: parseInt(entityId) })
+            onEntityClick?.({ type: entityType, id: parseId(entityId) })
             return true
           }
           return false
@@ -477,7 +640,7 @@ export default function Editor({
             if (target) {
               setEntityAtCursor({
                 type: target.getAttribute('data-entity-type'),
-                id: parseInt(target.getAttribute('data-entity-id'))
+                id: parseId(target.getAttribute('data-entity-id'))
               })
             } else {
               setEntityAtCursor(null)
@@ -488,7 +651,7 @@ export default function Editor({
             if (twistTarget) {
               setTwistAtCursor({
                 twistType: twistTarget.getAttribute('data-twist-type'),
-                twistId: parseInt(twistTarget.getAttribute('data-twist-id'))
+                twistId: parseId(twistTarget.getAttribute('data-twist-id'))
               })
             } else {
               setTwistAtCursor(null)
@@ -498,7 +661,7 @@ export default function Editor({
             const knowledgeTarget = event.target.closest('[data-knowledge-id]')
             if (knowledgeTarget) {
               setKnowledgeAtCursor({
-                knowledgeId: parseInt(knowledgeTarget.getAttribute('data-knowledge-id'))
+                knowledgeId: parseId(knowledgeTarget.getAttribute('data-knowledge-id'))
               })
             } else {
               setKnowledgeAtCursor(null)
@@ -508,10 +671,21 @@ export default function Editor({
             const relTarget = event.target.closest('[data-relationship-id]')
             if (relTarget) {
               setRelationshipAtCursor({
-                relationshipId: parseInt(relTarget.getAttribute('data-relationship-id'))
+                relationshipId: parseId(relTarget.getAttribute('data-relationship-id'))
               })
             } else {
               setRelationshipAtCursor(null)
+            }
+
+            // Detect if right-click was on a milestone link
+            const milestoneTarget = event.target.closest('[data-milestone-id]')
+            if (milestoneTarget) {
+              setMilestoneAtCursor({
+                milestoneId: milestoneTarget.getAttribute('data-milestone-id'),
+                groupId: parseId(milestoneTarget.getAttribute('data-group-id'))
+              })
+            } else {
+              setMilestoneAtCursor(null)
             }
 
             // Fetch typo suggestions for the right-clicked word (single word only)
@@ -541,31 +715,39 @@ export default function Editor({
         }
       }
     },
-    onUpdate: ({ editor }) => {
+    onUpdate: ({ editor, transaction, appendedTransactions }) => {
+      // Capture the writing process — but never the programmatic content-load.
+      if (!pentiLoadingRef.current) {
+        try { pentimentoRef.current?.onTransaction(transaction, appendedTransactions) } catch { /* telemetry must never break editing */ }
+      }
       if (onUpdate) {
         if (saveTimeoutRef.current) clearTimeout(saveTimeoutRef.current)
 
         const html = editor.getHTML()
         const words = editor.storage.characterCount.words()
+        // the chapter on screen, which may no longer be the one selected
+        const chapterId = chapter?.id
 
-        latestContentRef.current = { html, words, isDirty: true }
-
-        saveTimeoutRef.current = setTimeout(() => {
-          onUpdate(html, words)
-          latestContentRef.current.isDirty = false
-        }, 500)
+        const save = () => {
+          saveTimeoutRef.current = null
+          if (pendingSaveRef.current === save) pendingSaveRef.current = null
+          return onUpdate(html, words, chapterId)
+        }
+        pendingSaveRef.current = save
+        saveTimeoutRef.current = setTimeout(save, 500)
 
         // Janitor: trigger at 100-word boundaries
         const prevBoundary = Math.floor(lastJanitorWordCountRef.current / 100)
         const currBoundary = Math.floor(words / 100)
         if (currBoundary > prevBoundary) {
           lastJanitorWordCountRef.current = words
-          onJanitorTrigger?.()
+          onJanitorTriggerRef.current?.(html)
         }
       }
       // Janitor: 10-second inactivity trigger
       if (janitorInactivityTimerRef.current) clearTimeout(janitorInactivityTimerRef.current)
-      janitorInactivityTimerRef.current = setTimeout(() => onJanitorTrigger?.(), 10000)
+      janitorInactivityTimerRef.current = setTimeout(
+        () => onJanitorTriggerRef.current?.(editor.isDestroyed ? undefined : editor.getHTML()), 10000)
 
       // Debounced gutter re-measure on content change
       if (gutterMeasureTimeoutRef.current) clearTimeout(gutterMeasureTimeoutRef.current)
@@ -720,8 +902,41 @@ export default function Editor({
 
   // When chapter changes (or is reloaded from disk), load new content
   useEffect(() => {
-    if (editor && chapter?.content !== undefined) {
-      editor.commands.setContent(chapter.content || '')
+    if (editor && !editor.isDestroyed && chapter?.content !== undefined) {
+      // Suppress pentimento capture for this programmatic replacement.
+      pentiLoadingRef.current = true
+      try {
+        // preserveWhitespace keeps the spaces the writer typed: the default HTML parsing
+        // collapses runs of spaces and drops them at the start and end of paragraphs.
+        // Newlines inside text still read as spaces.
+        editor.commands.setContent(chapter.content || '', {
+          emitUpdate: false,
+          parseOptions: { preserveWhitespace: true }
+        })
+        // Reset undo/redo history so loading content does not become an undo step that can wipe the chapter
+        const cleanState = EditorState.create({
+          schema: editor.state.schema,
+          doc: editor.state.doc,
+          selection: editor.state.selection,
+          plugins: editor.state.plugins
+        })
+        editor.view.updateState(cleanState)
+      } catch (err) {
+        console.error('Failed to reset editor state history:', err)
+      } finally {
+        setTimeout(() => { pentiLoadingRef.current = false }, 0)
+      }
+      // Loading content emits no update (an update would save the loaded text and
+      // cancel the previous chapter's waiting save), so do here what typing would:
+      // count words from this chapter, re-measure the gutters, and run the Janitor
+      // (opening a chapter, a history restore or a sync reload; unchanged
+      // paragraphs come from the analysis cache).
+      lastJanitorWordCountRef.current = editor.storage.characterCount.words()
+      if (gutterMeasureTimeoutRef.current) clearTimeout(gutterMeasureTimeoutRef.current)
+      gutterMeasureTimeoutRef.current = setTimeout(() => setGutterMeasureTick(t => t + 1), 100)
+      setTimeout(() => {
+        if (!editor.isDestroyed) onJanitorTriggerRef.current?.(editor.getHTML())
+      }, 300)
     }
   }, [editor, chapter?.id, chapter?._rev])
 
@@ -849,8 +1064,88 @@ export default function Editor({
   useEffect(() => {
     if (!janitorActionsRef) return
 
+    // Find a passage by its text (review notes): the occurrence nearest `hint`,
+    // a plain-text offset counted over the editor's text nodes. Tries each of
+    // `texts` in turn; returns doc positions { from, to } or null.
+    const findPassage = (texts, hint = 0) => {
+      if (!editor || editor.isDestroyed) return null
+      const nodes = []
+      let plain = ''
+      editor.state.doc.descendants((node, pos) => {
+        if (!node.isText) return
+        nodes.push([plain.length, pos, node.text.length])
+        plain += node.text
+      })
+      const toPos = (off, isEnd) => {
+        for (const [start, pos, len] of nodes) {
+          if (off < start + len || (isEnd && off === start + len)) return pos + Math.max(0, off - start)
+        }
+        return null
+      }
+      const lower = plain.toLowerCase()
+      for (const text of texts) {
+        const q = (text || '').trim().toLowerCase()
+        if (!q) continue
+        let best = -1
+        for (let i = lower.indexOf(q); i !== -1; i = lower.indexOf(q, i + 1)) {
+          if (best < 0 || Math.abs(i - hint) < Math.abs(best - hint)) best = i
+        }
+        if (best < 0) continue
+        const from = toPos(best, false)
+        const to = toPos(best + q.length, true)
+        if (from != null && to != null) return { from, to }
+      }
+      return null
+    }
+    // A suggested rewrite may only replace text inside one paragraph: a quote
+    // that crosses paragraphs would merge them into one
+    const inOneBlock = (hit) => editor.state.doc.resolve(hit.from).sameParent(editor.state.doc.resolve(hit.to))
+
     janitorActionsRef.current = {
-      navigateToCharOffset(charOffset, matchedText = '') {
+      // keep flushSave / pauseRecording / resumeRecording set by the effect above
+      ...(janitorActionsRef.current || {}),
+      // Show a review note's passage: caret at its start (never a selection the
+      // next keystroke would replace) and a brief highlight drawn over the text
+      // without touching the document. False when the text is gone.
+      showPassage(texts, hint = 0) {
+        if (!editor || editor.isDestroyed) return false
+        const hit = findPassage(texts, hint)
+        if (!hit) return false
+        editor.commands.focus()
+        editor.commands.setTextSelection(hit.from)
+        editor.commands.scrollIntoView()
+        try {
+          const a = editor.view.domAtPos(hit.from)
+          const b = editor.view.domAtPos(hit.to)
+          const range = document.createRange()
+          range.setStart(a.node, a.offset)
+          range.setEnd(b.node, b.offset)
+          range.startContainer.parentElement?.scrollIntoView?.({ block: 'center' })
+          if (window.CSS?.highlights && window.Highlight) {
+            CSS.highlights.set('fn-review-passage', new window.Highlight(range))
+            setTimeout(() => CSS.highlights.delete('fn-review-passage'), 2600)
+          }
+        } catch { /* the highlight is decoration only */ }
+        return true
+      },
+      // Whether a review note's suggestion can be applied in place
+      canReplacePassage(texts, hint = 0) {
+        const hit = findPassage(texts, hint)
+        return !!hit && inOneBlock(hit)
+      },
+      // Replace a review note's passage with the reviewer's suggested text
+      replacePassage(texts, hint, replacement) {
+        const hit = findPassage(texts, hint)
+        if (!hit || !inOneBlock(hit)) return false
+        const chain = editor.chain().focus()
+        if (replacement) chain.insertContentAt(hit, { type: 'text', text: replacement })
+        else chain.deleteRange(hit)
+        chain.run()
+        return true
+      },
+      // caret: place the cursor at the match instead of selecting it (a paragraph
+      // jump must not leave text selected for the next keystroke to replace)
+      navigateToCharOffset(charOffset, matchedText = '', { caret = false } = {}) {
         if (!editor || editor.isDestroyed) return
         let plain = 0
         let approxPos = null
@@ -892,7 +1187,7 @@ export default function Editor({
 
         setTimeout(() => {
           editor.commands.focus()
-          if (matchedText && targetTo > targetFrom) {
+          if (matchedText && targetTo > targetFrom && !caret) {
             editor.commands.setTextSelection({ from: targetFrom, to: targetTo })
           } else {
             editor.commands.setTextSelection(targetFrom)
@@ -982,6 +1277,45 @@ export default function Editor({
       }
     }
   }, [editor, janitorActionsRef])
+
+  // Jump to a paragraph opened from elsewhere (Story Pulse lane): the target
+  // names its chapter, so it waits until that chapter's content is loaded. The
+  // content-load effect above runs first in the same commit, so the doc is current.
+  const appliedCharTargetRef = useRef(null)
+  useEffect(() => {
+    const target = scrollToCharTarget
+    if (!editor || editor.isDestroyed || !target || !chapter || chapter.content === undefined) return
+    if (String(chapter.id) !== String(target.chapterId) || appliedCharTargetRef.current === target.timestamp) return
+    appliedCharTargetRef.current = target.timestamp
+    if (target.passage) {
+      // a review note: find its text; when it's gone, land near where it was
+      if (janitorActionsRef?.current?.showPassage(target.passage.texts, target.passage.hint)) {
+        onCharTargetConsumed?.()
+        return
+      }
+      janitorActionsRef?.current?.navigateToCharOffset(target.passage.hint || 0, '', { caret: true })
+    } else {
+      janitorActionsRef?.current?.navigateToCharOffset(target.charOffset, target.snippet || '', { caret: true })
+    }
+    // opened from the Story Pulse lane: show the gutter so the paragraph's bar
+    // (and its correction pad) is right there; not saved as the default
+    if (target.showPulse) setPulseGutterVisible(true)
+    // one-shot: the Editor remounts when leaving the planner, and a target still
+    // set then would pull the caret back to this paragraph mid-writing
+    onCharTargetConsumed?.()
+    // brief flash on the paragraph, as for word-offset navigation
+    setTimeout(() => {
+      if (editor.isDestroyed) return
+      const { node } = editor.view.domAtPos(editor.state.selection.from) || {}
+      const el = node && (node.nodeType === Node.TEXT_NODE ? node.parentElement : node)
+      const block = el?.closest?.('p, li, blockquote') || el
+      if (!block?.style) return
+      block.scrollIntoView?.({ block: 'center' })
+      block.style.transition = 'background 0.3s'
+      block.style.background = 'rgba(196, 167, 76, 0.18)'
+      setTimeout(() => { block.style.background = '' }, 1600)
+    }, 200)
+  }, [editor, chapter?.id, chapter?._rev, scrollToCharTarget, janitorActionsRef])
 
   // ── Context menu handlers ───────────────────────────
 
@@ -1148,6 +1482,17 @@ export default function Editor({
           break
         }
 
+        case 'groupAction': {
+          let wordOffset = 0
+          if (editor) {
+            const selectionFrom = editor.state.selection.from
+            const textBefore = editor.state.doc.textBetween(0, selectionFrom, ' ')
+            wordOffset = textBefore.trim().split(/\s+/).filter(w => w.length > 0).length
+          }
+          setActivePopup({ type: 'groupAction', position: pos, data: { ...data, wordOffset } })
+          break
+        }
+
         case 'customLore':
           setActivePopup({ type: 'customLore', position: pos, data })
           break
@@ -1192,6 +1537,40 @@ export default function Editor({
           break
         }
 
+        case 'sketchboardAdd':
+          addEntityToBoard(projectPath, data.boardId, data.entity)
+            .then((nodeId) =>
+              setBoardNotice({
+                text: t('sketchboard.addedToBoard', 'Added {{name}} to {{board}}', {
+                  name: data.entity.name,
+                  board: data.boardName
+                }),
+                boardId: data.boardId,
+                nodeId
+              })
+            )
+            .catch(() =>
+              setBoardNotice({ text: t('sketchboard.boardActionFailed', 'The board could not be changed.') })
+            )
+          break
+
+        case 'sketchboardAppears':
+          setAppearsFrom(projectPath, data.boardId, data.nodeIds, chapter?.id, effectiveWorldTime)
+            .then(() =>
+              setBoardNotice({
+                text: t('sketchboard.appearsSet', '{{name}} appears on {{board}} from this chapter on', {
+                  name: data.entity.name,
+                  board: data.boardName
+                }),
+                boardId: data.boardId,
+                nodeId: data.nodeIds[0]
+              })
+            )
+            .catch(() =>
+              setBoardNotice({ text: t('sketchboard.boardActionFailed', 'The board could not be changed.') })
+            )
+          break
+
         case 'setAsPov':
           if (data?.entityId) {
             onChapterMetaUpdate?.({ pov_character_id: data.entityId })
@@ -1222,13 +1601,39 @@ export default function Editor({
           }
           break
 
+        case 'removeMilestoneLink':
+          if (editor) {
+            editor.chain().focus().unsetMilestoneLink().run()
+          }
+          break
+
+        case 'inspectMilestone':
+          if (data?.groupId) {
+            onEntityClick?.({
+              type: 'group',
+              id: parseId(data.groupId),
+              tab: 'history',
+              highlightMilestoneId: data.milestoneId
+            })
+          }
+          break
+
+        case 'inspectEntity':
+          if (data?.entityType && data?.entityId) {
+            onEntityClick?.({
+              type: data.entityType,
+              id: parseId(data.entityId)
+            })
+          }
+          break
+
         default:
           break
       }
 
       closeContextMenu()
     },
-    [ctxMenu, editor, closeContextMenu, onChapterMetaUpdate]
+    [ctxMenu, editor, closeContextMenu, onChapterMetaUpdate, projectPath, chapter?.id, effectiveWorldTime, t]
   )
 
   const closePopup = useCallback(() => {
@@ -1440,7 +1845,7 @@ export default function Editor({
             onChange={(e) => {
               const val = e.target.value
               onChapterMetaUpdate?.({
-                pov_character_id: val ? parseInt(val) : 0
+                pov_character_id: val ? parseId(val) : null
               })
             }}
           >
@@ -1627,18 +2032,20 @@ export default function Editor({
                 { key: 'character', label: t('editor.visCharacter', 'Characters') },
                 { key: 'location', label: t('editor.visLocation', 'Locations') },
                 { key: 'lore', label: t('editor.visLore', 'Items & Lore') },
+                { key: 'group', label: t('editor.visGroup', 'Factions & Groups') },
                 { key: 'twist', label: t('editor.visTwist', 'Twists & Foreshadows') },
                 { key: 'quicknote', label: t('editor.visQuicknote', 'Quick Notes') },
                 { key: 'annotation', label: t('editor.visAnnotation', 'Annotations') },
                 { key: 'knowledge', label: t('editor.visKnowledge', 'Knowledge Markers') },
                 { key: 'relationship', label: t('editor.visRelationship', 'Relationship Markers') },
+                { key: 'milestone', label: t('editor.visMilestone', 'Milestones') },
                 { key: 'spellcheck', label: t('editor.visSpellcheck', 'Spell Check Underlines') }
               ].map(item => (
                 <label key={item.key} style={{ display: 'flex', alignItems: 'center', gap: '8px', padding: '6px 4px', fontSize: '11px', fontFamily: 'var(--font-mono)', color: 'var(--text-secondary)', cursor: 'pointer' }}>
                   <input
                     type="checkbox"
-                    checked={linkVisibility[item.key]}
-                    onChange={(e) => setLinkVisibility(prev => ({ ...prev, [item.key]: e.target.checked }))}
+                    checked={linkVisibility[item.key] !== false}
+                    onChange={(e) => handleToggleLinkVisibility(item.key, e.target.checked)}
                     style={{ accentColor: 'var(--accent-amber)' }}
                   />
                   {item.label}
@@ -1657,6 +2064,19 @@ export default function Editor({
         >
           𐲎
         </button>
+        {pulseEnabled && pulseSupported && (
+          <button
+            className={`format-btn ${pulseGutterVisible ? 'active' : ''}`}
+            onClick={togglePulseGutter}
+            title={pulseGutterVisible ? t('storyPulse.gutterHide', 'Hide the Story Pulse beside the text') : t('storyPulse.gutterShow', 'Show the Story Pulse beside the text')}
+            aria-label={t('storyPulse.gutterShow', 'Show the Story Pulse beside the text')}
+            aria-pressed={pulseGutterVisible}
+          >
+            <svg width="14" height="14" viewBox="0 0 14 14" fill="none" stroke="currentColor" strokeWidth="1.4" strokeLinecap="round" aria-hidden="true">
+              <path d="M7 0.5 q 3.5 1.5 0 3 q -3.5 1.5 0 3 q 3.5 1.5 0 3 q -3.5 1.5 0 3" />
+            </svg>
+          </button>
+        )}
       </div>
 
       {/* ── Focus Mode Overlays ────────────────────────────── */}
@@ -1691,7 +2111,7 @@ export default function Editor({
         )}
 
         <div
-          className={`editor-content-wrapper ${!linkVisibility.character ? 'hide-character-links' : ''} ${!linkVisibility.location ? 'hide-location-links' : ''} ${!linkVisibility.lore ? 'hide-lore-links' : ''} ${!linkVisibility.twist ? 'hide-twist-links' : ''} ${!linkVisibility.quicknote ? 'hide-quicknote-links' : ''} ${!linkVisibility.annotation ? 'hide-annotation-links' : ''} ${!linkVisibility.knowledge ? 'hide-knowledge-links' : ''} ${!linkVisibility.relationship ? 'hide-relationship-links' : ''}`}
+          className={`editor-content-wrapper ${linkVisibility.character === false ? 'hide-character-links' : ''} ${linkVisibility.location === false ? 'hide-location-links' : ''} ${linkVisibility.lore === false ? 'hide-lore-links' : ''} ${linkVisibility.group === false ? 'hide-group-links' : ''} ${linkVisibility.twist === false ? 'hide-twist-links' : ''} ${linkVisibility.quicknote === false ? 'hide-quicknote-links' : ''} ${linkVisibility.annotation === false ? 'hide-annotation-links' : ''} ${linkVisibility.knowledge === false ? 'hide-knowledge-links' : ''} ${linkVisibility.relationship === false ? 'hide-relationship-links' : ''} ${linkVisibility.milestone === false ? 'hide-milestone-links' : ''}`}
           style={{
             flex: 1,
             minWidth: 0,
@@ -1699,9 +2119,12 @@ export default function Editor({
             overflowX: 'hidden',
             height: '100%',
             display: 'flex',
-            flexDirection: 'row'
+            flexDirection: 'column'
           }}
         >
+          {/* Inner row grows with the text (never shrinks below it), so side
+              gutters stretch to the full scroll height, not just the viewport */}
+          <div style={{ flex: '1 0 auto', display: 'flex', flexDirection: 'row' }}>
           {gutterVisible && chapter?.id && (
             <TimeGutter
               markers={timeMarkers}
@@ -1782,10 +2205,43 @@ export default function Editor({
             )}
             <EditorContent editor={editor} />
           </div>
+          {pulseEnabled && pulseSupported && pulseGutterVisible && chapter?.id && (
+            <PulseGutter
+              editor={editor}
+              projectPath={projectPath}
+              language={pulseLanguage}
+              chapterId={chapter.id}
+              editorColumnRef={editorColumnRef}
+              measureTick={gutterMeasureTick}
+              refreshKey={pulseRefreshKey}
+            />
+          )}
+          </div>
         </div>
       </div>
 
       {/* ── Overlays ──────────────────────────────────────── */}
+      {boardNotice && (
+        <div className="editor-notice" role="status">
+          <span>{boardNotice.text}</span>
+          {boardNotice.boardId && (
+            <button
+              type="button"
+              className="editor-notice-btn"
+              onClick={() => {
+                window.dispatchEvent(
+                  new CustomEvent('openSketchboard', {
+                    detail: { boardId: boardNotice.boardId, nodeId: boardNotice.nodeId }
+                  })
+                )
+                setBoardNotice(null)
+              }}
+            >
+              {t('sketchboard.openBoard', 'Open board')}
+            </button>
+          )}
+        </div>
+      )}
       <EntityContextMenu
         position={ctxMenu}
         selectedText={ctxText}
@@ -1794,10 +2250,13 @@ export default function Editor({
         onCreateEntity={handleCreateEntity}
         onLinkEntity={handleLinkEntity}
         onAction={handleAction}
+        projectPath={projectPath}
+        sketchboardMenu={projectConfig?.sketchboard_editor_menu === true || String(projectConfig?.sketchboard_editor_menu) === 'true'}
         entityAtCursor={entityAtCursor}
         twistAtCursor={twistAtCursor}
         knowledgeAtCursor={knowledgeAtCursor}
         relationshipAtCursor={relationshipAtCursor}
+        milestoneAtCursor={milestoneAtCursor}
         typoSuggestions={typoSuggestions}
         onApplyTypoFix={(word, fix) => {
           if (!editor) return
@@ -1948,6 +2407,58 @@ export default function Editor({
                   characterId: String(result.characterId)
                 })
                 .run()
+            }
+            onEntitiesChanged?.()
+          }}
+        />
+      )}
+
+      {activePopup?.type === 'groupAction' && (
+        <GroupActionPopup
+          mode={activePopup.data?.mode || 'createGroup'}
+          selectedText={activePopup.data?.text || ctxText}
+          wordOffset={activePopup.data?.wordOffset || 0}
+          chapterId={chapter?.id}
+          worldTime={effectiveWorldTime}
+          position={activePopup.position}
+          projectPath={projectPath}
+          calConfig={calConfig}
+          characters={characters}
+          groups={entities?.filter(e => e.type === 'group')}
+          defaultGroupId={activePopup.data?.defaultGroupId}
+          onClose={closePopup}
+          onSuccess={(result) => {
+            if (result) {
+              if (result.action === 'createGroup' && result.group) {
+                if (ctxText && editor) {
+                  editor
+                    .chain()
+                    .focus()
+                    .setEntityLink({
+                      entityType: 'group',
+                      entityId: String(result.group.id)
+                    })
+                    .run()
+                }
+              } else if (result.action === 'linkGroup' && result.groupId && editor) {
+                editor
+                  .chain()
+                  .focus()
+                  .setEntityLink({
+                    entityType: 'group',
+                    entityId: String(result.groupId)
+                  })
+                  .run()
+              } else if (result.action === 'addMilestone' && result.milestoneId && result.groupId && editor) {
+                editor
+                  .chain()
+                  .focus()
+                  .setMilestoneLink({
+                    milestoneId: String(result.milestoneId),
+                    groupId: String(result.groupId)
+                  })
+                  .run()
+              }
             }
             onEntitiesChanged?.()
           }}

@@ -15,24 +15,35 @@ router = APIRouter()
 import re
 
 def extract_year(text: str):
-    """Extract the most likely year number from a date string."""
+    """Extract the most likely year number from a date string.
+
+    The canonical FleshNote world-date format is "DD MonthName, YYYY [epoch]".
+    We try that first, then fall back to other common patterns.
+    """
     if not text: return None
+
+    # Pattern 0: "DD MonthName, YYYY" or "MonthName, YYYY" — canonical format
+    #   Match the number AFTER the comma (that's the year)
+    comma_match = re.search(r',\s*(-?\d+)', text)
+    if comma_match:
+        return int(comma_match.group(1))
+
     patterns = [
-        r'[Yy]ear\s+(\d+)',           # "Year 314"
-        r'(\d+)\s*[Ee]',              # "4E" (epoch number)
-        r'[Ee]\s*-?\s*(\d+)',         # "E-314"
-        r'\b(\d{2,})\b',             # Any 2+ digit number
+        r'[Yy]ear\s+(-?\d+)',           # "Year 314"
+        r'(-?\d+)\s*[Ee]',              # "4E" (epoch number)
+        r'[Ee]\s*-?\s*(\d+)',           # "E-314"
+        r'\b(\d{3,})\b',               # Any 3+ digit number (likely a year, not a day)
     ]
     for pattern in patterns:
         match = re.search(pattern, text)
         if match:
             return int(match.group(1))
-            
-    # Fallback to the first number found
-    match = re.search(r'\d+', text)
+
+    # Fallback to the first number found (for things like "Year 42")
+    match = re.search(r'-?\d+', text)
     if match:
         return int(match.group())
-        
+
     return None
 
 class ProjectPath(BaseModel):
@@ -105,6 +116,7 @@ def update_calendar_config(req: CalendarUpdate):
         )
     """)
 
+    from sync_core import log_change
     for key, value in req.updates.items():
         if isinstance(value, (list, dict)):
             store_value = json.dumps(value)
@@ -117,6 +129,10 @@ def update_calendar_config(req: CalendarUpdate):
             "INSERT OR REPLACE INTO calendar_config (config_key, config_value) VALUES (?, ?)",
             (key, store_value)
         )
+
+        log_change(cursor, "calendar_config", key, {
+            "config_value": store_value
+        })
 
     conn.commit()
 

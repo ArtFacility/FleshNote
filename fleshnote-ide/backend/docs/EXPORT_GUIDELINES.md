@@ -420,40 +420,28 @@ hr::after { content: "◆"; color: #999; }
 
 ---
 
-## Python Module Structure Suggestion
+## Module structure (as built)
 
 ```
-fleshnote/export/
-├── __init__.py
-├── pipeline.py          # Main ExportPipeline class
-├── strip.py             # Content mode stripping (needs DB access)
-│   ├── strip_prose()
-│   ├── strip_annotated()
-│   └── strip_full()
+backend/export/
+├── pipeline.py          # ExportPipeline: chapters (deleted ones skipped) → render → new file
+├── strip.py             # resolve_markers(): FleshNote markers → plain HTML per content mode;
+│                        #   footnote refs as <fn-ref>, visible links as <x-ref>
+├── document.py          # chapter HTML → blocks (p, h, scene, li, quote) of formatted runs (lxml);
+│                        #   typography on text runs only; opening "Chapter N" heading → label
+├── typography.py        # curly quotes per manuscript language, em dashes, ellipses, spaces
 ├── render_txt.py        # → .txt
-├── render_md.py         # → .md
-├── render_html.py       # → .html (also used as intermediate for PDF)
-├── render_docx.py       # → .docx (python-docx)
-├── render_pdf.py        # → .pdf (weasyprint from HTML)
-├── render_epub.py       # → .epub (ebooklib)
-├── typography.py        # Smart quotes, em-dashes, ellipsis, etc.
-├── specs.py             # TRIM_SIZES, getGutterForPages, getBookMetrics
-└── templates/
-    ├── manuscript.css    # Non-book-ready HTML/PDF styles
-    └── bookready.css     # Book-ready HTML/PDF styles (with @page rules)
+├── render_md.py         # → .md (emphasis, links, footnotes, escaping)
+├── render_html.py       # → .html, the live preview, and the PDF print documents
+│                        #   (print_book: trim size, mirrored margins, page numbers, soft hyphens
+│                        #    from pyphen; print_manuscript: standard manuscript format)
+├── render_pdf.py        # picks the print document; the app prints it with Chromium
+├── render_docx.py       # → .docx (book: trim + mirrored margins; or manuscript format)
+├── render_epub.py       # → .epub 3 (title page, nav, one file per chapter, manuscript language)
+└── templates/fonts/     # Crimson Pro (OFL), embedded in HTML and PDF exports
 ```
 
-Usage:
-```python
-from fleshnote.export.pipeline import ExportPipeline
-
-pipeline = ExportPipeline(project_id="abc123", db=get_db())
-pipeline.export(
-    content_mode="prose",       # "prose" | "notes" | "full"
-    format="pdf",               # "txt" | "md" | "html" | "docx" | "pdf" | "epub"
-    book_ready=True,
-    trim="standard",
-    overrides={"font_size": 11, "gutter": 0.625},  # optional manual overrides
-    output_path="/exports/The_Fleshstone_Chronicles.pdf"
-)
-```
+Tests: `backend/test_export.py` (every format and mode on `export_fixture.py`).
+Layout review: `backend/tools/export_review.py` prints the PDFs with Electron
+(`scripts/print_pdf.js`), converts the DOCX files with Word when available, and measures
+page sizes and the inside/outside margins of every page.

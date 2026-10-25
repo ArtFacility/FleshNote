@@ -1,5 +1,6 @@
 import { useState, useEffect } from 'react'
 import { useTranslation } from 'react-i18next'
+import PentimentoSettings from './PentimentoSettings'
 
 const SupportBadge = ({ level }) => {
     if (level === 'full') return <span title="Full support" style={{ color: '#4ade80', fontSize: 14 }}>●</span>;
@@ -9,8 +10,16 @@ const SupportBadge = ({ level }) => {
     return null;
 };
 
+// Sealed Pentimento opt-ins are stored as 'true'/'false' strings (the same
+// convention as pentimentoVerification.applyToProject and the companion app).
+// Rows written earlier with the 'toggle' type come back from get_project_config
+// already parsed to booleans, so accept both when reading.
+const optInOn = (value) => value === true || String(value).toLowerCase() === 'true'
+
+// Rows with `group` start a section of the table.
 const NLP_FEATURE_MATRIX = [
     { key: 'humanUi', label: 'Human-translated UI', en: 'full', hu: 'full', pl: 'partial', ar: 'none' },
+    { group: 'analysis', label: 'Analysis' },
     { key: 'ner', label: 'Entity name recognition (NER)', en: 'full', hu: 'full', pl: 'partial', ar: 'partial' },
     { key: 'sensory', label: 'Sensory check', en: 'full', hu: 'full', pl: 'none', ar: 'none' },
     { key: 'typo', label: 'Typo check', en: 'full', hu: 'full', pl: 'full', ar: 'full' },
@@ -18,8 +27,11 @@ const NLP_FEATURE_MATRIX = [
     { key: 'flesch', label: 'Flesch-Kincaid readability', en: 'full', hu: 'partial', pl: 'partial', ar: 'partial' },
     { key: 'passive', label: 'Janitor: Passive voice check', en: 'full', hu: 'full', pl: 'none', ar: 'none' },
     { key: 'showDontTell', label: "Janitor: Show don't tell check", en: 'full', hu: 'full', pl: 'none', ar: 'none' },
-    { key: 'locgen', label: 'Location name generation', en: 'full', hu: 'full', pl: 'full', ar: 'none' },
     { key: 'voiceConsist', label: 'Character voice consistency', en: 'soon', hu: 'soon', pl: 'soon', ar: 'soon' },
+    { group: 'generators', label: 'Generators' },
+    // the Story Architect's idea sparks (utils/madlibs): language packs with their own grammar
+    { key: 'brainstorm', label: 'Brainstorm engine (story ideas, characters, places)', en: 'full', hu: 'full', pl: 'full', ar: 'none' },
+    { key: 'locgen', label: 'Location name generation', en: 'full', hu: 'full', pl: 'full', ar: 'none' },
 ];
 
 const EditableHotkeyRow = ({ hotkeyKey, action, hotkeys, editingHotkey, pendingKey, setEditingHotkey, setPendingKey, onSave }) => (
@@ -261,12 +273,6 @@ export default function ProjectSettingsModal({ isOpen, onClose, projectPath, onC
                             {t('settings.tabNlp', 'NLP & Analysis')}
                         </button>
                         <button
-                            className={activeTab === 'accessibility' ? 'active' : ''}
-                            onClick={() => setActiveTab('accessibility')}
-                        >
-                            {t('settings.tabAccessibility', 'Accessibility')}
-                        </button>
-                        <button
                             className={activeTab === 'janitor' ? 'active' : ''}
                             onClick={() => setActiveTab('janitor')}
                         >
@@ -393,6 +399,20 @@ export default function ProjectSettingsModal({ isOpen, onClose, projectPath, onC
                                     )}
                                 </div>
 
+                                <div className="settings-card">
+                                    <label className="checkbox-label">
+                                        <input
+                                            type="checkbox"
+                                            checked={optInOn(config.sketchboard_editor_menu)}
+                                            onChange={() => handleUpdate('sketchboard_editor_menu', optInOn(config.sketchboard_editor_menu) ? 'false' : 'true', 'string')}
+                                        />
+                                        <div>
+                                            <strong>{t('settings.sketchboardEditorMenu', 'Sketchboard actions in the editor menu')}</strong>
+                                            <p className="settings-desc">{t('settings.sketchboardEditorMenuDesc', 'Right-click a linked name to add it to a board, or to make it appear on a board from this chapter on.')}</p>
+                                        </div>
+                                    </label>
+                                </div>
+
                             </div>
                         )}
 
@@ -425,6 +445,18 @@ export default function ProjectSettingsModal({ isOpen, onClose, projectPath, onC
                                         </div>
                                     </label>
                                 </div>
+
+                                <PentimentoSettings
+                                    projectPath={projectPath}
+                                    captureOn={config.pentimento_capture !== false}
+                                    onToggleCapture={() => handleUpdate('pentimento_capture', config.pentimento_capture === false, 'toggle')}
+                                    historyOn={config.prose_history !== false}
+                                    onToggleHistory={() => handleUpdate('prose_history', config.prose_history === false, 'toggle')}
+                                    verificationOn={optInOn(config.pentimento_verification)}
+                                    onToggleVerification={() => handleUpdate('pentimento_verification', optInOn(config.pentimento_verification) ? 'false' : 'true', 'string')}
+                                    externalTsaOn={optInOn(config.pentimento_external_tsa)}
+                                    onToggleExternalTsa={() => handleUpdate('pentimento_external_tsa', optInOn(config.pentimento_external_tsa) ? 'false' : 'true', 'string')}
+                                />
                             </div>
                         )}
 
@@ -501,7 +533,13 @@ export default function ProjectSettingsModal({ isOpen, onClose, projectPath, onC
                                             </tr>
                                         </thead>
                                         <tbody>
-                                            {NLP_FEATURE_MATRIX.map(row => (
+                                            {NLP_FEATURE_MATRIX.map(row => row.group ? (
+                                                <tr key={row.group}>
+                                                    <td colSpan={5} style={{ padding: '12px 4px 4px', fontSize: 10, fontFamily: 'var(--font-mono)', letterSpacing: '0.08em', textTransform: 'uppercase', color: 'var(--text-tertiary)', borderBottom: '1px solid var(--border-subtle)' }}>
+                                                        {t(`settings.nlpGroups.${row.group}`, row.label)}
+                                                    </td>
+                                                </tr>
+                                            ) : (
                                                 <tr key={row.key}>
                                                     <td className="nlp-matrix" style={{ padding: '5px 4px', color: 'var(--text-primary)' }}>{t(`settings.nlpFeatures.${row.key}`, row.label)}</td>
                                                     {['en', 'hu', 'pl', 'ar'].map(lang => (
@@ -568,25 +606,19 @@ export default function ProjectSettingsModal({ isOpen, onClose, projectPath, onC
                                         <p className="settings-desc">{t('settings.janitorSdtConfidenceDesc', 'Lower = more suggestions (may include false positives). Higher = only high-confidence tells.')}</p>
                                     </div>
                                 )}
-                            </div>
-                        )}
 
-                        {activeTab === 'accessibility' && (
-                            <div className="settings-section">
-                                <h3>{t('settings.accessibilityFeatures', 'Accessibility & Visuals')}</h3>
-
+                                {/* Off unless switched on: unlike the cards above, a missing key means off */}
                                 <div className="settings-card">
-                                    <h4>{t('settings.uiVisuals', 'UI & Typography')}</h4>
-                                    <p className="settings-desc mb-4">{t('settings.dyslexiaModeDesc', 'Override all fonts with OpenDyslexic to improve readability for some users.')}</p>
-
                                     <label className="checkbox-label">
                                         <input
                                             type="checkbox"
-                                            checked={config.dyslexia_mode || false}
-                                            onChange={() => handleToggle('dyslexia_mode')}
+                                            checked={config.janitor_show_story_pulse === true}
+                                            onChange={() => handleUpdate('janitor_show_story_pulse', config.janitor_show_story_pulse !== true, 'toggle')}
                                         />
                                         <div>
-                                            <strong>{t('settings.dyslexiaMode', 'OpenDyslexic Font Mode')}</strong>
+                                            <strong>{t('settings.storyPulse', 'Story Pulse')}</strong>
+                                            <span className="experimental-badge">{t('settings.experimental', 'Experimental')}</span>
+                                            <p className="settings-desc">{t('settings.storyPulseDesc', 'Adds a lane to the plot planner that estimates how tense each paragraph is, from the words in it, relative to the rest of your book. It is a rough sketch: expect misses, especially in quiet or dialogue-heavy scenes. English, Hungarian and Polish only.')}</p>
                                         </div>
                                     </label>
                                 </div>

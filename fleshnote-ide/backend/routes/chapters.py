@@ -9,7 +9,9 @@ import re
 import uuid
 from fastapi import APIRouter, HTTPException, BackgroundTasks
 from pydantic import BaseModel
+from project_io import safe_md_path
 from routes.imports import _plain_text_to_html
+from chapter_numbers import park_deleted_chapter_numbers, retire_chapter
 
 router = APIRouter()
 
@@ -22,27 +24,27 @@ class ChapterCreate(BaseModel):
     project_path: str
     title: str = ""
     chapter_number: int | None = None
-    pov_character_id: int | None = None
+    pov_character_id: str | int | None = None
     target_word_count: int = 4000
     status: str = "planned"
 
 
 class ChapterLoad(BaseModel):
     project_path: str
-    chapter_id: int
+    chapter_id: str | int
 
 
 class ChapterSave(BaseModel):
     project_path: str
-    chapter_id: int
+    chapter_id: str | int
     content: str
     word_count: int = 0
 
 
 class ChapterUpdate(BaseModel):
     project_path: str
-    chapter_id: int
-    pov_character_id: int | None = None
+    chapter_id: str | int
+    pov_character_id: str | int | None = None
     status: str | None = None
     title: str | None = None
     world_time: str | None = None
@@ -52,7 +54,7 @@ class ChapterUpdate(BaseModel):
 class BulkChapterCreate(BaseModel):
     project_path: str
     count: int
-    pov_character_id: int | None = None
+    pov_character_id: str | int | None = None
     target_word_count: int = 4000
 
 
@@ -83,7 +85,7 @@ _SHORT_TO_ENTITY_TYPE = {v: k for k, v in _ENTITY_TYPE_TO_SHORT.items()}
 
 def _entity_md_to_html(content: str, quicknote_types: dict = None) -> str:
     """Convert {{type:id|text}} markers to TipTap entity-link spans during chapter load."""
-    pattern = r'\{\{(char|loc|item|lore|group|quicknote|annotation):(\d+)\|([^}]+)\}\}'
+    pattern = r'\{\{(char|loc|item|lore|group|quicknote|annotation):([^|]+)\|([^}]+)\}\}'
     note_types = quicknote_types or {}
 
     def replacer(match):
@@ -108,7 +110,7 @@ def _entity_md_to_html(content: str, quicknote_types: dict = None) -> str:
 
 def _entity_html_to_md(content: str) -> str:
     """Convert TipTap entity-link spans to {{type:id|text}} markers during chapter save."""
-    pattern = r'<span[^>]*?data-entity-type="([^"]+)"[^>]*?data-entity-id="(\d+)"[^>]*?>([^<]+)</span>'
+    pattern = r'<span[^>]*?data-entity-type="([^"]+)"[^>]*?data-entity-id="([^"]+)"[^>]*?>([^<]+)</span>'
 
     def replacer(match):
         full_type = match.group(1)
@@ -128,11 +130,13 @@ def _update_entity_appearances(cursor, chapter_id: int, md_content: str):
     # Strip HTML for proper word counting
     plain = re.sub(r'<[^>]+>', ' ', md_content)
 
-    pattern = r'\{\{(char|loc|item|lore|group|quicknote|annotation):(\d+)\|[^}]+\}\}'
+    # IDs are UUIDs since the UUID migration; capture up to the pipe (no int
+    # cast) exactly like _update_foreshadowings / _update_knowledge_offsets.
+    pattern = r'\{\{(char|loc|item|lore|group|quicknote|annotation):([^|]+)\|[^}]+\}\}'
     seen = set()
     for match in re.finditer(pattern, md_content):
         short_type = match.group(1)
-        entity_id = int(match.group(2))
+        entity_id = match.group(2)
         entity_type = _SHORT_TO_ENTITY_TYPE.get(short_type, short_type)
 
         # Calculate word offset like we do for foreshadowing
@@ -168,7 +172,7 @@ _SHORT_TO_TWIST_TYPE = {v: k for k, v in _TWIST_TYPE_TO_SHORT.items()}
 
 def _twist_md_to_html(content: str) -> str:
     """Convert {{twist:id|text}} / {{foreshadow:id|text}} markers to TipTap spans on load."""
-    pattern = r'\{\{(twist|foreshadow):(\d+)\|([^}]+)\}\}'
+    pattern = r'\{\{(twist|foreshadow):([^|]+)\|([^}]+)\}\}'
 
     def replacer(match):
         short_type = match.group(1)
@@ -184,7 +188,7 @@ def _twist_md_to_html(content: str) -> str:
 
 def _twist_html_to_md(content: str) -> str:
     """Convert TipTap twist/foreshadow spans to {{type:id|text}} markers on save."""
-    pattern = r'<span[^>]*?data-twist-type="([^"]+)"[^>]*?data-twist-id="(\d+)"[^>]*?>([^<]+)</span>'
+    pattern = r'<span[^>]*?data-twist-type="([^"]+)"[^>]*?data-twist-id="([^"]+)"[^>]*?>([^<]+)</span>'
 
     def replacer(match):
         twist_type = match.group(1)
@@ -195,7 +199,7 @@ def _twist_html_to_md(content: str) -> str:
     return re.sub(pattern, replacer, content)
 
 
-def _update_foreshadowings(cursor, chapter_id: int, md_content: str):
+def _update_foreshadowings(cursor, chapter_id: str | int, md_content: str):
     """Scan markdown for {{foreshadow:id|text}} and {{twist:id|text}} markers,
     calculate word offsets, and sync the foreshadowings table."""
     cursor.execute("DELETE FROM foreshadowings WHERE chapter_id = ?", (chapter_id,))
@@ -204,10 +208,10 @@ def _update_foreshadowings(cursor, chapter_id: int, md_content: str):
     plain = re.sub(r'<[^>]+>', ' ', md_content)
 
     # Find all twist/foreshadow markers
-    pattern = r'\{\{(twist|foreshadow):(\d+)\|([^}]+)\}\}'
+    pattern = r'\{\{(twist|foreshadow):([^|]+)\|([^}]+)\}\}'
     for match in re.finditer(pattern, md_content):
         marker_type = match.group(1)
-        twist_id = int(match.group(2))
+        twist_id = match.group(2)
         selected_text = match.group(3)
 
         # Calculate word offset: count words in plain text before the marker position
@@ -236,12 +240,13 @@ def _update_foreshadowings(cursor, chapter_id: int, md_content: str):
                 if old_ch:
                     for row_info in cursor.execute("PRAGMA database_list").fetchall():
                         proj_dir = os.path.dirname(row_info[2])
-                        old_md_path = os.path.join(proj_dir, "md", old_ch["md_filename"])
-                        if os.path.exists(old_md_path):
+                        old_md_path = safe_md_path(
+                            os.path.join(proj_dir, "md"), old_ch["md_filename"])
+                        if old_md_path and os.path.exists(old_md_path):
                             with open(old_md_path, "r", encoding="utf-8") as f:
                                 old_content = f.read()
                             old_content = re.sub(
-                                r'\{\{twist:' + str(twist_id) + r'\|([^}]+)\}\}',
+                                r'\{\{twist:' + re.escape(str(twist_id)) + r'\|([^}]+)\}\}',
                                 r'\1', old_content
                             )
                             with open(old_md_path, "w", encoding="utf-8") as f:
@@ -262,7 +267,7 @@ def _update_foreshadowings(cursor, chapter_id: int, md_content: str):
 
 def _knowledge_md_to_html(content: str) -> str:
     """Convert {{knowledge:id:charId|text}} markers to TipTap spans on load."""
-    pattern = r'\{\{knowledge:(\d+):(\d+)\|([^}]+)\}\}'
+    pattern = r'\{\{knowledge:([^:]+):([^|]+)\|([^}]+)\}\}'
 
     def replacer(match):
         knowledge_id = match.group(1)
@@ -278,7 +283,7 @@ def _knowledge_md_to_html(content: str) -> str:
 
 def _knowledge_html_to_md(content: str) -> str:
     """Convert TipTap knowledge-link spans to {{knowledge:id:charId|text}} markers on save."""
-    pattern = r'<span[^>]*?data-knowledge-id="(\d+)"[^>]*?data-character-id="(\d+)"[^>]*?>([^<]+)</span>'
+    pattern = r'<span[^>]*?data-knowledge-id="([^"]+)"[^>]*?data-character-id="([^"]+)"[^>]*?>([^<]+)</span>'
 
     def replacer(match):
         knowledge_id = match.group(1)
@@ -291,7 +296,7 @@ def _knowledge_html_to_md(content: str) -> str:
 
 def _relationship_md_to_html(content: str) -> str:
     """Convert {{relationship:id:charId|text}} markers to TipTap spans on load."""
-    pattern = r'\{\{relationship:(\d+):(\d+)\|([^}]+)\}\}'
+    pattern = r'\{\{relationship:([^:]+):([^|]+)\|([^}]+)\}\}'
 
     def replacer(match):
         rel_id = match.group(1)
@@ -307,7 +312,7 @@ def _relationship_md_to_html(content: str) -> str:
 
 def _relationship_html_to_md(content: str) -> str:
     """Convert TipTap relationship-link spans to {{relationship:id:charId|text}} markers on save."""
-    pattern = r'<span[^>]*?data-relationship-id="(\d+)"[^>]*?data-character-id="(\d+)"[^>]*?>([^<]+)</span>'
+    pattern = r'<span[^>]*?data-relationship-id="([^"]+)"[^>]*?data-character-id="([^"]+)"[^>]*?>([^<]+)</span>'
 
     def replacer(match):
         rel_id = match.group(1)
@@ -320,7 +325,7 @@ def _relationship_html_to_md(content: str) -> str:
 
 def _time_md_to_html(content: str) -> str:
     """Convert {{time:ID:colorIndex|text}} markers to TipTap time-link spans on load."""
-    pattern = r'\{\{time:(\d+):(\d+)\|([^}]*)\}\}'
+    pattern = r'\{\{time:([^:]+):([^|]+)\|([^}]*)\}\}'
     def replace(m):
         time_id = m.group(1)
         color_index = m.group(2)
@@ -331,7 +336,7 @@ def _time_md_to_html(content: str) -> str:
 
 def _time_html_to_md(content: str) -> str:
     """Convert TipTap time-link spans to {{time:ID:colorIndex|text}} markers on save."""
-    pattern = r'<span[^>]*?data-time-id="(\d+)"[^>]*?data-color-index="(\d+)"[^>]*?>([^<]*)</span>'
+    pattern = r'<span[^>]*?data-time-id="([^"]+)"[^>]*?data-color-index="([^"]+)"[^>]*?>([^<]*)</span>'
     def replace(m):
         time_id = m.group(1)
         color_index = m.group(2)
@@ -340,11 +345,11 @@ def _time_html_to_md(content: str) -> str:
     return re.sub(pattern, replace, content)
 
 
-def _update_knowledge_offsets(cursor, chapter_id: int, md_content: str):
+def _update_knowledge_offsets(cursor, chapter_id: str | int, md_content: str):
     """Scan markdown for {{knowledge:id:charId|text}} markers and update word offsets."""
-    pattern = r'\{\{knowledge:(\d+):(\d+)\|([^}]+)\}\}'
+    pattern = r'\{\{knowledge:([^:]+):([^|]+)\|([^}]+)\}\}'
     for match in re.finditer(pattern, md_content):
-        knowledge_id = int(match.group(1))
+        knowledge_id = match.group(1)
 
         # Calculate word offset
         char_pos = match.start()
@@ -360,11 +365,11 @@ def _update_knowledge_offsets(cursor, chapter_id: int, md_content: str):
         """, (word_offset, chapter_id, knowledge_id))
 
 
-def _update_relationship_offsets(cursor, chapter_id: int, md_content: str):
+def _update_relationship_offsets(cursor, chapter_id: str | int, md_content: str):
     """Scan markdown for {{relationship:id:charId|text}} markers and update word offsets."""
-    pattern = r'\{\{relationship:(\d+):(\d+)\|([^}]+)\}\}'
+    pattern = r'\{\{relationship:([^:]+):([^|]+)\|([^}]+)\}\}'
     for match in re.finditer(pattern, md_content):
-        rel_id = int(match.group(1))
+        rel_id = match.group(1)
 
         # Calculate word offset
         char_pos = match.start()
@@ -378,6 +383,53 @@ def _update_relationship_offsets(cursor, chapter_id: int, md_content: str):
             SET word_offset = ?, chapter_id = ?
             WHERE id = ?
         """, (word_offset, chapter_id, rel_id))
+
+
+def _milestone_md_to_html(content: str) -> str:
+    """Convert {{milestone:id:groupId|text}} markers to TipTap spans on load."""
+    pattern = r'\{\{milestone:([^:]+):([^|]+)\|([^}]*)\}\}'
+    def replacer(match):
+        milestone_id = match.group(1)
+        group_id = match.group(2)
+        text = match.group(3)
+        return (
+            f'<span data-milestone-id="{milestone_id}" data-group-id="{group_id}" '
+            f'class="milestone-link">{text}</span>'
+        )
+    return re.sub(pattern, replacer, content)
+
+
+def _milestone_html_to_md(content: str) -> str:
+    """Convert TipTap milestone-link spans to {{milestone:id:groupId|text}} markers on save."""
+    pattern = r'<span[^>]*?(?:data-milestone-id="([^"]+)"[^>]*?data-group-id="([^"]+)"|data-group-id="([^"]+)"[^>]*?data-milestone-id="([^"]+)")(?:\s+[^>]*)?>([^<]*)</span>'
+    def replacer(match):
+        if match.group(1) is not None:
+            milestone_id = match.group(1)
+            group_id = match.group(2)
+        else:
+            milestone_id = match.group(4)
+            group_id = match.group(3)
+        text = match.group(5)
+        return f'{{{{milestone:{milestone_id}:{group_id}|{text}}}}}'
+    return re.sub(pattern, replacer, content)
+
+
+def _update_milestone_offsets(cursor, chapter_id: str | int, md_content: str):
+    """Scan markdown for {{milestone:id:groupId|text}} markers and update word offsets in history_entries."""
+    pattern = r'\{\{milestone:([^:]+):([^|]+)\|([^}]*)\}\}'
+    for match in re.finditer(pattern, md_content):
+        milestone_id = match.group(1)
+
+        char_pos = match.start()
+        text_before = re.sub(r'<[^>]+>', ' ', md_content[:char_pos])
+        text_before = re.sub(r'\{\{[^}]+\}\}', '', text_before)
+        word_offset = len(text_before.split())
+
+        cursor.execute("""
+            UPDATE history_entries
+            SET word_offset = ?, chapter_id = ?
+            WHERE id = ?
+        """, (word_offset, chapter_id, milestone_id))
 
 
 def _slugify(text: str) -> str:
@@ -396,6 +448,7 @@ def get_chapters(req: ProjectPath):
         SELECT c.*, ch.name as pov_name
         FROM chapters c
         LEFT JOIN characters ch ON c.pov_character_id = ch.id
+        WHERE c.deleted = 0
         ORDER BY c.chapter_number ASC
     """)
     rows = cursor.fetchall()
@@ -429,23 +482,35 @@ def create_chapter(req: ChapterCreate):
     conn = _get_db(req.project_path)
     cursor = conn.cursor()
 
+    park_deleted_chapter_numbers(cursor)
     # Auto-determine chapter number if not provided
     if req.chapter_number is None:
-        cursor.execute("SELECT COALESCE(MAX(chapter_number), 0) + 1 FROM chapters")
+        cursor.execute("SELECT COALESCE(MAX(chapter_number), 0) + 1 FROM chapters WHERE deleted = 0")
         req.chapter_number = cursor.fetchone()[0]
 
     # Generate md filename
     title_slug = _slugify(req.title) if req.title else "untitled"
     md_filename = f"ch_{req.chapter_number:03d}_{title_slug}_{uuid.uuid4().hex[:8]}.md"
 
+    chapter_id = str(uuid.uuid4())
     cursor.execute("""
-        INSERT INTO chapters (chapter_number, title, status, pov_character_id,
+        INSERT INTO chapters (id, chapter_number, title, status, pov_character_id,
                               target_word_count, md_filename, word_count)
-        VALUES (?, ?, ?, ?, ?, ?, 0)
-    """, (req.chapter_number, req.title or f"Chapter {req.chapter_number}",
+        VALUES (?, ?, ?, ?, ?, ?, ?, 0)
+    """, (chapter_id, req.chapter_number, req.title or f"Chapter {req.chapter_number}",
           req.status, req.pov_character_id, req.target_word_count, md_filename))
 
-    chapter_id = cursor.lastrowid
+    from sync_core import log_change
+    log_change(cursor, "chapters", chapter_id, {
+        "chapter_number": req.chapter_number,
+        "title": req.title or f"Chapter {req.chapter_number}",
+        "status": req.status,
+        "pov_character_id": req.pov_character_id,
+        "target_word_count": req.target_word_count,
+        "md_filename": md_filename,
+        "word_count": 0
+    })
+
     conn.commit()
 
     # Create the empty md file
@@ -489,24 +554,31 @@ def update_chapter(req: ChapterUpdate):
 
     updates = []
     params = []
+    changes = {}
 
     # Only include fields that were explicitly sent
     if req.pov_character_id is not None:
         # Allow unsetting POV with 0
         updates.append("pov_character_id = ?")
-        params.append(req.pov_character_id if req.pov_character_id != 0 else None)
+        val = req.pov_character_id if req.pov_character_id != 0 else None
+        params.append(val)
+        changes["pov_character_id"] = val
     if req.status is not None:
         updates.append("status = ?")
         params.append(req.status)
+        changes["status"] = req.status
     if req.title is not None:
         updates.append("title = ?")
         params.append(req.title)
+        changes["title"] = req.title
     if req.world_time is not None:
         updates.append("world_time = ?")
         params.append(req.world_time)
+        changes["world_time"] = req.world_time
     if req.target_word_count is not None:
         updates.append("target_word_count = ?")
         params.append(req.target_word_count)
+        changes["target_word_count"] = req.target_word_count
 
     if not updates:
         conn.close()
@@ -518,6 +590,10 @@ def update_chapter(req: ChapterUpdate):
     cursor.execute(
         f"UPDATE chapters SET {', '.join(updates)} WHERE id = ?", params
     )
+
+    from sync_core import log_change
+    log_change(cursor, "chapters", req.chapter_id, changes)
+
     conn.commit()
 
     # Re-fetch with POV name
@@ -555,12 +631,14 @@ def bulk_create_chapters(req: BulkChapterCreate):
     conn = _get_db(req.project_path)
     cursor = conn.cursor()
 
-    cursor.execute("SELECT COALESCE(MAX(chapter_number), 0) FROM chapters")
+    park_deleted_chapter_numbers(cursor)
+    cursor.execute("SELECT COALESCE(MAX(chapter_number), 0) FROM chapters WHERE deleted = 0")
     start_num = cursor.fetchone()[0] + 1
 
     md_dir = os.path.join(req.project_path, "md")
     os.makedirs(md_dir, exist_ok=True)
 
+    from sync_core import log_change
     created = []
     for i in range(req.count):
         num = start_num + i
@@ -569,11 +647,22 @@ def bulk_create_chapters(req: BulkChapterCreate):
         status = "writing" if i == 0 else "planned"
         pov_id = req.pov_character_id if i == 0 else None
 
+        chap_id = str(uuid.uuid4())
         cursor.execute("""
-            INSERT INTO chapters (chapter_number, title, status, pov_character_id,
+            INSERT INTO chapters (id, chapter_number, title, status, pov_character_id,
                                   target_word_count, md_filename, word_count)
-            VALUES (?, ?, ?, ?, ?, ?, 0)
-        """, (num, title, status, pov_id, req.target_word_count, md_filename))
+            VALUES (?, ?, ?, ?, ?, ?, ?, 0)
+        """, (chap_id, num, title, status, pov_id, req.target_word_count, md_filename))
+
+        log_change(cursor, "chapters", chap_id, {
+            "chapter_number": num,
+            "title": title,
+            "status": status,
+            "pov_character_id": pov_id,
+            "target_word_count": req.target_word_count,
+            "md_filename": md_filename,
+            "word_count": 0
+        })
 
         # Create empty md file
         md_path = os.path.join(md_dir, md_filename)
@@ -581,7 +670,7 @@ def bulk_create_chapters(req: BulkChapterCreate):
             f.write("")
 
         created.append({
-            "id": cursor.lastrowid,
+            "id": chap_id,
             "chapter_number": num,
             "title": title,
             "status": status,
@@ -597,12 +686,12 @@ def bulk_create_chapters(req: BulkChapterCreate):
 def load_chapter_content(req: ChapterLoad):
     conn = _get_db(req.project_path)
     cursor = conn.cursor()
-    cursor.execute("SELECT md_filename FROM chapters WHERE id = ?", (req.chapter_id,))
+    cursor.execute("SELECT md_filename FROM chapters WHERE id = ? AND deleted = 0", (req.chapter_id,))
     row = cursor.fetchone()
     # Fetch quicknote types for note-type coloring
     quicknote_types = {}
     try:
-        cursor.execute("SELECT id, note_type FROM quick_notes")
+        cursor.execute("SELECT id, note_type FROM quick_notes WHERE deleted = 0")
         for qn in cursor.fetchall():
             quicknote_types[str(qn["id"])] = qn["note_type"] or "Note"
     except Exception:
@@ -612,18 +701,29 @@ def load_chapter_content(req: ChapterLoad):
     if not row:
         raise HTTPException(status_code=404, detail="Chapter not found")
 
-    md_path = os.path.join(req.project_path, "md", row["md_filename"])
+    md_path = safe_md_path(os.path.join(req.project_path, "md"), row["md_filename"])
     content = ""
-    if os.path.exists(md_path):
+    unsafe_file = False
+    if md_path and os.path.exists(md_path):
         with open(md_path, "r", encoding="utf-8") as f:
             content = f.read()
+    elif md_path is None:
+        unsafe_file = True   # poisoned md_filename row — fail closed, show nothing
 
+    return {"content": md_to_editor_html(content, quicknote_types), "md_filename": row["md_filename"],
+            "unsafe_file": unsafe_file}
+
+
+def md_to_editor_html(content: str, quicknote_types: dict = None) -> str:
+    """A chapter file's text as the HTML the editor loads. The Janitor's
+    Stats overview uses it too, so its paragraphs match the ones the editor
+    sends (and hit the same analysis cache)."""
     # Safety net: if content is plain text (no HTML tags), convert to <p> tags
     # so TipTap renders line breaks correctly
     content = _plain_text_to_html(content)
 
     # Convert entity markers {{char:5|Name}} to TipTap HTML spans
-    content = _entity_md_to_html(content, quicknote_types)
+    content = _entity_md_to_html(content, quicknote_types or {})
 
     # Convert twist/foreshadow markers to TipTap spans
     content = _twist_md_to_html(content)
@@ -631,16 +731,15 @@ def load_chapter_content(req: ChapterLoad):
     # Convert knowledge/relationship markers to TipTap spans
     content = _knowledge_md_to_html(content)
     content = _relationship_md_to_html(content)
-    content = _time_md_to_html(content)
-
-    return {"content": content, "md_filename": row["md_filename"]}
+    content = _milestone_md_to_html(content)
+    return _time_md_to_html(content)
 
 
 @router.post("/api/project/chapter/save")
 def save_chapter_content(req: ChapterSave, background_tasks: BackgroundTasks):
     conn = _get_db(req.project_path)
     cursor = conn.cursor()
-    cursor.execute("SELECT md_filename, word_count FROM chapters WHERE id = ?", (req.chapter_id,))
+    cursor.execute("SELECT md_filename, word_count FROM chapters WHERE id = ? AND deleted = 0", (req.chapter_id,))
     row = cursor.fetchone()
 
     if not row:
@@ -658,10 +757,16 @@ def save_chapter_content(req: ChapterSave, background_tasks: BackgroundTasks):
     # Convert knowledge/relationship HTML spans to markdown markers
     md_content = _knowledge_html_to_md(md_content)
     md_content = _relationship_html_to_md(md_content)
+    md_content = _milestone_html_to_md(md_content)
     md_content = _time_html_to_md(md_content)
 
-    # Write the md file
-    md_path = os.path.join(req.project_path, "md", row["md_filename"])
+    # Write the md file — but never through a poisoned (traversal) filename
+    md_path = safe_md_path(os.path.join(req.project_path, "md"), row["md_filename"])
+    if not md_path:
+        conn.close()
+        raise HTTPException(status_code=409,
+                            detail="Chapter has an unsafe filename; refusing to write. "
+                                   "Rename or re-sync the chapter first.")
     os.makedirs(os.path.dirname(md_path), exist_ok=True)
     with open(md_path, "w", encoding="utf-8") as f:
         f.write(md_content)
@@ -675,6 +780,7 @@ def save_chapter_content(req: ChapterSave, background_tasks: BackgroundTasks):
     # Track knowledge/relationship markers and update word offsets
     _update_knowledge_offsets(cursor, req.chapter_id, md_content)
     _update_relationship_offsets(cursor, req.chapter_id, md_content)
+    _update_milestone_offsets(cursor, req.chapter_id, md_content)
 
     # Update word count and timestamp
     cursor.execute("""
@@ -686,6 +792,16 @@ def save_chapter_content(req: ChapterSave, background_tasks: BackgroundTasks):
     # Log difference in words
     word_diff = req.word_count - old_word_count
     
+    # Calculate SHA256 of the markdown content for synchronization tracking
+    import hashlib
+    prose_hash = hashlib.sha256(md_content.encode("utf-8")).hexdigest()
+
+    from sync_core import log_change
+    log_change(cursor, "chapters", req.chapter_id, {
+        "word_count": req.word_count,
+        "prose_hash": prose_hash
+    })
+
     if word_diff > 0:
         cursor.execute("SELECT stat_value FROM stats WHERE stat_key = 'words_since_last_top_words_update'")
         stat_row = cursor.fetchone()
@@ -755,7 +871,7 @@ def save_chapter_content(req: ChapterSave, background_tasks: BackgroundTasks):
 
 class ChapterDelete(BaseModel):
     project_path: str
-    chapter_id: int
+    chapter_id: str | int
 
 @router.post("/api/project/chapter/delete")
 def delete_chapter(req: ChapterDelete):
@@ -763,32 +879,26 @@ def delete_chapter(req: ChapterDelete):
     try:
         cursor = conn.cursor()
         
-        # 1. Look up the chapter to get its number and filename
-        cursor.execute("SELECT chapter_number, md_filename FROM chapters WHERE id = ?", (req.chapter_id,))
+        # 1. Look up the chapter to get its number
+        cursor.execute("SELECT chapter_number FROM chapters WHERE id = ? AND deleted = 0", (req.chapter_id,))
         row = cursor.fetchone()
         if not row:
             raise HTTPException(status_code=404, detail="Chapter not found")
             
         chap_num = row["chapter_number"]
-        md_filename = row["md_filename"]
         
-        # 2. Delete the file from disk if it exists
-        if md_filename:
-            md_path = os.path.join(req.project_path, "md", md_filename)
-            if os.path.exists(md_path):
-                try:
-                    os.remove(md_path)
-                except Exception as e:
-                    print(f"Warning: could not delete md file {md_path}: {e}")
-
-        # 3. Delete from DB
-        cursor.execute("DELETE FROM entity_appearances WHERE chapter_id = ?", (req.chapter_id,))
-        cursor.execute("DELETE FROM chapters WHERE id = ?", (req.chapter_id,))
+        # 2. Soft delete chapter (do NOT delete file from disk so we can restore/sync it!).
+        #    Its number is freed so the chapters after it can move down.
+        from sync_core import log_change
+        park_deleted_chapter_numbers(cursor)
+        retire_chapter(cursor, req.chapter_id)
         
-        # 4. Shift all subsequent chapters' numbering down by 1 in sequential order
-        cursor.execute("SELECT id, chapter_number FROM chapters WHERE chapter_number > ? ORDER BY chapter_number ASC", (chap_num,))
+        # 3. Shift all subsequent chapters' numbering down by 1 in sequential order
+        cursor.execute("SELECT id, chapter_number FROM chapters WHERE chapter_number > ? AND deleted = 0 ORDER BY chapter_number ASC", (chap_num,))
         for r in cursor.fetchall():
-            cursor.execute("UPDATE chapters SET chapter_number = ? WHERE id = ?", (r["chapter_number"] - 1, r["id"]))
+            new_num = r["chapter_number"] - 1
+            cursor.execute("UPDATE chapters SET chapter_number = ? WHERE id = ?", (new_num, r["id"]))
+            log_change(cursor, "chapters", r["id"], {"chapter_number": new_num})
         
         conn.commit()
         return {"status": "ok", "deleted_number": chap_num}
@@ -801,7 +911,7 @@ def delete_chapter(req: ChapterDelete):
 
 class ChapterInsert(BaseModel):
     project_path: str
-    anchor_chapter_id: int
+    anchor_chapter_id: str | int
     direction: str  # "above" or "below"
 
 @router.post("/api/project/chapter/insert")
@@ -810,32 +920,45 @@ def insert_chapter(req: ChapterInsert):
     try:
         cursor = conn.cursor()
         
-        cursor.execute("SELECT chapter_number FROM chapters WHERE id = ?", (req.anchor_chapter_id,))
+        cursor.execute("SELECT chapter_number FROM chapters WHERE id = ? AND deleted = 0", (req.anchor_chapter_id,))
         row = cursor.fetchone()
         if not row:
             raise HTTPException(status_code=404, detail="Anchor chapter not found")
             
         anchor_num = row["chapter_number"]
-        
+        park_deleted_chapter_numbers(cursor)
+
         # Calculate new chapter number based on direction
         new_num = anchor_num if req.direction == "above" else anchor_num + 1
         
+        from sync_core import log_change
         # Shift existing chapters up to make room, looping from highest to lowest 
         # so SQLite unique constraint check doesn't trip on overlapping numbers
-        cursor.execute("SELECT id, chapter_number FROM chapters WHERE chapter_number >= ? ORDER BY chapter_number DESC", (new_num,))
+        cursor.execute("SELECT id, chapter_number FROM chapters WHERE chapter_number >= ? AND deleted = 0 ORDER BY chapter_number DESC", (new_num,))
         for r in cursor.fetchall():
-            cursor.execute("UPDATE chapters SET chapter_number = ? WHERE id = ?", (r["chapter_number"] + 1, r["id"]))
+            newer_num = r["chapter_number"] + 1
+            cursor.execute("UPDATE chapters SET chapter_number = ? WHERE id = ?", (newer_num, r["id"]))
+            log_change(cursor, "chapters", r["id"], {"chapter_number": newer_num})
         
         title = f"Chapter {new_num}"
         md_filename = f"ch_{new_num:03d}_untitled_{uuid.uuid4().hex[:8]}.md"
         
         # Insert new
+        new_id = str(uuid.uuid4())
         cursor.execute("""
-            INSERT INTO chapters (chapter_number, title, status, target_word_count, md_filename, word_count)
-            VALUES (?, ?, ?, ?, ?, 0)
-        """, (new_num, title, "planned", 4000, md_filename))
+            INSERT INTO chapters (id, chapter_number, title, status, target_word_count, md_filename, word_count)
+            VALUES (?, ?, ?, ?, ?, ?, 0)
+        """, (new_id, new_num, title, "planned", 4000, md_filename))
         
-        new_id = cursor.lastrowid
+        log_change(cursor, "chapters", new_id, {
+            "chapter_number": new_num,
+            "title": title,
+            "status": "planned",
+            "target_word_count": 4000,
+            "md_filename": md_filename,
+            "word_count": 0
+        })
+
         conn.commit()
         
         # Create empty md file
@@ -880,7 +1003,7 @@ def get_todos(req: ProjectPath):
     """Scan all chapter markdown files for TODO markers."""
     conn = _get_db(req.project_path)
     cursor = conn.cursor()
-    cursor.execute("SELECT id, chapter_number, title, md_filename FROM chapters ORDER BY chapter_number ASC")
+    cursor.execute("SELECT id, chapter_number, title, md_filename FROM chapters WHERE deleted = 0 ORDER BY chapter_number ASC")
     db_chapters = cursor.fetchall()
     conn.close()
 
@@ -893,8 +1016,8 @@ def get_todos(req: ProjectPath):
         md_filename = ch["md_filename"]
         if not md_filename:
             continue
-        md_path = os.path.join(req.project_path, "md", md_filename)
-        if not os.path.exists(md_path):
+        md_path = safe_md_path(os.path.join(req.project_path, "md"), md_filename)
+        if not md_path or not os.path.exists(md_path):
             continue
 
         with open(md_path, "r", encoding="utf-8") as f:

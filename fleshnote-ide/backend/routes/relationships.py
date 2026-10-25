@@ -2,7 +2,8 @@ import os
 import sqlite3
 from fastapi import APIRouter, HTTPException
 from pydantic import BaseModel
-from .knowledge import _extract_year, _get_db
+from .knowledge import _get_db, _chapter_md_content
+from world_calendar import load_calendar_config, world_time_to_linear_day, effective_world_time
 
 router = APIRouter()
 
@@ -10,34 +11,34 @@ router = APIRouter()
 
 class RelationshipCreate(BaseModel):
     project_path: str
-    character_id: int
-    target_character_id: int
+    character_id: str | int
+    target_character_id: str | int
     rel_type: str
     notes: str = ""
-    chapter_id: int | None = None
+    chapter_id: str | int | None = None
     word_offset: int | None = None
     world_time: str | None = None
     is_one_sided: int = 1
 
 class RelationshipUpdate(BaseModel):
     project_path: str
-    relationship_id: int
+    relationship_id: str | int
     rel_type: str | None = None
     notes: str | None = None
-    chapter_id: int | None = None
+    chapter_id: str | int | None = None
     word_offset: int | None = None
     world_time: str | None = None
     is_one_sided: int | None = None
 
 class RelationshipDelete(BaseModel):
     project_path: str
-    relationship_id: int
+    relationship_id: str | int
 
 class RelationshipsForCharacter(BaseModel):
     project_path: str
-    character_id: int
+    character_id: str | int
     filter_mode: str = "author"              # 'author', 'narrative', 'world_time'
-    current_chapter: int | None = None       # chapter_number
+    current_chapter: str | int | None = None       # chapter_number
     current_world_time: str | None = None    # world_time string
 
 # ── Helpers ───────────────────────────────────────────────────────────────────
@@ -61,12 +62,19 @@ def _get_db_rel(project_path: str):
     cursor = conn.cursor()
     cursor.execute("""
         CREATE TABLE IF NOT EXISTS character_relationships (
-            id                  INTEGER PRIMARY KEY AUTOINCREMENT,
-            character_id        INTEGER NOT NULL,
-            target_character_id INTEGER NOT NULL,
+            id                  TEXT PRIMARY KEY DEFAULT (
+                                    lower(hex(randomblob(4))) || '-' || 
+                                    lower(hex(randomblob(2))) || '-4' || 
+                                    substr(lower(hex(randomblob(2))), 2) || '-' || 
+                                    substr('89ab', abs(random()) % 4 + 1, 1) || 
+                                    substr(lower(hex(randomblob(2))), 2) || '-' || 
+                                    lower(hex(randomblob(6)))
+                                ),
+            character_id        TEXT NOT NULL,
+            target_character_id TEXT NOT NULL,
             rel_type            TEXT NOT NULL,
             notes               TEXT,
-            chapter_id          INTEGER,
+            chapter_id          TEXT,
             word_offset         INTEGER,
             world_time          TEXT,
             is_one_sided        INTEGER DEFAULT 1,
@@ -86,17 +94,30 @@ def create_relationship(req: RelationshipCreate):
     conn = _get_db_rel(req.project_path)
     cursor = conn.cursor()
 
+    import uuid
+    rel_id = str(uuid.uuid4())
     cursor.execute("""
         INSERT INTO character_relationships
-            (character_id, target_character_id, rel_type, notes, 
+            (id, character_id, target_character_id, rel_type, notes, 
              chapter_id, word_offset, world_time, is_one_sided)
-        VALUES (?, ?, ?, ?, ?, ?, ?, ?)
+        VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)
     """, (
-        req.character_id, req.target_character_id, req.rel_type, req.notes,
+        rel_id, req.character_id, req.target_character_id, req.rel_type, req.notes,
         req.chapter_id, req.word_offset, req.world_time, req.is_one_sided
     ))
 
-    rel_id = cursor.lastrowid
+    from sync_core import log_change
+    log_change(cursor, "character_relationships", rel_id, {
+        "character_id": req.character_id,
+        "target_character_id": req.target_character_id,
+        "rel_type": req.rel_type,
+        "notes": req.notes,
+        "chapter_id": req.chapter_id,
+        "word_offset": req.word_offset,
+        "world_time": req.world_time,
+        "is_one_sided": req.is_one_sided
+    })
+
     conn.commit()
 
     cursor.execute("SELECT * FROM character_relationships WHERE id = ?", (rel_id,))
@@ -112,12 +133,14 @@ def update_relationship(req: RelationshipUpdate):
 
     fields = []
     values = []
+    changes = {}
 
     for field_name in ["rel_type", "notes", "chapter_id", "word_offset", "world_time", "is_one_sided"]:
         val = getattr(req, field_name)
         if val is not None:
             fields.append(f"{field_name} = ?")
             values.append(val)
+            changes[field_name] = val
 
     if not fields:
         conn.close()
@@ -129,6 +152,10 @@ def update_relationship(req: RelationshipUpdate):
         f"UPDATE character_relationships SET {', '.join(fields)} WHERE id = ?",
         values
     )
+
+    from sync_core import log_change
+    log_change(cursor, "character_relationships", req.relationship_id, changes)
+
     conn.commit()
 
     cursor.execute("SELECT * FROM character_relationships WHERE id = ?", (req.relationship_id,))
@@ -145,8 +172,15 @@ def delete_relationship(req: RelationshipDelete):
     conn = _get_db_rel(req.project_path)
     cursor = conn.cursor()
 
-    cursor.execute("DELETE FROM character_relationships WHERE id = ?", (req.relationship_id,))
+    import datetime
+    from sync_core import log_soft_delete
+    now = datetime.datetime.utcnow().isoformat() + "Z"
+
+    cursor.execute("UPDATE character_relationships SET deleted = 1, deleted_at = ? WHERE id = ?", (now, req.relationship_id))
     deleted = cursor.rowcount
+    if deleted > 0:
+        log_soft_delete(cursor, "character_relationships", req.relationship_id)
+
     conn.commit()
     conn.close()
 
@@ -166,12 +200,17 @@ def get_relationships_for_character(req: RelationshipsForCharacter):
         SELECT r.*,
                c1.name as character_name,
                c2.name as target_character_name,
-               ch.chapter_number
+               ch.chapter_number,
+               ch.world_time as chapter_world_time, ch.md_filename as chapter_md_filename
         FROM character_relationships r
         JOIN characters c1 ON r.character_id = c1.id
         JOIN characters c2 ON r.target_character_id = c2.id
         LEFT JOIN chapters ch ON r.chapter_id = ch.id
-        WHERE r.character_id = ? OR (r.target_character_id = ? AND r.is_one_sided = 0)
+        WHERE (r.character_id = ? OR (r.target_character_id = ? AND r.is_one_sided = 0))
+          AND r.deleted = 0
+          AND c1.deleted = 0
+          AND c2.deleted = 0
+          AND (ch.deleted = 0 OR ch.deleted IS NULL)
         ORDER BY ch.chapter_number ASC, r.word_offset ASC, r.id ASC
     """
     
@@ -183,28 +222,67 @@ def get_relationships_for_character(req: RelationshipsForCharacter):
         SELECT r.*,
                c1.name as character_name,
                c2.name as target_character_name,
-               ch.chapter_number
+               ch.chapter_number,
+               ch.world_time as chapter_world_time, ch.md_filename as chapter_md_filename
         FROM character_relationships r
         JOIN characters c1 ON r.character_id = c1.id
         JOIN characters c2 ON r.target_character_id = c2.id
         LEFT JOIN chapters ch ON r.chapter_id = ch.id
         WHERE r.target_character_id = ? AND r.is_one_sided = 1 AND r.character_id != ?
+          AND r.deleted = 0
+          AND c1.deleted = 0
+          AND c2.deleted = 0
+          AND (ch.deleted = 0 OR ch.deleted IS NULL)
         ORDER BY ch.chapter_number ASC, r.word_offset ASC, r.id ASC
     """
     cursor.execute(reverse_query, (req.character_id, req.character_id))
     reverse_rows = cursor.fetchall()
-    conn.close()
-    
+
     # helper to format a row
     def format_row(row):
         d = _row_to_dict(row)
         d["character_name"] = row["character_name"]
         d["target_character_name"] = row["target_character_name"]
         d["chapter_number"] = row["chapter_number"]
+        d["_chapter_world_time"] = row["chapter_world_time"]
+        d["_chapter_md_filename"] = row["chapter_md_filename"]
         return d
 
     all_rels = [format_row(r) for r in rows]
     all_reverse_rels = [format_row(r) for r in reverse_rows]
+
+    # Calendar-aware, day-level effective-time resolution (own world_time ->
+    # the time-override active at word_offset -> the chapter's blanket
+    # world_time), memoized per relationship row since _sort_key and the
+    # world_time filter both need it.
+    cal = load_calendar_config(cursor)
+    md_cache: dict = {}
+    world_times_cache: dict = {}
+    linear_cache: dict = {}
+
+    def _get_md(md_filename):
+        if md_filename not in md_cache:
+            md_cache[md_filename] = _chapter_md_content(req.project_path, md_filename)
+        return md_cache[md_filename]
+
+    def _get_world_times(chapter_id):
+        if chapter_id not in world_times_cache:
+            cursor.execute(
+                "SELECT id, world_date FROM world_times WHERE chapter_id = ? AND deleted = 0",
+                (chapter_id,),
+            )
+            world_times_cache[chapter_id] = {row[0]: row[1] for row in cursor.fetchall()}
+        return world_times_cache[chapter_id]
+
+    def _effective_linear(r):
+        if r["id"] not in linear_cache:
+            eff_time = effective_world_time(
+                r.get("world_time"), r.get("word_offset"),
+                _get_md(r.get("_chapter_md_filename")), r.get("_chapter_world_time"),
+                _get_world_times(r.get("chapter_id")),
+            )
+            linear_cache[r["id"]] = world_time_to_linear_day(eff_time, cal)
+        return linear_cache[r["id"]]
 
     # Organize relationships by the other character involved
     # For a given target, we want to trace the history and find the "latest state" and "ghost state"
@@ -239,7 +317,7 @@ def get_relationships_for_character(req: RelationshipsForCharacter):
 
     # Process each target to find latest states
     # Note: world time parsing logic
-    current_year = _extract_year(req.current_world_time) if req.current_world_time else None
+    current_linear = world_time_to_linear_day(req.current_world_time, cal) if req.current_world_time else None
     current_chapter = req.current_chapter
     
     results = []
@@ -256,7 +334,7 @@ def get_relationships_for_character(req: RelationshipsForCharacter):
         
         # User requested Author view to follow world time logic for consistency if time is available
         effective_filter_mode = req.filter_mode
-        if effective_filter_mode == 'author' and current_year is not None:
+        if effective_filter_mode == 'author' and current_linear is not None:
              effective_filter_mode = 'world_time'
 
         if effective_filter_mode == 'narrative' and current_chapter is not None:
@@ -264,27 +342,28 @@ def get_relationships_for_character(req: RelationshipsForCharacter):
             valid_rev_history = [r for r in rev_history if r["chapter_number"] is None or r["chapter_number"] <= current_chapter]
             narrative_history = valid_history
             narrative_rev_history = valid_rev_history
-        elif effective_filter_mode == 'world_time' and current_year is not None:
-            # For world time filtering, we filter by year, but we still compute narrative_history to show the ghost state
+        elif effective_filter_mode == 'world_time' and current_linear is not None:
+            # For world time filtering, we filter to the day (not just the year), but
+            # we still compute narrative_history to show the ghost state
             valid_history = []
             for r in history:
-                r_year = _extract_year(r.get("world_time"))
-                if r_year is None or r_year <= current_year:
+                r_linear = _effective_linear(r)
+                if r_linear is None or r_linear <= current_linear:
                     valid_history.append(r)
             valid_rev_history = []
             for r in rev_history:
-                r_year = _extract_year(r.get("world_time"))
-                if r_year is None or r_year <= current_year:
+                r_linear = _effective_linear(r)
+                if r_linear is None or r_linear <= current_linear:
                     valid_rev_history.append(r)
-                    
+
             if current_chapter is not None:
                 narrative_history = [r for r in history if r["chapter_number"] is None or r["chapter_number"] <= current_chapter]
                 narrative_rev_history = [r for r in rev_history if r["chapter_number"] is None or r["chapter_number"] <= current_chapter]
-            
+
         def _sort_key(r):
-            # Sort by world time year first if available, then chapter/offset
-            y = _extract_year(r.get("world_time"))
-            y = y if y is not None else -999999 # Initial state
+            # Sort by effective world time (to the day) first if available, then chapter/offset
+            y = _effective_linear(r)
+            y = y if y is not None else -999999999999999 # Initial state
             ch = r.get("chapter_number")
             ch = ch if ch is not None else 999999
             wo = r.get("word_offset")
@@ -337,5 +416,80 @@ def get_relationships_for_character(req: RelationshipsForCharacter):
             res["reverse_ghost_state"] = latest_narrative_reverse
             
         results.append(res)
-        
+
+    conn.close()
+
+    for rel in all_rels:
+        rel.pop("_chapter_world_time", None)
+        rel.pop("_chapter_md_filename", None)
+    for rel in all_reverse_rels:
+        rel.pop("_chapter_world_time", None)
+        rel.pop("_chapter_md_filename", None)
+
     return {"relationships": results}
+
+
+# ── Shared with sketchboards ──────────────────────────────────────────────────
+
+def directed_histories(cursor, project_path: str) -> list:
+    """Every relationship turning point between live characters, grouped by
+    direction: how the first character stands toward the second. A mutual
+    row counts in both directions, as in the relationship tracker.
+
+    Each history is in the tracker's order (chapter, then word offset, then
+    id, with rows that have no chapter first as the starting state), so the
+    state at a point is the last row that is not past it. Every row carries
+    its effective world date and that date as a day number (None when the
+    date can't be read; such rows always count, as in the tracker)."""
+    cursor.execute("""
+        SELECT r.*,
+               ch.chapter_number,
+               ch.world_time AS chapter_world_time, ch.md_filename AS chapter_md_filename
+        FROM character_relationships r
+        JOIN characters c1 ON r.character_id = c1.id
+        JOIN characters c2 ON r.target_character_id = c2.id
+        LEFT JOIN chapters ch ON r.chapter_id = ch.id
+        WHERE r.deleted = 0
+          AND c1.deleted = 0
+          AND c2.deleted = 0
+          AND (ch.deleted = 0 OR ch.deleted IS NULL)
+        ORDER BY ch.chapter_number ASC, r.word_offset ASC, r.id ASC
+    """)
+    rows = cursor.fetchall()
+    cal = load_calendar_config(cursor)
+    md_cache: dict = {}
+    world_times_cache: dict = {}
+
+    def _md(md_filename):
+        if md_filename not in md_cache:
+            md_cache[md_filename] = _chapter_md_content(project_path, md_filename)
+        return md_cache[md_filename]
+
+    def _world_times(chapter_id):
+        if chapter_id not in world_times_cache:
+            cursor.execute("SELECT id, world_date FROM world_times WHERE chapter_id = ? AND deleted = 0",
+                           (chapter_id,))
+            world_times_cache[chapter_id] = {row[0]: row[1] for row in cursor.fetchall()}
+        return world_times_cache[chapter_id]
+
+    out: dict = {}
+    for r in rows:
+        eff = effective_world_time(r["world_time"], r["word_offset"], _md(r["chapter_md_filename"]),
+                                   r["chapter_world_time"], _world_times(r["chapter_id"]))
+        mutual = r["is_one_sided"] is not None and not r["is_one_sided"]
+        item = {
+            "id": r["id"],
+            "rel_type": r["rel_type"],
+            "notes": r["notes"] or "",
+            "mutual": mutual,
+            "chapter_id": r["chapter_id"],
+            "chapter_number": r["chapter_number"],
+            "word_offset": r["word_offset"],
+            "world_time": eff or None,
+            "day": world_time_to_linear_day(eff, cal) if eff else None,
+        }
+        src, tgt = str(r["character_id"]), str(r["target_character_id"])
+        out.setdefault((src, tgt), []).append(item)
+        if mutual:
+            out.setdefault((tgt, src), []).append(item)
+    return [{"from": a, "to": b, "history": h} for (a, b), h in out.items()]

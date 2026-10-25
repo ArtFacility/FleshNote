@@ -3,6 +3,7 @@ import { useTranslation } from 'react-i18next'
 import EntityRenamePopup from '../EntityRenamePopup'
 import CalendarDatePicker from '../CalendarDatePicker'
 import ImageGallery from './ImageGallery'
+import OnBoards from './OnBoards'
 import LocationNameGeneratorModal from '../LocationNameGeneratorModal'
 import { parseWorldDate, dateToLinear } from '../../utils/calendarUtils'
 
@@ -830,6 +831,10 @@ export default function LocationInspectorPanel({
       </div>
 
       </>}
+
+      {activeTab === 'overview' && (
+        <OnBoards projectPath={projectPath} entityType="location" entityId={entity.id} />
+      )}
 
       {activeTab === 'references' && (
         <ImageGallery

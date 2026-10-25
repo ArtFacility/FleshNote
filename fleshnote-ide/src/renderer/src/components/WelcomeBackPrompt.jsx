@@ -543,7 +543,7 @@ export default function WelcomeBackPrompt({
       <div style={{
         background: 'var(--bg-elevated)',
         border: '1px solid var(--border-subtle)',
-        borderRadius: 8,
+        borderRadius: 0,
         padding: '48px 56px',
         maxWidth: 600,
         width: '100%'
@@ -613,7 +613,7 @@ export default function WelcomeBackPrompt({
                 background: 'var(--bg-deep)', border: '1px solid var(--border-default)',
                 color: 'var(--text-primary)', fontFamily: 'var(--font-serif)',
                 fontSize: 15, padding: '12px 14px', resize: 'vertical',
-                outline: 'none', borderRadius: 4, lineHeight: 1.6,
+                outline: 'none', borderRadius: 0, lineHeight: 1.6,
                 boxSizing: 'border-box'
               }}
               onKeyDown={e => {

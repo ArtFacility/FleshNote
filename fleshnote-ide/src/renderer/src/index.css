@@ -5,6 +5,14 @@
 @import './styles/inspector.css';
 @import './styles/extractor.css';
 @import './styles/setup.css';
+@import './styles/brainstorm.css';
+@import './styles/start.css';
+@import './styles/finder.css';
+@import './styles/picker.css';
+@import './styles/bookshelf.css';
+@import './styles/reviewer.css';
+@import './styles/reviews.css';
+@import './styles/story-pulse.css';
 
 @font-face {
   font-family: 'Crimson Pro';
@@ -104,6 +112,7 @@
 
 
 :root {
+  --titlebar-h: 38px;
   --bg-deep: #0d0e11;
   --bg-base: #131519;
   --bg-surface: #1a1c22;
@@ -126,6 +135,7 @@
   --accent-purple: #8b6ec4;
   --accent-purple-dim: #8b6ec422;
   --entity-character: #d4a052;
+  --entity-group: #d4a052;
   --entity-item: #6392c5;
   --entity-lore: #5d8fc5;
   --entity-location: #5c9e6e;
@@ -135,7 +145,7 @@
   --font-mono: 'JetBrains Mono', monospace;
   --font-sans: 'Inter', sans-serif;
   --font-serif: 'Crimson Pro', serif;
-  --font-runes: 'Noto Sans Old Hungarian', serif;
+  --font-runes: 'Noto Sans Old Hungarian', 'NotoOldHungarian';
 }
 
 /* Dyslexia Mode Overrides */
@@ -147,6 +157,7 @@
 
 .rune-font {
   font-family: var(--font-runes) !important;
+  font-synthesis: none;
 }
 
 * {
@@ -169,9 +180,14 @@ body {
 
 ::-webkit-scrollbar {
   width: 6px;
+  height: 6px;
 }
 
 ::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+::-webkit-scrollbar-corner {
   background: transparent;
 }
 
@@ -279,6 +295,80 @@ body {
 
 .entity-section {
   margin-bottom: 16px;
+}
+
+/* Notice after a Sketchboard action in the editor's context menu */
+.editor-notice {
+  position: fixed;
+  bottom: 28px;
+  left: 50%;
+  z-index: 900;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 8px 10px 8px 14px;
+  background: var(--bg-elevated);
+  border: 1px solid var(--border-default);
+  border-inline-start: 2px solid var(--accent-amber);
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.45);
+  color: var(--text-primary);
+  font-size: 12px;
+  transform: translateX(-50%);
+}
+
+.editor-notice-btn {
+  padding: 4px 10px;
+  background: none;
+  border: 1px solid var(--border-default);
+  border-radius: 0;
+  color: var(--accent-amber);
+  font-family: var(--font-mono);
+  font-size: 10px;
+  letter-spacing: 0.5px;
+  text-transform: uppercase;
+  cursor: pointer;
+}
+
+.editor-notice-btn:hover {
+  border-color: var(--accent-amber);
+}
+
+/* Sketchboards an entity is on (inspector overview) */
+.on-board-row {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 5px 6px;
+  font-size: 12px;
+  color: var(--text-secondary);
+  cursor: pointer;
+}
+
+.on-board-row:hover,
+.on-board-row:focus-visible {
+  background: var(--bg-hover);
+  color: var(--text-primary);
+  outline: none;
+}
+
+.on-board-rune {
+  width: 18px;
+  flex-shrink: 0;
+  color: var(--accent-amber);
+  text-align: center;
+}
+
+.on-board-name {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.on-board-count {
+  margin-inline-start: auto;
+  font-family: var(--font-mono);
+  font-size: 10px;
+  color: var(--text-tertiary);
 }
 
 .entity-section-title {

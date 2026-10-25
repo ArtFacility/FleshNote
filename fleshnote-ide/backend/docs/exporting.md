@@ -1,44 +1,33 @@
 # Exporting in FleshNote
 
-FleshNote provides a professional-grade export pipeline designed for authors who need to transition from raw drafting to publication-ready formats.
+FleshNote exports the manuscript in six formats, from a plain backup to a print-ready book.
 
 ## Supported Formats
 
-- **.docx (Microsoft Word)**: Industry-standard manuscript format. Uses standard paragraph styles, centered chapter headings, and 12pt Times New Roman-adjacent typography. Perfect for sending to editors or traditional publishers.
-- **.pdf (Print-Ready)**: High-fidelity PDF generation with book-ready page layouts. Supports customizable trim sizes (e.g., 5"x8", 6"x9"), gutter margins for binding, and automatic font-size optimization.
-- **.epub (E-Book)**: Reflowable e-book format compatible with Kindle, Apple Books, and Kobo. Standardized structural layout for electronic reading devices.
-- **.md (Markdown)**: Clean, portable Markdown for use in external tools like Obsidian, Scrivener (via import), or GitHub.
-- **.html**: Self-contained web view of your project with embedded CSS for beautiful browser-based reading.
-- **.txt**: Pure raw text for minimal archival purposes.
+- **.pdf**: printed by the app's own Chromium, in one of two layouts:
+  - **Printed book**: the chosen trim size (pocket 4.25"×6.87", standard 5"×8", large 6"×9"), mirrored margins with the gutter on the binding side of every page, page numbers, justified and hyphenated text in Crimson Pro, each chapter on a new page, and chapter one on a right-hand page.
+  - **Submission manuscript**: standard manuscript format for agents and editors: US Letter, 1-inch margins, 12 pt Times double-spaced, "Surname / TITLE / page" in the header, "#" for scene breaks, and a title page with the word count.
+- **.docx (Microsoft Word)**: the same two layouts as editable Word documents (mirrored margins, page-number fields, italics, bold and line breaks kept).
+- **.epub (E-Book)**: reflowable EPUB 3 with a title page, a table of contents and the manuscript's language.
+- **.md (Markdown)**: emphasis, links, lists and footnotes as Markdown, for Obsidian, GitHub and the like.
+- **.html**: one self-contained file with the font embedded; follows the reader's light or dark mode.
+- **.txt**: plain text, notes collected at the end.
+
+Every format gets book typography (curly quotes in the manuscript language, em dashes, ellipses). Deleted chapters are never exported, and a new export never overwrites an earlier one.
 
 ## Export Modes
 
-You can control exactly what content is exported:
+1. **Prose Only**: the text alone. Entity links become plain text; annotations and quick notes are left out (the passages they mark stay).
+2. **With Annotations**: annotations become numbered footnotes at the end of each chapter.
+3. **Full Annotated**: footnotes plus visible entity, twist and foreshadowing links.
 
-1. **Prose Only**: Strips all lore links, annotations, and quick notes. Pure narrative text.
-2. **With Annotations**: Converts `@lore` annotations into footnotes (or bracketed text depending on format). Discards private quick notes.
-3. **Full Annotated**: Preserves entity links and epistemic markers in a format-appropriate way (e.g., hyperlinked text in PDF/HTML).
+## Preview
 
-## Book-Ready Formatting (Pro Logic)
-
-The PDF export module includes a specialized "Book-Ready" toggle. When enabled:
-
-- **Trim Size**: Select from industry-standard sizes.
-- **Auto-Optimization**: The system calculates the ideal font size and leading based on your total word count and selected trim size to hit a "natural" page count.
-- **Gutter & Outer Margins**: Automatically adjusts for inner binding (gutter) versus outer readable space.
-- **Spine Calculation**: Estimates spine width based on page count to assist in cover design.
-
-## Live Preview
-
-The Export Modal features a **Live Preview** tab. This provides a real-time visualization of how your text will look on the physical page (for PDF) or as a structured document (for other formats) without needing to perform a full file write.
+- **PDF and Word:** the *Pages* tab shows the real printed pages (the same document the PDF export prints, drawn with pdf.js) as book spreads, with the true page count, page-turn controls, a scrubber with chapter marks, and an optional *Margins* overlay of the text block and gutter. Word pages follow the same layout, though Word may break lines slightly differently. The *Cover* tab (printed book only) sketches the closed book at the trim size, with the spine width from the real page count and the colour and rune from the bookshelf.
+- **HTML, EPUB, Markdown, text:** the first selected chapter as it reads in that format.
 
 ## Technical Details
 
-The export pipeline is powered by a Python backend using:
-- `python-docx` for Word generation.
-- `EbookLib` for EPUB generation.
-- `spaCy` for final-pass entity cleaning.
-- Custom CSS-to-HTML conversion for PDF rendering.
-
----
-*FleshNote Export Module v0.5.0*
+- Pipeline: `backend/export/` (see `EXPORT_GUIDELINES.md` for the module map). PDFs are laid out as print HTML by the backend and printed by the Electron main process (`printToPDF`).
+- `python-docx` for Word, `EbookLib` for EPUB, `lxml` for parsing chapter HTML, `pyphen` for hyphenation.
+- Tests: `backend/test_export.py`; page-layout review with measured margins: `backend/tools/export_review.py`.

@@ -1,0 +1,263 @@
+{
+ "lang": "pl",
+ "kind": "filter_verb",
+ "version": 1,
+ "entries": [
+  {
+   "id": "pl.filter.czu\u0107",
+   "lemma": "czu\u0107",
+   "pos": [
+    "VERB"
+   ],
+   "kind": "filter_verb",
+   "strength": "weak",
+   "valence": 0.0,
+   "arousal": 0.2,
+   "emotions": {
+    "anticipation": 0.3
+   },
+   "source": "migrated:pol_janitor.py",
+   "version": 1
+  },
+  {
+   "id": "pl.filter.obserwowa\u0107",
+   "lemma": "obserwowa\u0107",
+   "pos": [
+    "VERB"
+   ],
+   "kind": "filter_verb",
+   "strength": "weak",
+   "valence": 0.0,
+   "arousal": 0.2,
+   "emotions": {
+    "anticipation": 0.3
+   },
+   "source": "migrated:pol_janitor.py",
+   "version": 1
+  },
+  {
+   "id": "pl.filter.poczu\u0107",
+   "lemma": "poczu\u0107",
+   "pos": [
+    "VERB"
+   ],
+   "kind": "filter_verb",
+   "strength": "weak",
+   "valence": 0.0,
+   "arousal": 0.2,
+   "emotions": {
+    "anticipation": 0.3
+   },
+   "source": "migrated:pol_janitor.py",
+   "version": 1
+  },
+  {
+   "id": "pl.filter.s\u0142ysze\u0107",
+   "lemma": "s\u0142ysze\u0107",
+   "pos": [
+    "VERB"
+   ],
+   "kind": "filter_verb",
+   "strength": "weak",
+   "valence": 0.0,
+   "arousal": 0.2,
+   "emotions": {
+    "anticipation": 0.3
+   },
+   "source": "migrated:pol_janitor.py",
+   "version": 1
+  },
+  {
+   "id": "pl.filter.us\u0142ysze\u0107",
+   "lemma": "us\u0142ysze\u0107",
+   "pos": [
+    "VERB"
+   ],
+   "kind": "filter_verb",
+   "strength": "weak",
+   "valence": 0.0,
+   "arousal": 0.2,
+   "emotions": {
+    "anticipation": 0.3
+   },
+   "source": "migrated:pol_janitor.py",
+   "version": 1
+  },
+  {
+   "id": "pl.filter.widzie\u0107",
+   "lemma": "widzie\u0107",
+   "pos": [
+    "VERB"
+   ],
+   "kind": "filter_verb",
+   "strength": "weak",
+   "valence": 0.0,
+   "arousal": 0.2,
+   "emotions": {
+    "anticipation": 0.3
+   },
+   "source": "migrated:pol_janitor.py",
+   "version": 1
+  },
+  {
+   "id": "pl.filter.w\u0105cha\u0107",
+   "lemma": "w\u0105cha\u0107",
+   "pos": [
+    "VERB"
+   ],
+   "kind": "filter_verb",
+   "strength": "weak",
+   "valence": 0.0,
+   "arousal": 0.2,
+   "emotions": {
+    "anticipation": 0.3
+   },
+   "source": "migrated:pol_janitor.py",
+   "version": 1
+  },
+  {
+   "id": "pl.filter.zauwa\u017cy\u0107",
+   "lemma": "zauwa\u017cy\u0107",
+   "pos": [
+    "VERB"
+   ],
+   "kind": "filter_verb",
+   "strength": "weak",
+   "valence": 0.0,
+   "arousal": 0.2,
+   "emotions": {
+    "anticipation": 0.3
+   },
+   "source": "migrated:pol_janitor.py",
+   "version": 1
+  },
+  {
+   "id": "pl.filter.zobaczy\u0107",
+   "lemma": "zobaczy\u0107",
+   "pos": [
+    "VERB"
+   ],
+   "kind": "filter_verb",
+   "strength": "weak",
+   "valence": 0.0,
+   "arousal": 0.2,
+   "emotions": {
+    "anticipation": 0.3
+   },
+   "source": "migrated:pol_janitor.py",
+   "version": 1
+  },
+  {
+   "id": "pl.filter.patrze\u0107",
+   "lemma": "patrze\u0107",
+   "pos": [
+    "VERB"
+   ],
+   "kind": "filter_verb",
+   "strength": "weak",
+   "valence": 0.0,
+   "arousal": 0.2,
+   "emotions": {
+    "anticipation": 0.3
+   },
+   "source": "curated:gemini-2026-09",
+   "version": 1
+  },
+  {
+   "id": "pl.filter.spojrze\u0107",
+   "lemma": "spojrze\u0107",
+   "pos": [
+    "VERB"
+   ],
+   "kind": "filter_verb",
+   "strength": "weak",
+   "valence": 0.0,
+   "arousal": 0.2,
+   "emotions": {
+    "anticipation": 0.3
+   },
+   "source": "curated:gemini-2026-09",
+   "version": 1
+  },
+  {
+   "id": "pl.filter.zerkn\u0105\u0107",
+   "lemma": "zerkn\u0105\u0107",
+   "pos": [
+    "VERB"
+   ],
+   "kind": "filter_verb",
+   "strength": "weak",
+   "valence": 0.0,
+   "arousal": 0.2,
+   "emotions": {
+    "anticipation": 0.3
+   },
+   "source": "curated:gemini-2026-09",
+   "version": 1
+  },
+  {
+   "id": "pl.filter.przygl\u0105da\u0107",
+   "lemma": "przygl\u0105da\u0107",
+   "pos": [
+    "VERB"
+   ],
+   "kind": "filter_verb",
+   "strength": "weak",
+   "valence": 0.0,
+   "arousal": 0.2,
+   "emotions": {
+    "anticipation": 0.3
+   },
+   "source": "curated:gemini-2026-09",
+   "version": 1
+  },
+  {
+   "id": "pl.filter.przys\u0142uchiwa\u0107",
+   "lemma": "przys\u0142uchiwa\u0107",
+   "pos": [
+    "VERB"
+   ],
+   "kind": "filter_verb",
+   "strength": "weak",
+   "valence": 0.0,
+   "arousal": 0.2,
+   "emotions": {
+    "anticipation": 0.3
+   },
+   "source": "curated:gemini-2026-09",
+   "version": 1
+  },
+  {
+   "id": "pl.filter.wpatrywa\u0107",
+   "lemma": "wpatrywa\u0107",
+   "pos": [
+    "VERB"
+   ],
+   "kind": "filter_verb",
+   "strength": "weak",
+   "valence": 0.0,
+   "arousal": 0.2,
+   "emotions": {
+    "anticipation": 0.3
+   },
+   "source": "curated:gemini-2026-09",
+   "version": 1
+  },
+  {
+   "id": "pl.filter.wypatrywa\u0107",
+   "lemma": "wypatrywa\u0107",
+   "pos": [
+    "VERB"
+   ],
+   "kind": "filter_verb",
+   "strength": "weak",
+   "valence": 0.0,
+   "arousal": 0.2,
+   "emotions": {
+    "anticipation": 0.3
+   },
+   "source": "curated:gemini-2026-09",
+   "version": 1
+  }
+ ]
+}

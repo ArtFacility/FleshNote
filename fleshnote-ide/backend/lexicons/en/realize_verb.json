@@ -1,0 +1,279 @@
+{
+ "lang": "en",
+ "kind": "realize_verb",
+ "version": 1,
+ "entries": [
+  {
+   "id": "en.realize.realize",
+   "lemma": "realize",
+   "pos": [
+    "VERB"
+   ],
+   "kind": "realize_verb",
+   "strength": "weak",
+   "valence": 0.1,
+   "arousal": 0.4,
+   "emotions": {
+    "anticipation": 0.4
+   },
+   "source": "migrated:janitor.py",
+   "version": 1
+  },
+  {
+   "id": "en.realize.understand",
+   "lemma": "understand",
+   "pos": [
+    "VERB"
+   ],
+   "kind": "realize_verb",
+   "strength": "weak",
+   "valence": 0.2,
+   "arousal": 0.2,
+   "emotions": {
+    "trust": 0.4
+   },
+   "source": "migrated:janitor.py",
+   "version": 1
+  },
+  {
+   "id": "en.realize.recognize",
+   "lemma": "recognize",
+   "pos": [
+    "VERB"
+   ],
+   "kind": "realize_verb",
+   "strength": "weak",
+   "valence": 0.1,
+   "arousal": 0.3,
+   "emotions": {
+    "anticipation": 0.3
+   },
+   "source": "migrated:janitor.py",
+   "version": 1
+  },
+  {
+   "id": "en.realize.sense",
+   "lemma": "sense",
+   "pos": [
+    "VERB"
+   ],
+   "kind": "realize_verb",
+   "strength": "weak",
+   "valence": 0.0,
+   "arousal": 0.35,
+   "emotions": {
+    "anticipation": 0.4
+   },
+   "source": "migrated:janitor.py",
+   "version": 1
+  },
+  {
+   "id": "en.realize.discern",
+   "lemma": "discern",
+   "pos": [
+    "VERB"
+   ],
+   "kind": "realize_verb",
+   "strength": "weak",
+   "valence": 0.1,
+   "arousal": 0.25,
+   "emotions": {
+    "anticipation": 0.3
+   },
+   "source": "curated:gemini-2026-09",
+   "version": 1
+  },
+  {
+   "id": "en.realize.comprehend",
+   "lemma": "comprehend",
+   "pos": [
+    "VERB"
+   ],
+   "kind": "realize_verb",
+   "strength": "weak",
+   "valence": 0.15,
+   "arousal": 0.25,
+   "emotions": {
+    "anticipation": 0.3
+   },
+   "source": "curated:gemini-2026-09",
+   "version": 1
+  },
+  {
+   "id": "en.realize.grasp",
+   "lemma": "grasp",
+   "pos": [
+    "VERB"
+   ],
+   "kind": "realize_verb",
+   "strength": "weak",
+   "valence": 0.1,
+   "arousal": 0.3,
+   "emotions": {
+    "anticipation": 0.3
+   },
+   "source": "curated:gemini-2026-09",
+   "version": 1
+  },
+  {
+   "id": "en.realize.gather",
+   "lemma": "gather",
+   "pos": [
+    "VERB"
+   ],
+   "kind": "realize_verb",
+   "strength": "weak",
+   "valence": 0.05,
+   "arousal": 0.2,
+   "emotions": {
+    "anticipation": 0.3
+   },
+   "source": "curated:gemini-2026-09",
+   "version": 1
+  },
+  {
+   "id": "en.realize.deduce",
+   "lemma": "deduce",
+   "pos": [
+    "VERB"
+   ],
+   "kind": "realize_verb",
+   "strength": "weak",
+   "valence": 0.1,
+   "arousal": 0.25,
+   "emotions": {
+    "anticipation": 0.3
+   },
+   "source": "curated:gemini-2026-09",
+   "version": 1
+  },
+  {
+   "id": "en.realize.infer",
+   "lemma": "infer",
+   "pos": [
+    "VERB"
+   ],
+   "kind": "realize_verb",
+   "strength": "weak",
+   "valence": 0.05,
+   "arousal": 0.25,
+   "emotions": {
+    "anticipation": 0.3
+   },
+   "source": "curated:gemini-2026-09",
+   "version": 1
+  },
+  {
+   "id": "en.realize.perceive",
+   "lemma": "perceive",
+   "pos": [
+    "VERB"
+   ],
+   "kind": "realize_verb",
+   "strength": "weak",
+   "valence": 0.0,
+   "arousal": 0.3,
+   "emotions": {
+    "anticipation": 0.3
+   },
+   "source": "curated:gemini-2026-09",
+   "version": 1
+  },
+  {
+   "id": "en.realize.fathom",
+   "lemma": "fathom",
+   "pos": [
+    "VERB"
+   ],
+   "kind": "realize_verb",
+   "strength": "weak",
+   "valence": 0.1,
+   "arousal": 0.25,
+   "emotions": {
+    "anticipation": 0.3
+   },
+   "source": "curated:gemini-2026-09",
+   "version": 1
+  },
+  {
+   "id": "en.realize.learn",
+   "lemma": "learn",
+   "pos": [
+    "VERB"
+   ],
+   "kind": "realize_verb",
+   "strength": "weak",
+   "valence": 0.15,
+   "arousal": 0.3,
+   "emotions": {
+    "anticipation": 0.3
+   },
+   "source": "curated:gemini-2026-09",
+   "version": 1
+  },
+  {
+   "id": "en.realize.discover",
+   "lemma": "discover",
+   "pos": [
+    "VERB"
+   ],
+   "kind": "realize_verb",
+   "strength": "weak",
+   "valence": 0.2,
+   "arousal": 0.45,
+   "emotions": {
+    "anticipation": 0.3
+   },
+   "source": "curated:gemini-2026-09",
+   "version": 1
+  },
+  {
+   "id": "en.realize.conclude",
+   "lemma": "conclude",
+   "pos": [
+    "VERB"
+   ],
+   "kind": "realize_verb",
+   "strength": "weak",
+   "valence": 0.1,
+   "arousal": 0.3,
+   "emotions": {
+    "anticipation": 0.3
+   },
+   "source": "curated:gemini-2026-09",
+   "version": 1
+  },
+  {
+   "id": "en.realize.surmise",
+   "lemma": "surmise",
+   "pos": [
+    "VERB"
+   ],
+   "kind": "realize_verb",
+   "strength": "weak",
+   "valence": 0.0,
+   "arousal": 0.25,
+   "emotions": {
+    "anticipation": 0.3
+   },
+   "source": "curated:gemini-2026-09",
+   "version": 1
+  },
+  {
+   "id": "en.realize.ascertain",
+   "lemma": "ascertain",
+   "pos": [
+    "VERB"
+   ],
+   "kind": "realize_verb",
+   "strength": "weak",
+   "valence": 0.1,
+   "arousal": 0.25,
+   "emotions": {
+    "anticipation": 0.3
+   },
+   "source": "curated:gemini-2026-09",
+   "version": 1
+  }
+ ]
+}

@@ -1,0 +1,809 @@
+{
+ "lang": "pl",
+ "kind": "action_urgent",
+ "version": 1,
+ "entries": [
+  {
+   "id": "pl.urgent.uciekać",
+   "lemma": "uciekać",
+   "pos": [
+    "VERB"
+   ],
+   "kind": "action_urgent",
+   "strength": "strong",
+   "valence": -0.5,
+   "arousal": 0.75,
+   "emotions": {
+    "fear": 0.8
+   },
+   "source": "curated:claude-2026-09",
+   "version": 1
+  },
+  {
+   "id": "pl.urgent.pędzić",
+   "lemma": "pędzić",
+   "pos": [
+    "VERB"
+   ],
+   "kind": "action_urgent",
+   "strength": "strong",
+   "valence": 0.0,
+   "arousal": 0.65,
+   "emotions": {
+    "anticipation": 0.5
+   },
+   "source": "curated:claude-2026-09",
+   "version": 1
+  },
+  {
+   "id": "pl.urgent.gonić",
+   "lemma": "gonić",
+   "pos": [
+    "VERB"
+   ],
+   "kind": "action_urgent",
+   "strength": "strong",
+   "valence": -0.3,
+   "arousal": 0.7,
+   "emotions": {
+    "fear": 0.4,
+    "anticipation": 0.4
+   },
+   "source": "curated:claude-2026-09",
+   "version": 1
+  },
+  {
+   "id": "pl.urgent.skoczyć",
+   "lemma": "skoczyć",
+   "pos": [
+    "VERB"
+   ],
+   "kind": "action_urgent",
+   "strength": "weak",
+   "valence": 0.0,
+   "arousal": 0.55,
+   "emotions": {
+    "surprise": 0.4
+   },
+   "source": "curated:claude-2026-09",
+   "version": 1,
+   "note": "also 'nip out' (skoczyć do sklepu)"
+  },
+  {
+   "id": "pl.urgent.popędzić",
+   "lemma": "popędzić",
+   "pos": [
+    "VERB"
+   ],
+   "kind": "action_urgent",
+   "strength": "strong",
+   "valence": 0.0,
+   "arousal": 0.65,
+   "emotions": {
+    "anticipation": 0.5
+   },
+   "source": "curated:claude-2026-09",
+   "version": 1
+  },
+  {
+   "id": "pl.urgent.uciec",
+   "lemma": "uciec",
+   "pos": [
+    "VERB"
+   ],
+   "kind": "action_urgent",
+   "strength": "strong",
+   "valence": -0.5,
+   "arousal": 0.75,
+   "emotions": {
+    "fear": 0.8
+   },
+   "source": "curated:gemini-2026-10",
+   "version": 1
+  },
+  {
+   "id": "pl.urgent.biec",
+   "lemma": "biec",
+   "pos": [
+    "VERB"
+   ],
+   "kind": "action_urgent",
+   "strength": "weak",
+   "valence": 0.0,
+   "arousal": 0.6,
+   "emotions": {
+    "anticipation": 0.5
+   },
+   "source": "curated:gemini-2026-10",
+   "version": 1,
+   "note": "also time runs"
+  },
+  {
+   "id": "pl.urgent.pobiec",
+   "lemma": "pobiec",
+   "pos": [
+    "VERB"
+   ],
+   "kind": "action_urgent",
+   "strength": "strong",
+   "valence": 0.0,
+   "arousal": 0.65,
+   "emotions": {
+    "anticipation": 0.5
+   },
+   "source": "curated:gemini-2026-10",
+   "version": 1
+  },
+  {
+   "id": "pl.urgent.wybiec",
+   "lemma": "wybiec",
+   "pos": [
+    "VERB"
+   ],
+   "kind": "action_urgent",
+   "strength": "strong",
+   "valence": 0.0,
+   "arousal": 0.65,
+   "emotions": {
+    "anticipation": 0.5
+   },
+   "source": "curated:gemini-2026-10",
+   "version": 1
+  },
+  {
+   "id": "pl.urgent.wbiec",
+   "lemma": "wbiec",
+   "pos": [
+    "VERB"
+   ],
+   "kind": "action_urgent",
+   "strength": "strong",
+   "valence": 0.0,
+   "arousal": 0.65,
+   "emotions": {
+    "anticipation": 0.5
+   },
+   "source": "curated:gemini-2026-10",
+   "version": 1
+  },
+  {
+   "id": "pl.urgent.skakać",
+   "lemma": "skakać",
+   "pos": [
+    "VERB"
+   ],
+   "kind": "action_urgent",
+   "strength": "weak",
+   "valence": 0.0,
+   "arousal": 0.55,
+   "emotions": {
+    "surprise": 0.4
+   },
+   "source": "curated:gemini-2026-10",
+   "version": 1
+  },
+  {
+   "id": "pl.urgent.gnać",
+   "lemma": "gnać",
+   "pos": [
+    "VERB"
+   ],
+   "kind": "action_urgent",
+   "strength": "strong",
+   "valence": 0.0,
+   "arousal": 0.65,
+   "emotions": {
+    "anticipation": 0.5
+   },
+   "source": "curated:gemini-2026-10",
+   "version": 1
+  },
+  {
+   "id": "pl.urgent.pognać",
+   "lemma": "pognać",
+   "pos": [
+    "VERB"
+   ],
+   "kind": "action_urgent",
+   "strength": "strong",
+   "valence": 0.0,
+   "arousal": 0.65,
+   "emotions": {
+    "anticipation": 0.5
+   },
+   "source": "curated:gemini-2026-10",
+   "version": 1
+  },
+  {
+   "id": "pl.urgent.spieszyć",
+   "lemma": "spieszyć",
+   "pos": [
+    "VERB"
+   ],
+   "kind": "action_urgent",
+   "strength": "strong",
+   "valence": -0.1,
+   "arousal": 0.6,
+   "emotions": {
+    "anticipation": 0.6
+   },
+   "source": "curated:gemini-2026-10",
+   "version": 1
+  },
+  {
+   "id": "pl.urgent.pośpieszyć",
+   "lemma": "pośpieszyć",
+   "pos": [
+    "VERB"
+   ],
+   "kind": "action_urgent",
+   "strength": "strong",
+   "valence": -0.1,
+   "arousal": 0.65,
+   "emotions": {
+    "anticipation": 0.6
+   },
+   "source": "curated:gemini-2026-10",
+   "version": 1
+  },
+  {
+   "id": "pl.urgent.ścigać",
+   "lemma": "ścigać",
+   "pos": [
+    "VERB"
+   ],
+   "kind": "action_urgent",
+   "strength": "strong",
+   "valence": -0.3,
+   "arousal": 0.7,
+   "emotions": {
+    "anticipation": 0.6,
+    "anger": 0.4
+   },
+   "source": "curated:gemini-2026-10",
+   "version": 1
+  },
+  {
+   "id": "pl.urgent.pościg",
+   "lemma": "pościg",
+   "pos": [
+    "NOUN"
+   ],
+   "kind": "action_urgent",
+   "strength": "strong",
+   "valence": -0.3,
+   "arousal": 0.75,
+   "emotions": {
+    "anticipation": 0.6,
+    "fear": 0.5
+   },
+   "source": "curated:gemini-2026-10",
+   "version": 1
+  },
+  {
+   "id": "pl.urgent.ucieczka",
+   "lemma": "ucieczka",
+   "pos": [
+    "NOUN"
+   ],
+   "kind": "action_urgent",
+   "strength": "strong",
+   "valence": -0.5,
+   "arousal": 0.8,
+   "emotions": {
+    "fear": 0.8
+   },
+   "source": "curated:gemini-2026-10",
+   "version": 1
+  },
+  {
+   "id": "pl.urgent.umykać",
+   "lemma": "umykać",
+   "pos": [
+    "VERB"
+   ],
+   "kind": "action_urgent",
+   "strength": "strong",
+   "valence": -0.4,
+   "arousal": 0.65,
+   "emotions": {
+    "fear": 0.6
+   },
+   "source": "curated:gemini-2026-10",
+   "version": 1
+  },
+  {
+   "id": "pl.urgent.umknąć",
+   "lemma": "umknąć",
+   "pos": [
+    "VERB"
+   ],
+   "kind": "action_urgent",
+   "strength": "strong",
+   "valence": -0.4,
+   "arousal": 0.7,
+   "emotions": {
+    "fear": 0.6
+   },
+   "source": "curated:gemini-2026-10",
+   "version": 1
+  },
+  {
+   "id": "pl.urgent.czmychnąć",
+   "lemma": "czmychnąć",
+   "pos": [
+    "VERB"
+   ],
+   "kind": "action_urgent",
+   "strength": "strong",
+   "valence": -0.3,
+   "arousal": 0.65,
+   "emotions": {
+    "fear": 0.5
+   },
+   "source": "curated:gemini-2026-10",
+   "version": 1
+  },
+  {
+   "id": "pl.urgent.mknąć",
+   "lemma": "mknąć",
+   "pos": [
+    "VERB"
+   ],
+   "kind": "action_urgent",
+   "strength": "strong",
+   "valence": 0.0,
+   "arousal": 0.65,
+   "emotions": {
+    "anticipation": 0.5
+   },
+   "source": "curated:gemini-2026-10",
+   "version": 1
+  },
+  {
+   "id": "pl.urgent.pomknąć",
+   "lemma": "pomknąć",
+   "pos": [
+    "VERB"
+   ],
+   "kind": "action_urgent",
+   "strength": "strong",
+   "valence": 0.0,
+   "arousal": 0.65,
+   "emotions": {
+    "anticipation": 0.5
+   },
+   "source": "curated:gemini-2026-10",
+   "version": 1
+  },
+  {
+   "id": "pl.urgent.dopaść",
+   "lemma": "dopaść",
+   "pos": [
+    "VERB"
+   ],
+   "kind": "action_urgent",
+   "strength": "strong",
+   "valence": -0.3,
+   "arousal": 0.75,
+   "emotions": {
+    "fear": 0.5,
+    "anger": 0.5
+   },
+   "source": "curated:gemini-2026-10",
+   "version": 1
+  },
+  {
+   "id": "pl.urgent.dopadać",
+   "lemma": "dopadać",
+   "pos": [
+    "VERB"
+   ],
+   "kind": "action_urgent",
+   "strength": "strong",
+   "valence": -0.3,
+   "arousal": 0.7,
+   "emotions": {
+    "fear": 0.5,
+    "anger": 0.5
+   },
+   "source": "curated:gemini-2026-10",
+   "version": 1
+  },
+  {
+   "id": "pl.urgent.wypaść",
+   "lemma": "wypaść",
+   "pos": [
+    "VERB"
+   ],
+   "kind": "action_urgent",
+   "strength": "weak",
+   "valence": -0.2,
+   "arousal": 0.6,
+   "emotions": {
+    "surprise": 0.5
+   },
+   "source": "curated:gemini-2026-10",
+   "version": 1,
+   "note": "also fall out of pocket"
+  },
+  {
+   "id": "pl.urgent.wypadać",
+   "lemma": "wypadać",
+   "pos": [
+    "VERB"
+   ],
+   "kind": "action_urgent",
+   "strength": "weak",
+   "valence": -0.2,
+   "arousal": 0.55,
+   "emotions": {
+    "surprise": 0.4
+   },
+   "source": "curated:gemini-2026-10",
+   "version": 1
+  },
+  {
+   "id": "pl.urgent.wpaść",
+   "lemma": "wpaść",
+   "pos": [
+    "VERB"
+   ],
+   "kind": "action_urgent",
+   "strength": "weak",
+   "valence": -0.3,
+   "arousal": 0.65,
+   "emotions": {
+    "surprise": 0.5
+   },
+   "source": "curated:gemini-2026-10",
+   "version": 1,
+   "note": "also fall into hole"
+  },
+  {
+   "id": "pl.urgent.rzucić",
+   "lemma": "rzucić",
+   "pos": [
+    "VERB"
+   ],
+   "kind": "action_urgent",
+   "strength": "weak",
+   "valence": -0.2,
+   "arousal": 0.65,
+   "emotions": {
+    "anger": 0.4
+   },
+   "source": "curated:gemini-2026-10",
+   "version": 1,
+   "note": "also throw object"
+  },
+  {
+   "id": "pl.urgent.zataczać",
+   "lemma": "zataczać",
+   "pos": [
+    "VERB"
+   ],
+   "kind": "action_urgent",
+   "strength": "strong",
+   "valence": -0.4,
+   "arousal": 0.6,
+   "emotions": {
+    "fear": 0.3
+   },
+   "source": "curated:gemini-2026-10",
+   "version": 1
+  },
+  {
+   "id": "pl.urgent.zatoczyć",
+   "lemma": "zatoczyć",
+   "pos": [
+    "VERB"
+   ],
+   "kind": "action_urgent",
+   "strength": "strong",
+   "valence": -0.4,
+   "arousal": 0.65,
+   "emotions": {
+    "surprise": 0.4
+   },
+   "source": "curated:gemini-2026-10",
+   "version": 1
+  },
+  {
+   "id": "pl.urgent.potknąć",
+   "lemma": "potknąć",
+   "pos": [
+    "VERB"
+   ],
+   "kind": "action_urgent",
+   "strength": "strong",
+   "valence": -0.3,
+   "arousal": 0.6,
+   "emotions": {
+    "surprise": 0.5
+   },
+   "source": "curated:gemini-2026-10",
+   "version": 1
+  },
+  {
+   "id": "pl.urgent.potykać",
+   "lemma": "potykać",
+   "pos": [
+    "VERB"
+   ],
+   "kind": "action_urgent",
+   "strength": "strong",
+   "valence": -0.3,
+   "arousal": 0.55,
+   "emotions": {
+    "surprise": 0.4
+   },
+   "source": "curated:gemini-2026-10",
+   "version": 1
+  },
+  {
+   "id": "pl.urgent.poślizgnąć",
+   "lemma": "poślizgnąć",
+   "pos": [
+    "VERB"
+   ],
+   "kind": "action_urgent",
+   "strength": "strong",
+   "valence": -0.2,
+   "arousal": 0.55,
+   "emotions": {
+    "surprise": 0.4
+   },
+   "source": "curated:gemini-2026-10",
+   "version": 1
+  },
+  {
+   "id": "pl.urgent.upaść",
+   "lemma": "upaść",
+   "pos": [
+    "VERB"
+   ],
+   "kind": "action_urgent",
+   "strength": "weak",
+   "valence": -0.4,
+   "arousal": 0.65,
+   "emotions": {
+    "fear": 0.5
+   },
+   "source": "curated:gemini-2026-10",
+   "version": 1,
+   "note": "also fall down"
+  },
+  {
+   "id": "pl.urgent.padać",
+   "lemma": "padać",
+   "pos": [
+    "VERB"
+   ],
+   "kind": "action_urgent",
+   "strength": "weak",
+   "valence": -0.3,
+   "arousal": 0.55,
+   "emotions": {
+    "sadness": 0.4
+   },
+   "source": "curated:gemini-2026-10",
+   "version": 1,
+   "note": "also rain falls"
+  },
+  {
+   "id": "pl.urgent.runąć",
+   "lemma": "runąć",
+   "pos": [
+    "VERB"
+   ],
+   "kind": "action_urgent",
+   "strength": "strong",
+   "valence": -0.5,
+   "arousal": 0.8,
+   "emotions": {
+    "fear": 0.7
+   },
+   "source": "curated:gemini-2026-10",
+   "version": 1
+  },
+  {
+   "id": "pl.urgent.nurkować",
+   "lemma": "nurkować",
+   "pos": [
+    "VERB"
+   ],
+   "kind": "action_urgent",
+   "strength": "weak",
+   "valence": 0.0,
+   "arousal": 0.6,
+   "emotions": {
+    "anticipation": 0.4
+   },
+   "source": "curated:gemini-2026-10",
+   "version": 1,
+   "note": "also diving in water"
+  },
+  {
+   "id": "pl.urgent.szamotać",
+   "lemma": "szamotać",
+   "pos": [
+    "VERB"
+   ],
+   "kind": "action_urgent",
+   "strength": "strong",
+   "valence": -0.4,
+   "arousal": 0.7,
+   "emotions": {
+    "fear": 0.5,
+    "anger": 0.4
+   },
+   "source": "curated:gemini-2026-10",
+   "version": 1
+  },
+  {
+   "id": "pl.urgent.uchylić",
+   "lemma": "uchylić",
+   "pos": [
+    "VERB"
+   ],
+   "kind": "action_urgent",
+   "strength": "strong",
+   "valence": -0.1,
+   "arousal": 0.55,
+   "emotions": {
+    "anticipation": 0.4
+   },
+   "source": "curated:gemini-2026-10",
+   "version": 1
+  },
+  {
+   "id": "pl.urgent.uchylać",
+   "lemma": "uchylać",
+   "pos": [
+    "VERB"
+   ],
+   "kind": "action_urgent",
+   "strength": "strong",
+   "valence": -0.1,
+   "arousal": 0.55,
+   "emotions": {
+    "anticipation": 0.4
+   },
+   "source": "curated:gemini-2026-10",
+   "version": 1
+  },
+  {
+   "id": "pl.urgent.unikać",
+   "lemma": "unikać",
+   "pos": [
+    "VERB"
+   ],
+   "kind": "action_urgent",
+   "strength": "strong",
+   "valence": -0.2,
+   "arousal": 0.55,
+   "emotions": {
+    "fear": 0.4
+   },
+   "source": "curated:gemini-2026-10",
+   "version": 1
+  },
+  {
+   "id": "pl.urgent.uniknąć",
+   "lemma": "uniknąć",
+   "pos": [
+    "VERB"
+   ],
+   "kind": "action_urgent",
+   "strength": "strong",
+   "valence": -0.2,
+   "arousal": 0.6,
+   "emotions": {
+    "fear": 0.4
+   },
+   "source": "curated:gemini-2026-10",
+   "version": 1
+  },
+  {
+   "id": "pl.urgent.cofać",
+   "lemma": "cofać",
+   "pos": [
+    "VERB"
+   ],
+   "kind": "action_urgent",
+   "strength": "weak",
+   "valence": -0.2,
+   "arousal": 0.5,
+   "emotions": {
+    "fear": 0.4
+   },
+   "source": "curated:gemini-2026-10",
+   "version": 1,
+   "note": "also reverse car"
+  },
+  {
+   "id": "pl.urgent.wycofać",
+   "lemma": "wycofać",
+   "pos": [
+    "VERB"
+   ],
+   "kind": "action_urgent",
+   "strength": "strong",
+   "valence": -0.3,
+   "arousal": 0.55,
+   "emotions": {
+    "fear": 0.4
+   },
+   "source": "curated:gemini-2026-10",
+   "version": 1
+  },
+  {
+   "id": "pl.urgent.cwałować",
+   "lemma": "cwałować",
+   "pos": [
+    "VERB"
+   ],
+   "kind": "action_urgent",
+   "strength": "weak",
+   "valence": 0.0,
+   "arousal": 0.65,
+   "emotions": {
+    "anticipation": 0.5
+   },
+   "source": "curated:gemini-2026-10",
+   "version": 1,
+   "note": "horse gallop"
+  },
+  {
+   "id": "pl.urgent.kłusować",
+   "lemma": "kłusować",
+   "pos": [
+    "VERB"
+   ],
+   "kind": "action_urgent",
+   "strength": "weak",
+   "valence": 0.0,
+   "arousal": 0.5,
+   "emotions": {
+    "anticipation": 0.3
+   },
+   "source": "curated:gemini-2026-10",
+   "version": 1,
+   "note": "horse trot"
+  },
+  {
+   "id": "pl.urgent.szarżować",
+   "lemma": "szarżować",
+   "pos": [
+    "VERB"
+   ],
+   "kind": "action_urgent",
+   "strength": "strong",
+   "valence": -0.3,
+   "arousal": 0.8,
+   "emotions": {
+    "anger": 0.6
+   },
+   "source": "curated:gemini-2026-10",
+   "version": 1
+  },
+  {
+   "id": "pl.urgent.wtargnąć",
+   "lemma": "wtargnąć",
+   "pos": [
+    "VERB"
+   ],
+   "kind": "action_urgent",
+   "strength": "strong",
+   "valence": -0.4,
+   "arousal": 0.75,
+   "emotions": {
+    "fear": 0.5,
+    "surprise": 0.5
+   },
+   "source": "curated:gemini-2026-10",
+   "version": 1
+  }
+ ]
+}

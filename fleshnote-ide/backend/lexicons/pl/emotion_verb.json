@@ -1,0 +1,2019 @@
+{
+ "lang": "pl",
+ "kind": "emotion_verb",
+ "version": 1,
+ "entries": [
+  {
+   "id": "pl.emoverb.bać_refl",
+   "lemma": "bać",
+   "pos": [
+    "VERB"
+   ],
+   "kind": "emotion_verb",
+   "strength": "strong",
+   "valence": -0.82,
+   "arousal": 0.82,
+   "emotions": {
+    "fear": 0.85
+   },
+   "source": "curated:gemini-2026-09",
+   "version": 1,
+   "reflexive": true,
+   "role": "experiencer"
+  },
+  {
+   "id": "pl.emoverb.lękać_refl",
+   "lemma": "lękać",
+   "pos": [
+    "VERB"
+   ],
+   "kind": "emotion_verb",
+   "strength": "strong",
+   "valence": -0.74,
+   "arousal": 0.72,
+   "emotions": {
+    "fear": 0.85
+   },
+   "source": "curated:gemini-2026-09",
+   "version": 1,
+   "reflexive": true,
+   "role": "experiencer"
+  },
+  {
+   "id": "pl.emoverb.trwożyć_refl",
+   "lemma": "trwożyć",
+   "pos": [
+    "VERB"
+   ],
+   "kind": "emotion_verb",
+   "strength": "strong",
+   "valence": -0.84,
+   "arousal": 0.82,
+   "emotions": {
+    "fear": 0.85
+   },
+   "source": "curated:gemini-2026-09",
+   "version": 1,
+   "reflexive": true,
+   "role": "experiencer"
+  },
+  {
+   "id": "pl.emoverb.przerażać_refl",
+   "lemma": "przerażać",
+   "pos": [
+    "VERB"
+   ],
+   "kind": "emotion_verb",
+   "strength": "strong",
+   "valence": -0.92,
+   "arousal": 0.92,
+   "emotions": {
+    "fear": 0.85
+   },
+   "source": "curated:gemini-2026-09",
+   "version": 1,
+   "reflexive": true,
+   "role": "experiencer"
+  },
+  {
+   "id": "pl.emoverb.obawiać_refl",
+   "lemma": "obawiać",
+   "pos": [
+    "VERB"
+   ],
+   "kind": "emotion_verb",
+   "strength": "strong",
+   "valence": -0.52,
+   "arousal": 0.52,
+   "emotions": {
+    "fear": 0.85
+   },
+   "source": "curated:gemini-2026-09",
+   "version": 1,
+   "reflexive": true,
+   "role": "experiencer"
+  },
+  {
+   "id": "pl.emoverb.niepokoić_refl",
+   "lemma": "niepokoić",
+   "pos": [
+    "VERB"
+   ],
+   "kind": "emotion_verb",
+   "strength": "strong",
+   "valence": -0.54,
+   "arousal": 0.62,
+   "emotions": {
+    "fear": 0.85
+   },
+   "source": "curated:gemini-2026-09",
+   "version": 1,
+   "reflexive": true,
+   "role": "experiencer"
+  },
+  {
+   "id": "pl.emoverb.drżeć",
+   "lemma": "drżeć",
+   "pos": [
+    "VERB"
+   ],
+   "kind": "emotion_verb",
+   "strength": "strong",
+   "valence": -0.72,
+   "arousal": 0.72,
+   "emotions": {
+    "fear": 0.85
+   },
+   "source": "curated:gemini-2026-09",
+   "version": 1,
+   "role": "expression"
+  },
+  {
+   "id": "pl.emoverb.zamierać",
+   "lemma": "zamierać",
+   "pos": [
+    "VERB"
+   ],
+   "kind": "emotion_verb",
+   "strength": "strong",
+   "valence": -0.72,
+   "arousal": 0.72,
+   "emotions": {
+    "fear": 0.85
+   },
+   "source": "curated:gemini-2026-09",
+   "version": 1,
+   "role": "expression"
+  },
+  {
+   "id": "pl.emoverb.uciekać",
+   "lemma": "uciekać",
+   "pos": [
+    "VERB"
+   ],
+   "kind": "emotion_verb",
+   "strength": "strong",
+   "valence": -0.62,
+   "arousal": 0.82,
+   "emotions": {
+    "fear": 0.85
+   },
+   "source": "curated:gemini-2026-09",
+   "version": 1,
+   "role": "expression"
+  },
+  {
+   "id": "pl.emoverb.złościć_refl",
+   "lemma": "złościć",
+   "pos": [
+    "VERB"
+   ],
+   "kind": "emotion_verb",
+   "strength": "strong",
+   "valence": -0.82,
+   "arousal": 0.82,
+   "emotions": {
+    "anger": 0.85
+   },
+   "source": "curated:gemini-2026-09",
+   "version": 1,
+   "reflexive": true,
+   "role": "experiencer"
+  },
+  {
+   "id": "pl.emoverb.gniewać_refl",
+   "lemma": "gniewać",
+   "pos": [
+    "VERB"
+   ],
+   "kind": "emotion_verb",
+   "strength": "strong",
+   "valence": -0.82,
+   "arousal": 0.82,
+   "emotions": {
+    "anger": 0.85
+   },
+   "source": "curated:gemini-2026-09",
+   "version": 1,
+   "reflexive": true,
+   "role": "experiencer"
+  },
+  {
+   "id": "pl.emoverb.wściekać_refl",
+   "lemma": "wściekać",
+   "pos": [
+    "VERB"
+   ],
+   "kind": "emotion_verb",
+   "strength": "strong",
+   "valence": -0.92,
+   "arousal": 0.92,
+   "emotions": {
+    "anger": 0.85
+   },
+   "source": "curated:gemini-2026-09",
+   "version": 1,
+   "reflexive": true,
+   "role": "experiencer"
+  },
+  {
+   "id": "pl.emoverb.irytować_refl",
+   "lemma": "irytować",
+   "pos": [
+    "VERB"
+   ],
+   "kind": "emotion_verb",
+   "strength": "strong",
+   "valence": -0.62,
+   "arousal": 0.62,
+   "emotions": {
+    "anger": 0.85
+   },
+   "source": "curated:gemini-2026-09",
+   "version": 1,
+   "reflexive": true,
+   "role": "experiencer"
+  },
+  {
+   "id": "pl.emoverb.oburzać_refl",
+   "lemma": "oburzać",
+   "pos": [
+    "VERB"
+   ],
+   "kind": "emotion_verb",
+   "strength": "strong",
+   "valence": -0.72,
+   "arousal": 0.72,
+   "emotions": {
+    "anger": 0.85
+   },
+   "source": "curated:gemini-2026-09",
+   "version": 1,
+   "reflexive": true,
+   "role": "experiencer"
+  },
+  {
+   "id": "pl.emoverb.wzburzać_refl",
+   "lemma": "wzburzać",
+   "pos": [
+    "VERB"
+   ],
+   "kind": "emotion_verb",
+   "strength": "strong",
+   "valence": -0.74,
+   "arousal": 0.82,
+   "emotions": {
+    "anger": 0.85
+   },
+   "source": "curated:gemini-2026-09",
+   "version": 1,
+   "reflexive": true,
+   "role": "experiencer"
+  },
+  {
+   "id": "pl.emoverb.pieklić_refl",
+   "lemma": "pieklić",
+   "pos": [
+    "VERB"
+   ],
+   "kind": "emotion_verb",
+   "strength": "strong",
+   "valence": -0.82,
+   "arousal": 0.82,
+   "emotions": {
+    "anger": 0.85
+   },
+   "source": "curated:gemini-2026-09",
+   "version": 1,
+   "reflexive": true,
+   "role": "expression"
+  },
+  {
+   "id": "pl.emoverb.ciskać_refl",
+   "lemma": "ciskać",
+   "pos": [
+    "VERB"
+   ],
+   "kind": "emotion_verb",
+   "strength": "strong",
+   "valence": -0.72,
+   "arousal": 0.82,
+   "emotions": {
+    "anger": 0.85
+   },
+   "source": "curated:gemini-2026-09",
+   "version": 1,
+   "reflexive": true,
+   "role": "expression"
+  },
+  {
+   "id": "pl.emoverb.pienić_refl",
+   "lemma": "pienić",
+   "pos": [
+    "VERB"
+   ],
+   "kind": "emotion_verb",
+   "strength": "strong",
+   "valence": -0.82,
+   "arousal": 0.92,
+   "emotions": {
+    "anger": 0.85
+   },
+   "source": "curated:gemini-2026-09",
+   "version": 1,
+   "reflexive": true,
+   "role": "expression"
+  },
+  {
+   "id": "pl.emoverb.nawymyślać",
+   "lemma": "nawymyślać",
+   "pos": [
+    "VERB"
+   ],
+   "kind": "emotion_verb",
+   "strength": "strong",
+   "valence": -0.72,
+   "arousal": 0.72,
+   "emotions": {
+    "anger": 0.85
+   },
+   "source": "curated:gemini-2026-09",
+   "version": 1,
+   "role": "speech_act"
+  },
+  {
+   "id": "pl.emoverb.nienawidzić",
+   "lemma": "nienawidzić",
+   "pos": [
+    "VERB"
+   ],
+   "kind": "emotion_verb",
+   "strength": "strong",
+   "valence": -0.92,
+   "arousal": 0.82,
+   "emotions": {
+    "anger": 0.85
+   },
+   "source": "curated:gemini-2026-09",
+   "version": 1,
+   "role": "experiencer"
+  },
+  {
+   "id": "pl.emoverb.gardzić",
+   "lemma": "gardzić",
+   "pos": [
+    "VERB"
+   ],
+   "kind": "emotion_verb",
+   "strength": "strong",
+   "valence": -0.82,
+   "arousal": 0.62,
+   "emotions": {
+    "disgust": 0.85
+   },
+   "source": "curated:gemini-2026-09",
+   "version": 1,
+   "role": "experiencer"
+  },
+  {
+   "id": "pl.emoverb.brzydzić_refl",
+   "lemma": "brzydzić",
+   "pos": [
+    "VERB"
+   ],
+   "kind": "emotion_verb",
+   "strength": "strong",
+   "valence": -0.82,
+   "arousal": 0.72,
+   "emotions": {
+    "disgust": 0.85
+   },
+   "source": "curated:gemini-2026-09",
+   "version": 1,
+   "reflexive": true,
+   "role": "experiencer"
+  },
+  {
+   "id": "pl.emoverb.wzdragać_refl",
+   "lemma": "wzdragać",
+   "pos": [
+    "VERB"
+   ],
+   "kind": "emotion_verb",
+   "strength": "strong",
+   "valence": -0.72,
+   "arousal": 0.62,
+   "emotions": {
+    "disgust": 0.85
+   },
+   "source": "curated:gemini-2026-09",
+   "version": 1,
+   "reflexive": true,
+   "role": "expression"
+  },
+  {
+   "id": "pl.emoverb.lekceważyć",
+   "lemma": "lekceważyć",
+   "pos": [
+    "VERB"
+   ],
+   "kind": "emotion_verb",
+   "strength": "strong",
+   "valence": -0.52,
+   "arousal": 0.42,
+   "emotions": {
+    "disgust": 0.85
+   },
+   "source": "curated:gemini-2026-09",
+   "version": 1,
+   "role": "experiencer"
+  },
+  {
+   "id": "pl.emoverb.zazdrościć",
+   "lemma": "zazdrościć",
+   "pos": [
+    "VERB"
+   ],
+   "kind": "emotion_verb",
+   "strength": "strong",
+   "valence": -0.72,
+   "arousal": 0.62,
+   "emotions": {
+    "disgust": 0.85
+   },
+   "source": "curated:gemini-2026-09",
+   "version": 1,
+   "role": "experiencer"
+  },
+  {
+   "id": "pl.emoverb.smutcić_refl",
+   "lemma": "smucić",
+   "pos": [
+    "VERB"
+   ],
+   "kind": "emotion_verb",
+   "strength": "strong",
+   "valence": -0.72,
+   "arousal": 0.42,
+   "emotions": {
+    "sadness": 0.85
+   },
+   "source": "curated:gemini-2026-09",
+   "version": 1,
+   "reflexive": true,
+   "role": "experiencer"
+  },
+  {
+   "id": "pl.emoverb.martwić_refl",
+   "lemma": "martwić",
+   "pos": [
+    "VERB"
+   ],
+   "kind": "emotion_verb",
+   "strength": "strong",
+   "valence": -0.62,
+   "arousal": 0.42,
+   "emotions": {
+    "sadness": 0.85
+   },
+   "source": "curated:gemini-2026-09",
+   "version": 1,
+   "reflexive": true,
+   "role": "experiencer"
+  },
+  {
+   "id": "pl.emoverb.frasować_refl",
+   "lemma": "frasować",
+   "pos": [
+    "VERB"
+   ],
+   "kind": "emotion_verb",
+   "strength": "strong",
+   "valence": -0.62,
+   "arousal": 0.42,
+   "emotions": {
+    "sadness": 0.85
+   },
+   "source": "curated:gemini-2026-09",
+   "version": 1,
+   "reflexive": true,
+   "role": "experiencer"
+  },
+  {
+   "id": "pl.emoverb.rozpaczać",
+   "lemma": "rozpaczać",
+   "pos": [
+    "VERB"
+   ],
+   "kind": "emotion_verb",
+   "strength": "strong",
+   "valence": -0.92,
+   "arousal": 0.82,
+   "emotions": {
+    "sadness": 0.85
+   },
+   "source": "curated:gemini-2026-09",
+   "version": 1,
+   "role": "experiencer"
+  },
+  {
+   "id": "pl.emoverb.lamentować",
+   "lemma": "lamentować",
+   "pos": [
+    "VERB"
+   ],
+   "kind": "emotion_verb",
+   "strength": "strong",
+   "valence": -0.82,
+   "arousal": 0.72,
+   "emotions": {
+    "sadness": 0.85
+   },
+   "source": "curated:gemini-2026-09",
+   "version": 1,
+   "role": "expression"
+  },
+  {
+   "id": "pl.emoverb.płakać",
+   "lemma": "płakać",
+   "pos": [
+    "VERB"
+   ],
+   "kind": "emotion_verb",
+   "strength": "strong",
+   "valence": -0.82,
+   "arousal": 0.62,
+   "emotions": {
+    "sadness": 0.85
+   },
+   "source": "curated:gemini-2026-09",
+   "version": 1,
+   "role": "expression"
+  },
+  {
+   "id": "pl.emoverb.szlochać",
+   "lemma": "szlochać",
+   "pos": [
+    "VERB"
+   ],
+   "kind": "emotion_verb",
+   "strength": "strong",
+   "valence": -0.84,
+   "arousal": 0.72,
+   "emotions": {
+    "sadness": 0.85
+   },
+   "source": "curated:gemini-2026-09",
+   "version": 1,
+   "role": "expression"
+  },
+  {
+   "id": "pl.emoverb.łkać",
+   "lemma": "łkać",
+   "pos": [
+    "VERB"
+   ],
+   "kind": "emotion_verb",
+   "strength": "strong",
+   "valence": -0.82,
+   "arousal": 0.62,
+   "emotions": {
+    "sadness": 0.85
+   },
+   "source": "curated:gemini-2026-09",
+   "version": 1,
+   "role": "expression"
+  },
+  {
+   "id": "pl.emoverb.boleć",
+   "lemma": "boleć",
+   "pos": [
+    "VERB"
+   ],
+   "kind": "emotion_verb",
+   "strength": "strong",
+   "valence": -0.72,
+   "arousal": 0.62,
+   "emotions": {
+    "sadness": 0.85
+   },
+   "source": "curated:gemini-2026-09",
+   "version": 1,
+   "role": "stimulus"
+  },
+  {
+   "id": "pl.emoverb.cierpieć",
+   "lemma": "cierpieć",
+   "pos": [
+    "VERB"
+   ],
+   "kind": "emotion_verb",
+   "strength": "strong",
+   "valence": -0.82,
+   "arousal": 0.62,
+   "emotions": {
+    "sadness": 0.85
+   },
+   "source": "curated:gemini-2026-09",
+   "version": 1,
+   "role": "experiencer"
+  },
+  {
+   "id": "pl.emoverb.przeboleć",
+   "lemma": "przeboleć",
+   "pos": [
+    "VERB"
+   ],
+   "kind": "emotion_verb",
+   "strength": "strong",
+   "valence": -0.62,
+   "arousal": 0.42,
+   "emotions": {
+    "sadness": 0.85
+   },
+   "source": "curated:gemini-2026-09",
+   "version": 1,
+   "role": "experiencer"
+  },
+  {
+   "id": "pl.emoverb.żałować",
+   "lemma": "żałować",
+   "pos": [
+    "VERB"
+   ],
+   "kind": "emotion_verb",
+   "strength": "strong",
+   "valence": -0.62,
+   "arousal": 0.42,
+   "emotions": {
+    "sadness": 0.85
+   },
+   "source": "curated:gemini-2026-09",
+   "version": 1,
+   "role": "experiencer"
+  },
+  {
+   "id": "pl.emoverb.tęsknić",
+   "lemma": "tęsknić",
+   "pos": [
+    "VERB"
+   ],
+   "kind": "emotion_verb",
+   "strength": "strong",
+   "valence": -0.62,
+   "arousal": 0.42,
+   "emotions": {
+    "sadness": 0.85
+   },
+   "source": "curated:gemini-2026-09",
+   "version": 1,
+   "role": "experiencer"
+  },
+  {
+   "id": "pl.emoverb.wzdychać",
+   "lemma": "wzdychać",
+   "pos": [
+    "VERB"
+   ],
+   "kind": "emotion_verb",
+   "strength": "strong",
+   "valence": -0.52,
+   "arousal": 0.32,
+   "emotions": {
+    "sadness": 0.85
+   },
+   "source": "curated:gemini-2026-09",
+   "version": 1,
+   "role": "expression"
+  },
+  {
+   "id": "pl.emoverb.smęcić",
+   "lemma": "smęcić",
+   "pos": [
+    "VERB"
+   ],
+   "kind": "emotion_verb",
+   "strength": "strong",
+   "valence": -0.52,
+   "arousal": 0.32,
+   "emotions": {
+    "sadness": 0.85
+   },
+   "source": "curated:gemini-2026-09",
+   "version": 1,
+   "role": "speech_act"
+  },
+  {
+   "id": "pl.emoverb.cieszyć_refl",
+   "lemma": "cieszyć",
+   "pos": [
+    "VERB"
+   ],
+   "kind": "emotion_verb",
+   "strength": "strong",
+   "valence": 0.92,
+   "arousal": 0.72,
+   "emotions": {
+    "joy": 0.85
+   },
+   "source": "curated:gemini-2026-09",
+   "version": 1,
+   "reflexive": true,
+   "role": "experiencer"
+  },
+  {
+   "id": "pl.emoverb.radować_refl",
+   "lemma": "radować",
+   "pos": [
+    "VERB"
+   ],
+   "kind": "emotion_verb",
+   "strength": "strong",
+   "valence": 0.92,
+   "arousal": 0.82,
+   "emotions": {
+    "joy": 0.85
+   },
+   "source": "curated:gemini-2026-09",
+   "version": 1,
+   "reflexive": true,
+   "role": "experiencer"
+  },
+  {
+   "id": "pl.emoverb.śmiać_refl",
+   "lemma": "śmiać",
+   "pos": [
+    "VERB"
+   ],
+   "kind": "emotion_verb",
+   "strength": "strong",
+   "valence": 0.82,
+   "arousal": 0.62,
+   "emotions": {
+    "joy": 0.85
+   },
+   "source": "curated:gemini-2026-09",
+   "version": 1,
+   "reflexive": true,
+   "role": "expression"
+  },
+  {
+   "id": "pl.emoverb.uśmiechać_refl",
+   "lemma": "uśmiechać",
+   "pos": [
+    "VERB"
+   ],
+   "kind": "emotion_verb",
+   "strength": "strong",
+   "valence": 0.72,
+   "arousal": 0.42,
+   "emotions": {
+    "joy": 0.85
+   },
+   "source": "curated:gemini-2026-09",
+   "version": 1,
+   "reflexive": true,
+   "role": "expression"
+  },
+  {
+   "id": "pl.emoverb.chichotać",
+   "lemma": "chichotać",
+   "pos": [
+    "VERB"
+   ],
+   "kind": "emotion_verb",
+   "strength": "strong",
+   "valence": 0.62,
+   "arousal": 0.52,
+   "emotions": {
+    "joy": 0.85
+   },
+   "source": "curated:gemini-2026-09",
+   "version": 1,
+   "role": "expression"
+  },
+  {
+   "id": "pl.emoverb.triumfować",
+   "lemma": "triumfować",
+   "pos": [
+    "VERB"
+   ],
+   "kind": "emotion_verb",
+   "strength": "strong",
+   "valence": 0.84,
+   "arousal": 0.82,
+   "emotions": {
+    "joy": 0.85
+   },
+   "source": "curated:gemini-2026-09",
+   "version": 1,
+   "role": "expression"
+  },
+  {
+   "id": "pl.emoverb.świętować",
+   "lemma": "świętować",
+   "pos": [
+    "VERB"
+   ],
+   "kind": "emotion_verb",
+   "strength": "strong",
+   "valence": 0.82,
+   "arousal": 0.62,
+   "emotions": {
+    "joy": 0.85
+   },
+   "source": "curated:gemini-2026-09",
+   "version": 1,
+   "role": "expression"
+  },
+  {
+   "id": "pl.emoverb.kochać",
+   "lemma": "kochać",
+   "pos": [
+    "VERB"
+   ],
+   "kind": "emotion_verb",
+   "strength": "strong",
+   "valence": 0.92,
+   "arousal": 0.62,
+   "emotions": {
+    "joy": 0.85
+   },
+   "source": "curated:gemini-2026-09",
+   "version": 1,
+   "role": "other",
+   "note": "'kochała się w tkaninach' = was fond of; love is ambiguous"
+  },
+  {
+   "id": "pl.emoverb.uwielbiać",
+   "lemma": "uwielbiać",
+   "pos": [
+    "VERB"
+   ],
+   "kind": "emotion_verb",
+   "strength": "strong",
+   "valence": 0.92,
+   "arousal": 0.72,
+   "emotions": {
+    "joy": 0.85
+   },
+   "source": "curated:gemini-2026-09",
+   "version": 1,
+   "role": "experiencer"
+  },
+  {
+   "id": "pl.emoverb.ubóstwiać",
+   "lemma": "ubóstwiać",
+   "pos": [
+    "VERB"
+   ],
+   "kind": "emotion_verb",
+   "strength": "strong",
+   "valence": 0.92,
+   "arousal": 0.72,
+   "emotions": {
+    "joy": 0.85
+   },
+   "source": "curated:gemini-2026-09",
+   "version": 1,
+   "role": "experiencer"
+  },
+  {
+   "id": "pl.emoverb.przepadać",
+   "lemma": "przepadać",
+   "pos": [
+    "VERB"
+   ],
+   "kind": "emotion_verb",
+   "strength": "strong",
+   "valence": 0.72,
+   "arousal": 0.52,
+   "emotions": {
+    "joy": 0.85
+   },
+   "source": "curated:gemini-2026-09",
+   "version": 1,
+   "role": "experiencer"
+  },
+  {
+   "id": "pl.emoverb.pragnąć",
+   "lemma": "pragnąć",
+   "pos": [
+    "VERB"
+   ],
+   "kind": "emotion_verb",
+   "strength": "strong",
+   "valence": 0.64,
+   "arousal": 0.72,
+   "emotions": {
+    "anticipation": 0.85
+   },
+   "source": "curated:gemini-2026-09",
+   "version": 1,
+   "role": "other",
+   "note": "want/wish, not a named feeling"
+  },
+  {
+   "id": "pl.emoverb.pożądać",
+   "lemma": "pożądać",
+   "pos": [
+    "VERB"
+   ],
+   "kind": "emotion_verb",
+   "strength": "strong",
+   "valence": 0.64,
+   "arousal": 0.82,
+   "emotions": {
+    "anticipation": 0.85
+   },
+   "source": "curated:gemini-2026-09",
+   "version": 1,
+   "role": "experiencer"
+  },
+  {
+   "id": "pl.emoverb.łaknąć",
+   "lemma": "łaknąć",
+   "pos": [
+    "VERB"
+   ],
+   "kind": "emotion_verb",
+   "strength": "strong",
+   "valence": 0.62,
+   "arousal": 0.72,
+   "emotions": {
+    "anticipation": 0.85
+   },
+   "source": "curated:gemini-2026-09",
+   "version": 1,
+   "role": "experiencer"
+  },
+  {
+   "id": "pl.emoverb.marzyć",
+   "lemma": "marzyć",
+   "pos": [
+    "VERB"
+   ],
+   "kind": "emotion_verb",
+   "strength": "strong",
+   "valence": 0.72,
+   "arousal": 0.32,
+   "emotions": {
+    "joy": 0.85
+   },
+   "source": "curated:gemini-2026-09",
+   "version": 1,
+   "role": "other",
+   "note": "dream/daydream; wish sense is borderline"
+  },
+  {
+   "id": "pl.emoverb.śnić",
+   "lemma": "śnić",
+   "pos": [
+    "VERB"
+   ],
+   "kind": "emotion_verb",
+   "strength": "strong",
+   "valence": 0.52,
+   "arousal": 0.22,
+   "emotions": {
+    "joy": 0.85
+   },
+   "source": "curated:gemini-2026-09",
+   "version": 1,
+   "role": "other"
+  },
+  {
+   "id": "pl.emoverb.fantazjować",
+   "lemma": "fantazjować",
+   "pos": [
+    "VERB"
+   ],
+   "kind": "emotion_verb",
+   "strength": "strong",
+   "valence": 0.62,
+   "arousal": 0.42,
+   "emotions": {
+    "joy": 0.85
+   },
+   "source": "curated:gemini-2026-09",
+   "version": 1,
+   "role": "other"
+  },
+  {
+   "id": "pl.emoverb.oczekiwać",
+   "lemma": "oczekiwać",
+   "pos": [
+    "VERB"
+   ],
+   "kind": "emotion_verb",
+   "strength": "strong",
+   "valence": 0.52,
+   "arousal": 0.52,
+   "emotions": {
+    "anticipation": 0.85
+   },
+   "source": "curated:gemini-2026-09",
+   "version": 1,
+   "role": "other",
+   "note": "await/expect, not a feeling"
+  },
+  {
+   "id": "pl.emoverb.wyczekiwać",
+   "lemma": "wyczekiwać",
+   "pos": [
+    "VERB"
+   ],
+   "kind": "emotion_verb",
+   "strength": "strong",
+   "valence": 0.62,
+   "arousal": 0.62,
+   "emotions": {
+    "anticipation": 0.85
+   },
+   "source": "curated:gemini-2026-09",
+   "version": 1,
+   "role": "other",
+   "note": "wait for"
+  },
+  {
+   "id": "pl.emoverb.spodziewać_refl",
+   "lemma": "spodziewać",
+   "pos": [
+    "VERB"
+   ],
+   "kind": "emotion_verb",
+   "strength": "strong",
+   "valence": 0.52,
+   "arousal": 0.42,
+   "emotions": {
+    "anticipation": 0.85
+   },
+   "source": "curated:gemini-2026-09",
+   "version": 1,
+   "reflexive": true,
+   "role": "other",
+   "note": "expect"
+  },
+  {
+   "id": "pl.emoverb.dziwić_refl",
+   "lemma": "dziwić",
+   "pos": [
+    "VERB"
+   ],
+   "kind": "emotion_verb",
+   "strength": "strong",
+   "valence": 0.32,
+   "arousal": 0.62,
+   "emotions": {
+    "surprise": 0.85
+   },
+   "source": "curated:gemini-2026-09",
+   "version": 1,
+   "reflexive": true,
+   "role": "experiencer"
+  },
+  {
+   "id": "pl.emoverb.zdumiewać_refl",
+   "lemma": "zdumiewać",
+   "pos": [
+    "VERB"
+   ],
+   "kind": "emotion_verb",
+   "strength": "strong",
+   "valence": 0.34,
+   "arousal": 0.72,
+   "emotions": {
+    "surprise": 0.85
+   },
+   "source": "curated:gemini-2026-09",
+   "version": 1,
+   "reflexive": true,
+   "role": "experiencer"
+  },
+  {
+   "id": "pl.emoverb.zaskakiwać",
+   "lemma": "zaskakiwać",
+   "pos": [
+    "VERB"
+   ],
+   "kind": "emotion_verb",
+   "strength": "strong",
+   "valence": 0.24,
+   "arousal": 0.62,
+   "emotions": {
+    "surprise": 0.85
+   },
+   "source": "curated:gemini-2026-09",
+   "version": 1,
+   "role": "stimulus"
+  },
+  {
+   "id": "pl.emoverb.szokować",
+   "lemma": "szokować",
+   "pos": [
+    "VERB"
+   ],
+   "kind": "emotion_verb",
+   "strength": "strong",
+   "valence": -0.45,
+   "arousal": 0.82,
+   "emotions": {
+    "surprise": 0.85
+   },
+   "source": "curated:gemini-2026-09",
+   "version": 1,
+   "role": "stimulus"
+  },
+  {
+   "id": "pl.emoverb.osłupieć",
+   "lemma": "osłupieć",
+   "pos": [
+    "VERB"
+   ],
+   "kind": "emotion_verb",
+   "strength": "strong",
+   "valence": -0.22,
+   "arousal": 0.72,
+   "emotions": {
+    "surprise": 0.85
+   },
+   "source": "curated:gemini-2026-09",
+   "version": 1,
+   "role": "expression"
+  },
+  {
+   "id": "pl.emoverb.wstydzić_refl",
+   "lemma": "wstydzić",
+   "pos": [
+    "VERB"
+   ],
+   "kind": "emotion_verb",
+   "strength": "strong",
+   "valence": -0.72,
+   "arousal": 0.52,
+   "emotions": {
+    "sadness": 0.85
+   },
+   "source": "curated:gemini-2026-09",
+   "version": 1,
+   "reflexive": true,
+   "role": "experiencer"
+  },
+  {
+   "id": "pl.emoverb.krępować_refl",
+   "lemma": "krępować",
+   "pos": [
+    "VERB"
+   ],
+   "kind": "emotion_verb",
+   "strength": "strong",
+   "valence": -0.52,
+   "arousal": 0.42,
+   "emotions": {
+    "sadness": 0.85
+   },
+   "source": "curated:gemini-2026-09",
+   "version": 1,
+   "reflexive": true,
+   "role": "other",
+   "note": "'nie krępował się' = didn't mind; restrain"
+  },
+  {
+   "id": "pl.emoverb.żenować",
+   "lemma": "żenować",
+   "pos": [
+    "VERB"
+   ],
+   "kind": "emotion_verb",
+   "strength": "strong",
+   "valence": -0.52,
+   "arousal": 0.42,
+   "emotions": {
+    "sadness": 0.85
+   },
+   "source": "curated:gemini-2026-09",
+   "version": 1,
+   "role": "stimulus"
+  },
+  {
+   "id": "pl.emoverb.pysznić_refl",
+   "lemma": "pysznić",
+   "pos": [
+    "VERB"
+   ],
+   "kind": "emotion_verb",
+   "strength": "strong",
+   "valence": -0.52,
+   "arousal": 0.52,
+   "emotions": {
+    "disgust": 0.85
+   },
+   "source": "curated:gemini-2026-09",
+   "version": 1,
+   "reflexive": true,
+   "role": "speech_act"
+  },
+  {
+   "id": "pl.emoverb.chlubić_refl",
+   "lemma": "chlubić",
+   "pos": [
+    "VERB"
+   ],
+   "kind": "emotion_verb",
+   "strength": "strong",
+   "valence": 0.72,
+   "arousal": 0.52,
+   "emotions": {
+    "joy": 0.85
+   },
+   "source": "curated:gemini-2026-09",
+   "version": 1,
+   "reflexive": true,
+   "role": "speech_act"
+  },
+  {
+   "id": "pl.emoverb.szczycić_refl",
+   "lemma": "szczycić",
+   "pos": [
+    "VERB"
+   ],
+   "kind": "emotion_verb",
+   "strength": "strong",
+   "valence": 0.82,
+   "arousal": 0.62,
+   "emotions": {
+    "joy": 0.85
+   },
+   "source": "curated:gemini-2026-09",
+   "version": 1,
+   "reflexive": true,
+   "role": "speech_act"
+  },
+  {
+   "id": "pl.emoverb.chełpić_refl",
+   "lemma": "chełpić",
+   "pos": [
+    "VERB"
+   ],
+   "kind": "emotion_verb",
+   "strength": "strong",
+   "valence": -0.52,
+   "arousal": 0.52,
+   "emotions": {
+    "disgust": 0.85
+   },
+   "source": "curated:gemini-2026-09",
+   "version": 1,
+   "reflexive": true,
+   "role": "speech_act"
+  },
+  {
+   "id": "pl.emoverb.ufać",
+   "lemma": "ufać",
+   "pos": [
+    "VERB"
+   ],
+   "kind": "emotion_verb",
+   "strength": "strong",
+   "valence": 0.82,
+   "arousal": 0.42,
+   "emotions": {
+    "trust": 0.85
+   },
+   "source": "curated:gemini-2026-09",
+   "version": 1,
+   "role": "other"
+  },
+  {
+   "id": "pl.emoverb.dowierzać",
+   "lemma": "dowierzać",
+   "pos": [
+    "VERB"
+   ],
+   "kind": "emotion_verb",
+   "strength": "strong",
+   "valence": 0.72,
+   "arousal": 0.32,
+   "emotions": {
+    "trust": 0.85
+   },
+   "source": "curated:gemini-2026-09",
+   "version": 1,
+   "role": "other"
+  },
+  {
+   "id": "pl.emoverb.wierzyć",
+   "lemma": "wierzyć",
+   "pos": [
+    "VERB"
+   ],
+   "kind": "emotion_verb",
+   "strength": "strong",
+   "valence": 0.82,
+   "arousal": 0.42,
+   "emotions": {
+    "trust": 0.85
+   },
+   "source": "curated:gemini-2026-09",
+   "version": 1,
+   "role": "other"
+  },
+  {
+   "id": "pl.emoverb.polegać",
+   "lemma": "polegać",
+   "pos": [
+    "VERB"
+   ],
+   "kind": "emotion_verb",
+   "strength": "strong",
+   "valence": 0.82,
+   "arousal": 0.42,
+   "emotions": {
+    "trust": 0.85
+   },
+   "source": "curated:gemini-2026-09",
+   "version": 1,
+   "role": "other"
+  },
+  {
+   "id": "pl.emoverb.współczuć",
+   "lemma": "współczuć",
+   "pos": [
+    "VERB"
+   ],
+   "kind": "emotion_verb",
+   "strength": "strong",
+   "valence": 0.82,
+   "arousal": 0.42,
+   "emotions": {
+    "trust": 0.85
+   },
+   "source": "curated:gemini-2026-09",
+   "version": 1,
+   "role": "experiencer"
+  },
+  {
+   "id": "pl.emoverb.litować_refl",
+   "lemma": "litować",
+   "pos": [
+    "VERB"
+   ],
+   "kind": "emotion_verb",
+   "strength": "strong",
+   "valence": -0.32,
+   "arousal": 0.32,
+   "emotions": {
+    "sadness": 0.85
+   },
+   "source": "curated:gemini-2026-09",
+   "version": 1,
+   "reflexive": true,
+   "role": "experiencer"
+  },
+  {
+   "id": "pl.emoverb.przebaczać",
+   "lemma": "przebaczać",
+   "pos": [
+    "VERB"
+   ],
+   "kind": "emotion_verb",
+   "strength": "strong",
+   "valence": 0.82,
+   "arousal": 0.42,
+   "emotions": {
+    "trust": 0.85
+   },
+   "source": "curated:gemini-2026-09",
+   "version": 1,
+   "role": "speech_act"
+  },
+  {
+   "id": "pl.emoverb.wybaczać",
+   "lemma": "wybaczać",
+   "pos": [
+    "VERB"
+   ],
+   "kind": "emotion_verb",
+   "strength": "strong",
+   "valence": 0.82,
+   "arousal": 0.42,
+   "emotions": {
+    "trust": 0.85
+   },
+   "source": "curated:gemini-2026-09",
+   "version": 1,
+   "role": "speech_act"
+  },
+  {
+   "id": "pl.emoverb.uspokajać_refl",
+   "lemma": "uspokajać",
+   "pos": [
+    "VERB"
+   ],
+   "kind": "emotion_verb",
+   "strength": "strong",
+   "valence": 0.74,
+   "arousal": 0.22,
+   "emotions": {
+    "trust": 0.85
+   },
+   "source": "curated:gemini-2026-09",
+   "version": 1,
+   "reflexive": true,
+   "role": "stimulus",
+   "note": "calm someone down; 'uspokajać się' is experiencer"
+  },
+  {
+   "id": "pl.emoverb.wyciszać_refl",
+   "lemma": "wyciszać",
+   "pos": [
+    "VERB"
+   ],
+   "kind": "emotion_verb",
+   "strength": "strong",
+   "valence": 0.72,
+   "arousal": 0.22,
+   "emotions": {
+    "trust": 0.85
+   },
+   "source": "curated:gemini-2026-09",
+   "version": 1,
+   "reflexive": true,
+   "role": "stimulus",
+   "note": "quiet someone down"
+  },
+  {
+   "id": "pl.emoverb.koić",
+   "lemma": "koić",
+   "pos": [
+    "VERB"
+   ],
+   "kind": "emotion_verb",
+   "strength": "strong",
+   "valence": 0.82,
+   "arousal": 0.22,
+   "emotions": {
+    "trust": 0.85
+   },
+   "source": "curated:gemini-2026-09",
+   "version": 1,
+   "role": "stimulus"
+  },
+  {
+   "id": "pl.emoverb.pocieszać",
+   "lemma": "pocieszać",
+   "pos": [
+    "VERB"
+   ],
+   "kind": "emotion_verb",
+   "strength": "strong",
+   "valence": 0.72,
+   "arousal": 0.42,
+   "emotions": {
+    "trust": 0.85
+   },
+   "source": "curated:gemini-2026-09",
+   "version": 1,
+   "role": "speech_act"
+  },
+  {
+   "id": "pl.emoverb.dopingować",
+   "lemma": "dopingować",
+   "pos": [
+    "VERB"
+   ],
+   "kind": "emotion_verb",
+   "strength": "strong",
+   "valence": 0.72,
+   "arousal": 0.62,
+   "emotions": {
+    "anticipation": 0.85
+   },
+   "source": "curated:gemini-2026-09",
+   "version": 1,
+   "role": "speech_act"
+  },
+  {
+   "id": "pl.emoverb.zagrzewać",
+   "lemma": "zagrzewać",
+   "pos": [
+    "VERB"
+   ],
+   "kind": "emotion_verb",
+   "strength": "strong",
+   "valence": 0.72,
+   "arousal": 0.72,
+   "emotions": {
+    "anticipation": 0.85
+   },
+   "source": "curated:gemini-2026-09",
+   "version": 1,
+   "role": "speech_act"
+  },
+  {
+   "id": "pl.emoverb.podjudzać",
+   "lemma": "podjudzać",
+   "pos": [
+    "VERB"
+   ],
+   "kind": "emotion_verb",
+   "strength": "strong",
+   "valence": -0.72,
+   "arousal": 0.72,
+   "emotions": {
+    "anger": 0.85
+   },
+   "source": "curated:gemini-2026-09",
+   "version": 1,
+   "role": "speech_act"
+  },
+  {
+   "id": "pl.emoverb.prowokować",
+   "lemma": "prowokować",
+   "pos": [
+    "VERB"
+   ],
+   "kind": "emotion_verb",
+   "strength": "strong",
+   "valence": -0.62,
+   "arousal": 0.72,
+   "emotions": {
+    "anger": 0.85
+   },
+   "source": "curated:gemini-2026-09",
+   "version": 1,
+   "role": "speech_act"
+  },
+  {
+   "id": "pl.emoverb.drażnić",
+   "lemma": "drażnić",
+   "pos": [
+    "VERB"
+   ],
+   "kind": "emotion_verb",
+   "strength": "strong",
+   "valence": -0.62,
+   "arousal": 0.62,
+   "emotions": {
+    "anger": 0.85
+   },
+   "source": "curated:gemini-2026-09",
+   "version": 1,
+   "role": "stimulus"
+  },
+  {
+   "id": "pl.emoverb.zdziwić_refl",
+   "lemma": "zdziwić",
+   "reflexive": true,
+   "pos": [
+    "VERB"
+   ],
+   "kind": "emotion_verb",
+   "role": "experiencer",
+   "strength": "strong",
+   "valence": 0.2,
+   "arousal": 0.7,
+   "emotions": {
+    "surprise": 0.9
+   },
+   "source": "curated:gemini-2026-09",
+   "version": 1
+  },
+  {
+   "id": "pl.emoverb.ucieszyć_refl",
+   "lemma": "ucieszyć",
+   "reflexive": true,
+   "pos": [
+    "VERB"
+   ],
+   "kind": "emotion_verb",
+   "role": "experiencer",
+   "strength": "strong",
+   "valence": 0.85,
+   "arousal": 0.8,
+   "emotions": {
+    "joy": 0.9
+   },
+   "source": "curated:gemini-2026-09",
+   "version": 1
+  },
+  {
+   "id": "pl.emoverb.przestraszyć_refl",
+   "lemma": "przestraszyć",
+   "reflexive": true,
+   "pos": [
+    "VERB"
+   ],
+   "kind": "emotion_verb",
+   "role": "experiencer",
+   "strength": "strong",
+   "valence": -0.78,
+   "arousal": 0.82,
+   "emotions": {
+    "fear": 0.9
+   },
+   "source": "curated:gemini-2026-09",
+   "version": 1
+  },
+  {
+   "id": "pl.emoverb.przerazić_refl",
+   "lemma": "przerazić",
+   "reflexive": true,
+   "pos": [
+    "VERB"
+   ],
+   "kind": "emotion_verb",
+   "role": "experiencer",
+   "strength": "strong",
+   "valence": -0.88,
+   "arousal": 0.9,
+   "emotions": {
+    "fear": 0.95
+   },
+   "source": "curated:gemini-2026-09",
+   "version": 1
+  },
+  {
+   "id": "pl.emoverb.rozgniewać_refl",
+   "lemma": "rozgniewać",
+   "reflexive": true,
+   "pos": [
+    "VERB"
+   ],
+   "kind": "emotion_verb",
+   "role": "experiencer",
+   "strength": "strong",
+   "valence": -0.82,
+   "arousal": 0.85,
+   "emotions": {
+    "anger": 0.9
+   },
+   "source": "curated:gemini-2026-09",
+   "version": 1
+  },
+  {
+   "id": "pl.emoverb.zmartwić_refl",
+   "lemma": "zmartwić",
+   "reflexive": true,
+   "pos": [
+    "VERB"
+   ],
+   "kind": "emotion_verb",
+   "role": "experiencer",
+   "strength": "strong",
+   "valence": -0.72,
+   "arousal": 0.6,
+   "emotions": {
+    "sadness": 0.85
+   },
+   "source": "curated:gemini-2026-09",
+   "version": 1
+  },
+  {
+   "id": "pl.emoverb.zaniepokoić_refl",
+   "lemma": "zaniepokoić",
+   "reflexive": true,
+   "pos": [
+    "VERB"
+   ],
+   "kind": "emotion_verb",
+   "role": "experiencer",
+   "strength": "strong",
+   "valence": -0.65,
+   "arousal": 0.68,
+   "emotions": {
+    "fear": 0.8
+   },
+   "source": "curated:gemini-2026-09",
+   "version": 1
+  },
+  {
+   "id": "pl.emoverb.zawstydzić_refl",
+   "lemma": "zawstydzić",
+   "reflexive": true,
+   "pos": [
+    "VERB"
+   ],
+   "kind": "emotion_verb",
+   "role": "experiencer",
+   "strength": "strong",
+   "valence": -0.68,
+   "arousal": 0.62,
+   "emotions": {
+    "sadness": 0.75
+   },
+   "source": "curated:gemini-2026-09",
+   "version": 1
+  },
+  {
+   "id": "pl.emoverb.zezłościć_refl",
+   "lemma": "zezłościć",
+   "reflexive": true,
+   "pos": [
+    "VERB"
+   ],
+   "kind": "emotion_verb",
+   "role": "experiencer",
+   "strength": "strong",
+   "valence": -0.8,
+   "arousal": 0.82,
+   "emotions": {
+    "anger": 0.9
+   },
+   "source": "curated:gemini-2026-09",
+   "version": 1
+  },
+  {
+   "id": "pl.emoverb.zirytować_refl",
+   "lemma": "zirytować",
+   "reflexive": true,
+   "pos": [
+    "VERB"
+   ],
+   "kind": "emotion_verb",
+   "role": "experiencer",
+   "strength": "strong",
+   "valence": -0.65,
+   "arousal": 0.72,
+   "emotions": {
+    "anger": 0.8
+   },
+   "source": "curated:gemini-2026-09",
+   "version": 1
+  },
+  {
+   "id": "pl.emoverb.zdenerwować_refl",
+   "lemma": "zdenerwować",
+   "reflexive": true,
+   "pos": [
+    "VERB"
+   ],
+   "kind": "emotion_verb",
+   "role": "experiencer",
+   "strength": "strong",
+   "valence": -0.72,
+   "arousal": 0.78,
+   "emotions": {
+    "anger": 0.85
+   },
+   "source": "curated:gemini-2026-09",
+   "version": 1
+  },
+  {
+   "id": "pl.emoverb.zniecierpliwić_refl",
+   "lemma": "zniecierpliwić",
+   "reflexive": true,
+   "pos": [
+    "VERB"
+   ],
+   "kind": "emotion_verb",
+   "role": "experiencer",
+   "strength": "strong",
+   "valence": -0.58,
+   "arousal": 0.65,
+   "emotions": {
+    "anger": 0.75
+   },
+   "source": "curated:gemini-2026-09",
+   "version": 1
+  },
+  {
+   "id": "pl.emoverb.zdumieć",
+   "lemma": "zdumieć",
+   "pos": [
+    "VERB"
+   ],
+   "kind": "emotion_verb",
+   "strength": "strong",
+   "valence": 0.1,
+   "arousal": 0.7,
+   "emotions": {
+    "surprise": 0.9
+   },
+   "role": "experiencer",
+   "source": "curated:claude-2026-09",
+   "version": 1,
+   "reflexive": true
+  },
+  {
+   "id": "pl.emoverb.wystraszyć",
+   "lemma": "wystraszyć",
+   "pos": [
+    "VERB"
+   ],
+   "kind": "emotion_verb",
+   "strength": "strong",
+   "valence": -0.7,
+   "arousal": 0.8,
+   "emotions": {
+    "fear": 0.85
+   },
+   "role": "experiencer",
+   "source": "curated:claude-2026-09",
+   "version": 1,
+   "reflexive": true
+  },
+  {
+   "id": "pl.emoverb.zlęknąć",
+   "lemma": "zlęknąć",
+   "pos": [
+    "VERB"
+   ],
+   "kind": "emotion_verb",
+   "strength": "strong",
+   "valence": -0.7,
+   "arousal": 0.75,
+   "emotions": {
+    "fear": 0.85
+   },
+   "role": "experiencer",
+   "source": "curated:claude-2026-09",
+   "version": 1,
+   "reflexive": true
+  },
+  {
+   "id": "pl.emoverb.zatrwożyć",
+   "lemma": "zatrwożyć",
+   "pos": [
+    "VERB"
+   ],
+   "kind": "emotion_verb",
+   "strength": "strong",
+   "valence": -0.7,
+   "arousal": 0.75,
+   "emotions": {
+    "fear": 0.85
+   },
+   "role": "experiencer",
+   "source": "curated:claude-2026-09",
+   "version": 1,
+   "reflexive": true
+  },
+  {
+   "id": "pl.emoverb.zasmucić",
+   "lemma": "zasmucić",
+   "pos": [
+    "VERB"
+   ],
+   "kind": "emotion_verb",
+   "strength": "strong",
+   "valence": -0.7,
+   "arousal": 0.4,
+   "emotions": {
+    "sadness": 0.85
+   },
+   "role": "experiencer",
+   "source": "curated:claude-2026-09",
+   "version": 1,
+   "reflexive": true
+  },
+  {
+   "id": "pl.emoverb.uradować",
+   "lemma": "uradować",
+   "pos": [
+    "VERB"
+   ],
+   "kind": "emotion_verb",
+   "strength": "strong",
+   "valence": 0.85,
+   "arousal": 0.65,
+   "emotions": {
+    "joy": 0.9
+   },
+   "role": "experiencer",
+   "source": "curated:claude-2026-09",
+   "version": 1,
+   "reflexive": true
+  },
+  {
+   "id": "pl.emoverb.rozzłościć",
+   "lemma": "rozzłościć",
+   "pos": [
+    "VERB"
+   ],
+   "kind": "emotion_verb",
+   "strength": "strong",
+   "valence": -0.7,
+   "arousal": 0.75,
+   "emotions": {
+    "anger": 0.85
+   },
+   "role": "experiencer",
+   "source": "curated:claude-2026-09",
+   "version": 1,
+   "reflexive": true
+  },
+  {
+   "id": "pl.emoverb.wściec",
+   "lemma": "wściec",
+   "pos": [
+    "VERB"
+   ],
+   "kind": "emotion_verb",
+   "strength": "strong",
+   "valence": -0.85,
+   "arousal": 0.9,
+   "emotions": {
+    "anger": 0.95
+   },
+   "role": "experiencer",
+   "source": "curated:claude-2026-09",
+   "version": 1,
+   "reflexive": true
+  },
+  {
+   "id": "pl.emoverb.oburzyć",
+   "lemma": "oburzyć",
+   "pos": [
+    "VERB"
+   ],
+   "kind": "emotion_verb",
+   "strength": "strong",
+   "valence": -0.65,
+   "arousal": 0.7,
+   "emotions": {
+    "anger": 0.75,
+    "disgust": 0.5
+   },
+   "role": "experiencer",
+   "source": "curated:claude-2026-09",
+   "version": 1,
+   "reflexive": true
+  },
+  {
+   "id": "pl.emoverb.denerwować",
+   "lemma": "denerwować",
+   "pos": [
+    "VERB"
+   ],
+   "kind": "emotion_verb",
+   "strength": "strong",
+   "valence": -0.55,
+   "arousal": 0.65,
+   "emotions": {
+    "anger": 0.6,
+    "fear": 0.4
+   },
+   "role": "experiencer",
+   "source": "curated:claude-2026-09",
+   "version": 1,
+   "reflexive": true
+  },
+  {
+   "id": "pl.emoverb.niecierpliwić",
+   "lemma": "niecierpliwić",
+   "pos": [
+    "VERB"
+   ],
+   "kind": "emotion_verb",
+   "strength": "strong",
+   "valence": -0.4,
+   "arousal": 0.6,
+   "emotions": {
+    "anger": 0.4,
+    "anticipation": 0.6
+   },
+   "role": "experiencer",
+   "source": "curated:claude-2026-09",
+   "version": 1,
+   "reflexive": true
+  },
+  {
+   "id": "pl.emoverb.zachwycić",
+   "lemma": "zachwycić",
+   "pos": [
+    "VERB"
+   ],
+   "kind": "emotion_verb",
+   "strength": "strong",
+   "valence": 0.85,
+   "arousal": 0.7,
+   "emotions": {
+    "joy": 0.8,
+    "surprise": 0.4
+   },
+   "role": "experiencer",
+   "source": "curated:claude-2026-09",
+   "version": 1,
+   "reflexive": true
+  },
+  {
+   "id": "pl.emoverb.zachwycać",
+   "lemma": "zachwycać",
+   "pos": [
+    "VERB"
+   ],
+   "kind": "emotion_verb",
+   "strength": "strong",
+   "valence": 0.85,
+   "arousal": 0.65,
+   "emotions": {
+    "joy": 0.8
+   },
+   "role": "experiencer",
+   "source": "curated:claude-2026-09",
+   "version": 1,
+   "reflexive": true
+  }
+ ]
+}

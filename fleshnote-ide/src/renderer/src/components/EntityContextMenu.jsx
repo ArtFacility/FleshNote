@@ -1,5 +1,7 @@
 import { useEffect, useState, useRef, useLayoutEffect } from 'react'
 import { useTranslation } from 'react-i18next'
+import EditorBoardMenu from './sketchboard/EditorBoardMenu'
+import { boardKindOf } from './sketchboard/boardActions'
 
 // ── Inline SVG Icons ────────────────────────────────────────────────────────
 
@@ -158,6 +160,19 @@ const Icons = {
     >
       <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z" />
     </svg>
+  ),
+  Flag: () => (
+    <svg
+      width="14"
+      height="14"
+      viewBox="0 0 24 24"
+      fill="none"
+      stroke="currentColor"
+      strokeWidth="2"
+    >
+      <path d="M4 15s1-1 4-1 5 2 8 2 4-1 4-1V3s-1 1-4 1-5-2-8-2-4 1-4 1z" />
+      <line x1="4" y1="22" x2="4" y2="15" />
+    </svg>
   )
 }
 
@@ -175,15 +190,38 @@ export default function EntityContextMenu({
   twistAtCursor, // Twist/foreshadow link under cursor (if any): { twistType, twistId }
   knowledgeAtCursor, // Knowledge link under cursor (if any): { knowledgeId }
   relationshipAtCursor, // Relationship link under cursor (if any): { relationshipId }
+  milestoneAtCursor, // Milestone link under cursor (if any): { milestoneId, groupId }
   typoSuggestions, // { word, suggestions: [] } | null
   onApplyTypoFix, // (word, fix) => void
-  onMarkNotTypo // (word) => void
+  onMarkNotTypo, // (word) => void
+  projectPath,
+  sketchboardMenu // Show the Sketchboard submenu (a project setting, off by default)
 }) {
   const { t } = useTranslation()
   const [activeSubmenu, setActiveSubmenu] = useState(null)
+  const boardKind = entityAtCursor ? boardKindOf(entityAtCursor.type) : null
+  const boardEntity = boardKind
+    ? {
+        id: entityAtCursor.id,
+        name:
+          entities?.find((e) => String(e.id) === String(entityAtCursor.id))?.name || selectedText || ''
+      }
+    : null
   const [adjustedPos, setAdjustedPos] = useState(position)
   const [submenuLeft, setSubmenuLeft] = useState(false)
   const menuRef = useRef(null)
+  const submenuRef = useRef(null)
+
+  // Submenu vertical boundary clamping to ensure it is never offscreen
+  useLayoutEffect(() => {
+    if (submenuRef.current && activeSubmenu) {
+      const subRect = submenuRef.current.getBoundingClientRect()
+      if (subRect.bottom > window.innerHeight - 16) {
+        const overflow = subRect.bottom - (window.innerHeight - 16)
+        submenuRef.current.style.top = `${-4 - overflow}px`
+      }
+    }
+  }, [activeSubmenu])
 
   // Bounds logic
   useLayoutEffect(() => {
@@ -350,6 +388,7 @@ export default function EntityContextMenu({
         </span>
         {activeSubmenu === 'create' && (
           <div
+            ref={submenuRef}
             className={`context-menu-submenu ${submenuLeft ? 'submenu-left' : ''}`}
             onClick={(e) => e.stopPropagation()}
           >
@@ -390,6 +429,7 @@ export default function EntityContextMenu({
           </span>
           {activeSubmenu === 'alias' && (
             <div
+              ref={submenuRef}
               className={`context-menu-submenu ${submenuLeft ? 'submenu-left' : ''}`}
               onClick={(e) => e.stopPropagation()}
             >
@@ -491,6 +531,7 @@ export default function EntityContextMenu({
         </span>
         {activeSubmenu === 'twist' && (
           <div
+            ref={submenuRef}
             className={`context-menu-submenu ${submenuLeft ? 'submenu-left' : ''}`}
             onClick={(e) => e.stopPropagation()}
           >
@@ -515,6 +556,104 @@ export default function EntityContextMenu({
           </div>
         )}
       </div>
+
+      {/* ── Faction / Group (Submenu) ──────────────────── */}
+      <div
+        className={`context-menu-item has-submenu ${activeSubmenu === 'faction' ? 'active' : ''}`}
+        onMouseEnter={() => setActiveSubmenu('faction')}
+      >
+        <span className="icon" style={{ color: 'var(--entity-group)' }}>
+          <Icons.Flag />
+        </span>
+        {t('contextMenu.groupSubmenu', 'Faction / Group')}
+        <span className="chevron">
+          <Icons.ChevronRight />
+        </span>
+        {activeSubmenu === 'faction' && (
+          <div
+            ref={submenuRef}
+            className={`context-menu-submenu ${submenuLeft ? 'submenu-left' : ''}`}
+            onClick={(e) => e.stopPropagation()}
+          >
+            <button
+              className="context-menu-item"
+              onClick={() => onAction?.('groupAction', { mode: 'createGroup', text: selectedText })}
+            >
+              <span className="icon" style={{ color: 'var(--entity-group)' }}>
+                <Icons.Plus />
+              </span>
+              {t('contextMenu.createGroup', 'Create Faction')}
+            </button>
+            <button
+              className="context-menu-item"
+              onClick={() => onAction?.('groupAction', { mode: 'linkGroup', text: selectedText })}
+            >
+              <span className="icon">
+                <Icons.Link />
+              </span>
+              {t('contextMenu.linkGroup', 'Link to Faction')}
+            </button>
+            <button
+              className="context-menu-item"
+              onClick={() => onAction?.('groupAction', { mode: 'addMember', text: selectedText })}
+            >
+              <span className="icon">
+                <Icons.User />
+              </span>
+              {t('contextMenu.addMember', 'Add Member to Faction')}
+            </button>
+            <button
+              className="context-menu-item"
+              onClick={() => onAction?.('groupAction', { mode: 'departMember', text: selectedText })}
+            >
+              <span className="icon">
+                <Icons.Unlink />
+              </span>
+              {t('contextMenu.departMember', 'Record Member Departure')}
+            </button>
+            <button
+              className="context-menu-item"
+              onClick={() => onAction?.('groupAction', { mode: 'addMilestone', text: selectedText })}
+            >
+              <span className="icon" style={{ color: 'var(--accent-amber)', fontSize: '13px', lineHeight: 1 }}>
+                𐲨
+              </span>
+              {t('contextMenu.addMilestone', 'Add Faction Milestone')}
+            </button>
+          </div>
+        )}
+      </div>
+
+      {/* ── Sketchboard (opt-in, on a linked name) ──────── */}
+      {sketchboardMenu && boardKind && (
+        <div
+          className={`context-menu-item has-submenu ${activeSubmenu === 'sketchboard' ? 'active' : ''}`}
+          onMouseEnter={() => setActiveSubmenu('sketchboard')}
+        >
+          <span className="icon rune-font" style={{ color: 'var(--accent-amber)' }}>
+            𐲡
+          </span>
+          {t('contextMenu.sketchboard', 'Sketchboard')}
+          <span className="chevron">
+            <Icons.ChevronRight />
+          </span>
+          {activeSubmenu === 'sketchboard' && (
+            <div
+              ref={submenuRef}
+              className={`context-menu-submenu ${submenuLeft ? 'submenu-left' : ''}`}
+              onClick={(e) => e.stopPropagation()}
+            >
+              <EditorBoardMenu
+                projectPath={projectPath}
+                entity={boardEntity}
+                kind={boardKind}
+                onAction={(type, data) => onAction?.(type, data)}
+                t={t}
+              />
+            </div>
+          )}
+        </div>
+      )}
 
       {/* ── Set as POV (only if entity link is a character) ── */}
       {entityAtCursor && entityAtCursor.type === 'character' && (
@@ -635,6 +774,32 @@ export default function EntityContextMenu({
               <Icons.Unlink />
             </span>
             {t('contextMenu.removeRelationshipLink', 'Remove Relationship Marker')}
+          </button>
+        </>
+      )}
+
+      {milestoneAtCursor && (
+        <>
+          <div className="context-menu-divider" />
+          <button
+            className="context-menu-item"
+            onClick={() => onAction?.('inspectMilestone', milestoneAtCursor)}
+            onMouseEnter={() => setActiveSubmenu(null)}
+          >
+            <span className="icon" style={{ color: 'var(--accent-amber)', fontSize: '13px', lineHeight: 1 }}>
+              𐲨
+            </span>
+            {t('contextMenu.inspectMilestone', 'Inspect Milestone in Faction')}
+          </button>
+          <button
+            className="context-menu-item danger"
+            onClick={() => onAction?.('removeMilestoneLink')}
+            onMouseEnter={() => setActiveSubmenu(null)}
+          >
+            <span className="icon">
+              <Icons.Unlink />
+            </span>
+            {t('contextMenu.removeMilestoneLink', 'Remove Milestone Marker')}
           </button>
         </>
       )}

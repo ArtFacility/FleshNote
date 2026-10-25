@@ -9,6 +9,7 @@ import sqlite3
 import re
 from fastapi import APIRouter, HTTPException
 from pydantic import BaseModel
+from project_io import safe_md_path
 
 router = APIRouter()
 
@@ -21,7 +22,8 @@ def _get_db(project_path: str):
     db_path = os.path.join(project_path, "fleshnote.db")
     if not os.path.exists(db_path):
         raise HTTPException(status_code=404, detail="Database not found")
-    conn = sqlite3.connect(db_path)
+    conn = sqlite3.connect(db_path, timeout=30.0)
+    conn.execute("PRAGMA busy_timeout = 30000;")
     conn.row_factory = sqlite3.Row
     return conn
 
@@ -36,7 +38,7 @@ class LoreEntityCreate(BaseModel):
 
 class LoreEntityUpdate(BaseModel):
     project_path: str
-    entity_id: int
+    entity_id: str | int
     name: str | None = None
     category: str | None = None
     classification: str | None = None
@@ -49,21 +51,21 @@ class LoreEntityUpdate(BaseModel):
 
 class LoreEntityDelete(BaseModel):
     project_path: str
-    entity_id: int
+    entity_id: str | int
 
 
 class AppendDescriptionRequest(BaseModel):
     project_path: str
     entity_type: str          # 'character', 'lore', 'location', 'group'
-    entity_id: int
+    entity_id: str | int
     text: str                 # The selected text to append
     target_field: str = "description"  # 'description' or 'notes'
-    source_chapter_id: int | None = None
+    source_chapter_id: str | int | None = None
 
 class AddAliasRequest(BaseModel):
     project_path: str
     entity_type: str
-    entity_id: int
+    entity_id: str | int
     alias: str
 
 class EntitySearchRequest(BaseModel):
@@ -75,14 +77,14 @@ class EntitySearchRequest(BaseModel):
 class ScanReferencesRequest(BaseModel):
     project_path: str
     entity_type: str
-    entity_id: int
+    entity_id: str | int
     old_name: str
     new_name: str
 
 class ReplaceReferencesRequest(BaseModel):
     project_path: str
     entity_type: str
-    entity_id: int
+    entity_id: str | int
     replacements: dict[str, dict] # maps linked_text to {"new_text": ..., "add_alias": bool}
 
 _ENTITY_TYPE_TO_SHORT = {
@@ -100,11 +102,44 @@ def create_lore_entity(req: LoreEntityCreate):
     """Create a lore entity (item, magic system, artifact, etc.)."""
     conn = _get_db(req.project_path)
     cursor = conn.cursor()
+    
+    # Deduplication guard: if an active lore entity with identical name was created in the last 5 seconds,
+    # return it to protect against rapid multi-click/duplicate submission spikes
     cursor.execute("""
-        INSERT INTO lore_entities (name, category, aliases, description)
-        VALUES (?, ?, ?, ?)
-    """, (req.name, req.category, json.dumps(req.aliases), req.description))
-    entity_id = cursor.lastrowid
+        SELECT id, name, category, aliases
+        FROM lore_entities
+        WHERE LOWER(TRIM(name)) = LOWER(TRIM(?))
+          AND deleted = 0
+          AND datetime(created_at) >= datetime('now', '-5 seconds')
+        ORDER BY created_at DESC
+        LIMIT 1
+    """, (req.name,))
+    recent = cursor.fetchone()
+    if recent:
+        conn.close()
+        return {
+            "entity": {
+                "id": recent["id"], "type": "lore",
+                "name": recent["name"], "category": recent["category"],
+                "aliases": json.loads(recent["aliases"]) if recent["aliases"] else [],
+            }
+        }
+
+    import uuid
+    entity_id = str(uuid.uuid4())
+    cursor.execute("""
+        INSERT INTO lore_entities (id, name, category, aliases, description)
+        VALUES (?, ?, ?, ?, ?)
+    """, (entity_id, req.name, req.category, json.dumps(req.aliases), req.description))
+
+    from sync_core import log_change
+    log_change(cursor, "lore_entities", entity_id, {
+        "name": req.name,
+        "category": req.category,
+        "aliases": req.aliases,
+        "description": req.description,
+    })
+
     conn.commit()
     conn.close()
     return {
@@ -124,6 +159,7 @@ def update_lore_entity(req: LoreEntityUpdate):
 
     fields = []
     values = []
+    changes = {}
 
     for field_name in ["name", "category", "classification", "description",
                        "rules", "limitations", "origin", "notes"]:
@@ -131,10 +167,12 @@ def update_lore_entity(req: LoreEntityUpdate):
         if val is not None:
             fields.append(f"{field_name} = ?")
             values.append(val)
+            changes[field_name] = val
 
     if req.aliases is not None:
         fields.append("aliases = ?")
         values.append(json.dumps(req.aliases))
+        changes["aliases"] = req.aliases
 
     if not fields:
         conn.close()
@@ -147,6 +185,10 @@ def update_lore_entity(req: LoreEntityUpdate):
         f"UPDATE lore_entities SET {', '.join(fields)} WHERE id = ?",
         values
     )
+
+    from sync_core import log_change
+    log_change(cursor, "lore_entities", req.entity_id, changes)
+
     conn.commit()
 
     cursor.execute("SELECT * FROM lore_entities WHERE id = ?", (req.entity_id,))
@@ -174,8 +216,25 @@ def update_lore_entity(req: LoreEntityUpdate):
 def delete_lore_entity(req: LoreEntityDelete):
     conn = _get_db(req.project_path)
     cursor = conn.cursor()
-    cursor.execute("DELETE FROM lore_entities WHERE id = ?", (req.entity_id,))
-    cursor.execute("DELETE FROM image_references WHERE entity_type = 'item' AND entity_id = ?", (req.entity_id,))
+
+    import datetime
+    from sync_core import log_soft_delete
+    now = datetime.datetime.utcnow().isoformat() + "Z"
+
+    # Soft delete lore entity
+    cursor.execute("UPDATE lore_entities SET deleted = 1, deleted_at = ? WHERE id = ?", (now, req.entity_id))
+    log_soft_delete(cursor, "lore_entities", req.entity_id)
+
+    # Cascade soft deletes: image references
+    cursor.execute("""
+        SELECT id FROM image_references 
+        WHERE entity_type = 'item' AND entity_id = ? AND deleted = 0
+    """, (req.entity_id,))
+    img_rows = cursor.fetchall()
+    for r in img_rows:
+        cursor.execute("UPDATE image_references SET deleted = 1, deleted_at = ? WHERE id = ?", (now, r["id"]))
+        log_soft_delete(cursor, "image_references", r["id"])
+
     conn.commit()
     conn.close()
     return {"status": "ok"}
@@ -231,6 +290,9 @@ def append_entity_description(req: AppendDescriptionRequest):
             (appended, req.entity_id)
         )
 
+    from sync_core import log_change
+    log_change(cursor, table, req.entity_id, {field: appended})
+
     conn.commit()
     conn.close()
 
@@ -267,6 +329,8 @@ def add_entity_alias(req: AddAliasRequest):
             f"UPDATE {table} SET aliases = ?, updated_at = CURRENT_TIMESTAMP WHERE id = ?",
             (json.dumps(aliases), req.entity_id)
         )
+        from sync_core import log_change
+        log_change(cursor, table, req.entity_id, {"aliases": aliases})
         conn.commit()
 
     conn.close()
@@ -290,60 +354,53 @@ def search_entities(req: EntitySearchRequest):
     ]
 
     for table, entity_type, cols in tables:
-        cursor.execute(f"SELECT {', '.join(cols)} FROM {table}")
+        cursor.execute(f"SELECT {', '.join(cols)} FROM {table} WHERE deleted = 0")
         for row in cursor.fetchall():
             name = row["name"]
             aliases = json.loads(row["aliases"]) if row["aliases"] else []
             name_lower = name.lower()
 
-            # Score calculation
+            # Ranking score:
+            # 3 = Exact name match
+            # 2 = Partial name match (starts with) or exact alias match
+            # 1 = Contains query
             score = 0
-            if query_lower:
-                if name_lower == query_lower:
-                    score = 100
-                elif name_lower.startswith(query_lower):
-                    score = 80
-                elif query_lower in name_lower:
-                    score = 60
-                else:
-                    # Check aliases
-                    for alias in aliases:
-                        alias_lower = alias.lower()
-                        if alias_lower == query_lower:
-                            score = 90
-                            break
-                        elif query_lower in alias_lower:
-                            score = 50
-                            break
+            if name_lower == query_lower:
+                score = 3
+            elif name_lower.startswith(query_lower):
+                score = 2
+            elif query_lower in name_lower:
+                score = 1
 
-                if score == 0:
-                    continue  # No match, skip
-            else:
-                score = 10  # Show all if no query, low score
+            for alias in aliases:
+                alias_lower = alias.lower()
+                if alias_lower == query_lower:
+                    score = max(score, 2)
+                elif query_lower in alias_lower:
+                    score = max(score, 1)
 
-            entry = {
-                "id": row["id"],
-                "type": entity_type,
-                "name": name,
-                "aliases": aliases,
-                "score": score,
-            }
-            if "category" in row.keys():
-                entry["category"] = row["category"]
-            if "region" in row.keys():
-                entry["region"] = row["region"]
+            # If a selection context is provided, give a small boost for matching terms
+            if req.selected_text and req.selected_text.lower() == name_lower:
+                score += 1.5
 
-            results.append(entry)
+            if score > 0:
+                item = {
+                    "id": row["id"],
+                    "type": entity_type,
+                    "name": name,
+                    "aliases": aliases,
+                    "score": score
+                }
+                if "category" in row.keys():
+                    item["category"] = row["category"]
+                if "region" in row.keys():
+                    item["region"] = row["region"]
+                results.append(item)
 
     conn.close()
-
-    # Sort by score descending, then by name
-    results.sort(key=lambda x: (-x["score"], x["name"]))
-
-    # Limit results
-    results = results[:req.limit]
-
-    return {"entities": results}
+    # Sort by score descending
+    results.sort(key=lambda x: x["score"], reverse=True)
+    return {"entities": results[:req.limit]}
 
 
 @router.post("/api/project/entities")
@@ -357,7 +414,7 @@ def get_all_entities(req: ProjectPath):
     entities = []
 
     # Characters
-    cursor.execute("SELECT id, name, aliases, role, status, birth_date FROM characters")
+    cursor.execute("SELECT id, name, aliases, role, status, birth_date FROM characters WHERE deleted = 0")
     for row in cursor.fetchall():
         aliases = json.loads(row["aliases"]) if row["aliases"] else []
         entities.append({
@@ -368,7 +425,7 @@ def get_all_entities(req: ProjectPath):
         })
 
     # Lore entities
-    cursor.execute("SELECT * FROM lore_entities")
+    cursor.execute("SELECT * FROM lore_entities WHERE deleted = 0")
     for row in cursor.fetchall():
         aliases = json.loads(row["aliases"]) if row["aliases"] else []
         entities.append({
@@ -385,7 +442,7 @@ def get_all_entities(req: ProjectPath):
         })
 
     # Locations
-    cursor.execute("SELECT * FROM locations")
+    cursor.execute("SELECT * FROM locations WHERE deleted = 0")
     for row in cursor.fetchall():
         aliases = json.loads(row["aliases"]) if row["aliases"] else []
         entities.append({
@@ -399,18 +456,35 @@ def get_all_entities(req: ProjectPath):
         })
 
     # Groups
-    cursor.execute("SELECT * FROM groups")
+    has_gm = cursor.execute("SELECT name FROM sqlite_master WHERE type='table' AND name='group_memberships'").fetchone()
+    if has_gm:
+        cursor.execute("""
+            SELECT g.*, 
+                   (SELECT COUNT(*) FROM group_memberships gm 
+                    WHERE gm.group_id = g.id AND gm.deleted = 0 AND gm.left_date IS NULL) AS active_members_count
+            FROM groups g 
+            WHERE g.deleted = 0
+        """)
+    else:
+        cursor.execute("SELECT * FROM groups WHERE deleted = 0")
     for row in cursor.fetchall():
         aliases = json.loads(row["aliases"]) if row["aliases"] else []
+        keys = row.keys()
         entities.append({
             "id": row["id"], "type": "group",
             "name": row["name"], "aliases": aliases,
-            "group_type": row["group_type"],
-            "description": row["description"],
-            "surface_agenda": row["surface_agenda"],
-            "true_agenda": row["true_agenda"],
-            "notes": row["notes"],
-            "updated_at": row["updated_at"],
+            "group_type": row["group_type"] if "group_type" in keys else "",
+            "description": row["description"] if "description" in keys else "",
+            "surface_agenda": row["surface_agenda"] if "surface_agenda" in keys else "",
+            "true_agenda": row["true_agenda"] if "true_agenda" in keys else "",
+            "notes": row["notes"] if "notes" in keys else "",
+            "parent_group_id": row["parent_group_id"] if "parent_group_id" in keys else None,
+            "philosophy": row["philosophy"] if "philosophy" in keys else "",
+            "internal_rules": row["internal_rules"] if "internal_rules" in keys else "",
+            "headquarters_location_id": row["headquarters_location_id"] if "headquarters_location_id" in keys else None,
+            "faction_color": row["faction_color"] if "faction_color" in keys else "",
+            "member_count": row["active_members_count"] if "active_members_count" in keys else 0,
+            "updated_at": row["updated_at"] if "updated_at" in keys else None,
         })
 
     conn.close()
@@ -432,8 +506,8 @@ def scan_entity_references(req: ScanReferencesRequest):
     unique_matches = {}
 
     for row in files:
-        md_file = os.path.join(req.project_path, "md", row["md_filename"])
-        if not os.path.exists(md_file):
+        md_file = safe_md_path(os.path.join(req.project_path, "md"), row["md_filename"])
+        if not md_file or not os.path.exists(md_file):
             continue
         with open(md_file, "r", encoding="utf-8") as f:
             content = f.read()
@@ -480,10 +554,10 @@ def replace_entity_references(req: ReplaceReferencesRequest):
     aliases_to_add = set()
 
     for row in files:
-        md_file = os.path.join(req.project_path, "md", row["md_filename"])
-        if not os.path.exists(md_file):
+        md_file = safe_md_path(os.path.join(req.project_path, "md"), row["md_filename"])
+        if not md_file or not os.path.exists(md_file):
             continue
-            
+
         with open(md_file, "r", encoding="utf-8") as f:
             content = f.read()
 

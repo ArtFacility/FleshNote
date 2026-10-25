@@ -1,0 +1,185 @@
+{
+  "lang": "en",
+  "kind": "hedge",
+  "version": 1,
+  "entries": [
+    {
+      "id": "en.hedge.perhaps",
+      "lemma": "perhaps",
+      "kind": "hedge",
+      "strength": "weak",
+      "factor": 0.6,
+      "source": "curated:gemini-2026-09",
+      "version": 1
+    },
+    {
+      "id": "en.hedge.maybe",
+      "lemma": "maybe",
+      "kind": "hedge",
+      "strength": "weak",
+      "factor": 0.6,
+      "source": "curated:gemini-2026-09",
+      "version": 1
+    },
+    {
+      "id": "en.hedge.possibly",
+      "lemma": "possibly",
+      "kind": "hedge",
+      "strength": "weak",
+      "factor": 0.6,
+      "source": "curated:gemini-2026-09",
+      "version": 1
+    },
+    {
+      "id": "en.hedge.probably",
+      "lemma": "probably",
+      "kind": "hedge",
+      "strength": "weak",
+      "factor": 0.6,
+      "source": "curated:gemini-2026-09",
+      "version": 1
+    },
+    {
+      "id": "en.hedge.presumably",
+      "lemma": "presumably",
+      "kind": "hedge",
+      "strength": "weak",
+      "factor": 0.6,
+      "source": "curated:gemini-2026-09",
+      "version": 1
+    },
+    {
+      "id": "en.hedge.apparently",
+      "lemma": "apparently",
+      "kind": "hedge",
+      "strength": "weak",
+      "factor": 0.6,
+      "source": "curated:gemini-2026-09",
+      "version": 1
+    },
+    {
+      "id": "en.hedge.seemingly",
+      "lemma": "seemingly",
+      "kind": "hedge",
+      "strength": "weak",
+      "factor": 0.6,
+      "source": "curated:gemini-2026-09",
+      "version": 1
+    },
+    {
+      "id": "en.hedge.supposedly",
+      "lemma": "supposedly",
+      "kind": "hedge",
+      "strength": "weak",
+      "factor": 0.6,
+      "source": "curated:gemini-2026-09",
+      "version": 1
+    },
+    {
+      "id": "en.hedge.ostensibly",
+      "lemma": "ostensibly",
+      "kind": "hedge",
+      "strength": "weak",
+      "factor": 0.6,
+      "source": "curated:gemini-2026-09",
+      "version": 1
+    },
+    {
+      "id": "en.hedge.conceivably",
+      "lemma": "conceivably",
+      "kind": "hedge",
+      "strength": "weak",
+      "factor": 0.6,
+      "source": "curated:gemini-2026-09",
+      "version": 1
+    },
+    {
+      "id": "en.hedge.arguably",
+      "lemma": "arguably",
+      "kind": "hedge",
+      "strength": "weak",
+      "factor": 0.6,
+      "source": "curated:gemini-2026-09",
+      "version": 1
+    },
+    {
+      "id": "en.hedge.plausibly",
+      "lemma": "plausibly",
+      "kind": "hedge",
+      "strength": "weak",
+      "factor": 0.6,
+      "source": "curated:gemini-2026-09",
+      "version": 1
+    },
+    {
+      "id": "en.hedge.allegedly",
+      "lemma": "allegedly",
+      "kind": "hedge",
+      "strength": "weak",
+      "factor": 0.6,
+      "source": "curated:gemini-2026-09",
+      "version": 1
+    },
+    {
+      "id": "en.hedge.reportedly",
+      "lemma": "reportedly",
+      "kind": "hedge",
+      "strength": "weak",
+      "factor": 0.6,
+      "source": "curated:gemini-2026-09",
+      "version": 1
+    },
+    {
+      "id": "en.hedge.as_if",
+      "phrase": [
+        "as",
+        "if"
+      ],
+      "kind": "hedge",
+      "strength": "weak",
+      "factor": 0.5,
+      "source": "curated:gemini-2026-09",
+      "version": 1,
+      "example": "He looked as if he had seen a ghost in the corridor."
+    },
+    {
+      "id": "en.hedge.as_though",
+      "phrase": [
+        "as",
+        "though"
+      ],
+      "kind": "hedge",
+      "strength": "weak",
+      "factor": 0.5,
+      "source": "curated:gemini-2026-09",
+      "version": 1,
+      "example": "She spoke as though nothing had happened during the night."
+    },
+    {
+      "id": "en.hedge.sort_of",
+      "phrase": [
+        "sort",
+        "of"
+      ],
+      "kind": "hedge",
+      "strength": "weak",
+      "factor": 0.5,
+      "source": "curated:gemini-2026-09",
+      "version": 1,
+      "example": "I sort of expected him to arrive late today."
+    },
+    {
+      "id": "en.hedge.kind_of",
+      "phrase": [
+        "kind",
+        "of"
+      ],
+      "kind": "hedge",
+      "strength": "weak",
+      "factor": 0.5,
+      "source": "curated:gemini-2026-09",
+      "version": 1,
+      "example": "It felt kind of strange to see the old house empty."
+    }
+  ]
+}

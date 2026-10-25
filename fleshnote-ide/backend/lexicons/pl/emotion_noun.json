@@ -1,0 +1,2222 @@
+{
+  "lang": "pl",
+  "kind": "emotion_noun",
+  "version": 1,
+  "entries": [
+    {
+      "id": "pl.emonoun.gniew",
+      "lemma": "gniew",
+      "pos": [
+        "NOUN"
+      ],
+      "kind": "emotion_noun",
+      "strength": "strong",
+      "valence": -0.82,
+      "arousal": 0.82,
+      "emotions": {
+        "anger": 0.85
+      },
+      "source": "curated:gemini-2026-09",
+      "version": 1,
+      "felt": "state"
+    },
+    {
+      "id": "pl.emonoun.wściekłość",
+      "lemma": "wściekłość",
+      "pos": [
+        "NOUN"
+      ],
+      "kind": "emotion_noun",
+      "strength": "strong",
+      "valence": -0.92,
+      "arousal": 0.92,
+      "emotions": {
+        "anger": 0.85
+      },
+      "source": "curated:gemini-2026-09",
+      "version": 1,
+      "felt": "state"
+    },
+    {
+      "id": "pl.emonoun.furia",
+      "lemma": "furia",
+      "pos": [
+        "NOUN"
+      ],
+      "kind": "emotion_noun",
+      "strength": "strong",
+      "valence": -0.92,
+      "arousal": 0.92,
+      "emotions": {
+        "anger": 0.85
+      },
+      "source": "curated:gemini-2026-09",
+      "version": 1,
+      "felt": "state"
+    },
+    {
+      "id": "pl.emonoun.złość",
+      "lemma": "złość",
+      "pos": [
+        "NOUN"
+      ],
+      "kind": "emotion_noun",
+      "strength": "strong",
+      "valence": -0.74,
+      "arousal": 0.74,
+      "emotions": {
+        "anger": 0.85
+      },
+      "source": "curated:gemini-2026-09",
+      "version": 1,
+      "felt": "state"
+    },
+    {
+      "id": "pl.emonoun.oburzenie",
+      "lemma": "oburzenie",
+      "pos": [
+        "NOUN"
+      ],
+      "kind": "emotion_noun",
+      "strength": "strong",
+      "valence": -0.72,
+      "arousal": 0.72,
+      "emotions": {
+        "anger": 0.85
+      },
+      "source": "curated:gemini-2026-09",
+      "version": 1,
+      "felt": "state"
+    },
+    {
+      "id": "pl.emonoun.irytacja",
+      "lemma": "irytacja",
+      "pos": [
+        "NOUN"
+      ],
+      "kind": "emotion_noun",
+      "strength": "strong",
+      "valence": -0.54,
+      "arousal": 0.62,
+      "emotions": {
+        "anger": 0.85
+      },
+      "source": "curated:gemini-2026-09",
+      "version": 1,
+      "felt": "state"
+    },
+    {
+      "id": "pl.emonoun.wzburzeć",
+      "lemma": "wzburzenie",
+      "pos": [
+        "NOUN"
+      ],
+      "kind": "emotion_noun",
+      "strength": "strong",
+      "valence": -0.74,
+      "arousal": 0.82,
+      "emotions": {
+        "anger": 0.85
+      },
+      "source": "curated:gemini-2026-09",
+      "version": 1,
+      "felt": "state"
+    },
+    {
+      "id": "pl.emonoun.rozjątrzeć",
+      "lemma": "rozjątrzenie",
+      "pos": [
+        "NOUN"
+      ],
+      "kind": "emotion_noun",
+      "strength": "strong",
+      "valence": -0.74,
+      "arousal": 0.82,
+      "emotions": {
+        "anger": 0.85
+      },
+      "source": "curated:gemini-2026-09",
+      "version": 1,
+      "felt": "state"
+    },
+    {
+      "id": "pl.emonoun.nienawiść",
+      "lemma": "nienawiść",
+      "pos": [
+        "NOUN"
+      ],
+      "kind": "emotion_noun",
+      "strength": "strong",
+      "valence": -0.92,
+      "arousal": 0.84,
+      "emotions": {
+        "anger": 0.85
+      },
+      "source": "curated:gemini-2026-09",
+      "version": 1,
+      "felt": "state"
+    },
+    {
+      "id": "pl.emonoun.odraza",
+      "lemma": "odraza",
+      "pos": [
+        "NOUN"
+      ],
+      "kind": "emotion_noun",
+      "strength": "strong",
+      "valence": -0.84,
+      "arousal": 0.72,
+      "emotions": {
+        "disgust": 0.85
+      },
+      "source": "curated:gemini-2026-09",
+      "version": 1,
+      "felt": "state"
+    },
+    {
+      "id": "pl.emonoun.wstręt",
+      "lemma": "wstręt",
+      "pos": [
+        "NOUN"
+      ],
+      "kind": "emotion_noun",
+      "strength": "strong",
+      "valence": -0.84,
+      "arousal": 0.72,
+      "emotions": {
+        "disgust": 0.85
+      },
+      "source": "curated:gemini-2026-09",
+      "version": 1,
+      "felt": "state"
+    },
+    {
+      "id": "pl.emonoun.pogarda",
+      "lemma": "pogarda",
+      "pos": [
+        "NOUN"
+      ],
+      "kind": "emotion_noun",
+      "strength": "strong",
+      "valence": -0.82,
+      "arousal": 0.62,
+      "emotions": {
+        "disgust": 0.85
+      },
+      "source": "curated:gemini-2026-09",
+      "version": 1,
+      "felt": "state"
+    },
+    {
+      "id": "pl.emonoun.wzgard",
+      "lemma": "wzgard",
+      "pos": [
+        "NOUN"
+      ],
+      "kind": "emotion_noun",
+      "strength": "strong",
+      "valence": -0.82,
+      "arousal": 0.62,
+      "emotions": {
+        "disgust": 0.85
+      },
+      "source": "curated:gemini-2026-09",
+      "version": 1,
+      "felt": "state"
+    },
+    {
+      "id": "pl.emonoun.lekceważyć",
+      "lemma": "lekceważyć",
+      "pos": [
+        "NOUN"
+      ],
+      "kind": "emotion_noun",
+      "strength": "strong",
+      "valence": -0.52,
+      "arousal": 0.42,
+      "emotions": {
+        "disgust": 0.85
+      },
+      "source": "curated:gemini-2026-09",
+      "version": 1,
+      "felt": "state"
+    },
+    {
+      "id": "pl.emonoun.zawiść",
+      "lemma": "zawiść",
+      "pos": [
+        "NOUN"
+      ],
+      "kind": "emotion_noun",
+      "strength": "strong",
+      "valence": -0.82,
+      "arousal": 0.72,
+      "emotions": {
+        "disgust": 0.85
+      },
+      "source": "curated:gemini-2026-09",
+      "version": 1,
+      "felt": "state"
+    },
+    {
+      "id": "pl.emonoun.zazdrość",
+      "lemma": "zazdrość",
+      "pos": [
+        "NOUN"
+      ],
+      "kind": "emotion_noun",
+      "strength": "strong",
+      "valence": -0.72,
+      "arousal": 0.64,
+      "emotions": {
+        "disgust": 0.85
+      },
+      "source": "curated:gemini-2026-09",
+      "version": 1,
+      "felt": "state"
+    },
+    {
+      "id": "pl.emonoun.uraza",
+      "lemma": "uraza",
+      "pos": [
+        "NOUN"
+      ],
+      "kind": "emotion_noun",
+      "strength": "strong",
+      "valence": -0.62,
+      "arousal": 0.52,
+      "emotions": {
+        "anger": 0.85
+      },
+      "source": "curated:gemini-2026-09",
+      "version": 1,
+      "felt": "state"
+    },
+    {
+      "id": "pl.emonoun.żal",
+      "lemma": "żal",
+      "pos": [
+        "NOUN"
+      ],
+      "kind": "emotion_noun",
+      "strength": "strong",
+      "valence": -0.72,
+      "arousal": 0.52,
+      "emotions": {
+        "sadness": 0.85
+      },
+      "source": "curated:gemini-2026-09",
+      "version": 1,
+      "felt": "state"
+    },
+    {
+      "id": "pl.emonoun.rozgoryczenie",
+      "lemma": "rozgoryczenie",
+      "pos": [
+        "NOUN"
+      ],
+      "kind": "emotion_noun",
+      "strength": "strong",
+      "valence": -0.74,
+      "arousal": 0.52,
+      "emotions": {
+        "sadness": 0.85
+      },
+      "source": "curated:gemini-2026-09",
+      "version": 1,
+      "felt": "state"
+    },
+    {
+      "id": "pl.emonoun.pretensja",
+      "lemma": "pretensja",
+      "pos": [
+        "NOUN"
+      ],
+      "kind": "emotion_noun",
+      "strength": "strong",
+      "valence": -0.52,
+      "arousal": 0.52,
+      "emotions": {
+        "anger": 0.85
+      },
+      "source": "curated:gemini-2026-09",
+      "version": 1,
+      "felt": "state"
+    },
+    {
+      "id": "pl.emonoun.strach",
+      "lemma": "strach",
+      "pos": [
+        "NOUN"
+      ],
+      "kind": "emotion_noun",
+      "strength": "strong",
+      "valence": -0.82,
+      "arousal": 0.82,
+      "emotions": {
+        "fear": 0.85
+      },
+      "source": "curated:gemini-2026-09",
+      "version": 1,
+      "felt": "state"
+    },
+    {
+      "id": "pl.emonoun.lęk",
+      "lemma": "lęk",
+      "pos": [
+        "NOUN"
+      ],
+      "kind": "emotion_noun",
+      "strength": "strong",
+      "valence": -0.74,
+      "arousal": 0.72,
+      "emotions": {
+        "fear": 0.85
+      },
+      "source": "curated:gemini-2026-09",
+      "version": 1,
+      "felt": "state"
+    },
+    {
+      "id": "pl.emonoun.trwóg",
+      "lemma": "trwóg",
+      "pos": [
+        "NOUN"
+      ],
+      "kind": "emotion_noun",
+      "strength": "strong",
+      "valence": -0.92,
+      "arousal": 0.92,
+      "emotions": {
+        "fear": 0.85
+      },
+      "source": "curated:gemini-2026-09",
+      "version": 1,
+      "felt": "state"
+    },
+    {
+      "id": "pl.emonoun.przerażenie",
+      "lemma": "przerażenie",
+      "pos": [
+        "NOUN"
+      ],
+      "kind": "emotion_noun",
+      "strength": "strong",
+      "valence": -0.92,
+      "arousal": 0.92,
+      "emotions": {
+        "fear": 0.85
+      },
+      "source": "curated:gemini-2026-09",
+      "version": 1,
+      "felt": "state"
+    },
+    {
+      "id": "pl.emonoun.popłoch",
+      "lemma": "popłoch",
+      "pos": [
+        "NOUN"
+      ],
+      "kind": "emotion_noun",
+      "strength": "strong",
+      "valence": -0.84,
+      "arousal": 0.92,
+      "emotions": {
+        "fear": 0.85
+      },
+      "source": "curated:gemini-2026-09",
+      "version": 1,
+      "felt": "state"
+    },
+    {
+      "id": "pl.emonoun.panik",
+      "lemma": "panik",
+      "pos": [
+        "NOUN"
+      ],
+      "kind": "emotion_noun",
+      "strength": "strong",
+      "valence": -0.92,
+      "arousal": 0.92,
+      "emotions": {
+        "fear": 0.85
+      },
+      "source": "curated:gemini-2026-09",
+      "version": 1,
+      "felt": "state"
+    },
+    {
+      "id": "pl.emonoun.obawa",
+      "lemma": "obawa",
+      "pos": [
+        "NOUN"
+      ],
+      "kind": "emotion_noun",
+      "strength": "strong",
+      "valence": -0.52,
+      "arousal": 0.52,
+      "emotions": {
+        "fear": 0.85
+      },
+      "source": "curated:gemini-2026-09",
+      "version": 1,
+      "felt": "state"
+    },
+    {
+      "id": "pl.emonoun.niepokój",
+      "lemma": "niepokój",
+      "pos": [
+        "NOUN"
+      ],
+      "kind": "emotion_noun",
+      "strength": "strong",
+      "valence": -0.54,
+      "arousal": 0.62,
+      "emotions": {
+        "fear": 0.85
+      },
+      "source": "curated:gemini-2026-09",
+      "version": 1,
+      "felt": "state"
+    },
+    {
+      "id": "pl.emonoun.troski",
+      "lemma": "troski",
+      "pos": [
+        "NOUN"
+      ],
+      "kind": "emotion_noun",
+      "strength": "strong",
+      "valence": -0.52,
+      "arousal": 0.42,
+      "emotions": {
+        "sadness": 0.85
+      },
+      "source": "curated:gemini-2026-09",
+      "version": 1,
+      "alt_lemmas": [
+        "troska"
+      ],
+      "lemma_evidence": "carrier",
+      "felt": "state"
+    },
+    {
+      "id": "pl.emonoun.frasunka",
+      "lemma": "frasunek",
+      "pos": [
+        "NOUN"
+      ],
+      "kind": "emotion_noun",
+      "strength": "strong",
+      "valence": -0.62,
+      "arousal": 0.42,
+      "emotions": {
+        "sadness": 0.85
+      },
+      "source": "curated:gemini-2026-09",
+      "version": 1,
+      "felt": "state"
+    },
+    {
+      "id": "pl.emonoun.strapienie",
+      "lemma": "strapienie",
+      "pos": [
+        "NOUN"
+      ],
+      "kind": "emotion_noun",
+      "strength": "strong",
+      "valence": -0.62,
+      "arousal": 0.42,
+      "emotions": {
+        "sadness": 0.85
+      },
+      "source": "curated:gemini-2026-09",
+      "version": 1,
+      "felt": "state"
+    },
+    {
+      "id": "pl.emonoun.zmartwienie",
+      "lemma": "zmartwienie",
+      "pos": [
+        "NOUN"
+      ],
+      "kind": "emotion_noun",
+      "strength": "strong",
+      "valence": -0.62,
+      "arousal": 0.42,
+      "emotions": {
+        "sadness": 0.85
+      },
+      "source": "curated:gemini-2026-09",
+      "version": 1,
+      "felt": "state"
+    },
+    {
+      "id": "pl.emonoun.smutek",
+      "lemma": "smutek",
+      "pos": [
+        "NOUN"
+      ],
+      "kind": "emotion_noun",
+      "strength": "strong",
+      "valence": -0.74,
+      "arousal": 0.32,
+      "emotions": {
+        "sadness": 0.85
+      },
+      "source": "curated:gemini-2026-09",
+      "version": 1,
+      "felt": "state"
+    },
+    {
+      "id": "pl.emonoun.żałość",
+      "lemma": "żałość",
+      "pos": [
+        "NOUN"
+      ],
+      "kind": "emotion_noun",
+      "strength": "strong",
+      "valence": -0.72,
+      "arousal": 0.42,
+      "emotions": {
+        "sadness": 0.85
+      },
+      "source": "curated:gemini-2026-09",
+      "version": 1,
+      "felt": "state"
+    },
+    {
+      "id": "pl.emonoun.żałobać",
+      "lemma": "żałoba",
+      "pos": [
+        "NOUN"
+      ],
+      "kind": "emotion_noun",
+      "strength": "strong",
+      "valence": -0.84,
+      "arousal": 0.38,
+      "emotions": {
+        "sadness": 0.85
+      },
+      "source": "curated:gemini-2026-09",
+      "version": 1,
+      "felt": "state"
+    },
+    {
+      "id": "pl.emonoun.rozpacz",
+      "lemma": "rozpacz",
+      "pos": [
+        "NOUN"
+      ],
+      "kind": "emotion_noun",
+      "strength": "strong",
+      "valence": -0.92,
+      "arousal": 0.82,
+      "emotions": {
+        "sadness": 0.85
+      },
+      "source": "curated:gemini-2026-09",
+      "version": 1,
+      "felt": "state"
+    },
+    {
+      "id": "pl.emonoun.desperacja",
+      "lemma": "desperacja",
+      "pos": [
+        "NOUN"
+      ],
+      "kind": "emotion_noun",
+      "strength": "strong",
+      "valence": -0.82,
+      "arousal": 0.82,
+      "emotions": {
+        "sadness": 0.85
+      },
+      "source": "curated:gemini-2026-09",
+      "version": 1,
+      "felt": "state"
+    },
+    {
+      "id": "pl.emonoun.zwątpienąć",
+      "lemma": "zwątpienie",
+      "pos": [
+        "NOUN"
+      ],
+      "kind": "emotion_noun",
+      "strength": "strong",
+      "valence": -0.72,
+      "arousal": 0.42,
+      "emotions": {
+        "sadness": 0.85
+      },
+      "source": "curated:gemini-2026-09",
+      "version": 1,
+      "felt": "state"
+    },
+    {
+      "id": "pl.emonoun.przygnębienie",
+      "lemma": "przygnębienie",
+      "pos": [
+        "NOUN"
+      ],
+      "kind": "emotion_noun",
+      "strength": "strong",
+      "valence": -0.74,
+      "arousal": 0.32,
+      "emotions": {
+        "sadness": 0.85
+      },
+      "source": "curated:gemini-2026-09",
+      "version": 1,
+      "felt": "state"
+    },
+    {
+      "id": "pl.emonoun.melancholia",
+      "lemma": "melancholia",
+      "pos": [
+        "NOUN"
+      ],
+      "kind": "emotion_noun",
+      "strength": "strong",
+      "valence": -0.52,
+      "arousal": 0.22,
+      "emotions": {
+        "sadness": 0.85
+      },
+      "source": "curated:gemini-2026-09",
+      "version": 1,
+      "felt": "state"
+    },
+    {
+      "id": "pl.emonoun.tęsknota",
+      "lemma": "tęsknota",
+      "pos": [
+        "NOUN"
+      ],
+      "kind": "emotion_noun",
+      "strength": "strong",
+      "valence": -0.62,
+      "arousal": 0.42,
+      "emotions": {
+        "sadness": 0.85
+      },
+      "source": "curated:gemini-2026-09",
+      "version": 1,
+      "felt": "state"
+    },
+    {
+      "id": "pl.emonoun.nostalgia",
+      "lemma": "nostalgia",
+      "pos": [
+        "NOUN"
+      ],
+      "kind": "emotion_noun",
+      "strength": "strong",
+      "valence": -0.42,
+      "arousal": 0.32,
+      "emotions": {
+        "sadness": 0.85
+      },
+      "source": "curated:gemini-2026-09",
+      "version": 1,
+      "felt": "state"
+    },
+    {
+      "id": "pl.emonoun.samotność",
+      "lemma": "samotność",
+      "pos": [
+        "NOUN"
+      ],
+      "kind": "emotion_noun",
+      "strength": "strong",
+      "valence": -0.72,
+      "arousal": 0.32,
+      "emotions": {
+        "sadness": 0.85
+      },
+      "source": "curated:gemini-2026-09",
+      "version": 1,
+      "felt": "state"
+    },
+    {
+      "id": "pl.emonoun.opuszczenie",
+      "lemma": "opuszczenie",
+      "pos": [
+        "NOUN"
+      ],
+      "kind": "emotion_noun",
+      "strength": "strong",
+      "valence": -0.72,
+      "arousal": 0.32,
+      "emotions": {
+        "sadness": 0.85
+      },
+      "source": "curated:gemini-2026-09",
+      "version": 1,
+      "felt": "state"
+    },
+    {
+      "id": "pl.emonoun.beznadzieja",
+      "lemma": "beznadzieja",
+      "pos": [
+        "NOUN"
+      ],
+      "kind": "emotion_noun",
+      "strength": "strong",
+      "valence": -0.92,
+      "arousal": 0.32,
+      "emotions": {
+        "sadness": 0.85
+      },
+      "source": "curated:gemini-2026-09",
+      "version": 1,
+      "felt": "state"
+    },
+    {
+      "id": "pl.emonoun.wstyd",
+      "lemma": "wstyd",
+      "pos": [
+        "NOUN"
+      ],
+      "kind": "emotion_noun",
+      "strength": "strong",
+      "valence": -0.72,
+      "arousal": 0.62,
+      "emotions": {
+        "sadness": 0.85
+      },
+      "source": "curated:gemini-2026-09",
+      "version": 1,
+      "felt": "state"
+    },
+    {
+      "id": "pl.emonoun.hańba",
+      "lemma": "hańba",
+      "pos": [
+        "NOUN"
+      ],
+      "kind": "emotion_noun",
+      "strength": "strong",
+      "valence": -0.92,
+      "arousal": 0.72,
+      "emotions": {
+        "sadness": 0.85
+      },
+      "source": "curated:gemini-2026-09",
+      "version": 1,
+      "felt": "evaluative"
+    },
+    {
+      "id": "pl.emonoun.sromota",
+      "lemma": "sromota",
+      "pos": [
+        "NOUN"
+      ],
+      "kind": "emotion_noun",
+      "strength": "strong",
+      "valence": -0.82,
+      "arousal": 0.62,
+      "emotions": {
+        "sadness": 0.85
+      },
+      "source": "curated:gemini-2026-09",
+      "version": 1,
+      "felt": "evaluative"
+    },
+    {
+      "id": "pl.emonoun.upokorzeć",
+      "lemma": "upokorzenie",
+      "pos": [
+        "NOUN"
+      ],
+      "kind": "emotion_noun",
+      "strength": "strong",
+      "valence": -0.82,
+      "arousal": 0.62,
+      "emotions": {
+        "sadness": 0.85
+      },
+      "source": "curated:gemini-2026-09",
+      "version": 1,
+      "felt": "state"
+    },
+    {
+      "id": "pl.emonoun.poniżeć",
+      "lemma": "poniżenie",
+      "pos": [
+        "NOUN"
+      ],
+      "kind": "emotion_noun",
+      "strength": "strong",
+      "valence": -0.82,
+      "arousal": 0.62,
+      "emotions": {
+        "sadness": 0.85
+      },
+      "source": "curated:gemini-2026-09",
+      "version": 1,
+      "felt": "state"
+    },
+    {
+      "id": "pl.emonoun.skrucha",
+      "lemma": "skrucha",
+      "pos": [
+        "NOUN"
+      ],
+      "kind": "emotion_noun",
+      "strength": "strong",
+      "valence": -0.52,
+      "arousal": 0.42,
+      "emotions": {
+        "sadness": 0.85
+      },
+      "source": "curated:gemini-2026-09",
+      "version": 1,
+      "felt": "state"
+    },
+    {
+      "id": "pl.emonoun.poczucie_wina",
+      "phrase": [
+        "poczucie",
+        "wina"
+      ],
+      "kind": "emotion_noun",
+      "strength": "strong",
+      "valence": -0.72,
+      "arousal": 0.52,
+      "emotions": {
+        "sadness": 0.85
+      },
+      "source": "curated:gemini-2026-09",
+      "version": 1,
+      "alt_lemmas": [
+        "wino"
+      ],
+      "lemma_evidence": "carrier",
+      "example": "Męczyło go bolesne poczucie winy z powodu dawnego błędu.",
+      "felt": "state"
+    },
+    {
+      "id": "pl.emonoun.radość",
+      "lemma": "radość",
+      "pos": [
+        "NOUN"
+      ],
+      "kind": "emotion_noun",
+      "strength": "strong",
+      "valence": 0.92,
+      "arousal": 0.72,
+      "emotions": {
+        "joy": 0.85
+      },
+      "source": "curated:gemini-2026-09",
+      "version": 1,
+      "felt": "state"
+    },
+    {
+      "id": "pl.emonoun.szczęście",
+      "lemma": "szczęście",
+      "pos": [
+        "NOUN"
+      ],
+      "kind": "emotion_noun",
+      "strength": "strong",
+      "valence": 0.92,
+      "arousal": 0.72,
+      "emotions": {
+        "joy": 0.85
+      },
+      "source": "curated:gemini-2026-09",
+      "version": 1,
+      "felt": "state"
+    },
+    {
+      "id": "pl.emonoun.wesołość",
+      "lemma": "wesołość",
+      "pos": [
+        "NOUN"
+      ],
+      "kind": "emotion_noun",
+      "strength": "strong",
+      "valence": 0.82,
+      "arousal": 0.62,
+      "emotions": {
+        "joy": 0.85
+      },
+      "source": "curated:gemini-2026-09",
+      "version": 1,
+      "felt": "state"
+    },
+    {
+      "id": "pl.emonoun.rozradować",
+      "lemma": "rozradować",
+      "pos": [
+        "NOUN"
+      ],
+      "kind": "emotion_noun",
+      "strength": "strong",
+      "valence": 0.92,
+      "arousal": 0.72,
+      "emotions": {
+        "joy": 0.85
+      },
+      "source": "curated:gemini-2026-09",
+      "version": 1,
+      "felt": "state"
+    },
+    {
+      "id": "pl.emonoun.zachwyt",
+      "lemma": "zachwyt",
+      "pos": [
+        "NOUN"
+      ],
+      "kind": "emotion_noun",
+      "strength": "strong",
+      "valence": 0.92,
+      "arousal": 0.72,
+      "emotions": {
+        "joy": 0.85
+      },
+      "source": "curated:gemini-2026-09",
+      "version": 1,
+      "felt": "state"
+    },
+    {
+      "id": "pl.emonoun.ekstaza",
+      "lemma": "ekstaza",
+      "pos": [
+        "NOUN"
+      ],
+      "kind": "emotion_noun",
+      "strength": "strong",
+      "valence": 0.94,
+      "arousal": 0.92,
+      "emotions": {
+        "joy": 0.85
+      },
+      "source": "curated:gemini-2026-09",
+      "version": 1,
+      "felt": "state"
+    },
+    {
+      "id": "pl.emonoun.uniesienie",
+      "lemma": "uniesienie",
+      "pos": [
+        "NOUN"
+      ],
+      "kind": "emotion_noun",
+      "strength": "strong",
+      "valence": 0.84,
+      "arousal": 0.72,
+      "emotions": {
+        "joy": 0.85
+      },
+      "source": "curated:gemini-2026-09",
+      "version": 1,
+      "felt": "state"
+    },
+    {
+      "id": "pl.emonoun.euforia",
+      "lemma": "euforia",
+      "pos": [
+        "NOUN"
+      ],
+      "kind": "emotion_noun",
+      "strength": "strong",
+      "valence": 0.94,
+      "arousal": 0.92,
+      "emotions": {
+        "joy": 0.85
+      },
+      "source": "curated:gemini-2026-09",
+      "version": 1,
+      "felt": "state"
+    },
+    {
+      "id": "pl.emonoun.entuzjazm",
+      "lemma": "entuzjazm",
+      "pos": [
+        "NOUN"
+      ],
+      "kind": "emotion_noun",
+      "strength": "strong",
+      "valence": 0.82,
+      "arousal": 0.82,
+      "emotions": {
+        "anticipation": 0.85
+      },
+      "source": "curated:gemini-2026-09",
+      "version": 1,
+      "felt": "state"
+    },
+    {
+      "id": "pl.emonoun.zapać",
+      "lemma": "zapał",
+      "pos": [
+        "NOUN"
+      ],
+      "kind": "emotion_noun",
+      "strength": "strong",
+      "valence": 0.82,
+      "arousal": 0.82,
+      "emotions": {
+        "anticipation": 0.85
+      },
+      "source": "curated:gemini-2026-09",
+      "version": 1,
+      "felt": "state"
+    },
+    {
+      "id": "pl.emonoun.podniecenie",
+      "lemma": "podniecenie",
+      "pos": [
+        "NOUN"
+      ],
+      "kind": "emotion_noun",
+      "strength": "strong",
+      "valence": 0.64,
+      "arousal": 0.82,
+      "emotions": {
+        "anticipation": 0.85
+      },
+      "source": "curated:gemini-2026-09",
+      "version": 1,
+      "felt": "state"
+    },
+    {
+      "id": "pl.emonoun.ciekawość",
+      "lemma": "ciekawość",
+      "pos": [
+        "NOUN"
+      ],
+      "kind": "emotion_noun",
+      "strength": "strong",
+      "valence": 0.62,
+      "arousal": 0.52,
+      "emotions": {
+        "anticipation": 0.85
+      },
+      "source": "curated:gemini-2026-09",
+      "version": 1,
+      "felt": "state"
+    },
+    {
+      "id": "pl.emonoun.zniecierpliwieć",
+      "lemma": "zniecierpliwienie",
+      "pos": [
+        "NOUN"
+      ],
+      "kind": "emotion_noun",
+      "strength": "strong",
+      "valence": -0.42,
+      "arousal": 0.72,
+      "emotions": {
+        "anticipation": 0.85
+      },
+      "source": "curated:gemini-2026-09",
+      "version": 1,
+      "felt": "state"
+    },
+    {
+      "id": "pl.emonoun.nadzieja",
+      "lemma": "nadzieja",
+      "pos": [
+        "NOUN"
+      ],
+      "kind": "emotion_noun",
+      "strength": "strong",
+      "valence": 0.82,
+      "arousal": 0.52,
+      "emotions": {
+        "anticipation": 0.85
+      },
+      "source": "curated:gemini-2026-09",
+      "version": 1,
+      "felt": "state"
+    },
+    {
+      "id": "pl.emonoun.otuch",
+      "lemma": "otuch",
+      "pos": [
+        "NOUN"
+      ],
+      "kind": "emotion_noun",
+      "strength": "strong",
+      "valence": 0.74,
+      "arousal": 0.42,
+      "emotions": {
+        "trust": 0.85
+      },
+      "source": "curated:gemini-2026-09",
+      "version": 1,
+      "felt": "state"
+    },
+    {
+      "id": "pl.emonoun.ufność",
+      "lemma": "ufność",
+      "pos": [
+        "NOUN"
+      ],
+      "kind": "emotion_noun",
+      "strength": "strong",
+      "valence": 0.82,
+      "arousal": 0.42,
+      "emotions": {
+        "trust": 0.85
+      },
+      "source": "curated:gemini-2026-09",
+      "version": 1,
+      "felt": "state"
+    },
+    {
+      "id": "pl.emonoun.zaufanie",
+      "lemma": "zaufanie",
+      "pos": [
+        "NOUN"
+      ],
+      "kind": "emotion_noun",
+      "strength": "strong",
+      "valence": 0.82,
+      "arousal": 0.42,
+      "emotions": {
+        "trust": 0.85
+      },
+      "source": "curated:gemini-2026-09",
+      "version": 1,
+      "felt": "state"
+    },
+    {
+      "id": "pl.emonoun.wiara",
+      "lemma": "wiara",
+      "pos": [
+        "NOUN"
+      ],
+      "kind": "emotion_noun",
+      "strength": "strong",
+      "valence": 0.82,
+      "arousal": 0.42,
+      "emotions": {
+        "trust": 0.85
+      },
+      "source": "curated:gemini-2026-09",
+      "version": 1,
+      "felt": "state"
+    },
+    {
+      "id": "pl.emonoun.spokój",
+      "lemma": "spokój",
+      "pos": [
+        "NOUN"
+      ],
+      "kind": "emotion_noun",
+      "strength": "strong",
+      "valence": 0.84,
+      "arousal": 0.12,
+      "emotions": {
+        "trust": 0.85
+      },
+      "source": "curated:gemini-2026-09",
+      "version": 1,
+      "felt": "state"
+    },
+    {
+      "id": "pl.emonoun.ukojeć",
+      "lemma": "ukojenie",
+      "pos": [
+        "NOUN"
+      ],
+      "kind": "emotion_noun",
+      "strength": "strong",
+      "valence": 0.82,
+      "arousal": 0.12,
+      "emotions": {
+        "trust": 0.85
+      },
+      "source": "curated:gemini-2026-09",
+      "version": 1,
+      "alt_lemmas": [
+        "ukojeć"
+      ],
+      "lemma_evidence": "carrier",
+      "felt": "state"
+    },
+    {
+      "id": "pl.emonoun.ulga",
+      "lemma": "ulga",
+      "pos": [
+        "NOUN"
+      ],
+      "kind": "emotion_noun",
+      "strength": "strong",
+      "valence": 0.82,
+      "arousal": 0.38,
+      "emotions": {
+        "joy": 0.85
+      },
+      "source": "curated:gemini-2026-09",
+      "version": 1,
+      "felt": "state"
+    },
+    {
+      "id": "pl.emonoun.wytchnienie",
+      "lemma": "wytchnienie",
+      "pos": [
+        "NOUN"
+      ],
+      "kind": "emotion_noun",
+      "strength": "strong",
+      "valence": 0.74,
+      "arousal": 0.18,
+      "emotions": {
+        "trust": 0.85
+      },
+      "source": "curated:gemini-2026-09",
+      "version": 1,
+      "felt": "state"
+    },
+    {
+      "id": "pl.emonoun.miłość",
+      "lemma": "miłość",
+      "pos": [
+        "NOUN"
+      ],
+      "kind": "emotion_noun",
+      "strength": "strong",
+      "valence": 0.92,
+      "arousal": 0.62,
+      "emotions": {
+        "joy": 0.85
+      },
+      "source": "curated:gemini-2026-09",
+      "version": 1,
+      "felt": "state"
+    },
+    {
+      "id": "pl.emonoun.przywiązanie",
+      "lemma": "przywiązanie",
+      "pos": [
+        "NOUN"
+      ],
+      "kind": "emotion_noun",
+      "strength": "strong",
+      "valence": 0.82,
+      "arousal": 0.42,
+      "emotions": {
+        "trust": 0.85
+      },
+      "source": "curated:gemini-2026-09",
+      "version": 1,
+      "felt": "state"
+    },
+    {
+      "id": "pl.emonoun.czułość",
+      "lemma": "czułość",
+      "pos": [
+        "NOUN"
+      ],
+      "kind": "emotion_noun",
+      "strength": "strong",
+      "valence": 0.82,
+      "arousal": 0.42,
+      "emotions": {
+        "joy": 0.85
+      },
+      "source": "curated:gemini-2026-09",
+      "version": 1,
+      "felt": "state"
+    },
+    {
+      "id": "pl.emonoun.serdeczność",
+      "lemma": "serdeczność",
+      "pos": [
+        "NOUN"
+      ],
+      "kind": "emotion_noun",
+      "strength": "strong",
+      "valence": 0.82,
+      "arousal": 0.42,
+      "emotions": {
+        "joy": 0.85
+      },
+      "source": "curated:gemini-2026-09",
+      "version": 1,
+      "felt": "trait"
+    },
+    {
+      "id": "pl.emonoun.życzliwość",
+      "lemma": "życzliwość",
+      "pos": [
+        "NOUN"
+      ],
+      "kind": "emotion_noun",
+      "strength": "strong",
+      "valence": 0.82,
+      "arousal": 0.42,
+      "emotions": {
+        "trust": 0.85
+      },
+      "source": "curated:gemini-2026-09",
+      "version": 1,
+      "felt": "trait"
+    },
+    {
+      "id": "pl.emonoun.litość",
+      "lemma": "litość",
+      "pos": [
+        "NOUN"
+      ],
+      "kind": "emotion_noun",
+      "strength": "strong",
+      "valence": -0.32,
+      "arousal": 0.42,
+      "emotions": {
+        "sadness": 0.85
+      },
+      "source": "curated:gemini-2026-09",
+      "version": 1,
+      "felt": "state"
+    },
+    {
+      "id": "pl.emonoun.współczut",
+      "lemma": "współczucie",
+      "pos": [
+        "NOUN"
+      ],
+      "kind": "emotion_noun",
+      "strength": "strong",
+      "valence": 0.74,
+      "arousal": 0.42,
+      "emotions": {
+        "trust": 0.85
+      },
+      "source": "curated:gemini-2026-09",
+      "version": 1,
+      "felt": "state"
+    },
+    {
+      "id": "pl.emonoun.miłosierd",
+      "lemma": "miłosierdzie",
+      "pos": [
+        "NOUN"
+      ],
+      "kind": "emotion_noun",
+      "strength": "strong",
+      "valence": 0.84,
+      "arousal": 0.42,
+      "emotions": {
+        "trust": 0.85
+      },
+      "source": "curated:gemini-2026-09",
+      "version": 1,
+      "alt_lemmas": [
+        "miłosierda"
+      ],
+      "lemma_evidence": "carrier",
+      "felt": "trait"
+    },
+    {
+      "id": "pl.emonoun.wdzięczność",
+      "lemma": "wdzięczność",
+      "pos": [
+        "NOUN"
+      ],
+      "kind": "emotion_noun",
+      "strength": "strong",
+      "valence": 0.84,
+      "arousal": 0.42,
+      "emotions": {
+        "trust": 0.85
+      },
+      "source": "curated:gemini-2026-09",
+      "version": 1,
+      "felt": "state"
+    },
+    {
+      "id": "pl.emonoun.duma",
+      "lemma": "duma",
+      "pos": [
+        "NOUN"
+      ],
+      "kind": "emotion_noun",
+      "strength": "strong",
+      "valence": 0.74,
+      "arousal": 0.62,
+      "emotions": {
+        "joy": 0.85
+      },
+      "source": "curated:gemini-2026-09",
+      "version": 1,
+      "felt": "state",
+      "note": "also trait reading"
+    },
+    {
+      "id": "pl.emonoun.pychać",
+      "lemma": "pycha",
+      "pos": [
+        "NOUN"
+      ],
+      "kind": "emotion_noun",
+      "strength": "strong",
+      "valence": -0.54,
+      "arousal": 0.62,
+      "emotions": {
+        "disgust": 0.85
+      },
+      "source": "curated:gemini-2026-09",
+      "version": 1,
+      "felt": "trait"
+    },
+    {
+      "id": "pl.emonoun.zuchwalstwo",
+      "lemma": "zuchwalstwo",
+      "pos": [
+        "NOUN"
+      ],
+      "kind": "emotion_noun",
+      "strength": "strong",
+      "valence": -0.52,
+      "arousal": 0.72,
+      "emotions": {
+        "anger": 0.85
+      },
+      "source": "curated:gemini-2026-09",
+      "version": 1,
+      "felt": "trait"
+    },
+    {
+      "id": "pl.emonoun.zarozumiałość",
+      "lemma": "zarozumiałość",
+      "pos": [
+        "NOUN"
+      ],
+      "kind": "emotion_noun",
+      "strength": "strong",
+      "valence": -0.54,
+      "arousal": 0.42,
+      "emotions": {
+        "disgust": 0.85
+      },
+      "source": "curated:gemini-2026-09",
+      "version": 1,
+      "felt": "trait"
+    },
+    {
+      "id": "pl.emonoun.próżność",
+      "lemma": "próżność",
+      "pos": [
+        "NOUN"
+      ],
+      "kind": "emotion_noun",
+      "strength": "strong",
+      "valence": -0.42,
+      "arousal": 0.42,
+      "emotions": {
+        "disgust": 0.85
+      },
+      "source": "curated:gemini-2026-09",
+      "version": 1,
+      "felt": "trait"
+    },
+    {
+      "id": "pl.emonoun.podziw",
+      "lemma": "podziw",
+      "pos": [
+        "NOUN"
+      ],
+      "kind": "emotion_noun",
+      "strength": "strong",
+      "valence": 0.82,
+      "arousal": 0.62,
+      "emotions": {
+        "trust": 0.85
+      },
+      "source": "curated:gemini-2026-09",
+      "version": 1,
+      "felt": "state"
+    },
+    {
+      "id": "pl.emonoun.zdumienie",
+      "lemma": "zdumienie",
+      "pos": [
+        "NOUN"
+      ],
+      "kind": "emotion_noun",
+      "strength": "strong",
+      "valence": 0.32,
+      "arousal": 0.72,
+      "emotions": {
+        "surprise": 0.85
+      },
+      "source": "curated:gemini-2026-09",
+      "version": 1,
+      "felt": "state"
+    },
+    {
+      "id": "pl.emonoun.zaskoczeć",
+      "lemma": "zaskoczenie",
+      "pos": [
+        "NOUN"
+      ],
+      "kind": "emotion_noun",
+      "strength": "strong",
+      "valence": 0.32,
+      "arousal": 0.62,
+      "emotions": {
+        "surprise": 0.85
+      },
+      "source": "curated:gemini-2026-09",
+      "version": 1,
+      "felt": "state"
+    },
+    {
+      "id": "pl.emonoun.szok",
+      "lemma": "szok",
+      "pos": [
+        "NOUN"
+      ],
+      "kind": "emotion_noun",
+      "strength": "strong",
+      "valence": -0.52,
+      "arousal": 0.82,
+      "emotions": {
+        "surprise": 0.85
+      },
+      "source": "curated:gemini-2026-09",
+      "version": 1,
+      "felt": "state"
+    },
+    {
+      "id": "pl.emonoun.osłupiyć",
+      "lemma": "osłupienie",
+      "pos": [
+        "NOUN"
+      ],
+      "kind": "emotion_noun",
+      "strength": "strong",
+      "valence": -0.22,
+      "arousal": 0.72,
+      "emotions": {
+        "surprise": 0.85
+      },
+      "source": "curated:gemini-2026-09",
+      "version": 1,
+      "felt": "state"
+    },
+    {
+      "id": "pl.emonoun.zmieszanie",
+      "lemma": "zmieszanie",
+      "pos": [
+        "NOUN"
+      ],
+      "kind": "emotion_noun",
+      "strength": "strong",
+      "valence": -0.42,
+      "arousal": 0.52,
+      "emotions": {
+        "surprise": 0.85
+      },
+      "source": "curated:gemini-2026-09",
+      "version": 1,
+      "felt": "state"
+    },
+    {
+      "id": "pl.emonoun.zakłopotanie",
+      "lemma": "zakłopotanie",
+      "pos": [
+        "NOUN"
+      ],
+      "kind": "emotion_noun",
+      "strength": "strong",
+      "valence": -0.42,
+      "arousal": 0.52,
+      "emotions": {
+        "surprise": 0.85
+      },
+      "source": "curated:gemini-2026-09",
+      "version": 1,
+      "felt": "state"
+    },
+    {
+      "id": "pl.emonoun.nieśmiałość",
+      "lemma": "nieśmiałość",
+      "pos": [
+        "NOUN"
+      ],
+      "kind": "emotion_noun",
+      "strength": "strong",
+      "valence": -0.42,
+      "arousal": 0.32,
+      "emotions": {
+        "fear": 0.85
+      },
+      "source": "curated:gemini-2026-09",
+      "version": 1,
+      "felt": "trait"
+    },
+    {
+      "id": "pl.emonoun.bojaźń",
+      "lemma": "bojaźń",
+      "pos": [
+        "NOUN"
+      ],
+      "kind": "emotion_noun",
+      "strength": "strong",
+      "valence": -0.72,
+      "arousal": 0.62,
+      "emotions": {
+        "fear": 0.85
+      },
+      "source": "curated:gemini-2026-09",
+      "version": 1,
+      "felt": "state"
+    },
+    {
+      "id": "pl.emonoun.męka",
+      "lemma": "męka",
+      "pos": [
+        "NOUN"
+      ],
+      "kind": "emotion_noun",
+      "strength": "strong",
+      "valence": -0.84,
+      "arousal": 0.72,
+      "emotions": {
+        "sadness": 0.85
+      },
+      "source": "curated:gemini-2026-09",
+      "version": 1,
+      "felt": "state"
+    },
+    {
+      "id": "pl.emonoun.katusze",
+      "lemma": "katusze",
+      "pos": [
+        "NOUN"
+      ],
+      "kind": "emotion_noun",
+      "strength": "strong",
+      "valence": -0.92,
+      "arousal": 0.82,
+      "emotions": {
+        "sadness": 0.85
+      },
+      "source": "curated:gemini-2026-09",
+      "version": 1,
+      "felt": "state"
+    },
+    {
+      "id": "pl.emonoun.cierpienie",
+      "lemma": "cierpienie",
+      "pos": [
+        "NOUN"
+      ],
+      "kind": "emotion_noun",
+      "strength": "strong",
+      "valence": -0.84,
+      "arousal": 0.62,
+      "emotions": {
+        "sadness": 0.85
+      },
+      "source": "curated:gemini-2026-09",
+      "version": 1,
+      "felt": "state"
+    },
+    {
+      "id": "pl.emonoun.ból",
+      "lemma": "ból",
+      "pos": [
+        "NOUN"
+      ],
+      "kind": "emotion_noun",
+      "strength": "strong",
+      "valence": -0.82,
+      "arousal": 0.72,
+      "emotions": {
+        "sadness": 0.85
+      },
+      "source": "curated:gemini-2026-09",
+      "version": 1,
+      "felt": "state"
+    },
+    {
+      "id": "pl.emonoun.boleść",
+      "lemma": "boleść",
+      "pos": [
+        "NOUN"
+      ],
+      "kind": "emotion_noun",
+      "strength": "strong",
+      "valence": -0.82,
+      "arousal": 0.62,
+      "emotions": {
+        "sadness": 0.85
+      },
+      "source": "curated:gemini-2026-09",
+      "version": 1,
+      "felt": "state"
+    },
+    {
+      "id": "pl.emonoun.udręka",
+      "lemma": "udręka",
+      "pos": [
+        "NOUN"
+      ],
+      "kind": "emotion_noun",
+      "strength": "strong",
+      "valence": -0.84,
+      "arousal": 0.72,
+      "emotions": {
+        "sadness": 0.85
+      },
+      "source": "curated:gemini-2026-09",
+      "version": 1,
+      "felt": "state"
+    },
+    {
+      "id": "pl.emonoun.rozterka",
+      "lemma": "rozterka",
+      "pos": [
+        "NOUN"
+      ],
+      "kind": "emotion_noun",
+      "strength": "strong",
+      "valence": -0.52,
+      "arousal": 0.62,
+      "emotions": {
+        "fear": 0.85
+      },
+      "source": "curated:gemini-2026-09",
+      "version": 1,
+      "felt": "state"
+    },
+    {
+      "id": "pl.emonoun.wahanie",
+      "lemma": "wahanie",
+      "pos": [
+        "NOUN"
+      ],
+      "kind": "emotion_noun",
+      "strength": "strong",
+      "valence": -0.32,
+      "arousal": 0.42,
+      "emotions": {
+        "fear": 0.85
+      },
+      "source": "curated:gemini-2026-09",
+      "version": 1,
+      "felt": "state"
+    },
+    {
+      "id": "pl.emonoun.skrupuł",
+      "lemma": "skrupuł",
+      "pos": [
+        "NOUN"
+      ],
+      "kind": "emotion_noun",
+      "strength": "strong",
+      "valence": -0.32,
+      "arousal": 0.42,
+      "emotions": {
+        "fear": 0.85
+      },
+      "source": "curated:gemini-2026-09",
+      "version": 1,
+      "felt": "state"
+    },
+    {
+      "id": "pl.emonoun.wyrzut",
+      "lemma": "wyrzut",
+      "pos": [
+        "NOUN"
+      ],
+      "kind": "emotion_noun",
+      "strength": "strong",
+      "valence": -0.62,
+      "arousal": 0.52,
+      "emotions": {
+        "sadness": 0.85
+      },
+      "source": "curated:gemini-2026-09",
+      "version": 1,
+      "alt_lemmas": [
+        "wyrzuty"
+      ],
+      "lemma_evidence": "carrier",
+      "felt": "state"
+    },
+    {
+      "id": "pl.emonoun.pasja",
+      "lemma": "pasja",
+      "pos": [
+        "NOUN"
+      ],
+      "kind": "emotion_noun",
+      "strength": "strong",
+      "valence": 0.74,
+      "arousal": 0.82,
+      "emotions": {
+        "joy": 0.85
+      },
+      "source": "curated:gemini-2026-09",
+      "version": 1,
+      "felt": "state"
+    },
+    {
+      "id": "pl.emonoun.żądza",
+      "lemma": "żądza",
+      "pos": [
+        "NOUN"
+      ],
+      "kind": "emotion_noun",
+      "strength": "strong",
+      "valence": 0.32,
+      "arousal": 0.82,
+      "emotions": {
+        "anticipation": 0.85
+      },
+      "source": "curated:gemini-2026-09",
+      "version": 1,
+      "felt": "state"
+    },
+    {
+      "id": "pl.emonoun.pożądanie",
+      "lemma": "pożądanie",
+      "pos": [
+        "NOUN"
+      ],
+      "kind": "emotion_noun",
+      "strength": "strong",
+      "valence": 0.52,
+      "arousal": 0.82,
+      "emotions": {
+        "anticipation": 0.85
+      },
+      "source": "curated:gemini-2026-09",
+      "version": 1,
+      "felt": "state"
+    },
+    {
+      "id": "pl.emonoun.chciwość",
+      "lemma": "chciwość",
+      "pos": [
+        "NOUN"
+      ],
+      "kind": "emotion_noun",
+      "strength": "strong",
+      "valence": -0.62,
+      "arousal": 0.62,
+      "emotions": {
+        "disgust": 0.85
+      },
+      "source": "curated:gemini-2026-09",
+      "version": 1,
+      "felt": "trait"
+    },
+    {
+      "id": "pl.emonoun.łakomstwo",
+      "lemma": "łakomstwo",
+      "pos": [
+        "NOUN"
+      ],
+      "kind": "emotion_noun",
+      "strength": "strong",
+      "valence": -0.52,
+      "arousal": 0.52,
+      "emotions": {
+        "disgust": 0.85
+      },
+      "source": "curated:gemini-2026-09",
+      "version": 1,
+      "felt": "trait"
+    },
+    {
+      "id": "pl.emonoun.skąpstwo",
+      "lemma": "skąpstwo",
+      "pos": [
+        "NOUN"
+      ],
+      "kind": "emotion_noun",
+      "strength": "strong",
+      "valence": -0.62,
+      "arousal": 0.42,
+      "emotions": {
+        "disgust": 0.85
+      },
+      "source": "curated:gemini-2026-09",
+      "version": 1,
+      "felt": "trait"
+    },
+    {
+      "id": "pl.emonoun.samolubstwo",
+      "lemma": "samolubstwo",
+      "pos": [
+        "NOUN"
+      ],
+      "kind": "emotion_noun",
+      "strength": "strong",
+      "valence": -0.62,
+      "arousal": 0.42,
+      "emotions": {
+        "disgust": 0.85
+      },
+      "source": "curated:gemini-2026-09",
+      "version": 1,
+      "felt": "trait"
+    },
+    {
+      "id": "pl.emonoun.egoizm",
+      "lemma": "egoizm",
+      "pos": [
+        "NOUN"
+      ],
+      "kind": "emotion_noun",
+      "strength": "strong",
+      "valence": -0.62,
+      "arousal": 0.42,
+      "emotions": {
+        "disgust": 0.85
+      },
+      "source": "curated:gemini-2026-09",
+      "version": 1,
+      "felt": "trait"
+    },
+    {
+      "id": "pl.emonoun.zniechęcenie",
+      "lemma": "zniechęcenie",
+      "pos": [
+        "NOUN"
+      ],
+      "kind": "emotion_noun",
+      "strength": "strong",
+      "valence": -0.52,
+      "arousal": 0.22,
+      "emotions": {
+        "sadness": 0.85
+      },
+      "source": "curated:gemini-2026-09",
+      "version": 1,
+      "felt": "state"
+    },
+    {
+      "id": "pl.emonoun.apatia",
+      "lemma": "apatia",
+      "pos": [
+        "NOUN"
+      ],
+      "kind": "emotion_noun",
+      "strength": "strong",
+      "valence": -0.62,
+      "arousal": 0.12,
+      "emotions": {
+        "sadness": 0.85
+      },
+      "source": "curated:gemini-2026-09",
+      "version": 1,
+      "felt": "state"
+    },
+    {
+      "id": "pl.emonoun.otępienie",
+      "lemma": "otępienie",
+      "pos": [
+        "NOUN"
+      ],
+      "kind": "emotion_noun",
+      "strength": "strong",
+      "valence": -0.62,
+      "arousal": 0.12,
+      "emotions": {
+        "sadness": 0.85
+      },
+      "source": "curated:gemini-2026-09",
+      "version": 1,
+      "felt": "state"
+    },
+    {
+      "id": "pl.emonoun.nuda",
+      "lemma": "nuda",
+      "pos": [
+        "NOUN"
+      ],
+      "kind": "emotion_noun",
+      "strength": "strong",
+      "valence": -0.42,
+      "arousal": 0.22,
+      "emotions": {
+        "sadness": 0.85
+      },
+      "source": "curated:gemini-2026-09",
+      "version": 1,
+      "felt": "state"
+    },
+    {
+      "id": "pl.emonoun.odwagać",
+      "lemma": "odwaga",
+      "pos": [
+        "NOUN"
+      ],
+      "kind": "emotion_noun",
+      "strength": "strong",
+      "valence": 0.86,
+      "arousal": 0.72,
+      "emotions": {
+        "trust": 0.85
+      },
+      "source": "curated:gemini-2026-09",
+      "version": 1,
+      "felt": "trait"
+    },
+    {
+      "id": "pl.emonoun.męstwo",
+      "lemma": "męstwo",
+      "pos": [
+        "NOUN"
+      ],
+      "kind": "emotion_noun",
+      "strength": "strong",
+      "valence": 0.9,
+      "arousal": 0.72,
+      "emotions": {
+        "trust": 0.85
+      },
+      "source": "curated:gemini-2026-09",
+      "version": 1,
+      "felt": "trait"
+    },
+    {
+      "id": "pl.emonoun.śmiałość",
+      "lemma": "śmiałość",
+      "pos": [
+        "NOUN"
+      ],
+      "kind": "emotion_noun",
+      "strength": "strong",
+      "valence": 0.82,
+      "arousal": 0.62,
+      "emotions": {
+        "trust": 0.85
+      },
+      "source": "curated:gemini-2026-09",
+      "version": 1,
+      "felt": "trait"
+    },
+    {
+      "id": "pl.emonoun.brawura",
+      "lemma": "brawura",
+      "pos": [
+        "NOUN"
+      ],
+      "kind": "emotion_noun",
+      "strength": "strong",
+      "valence": 0.52,
+      "arousal": 0.82,
+      "emotions": {
+        "anticipation": 0.85
+      },
+      "source": "curated:gemini-2026-09",
+      "version": 1,
+      "felt": "trait"
+    },
+    {
+      "id": "pl.emonoun.honor",
+      "lemma": "honor",
+      "pos": [
+        "NOUN"
+      ],
+      "kind": "emotion_noun",
+      "strength": "strong",
+      "valence": 0.84,
+      "arousal": 0.52,
+      "emotions": {
+        "trust": 0.85
+      },
+      "source": "curated:gemini-2026-09",
+      "version": 1,
+      "felt": "trait"
+    },
+    {
+      "id": "pl.emonoun.godność",
+      "lemma": "godność",
+      "pos": [
+        "NOUN"
+      ],
+      "kind": "emotion_noun",
+      "strength": "strong",
+      "valence": 0.84,
+      "arousal": 0.42,
+      "emotions": {
+        "trust": 0.85
+      },
+      "source": "curated:gemini-2026-09",
+      "version": 1,
+      "felt": "trait"
+    },
+    {
+      "id": "pl.emonoun.odprężć",
+      "lemma": "odprężenie",
+      "pos": [
+        "NOUN"
+      ],
+      "kind": "emotion_noun",
+      "strength": "strong",
+      "valence": 0.76,
+      "arousal": 0.14,
+      "emotions": {
+        "trust": 0.85
+      },
+      "source": "curated:gemini-2026-09",
+      "version": 1,
+      "felt": "state"
+    },
+    {
+      "id": "pl.emonoun.wyciszeć",
+      "lemma": "wyciszenie",
+      "pos": [
+        "NOUN"
+      ],
+      "kind": "emotion_noun",
+      "strength": "strong",
+      "valence": 0.74,
+      "arousal": 0.12,
+      "emotions": {
+        "trust": 0.85
+      },
+      "source": "curated:gemini-2026-09",
+      "version": 1,
+      "felt": "state"
+    },
+    {
+      "id": "pl.emonoun.zdziwienie",
+      "lemma": "zdziwienie",
+      "pos": [
+        "NOUN"
+      ],
+      "kind": "emotion_noun",
+      "strength": "strong",
+      "valence": 0.1,
+      "arousal": 0.6,
+      "emotions": {
+        "surprise": 0.85
+      },
+      "source": "curated:gemini-2026-09",
+      "version": 1,
+      "felt": "state"
+    },
+    {
+      "id": "pl.emonoun.trwoga",
+      "lemma": "trwoga",
+      "pos": [
+        "NOUN"
+      ],
+      "kind": "emotion_noun",
+      "strength": "strong",
+      "valence": -0.9,
+      "arousal": 0.85,
+      "emotions": {
+        "fear": 0.95
+      },
+      "source": "curated:gemini-2026-09",
+      "version": 1,
+      "felt": "state"
+    }
+  ]
+}

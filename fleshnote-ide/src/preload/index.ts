@@ -1,4 +1,4 @@
-import { contextBridge, ipcRenderer } from 'electron'
+import { contextBridge, ipcRenderer, webUtils } from 'electron'
 import { electronAPI } from '@electron-toolkit/preload'
 
 // Custom APIs for renderer
@@ -14,13 +14,78 @@ const api = {
   updateProjectConfig: (projectPath, key, value, type) =>
     ipcRenderer.invoke('api:updateProjectConfig', { project_path: projectPath, config_key: key, config_value: value, config_type: type }),
   loadProject: (projectPath) => ipcRenderer.invoke('api:loadProject', projectPath),
+  migrateProject: (projectPath) => ipcRenderer.invoke('api:migrateProject', projectPath),
+  modernizeProjects: (workspacePath) => ipcRenderer.invoke('api:modernizeProjects', workspacePath),
+  exportFlnote: (payload) => ipcRenderer.invoke('api:exportFlnote', payload),
+  exportVault: (payload) => ipcRenderer.invoke('api:exportVault', payload),
+  importFlnote: (payload) => ipcRenderer.invoke('api:importFlnote', payload),
+  exportReviewPackage: (payload) => ipcRenderer.invoke('api:exportReviewPackage', payload),
+  openReviewPackage: (payload) => ipcRenderer.invoke('api:openReviewPackage', payload),
+  startReview: (payload) => ipcRenderer.invoke('api:startReview', payload),
+  listReviews: () => ipcRenderer.invoke('api:listReviews'),
+  saveReviewPackage: (payload) => ipcRenderer.invoke('api:saveReviewPackage', payload),
+  finishReview: (payload) => ipcRenderer.invoke('api:finishReview', payload),
+  discardReview: (payload) => ipcRenderer.invoke('api:discardReview', payload),
+  importReviews: (payload) => ipcRenderer.invoke('api:importReviews', payload),
+  pickReviewFiles: () => ipcRenderer.invoke('api:pickReviewFiles'),
+  reviewNotes: (payload) => ipcRenderer.invoke('api:reviewNotes', payload),
+  reviewCopies: (payload) => ipcRenderer.invoke('api:reviewCopies', payload),
+  revokeReviewCopy: (payload) => ipcRenderer.invoke('api:revokeReviewCopy', payload),
+  setReviewNoteStatus: (payload) => ipcRenderer.invoke('api:setReviewNoteStatus', payload),
+  deleteReceivedReview: (payload) => ipcRenderer.invoke('api:deleteReceivedReview', payload),
+  takeLaunchFile: () => ipcRenderer.invoke('api:takeLaunchFile'),
+  onLaunchFile: (callback) => {
+    const listener = () => callback()
+    ipcRenderer.on('launch-file', listener)
+    return () => ipcRenderer.removeListener('launch-file', listener)
+  },
+  // The window is about to close: finish saving, then call closeReady().
+  onBeforeClose: (callback) => {
+    const listener = () => callback()
+    ipcRenderer.on('app:before-close', listener)
+    return () => ipcRenderer.removeListener('app:before-close', listener)
+  },
+  closeReady: () => ipcRenderer.send('app:close-ready'),
+  pentimentoStashRead: () => ipcRenderer.invoke('pentimento:stash-read'),
+  pentimentoStashWrite: (json) => ipcRenderer.send('pentimento:stash-write', json),
+  syncPreview: (payload) => ipcRenderer.invoke('api:syncPreview', payload),
+  syncApply: (payload) => ipcRenderer.invoke('api:syncApply', payload),
+  remoteSyncStart: (payload) => ipcRenderer.invoke('api:remoteSyncStart', payload),
+  cloneSendStart: (payload) => ipcRenderer.invoke('api:cloneSendStart', payload),
+  cloneReceiveStart: (payload) => ipcRenderer.invoke('api:cloneReceiveStart', payload),
+  remoteSyncStatus: (payload) => ipcRenderer.invoke('api:remoteSyncStatus', payload),
+  remoteSyncPreview: (payload) => ipcRenderer.invoke('api:remoteSyncPreview', payload),
+  remoteSyncApply: (payload) => ipcRenderer.invoke('api:remoteSyncApply', payload),
+  remoteSyncCancel: (payload) => ipcRenderer.invoke('api:remoteSyncCancel', payload),
+  pentimentoSessionStart: (payload) => ipcRenderer.invoke('api:pentimentoSessionStart', payload),
+  pentimentoFlush: (payload) => ipcRenderer.invoke('api:pentimentoFlush', payload),
+  pentimentoSessionEnd: (payload) => ipcRenderer.invoke('api:pentimentoSessionEnd', payload),
+  pentimentoAnchorHead: (payload) => ipcRenderer.invoke('api:pentimentoAnchorHead', payload),
+  pentimentoReceipts: (payload) => ipcRenderer.invoke('api:pentimentoReceipts', payload),
+  pentimentoHeatmap: (payload) => ipcRenderer.invoke('api:pentimentoHeatmap', payload),
+  pentimentoOps: (payload) => ipcRenderer.invoke('api:pentimentoOps', payload),
+  pentimentoSummary: (payload) => ipcRenderer.invoke('api:pentimentoSummary', payload),
+  pentimentoCompact: (payload) => ipcRenderer.invoke('api:pentimentoCompact', payload),
+  pentimentoClear: (payload) => ipcRenderer.invoke('api:pentimentoClear', payload),
+  pentimentoStorage: (payload) => ipcRenderer.invoke('api:pentimentoStorage', payload),
+  captureShowcase: (payload) => ipcRenderer.invoke('pentimento:captureShowcase', payload),
+  chapterHistoryList: (payload) => ipcRenderer.invoke('api:chapterHistoryList', payload),
+  chapterHistoryPreview: (payload) => ipcRenderer.invoke('api:chapterHistoryPreview', payload),
+  chapterHistoryPin: (payload) => ipcRenderer.invoke('api:chapterHistoryPin', payload),
+  chapterHistoryRestore: (payload) => ipcRenderer.invoke('api:chapterHistoryRestore', payload),
+  chapterHistoryStorage: (payload) => ipcRenderer.invoke('api:chapterHistoryStorage', payload),
+  chapterHistoryPrune: (payload) => ipcRenderer.invoke('api:chapterHistoryPrune', payload),
+  chapterHistoryClear: (payload) => ipcRenderer.invoke('api:chapterHistoryClear', payload),
   getStats: (projectPath) => ipcRenderer.invoke('api:getStats', projectPath),
   getAchievements: (projectPath) => ipcRenderer.invoke('api:getAchievements', projectPath),
   updateStat: (payload) => ipcRenderer.invoke('api:updateStat', payload),
+  usageTick: (payload) => ipcRenderer.invoke('api:usageTick', payload),
+  usageReport: (payload) => ipcRenderer.invoke('api:usageReport', payload),
   deleteProject: (projectPath) => ipcRenderer.invoke('api:deleteProject', projectPath),
   loadTranslations: (lang) => ipcRenderer.invoke('api:loadTranslations', lang),
   exportProject: (payload) => ipcRenderer.invoke('api:exportProject', payload),
   exportPreview: (payload) => ipcRenderer.invoke('api:exportPreview', payload),
+  exportPrintPreview: (payload) => ipcRenderer.invoke('api:exportPrintPreview', payload),
   showItemInFolder: (filepath) => ipcRenderer.invoke('api:showItemInFolder', filepath),
 
   // ── Chapters ───────────────────────────────────────
@@ -60,6 +125,11 @@ const api = {
   createGroup: (payload) => ipcRenderer.invoke('api:createGroup', payload),
   updateGroup: (payload) => ipcRenderer.invoke('api:updateGroup', payload),
   deleteGroup: (payload) => ipcRenderer.invoke('api:deleteGroup', payload),
+  getGroupMembers: (payload) => ipcRenderer.invoke('api:getGroupMembers', payload),
+  addGroupMember: (payload) => ipcRenderer.invoke('api:addGroupMember', payload),
+  updateGroupMember: (payload) => ipcRenderer.invoke('api:updateGroupMember', payload),
+  removeGroupMember: (payload) => ipcRenderer.invoke('api:removeGroupMember', payload),
+  getCharacterMemberships: (payload) => ipcRenderer.invoke('api:getCharacterMemberships', payload),
 
   // ── Entities (for linkification) ───────────────────
   getEntities: (projectPath) => ipcRenderer.invoke('api:getEntities', projectPath),
@@ -128,6 +198,7 @@ const api = {
 
   // ── History Timeline ────────────────────────────────
   getHistoryEntries: (payload) => ipcRenderer.invoke('api:getHistoryEntries', payload),
+  listHistoryEntries: (payload) => ipcRenderer.invoke('api:getHistoryEntries', payload),
   createHistoryEntry: (payload) => ipcRenderer.invoke('api:createHistoryEntry', payload),
   updateHistoryEntry: (payload) => ipcRenderer.invoke('api:updateHistoryEntry', payload),
   deleteHistoryEntry: (payload) => ipcRenderer.invoke('api:deleteHistoryEntry', payload),
@@ -144,16 +215,18 @@ const api = {
   updateBoard: (p) => ipcRenderer.invoke('api:updateBoard', p),
   deleteBoard: (p) => ipcRenderer.invoke('api:deleteBoard', p),
   loadBoard: (p) => ipcRenderer.invoke('api:loadBoard', p),
-  createBoardItem: (p) => ipcRenderer.invoke('api:createBoardItem', p),
-  updateBoardItem: (p) => ipcRenderer.invoke('api:updateBoardItem', p),
-  deleteBoardItem: (p) => ipcRenderer.invoke('api:deleteBoardItem', p),
-  createBoardConnection: (p) => ipcRenderer.invoke('api:createBoardConnection', p),
-  updateBoardConnection: (p) => ipcRenderer.invoke('api:updateBoardConnection', p),
-  deleteBoardConnection: (p) => ipcRenderer.invoke('api:deleteBoardConnection', p),
+  boardBatch: (p) => ipcRenderer.invoke('api:boardBatch', p),
+  boardsForEntity: (p) => ipcRenderer.invoke('api:boardsForEntity', p),
+  generatedBoard: (p) => ipcRenderer.invoke('api:generatedBoard', p),
 
   // ── Image References ────────────────────────────────
   openImage: () => ipcRenderer.invoke('dialog:openImage'),
   uploadImageRef: (payload) => ipcRenderer.invoke('api:uploadImageRef', payload),
+  coverGet: (payload) => ipcRenderer.invoke('api:coverGet', payload),
+  coverAddImage: (payload) => ipcRenderer.invoke('api:coverAddImage', payload),
+  coverSave: (payload) => ipcRenderer.invoke('api:coverSave', payload),
+  coverCleanup: (payload) => ipcRenderer.invoke('api:coverCleanup', payload),
+  coverReadImage: (payload) => ipcRenderer.invoke('api:coverReadImage', payload),
   createImageRef: (payload) => ipcRenderer.invoke('api:createImageRef', payload),
   saveIconCrop: (payload) => ipcRenderer.invoke('api:saveIconCrop', payload),
   updateImageRef: (payload) => ipcRenderer.invoke('api:updateImageRef', payload),
@@ -169,13 +242,29 @@ const api = {
   savePlannerArc: (payload) => ipcRenderer.invoke('api:savePlannerArc', payload),
   deletePlannerBlock: (payload) => ipcRenderer.invoke('api:deletePlannerBlock', payload),
   deletePlannerArc: (payload) => ipcRenderer.invoke('api:deletePlannerArc', payload),
+  getPlannerFrameworks: () => ipcRenderer.invoke('api:getPlannerFrameworks'),
+  getFrameworkRecommendations: (payload) => ipcRenderer.invoke('api:getFrameworkRecommendations', payload),
+  synthesizeArchitecture: (payload) => ipcRenderer.invoke('api:synthesizeArchitecture', payload),
+  applyPlannerFramework: (payload) => ipcRenderer.invoke('api:applyPlannerFramework', payload),
 
   // ── Import ─────────────────────────────────────────
   openFile: (filters) => ipcRenderer.invoke('dialog:openFile', filters),
+  saveBoardFile: (payload) => ipcRenderer.invoke('dialog:saveBoardFile', payload),
+  openBoardFile: (filters) => ipcRenderer.invoke('dialog:openBoardFile', filters),
+  openFiles: (filters) => ipcRenderer.invoke('dialog:openFiles', filters),
+  // Dropped files no longer carry .path (Electron 32+); this recovers it.
+  getPathForFile: (file) => {
+    try {
+      return webUtils.getPathForFile(file) || ''
+    } catch {
+      return ''
+    }
+  },
   importSplitPreview: (payload) => ipcRenderer.invoke('api:importSplitPreview', payload),
   importConfirmSplits: (payload) => ipcRenderer.invoke('api:importConfirmSplits', payload),
   importNerExtract: (payload) => ipcRenderer.invoke('api:importNerExtract', payload),
   importNerAnalyze: (payload) => ipcRenderer.invoke('api:importNerAnalyze', payload),
+  importNerProgress: (jobId) => ipcRenderer.invoke('api:importNerProgress', jobId),
   importBulkCreateEntities: (payload) => ipcRenderer.invoke('api:importBulkCreateEntities', payload),
   importExternalEntities: (payload) => ipcRenderer.invoke('api:importExternalEntities', payload),
   importExternalEntitiesConfirm: (payload) => ipcRenderer.invoke('api:importExternalEntitiesConfirm', payload),
@@ -192,6 +281,8 @@ const api = {
   // ── Janitor ────────────────────────────────────────
   janitorAnalyze: (payload) => ipcRenderer.invoke('api:janitorAnalyze', payload),
   janitorSensesOverview: (payload) => ipcRenderer.invoke('api:janitorSensesOverview', payload),
+  storyPulse: (payload) => ipcRenderer.invoke('api:storyPulse', payload),
+  storyPulseCorrect: (payload) => ipcRenderer.invoke('api:storyPulseCorrect', payload),
 
   // ── Synonyms ──────────────────────────────────────
   synonymLookup: (payload) => ipcRenderer.invoke('api:synonymLookup', payload),

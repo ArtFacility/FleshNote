@@ -19,6 +19,14 @@ hidden_imports = [
     'routes.annotations',
     'routes.settings',
     'routes.export',
+    'routes.cover',
+    'routes.sync',
+    'routes.remote_sync',
+    'remote_sync_session',
+    # multipart form parsing — needed for remote-sync file uploads, imported lazily by starlette
+    'multipart',
+    'multipart.multipart',
+    'python_multipart',
     'export.render_txt',
     'export.render_md',
     'export.render_html',
@@ -37,20 +45,9 @@ hidden_imports = [
     'uvicorn.protocols.websockets.auto',
     'uvicorn.lifespan',
     'uvicorn.lifespan.on',
-    # reportlab barcode submodules — dynamically imported, PyInstaller can't trace them
-    'reportlab.graphics.barcode.code128',
-    'reportlab.graphics.barcode.code39',
-    'reportlab.graphics.barcode.code93',
-    'reportlab.graphics.barcode.common',
-    'reportlab.graphics.barcode.eanbc',
-    'reportlab.graphics.barcode.qr',
-    'reportlab.graphics.barcode.widgets',
-    'reportlab.graphics.barcode.dmtx',
-    'reportlab.graphics.barcode.ecc200datamatrix',
-    'reportlab.graphics.barcode.fourstate',
-    'reportlab.graphics.barcode.lto',
-    'reportlab.graphics.barcode.usps',
-    'reportlab.graphics.barcode.usps4s',
+    'export.document',
+    # Hyphenation for print exports (dictionaries are collected below)
+    'pyphen',
     # NLTK synonyms
     'routes.synonyms',
     'nltk_manager',
@@ -62,25 +59,42 @@ hidden_imports = [
     'routes.spellcheck',
     'phunspell',
     'spylls',
-    'spylls.spellcheck',
-    'spylls.spellcheck.dictionary',
+    'spylls.hunspell',
 ]
 
 datas = [
-    ('export/templates/manuscript.css', 'export/templates'),
+    # Crimson Pro, embedded in HTML and PDF exports
+    ('export/templates/fonts', 'export/templates/fonts'),
     # Bundled NLTK WordNet data — English synonyms available offline
     ('nltk_data', 'nltk_data'),
     # Name generator datasets (presets and real name lists)
     ('tools/name_gen/data', 'tools/name_gen/data'),
+    # Janitor word library (lexicon_engine.py raises at import if missing)
+    ('lexicons', 'lexicons'),
     ('stopwords.json', '.'),
+    # .flnote folder icon (desktop.ini IconResource needs an .ico)
+    ('../resources/icons/fleshnote.ico', 'icons'),
+    ('../resources/icons/fleshnote-project-256.png', 'icons'),
 ]
 
 from PyInstaller.utils.hooks import collect_submodules, collect_data_files
 
 hidden_imports.extend(collect_submodules('numpy'))
 
-# Bundle phunspell Hunspell dictionaries (.dic/.aff files)
-datas += collect_data_files('phunspell')
+# Bundle the Hunspell dictionaries (.dic/.aff files) of the languages FleshNote spell-checks
+# (LANG_MAP in routes/spellcheck.py and routes/janitor.py); phunspell ships 56, about 200 MB.
+SPELL_DICTIONARIES = {'en', 'ar', 'hu_HU', 'pl_PL'}
+
+
+def _wanted_phunspell_file(dest):
+    parts = dest.replace(os.sep, '/').split('/')
+    if 'dictionary' not in parts or parts[-1] == 'dictionary':
+        return True
+    return parts[parts.index('dictionary') + 1] in SPELL_DICTIONARIES
+
+
+datas += [(src, dest) for src, dest in collect_data_files('phunspell') if _wanted_phunspell_file(dest)]
+datas += collect_data_files('pyphen')
 hidden_imports.extend(collect_submodules('spacy'))
 hidden_imports.extend(collect_submodules('thinc'))
 
@@ -90,7 +104,7 @@ a = Analysis(
     binaries=[],
     datas=datas,
     hiddenimports=hidden_imports,
-    hookspath=[],
+    hookspath=['pyinstaller_hooks'],  # hook-nltk.py: no build-machine NLTK data in the bundle
     hooksconfig={},
     runtime_hooks=[],
     excludes=[

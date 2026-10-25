@@ -1,0 +1,36 @@
+# FleshNote in a browser on your own server (VPS_DEPLOY.md):
+#   sudo cp fleshnote-web.service /etc/systemd/system/ && sudo systemctl enable --now fleshnote-web
+#
+# Whoever signs in can use everything this process can reach, so it runs as a user of its own
+# and sees as little of the machine as it needs: the code read-only, its data folder writable,
+# no home folders, and no way into the server's private network (the internet stays open for
+# the spelling and language models it downloads).
+[Unit]
+Description=FleshNote in a browser
+After=network-online.target
+Wants=network-online.target
+
+[Service]
+User=fleshnote
+Group=fleshnote
+WorkingDirectory=/opt/fleshnote/fleshnote-ide/backend
+ExecStart=/opt/fleshnote/fleshnote-ide/backend/.venv/bin/python web_main.py --config /etc/fleshnote-web/fleshnote-web.yaml
+# /var/lib/fleshnote-web, owned by the service user; also its HOME (model downloads land there)
+StateDirectory=fleshnote-web
+Environment=HOME=/var/lib/fleshnote-web
+Restart=on-failure
+RestartSec=5
+
+NoNewPrivileges=yes
+ProtectSystem=strict
+ProtectHome=yes
+PrivateTmp=yes
+PrivateDevices=yes
+ProtectKernelTunables=yes
+ProtectKernelModules=yes
+ProtectControlGroups=yes
+IPAddressDeny=10.0.0.0/8 172.16.0.0/12 192.168.0.0/16 169.254.0.0/16 fc00::/7 fe80::/10
+MemoryMax=2G
+
+[Install]
+WantedBy=multi-user.target

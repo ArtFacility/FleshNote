@@ -1,0 +1,159 @@
+{
+  "lang": "hu",
+  "kind": "diminisher",
+  "version": 1,
+  "entries": [
+    {
+      "id": "hu.dimin.kissé",
+      "lemma": "kissé",
+      "kind": "diminisher",
+      "strength": "strong",
+      "factor": 0.7,
+      "source": "curated:gemini-2026-09",
+      "version": 1
+    },
+    {
+      "id": "hu.dimin.némileg",
+      "lemma": "némileg",
+      "kind": "diminisher",
+      "strength": "strong",
+      "factor": 0.7,
+      "source": "curated:gemini-2026-09",
+      "version": 1
+    },
+    {
+      "id": "hu.dimin.valamelyest",
+      "lemma": "valamelyest",
+      "kind": "diminisher",
+      "strength": "strong",
+      "factor": 0.7,
+      "source": "curated:gemini-2026-09",
+      "version": 1
+    },
+    {
+      "id": "hu.dimin.alig",
+      "lemma": "alig",
+      "kind": "diminisher",
+      "strength": "strong",
+      "factor": 0.4,
+      "source": "curated:gemini-2026-09",
+      "version": 1
+    },
+    {
+      "id": "hu.dimin.aligha",
+      "lemma": "aligha",
+      "kind": "diminisher",
+      "strength": "strong",
+      "factor": 0.4,
+      "source": "curated:gemini-2026-09",
+      "version": 1
+    },
+    {
+      "id": "hu.dimin.elenyésző",
+      "lemma": "elenyésző",
+      "kind": "diminisher",
+      "strength": "strong",
+      "factor": 0.3,
+      "source": "curated:gemini-2026-09",
+      "version": 1
+    },
+    {
+      "id": "hu.dimin.parányit",
+      "lemma": "parányit",
+      "kind": "diminisher",
+      "strength": "strong",
+      "factor": 0.5,
+      "source": "curated:gemini-2026-09",
+      "version": 1
+    },
+    {
+      "id": "hu.dimin.csekély",
+      "lemma": "csekély",
+      "kind": "diminisher",
+      "strength": "strong",
+      "factor": 0.6,
+      "source": "curated:gemini-2026-09",
+      "version": 1
+    },
+    {
+      "id": "hu.dimin.csöpp",
+      "lemma": "csöpp",
+      "kind": "diminisher",
+      "strength": "strong",
+      "factor": 0.5,
+      "source": "curated:gemini-2026-09",
+      "version": 1
+    },
+    {
+      "id": "hu.dimin.aprócska",
+      "lemma": "aprócska",
+      "kind": "diminisher",
+      "strength": "strong",
+      "factor": 0.6,
+      "source": "curated:gemini-2026-09",
+      "version": 1
+    },
+    {
+      "id": "hu.dimin.kicsi",
+      "lemma": "kicsi",
+      "kind": "diminisher",
+      "strength": "strong",
+      "factor": 0.7,
+      "source": "curated:gemini-2026-09",
+      "version": 1
+    },
+    {
+      "id": "hu.dimin.egy_kicsi",
+      "phrase": [
+        "egy",
+        "kicsi"
+      ],
+      "kind": "diminisher",
+      "strength": "strong",
+      "factor": 0.7,
+      "source": "curated:gemini-2026-09",
+      "version": 1,
+      "example": "Várt egy kicsi ideig a kapu előtt."
+    },
+    {
+      "id": "hu.dimin.egy_kissé",
+      "phrase": [
+        "egy",
+        "kissé"
+      ],
+      "kind": "diminisher",
+      "strength": "strong",
+      "factor": 0.7,
+      "source": "curated:gemini-2026-09",
+      "version": 1,
+      "example": "A hideg szél egy kissé mérséklődött estére."
+    },
+    {
+      "id": "hu.dimin.némiképpen",
+      "lemma": "némiképpen",
+      "kind": "diminisher",
+      "strength": "strong",
+      "factor": 0.7,
+      "source": "curated:gemini-2026-09",
+      "version": 1
+    },
+    {
+      "id": "hu.dimin.félve",
+      "lemma": "félve",
+      "kind": "diminisher",
+      "strength": "strong",
+      "factor": 0.6,
+      "source": "curated:gemini-2026-09",
+      "version": 1
+    },
+    {
+      "id": "hu.dimin.részben",
+      "lemma": "részben",
+      "kind": "diminisher",
+      "strength": "strong",
+      "factor": 0.6,
+      "source": "curated:gemini-2026-09",
+      "version": 1
+    }
+  ]
+}

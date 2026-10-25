@@ -5,21 +5,92 @@ import fs from 'fs'
 import { electronApp, optimizer, is } from '@electron-toolkit/utils'
 import icon from '../../resources/icon.png?asset'
 import { spawn, ChildProcessWithoutNullStreams } from 'child_process'
-import killPort from 'kill-port'
+import { createServer, AddressInfo } from 'net'
 import { autoUpdater } from 'electron-updater'
 
 let pythonProcess: ChildProcessWithoutNullStreams | null = null
 let backendStderr = ''
+let backendPort = 8000
+let backendUrl = `http://127.0.0.1:${backendPort}`
 const globalConfigPath = join(app.getPath('userData'), 'fleshnote_config.json')
-const BACKEND_URL = 'http://127.0.0.1:8000'
+
+function isPortAvailable(port: number, host = '127.0.0.1'): Promise<boolean> {
+  return new Promise((resolve) => {
+    const server = createServer()
+    server.unref()
+    server.once('error', () => {
+      resolve(false)
+    })
+    server.listen(port, host, () => {
+      server.close(() => resolve(true))
+    })
+  })
+}
+
+async function findAvailablePort(preferredPort = 8000, host = '127.0.0.1'): Promise<number> {
+  if (process.env.FLESHNOTE_PORT) {
+    const envPort = parseInt(process.env.FLESHNOTE_PORT, 10)
+    if (!isNaN(envPort) && envPort > 0) {
+      if (await isPortAvailable(envPort, host)) {
+        return envPort
+      }
+      console.warn(`FLESHNOTE_PORT (${envPort}) is busy, searching for an available port...`)
+    }
+  }
+
+  // Try preferred port (default 8000) and consecutive ports in a small pool
+  for (let port = preferredPort; port < preferredPort + 20; port++) {
+    if (await isPortAvailable(port, host)) {
+      return port
+    }
+  }
+
+  // Fallback to any OS-assigned ephemeral port
+  return new Promise((resolve, reject) => {
+    const server = createServer()
+    server.unref()
+    server.once('error', reject)
+    server.listen(0, host, () => {
+      const address = server.address() as AddressInfo
+      const port = address.port
+      server.close(() => resolve(port))
+    })
+  })
+}
+
+import crypto from 'crypto'
 
 async function startPythonBackend() {
+  backendPort = await findAvailablePort(8000)
+  backendUrl = `http://127.0.0.1:${backendPort}`
+  console.log(`Allocated backend port: ${backendPort}`)
+
+  // Load or generate device ID
+  const deviceJsonPath = join(app.getPath('userData'), 'device.json')
+  let deviceId = ''
   try {
-    // Attempt to kill any dangling process on port 8000 before starting
-    await killPort(8000, 'tcp')
-    console.log('Cleared port 8000 for backend startup.')
+    if (fs.existsSync(deviceJsonPath)) {
+      const data = JSON.parse(fs.readFileSync(deviceJsonPath, 'utf8'))
+      deviceId = data.device_id
+    }
   } catch (err) {
-    // kill-port throws an error if no process is running, which is fine
+    console.error('Failed to read device.json:', err)
+  }
+
+  if (!deviceId) {
+    deviceId = crypto.randomUUID()
+    try {
+      fs.writeFileSync(deviceJsonPath, JSON.stringify({ device_id: deviceId }, null, 2), 'utf8')
+    } catch (err) {
+      console.error('Failed to write device.json:', err)
+    }
+  }
+
+  const env = {
+    ...process.env,
+    FLESHNOTE_DEVICE_ID: deviceId,
+    FLESHNOTE_APP_VERSION: app.getVersion(),
+    FLESHNOTE_PORT: String(backendPort)
   }
 
   if (app.isPackaged) {
@@ -27,7 +98,7 @@ async function startPythonBackend() {
     const isWin = process.platform === 'win32'
     const backendExeName = isWin ? 'backend.exe' : 'backend'
     const backendExe = join(process.resourcesPath, 'backend-dist', backendExeName)
-    pythonProcess = spawn(backendExe, { windowsHide: true })
+    pythonProcess = spawn(backendExe, ['--port', String(backendPort)], { env, windowsHide: true })
   } else {
     // In development, run the python script from the virtual environment
     const isWinDev = process.platform === 'win32'
@@ -35,7 +106,7 @@ async function startPythonBackend() {
       ? join(__dirname, '../../backend/.venv/Scripts/python.exe')
       : join(__dirname, '../../backend/.venv/bin/python')
     const scriptPath = join(__dirname, '../../backend/main.py')
-    pythonProcess = spawn(pythonExe, [scriptPath], { windowsHide: true })
+    pythonProcess = spawn(pythonExe, [scriptPath, '--port', String(backendPort)], { env, windowsHide: true })
   }
 
   pythonProcess.stdout.on('data', (data) => {
@@ -70,22 +141,22 @@ async function startPythonBackend() {
 }
 
 async function waitForBackend(timeoutMs = 30000) {
-  console.log('Waiting for Python backend to wake up...')
+  console.log(`Waiting for Python backend to wake up on port ${backendPort}...`)
   const deadline = Date.now() + timeoutMs
   while (Date.now() < deadline) {
     try {
-      const response = await fetch(`${BACKEND_URL}/`)
+      const response = await net.fetch(`${backendUrl}/`)
       if (response.ok) {
-        console.log('Backend is online.')
+        console.log(`Backend is online on port ${backendPort}.`)
         return
       }
-    } catch {
-      // ECONNREFUSED — not ready yet.
+    } catch (e: any) {
+      console.log('Backend connection attempt failed:', e.message || e)
     }
     await new Promise((resolve) => setTimeout(resolve, 200))
   }
   throw new Error(
-    `Backend did not respond within ${timeoutMs / 1000} seconds.\n\n` +
+    `Backend did not respond on port ${backendPort} within ${timeoutMs / 1000} seconds.\n\n` +
     (backendStderr || 'No stderr output captured.')
   )
 }
@@ -130,7 +201,7 @@ function showBackendErrorWindow(details: string) {
 // ── Helper: POST to backend ──────────────────────────────────────────────────
 
 async function backendPost(path: string, body: object) {
-  const response = await fetch(`${BACKEND_URL}${path}`, {
+  const response = await net.fetch(`${backendUrl}${path}`, {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
     body: JSON.stringify(body)
@@ -140,7 +211,160 @@ async function backendPost(path: string, body: object) {
   return data
 }
 
+async function backendGet(path: string) {
+  const response = await net.fetch(`${backendUrl}${path}`, {
+    method: 'GET',
+    headers: { 'Content-Type': 'application/json' }
+  })
+  const data = await response.json()
+  if (!response.ok) throw new Error(data.detail || `Backend error: ${path}`)
+  return data
+}
+
+// ── Splash ─────────────────────────────────────────────────────────────────
+// The main window isn't created until the Python backend answers (can be 5–10s),
+// so without this the app is a black void on launch. This frameless card pops up
+// instantly at app-ready and is destroyed the moment the real window can show.
+
+let splashWindow: BrowserWindow | null = null
+
+function createSplashWindow(): void {
+  splashWindow = new BrowserWindow({
+    width: 480,
+    height: 340,
+    frame: false,
+    transparent: true,
+    resizable: false,
+    movable: false,
+    center: true,
+    skipTaskbar: true,
+    alwaysOnTop: true,
+    show: false,
+    webPreferences: { sandbox: false }
+  })
+
+  const version = '2.0'
+  const html = `<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<style>
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  html, body { width: 100%; height: 100%; background: transparent; overflow: hidden; }
+  body { display: flex; align-items: center; justify-content: center; -webkit-user-select: none; user-select: none; }
+  .card {
+    width: 400px; padding: 30px 34px 26px;
+    background: #1a1c22; border: 1px solid #2a2d37; border-radius: 16px;
+    box-shadow: 0 20px 60px rgba(0,0,0,0.55);
+    display: flex; flex-direction: column; align-items: center;
+    animation: rise .35s ease both;
+  }
+  @keyframes rise { from { opacity: 0; transform: translateY(8px); } to { opacity: 1; transform: none; } }
+  .logo { height: 60px; margin-bottom: 16px; filter: drop-shadow(0 3px 10px rgba(212,168,71,0.25)); }
+  .name {
+    font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+    font-size: 28px;
+    font-weight: 700;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: #e8e6e1;
+    display: flex;
+    gap: 0.28em;
+  }
+  .ver { margin-top: 6px; font-family: Consolas, monospace; font-size: 11px; letter-spacing: .08em; color: #6b6860; }
+  .slogan { margin-top: 14px; font-family: Georgia, serif; font-style: italic; font-size: 13.5px; color: #9b978f; }
+  .track { margin-top: 26px; width: 100%; height: 4px; background: #23262f; border-radius: 4px; overflow: hidden; }
+  .fill { height: 100%; width: 42%; border-radius: 4px;
+    background: linear-gradient(90deg, rgba(212,160,82,0) 0%, #d4a052 50%, rgba(212,160,82,0) 100%);
+    animation: sweep 1.3s ease-in-out infinite; }
+  @keyframes sweep { 0% { transform: translateX(-110%); } 100% { transform: translateX(250%); } }
+  .status { margin-top: 14px; height: 14px; font-family: Consolas, monospace; font-size: 11px; letter-spacing: .04em; color: #d4a052; }
+  .hint { margin-top: 5px; height: 12px; font-family: Consolas, monospace; font-size: 10px; letter-spacing: .04em; color: #55524b; }
+</style>
+</head>
+<body>
+  <div class="card">
+    <svg class="logo" viewBox="0 0 357 411" fill="none" xmlns="http://www.w3.org/2000/svg">
+      <path d="M141.5 10C145.021 10 189.687 30.6595 226 74.6045V348.703C199.086 380.786 165.921 396 141.5 396C93 396 10 336 10 203C10 69.5 135.5 9.99995 141.5 10Z" stroke="#D4A847" stroke-width="20" stroke-linejoin="round"/>
+      <line x1="31.9289" y1="311.929" x2="222.929" y2="120.929" stroke="#D4A847" stroke-width="20"/>
+      <path d="M225.929 303L36 113.071" stroke="#D4A847" stroke-width="20"/>
+      <line x1="162.536" y1="188.464" x2="223.536" y2="249.464" stroke="#D4A847" stroke-width="10"/>
+      <line x1="190.536" y1="162.464" x2="223.536" y2="195.464" stroke="#D4A847" stroke-width="10"/>
+      <line x1="112.071" y1="337.071" x2="46.0711" y2="403.071" stroke="#D4A847" stroke-width="20"/>
+      <line x1="110.999" y1="87.1413" x2="46.9289" y2="23.0711" stroke="#D4A847" stroke-width="20"/>
+      <path d="M226 9.92188C226.73 10.2521 227.594 10.6614 228.587 11.1592C232.245 12.993 237.331 15.8369 243.365 19.7324C255.437 27.525 271.055 39.361 286.484 55.4111C317.326 87.4942 347 135.926 347 202.554C347 338.414 267.632 395.467 226 395.922V9.92188Z" stroke="#D4A847" stroke-width="20" stroke-linejoin="bevel"/>
+      <line x1="210.071" y1="280.929" x2="293.071" y2="363.929" stroke="#D4A847" stroke-width="20"/>
+    </svg>
+    <div class="name"><span>FLESH</span><span>NOTE</span></div>
+    <div class="ver">v${version}</div>
+    <div class="slogan">Write first. Note second.</div>
+    <div class="track"><div class="fill"></div></div>
+    <div class="status" id="flavor">Starting up…</div>
+    <div class="hint" id="hint">Sharpening the quills…</div>
+  </div>
+  <script>
+    var hints = ["Stretching fingers...","Warming the keyboard...","Worlding the builders...","Shelving the ideas...","Connecting twists","Outlining side characters...","Plotting betrayal","Comparing power levels","Daydreaming about that one cool scene...","Refining dialouge...","Ignoring plotholes...","Rewriting the rewrite...","Counting the words...","Checking for typos...","Drinking energy drink...","Looking for the perfect background song...","Waiting for inspiration...","Debugging the plot holes...","Forgetting eye colors...","Contemplating pacing..."];
+    var i = 0; var el = document.getElementById('hint');
+    setInterval(function () { i = (i + 1) % hints.length; if (el) el.textContent = hints[i]; }, 2200);
+  </script>
+</body>
+</html>`
+
+  splashWindow.loadURL(`data:text/html;charset=utf-8,${encodeURIComponent(html)}`)
+  splashWindow.once('ready-to-show', () => splashWindow?.show())
+
+  // Safety net: never let the splash outlive startup, even if something stalls.
+  setTimeout(destroySplash, 40000)
+}
+
+function setSplashPhase(text: string): void {
+  if (!splashWindow || splashWindow.isDestroyed()) return
+  splashWindow.webContents
+    .executeJavaScript(`(() => { const el = document.getElementById('flavor'); if (el) el.textContent = ${JSON.stringify(text)}; })()`)
+    .catch(() => {})
+}
+
+function destroySplash(): void {
+  if (splashWindow) {
+    try { splashWindow.destroy() } catch { /* already gone */ }
+    splashWindow = null
+  }
+}
+
 // ── Window ───────────────────────────────────────────────────────────────────
+
+let mainWindowRef: BrowserWindow | null = null
+// Close handshake (see createWindow): webContents id → finish the close.
+const CLOSE_GRACE_MS = 3000
+const closeWaiters = new Map<number, () => void>()
+let appQuitting = false
+app.on('before-quit', () => { appQuitting = true })
+ipcMain.on('app:close-ready', (event) => closeWaiters.get(event.sender.id)?.())
+
+// Pentimento crash backup: writing ops the backend hasn't confirmed yet, kept on disk
+// so a crash or a killed process loses about a second of the writing record.
+// Written whole each time (temp file + rename, so a kill mid-write can't corrupt it).
+const pentimentoStashPath = join(app.getPath('userData'), 'pentimento-stash.json')
+ipcMain.on('pentimento:stash-write', (_event, json) => {
+  try {
+    if (typeof json !== 'string' || json.length > 5_000_000) return
+    if (json === '{}') {
+      if (fs.existsSync(pentimentoStashPath)) fs.unlinkSync(pentimentoStashPath)
+      return
+    }
+    fs.writeFileSync(pentimentoStashPath + '.tmp', json)
+    fs.renameSync(pentimentoStashPath + '.tmp', pentimentoStashPath)
+  } catch (err) {
+    console.error('Pentimento stash write failed:', err)
+  }
+})
+ipcMain.handle('pentimento:stash-read', () => {
+  try {
+    return JSON.parse(fs.readFileSync(pentimentoStashPath, 'utf-8'))
+  } catch {
+    return {}
+  }
+})
 
 function createWindow(): void {
   const mainWindow = new BrowserWindow({
@@ -156,8 +380,31 @@ function createWindow(): void {
     }
   })
 
+  mainWindowRef = mainWindow
+  mainWindow.on('closed', () => { if (mainWindowRef === mainWindow) mainWindowRef = null })
+
+  // The backend is killed as soon as the last window closes, so give the renderer a
+  // moment to save the open chapter and seal its writing session first.
+  let closeReady = false
+  mainWindow.on('close', (event) => {
+    const wc = mainWindow.webContents
+    if (closeReady || wc.isDestroyed() || wc.isCrashed()) return
+    event.preventDefault()
+    if (closeWaiters.has(wc.id)) return
+    const finish = (): void => {
+      if (!closeWaiters.has(wc.id)) return
+      closeWaiters.delete(wc.id)
+      closeReady = true
+      if (appQuitting) app.quit()
+      else if (!mainWindow.isDestroyed()) mainWindow.close()
+    }
+    closeWaiters.set(wc.id, finish)
+    setTimeout(finish, CLOSE_GRACE_MS)
+    wc.send('app:before-close')
+  })
   mainWindow.on('ready-to-show', () => {
     mainWindow.show()
+    destroySplash()
   })
 
   mainWindow.webContents.setWindowOpenHandler((details) => {
@@ -212,9 +459,43 @@ protocol.registerSchemesAsPrivileged([
   { scheme: 'fleshnote-asset', privileges: { standard: true, secure: true, supportFetchAPI: true, stream: true } }
 ])
 
+// ── Opening review files ─────────────────────────────────────────────────────
+// Double-clicking a .flreview file launches FleshNote with its path (or, on
+// macOS, sends 'open-file'). Only one FleshNote runs at a time: a second launch
+// hands its file to the running window and quits.
+const gotSingleInstanceLock = app.requestSingleInstanceLock()
+if (!gotSingleInstanceLock) app.quit()
+
+function findLaunchFile(argv: string[]): string | null {
+  return argv.find((a) => /\.flreview$/i.test(a) && fs.existsSync(a)) || null
+}
+
+// The renderer asks for this once it has mounted ('api:takeLaunchFile') and
+// again whenever 'launch-file' tells it a new one arrived.
+let pendingLaunchFile: string | null = findLaunchFile(process.argv)
+
+function deliverLaunchFile(file: string | null): void {
+  if (file) pendingLaunchFile = file
+  const win = mainWindowRef
+  if (!win) return
+  if (win.isMinimized()) win.restore()
+  win.focus()
+  if (file) win.webContents.send('launch-file')
+}
+
+app.on('second-instance', (_event, argv) => deliverLaunchFile(findLaunchFile(argv)))
+app.on('open-file', (event, file) => {
+  event.preventDefault()
+  deliverLaunchFile(file)
+})
+
 // ── App Ready ────────────────────────────────────────────────────────────────
 
 app.whenReady().then(async () => {
+  if (!gotSingleInstanceLock) return
+  // Instant visual feedback while the backend boots (createWindow waits on it below).
+  createSplashWindow()
+
   // Handle fleshnote-asset://load/C:/path/to/file.png requests
   protocol.handle('fleshnote-asset', (request) => {
     const url = new URL(request.url)
@@ -224,13 +505,16 @@ app.whenReady().then(async () => {
     return net.fetch(pathToFileURL(filePath).toString())
   })
 
+  setSplashPhase('Waking the backend…')
   startPythonBackend()
   try {
     await waitForBackend()
   } catch (err: any) {
+    destroySplash()
     showBackendErrorWindow(err.message)
     return
   }
+  setSplashPhase('Loading your workspace…')
   electronApp.setAppUserModelId('com.artfacility.fleshnote')
 
   // ── Global Config ──────────────────────────────────
@@ -263,6 +547,73 @@ app.whenReady().then(async () => {
     })
     if (canceled) return null
     return filePaths[0]
+  })
+
+  // Capture a rectangle of the live page (a rendered showcase card) to a PNG file.
+  ipcMain.handle('pentimento:captureShowcase', async (event, payload) => {
+    const win = BrowserWindow.fromWebContents(event.sender)
+    if (!win) return { saved: false }
+    const r = payload?.rect || {}
+    const rect = {
+      x: Math.round(r.x || 0), y: Math.round(r.y || 0),
+      width: Math.round(r.width || 0), height: Math.round(r.height || 0)
+    }
+    if (rect.width <= 0 || rect.height <= 0) return { saved: false }
+    const image = await win.webContents.capturePage(rect)
+    const { canceled, filePath } = await dialog.showSaveDialog(win, {
+      title: 'Save Showcase',
+      defaultPath: payload?.defaultName || 'fleshnote-showcase.png',
+      filters: [{ name: 'PNG Image', extensions: ['png'] }]
+    })
+    if (canceled || !filePath) return { saved: false }
+    fs.writeFileSync(filePath, image.toPNG())
+    return { saved: true, path: filePath }
+  })
+
+  // Several files at once (manuscript import: one file per chapter)
+  ipcMain.handle('dialog:openFiles', async (_event, filters) => {
+    const { canceled, filePaths } = await dialog.showOpenDialog({
+      properties: ['openFile', 'multiSelections'],
+      title: 'Select Files to Import',
+      filters: filters || [
+        { name: 'Manuscripts', extensions: ['txt', 'md', 'docx'] },
+        { name: 'All Files', extensions: ['*'] }
+      ]
+    })
+    if (canceled) return []
+    return filePaths
+  })
+
+  // A sketchboard file (JSON Canvas or SVG): saved as the text it is given,
+  // or picked and read back as text.
+  ipcMain.handle('dialog:saveBoardFile', async (event, payload) => {
+    const win = BrowserWindow.fromWebContents(event.sender)
+    const opts = {
+      title: 'Export board',
+      defaultPath: payload?.defaultName || 'board',
+      filters: payload?.filters || []
+    }
+    const { canceled, filePath } = win
+      ? await dialog.showSaveDialog(win, opts)
+      : await dialog.showSaveDialog(opts)
+    if (canceled || !filePath) return { saved: false }
+    fs.writeFileSync(filePath, String(payload?.content ?? ''), 'utf8')
+    return { saved: true, path: filePath }
+  })
+
+  ipcMain.handle('dialog:openBoardFile', async (event, filters) => {
+    const win = BrowserWindow.fromWebContents(event.sender)
+    const opts = {
+      properties: ['openFile'] as Array<'openFile'>,
+      title: 'Import a board',
+      filters: filters || []
+    }
+    const { canceled, filePaths } = win
+      ? await dialog.showOpenDialog(win, opts)
+      : await dialog.showOpenDialog(opts)
+    if (canceled || !filePaths[0]) return null
+    if (fs.statSync(filePaths[0]).size > 20 * 1024 * 1024) return null
+    return { name: filePaths[0].split(/[\\/]/).pop(), content: fs.readFileSync(filePaths[0], 'utf8') }
   })
 
   ipcMain.handle('dialog:openFile', async (_event, filters) => {
@@ -316,6 +667,12 @@ app.whenReady().then(async () => {
         return sourcePath // fallback to read-only, though it might fail
       }
     }
+    // The bundled Tutorial is already a 2.0 project, but a copy left behind by
+    // a 1.x install is still a 1.x project: bring it to the current schema
+    // before it opens (backup and rollback as for any project).
+    if (!fs.existsSync(join(userDataTutorial, 'fleshnote_project.json'))) {
+      await backendPost('/api/project/migrate', { project_path: userDataTutorial })
+    }
     return userDataTutorial
   })
 
@@ -327,6 +684,287 @@ app.whenReady().then(async () => {
     return await backendPost('/api/project/load', { project_path: projectPath })
   })
 
+  ipcMain.handle('api:migrateProject', async (_event, projectPath) => {
+    return await backendPost('/api/project/migrate', { project_path: projectPath })
+  })
+
+  ipcMain.handle('api:modernizeProjects', async (_event, workspacePath) => {
+    return await backendPost('/api/projects/modernize', { workspace_path: workspacePath })
+  })
+
+  // Share a project as a single-file .flnote ZIP (save dialog -> backend zips).
+  ipcMain.handle('api:exportFlnote', async (event, payload) => {
+    try {
+      const win = BrowserWindow.fromWebContents(event.sender)
+      if (!win) return { status: 'error', message: 'No window' }
+      const { canceled, filePath } = await dialog.showSaveDialog(win, {
+        title: 'Export Project (.flnote)',
+        defaultPath: `${payload?.defaultName || 'Project'}.flnote`,
+        filters: [{ name: 'FleshNote Project', extensions: ['flnote'] }]
+      })
+      if (canceled || !filePath) return { status: 'cancelled' }
+      return await backendPost('/api/project/export-flnote', {
+        project_path: payload.project_path,
+        dest_path: filePath
+      })
+    } catch (err: any) {
+      console.error('Export .flnote failed:', err)
+      return { status: 'error', message: err.message }
+    }
+  })
+
+  // Export the project as a folder tree (Obsidian markdown / plain text).
+  ipcMain.handle('api:exportVault', async (event, payload) => {
+    try {
+      const win = BrowserWindow.fromWebContents(event.sender)
+      if (!win) return { status: 'error', message: 'No window' }
+      const { canceled, filePaths } = await dialog.showOpenDialog(win, {
+        title: payload?.fmt === 'txt' ? 'Export Project (Plain Text)' : 'Export Project (Obsidian Vault)',
+        defaultPath: payload?.defaultName || undefined,
+        properties: ['openDirectory', 'createDirectory'],
+        buttonLabel: 'Export Here'
+      })
+      if (canceled || !filePaths[0]) return { status: 'cancelled' }
+      return await backendPost('/api/project/export-vault', {
+        project_path: payload.project_path,
+        dest_dir: filePaths[0],
+        fmt: payload.fmt || 'obsidian'
+      })
+    } catch (err: any) {
+      console.error('Export vault failed:', err)
+      return { status: 'error', message: err.message }
+    }
+  })
+
+  // Import a shared .flnote ZIP (open dialog -> backend validates + extracts).
+  ipcMain.handle('api:importFlnote', async (_event, payload) => {
+    try {
+      let zipPath = payload?.zip_path
+      if (!zipPath) {
+        const { canceled, filePaths } = await dialog.showOpenDialog({
+          properties: ['openFile'],
+          title: 'Open FleshNote Project File',
+          filters: [{ name: 'FleshNote Project', extensions: ['flnote'] }]
+        })
+        if (canceled || !filePaths[0]) return { status: 'cancelled' }
+        zipPath = filePaths[0]
+      }
+      return await backendPost('/api/project/import-flnote', {
+        zip_path: zipPath,
+        workspace_path: payload.workspace_path
+      })
+    } catch (err: any) {
+      console.error('Import .flnote failed:', err)
+      return { status: 'error', message: err.message }
+    }
+  })
+
+  // ── Reviews (.flreview) ──────────────────────────────
+  // A reviewer's notes live in a working copy under userData/reviews; the file
+  // they were sent is never written to.
+  const reviewStore = join(app.getPath('userData'), 'reviews')
+  const safeFileName = (name: string) => (name || 'Review').replace(/[\\/:*?"<>|]+/g, ' ').trim().slice(0, 120) || 'Review'
+
+  ipcMain.handle('api:takeLaunchFile', () => {
+    const file = pendingLaunchFile
+    pendingLaunchFile = null
+    return file
+  })
+
+  ipcMain.handle('api:exportReviewPackage', async (event, payload) => {
+    try {
+      const win = BrowserWindow.fromWebContents(event.sender)
+      if (!win) return { status: 'error', message: 'No window' }
+      const { canceled, filePath } = await dialog.showSaveDialog(win, {
+        title: 'Save review copy',
+        defaultPath: join(app.getPath('documents'), `${safeFileName(payload?.defaultName)}.flreview`),
+        filters: [{ name: 'FleshNote Review', extensions: ['flreview'] }]
+      })
+      if (canceled || !filePath) return { status: 'cancelled' }
+      return await backendPost('/api/review/export', {
+        project_path: payload.project_path,
+        dest_path: filePath,
+        scope: payload.scope || {},
+        reviewer_label: payload.reviewer_label || '',
+        author_label: payload.author_label || '',
+        message: payload.message || '',
+        expires_days: payload.expires_days || 0
+      })
+    } catch (err: any) {
+      console.error('Export review package failed:', err)
+      return { status: 'error', message: err.message }
+    }
+  })
+
+  // Read a review file without starting a review (to see who it is from and which project it belongs to)
+  ipcMain.handle('api:openReviewPackage', async (_event, payload) => {
+    try {
+      return await backendPost('/api/review/open', { path: payload.path })
+    } catch (err: any) {
+      return { status: 'error', message: err.message }
+    }
+  })
+
+  // Start (or resume) reviewing a file: copies it into the review store
+  ipcMain.handle('api:startReview', async (event, payload) => {
+    try {
+      let file = payload?.path
+      if (!file) {
+        const win = BrowserWindow.fromWebContents(event.sender)
+        const opts = {
+          properties: ['openFile'] as Array<'openFile'>,
+          title: 'Open a review file',
+          filters: [{ name: 'FleshNote Review', extensions: ['flreview'] }]
+        }
+        const { canceled, filePaths } = win ? await dialog.showOpenDialog(win, opts) : await dialog.showOpenDialog(opts)
+        if (canceled || !filePaths[0]) return { status: 'cancelled' }
+        file = filePaths[0]
+      }
+      return await backendPost('/api/review/start', { path: file, store_dir: reviewStore })
+    } catch (err: any) {
+      console.error('Start review failed:', err)
+      return { status: 'error', message: err.message }
+    }
+  })
+
+  ipcMain.handle('api:listReviews', async () => {
+    try {
+      return await backendPost('/api/review/list', { store_dir: reviewStore })
+    } catch (err: any) {
+      return { status: 'error', message: err.message, reviews: [] }
+    }
+  })
+
+  ipcMain.handle('api:saveReviewPackage', async (_event, payload) => {
+    try {
+      return await backendPost('/api/review/save', { path: payload.path, package: payload.package, store_dir: reviewStore })
+    } catch (err: any) {
+      return { status: 'error', message: err.message }
+    }
+  })
+
+  // The reviewer is done: save the copy that goes back to the author
+  ipcMain.handle('api:finishReview', async (event, payload) => {
+    try {
+      const win = BrowserWindow.fromWebContents(event.sender)
+      if (!win) return { status: 'error', message: 'No window' }
+      const { canceled, filePath } = await dialog.showSaveDialog(win, {
+        title: 'Save your review for the author',
+        defaultPath: join(app.getPath('documents'), `${safeFileName(payload?.defaultName)}.flreview`),
+        filters: [{ name: 'FleshNote Review', extensions: ['flreview'] }]
+      })
+      if (canceled || !filePath) return { status: 'cancelled' }
+      return await backendPost('/api/review/finish', { path: payload.path, dest_path: filePath, store_dir: reviewStore })
+    } catch (err: any) {
+      return { status: 'error', message: err.message }
+    }
+  })
+
+  ipcMain.handle('api:discardReview', async (_event, payload) => {
+    try {
+      return await backendPost('/api/review/discard', { path: payload.path, store_dir: reviewStore })
+    } catch (err: any) {
+      return { status: 'error', message: err.message }
+    }
+  })
+
+  // Author side: bring returned review files into a project
+  ipcMain.handle('api:importReviews', async (event, payload) => {
+    try {
+      let files: string[] = payload?.paths || []
+      if (!files.length) {
+        const win = BrowserWindow.fromWebContents(event.sender)
+        const opts = {
+          properties: ['openFile', 'multiSelections'] as Array<'openFile' | 'multiSelections'>,
+          title: 'Import reviews',
+          filters: [{ name: 'FleshNote Review', extensions: ['flreview'] }]
+        }
+        const { canceled, filePaths } = win ? await dialog.showOpenDialog(win, opts) : await dialog.showOpenDialog(opts)
+        if (canceled || !filePaths.length) return { status: 'cancelled' }
+        files = filePaths
+      }
+      return await backendPost('/api/review/import', { project_path: payload.project_path, package_paths: files })
+    } catch (err: any) {
+      return { status: 'error', message: err.message }
+    }
+  })
+
+  ipcMain.handle('api:pickReviewFiles', async (event) => {
+    const win = BrowserWindow.fromWebContents(event.sender)
+    const opts = {
+      properties: ['openFile', 'multiSelections'] as Array<'openFile' | 'multiSelections'>,
+      title: 'Choose review files',
+      filters: [{ name: 'FleshNote Review', extensions: ['flreview'] }]
+    }
+    const { canceled, filePaths } = win ? await dialog.showOpenDialog(win, opts) : await dialog.showOpenDialog(opts)
+    if (canceled || !filePaths.length) return { status: 'cancelled' }
+    return { status: 'ok', paths: filePaths }
+  })
+
+  ipcMain.handle('api:reviewNotes', async (_event, payload) => backendPost('/api/review/notes', payload))
+  ipcMain.handle('api:reviewCopies', async (_event, payload) => backendPost('/api/review/copies', payload))
+  ipcMain.handle('api:revokeReviewCopy', async (_event, payload) => backendPost('/api/review/copy/revoke', payload))
+  ipcMain.handle('api:setReviewNoteStatus', async (_event, payload) => backendPost('/api/review/note/status', payload))
+  ipcMain.handle('api:deleteReceivedReview', async (_event, payload) => backendPost('/api/review/received/delete', payload))
+
+  ipcMain.handle('api:syncPreview', async (_event, payload) => {
+    return await backendPost('/api/project/sync/preview', payload)
+  })
+
+  ipcMain.handle('api:syncApply', async (_event, payload) => {
+    return await backendPost('/api/project/sync/apply', payload)
+  })
+
+  ipcMain.handle('api:remoteSyncStart', async (_event, payload) => {
+    return await backendPost('/api/project/remote-sync/start', payload)
+  })
+
+  ipcMain.handle('api:cloneSendStart', async (_event, payload) => {
+    return await backendPost('/api/project/remote-sync/clone-send/start', payload)
+  })
+
+  ipcMain.handle('api:cloneReceiveStart', async (_event, payload) => {
+    return await backendPost('/api/project/remote-sync/clone-receive/start', payload)
+  })
+
+  ipcMain.handle('api:remoteSyncStatus', async (_event, payload) => {
+    return await backendPost('/api/project/remote-sync/status', payload)
+  })
+
+  ipcMain.handle('api:remoteSyncPreview', async (_event, payload) => {
+    return await backendPost('/api/project/remote-sync/preview', payload)
+  })
+
+  ipcMain.handle('api:remoteSyncApply', async (_event, payload) => {
+    return await backendPost('/api/project/remote-sync/apply', payload)
+  })
+
+  ipcMain.handle('api:remoteSyncCancel', async (_event, payload) => {
+    return await backendPost('/api/project/remote-sync/cancel', payload)
+  })
+
+  // ── Pentimento telemetry ─────────────────────────────────────────────────
+  ipcMain.handle('api:pentimentoSessionStart', async (_e, p) => backendPost('/api/project/pentimento/session/start', p))
+  ipcMain.handle('api:pentimentoFlush', async (_e, p) => backendPost('/api/project/pentimento/flush', p))
+  ipcMain.handle('api:pentimentoSessionEnd', async (_e, p) => backendPost('/api/project/pentimento/session/end', p))
+  ipcMain.handle('api:pentimentoAnchorHead', async (_e, p) => backendPost('/api/project/pentimento/anchor-head', p))
+  ipcMain.handle('api:pentimentoReceipts', async (_e, p) => backendPost('/api/project/pentimento/receipts', p))
+  ipcMain.handle('api:pentimentoHeatmap', async (_e, p) => backendPost('/api/project/pentimento/heatmap', p))
+  ipcMain.handle('api:pentimentoOps', async (_e, p) => backendPost('/api/project/pentimento/ops', p))
+  ipcMain.handle('api:pentimentoSummary', async (_e, p) => backendPost('/api/project/pentimento/summary', p))
+  ipcMain.handle('api:pentimentoCompact', async (_e, p) => backendPost('/api/project/pentimento/compact', p))
+  ipcMain.handle('api:pentimentoClear', async (_e, p) => backendPost('/api/project/pentimento/clear', p))
+  ipcMain.handle('api:pentimentoStorage', async (_e, p) => backendPost('/api/project/pentimento/storage', p))
+
+  // Chapter history (prose rollback / Edit History)
+  ipcMain.handle('api:chapterHistoryList', async (_e, p) => backendPost('/api/project/chapter/history/list', p))
+  ipcMain.handle('api:chapterHistoryPreview', async (_e, p) => backendPost('/api/project/chapter/history/preview', p))
+  ipcMain.handle('api:chapterHistoryPin', async (_e, p) => backendPost('/api/project/chapter/history/pin', p))
+  ipcMain.handle('api:chapterHistoryRestore', async (_e, p) => backendPost('/api/project/chapter/history/restore', p))
+  ipcMain.handle('api:chapterHistoryStorage', async (_e, p) => backendPost('/api/project/chapter/history/storage', p))
+  ipcMain.handle('api:chapterHistoryPrune', async (_e, p) => backendPost('/api/project/chapter/history/prune', p))
+  ipcMain.handle('api:chapterHistoryClear', async (_e, p) => backendPost('/api/project/chapter/history/clear', p))
+
   ipcMain.handle('api:getStats', async (_event, projectPath) => {
     return await backendPost('/api/project/stats', { project_path: projectPath })
   })
@@ -337,6 +975,14 @@ app.whenReady().then(async () => {
 
   ipcMain.handle('api:updateStat', async (_event, payload) => {
     return await backendPost('/api/project/stats/update', payload)
+  })
+
+  ipcMain.handle('api:usageTick', async (_event, payload) => {
+    return await backendPost('/api/project/usage/tick', payload)
+  })
+
+  ipcMain.handle('api:usageReport', async (_event, payload) => {
+    return await backendPost('/api/project/usage/report', payload)
   })
 
   ipcMain.handle('api:getProjectConfig', async (_event, projectPath) => {
@@ -360,8 +1006,53 @@ app.whenReady().then(async () => {
     }
   })
 
+  // The backend lays a PDF out as a print document (page size, mirrored margins and
+  // page numbers in its @page CSS); Chromium prints it here.
+  async function printHtmlToPdf(html: string): Promise<Buffer> {
+    const tmp = join(app.getPath('temp'), `fleshnote-print-${crypto.randomUUID()}.html`)
+    const win = new BrowserWindow({
+      show: false,
+      webPreferences: { javascript: false, sandbox: true, contextIsolation: true }
+    })
+    try {
+      fs.writeFileSync(tmp, html, 'utf8')
+      win.webContents.on('will-navigate', (e) => e.preventDefault())
+      await win.loadFile(tmp)
+      return await win.webContents.printToPDF({
+        preferCSSPageSize: true,
+        printBackground: true,
+        generateDocumentOutline: true,
+        generateTaggedPDF: true
+      })
+    } finally {
+      win.destroy()
+      fs.rm(tmp, { force: true }, () => {})
+    }
+  }
+
+  async function printToPdfFile(html: string, filepath: string): Promise<void> {
+    fs.writeFileSync(filepath, await printHtmlToPdf(html))
+  }
+
+  // The export window's page view: the same print document as the PDF export,
+  // printed in memory so the window can show the real pages.
+  ipcMain.handle('api:exportPrintPreview', async (_event, payload) => {
+    const res = await backendPost('/api/project/export/print-preview', payload)
+    const pdf = await printHtmlToPdf(res.html)
+    return { status: 'success', pdf: new Uint8Array(pdf) }
+  })
+
   ipcMain.handle('api:exportProject', async (_event, payload) => {
-    return await backendPost('/api/project/export', payload)
+    const res = await backendPost('/api/project/export', payload)
+    if (res?.status !== 'print') return res
+    try {
+      await printToPdfFile(res.html, res.filepath)
+    } catch (err: any) {
+      console.error('PDF printing failed:', err)
+      return { status: 'error', message: `PDF printing failed: ${err.message}` }
+    }
+    const { html: _html, ...rest } = res
+    return { ...rest, status: 'success' }
   })
 
   ipcMain.handle('api:exportPreview', async (_event, payload) => {
@@ -478,6 +1169,26 @@ app.whenReady().then(async () => {
 
   ipcMain.handle('api:deleteGroup', async (_event, payload) => {
     return await backendPost('/api/project/group/delete', payload)
+  })
+
+  ipcMain.handle('api:getGroupMembers', async (_event, payload) => {
+    return await backendPost('/api/project/group/members', payload)
+  })
+
+  ipcMain.handle('api:addGroupMember', async (_event, payload) => {
+    return await backendPost('/api/project/group/member/add', payload)
+  })
+
+  ipcMain.handle('api:updateGroupMember', async (_event, payload) => {
+    return await backendPost('/api/project/group/member/update', payload)
+  })
+
+  ipcMain.handle('api:removeGroupMember', async (_event, payload) => {
+    return await backendPost('/api/project/group/member/remove', payload)
+  })
+
+  ipcMain.handle('api:getCharacterMemberships', async (_event, payload) => {
+    return await backendPost('/api/project/character/memberships', payload)
   })
 
   // ── Entities ───────────────────────────────────────
@@ -696,12 +1407,13 @@ app.whenReady().then(async () => {
   ipcMain.handle('api:updateBoard', async (_e, p) => backendPost('/api/project/boards/update', p))
   ipcMain.handle('api:deleteBoard', async (_e, p) => backendPost('/api/project/boards/delete', p))
   ipcMain.handle('api:loadBoard', async (_e, p) => backendPost('/api/project/boards/load', p))
-  ipcMain.handle('api:createBoardItem', async (_e, p) => backendPost('/api/project/boards/items/create', p))
-  ipcMain.handle('api:updateBoardItem', async (_e, p) => backendPost('/api/project/boards/items/update', p))
-  ipcMain.handle('api:deleteBoardItem', async (_e, p) => backendPost('/api/project/boards/items/delete', p))
-  ipcMain.handle('api:createBoardConnection', async (_e, p) => backendPost('/api/project/boards/connections/create', p))
-  ipcMain.handle('api:updateBoardConnection', async (_e, p) => backendPost('/api/project/boards/connections/update', p))
-  ipcMain.handle('api:deleteBoardConnection', async (_e, p) => backendPost('/api/project/boards/connections/delete', p))
+  ipcMain.handle('api:boardBatch', async (_e, p) => backendPost('/api/project/boards/batch', p))
+  ipcMain.handle('api:generatedBoard', async (_e, p) =>
+    backendPost('/api/project/boards/generated', p)
+  )
+  ipcMain.handle('api:boardsForEntity', async (_e, p) =>
+    backendPost('/api/project/boards/for-entity', p)
+  )
 
   // ── Image References ──────────────────────────────
   ipcMain.handle('dialog:openImage', async () => {
@@ -717,6 +1429,23 @@ app.whenReady().then(async () => {
     return filePaths[0]
   })
   ipcMain.handle('api:uploadImageRef', async (_e, p) => backendPost('/api/project/image-ref/upload', p))
+
+  // ── Book cover ────────────────────────────────────
+  ipcMain.handle('api:coverGet', async (_e, p) => backendPost('/api/project/cover/get', p))
+  ipcMain.handle('api:coverAddImage', async (_e, p) => backendPost('/api/project/cover/add-image', p))
+  ipcMain.handle('api:coverSave', async (_e, p) => backendPost('/api/project/cover/save', p))
+  ipcMain.handle('api:coverCleanup', async (_e, p) => backendPost('/api/project/cover/cleanup', p))
+  // The cover editor draws images on a canvas it saves as PNG; images loaded from
+  // fleshnote-asset:// would taint that canvas, so it gets the bytes instead.
+  // Only the project's own cover assets can be read.
+  ipcMain.handle('api:coverReadImage', async (_e, { project_path, path: rel }) => {
+    const m = /^assets\/cover\/(?:img|front|spine)_[0-9a-f]{12}\.(png|jpe?g|webp|gif|bmp)$/.exec(rel || '')
+    if (!m || typeof project_path !== 'string') return null
+    const full = join(project_path, ...rel.split('/'))
+    if (!fs.existsSync(full) || fs.lstatSync(full).isSymbolicLink()) return null
+    const ext = m[1] === 'jpg' ? 'jpeg' : m[1]
+    return { mime: `image/${ext}`, data: new Uint8Array(fs.readFileSync(full)) }
+  })
   ipcMain.handle('api:createImageRef', async (_e, p) => backendPost('/api/project/image-ref/create', p))
   ipcMain.handle('api:saveIconCrop', async (_e, p) => backendPost('/api/project/image-ref/save-icon', p))
   ipcMain.handle('api:updateImageRef', async (_e, p) => backendPost('/api/project/image-ref/update', p))
@@ -766,6 +1495,22 @@ app.whenReady().then(async () => {
     return await backendPost('/api/project/planner/delete-arc', payload)
   })
 
+  ipcMain.handle('api:getPlannerFrameworks', async () => {
+    return await backendGet('/api/project/planner/frameworks')
+  })
+
+  ipcMain.handle('api:getFrameworkRecommendations', async (_event, payload) => {
+    return await backendPost('/api/project/planner/recommendations', payload)
+  })
+
+  ipcMain.handle('api:synthesizeArchitecture', async (_event, payload) => {
+    return await backendPost('/api/project/planner/synthesize', payload)
+  })
+
+  ipcMain.handle('api:applyPlannerFramework', async (_event, payload) => {
+    return await backendPost('/api/project/planner/apply-framework', payload)
+  })
+
   // ── Import ─────────────────────────────────────────
   ipcMain.handle('api:importSplitPreview', async (_event, payload) => {
     return await backendPost('/api/project/import/split-preview', payload)
@@ -782,6 +1527,10 @@ app.whenReady().then(async () => {
 
   ipcMain.handle('api:importNerAnalyze', async (_event, payload) => {
     return await backendPost('/api/project/import/ner-analyze', payload)
+  })
+
+  ipcMain.handle('api:importNerProgress', async (_event, jobId: string) => {
+    return await backendPost('/api/project/import/ner-progress', { job_id: jobId })
   })
 
   ipcMain.handle('api:importBulkCreateEntities', async (_event, payload) => {
@@ -833,6 +1582,12 @@ app.whenReady().then(async () => {
   })
   ipcMain.handle('api:janitorSensesOverview', async (_event, payload) => {
     return await backendPost('/api/project/janitor/senses-overview', payload)
+  })
+  ipcMain.handle('api:storyPulse', async (_event, payload) => {
+    return await backendPost('/api/project/story-pulse', payload)
+  })
+  ipcMain.handle('api:storyPulseCorrect', async (_event, payload) => {
+    return await backendPost('/api/project/story-pulse/correct', payload)
   })
 
   // ── Auto Updater ───────────────────────────────────

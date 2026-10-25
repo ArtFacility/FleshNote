@@ -21,28 +21,28 @@ class LocationCreate(BaseModel):
     name: str
     region: str = ""
     description: str = ""
-    parent_location_id: int | None = None
+    parent_location_id: str | int | None = None
     aliases: list[str] = []
     notes: str = ""
 
 
 class LocationUpdate(BaseModel):
     project_path: str
-    location_id: int
+    location_id: str | int
     name: str | None = None
     region: str | None = None
     description: str | None = None
-    parent_location_id: int | None = None
+    parent_location_id: str | int | None = None
     aliases: list[str] | None = None
     notes: str | None = None
 
 class LocationDelete(BaseModel):
     project_path: str
-    location_id: int
+    location_id: str | int
 
 class WeatherStateCreate(BaseModel):
     project_path: str
-    location_id: int
+    location_id: str | int
     world_time: str
     weather: str = ""
     temperature: str = ""
@@ -50,7 +50,7 @@ class WeatherStateCreate(BaseModel):
 
 class WeatherStateUpdate(BaseModel):
     project_path: str
-    weather_state_id: int
+    weather_state_id: str | int
     world_time: str | None = None
     weather: str | None = None
     temperature: str | None = None
@@ -58,17 +58,18 @@ class WeatherStateUpdate(BaseModel):
 
 class WeatherStateDelete(BaseModel):
     project_path: str
-    weather_state_id: int
+    weather_state_id: str | int
 
 class WeatherStateListQuery(BaseModel):
     project_path: str
-    location_id: int
+    location_id: str | int
 
 def _get_db(project_path: str):
     db_path = os.path.join(project_path, "fleshnote.db")
     if not os.path.exists(db_path):
         raise HTTPException(status_code=404, detail="Database not found")
-    conn = sqlite3.connect(db_path)
+    conn = sqlite3.connect(db_path, timeout=30.0)
+    conn.execute("PRAGMA busy_timeout = 30000;")
     conn.row_factory = sqlite3.Row
     return conn
 
@@ -77,7 +78,7 @@ def _get_db(project_path: str):
 def get_locations(req: ProjectPath):
     conn = _get_db(req.project_path)
     cursor = conn.cursor()
-    cursor.execute("SELECT * FROM locations ORDER BY id ASC")
+    cursor.execute("SELECT * FROM locations WHERE deleted = 0 ORDER BY id ASC")
     rows = cursor.fetchall()
     conn.close()
 
@@ -101,10 +102,36 @@ def create_location(req: LocationCreate):
     conn = _get_db(req.project_path)
     cursor = conn.cursor()
 
+    # Deduplication guard: if an active location with identical name was created in the last 5 seconds,
+    # return it to protect against rapid multi-click/duplicate submission spikes
     cursor.execute("""
-        INSERT INTO locations (name, aliases, region, parent_location_id, description, notes)
-        VALUES (?, ?, ?, ?, ?, ?)
+        SELECT id, name, description, parent_location_id
+        FROM locations
+        WHERE LOWER(TRIM(name)) = LOWER(TRIM(?))
+          AND deleted = 0
+          AND datetime(created_at) >= datetime('now', '-5 seconds')
+        ORDER BY created_at DESC
+        LIMIT 1
+    """, (req.name,))
+    recent = cursor.fetchone()
+    if recent:
+        conn.close()
+        return {
+            "location": {
+                "id": recent["id"],
+                "name": recent["name"],
+                "description": recent["description"],
+                "parent_location_id": recent["parent_location_id"],
+            }
+        }
+
+    import uuid
+    loc_id = str(uuid.uuid4())
+    cursor.execute("""
+        INSERT INTO locations (id, name, aliases, region, parent_location_id, description, notes)
+        VALUES (?, ?, ?, ?, ?, ?, ?)
     """, (
+        loc_id,
         req.name,
         json.dumps(req.aliases) if req.aliases else None,
         req.region,
@@ -113,7 +140,16 @@ def create_location(req: LocationCreate):
         req.notes,
     ))
 
-    loc_id = cursor.lastrowid
+    from sync_core import log_change
+    log_change(cursor, "locations", loc_id, {
+        "name": req.name,
+        "aliases": req.aliases,
+        "region": req.region,
+        "parent_location_id": req.parent_location_id,
+        "description": req.description,
+        "notes": req.notes,
+    })
+
     conn.commit()
     conn.close()
 
@@ -134,16 +170,19 @@ def update_location(req: LocationUpdate):
 
     fields = []
     values = []
+    changes = {}
 
     for field_name in ["name", "region", "description", "parent_location_id", "notes"]:
         val = getattr(req, field_name)
         if val is not None:
             fields.append(f"{field_name} = ?")
             values.append(val)
+            changes[field_name] = val
 
     if req.aliases is not None:
         fields.append("aliases = ?")
         values.append(json.dumps(req.aliases))
+        changes["aliases"] = req.aliases
 
     fields.append("updated_at = CURRENT_TIMESTAMP")
 
@@ -157,6 +196,10 @@ def update_location(req: LocationUpdate):
         f"UPDATE locations SET {', '.join(fields)} WHERE id = ?",
         values
     )
+
+    from sync_core import log_change
+    log_change(cursor, "locations", req.location_id, changes)
+
     conn.commit()
 
     # Return updated location
@@ -184,8 +227,39 @@ def update_location(req: LocationUpdate):
 def delete_location(req: LocationDelete):
     conn = _get_db(req.project_path)
     cursor = conn.cursor()
-    cursor.execute("DELETE FROM locations WHERE id = ?", (req.location_id,))
-    cursor.execute("DELETE FROM image_references WHERE entity_type = 'loc' AND entity_id = ?", (req.location_id,))
+
+    import datetime
+    from sync_core import log_soft_delete, log_change
+    now = datetime.datetime.utcnow().isoformat() + "Z"
+
+    # Soft delete location
+    cursor.execute("UPDATE locations SET deleted = 1, deleted_at = ? WHERE id = ?", (now, req.location_id))
+    log_soft_delete(cursor, "locations", req.location_id)
+
+    # Cascade parent_location_id = NULL to children locations
+    cursor.execute("SELECT id FROM locations WHERE parent_location_id = ? AND deleted = 0", (req.location_id,))
+    child_locs = cursor.fetchall()
+    for r in child_locs:
+        cursor.execute("UPDATE locations SET parent_location_id = NULL WHERE id = ?", (r["id"],))
+        log_change(cursor, "locations", r["id"], {"parent_location_id": None})
+
+    # Cascade soft deletes: location weather states
+    cursor.execute("SELECT id FROM location_weather_states WHERE location_id = ? AND deleted = 0", (req.location_id,))
+    weather_states = cursor.fetchall()
+    for r in weather_states:
+        cursor.execute("UPDATE location_weather_states SET deleted = 1, deleted_at = ? WHERE id = ?", (now, r["id"]))
+        log_soft_delete(cursor, "location_weather_states", r["id"])
+
+    # Cascade soft deletes: image references
+    cursor.execute("""
+        SELECT id FROM image_references 
+        WHERE entity_type = 'loc' AND entity_id = ? AND deleted = 0
+    """, (req.location_id,))
+    img_rows = cursor.fetchall()
+    for r in img_rows:
+        cursor.execute("UPDATE image_references SET deleted = 1, deleted_at = ? WHERE id = ?", (now, r["id"]))
+        log_soft_delete(cursor, "image_references", r["id"])
+
     conn.commit()
     conn.close()
     return {"status": "ok"}
@@ -196,7 +270,7 @@ def get_weather_states(req: WeatherStateListQuery):
     conn = _get_db(req.project_path)
     cursor = conn.cursor()
     cursor.execute(
-        "SELECT * FROM location_weather_states WHERE location_id = ? ORDER BY world_time ASC",
+        "SELECT * FROM location_weather_states WHERE location_id = ? AND deleted = 0 ORDER BY world_time ASC",
         (req.location_id,)
     )
     rows = cursor.fetchall()
@@ -220,12 +294,22 @@ def create_weather_state(req: WeatherStateCreate):
     conn = _get_db(req.project_path)
     cursor = conn.cursor()
 
+    import uuid
+    state_id = str(uuid.uuid4())
     cursor.execute("""
-        INSERT INTO location_weather_states (location_id, world_time, weather, temperature, moisture)
-        VALUES (?, ?, ?, ?, ?)
-    """, (req.location_id, req.world_time, req.weather, req.temperature, req.moisture))
-    
-    state_id = cursor.lastrowid
+        INSERT INTO location_weather_states (id, location_id, world_time, weather, temperature, moisture)
+        VALUES (?, ?, ?, ?, ?, ?)
+    """, (state_id, req.location_id, req.world_time, req.weather, req.temperature, req.moisture))
+
+    from sync_core import log_change
+    log_change(cursor, "location_weather_states", state_id, {
+        "location_id": req.location_id,
+        "world_time": req.world_time,
+        "weather": req.weather,
+        "temperature": req.temperature,
+        "moisture": req.moisture,
+    })
+
     conn.commit()
     conn.close()
 
@@ -248,12 +332,14 @@ def update_weather_state(req: WeatherStateUpdate):
 
     fields = []
     values = []
+    changes = {}
 
     for field_name in ["world_time", "weather", "temperature", "moisture"]:
         val = getattr(req, field_name)
         if val is not None:
             fields.append(f"{field_name} = ?")
             values.append(val)
+            changes[field_name] = val
 
     fields.append("updated_at = CURRENT_TIMESTAMP")
 
@@ -267,6 +353,10 @@ def update_weather_state(req: WeatherStateUpdate):
         f"UPDATE location_weather_states SET {', '.join(fields)} WHERE id = ?",
         values
     )
+
+    from sync_core import log_change
+    log_change(cursor, "location_weather_states", req.weather_state_id, changes)
+
     conn.commit()
 
     cursor.execute("SELECT * FROM location_weather_states WHERE id = ?", (req.weather_state_id,))
@@ -292,7 +382,14 @@ def update_weather_state(req: WeatherStateUpdate):
 def delete_weather_state(req: WeatherStateDelete):
     conn = _get_db(req.project_path)
     cursor = conn.cursor()
-    cursor.execute("DELETE FROM location_weather_states WHERE id = ?", (req.weather_state_id,))
+
+    import datetime
+    from sync_core import log_soft_delete
+    now = datetime.datetime.utcnow().isoformat() + "Z"
+
+    cursor.execute("UPDATE location_weather_states SET deleted = 1, deleted_at = ? WHERE id = ?", (now, req.weather_state_id))
+    log_soft_delete(cursor, "location_weather_states", req.weather_state_id)
+
     conn.commit()
     conn.close()
     return {"status": "ok"}

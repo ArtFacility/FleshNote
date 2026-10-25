@@ -1,0 +1,444 @@
+"""
+FleshNote — Remote (QR/LAN) Sync Session
+
+Transport scaffolding for phone <-> desktop sync. The desktop stays the single
+authority that runs the merge (see routes/sync.py) — this module only gets a
+copy of the phone's project onto local disk (as a zip) so the existing
+folder-based sync_preview/sync_apply can run against it unchanged, then hands
+back a zip of the merged desktop project for the phone to pull down.
+
+Two FastAPI apps are involved:
+- The main app (main.py), bound to 127.0.0.1 only, reachable from Electron.
+  Its /api/project/remote-sync/* routes (routes/remote_sync.py) start/stop
+  sessions and drive preview/apply — same trust boundary as everything else.
+- `remote_app` below, bound to 0.0.0.0 on an ephemeral port, started ONLY
+  while a pairing session is active (never at backend boot — binding 0.0.0.0
+  early would trip the Windows Firewall prompt before the user asked for
+  sync). Every route on it requires the session's token.
+
+Everything with project content is encrypted with the session's key, which the
+phone only gets from the QR code (see sync_crypto.py). The token, the session
+status and the timing of requests are not secret. A request that doesn't
+decrypt never changes the session's state, so someone who only sniffed the
+token can't read the project, replace it, or end the session.
+
+Download-back contract: the zip returned by /remote-sync/download is a full
+project folder (fleshnote.db + md/ + fleshnote_project.json), the same shape
+sync_apply already expects as a `remote_path`. The companion app MUST feed it
+into its OWN sync engine as `remote_path` (a directional pull, same as the
+desktop did) rather than overwriting its local fleshnote.db wholesale — a raw
+overwrite would destroy device-local pentimento_sessions/pentimento_ops/
+chapter_snapshots (never synced, see PENTIMENTO.md) and clobber sync_meta.
+"""
+
+import os
+import json
+import time
+import socket
+import secrets
+import shutil
+import tempfile
+import threading
+from typing import Optional
+
+import uvicorn
+from fastapi import FastAPI, HTTPException, UploadFile, File, Query, Request
+from fastapi.responses import Response
+
+import project_io
+import sync_crypto
+
+SESSION_TTL_SECONDS = 10 * 60
+MAX_UPLOAD_BYTES = 200 * 1024 * 1024 + sync_crypto.OVERHEAD
+OUTDATED_PHONE = ("The phone's upload could not be decrypted. Update the FleshNote "
+                  "Companion app and scan the code again.")
+PORT_CANDIDATES = list(range(8420, 8430))
+
+
+class RemoteSyncSession:
+    def __init__(self, project_path: Optional[str], project_id: str, project_name: str,
+                 mode: str = "merge", workspace_path: Optional[str] = None):
+        self.token = secrets.token_urlsafe(24)
+        self.key = sync_crypto.new_key()  # shared with the phone only through the QR code
+        self.project_path = project_path
+        self.project_id = project_id
+        self.project_name = project_name
+        # "merge"        -> phone uploads, desktop merges, phone downloads back (§9)
+        # "clone_send"   -> desktop serves its whole project to a fresh phone
+        # "clone_receive"-> phone uploads a whole project the desktop lacks; desktop registers it
+        self.mode = mode
+        self.workspace_path = workspace_path       # where clone_receive lands the new project
+        self.cloned_project_path: Optional[str] = None  # set after a clone_receive
+        self.created_at = time.time()
+        self.expires_at = self.created_at + SESSION_TTL_SECONDS
+        # waiting -> uploaded -> ready -> applying -> applied -> downloaded
+        #                                          \-> error / cancelled / expired
+        self.status = "waiting"
+        self.error_message: Optional[str] = None
+        self.remote_tmp_root: Optional[str] = None   # whole temp dir (holds extracted project)
+        self.remote_tmp_dir: Optional[str] = None     # extracted phone project (sync_preview remote_path)
+        self.download_zip_path: Optional[str] = None
+        self.preview: Optional[dict] = None
+
+    def is_expired(self) -> bool:
+        return time.time() > self.expires_at
+
+    def touch_error(self, msg: str):
+        self.status = "error"
+        self.error_message = msg
+
+
+_active_session: Optional[RemoteSyncSession] = None
+_session_lock = threading.Lock()
+_server: Optional[uvicorn.Server] = None
+_server_thread: Optional[threading.Thread] = None
+_server_port: Optional[int] = None
+
+
+# ── helpers ──────────────────────────────────────────────────────────────
+
+def _ip_rank(ip: str) -> int:
+    """Lower = more likely reachable by a phone on the same Wi-Fi. Real private
+    LAN ranges first; the CGNAT range (100.64.0.0/10, used by Tailscale and
+    carrier NAT — NOT reachable from a phone on the LAN) last."""
+    try:
+        a, b = (int(x) for x in ip.split(".")[:2])
+    except Exception:
+        return 3
+    if a == 192 and b == 168:
+        return 0
+    if a == 10:
+        return 1
+    if a == 172 and 16 <= b <= 31:
+        return 2
+    if a == 100 and 64 <= b <= 127:   # CGNAT / Tailscale — try only as a last resort
+        return 5
+    return 3
+
+
+def _enumerate_ipv4() -> set[str]:
+    """All local IPv4 addresses, via the OS command (locale-tolerant) plus
+    stdlib fallbacks — stdlib alone misses the Wi-Fi IP when a VPN like
+    Tailscale owns hostname resolution and the default route."""
+    ips: set[str] = set()
+    # Default-route interface (often the VPN when one is up — still a candidate).
+    try:
+        s = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
+        s.connect(("8.8.8.8", 80))
+        ips.add(s.getsockname()[0])
+        s.close()
+    except Exception:
+        pass
+    try:
+        ips.update(socket.gethostbyname_ex(socket.gethostname())[2])
+    except Exception:
+        pass
+    # OS command: enumerates every adapter, not just what the hostname resolves to.
+    try:
+        import subprocess, re, sys
+        if sys.platform.startswith("win"):
+            out = subprocess.run(["ipconfig"], capture_output=True, text=True, timeout=5).stdout
+            # The IPv4 line keeps "IPv4" across latin-script locales (EN "IPv4 Address",
+            # HU "IPv4-cím", PL "Adres IPv4", DE "IPv4-Adresse"...), so match those lines
+            # only — avoids picking up subnet masks / gateways.
+            for line in out.splitlines():
+                if "IPv4" in line:
+                    m = re.search(r"(\d{1,3}(?:\.\d{1,3}){3})", line)
+                    if m:
+                        ips.add(m.group(1))
+        else:
+            out = subprocess.run(["ip", "-4", "-o", "addr", "show"],
+                                 capture_output=True, text=True, timeout=5).stdout
+            if not out:
+                out = subprocess.run(["ifconfig"], capture_output=True, text=True, timeout=5).stdout
+            for m in re.finditer(r"inet\s+(\d{1,3}(?:\.\d{1,3}){3})", out):
+                ips.add(m.group(1))
+    except Exception:
+        pass
+    return ips
+
+
+def _get_local_ips() -> list[str]:
+    candidates = {
+        ip for ip in _enumerate_ipv4()
+        if ip and not ip.startswith("127.") and not ip.startswith("169.254.")
+        and not ip.startswith("255.") and ip != "0.0.0.0"
+    }
+    if not candidates:
+        return ["127.0.0.1"]
+    # Real LAN first, CGNAT/Tailscale last, so the phone tries a reachable host first.
+    return sorted(candidates, key=lambda ip: (_ip_rank(ip), ip))
+
+
+def _safe_extract_zip(zip_path: str, dest_dir: str):
+    """Extract with full validation — delegates to project_io (zip-slip, bombs,
+    symlinks, duplicates, entry allowlist)."""
+    return project_io.safe_extract_zip(zip_path, dest_dir)
+
+
+def _register_cloned_project(extract_dir: str, workspace_path: Optional[str]) -> str:
+    """Copy a phone-uploaded project into the desktop's workspace as a NEW
+    project folder (unique name from its project_name). Returns the new path."""
+    if not workspace_path or not os.path.isdir(workspace_path):
+        raise ValueError("No workspace folder available to receive the project.")
+    meta_path = os.path.join(extract_dir, "fleshnote_project.json")
+    with open(meta_path, encoding="utf-8") as f:
+        meta = json.load(f)
+    raw_name = str(meta.get("project_name") or "Received Project").strip()
+    base = project_io.sanitize_project_name(raw_name)
+
+    target = project_io.next_available_project_dir(workspace_path, base)
+    shutil.copytree(extract_dir, target)
+    return target
+
+
+def _zip_project(project_path: str) -> str:
+    """Zip the project (hardened, WAL-safe) into its own temp folder for the
+    phone to download. Returns the zip's path."""
+    # The phone can't run the Story Pulse engine: store what the Janitor has
+    # measured so it travels in fleshnote.db.
+    from routes.story_pulse import refresh_stored_scores
+    refresh_stored_scores(project_path)
+    tmp = tempfile.mkdtemp(prefix="fleshnote_remote_dl_")
+    return project_io.zip_project(project_path, os.path.join(tmp, "project.zip"))
+
+
+def _cleanup_session(session: RemoteSyncSession):
+    if session.remote_tmp_root and os.path.isdir(session.remote_tmp_root):
+        shutil.rmtree(session.remote_tmp_root, ignore_errors=True)
+    if session.download_zip_path:
+        shutil.rmtree(os.path.dirname(session.download_zip_path), ignore_errors=True)
+
+
+def _pick_port() -> int:
+    for p in PORT_CANDIDATES:
+        try:
+            s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+            s.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
+            s.bind(("0.0.0.0", p))
+            s.close()
+            return p
+        except OSError:
+            continue
+    raise RuntimeError("No free port available for remote sync (8420-8429 all busy)")
+
+
+# ── LAN-facing app (phone talks to this one) ────────────────────────────────
+
+remote_app = FastAPI(title="FleshNote Remote Sync")
+
+
+def _sealed(session: RemoteSyncSession, purpose: str, data: bytes) -> Response:
+    return Response(content=sync_crypto.seal(session.key, purpose, session.token, data),
+                    media_type="application/octet-stream")
+
+
+def _session_for_token(token: str) -> RemoteSyncSession:
+    session = _active_session
+    if not session or session.token != token:
+        raise HTTPException(status_code=403, detail="Invalid or expired sync session")
+    if session.is_expired() and session.status not in ("applied", "downloaded"):
+        session.status = "expired"
+    if session.status == "expired":
+        raise HTTPException(status_code=403, detail="Sync session expired")
+    return session
+
+
+@remote_app.get("/remote-sync/pair")
+def remote_pair(token: str = Query(...)):
+    # Sealed, so the phone also learns that it reached the desktop holding the key.
+    session = _session_for_token(token)
+    body = json.dumps({"status": "ok", "project_id": session.project_id,
+                       "project_name": session.project_name}).encode("utf-8")
+    return _sealed(session, "pair", body)
+
+
+@remote_app.post("/remote-sync/upload")
+async def remote_upload(token: str = Query(...), file: UploadFile = File(...)):
+    session = _session_for_token(token)
+
+    # Read and decrypt before touching the session: a body that doesn't decrypt
+    # leaves the session waiting for the real phone.
+    blob = bytearray()
+    while True:
+        chunk = await file.read(1024 * 1024)
+        if not chunk:
+            break
+        blob += chunk
+        if len(blob) > MAX_UPLOAD_BYTES:
+            raise HTTPException(status_code=413, detail="Upload too large")
+    try:
+        data = sync_crypto.open_sealed(session.key, "upload", session.token, bytes(blob))
+    except sync_crypto.SealError:
+        raise HTTPException(status_code=400, detail=OUTDATED_PHONE)
+    del blob
+
+    with _session_lock:
+        if session.status != "waiting":
+            raise HTTPException(status_code=409, detail=f"Session not accepting uploads (status={session.status})")
+        session.status = "uploaded"
+
+    tmp_root = tempfile.mkdtemp(prefix="fleshnote_remote_")
+    zip_path = os.path.join(tmp_root, "upload.zip")
+    extract_dir = os.path.join(tmp_root, "project")
+    try:
+        with open(zip_path, "wb") as f:
+            f.write(data)
+        del data
+
+        os.makedirs(extract_dir, exist_ok=True)
+        try:
+            _safe_extract_zip(zip_path, extract_dir)
+        except ValueError as e:
+            raise HTTPException(status_code=400, detail=str(e))
+        os.remove(zip_path)
+
+        if not os.path.exists(os.path.join(extract_dir, "fleshnote.db")):
+            raise HTTPException(status_code=400, detail="Uploaded project is missing fleshnote.db")
+        if not os.path.exists(os.path.join(extract_dir, "fleshnote_project.json")):
+            raise HTTPException(status_code=400, detail="Uploaded project is missing fleshnote_project.json")
+
+        session.remote_tmp_root = tmp_root
+        session.remote_tmp_dir = extract_dir
+    except HTTPException as e:
+        shutil.rmtree(tmp_root, ignore_errors=True)
+        session.touch_error(str(e.detail))
+        raise
+    except Exception as e:
+        shutil.rmtree(tmp_root, ignore_errors=True)
+        session.touch_error(str(e))
+        raise HTTPException(status_code=500, detail=str(e))
+
+    # Clone-receive: the phone is sending a whole project the desktop doesn't
+    # have yet. Register it as a NEW project rather than merging.
+    if session.mode == "clone_receive":
+        try:
+            session.cloned_project_path = _register_cloned_project(
+                extract_dir, session.workspace_path)
+        except Exception as e:
+            session.touch_error(str(e))
+            raise HTTPException(status_code=500, detail=str(e))
+        session.status = "applied"  # nothing to download back
+        return {"status": "ok"}
+
+    # Reuse the exact desktop folder-based diff engine — no duplicated merge logic.
+    from routes.sync import sync_preview, SyncPreviewRequest
+    try:
+        result = sync_preview(SyncPreviewRequest(local_path=session.project_path, remote_path=session.remote_tmp_dir))
+    except HTTPException as e:
+        session.touch_error(str(e.detail))
+        raise
+
+    if result.get("status") == "error":
+        session.touch_error(result.get("message", "Sync preview failed"))
+        raise HTTPException(status_code=400, detail=session.error_message)
+
+    session.preview = result
+    session.status = "ready"
+    return {"status": "ok"}
+
+
+@remote_app.get("/remote-sync/result")
+def remote_result(token: str = Query(...)):
+    session = _session_for_token(token)
+    return {"status": session.status, "error": session.error_message}
+
+
+@remote_app.get("/remote-sync/download")
+def remote_download(token: str = Query(...)):
+    session = _session_for_token(token)
+    # clone_send has the zip ready from session start (nothing to merge first);
+    # merge mode only has it after the desktop applies.
+    ready = os.path.isfile(session.download_zip_path or "") and (
+        session.mode == "clone_send" or session.status == "applied")
+    if not ready:
+        raise HTTPException(status_code=409, detail="Project not ready for download yet")
+    with open(session.download_zip_path, "rb") as f:
+        return _sealed(session, "download", f.read())
+
+
+@remote_app.post("/remote-sync/complete")
+async def remote_complete(request: Request, token: str = Query(...)):
+    # The phone proves it holds the key, so a sniffed token can't end the session.
+    session = _session_for_token(token)
+    try:
+        sync_crypto.open_sealed(session.key, "complete", session.token, await request.body())
+    except sync_crypto.SealError:
+        raise HTTPException(status_code=400, detail=OUTDATED_PHONE)
+    session.status = "downloaded"
+    return {"status": "ok"}
+
+
+# ── lifecycle, called from routes/remote_sync.py (loopback-only) ───────────
+
+def start_session(project_path: Optional[str], project_id: str, project_name: str,
+                  mode: str = "merge", workspace_path: Optional[str] = None) -> dict:
+    global _active_session, _server, _server_thread, _server_port
+    with _session_lock:
+        if _active_session:
+            _cleanup_session(_active_session)
+        _stop_server_locked()
+
+        session = RemoteSyncSession(project_path, project_id, project_name,
+                                    mode=mode, workspace_path=workspace_path)
+        # clone_send serves the whole project immediately, so zip it up front.
+        if mode == "clone_send" and project_path:
+            session.download_zip_path = _zip_project(project_path)
+        _active_session = session
+
+        port = _pick_port()
+        config = uvicorn.Config(remote_app, host="0.0.0.0", port=port, log_level="warning")
+        server = uvicorn.Server(config)
+        thread = threading.Thread(target=server.run, daemon=True)
+        thread.start()
+
+        deadline = time.time() + 5
+        while not server.started and time.time() < deadline:
+            time.sleep(0.05)
+
+        _server = server
+        _server_thread = thread
+        _server_port = port
+
+        return {
+            "protocol": sync_crypto.VERSION,
+            "token": session.token,
+            "key": session.key.hex(),
+            "port": port,
+            "hosts": _get_local_ips(),
+            "project_id": project_id,
+            "project_name": project_name,
+            "mode": mode,
+            "expires_at": session.expires_at,
+        }
+
+
+def _stop_server_locked():
+    global _server, _server_thread, _server_port
+    if _server:
+        _server.should_exit = True
+        if _server_thread:
+            _server_thread.join(timeout=5)
+    _server = None
+    _server_thread = None
+    _server_port = None
+
+
+def cancel_session(token: Optional[str] = None) -> dict:
+    """Cancel the active session. If `token` is given, it must match — a stale token
+    from a session that start_session() already replaced is a no-op, not a takedown
+    of whatever session is active now."""
+    global _active_session
+    with _session_lock:
+        if _active_session and (token is None or _active_session.token == token):
+            _cleanup_session(_active_session)
+            _active_session = None
+            _stop_server_locked()
+    return {"status": "ok"}
+
+
+def get_session() -> Optional[RemoteSyncSession]:
+    session = _active_session
+    if session and session.is_expired() and session.status not in ("applied", "downloaded"):
+        session.status = "expired"
+    return session

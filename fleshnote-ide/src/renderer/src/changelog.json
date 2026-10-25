@@ -1,6 +1,25 @@
 {
-    "currentVersion": "1.2.0",
+    "currentVersion": "2.0",
     "history": [
+        {
+            "version": "2.0",
+            "date": "2026-09-11",
+            "changes": [
+                "NEW: Sketchboards rebuilt — legend, templates, a chapter timeline, and live Relationships and Factions boards",
+                "NEW: Factions — rosters with roles, join and leave dates, and their own history",
+                "NEW: History — snapshots of earlier writing sessions per chapter; compare them and roll back",
+                "NEW: Story Architect — a five-step planner for a new book, with a brainstorm generator",
+                "NEW: Story Pulse — an intensity curve per chapter in the Plot Planner",
+                "NEW: Pentimento — record and replay how a chapter was written, optionally sealed with a trusted timestamp",
+                "NEW: Review copies — send a beta reader a .flreview file and bring their notes back into the manuscript",
+                "NEW: Export rebuilt — print-ready PDF, DOCX and EPUB with a page preview, plus an early cover editor",
+                "NEW: Obsidian vault export, manuscript import, and a bookshelf for your projects",
+                "NEW: Wi-Fi sync with the upcoming phone app, and a browser version for your own server",
+                "Smarter Janitor, a day-level world calendar, a smaller installer, and no more clashes over port 8000",
+                "Projects from 1.x are upgraded when you open them (a backup of the old database is kept)",
+                "More details on the website (artfacility.xyz)"
+            ]
+        },
         {
             "version": "1.2.0",
             "date": "2026-04-26",

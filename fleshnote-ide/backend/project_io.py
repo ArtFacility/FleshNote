@@ -1,0 +1,374 @@
+"""
+FleshNote — Project file-level I/O utilities
+============================================
+
+On-disk layout (v2.1+): every project is an extensioned folder so it behaves
+like a single file for non-technical users:
+
+    MyNovel.flnote/
+        fleshnote.db            (SQLite, WAL mode)
+        fleshnote_project.json  (descriptor)
+        md/                     (chapter markdown)
+        assets/                 (reference images)
+
+Transport / share format: a single ZIP named `MyNovel.flnote` containing the
+same tree (either at the archive root or nested under one root folder).
+
+This module centralizes everything that touches those bytes:
+- `.flnote` naming (sanitize / display / next free path)
+- consistent SQLite snapshots (backup API — safe against live WAL)
+- hardened ZIP creation and extraction (zip-slip, bombs, symlinks, allowlist)
+
+Security reviewers' rules baked in here:
+- NEVER zip or copy a live `fleshnote.db` directly — always snapshot via the
+  SQLite backup API first (a raw file copy can capture a torn WAL state).
+- NEVER trust archive member paths: validate, cap, allowlist, extract manually.
+"""
+
+import os
+import re
+import shutil
+import sqlite3
+import tempfile
+import zipfile
+import unicodedata
+
+PROJECT_EXT = ".flnote"
+
+# Contents every valid FleshNote archive must carry / may carry — nothing else
+# gets extracted (junk like desktop.ini/Thumbs.db is silently skipped).
+ALLOWED_TOP_FILES = {"fleshnote.db", "fleshnote_project.json"}
+ALLOWED_TOP_DIRS = {"md", "assets"}
+# fleshnote_cache.db is local derived data (janitor_cache.py), rebuilt on demand.
+JUNK_NAMES = {"desktop.ini", "thumbs.db", ".ds_store", "fleshnote.db.bak",
+              "fleshnote_cache.db", "fleshnote_cache.db-wal", "fleshnote_cache.db-shm"}
+
+# Extraction caps (both compressed upload caps and these uncompressed caps are
+# enforced — a 20 MB compressed zip bomb can expand to many GB otherwise).
+MAX_ARCHIVE_FILES = 5000
+MAX_ARCHIVE_UNCOMPRESSED = 512 * 1024 * 1024   # 512 MB total
+MAX_ARCHIVE_SINGLE_FILE = 256 * 1024 * 1024    # 256 MB per file
+
+
+# ── .flnote naming ──────────────────────────────────────────────────────────
+
+def app_version() -> str:
+    """The running FleshNote version, recorded in project descriptors.
+
+    Electron passes it as FLESHNOTE_APP_VERSION. A backend started by hand
+    (development, tests) reads it from package.json instead.
+    """
+    version = os.environ.get("FLESHNOTE_APP_VERSION", "").strip()
+    if version:
+        return version
+    try:
+        import json
+        package = os.path.join(os.path.dirname(os.path.abspath(__file__)), "..", "package.json")
+        with open(package, encoding="utf-8") as f:
+            return str(json.load(f).get("version") or "unknown")
+    except (OSError, ValueError):
+        return "unknown"
+
+
+def sanitize_project_name(name: str) -> str:
+    """Make a user-supplied project name safe as a folder name on Windows/macOS/Linux.
+    Strips an existing .flnote suffix so 'Foo.flnote' never becomes 'Foo.flnote.flnote'."""
+    name = display_name(str(name or "").strip())
+    name = re.sub(r'[<>:"/\\|?*\x00-\x1f]', "", name)
+    name = re.sub(r"\s+", " ", name).strip()
+    # Windows forbids names ending in a dot or space (silently truncates them).
+    name = name.rstrip(". ")
+    return name or "Untitled"
+
+
+def display_name(folder_name: str) -> str:
+    """Folder name -> human project name ('MyNovel.flnote' -> 'MyNovel')."""
+    base = str(folder_name or "")
+    if base.lower().endswith(PROJECT_EXT):
+        base = base[: -len(PROJECT_EXT)]
+    return base
+
+
+def with_ext(project_name: str) -> str:
+    """Human project name -> folder name ('MyNovel' -> 'MyNovel.flnote')."""
+    return sanitize_project_name(project_name) + PROJECT_EXT
+
+
+def next_available_project_dir(workspace_path: str, base_name: str) -> str:
+    """First non-colliding '{name}.flnote' path in the workspace."""
+    folder = with_ext(base_name)
+    stem = display_name(folder)
+    target = os.path.join(workspace_path, folder)
+    i = 2
+    while os.path.exists(target):
+        target = os.path.join(workspace_path, f"{stem} ({i}){PROJECT_EXT}")
+        i += 1
+    return target
+
+
+def is_fleshnote_project(dir_path: str) -> bool:
+    """Marker-based detection (independent of the folder's name/extension)."""
+    return os.path.isdir(dir_path) and (
+        os.path.exists(os.path.join(dir_path, "fleshnote.db"))
+        or os.path.exists(os.path.join(dir_path, "fleshnote_project.json"))
+    )
+
+
+def is_legacy_folder(dir_path: str) -> bool:
+    """True if it's a valid project folder without the .flnote suffix."""
+    return is_fleshnote_project(dir_path) and not os.path.basename(dir_path).lower().endswith(PROJECT_EXT)
+
+
+# ── chapter md_filename safety (path-traversal guard) ───────────────────────
+#
+# `chapters.md_filename` is untrusted data: it can arrive from a synced
+# change_log row or inside a hostile project's SQLite file. Local generation
+# always produces safe flat names (ch_NNN_slug_uuid.md), so anything else is
+# hostile. Every file sink must go through safe_md_path(), which validates the
+# name AND canonicalize-contains the resolved path inside the project's md/.
+
+# Windows device names, blocked regardless of extension on the Win32 namespace.
+RESERVED_WINDOWS_NAMES = (
+    {"CON", "PRN", "AUX", "NUL"}
+    | {f"COM{i}" for i in range(1, 10)}
+    | {f"LPT{i}" for i in range(1, 10)}
+)
+MAX_MD_FILENAME_LEN = 200
+
+# Single component, no separators / drive-stream colons / Win-illegal chars,
+# ending in .md (case-insensitive — Windows filesystems are case-insensitive).
+_MD_NAME_RE = re.compile(r'^[^/\\:*?"<>|]+\.md$', re.IGNORECASE)
+
+
+def md_filename_ok(md_filename) -> bool:
+    """True if md_filename is a safe flat chapter-file basename: one path
+    component ending in .md, no '..' escape, no separators, colons, control
+    chars, trailing dots/spaces, empty/reserved stems, overlong names."""
+    if not md_filename or not isinstance(md_filename, str):
+        return False
+    name = unicodedata.normalize("NFC", md_filename)
+    if len(name) > MAX_MD_FILENAME_LEN or "\x00" in name:
+        return False
+    if len(name.encode("utf-8")) > 255:   # CJK chars count as characters, not bytes
+        return False
+    if any(ord(c) < 0x20 for c in name):
+        return False
+    if not _MD_NAME_RE.match(name):
+        return False  # separators, ':', Win-illegal chars, bad/absent suffix
+    stem = name[:-3]  # strip the '.md' suffix (regex guarantees it is present)
+    if stem != stem.rstrip(" ."):
+        return False  # Win32 strips trailing dots/spaces: 'CON .md' is the CON device
+    if not stem.strip(" ."):
+        return False
+    # device-name parsing applies to the segment before the FIRST dot, so
+    # 'con.x.md' is as dangerous as 'CON.md'
+    if name.split(".")[0].upper().rstrip(" .") in RESERVED_WINDOWS_NAMES:
+        return False
+    return True
+
+
+def safe_md_path(base_md_dir, md_filename):
+    """Validate a chapters.md_filename value and return the absolute path it
+    may be read/written at — guaranteed (via realpath containment) to stay
+    inside base_md_dir even if a same-named symlink is planted. Returns None
+    for any unsafe or non-basename value; callers must fail closed."""
+    if not md_filename_ok(md_filename):
+        return None
+    name = unicodedata.normalize("NFC", md_filename)
+    real_md = os.path.realpath(base_md_dir)
+    real_target = os.path.realpath(os.path.join(real_md, name))
+    try:
+        # normcase makes the containment check case-insensitive on Windows
+        # (commonpath preserves the input case) and is a no-op elsewhere.
+        common = os.path.commonpath([real_md, real_target])
+        if os.path.normcase(common) != os.path.normcase(real_md):
+            return None
+    except ValueError:
+        return None
+    return real_target
+
+
+# ── consistent SQLite snapshots (the WAL fix) ────────────────────────────────
+
+def snapshot_db(project_path: str) -> str:
+    """Return a path to a consistent temp-file snapshot of the project's
+    fleshnote.db, using SQLite's backup API (WAL-aware, no torn state).
+    Caller must os.remove() the returned file when done."""
+    src = os.path.join(project_path, "fleshnote.db")
+    if not os.path.exists(src):
+        raise FileNotFoundError(f"Database not found: {src}")
+    fd, tmp = tempfile.mkstemp(prefix="fleshnote_db_", suffix=".db")
+    os.close(fd)
+    try:
+        os.remove(tmp)  # backup() needs a non-existent or empty target file
+    except OSError:
+        pass
+    src_conn = sqlite3.connect(src)
+    dst_conn = sqlite3.connect(tmp)
+    try:
+        src_conn.backup(dst_conn)
+        dst_conn.commit()
+    finally:
+        dst_conn.close()
+        src_conn.close()
+    return tmp
+
+
+def backup_db_file(project_path: str, backup_path: str) -> None:
+    """Consistent {project_path}/fleshnote.db -> backup_path (snapshot copy).
+    Use for .bak files before migrations / sync apply."""
+    tmp = snapshot_db(project_path)
+    try:
+        shutil.move(tmp, backup_path)
+    finally:
+        if os.path.exists(tmp):
+            try:
+                os.remove(tmp)
+            except OSError:
+                pass
+
+
+def restore_db_file(project_path: str, backup_path: str) -> None:
+    """Restore a backup over the live db — purges stale -wal/-shm files first,
+    otherwise a leftover WAL can resurrect a torn state."""
+    db_path = os.path.join(project_path, "fleshnote.db")
+    for suffix in ("-wal", "-shm"):
+        stale = db_path + suffix
+        if os.path.exists(stale):
+            try:
+                os.remove(stale)
+            except OSError:
+                pass
+    shutil.copy2(backup_path, db_path)
+
+
+# ── archive creation ────────────────────────────────────────────────────────
+
+def _zip_walk_files(project_path: str):
+    """Yield (abs_path, rel_archive_name) for every file that travels in a
+    .flnote archive: descriptor, snapshot-safe db, md/, assets/. Skips junk
+    and symlinks — a file symlink would leak external target content into
+    a shareable archive."""
+    yield os.path.join(project_path, "fleshnote_project.json"), "fleshnote_project.json"
+    for sub in ("md", "assets"):
+        sub_dir = os.path.join(project_path, sub)
+        if not os.path.isdir(sub_dir):
+            continue
+        for root, _dirs, files in os.walk(sub_dir):
+            for fname in files:
+                if fname.lower() in JUNK_NAMES or fname.lower().endswith(".bak"):
+                    continue
+                full = os.path.join(root, fname)
+                if os.path.islink(full):
+                    continue
+                yield full, os.path.relpath(full, project_path).replace(os.sep, "/")
+
+
+def zip_project(project_path: str, dest_zip_path: str) -> str:
+    """Write the project as a single-file .flnote ZIP to dest_zip_path.
+    The db is snapshotted via the backup API first — never zip a live WAL db."""
+    os.makedirs(os.path.dirname(dest_zip_path) or ".", exist_ok=True)
+    db_path = os.path.join(project_path, "fleshnote.db")
+    snapshot_tmp = snapshot_db(project_path) if os.path.exists(db_path) else None
+    try:
+        with zipfile.ZipFile(dest_zip_path, "w", zipfile.ZIP_DEFLATED) as zf:
+            if snapshot_tmp and os.path.isfile(snapshot_tmp):
+                zf.write(snapshot_tmp, "fleshnote.db")
+            for full, rel in _zip_walk_files(project_path):
+                if os.path.isfile(full):
+                    zf.write(full, rel)
+    finally:
+        if snapshot_tmp and os.path.exists(snapshot_tmp):
+            try:
+                os.remove(snapshot_tmp)
+            except OSError:
+                pass
+    return dest_zip_path
+
+
+# ── hardened archive extraction ─────────────────────────────────────────────
+
+def _member_type_ok(info: zipfile.ZipInfo) -> bool:
+    """Reject symlinks/hardlinks/fifos/devices. Entries without POSIX type bits
+    (Windows zip tools often store 0, or permission bits only) are treated as
+    regular files — zipfile cannot materialize real symlinks without the
+    symlink type bit anyway."""
+    mode = info.external_attr >> 16
+    ftype = mode & 0o170000
+    return ftype in (0, 0o100000, 0o40000)
+
+
+def validate_archive(zf: zipfile.ZipFile, allowlist: bool = True):
+    """Validate every member of an open .flnote archive. Returns the extraction
+    plan: list of (ZipInfo, normalized_arcname). Raises ValueError on anything
+    unsafe: path escapes, bombs, symlinks, duplicates, unexpected entries."""
+    infos = [i for i in zf.infolist() if not i.is_dir()]
+    if len(infos) > MAX_ARCHIVE_FILES:
+        raise ValueError("Archive contains too many files")
+
+    # Optional single root folder ('MyNovel.flnote/…') — strip it so both
+    # archive shapes (root-level and nested) normalize to the same tree.
+    firsts = set()
+    for i in infos:
+        firsts.add(i.filename.replace("\\", "/").split("/", 1)[0])
+    root_prefix = ""
+    if len(firsts) == 1:
+        only = next(iter(firsts))
+        if (only not in ALLOWED_TOP_FILES and only not in ALLOWED_TOP_DIRS
+                and only not in JUNK_NAMES and only.endswith(PROJECT_EXT)):
+            root_prefix = only + "/"
+
+    plan = []
+    seen = set()
+    total = 0
+    for info in infos:
+        name = info.filename.replace("\\", "/")
+        if not name or name.startswith("/") or "\x00" in name:
+            raise ValueError(f"Unsafe path in archive: {info.filename}")
+        parts = name.split("/")
+        if any(p == ".." for p in parts):
+            raise ValueError(f"Unsafe path in archive: {info.filename}")
+        drive = parts[0]
+        if len(drive) >= 2 and drive[1] == ":":
+            raise ValueError(f"Absolute path in archive: {info.filename}")
+        if not _member_type_ok(info):
+            raise ValueError(f"Unsupported file type in archive: {info.filename}")
+
+        arcname = name[len(root_prefix):] if root_prefix and name.startswith(root_prefix) else name
+        top = arcname.split("/", 1)[0]
+        if allowlist:
+            base = top.lower()
+            if base in JUNK_NAMES or base.endswith(".bak"):
+                continue  # junk travels sometimes; skip silently
+            if top not in ALLOWED_TOP_FILES and top not in ALLOWED_TOP_DIRS:
+                raise ValueError(f"Unexpected content in archive: {info.filename}")
+
+        arcname = unicodedata.normalize("NFC", arcname)
+        if arcname in seen:
+            raise ValueError(f"Duplicate entry in archive: {arcname}")
+        seen.add(arcname)
+
+        total += info.file_size
+        if total > MAX_ARCHIVE_UNCOMPRESSED:
+            raise ValueError("Archive expands beyond the size limit (possible zip bomb)")
+        if info.file_size > MAX_ARCHIVE_SINGLE_FILE:
+            raise ValueError(f"Single file too large in archive: {info.filename}")
+        plan.append((info, arcname))
+    return plan
+
+
+def safe_extract_zip(zip_path: str, dest_dir: str, allowlist: bool = True) -> str:
+    """Extract a .flnote archive into dest_dir with full validation.
+    Returns dest_dir. Raises ValueError on any unsafe content."""
+    dest_dir = os.path.realpath(dest_dir)
+    os.makedirs(dest_dir, exist_ok=True)
+    with zipfile.ZipFile(zip_path) as zf:
+        plan = validate_archive(zf, allowlist=allowlist)
+        for info, arcname in plan:
+            target = os.path.realpath(os.path.join(dest_dir, arcname))
+            if target != dest_dir and not target.startswith(dest_dir + os.sep):
+                raise ValueError(f"Unsafe path in archive: {info.filename}")
+            os.makedirs(os.path.dirname(target), exist_ok=True)
+            with zf.open(info) as src, open(target, "wb") as out:
+                shutil.copyfileobj(src, out, length=1024 * 1024)
+    return dest_dir

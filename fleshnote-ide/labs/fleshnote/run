@@ -1,0 +1,32 @@
+#!/usr/bin/env bash
+# Starts FleshNote's backend for Seneschal Labs (seneschal-lab@fleshnote, as the user labs, which
+# may only write data/). Python 3.13 (huspacy wants < 3.14) and the packages live in data/: made
+# on the first start and again when backend/requirements.txt changes, so a redeploy, which
+# replaces everything else in this folder, never costs a reinstall.
+set -euo pipefail
+cd "$(dirname "$0")"
+DATA=$PWD/data
+export UV_PYTHON_INSTALL_DIR=$DATA/python UV_CACHE_DIR=$DATA/cache
+
+if [ ! -x "$DATA/uv/bin/uv" ]; then
+  echo "getting uv"
+  python3 -m venv "$DATA/uv"
+  "$DATA/uv/bin/pip" install -q uv
+fi
+want=$(sha256sum backend/requirements.txt | cut -d' ' -f1)
+if [ "$(cat "$DATA/venv.requirements" 2>/dev/null)" != "$want" ]; then
+  echo "installing the Python packages (first start, or the requirements changed)"
+  rm -rf "$DATA/venv"
+  "$DATA/uv/bin/uv" venv -q --python 3.13 "$DATA/venv"
+  "$DATA/uv/bin/uv" pip install -q --python "$DATA/venv/bin/python" -r backend/requirements.txt
+  echo "$want" > "$DATA/venv.requirements"
+fi
+
+# The port, and whether this is a demo copy, come from the manifest (the demo shares this script).
+port=$(sed -n 's/^backend: *[0-9.]*:\([0-9]*\).*/\1/p' experiment.yaml)
+if grep -q '^demo: *true' experiment.yaml; then export FLESHNOTE_WEB_DEMO=1; fi
+export FLESHNOTE_WEB_ROOT=$DATA
+export FLESHNOTE_DEVICE_ID=labs-homeserver
+export FLESHNOTE_APP_VERSION=$(cat version 2>/dev/null || echo web)
+cd backend
+exec "$DATA/venv/bin/python" web_main.py --port "${port:?no backend port in experiment.yaml}"

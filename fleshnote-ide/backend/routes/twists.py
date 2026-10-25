@@ -9,6 +9,7 @@ import json
 import sqlite3
 from fastapi import APIRouter, HTTPException
 from pydantic import BaseModel
+from project_io import safe_md_path
 
 router = APIRouter()
 
@@ -22,19 +23,19 @@ class TwistCreate(BaseModel):
     title: str
     description: str = ""
     twist_type: str = ""            # 'identity', 'motive', 'event', 'ability', 'relationship'
-    reveal_chapter_id: int | None = None
-    characters_who_know: list[int] = []
+    reveal_chapter_id: str | int | None = None
+    characters_who_know: list[str | int] = []
     notes: str = ""
 
 
 class TwistUpdate(BaseModel):
     project_path: str
-    twist_id: int
+    twist_id: str | int
     title: str | None = None
     description: str | None = None
     twist_type: str | None = None
-    reveal_chapter_id: int | None = None
-    characters_who_know: list[int] | None = None
+    reveal_chapter_id: str | int | None = None
+    characters_who_know: list[str | int] | None = None
     status: str | None = None        # 'planned', 'hinted', 'revealed'
     notes: str | None = None
 
@@ -43,7 +44,8 @@ def _get_db(project_path: str):
     db_path = os.path.join(project_path, "fleshnote.db")
     if not os.path.exists(db_path):
         raise HTTPException(status_code=404, detail="Database not found")
-    conn = sqlite3.connect(db_path)
+    conn = sqlite3.connect(db_path, timeout=30.0)
+    conn.execute("PRAGMA busy_timeout = 30000;")
     conn.row_factory = sqlite3.Row
     return conn
 
@@ -65,7 +67,7 @@ def _row_to_dict(row):
 def get_twists(req: ProjectPath):
     conn = _get_db(req.project_path)
     cursor = conn.cursor()
-    cursor.execute("SELECT * FROM twists ORDER BY id ASC")
+    cursor.execute("SELECT * FROM twists WHERE deleted = 0 ORDER BY id ASC")
     rows = cursor.fetchall()
     conn.close()
     return {"twists": [_row_to_dict(row) for row in rows]}
@@ -78,7 +80,7 @@ def get_twists_for_planner(req: ProjectPath):
     cursor = conn.cursor()
 
     # All twists
-    cursor.execute("SELECT * FROM twists ORDER BY id ASC")
+    cursor.execute("SELECT * FROM twists WHERE deleted = 0 ORDER BY id ASC")
     twist_rows = cursor.fetchall()
 
     # All foreshadowings
@@ -87,12 +89,13 @@ def get_twists_for_planner(req: ProjectPath):
                c.chapter_number, c.word_count
         FROM foreshadowings f
         LEFT JOIN chapters c ON c.id = f.chapter_id
+        WHERE f.deleted = 0 AND (c.deleted = 0 OR c.deleted IS NULL)
         ORDER BY f.twist_id ASC, c.chapter_number ASC
     """)
     fs_rows = cursor.fetchall()
 
     # Chapter word counts for position calculation
-    cursor.execute("SELECT id, chapter_number, word_count, target_word_count FROM chapters ORDER BY chapter_number ASC")
+    cursor.execute("SELECT id, chapter_number, word_count, target_word_count FROM chapters WHERE deleted = 0 ORDER BY chapter_number ASC")
     ch_rows = cursor.fetchall()
     conn.close()
 
@@ -136,18 +139,54 @@ def create_twist(req: TwistCreate):
     conn = _get_db(req.project_path)
     cursor = conn.cursor()
 
+    # Deduplication guard: if an active twist with identical title was created in the last 5 seconds,
+    # return it to protect against rapid multi-click/duplicate submission spikes
     cursor.execute("""
-        INSERT INTO twists (title, description, twist_type, reveal_chapter_id,
+        SELECT id, title, description, twist_type, reveal_chapter_id, notes
+        FROM twists
+        WHERE LOWER(TRIM(title)) = LOWER(TRIM(?))
+          AND deleted = 0
+          AND datetime(created_at) >= datetime('now', '-5 seconds')
+        ORDER BY created_at DESC
+        LIMIT 1
+    """, (req.title,))
+    recent = cursor.fetchone()
+    if recent:
+        conn.close()
+        return {
+            "twist": {
+                "id": recent["id"],
+                "title": recent["title"],
+                "description": recent["description"],
+                "twist_type": recent["twist_type"],
+                "reveal_chapter_id": recent["reveal_chapter_id"],
+                "notes": recent["notes"],
+            }
+        }
+
+    import uuid
+    twist_id = str(uuid.uuid4())
+    cursor.execute("""
+        INSERT INTO twists (id, title, description, twist_type, reveal_chapter_id,
                              characters_who_know, notes)
-        VALUES (?, ?, ?, ?, ?, ?)
+        VALUES (?, ?, ?, ?, ?, ?, ?)
     """, (
-        req.title, req.description, req.twist_type,
+        twist_id, req.title, req.description, req.twist_type,
         req.reveal_chapter_id,
         json.dumps(req.characters_who_know) if req.characters_who_know else None,
         req.notes,
     ))
 
-    twist_id = cursor.lastrowid
+    from sync_core import log_change
+    log_change(cursor, "twists", twist_id, {
+        "title": req.title,
+        "description": req.description,
+        "twist_type": req.twist_type,
+        "reveal_chapter_id": req.reveal_chapter_id,
+        "characters_who_know": req.characters_who_know,
+        "notes": req.notes,
+    })
+
     conn.commit()
 
     cursor.execute("SELECT * FROM twists WHERE id = ?", (twist_id,))
@@ -165,6 +204,7 @@ def update_twist(req: TwistUpdate):
 
     fields = []
     values = []
+    changes = {}
 
     for field_name in ["title", "description", "twist_type",
                        "reveal_chapter_id", "status", "notes"]:
@@ -172,10 +212,12 @@ def update_twist(req: TwistUpdate):
         if val is not None:
             fields.append(f"{field_name} = ?")
             values.append(val)
+            changes[field_name] = val
 
     if req.characters_who_know is not None:
         fields.append("characters_who_know = ?")
         values.append(json.dumps(req.characters_who_know))
+        changes["characters_who_know"] = req.characters_who_know
 
     if not fields:
         conn.close()
@@ -187,6 +229,10 @@ def update_twist(req: TwistUpdate):
         f"UPDATE twists SET {', '.join(fields)} WHERE id = ?",
         values
     )
+
+    from sync_core import log_change
+    log_change(cursor, "twists", req.twist_id, changes)
+
     conn.commit()
 
     cursor.execute("SELECT * FROM twists WHERE id = ?", (req.twist_id,))
@@ -201,7 +247,7 @@ def update_twist(req: TwistUpdate):
 
 class TwistDetail(BaseModel):
     project_path: str
-    twist_id: int
+    twist_id: str | int
 
 
 @router.post("/api/project/twist/detail")
@@ -321,7 +367,7 @@ def get_twist_detail(req: TwistDetail):
 
 class TwistDelete(BaseModel):
     project_path: str
-    twist_id: int
+    twist_id: str | int
 
 
 @router.post("/api/project/twist/delete")
@@ -333,10 +379,13 @@ def delete_twist(req: TwistDelete):
     cursor.execute("SELECT id, md_filename FROM chapters")
     chapters = cursor.fetchall()
     tid = str(req.twist_id)
-    pattern = re.compile(r'\{\{(?:twist|foreshadow):' + tid + r'\|([^}]+)\}\}')
+    pattern = re.compile(r'\{\{(?:twist|foreshadow):' + re.escape(tid) + r'\|([^}]+)\}\}')
     for ch in chapters:
-        md_path = os.path.join(req.project_path, "md", ch["md_filename"])
-        if not os.path.exists(md_path):
+        md_filename = ch["md_filename"]
+        if not md_filename:
+            continue
+        md_path = safe_md_path(os.path.join(req.project_path, "md"), md_filename)
+        if not md_path or not os.path.exists(md_path):
             continue
         with open(md_path, "r", encoding="utf-8") as f:
             content = f.read()
@@ -345,8 +394,12 @@ def delete_twist(req: TwistDelete):
             with open(md_path, "w", encoding="utf-8") as f:
                 f.write(new_content)
 
+    import datetime
+    from sync_core import log_soft_delete
+    now = datetime.datetime.utcnow().isoformat() + "Z"
+
     # Check if there are foreshadowings to trigger "retcon_achieved"
-    cursor.execute("SELECT COUNT(*) as f_count FROM foreshadowings WHERE twist_id = ?", (req.twist_id,))
+    cursor.execute("SELECT COUNT(*) as f_count FROM foreshadowings WHERE twist_id = ? AND deleted = 0", (req.twist_id,))
     f_count = cursor.fetchone()["f_count"]
     if f_count > 0:
         cursor.execute("SELECT stat_value FROM stats WHERE stat_key = 'retcon_achieved'")
@@ -355,8 +408,17 @@ def delete_twist(req: TwistDelete):
         else:
             cursor.execute("INSERT INTO stats (stat_key, stat_value) VALUES ('retcon_achieved', '1')")
 
-    cursor.execute("DELETE FROM foreshadowings WHERE twist_id = ?", (req.twist_id,))
-    cursor.execute("DELETE FROM twists WHERE id = ?", (req.twist_id,))
+    # Soft delete foreshadowings
+    cursor.execute("SELECT id FROM foreshadowings WHERE twist_id = ? AND deleted = 0", (req.twist_id,))
+    fs_rows = cursor.fetchall()
+    for r in fs_rows:
+        cursor.execute("UPDATE foreshadowings SET deleted = 1, deleted_at = ? WHERE id = ?", (now, r["id"]))
+        log_soft_delete(cursor, "foreshadowings", r["id"])
+
+    # Soft delete the twist
+    cursor.execute("UPDATE twists SET deleted = 1, deleted_at = ? WHERE id = ?", (now, req.twist_id))
+    log_soft_delete(cursor, "twists", req.twist_id)
+
     conn.commit()
     conn.close()
     return {"status": "ok"}

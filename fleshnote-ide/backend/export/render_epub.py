@@ -1,85 +1,63 @@
-from ebooklib import epub
-import os
-import re
 import io
+import uuid
 
-def render(project_title, author_name, chapters, content_mode) -> bytes:
-    """
-    Renders chapters to a reflowable EPUB e-book.
-    """
+from ebooklib import epub
+
+from export.render_html import _chapter_html, esc
+
+_CSS = """
+body { font-family: serif; line-height: 1.5; }
+h1.book-title { text-align: center; font-weight: normal; margin-top: 30%; }
+p.author { text-align: center; font-style: italic; text-indent: 0; }
+.chapter-label { text-align: center; font-variant: small-caps; letter-spacing: 0.1em; text-indent: 0; margin: 3em 0 0; }
+h2.chapter-title { text-align: center; font-weight: normal; margin: 0.3em 0 1.5em; }
+h3 { text-align: center; font-size: 1em; }
+p { margin: 0; text-indent: 1.3em; }
+p.first, p.scene { text-indent: 0; }
+p.scene { text-align: center; margin: 1em 0; }
+blockquote { margin: 0.8em 1.5em; }
+.note-ref { font-size: 0.7em; vertical-align: super; line-height: 0; }
+.footnotes { margin-top: 2em; font-size: 0.85em; border-top: 1px solid #999; }
+.entity.char, .entity.group, .twist { font-weight: bold; }
+.entity.loc, .entity.item, .entity.lore, .foreshadow, .epistemic { font-style: italic; }
+a { text-decoration: none; }
+"""
+
+
+def render(project_title, author_name, chapters, lang="en", identifier=None, cover_png=None) -> bytes:
+    """A reflowable EPUB 3 with a title page, a table of contents and one file per
+    chapter. cover_png (bytes) becomes the book's cover image."""
     book = epub.EpubBook()
-
-    # Set metadata
-    book.set_identifier(f"fleshnote-project-{project_title.lower().replace(' ', '-')}")
+    book.set_identifier(identifier or "urn:uuid:%s" % uuid.uuid4())
     book.set_title(project_title)
-    book.set_language('en')
+    book.set_language(lang or "en")
     if author_name:
         book.add_author(author_name)
+    if cover_png:
+        book.set_cover("images/cover.png", cover_png)
 
-    # Add TOC and Spine lists
-    book_spine = ['nav']
-    toc = []
+    style = epub.EpubItem(uid="style", file_name="style/book.css", media_type="text/css", content=_CSS)
+    book.add_item(style)
 
-    # Process Chapters
-    for idx, chapter in enumerate(chapters):
-        title = chapter.get('title', f"Chapter {idx+1}")
-        file_name = f"chap_{idx+1:03d}.xhtml"
-        
-        # Create chapter object
-        c = epub.EpubHtml(title=title, file_name=file_name, lang='en')
-        
-        content_html = []
-        content_html.append(f"<h1>{title}</h1>")
-        
-        text = chapter.get('text', '')
-        footnotes = chapter.get('footnotes', [])
+    title_page = epub.EpubHtml(title=project_title, file_name="title.xhtml", lang=lang)
+    title_page.content = '<h1 class="book-title">%s</h1>%s' % (
+        esc(project_title), '<p class="author">%s</p>' % esc(author_name) if author_name else "")
+    title_page.add_item(style)
+    book.add_item(title_page)
 
-        # Replace footnote ref placeholders with inline superscript links
-        for i, fn in enumerate(footnotes):
-            fn_idx = i + 1
-            text = text.replace(
-                f"[[FOOTNOTE_REF:{fn_idx}]]",
-                f'<sup><a href="#fn{fn_idx}" id="ref{fn_idx}" epub:type="noteref">[{fn_idx}]</a></sup>'
-            )
+    spine, toc = (["cover"] if cover_png else []) + [title_page, "nav"], []
+    for idx, ch in enumerate(chapters):
+        item = epub.EpubHtml(title=ch.title, file_name="chap_%03d.xhtml" % (idx + 1), lang=lang)
+        item.content = _chapter_html(idx, ch)
+        item.add_item(style)
+        book.add_item(item)
+        spine.append(item)
+        toc.append(item)
 
-        # Clean remaining markers
-        text = re.sub(r'\[\[ENTITY_REF:[^:]+:([^\]]+)\]\]', r'\1', text)
-        text = re.sub(r'\[\[ENTITY_LINK:[^:]+:[^:]+:([^:]+):[^\]]*\]\]', r'\1', text)
-        text = re.sub(r'\[\[TWIST_REF:([^:]+):([^\]]+)\]\]', r'\2', text)
-        text = re.sub(r'\{(secret|knows|believes):([^}]+)\}', r'', text)
-
-        if '<p>' not in text:
-            blocks = text.split('\n')
-            for b in blocks:
-                if b.strip():
-                    content_html.append(f"<p>{b.strip()}</p>")
-        else:
-            content_html.append(text)
-
-        # Per-chapter footnotes as EPUB aside
-        if footnotes:
-            content_html.append('<aside epub:type="footnote">')
-            content_html.append('<ol class="footnotes">')
-            for i, fn in enumerate(footnotes):
-                fn_idx = i + 1
-                content_html.append(f'<li id="fn{fn_idx}"><a href="#ref{fn_idx}">^</a> {fn}</li>')
-            content_html.append('</ol>')
-            content_html.append('</aside>')
-
-        c.content = u"<html><body>" + u"".join(content_html) + u"</body></html>"
-        
-        # Add to book
-        book.add_item(c)
-        book_spine.append(c)
-        toc.append(epub.Link(file_name, title, f"chap{idx+1}"))
-
-    # Set TOC and Spine
     book.toc = tuple(toc)
-    book.spine = book_spine
+    book.spine = spine
     book.add_item(epub.EpubNav())
     book.add_item(epub.EpubNcx())
-
-    # Write to buffer
     out = io.BytesIO()
     epub.write_epub(out, book, {})
     return out.getvalue()

@@ -1,0 +1,795 @@
+{
+  "lang": "en",
+  "kind": "emotion_adverb",
+  "version": 1,
+  "entries": [
+    {
+      "id": "en.emoadv.angrily",
+      "lemma": "angrily",
+      "pos": [
+        "ADV"
+      ],
+      "kind": "emotion_adverb",
+      "strength": "strong",
+      "valence": -0.8,
+      "arousal": 0.8,
+      "emotions": {
+        "anger": 0.9
+      },
+      "source": "migrated:janitor.py",
+      "version": 1,
+      "felt": "state"
+    },
+    {
+      "id": "en.emoadv.sadly",
+      "lemma": "sadly",
+      "pos": [
+        "ADV"
+      ],
+      "kind": "emotion_adverb",
+      "strength": "strong",
+      "valence": -0.75,
+      "arousal": 0.35,
+      "emotions": {
+        "sadness": 0.85
+      },
+      "source": "migrated:janitor.py",
+      "version": 1,
+      "felt": "state"
+    },
+    {
+      "id": "en.emoadv.happily",
+      "lemma": "happily",
+      "pos": [
+        "ADV"
+      ],
+      "kind": "emotion_adverb",
+      "strength": "strong",
+      "valence": 0.85,
+      "arousal": 0.65,
+      "emotions": {
+        "joy": 0.9
+      },
+      "source": "migrated:janitor.py",
+      "version": 1,
+      "felt": "state"
+    },
+    {
+      "id": "en.emoadv.nervously",
+      "lemma": "nervously",
+      "pos": [
+        "ADV"
+      ],
+      "kind": "emotion_adverb",
+      "strength": "strong",
+      "valence": -0.55,
+      "arousal": 0.6,
+      "emotions": {
+        "fear": 0.7
+      },
+      "source": "migrated:janitor.py",
+      "version": 1,
+      "felt": "state"
+    },
+    {
+      "id": "en.emoadv.anxiously",
+      "lemma": "anxiously",
+      "pos": [
+        "ADV"
+      ],
+      "kind": "emotion_adverb",
+      "strength": "strong",
+      "valence": -0.65,
+      "arousal": 0.7,
+      "emotions": {
+        "fear": 0.75
+      },
+      "source": "migrated:janitor.py",
+      "version": 1,
+      "felt": "state"
+    },
+    {
+      "id": "en.emoadv.bitterly",
+      "lemma": "bitterly",
+      "pos": [
+        "ADV"
+      ],
+      "kind": "emotion_adverb",
+      "strength": "strong",
+      "valence": -0.7,
+      "arousal": 0.65,
+      "emotions": {
+        "anger": 0.7,
+        "disgust": 0.5
+      },
+      "source": "migrated:janitor.py",
+      "version": 1,
+      "felt": "state"
+    },
+    {
+      "id": "en.emoadv.jealously",
+      "lemma": "jealously",
+      "pos": [
+        "ADV"
+      ],
+      "kind": "emotion_adverb",
+      "strength": "strong",
+      "valence": -0.7,
+      "arousal": 0.65,
+      "emotions": {
+        "disgust": 0.7,
+        "anger": 0.6
+      },
+      "source": "migrated:janitor.py",
+      "version": 1,
+      "felt": "state"
+    },
+    {
+      "id": "en.emoadv.desperately",
+      "lemma": "desperately",
+      "pos": [
+        "ADV"
+      ],
+      "kind": "emotion_adverb",
+      "strength": "strong",
+      "valence": -0.8,
+      "arousal": 0.8,
+      "emotions": {
+        "fear": 0.7,
+        "sadness": 0.7
+      },
+      "source": "migrated:janitor.py",
+      "version": 1,
+      "felt": "state"
+    },
+    {
+      "id": "en.emoadv.proudly",
+      "lemma": "proudly",
+      "pos": [
+        "ADV"
+      ],
+      "kind": "emotion_adverb",
+      "strength": "strong",
+      "valence": 0.7,
+      "arousal": 0.6,
+      "emotions": {
+        "joy": 0.7,
+        "trust": 0.6
+      },
+      "source": "migrated:janitor.py",
+      "version": 1,
+      "felt": "state",
+      "note": "also trait reading"
+    },
+    {
+      "id": "en.emoadv.resentfully",
+      "lemma": "resentfully",
+      "pos": [
+        "ADV"
+      ],
+      "kind": "emotion_adverb",
+      "strength": "strong",
+      "valence": -0.7,
+      "arousal": 0.6,
+      "emotions": {
+        "anger": 0.8
+      },
+      "source": "migrated:janitor.py",
+      "version": 1,
+      "felt": "state"
+    },
+    {
+      "id": "en.emoadv.gleefully",
+      "lemma": "gleefully",
+      "pos": [
+        "ADV"
+      ],
+      "kind": "emotion_adverb",
+      "strength": "strong",
+      "valence": 0.8,
+      "arousal": 0.75,
+      "emotions": {
+        "joy": 0.85
+      },
+      "source": "migrated:janitor.py",
+      "version": 1,
+      "felt": "state"
+    },
+    {
+      "id": "en.emoadv.miserably",
+      "lemma": "miserably",
+      "pos": [
+        "ADV"
+      ],
+      "kind": "emotion_adverb",
+      "strength": "strong",
+      "valence": -0.8,
+      "arousal": 0.35,
+      "emotions": {
+        "sadness": 0.85
+      },
+      "source": "migrated:janitor.py",
+      "version": 1,
+      "felt": "state"
+    },
+    {
+      "id": "en.emoadv.furiously",
+      "lemma": "furiously",
+      "pos": [
+        "ADV"
+      ],
+      "kind": "emotion_adverb",
+      "strength": "strong",
+      "valence": -0.9,
+      "arousal": 0.95,
+      "emotions": {
+        "anger": 0.95
+      },
+      "source": "migrated:janitor.py",
+      "version": 1,
+      "felt": "state"
+    },
+    {
+      "id": "en.emoadv.astonishedly",
+      "lemma": "astonishedly",
+      "pos": [
+        "ADV"
+      ],
+      "kind": "emotion_adverb",
+      "strength": "strong",
+      "valence": 0.3,
+      "arousal": 0.7,
+      "emotions": {
+        "surprise": 0.8
+      },
+      "source": "curated:gemini-2026-09",
+      "version": 1,
+      "spell_ok": "literary adverb formed from astonished meaning with astonishment",
+      "felt": "state"
+    },
+    {
+      "id": "en.emoadv.scornfully",
+      "lemma": "scornfully",
+      "pos": [
+        "ADV"
+      ],
+      "kind": "emotion_adverb",
+      "strength": "strong",
+      "valence": -0.7,
+      "arousal": 0.6,
+      "emotions": {
+        "disgust": 0.8
+      },
+      "source": "curated:gemini-2026-09",
+      "version": 1,
+      "felt": "state"
+    },
+    {
+      "id": "en.emoadv.disdainfully",
+      "lemma": "disdainfully",
+      "pos": [
+        "ADV"
+      ],
+      "kind": "emotion_adverb",
+      "strength": "strong",
+      "valence": -0.7,
+      "arousal": 0.5,
+      "emotions": {
+        "disgust": 0.8
+      },
+      "source": "curated:gemini-2026-09",
+      "version": 1,
+      "felt": "state"
+    },
+    {
+      "id": "en.emoadv.fearfully",
+      "lemma": "fearfully",
+      "pos": [
+        "ADV"
+      ],
+      "kind": "emotion_adverb",
+      "strength": "strong",
+      "valence": -0.7,
+      "arousal": 0.7,
+      "emotions": {
+        "fear": 0.8
+      },
+      "source": "curated:gemini-2026-09",
+      "version": 1,
+      "felt": "state"
+    },
+    {
+      "id": "en.emoadv.timidly",
+      "lemma": "timidly",
+      "pos": [
+        "ADV"
+      ],
+      "kind": "emotion_adverb",
+      "strength": "strong",
+      "valence": -0.3,
+      "arousal": 0.4,
+      "emotions": {
+        "fear": 0.8
+      },
+      "source": "curated:gemini-2026-09",
+      "version": 1,
+      "felt": "trait"
+    },
+    {
+      "id": "en.emoadv.sorrowfully",
+      "lemma": "sorrowfully",
+      "pos": [
+        "ADV"
+      ],
+      "kind": "emotion_adverb",
+      "strength": "strong",
+      "valence": -0.8,
+      "arousal": 0.4,
+      "emotions": {
+        "sadness": 0.8
+      },
+      "source": "curated:gemini-2026-09",
+      "version": 1,
+      "felt": "state"
+    },
+    {
+      "id": "en.emoadv.mournfully",
+      "lemma": "mournfully",
+      "pos": [
+        "ADV"
+      ],
+      "kind": "emotion_adverb",
+      "strength": "strong",
+      "valence": -0.8,
+      "arousal": 0.4,
+      "emotions": {
+        "sadness": 0.8
+      },
+      "source": "curated:gemini-2026-09",
+      "version": 1,
+      "felt": "state"
+    },
+    {
+      "id": "en.emoadv.jubilantly",
+      "lemma": "jubilantly",
+      "pos": [
+        "ADV"
+      ],
+      "kind": "emotion_adverb",
+      "strength": "strong",
+      "valence": 0.9,
+      "arousal": 0.8,
+      "emotions": {
+        "joy": 0.8
+      },
+      "source": "curated:gemini-2026-09",
+      "version": 1,
+      "felt": "state"
+    },
+    {
+      "id": "en.emoadv.indignantly",
+      "lemma": "indignantly",
+      "pos": [
+        "ADV"
+      ],
+      "kind": "emotion_adverb",
+      "strength": "strong",
+      "valence": -0.8,
+      "arousal": 0.7,
+      "emotions": {
+        "anger": 0.8
+      },
+      "source": "curated:gemini-2026-09",
+      "version": 1,
+      "felt": "state"
+    },
+    {
+      "id": "en.emoadv.wrathfully",
+      "lemma": "wrathfully",
+      "pos": [
+        "ADV"
+      ],
+      "kind": "emotion_adverb",
+      "strength": "strong",
+      "valence": -0.9,
+      "arousal": 0.9,
+      "emotions": {
+        "anger": 0.8
+      },
+      "source": "curated:gemini-2026-09",
+      "version": 1,
+      "felt": "state"
+    },
+    {
+      "id": "en.emoadv.spitefully",
+      "lemma": "spitefully",
+      "pos": [
+        "ADV"
+      ],
+      "kind": "emotion_adverb",
+      "strength": "strong",
+      "valence": -0.7,
+      "arousal": 0.6,
+      "emotions": {
+        "anger": 0.8
+      },
+      "source": "curated:gemini-2026-09",
+      "version": 1,
+      "felt": "trait"
+    },
+    {
+      "id": "en.emoadv.remorsefully",
+      "lemma": "remorsefully",
+      "pos": [
+        "ADV"
+      ],
+      "kind": "emotion_adverb",
+      "strength": "strong",
+      "valence": -0.7,
+      "arousal": 0.5,
+      "emotions": {
+        "sadness": 0.8
+      },
+      "source": "curated:gemini-2026-09",
+      "version": 1,
+      "felt": "state"
+    },
+    {
+      "id": "en.emoadv.shamefully",
+      "lemma": "shamefully",
+      "pos": [
+        "ADV"
+      ],
+      "kind": "emotion_adverb",
+      "strength": "strong",
+      "valence": -0.7,
+      "arousal": 0.5,
+      "emotions": {
+        "sadness": 0.8
+      },
+      "source": "curated:gemini-2026-09",
+      "version": 1,
+      "felt": "evaluative"
+    },
+    {
+      "id": "en.emoadv.triumphantly",
+      "lemma": "triumphantly",
+      "pos": [
+        "ADV"
+      ],
+      "kind": "emotion_adverb",
+      "strength": "strong",
+      "valence": 0.8,
+      "arousal": 0.8,
+      "emotions": {
+        "joy": 0.8
+      },
+      "source": "curated:gemini-2026-09",
+      "version": 1,
+      "felt": "state"
+    },
+    {
+      "id": "en.emoadv.fondly",
+      "lemma": "fondly",
+      "pos": [
+        "ADV"
+      ],
+      "kind": "emotion_adverb",
+      "strength": "strong",
+      "valence": 0.7,
+      "arousal": 0.4,
+      "emotions": {
+        "joy": 0.8
+      },
+      "source": "curated:gemini-2026-09",
+      "version": 1,
+      "felt": "state"
+    },
+    {
+      "id": "en.emoadv.tenderly",
+      "lemma": "tenderly",
+      "pos": [
+        "ADV"
+      ],
+      "kind": "emotion_adverb",
+      "strength": "strong",
+      "valence": 0.8,
+      "arousal": 0.3,
+      "emotions": {
+        "joy": 0.8
+      },
+      "source": "curated:gemini-2026-09",
+      "version": 1,
+      "felt": "state"
+    },
+    {
+      "id": "en.emoadv.curiously",
+      "lemma": "curiously",
+      "pos": [
+        "ADV"
+      ],
+      "kind": "emotion_adverb",
+      "strength": "strong",
+      "valence": 0.4,
+      "arousal": 0.5,
+      "emotions": {
+        "anticipation": 0.8
+      },
+      "source": "curated:gemini-2026-09",
+      "version": 1,
+      "felt": "state"
+    },
+    {
+      "id": "en.emoadv.eagerly",
+      "lemma": "eagerly",
+      "pos": [
+        "ADV"
+      ],
+      "kind": "emotion_adverb",
+      "strength": "strong",
+      "valence": 0.7,
+      "arousal": 0.7,
+      "emotions": {
+        "anticipation": 0.8
+      },
+      "source": "curated:gemini-2026-09",
+      "version": 1,
+      "felt": "state"
+    },
+    {
+      "id": "en.emoadv.impatiently",
+      "lemma": "impatiently",
+      "pos": [
+        "ADV"
+      ],
+      "kind": "emotion_adverb",
+      "strength": "strong",
+      "valence": -0.3,
+      "arousal": 0.7,
+      "emotions": {
+        "anticipation": 0.8
+      },
+      "source": "curated:gemini-2026-09",
+      "version": 1,
+      "felt": "state"
+    },
+    {
+      "id": "en.emoadv.restlessly",
+      "lemma": "restlessly",
+      "pos": [
+        "ADV"
+      ],
+      "kind": "emotion_adverb",
+      "strength": "strong",
+      "valence": -0.4,
+      "arousal": 0.6,
+      "emotions": {
+        "anticipation": 0.8
+      },
+      "source": "curated:gemini-2026-09",
+      "version": 1,
+      "felt": "state"
+    },
+    {
+      "id": "en.emoadv.apprehensively",
+      "lemma": "apprehensively",
+      "pos": [
+        "ADV"
+      ],
+      "kind": "emotion_adverb",
+      "strength": "strong",
+      "valence": -0.5,
+      "arousal": 0.6,
+      "emotions": {
+        "fear": 0.8
+      },
+      "source": "curated:gemini-2026-09",
+      "version": 1,
+      "felt": "state"
+    },
+    {
+      "id": "en.emoadv.suspiciously",
+      "lemma": "suspiciously",
+      "pos": [
+        "ADV"
+      ],
+      "kind": "emotion_adverb",
+      "strength": "strong",
+      "valence": -0.5,
+      "arousal": 0.6,
+      "emotions": {
+        "fear": 0.8
+      },
+      "source": "curated:gemini-2026-09",
+      "version": 1,
+      "felt": "state"
+    },
+    {
+      "id": "en.emoadv.warily",
+      "lemma": "warily",
+      "pos": [
+        "ADV"
+      ],
+      "kind": "emotion_adverb",
+      "strength": "strong",
+      "valence": -0.3,
+      "arousal": 0.5,
+      "emotions": {
+        "anticipation": 0.8
+      },
+      "source": "curated:gemini-2026-09",
+      "version": 1,
+      "felt": "state"
+    },
+    {
+      "id": "en.emoadv.skeptically",
+      "lemma": "skeptically",
+      "pos": [
+        "ADV"
+      ],
+      "kind": "emotion_adverb",
+      "strength": "strong",
+      "valence": -0.3,
+      "arousal": 0.4,
+      "emotions": {
+        "disgust": 0.8
+      },
+      "source": "curated:gemini-2026-09",
+      "version": 1,
+      "felt": "state"
+    },
+    {
+      "id": "en.emoadv.cynically",
+      "lemma": "cynically",
+      "pos": [
+        "ADV"
+      ],
+      "kind": "emotion_adverb",
+      "strength": "strong",
+      "valence": -0.5,
+      "arousal": 0.4,
+      "emotions": {
+        "disgust": 0.8
+      },
+      "source": "curated:gemini-2026-09",
+      "version": 1,
+      "felt": "trait"
+    },
+    {
+      "id": "en.emoadv.mockingly",
+      "lemma": "mockingly",
+      "pos": [
+        "ADV"
+      ],
+      "kind": "emotion_adverb",
+      "strength": "strong",
+      "valence": -0.6,
+      "arousal": 0.6,
+      "emotions": {
+        "disgust": 0.8
+      },
+      "source": "curated:gemini-2026-09",
+      "version": 1,
+      "felt": "state"
+    },
+    {
+      "id": "en.emoadv.derisively",
+      "lemma": "derisively",
+      "pos": [
+        "ADV"
+      ],
+      "kind": "emotion_adverb",
+      "strength": "strong",
+      "valence": -0.7,
+      "arousal": 0.6,
+      "emotions": {
+        "disgust": 0.8
+      },
+      "source": "curated:gemini-2026-09",
+      "version": 1,
+      "felt": "state"
+    },
+    {
+      "id": "en.emoadv.wryly",
+      "lemma": "wryly",
+      "pos": [
+        "ADV"
+      ],
+      "kind": "emotion_adverb",
+      "strength": "strong",
+      "valence": 0.2,
+      "arousal": 0.3,
+      "emotions": {
+        "joy": 0.8
+      },
+      "source": "curated:gemini-2026-09",
+      "version": 1,
+      "felt": "state"
+    },
+    {
+      "id": "en.emoadv.somberly",
+      "lemma": "somberly",
+      "pos": [
+        "ADV"
+      ],
+      "kind": "emotion_adverb",
+      "strength": "strong",
+      "valence": -0.5,
+      "arousal": 0.3,
+      "emotions": {
+        "sadness": 0.8
+      },
+      "source": "curated:gemini-2026-09",
+      "version": 1,
+      "felt": "state"
+    },
+    {
+      "id": "en.emoadv.grimly",
+      "lemma": "grimly",
+      "pos": [
+        "ADV"
+      ],
+      "kind": "emotion_adverb",
+      "strength": "strong",
+      "valence": -0.6,
+      "arousal": 0.5,
+      "emotions": {
+        "anger": 0.8
+      },
+      "source": "curated:gemini-2026-09",
+      "version": 1,
+      "felt": "state"
+    },
+    {
+      "id": "en.emoadv.haughtily",
+      "lemma": "haughtily",
+      "pos": [
+        "ADV"
+      ],
+      "kind": "emotion_adverb",
+      "strength": "strong",
+      "valence": -0.6,
+      "arousal": 0.5,
+      "emotions": {
+        "disgust": 0.8
+      },
+      "source": "curated:gemini-2026-09",
+      "version": 1,
+      "felt": "trait"
+    },
+    {
+      "id": "en.emoadv.arrogantly",
+      "lemma": "arrogantly",
+      "pos": [
+        "ADV"
+      ],
+      "kind": "emotion_adverb",
+      "strength": "strong",
+      "valence": -0.6,
+      "arousal": 0.5,
+      "emotions": {
+        "disgust": 0.8
+      },
+      "source": "curated:gemini-2026-09",
+      "version": 1,
+      "felt": "trait"
+    },
+    {
+      "id": "en.emoadv.sullenly",
+      "lemma": "sullenly",
+      "pos": [
+        "ADV"
+      ],
+      "kind": "emotion_adverb",
+      "strength": "strong",
+      "valence": -0.6,
+      "arousal": 0.4,
+      "emotions": {
+        "anger": 0.8
+      },
+      "source": "curated:gemini-2026-09",
+      "version": 1,
+      "felt": "state"
+    }
+  ]
+}
