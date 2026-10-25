@@ -42,11 +42,12 @@ MyNovel.flnote/
 - **Vault export** (`POST /api/project/export-vault`, `{project_path, dest_dir, fmt}`):
   leaves-FleshNote export in `backend/export/vault.py`. `fmt: "obsidian"` writes a
   folder tree of Markdown (Manuscript/, Characters/, Locations/, Groups & Factions/,
-  Lore/<category>/, Quick Notes/, Twists & Secrets/, attachments/ with copied entity
+  Lore/<category>/, Quick Notes/, Twists & Secrets/, Sketchboards/ as `.canvas`
+  files whose linked nodes show the entity's note, attachments/ with copied entity
   images, Project Overview.md) with YAML frontmatter and Obsidian wiki links;
-  `fmt: "txt"` writes the same tree as plain `.txt` without frontmatter or images.
-  Chapter markers (`{{char:...}}`, `{knows:...}`) are converted (wiki links and
-  `[!info]` callouts); planner/Pentimento/world history/sketchboards/stats are
+  `fmt: "txt"` writes the same tree as plain `.txt` without frontmatter, images or
+  boards. Chapter markers (`{{char:...}}`, `{knows:...}`) are converted (wiki links
+  and `[!info]` callouts); planner/Pentimento/world history/stats are
   intentionally not exported. The vault folder is named `<Project> (Obsidian)` /
   `<Project> (Plain Text)` inside `dest_dir` and must not pre-exist.
 

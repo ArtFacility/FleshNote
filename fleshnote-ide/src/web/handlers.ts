@@ -115,6 +115,24 @@ export const webHandlers = {
   },
   'dialog:openFiles': async (_e: unknown, filters?: Filter[]) =>
     uploadAll(await pick({ multiple: true, filters: filters || MANUSCRIPTS })),
+  // A board file is made and read in the browser: no server round trip.
+  'dialog:saveBoardFile': async (_e: unknown, payload: any) => {
+    const url = URL.createObjectURL(
+      new Blob([String(payload?.content ?? '')], { type: payload?.mime || 'text/plain' })
+    )
+    const a = document.createElement('a')
+    a.href = url
+    a.download = payload?.defaultName || 'board'
+    document.body.appendChild(a)
+    a.click()
+    a.remove()
+    setTimeout(() => URL.revokeObjectURL(url), 2000)
+    return { saved: true }
+  },
+  'dialog:openBoardFile': async (_e: unknown, filters?: Filter[]) => {
+    const [file] = await pick({ filters })
+    return file ? { name: file.name, content: await file.text() } : null
+  },
   'dialog:openImage': async () => {
     const [file] = await pick({ filters: IMAGES })
     return file ? upload(file) : null

@@ -584,6 +584,38 @@ app.whenReady().then(async () => {
     return filePaths
   })
 
+  // A sketchboard file (JSON Canvas or SVG): saved as the text it is given,
+  // or picked and read back as text.
+  ipcMain.handle('dialog:saveBoardFile', async (event, payload) => {
+    const win = BrowserWindow.fromWebContents(event.sender)
+    const opts = {
+      title: 'Export board',
+      defaultPath: payload?.defaultName || 'board',
+      filters: payload?.filters || []
+    }
+    const { canceled, filePath } = win
+      ? await dialog.showSaveDialog(win, opts)
+      : await dialog.showSaveDialog(opts)
+    if (canceled || !filePath) return { saved: false }
+    fs.writeFileSync(filePath, String(payload?.content ?? ''), 'utf8')
+    return { saved: true, path: filePath }
+  })
+
+  ipcMain.handle('dialog:openBoardFile', async (event, filters) => {
+    const win = BrowserWindow.fromWebContents(event.sender)
+    const opts = {
+      properties: ['openFile'] as Array<'openFile'>,
+      title: 'Import a board',
+      filters: filters || []
+    }
+    const { canceled, filePaths } = win
+      ? await dialog.showOpenDialog(win, opts)
+      : await dialog.showOpenDialog(opts)
+    if (canceled || !filePaths[0]) return null
+    if (fs.statSync(filePaths[0]).size > 20 * 1024 * 1024) return null
+    return { name: filePaths[0].split(/[\\/]/).pop(), content: fs.readFileSync(filePaths[0], 'utf8') }
+  })
+
   ipcMain.handle('dialog:openFile', async (_event, filters) => {
     const { canceled, filePaths } = await dialog.showOpenDialog({
       properties: ['openFile'],
@@ -1375,12 +1407,13 @@ app.whenReady().then(async () => {
   ipcMain.handle('api:updateBoard', async (_e, p) => backendPost('/api/project/boards/update', p))
   ipcMain.handle('api:deleteBoard', async (_e, p) => backendPost('/api/project/boards/delete', p))
   ipcMain.handle('api:loadBoard', async (_e, p) => backendPost('/api/project/boards/load', p))
-  ipcMain.handle('api:createBoardItem', async (_e, p) => backendPost('/api/project/boards/items/create', p))
-  ipcMain.handle('api:updateBoardItem', async (_e, p) => backendPost('/api/project/boards/items/update', p))
-  ipcMain.handle('api:deleteBoardItem', async (_e, p) => backendPost('/api/project/boards/items/delete', p))
-  ipcMain.handle('api:createBoardConnection', async (_e, p) => backendPost('/api/project/boards/connections/create', p))
-  ipcMain.handle('api:updateBoardConnection', async (_e, p) => backendPost('/api/project/boards/connections/update', p))
-  ipcMain.handle('api:deleteBoardConnection', async (_e, p) => backendPost('/api/project/boards/connections/delete', p))
+  ipcMain.handle('api:boardBatch', async (_e, p) => backendPost('/api/project/boards/batch', p))
+  ipcMain.handle('api:generatedBoard', async (_e, p) =>
+    backendPost('/api/project/boards/generated', p)
+  )
+  ipcMain.handle('api:boardsForEntity', async (_e, p) =>
+    backendPost('/api/project/boards/for-entity', p)
+  )
 
   // ── Image References ──────────────────────────────
   ipcMain.handle('dialog:openImage', async () => {

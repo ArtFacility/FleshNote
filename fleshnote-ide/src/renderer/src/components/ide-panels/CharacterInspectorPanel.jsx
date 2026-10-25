@@ -4,6 +4,7 @@ import RelationshipTurningPointPopup from '../RelationshipTurningPointPopup'
 import CalendarDatePicker from '../CalendarDatePicker'
 import EntityRenamePopup from '../EntityRenamePopup'
 import ImageGallery from './ImageGallery'
+import OnBoards from './OnBoards'
 import NameGeneratorModal from '../NameGeneratorModal'
 
 const Icons = {
@@ -590,6 +591,10 @@ export default function CharacterInspectorPanel({
             )
           })}
         </div>
+      )}
+
+      {activeTab === 'overview' && (
+        <OnBoards projectPath={projectPath} entityType="character" entityId={entity.id} />
       )}
 
       {activeTab === 'references' && (

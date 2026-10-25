@@ -19,6 +19,7 @@ import getSuggestionConfig from '../extensions/mentionSuggestion'
 import { useEffect, useRef, useState, useCallback, useMemo } from 'react'
 import { useTranslation } from 'react-i18next'
 import EntityContextMenu from './EntityContextMenu'
+import { addEntityToBoard, setAppearsFrom } from './sketchboard/boardActions'
 import AppendDescriptionPopup from './AppendDescriptionPopup'
 import MakeConnectionPopup from './MakeConnectionPopup'
 import CustomLorePopup from './CustomLorePopup'
@@ -429,6 +430,14 @@ export default function Editor({
       return !v
     })
   }, [])
+
+  // A short notice after a Sketchboard action from the context menu.
+  const [boardNotice, setBoardNotice] = useState(null)
+  useEffect(() => {
+    if (!boardNotice) return undefined
+    const timer = setTimeout(() => setBoardNotice(null), 5000)
+    return () => clearTimeout(timer)
+  }, [boardNotice])
 
   const effectiveWorldTime = useMemo(() => {
     if (activeTimeMarkerId) {
@@ -1528,6 +1537,40 @@ export default function Editor({
           break
         }
 
+        case 'sketchboardAdd':
+          addEntityToBoard(projectPath, data.boardId, data.entity)
+            .then((nodeId) =>
+              setBoardNotice({
+                text: t('sketchboard.addedToBoard', 'Added {{name}} to {{board}}', {
+                  name: data.entity.name,
+                  board: data.boardName
+                }),
+                boardId: data.boardId,
+                nodeId
+              })
+            )
+            .catch(() =>
+              setBoardNotice({ text: t('sketchboard.boardActionFailed', 'The board could not be changed.') })
+            )
+          break
+
+        case 'sketchboardAppears':
+          setAppearsFrom(projectPath, data.boardId, data.nodeIds, chapter?.id, effectiveWorldTime)
+            .then(() =>
+              setBoardNotice({
+                text: t('sketchboard.appearsSet', '{{name}} appears on {{board}} from this chapter on', {
+                  name: data.entity.name,
+                  board: data.boardName
+                }),
+                boardId: data.boardId,
+                nodeId: data.nodeIds[0]
+              })
+            )
+            .catch(() =>
+              setBoardNotice({ text: t('sketchboard.boardActionFailed', 'The board could not be changed.') })
+            )
+          break
+
         case 'setAsPov':
           if (data?.entityId) {
             onChapterMetaUpdate?.({ pov_character_id: data.entityId })
@@ -1590,7 +1633,7 @@ export default function Editor({
 
       closeContextMenu()
     },
-    [ctxMenu, editor, closeContextMenu, onChapterMetaUpdate]
+    [ctxMenu, editor, closeContextMenu, onChapterMetaUpdate, projectPath, chapter?.id, effectiveWorldTime, t]
   )
 
   const closePopup = useCallback(() => {
@@ -2178,6 +2221,27 @@ export default function Editor({
       </div>
 
       {/* ── Overlays ──────────────────────────────────────── */}
+      {boardNotice && (
+        <div className="editor-notice" role="status">
+          <span>{boardNotice.text}</span>
+          {boardNotice.boardId && (
+            <button
+              type="button"
+              className="editor-notice-btn"
+              onClick={() => {
+                window.dispatchEvent(
+                  new CustomEvent('openSketchboard', {
+                    detail: { boardId: boardNotice.boardId, nodeId: boardNotice.nodeId }
+                  })
+                )
+                setBoardNotice(null)
+              }}
+            >
+              {t('sketchboard.openBoard', 'Open board')}
+            </button>
+          )}
+        </div>
+      )}
       <EntityContextMenu
         position={ctxMenu}
         selectedText={ctxText}
@@ -2186,6 +2250,8 @@ export default function Editor({
         onCreateEntity={handleCreateEntity}
         onLinkEntity={handleLinkEntity}
         onAction={handleAction}
+        projectPath={projectPath}
+        sketchboardMenu={projectConfig?.sketchboard_editor_menu === true || String(projectConfig?.sketchboard_editor_menu) === 'true'}
         entityAtCursor={entityAtCursor}
         twistAtCursor={twistAtCursor}
         knowledgeAtCursor={knowledgeAtCursor}

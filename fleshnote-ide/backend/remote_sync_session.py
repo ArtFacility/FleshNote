@@ -195,6 +195,10 @@ def _register_cloned_project(extract_dir: str, workspace_path: Optional[str]) ->
 def _zip_project(project_path: str) -> str:
     """Zip the project (hardened, WAL-safe) into its own temp folder for the
     phone to download. Returns the zip's path."""
+    # The phone can't run the Story Pulse engine: store what the Janitor has
+    # measured so it travels in fleshnote.db.
+    from routes.story_pulse import refresh_stored_scores
+    refresh_stored_scores(project_path)
     tmp = tempfile.mkdtemp(prefix="fleshnote_remote_dl_")
     return project_io.zip_project(project_path, os.path.join(tmp, "project.zip"))
 

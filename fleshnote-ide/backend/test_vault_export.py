@@ -166,6 +166,84 @@ class TestVaultExport(unittest.TestCase):
         note = open(os.path.join(final, "Characters", "Sophia.md"), encoding="utf-8").read()
         self.assertIn("[[Manuscript/01 — Arrival|Ch 1: Arrival]]", note)
 
+    def _add_boards(self):
+        conn = sqlite3.connect(os.path.join(self.project_path, "fleshnote.db"))
+        try:
+            cur = conn.cursor()
+            db_setup.ensure_board_schema(cur)
+            cur.execute("INSERT INTO characters (id, name, deleted) VALUES ('char-2', 'Marcus', 0)")
+            cur.execute("INSERT INTO character_relationships (id, character_id, target_character_id, rel_type, is_one_sided, deleted) VALUES (?,?,?,?,?,0)",
+                        ("rel-2", "char-1", "char-2", "trust", 0))
+            cur.execute("INSERT INTO boards (id, name, board_type) VALUES ('b-1', 'Magic: Rules', 'custom')")
+            cur.execute("INSERT INTO boards (id, name, board_type) VALUES ('b-2', 'Bonds', 'gen_relationships')")
+            nodes = [
+                ("n-frame", "b-1", "Circle", "frame", None, None, 0, 0, 600, 400, "[]"),
+                ("n-soph", "b-1", "", "ellipse", "character", "char-1", 40, 40, 160, 64, "[]"),
+                ("n-idea", "b-1", "Binding", "card", None, None, 300, 40, 160, 64, json.dumps([["Cost", "a memory"]])),
+                ("n-gone", "b-1", "Old name", "card", "location", "loc-missing", 300, 200, 160, 64, "[]"),
+                ("g-1", "b-2", "", "ellipse", "character", "char-1", 0, 0, 160, 64, "[]"),
+                ("g-2", "b-2", "", "ellipse", "character", "char-2", 300, 0, 160, 64, "[]"),
+            ]
+            for n in nodes:
+                cur.execute("INSERT INTO board_items (id, board_id, name, shape, entity_type, entity_id, pos_x, pos_y, size_x, size_y, props, color_token, deleted) "
+                            "VALUES (?,?,?,?,?,?,?,?,?,?,?,'blue',0)", n)
+            cur.execute("INSERT INTO item_connections (id, board_id, item_start_id, item_end_id, title, from_side, to_side, start_marker, end_marker, color_token, deleted) "
+                        "VALUES ('e-1','b-1','n-soph','n-idea','wields','right','left','none','arrow','red',0)")
+            cur.execute("INSERT INTO board_edge_types (id, board_id, name, deleted) VALUES ('t-1','b-1','Feeds',0)")
+            cur.execute("INSERT INTO item_connections (id, board_id, item_start_id, item_end_id, title, type_id, deleted) "
+                        "VALUES ('e-2','b-1','n-idea','n-gone','','t-1',0)")
+            conn.commit()
+        finally:
+            conn.close()
+
+    def test_boards_as_canvas(self):
+        self._add_boards()
+        final, _ = self._obsidian_export()
+        boards = os.path.join(final, "Sketchboards")
+        self.assertEqual(sorted(os.listdir(boards)), ["Bonds.canvas", "Magic- Rules.canvas"])
+
+        doc = json.load(open(os.path.join(boards, "Magic- Rules.canvas"), encoding="utf-8"))
+        nodes = {n["id"]: n for n in doc["nodes"]}
+        self.assertEqual(doc["nodes"][0]["id"], "n-frame")  # groups first
+        self.assertEqual(nodes["n-frame"]["type"], "group")
+        self.assertEqual(nodes["n-soph"], {"id": "n-soph", "x": 40, "y": 40, "width": 160, "height": 64,
+                                           "color": "5", "type": "file", "file": "Characters/Sophia.md"})
+        self.assertTrue(os.path.isfile(os.path.join(final, *nodes["n-soph"]["file"].split("/"))))
+        self.assertEqual(nodes["n-idea"]["text"], "**Binding**\n\n- Cost: a memory")
+        self.assertEqual(nodes["n-gone"]["type"], "text")  # entity gone: its own name
+        self.assertEqual(doc["edges"][0], {"id": "e-1", "fromNode": "n-soph", "fromSide": "right", "fromEnd": "none",
+                                           "toNode": "n-idea", "toSide": "left", "toEnd": "arrow",
+                                           "color": "1", "label": "wields"})
+        self.assertEqual(doc["edges"][1]["label"], "Feeds")  # the legend type names an unlabelled line
+
+        # A live board draws the tracker's latest state: one mutual line, arrows both ends.
+        live = json.load(open(os.path.join(boards, "Bonds.canvas"), encoding="utf-8"))
+        self.assertEqual(len(live["edges"]), 1)
+        e = live["edges"][0]
+        self.assertEqual((e["fromEnd"], e["toEnd"], e["label"], e["color"]), ("arrow", "arrow", "Trust", "5"))
+        self.assertEqual({e["fromNode"], e["toNode"]}, {"g-1", "g-2"})
+
+        overview = open(os.path.join(final, "Project Overview.md"), encoding="utf-8").read()
+        self.assertIn("- Sketchboards: 2", overview)
+        self.assertNotIn("sketchboards,", overview)
+
+    def test_bad_board_is_skipped(self):
+        self._add_boards()
+        import routes.boards
+        real = routes.boards.generated_data
+        routes.boards.generated_data = lambda *a: 1 / 0
+        try:
+            final, _ = self._obsidian_export()
+        finally:
+            routes.boards.generated_data = real
+        self.assertEqual(os.listdir(os.path.join(final, "Sketchboards")), ["Magic- Rules.canvas"])
+
+    def test_txt_mode_has_no_boards(self):
+        self._add_boards()
+        final, _ = export_vault(self.project_path, self.dest, "txt")
+        self.assertFalse(os.path.isdir(os.path.join(final, "Sketchboards")))
+        self.assertIn("sketchboards,", open(os.path.join(final, "Project Overview.txt"), encoding="utf-8").read())
+
     def test_txt_output_written_before_obsidian_marker_state(self):
         # exporter must not mutate the source project (dry: chapter md unchanged)
         before = open(os.path.join(self.project_path, "md", "ch_001_arrival.md"), encoding="utf-8").read()

@@ -183,6 +183,101 @@ class TestEndpoint(unittest.TestCase):
         self.assertEqual(SP.paragraph_key("A\u0301rvíztűrő tükörfúrógép x \U00010C80"), "effd79acd5e004f68b54")
 
 
+    def stored(self):
+        conn = sqlite3.connect(os.path.join(self.dir, "fleshnote.db"))
+        try:
+            return {r[0]: r[1:] for r in conn.execute(
+                "SELECT para_hash, chapter_id, raw, valence, scored_at FROM paragraph_pulse_scores")}
+        finally:
+            conn.close()
+
+    def test_measurements_are_stored_and_reused_without_the_janitor_cache(self):
+        first = self.pulse()
+        rows = self.stored()
+        for ch in first["chapters"]:
+            p = ch["paragraphs"][0]
+            self.assertEqual(rows[p["key"]][:3], (str(ch["chapter_id"]), p["raw"], p["valence"]))
+        # a phone, or a machine that never ran the Janitor on this text
+        for suffix in ("", "-wal", "-shm"):
+            path = os.path.join(self.dir, "fleshnote_cache.db" + suffix)
+            if os.path.exists(path):
+                os.remove(path)
+        req = SP.StoryPulseRequest(project_path=self.dir, language="en", cache_only=True)
+        again = SP.story_pulse(req)
+        self.assertEqual(again["coverage"], {"scored": 2, "total": 2})
+        self.assertEqual([ch["paragraphs"][0]["intensity"] for ch in again["chapters"]],
+                         [ch["paragraphs"][0]["intensity"] for ch in first["chapters"]])
+        self.assertEqual(self.stored(), rows)  # reused, not rewritten
+
+    def test_an_edited_paragraph_drops_its_stored_measurement(self):
+        self.pulse()
+        old = SP.paragraph_key("The garden was quiet and peaceful in the gentle evening light, and she smiled.")
+        self.assertIn(old, self.stored())
+        with open(os.path.join(self.dir, "md", "ch1.md"), "w", encoding="utf-8") as f:
+            f.write("<p>The garden was loud and crowded in the harsh noon light, and she frowned.</p>")
+        SP.story_pulse(SP.StoryPulseRequest(project_path=self.dir, language="en", cache_only=True))
+        self.assertNotIn(old, self.stored())
+        self.assertEqual(len(self.stored()), 1)  # the new text waits for the Janitor
+
+    def test_refresh_before_a_sync_follows_the_pulse_toggle(self):
+        self.pulse()  # fills the Janitor cache
+        conn = sqlite3.connect(os.path.join(self.dir, "fleshnote.db"))
+        conn.execute("DELETE FROM paragraph_pulse_scores")
+        conn.execute("CREATE TABLE project_config (config_key TEXT PRIMARY KEY, config_value TEXT, config_type TEXT)")
+        conn.execute("INSERT INTO project_config VALUES ('janitor_show_story_pulse', 'false', 'toggle')")
+        conn.commit()
+        SP.refresh_stored_scores(self.dir)
+        self.assertEqual(self.stored(), {})
+        conn.execute("UPDATE project_config SET config_value = 'true'")
+        conn.commit()
+        conn.close()
+        SP.refresh_stored_scores(self.dir)
+        self.assertEqual(len(self.stored()), 2)
+
+
+class TestScoreSync(unittest.TestCase):
+    """Measurements cross a sync merge by direct copy (routes/sync.py), never
+    through change_log; the remote file is untrusted."""
+
+    def setUp(self):
+        from db_setup import ensure_pulse_scores
+        self.local = sqlite3.connect(":memory:")
+        self.remote = sqlite3.connect(":memory:")
+        self.remote.row_factory = sqlite3.Row
+        for c in (self.local, self.remote):
+            c.execute("CREATE TABLE chapters (id TEXT PRIMARY KEY)")
+            c.execute("INSERT INTO chapters VALUES ('c1')")
+            ensure_pulse_scores(c.cursor())
+
+    def put(self, conn, key, raw=0.5, valence=0.1, chapter="c1", emotions='{"fear": 1.0}'):
+        conn.execute("INSERT INTO paragraph_pulse_scores VALUES (?, ?, 'en', ?, ?, ?, '[]', 12, 'e1', 'w1', 'now')",
+                     (chapter, key, raw, valence, emotions))
+
+    def test_rows_are_copied_once_and_hostile_rows_refused(self):
+        from routes.sync import _import_pulse_scores
+        good, mine = "a" * 20, "b" * 20
+        self.put(self.remote, good)
+        self.put(self.remote, mine, raw=9.0)
+        self.put(self.local, mine, raw=0.2)                      # this side's own value stays
+        self.put(self.remote, "c" * 20, chapter="elsewhere")     # a chapter this side lacks
+        self.put(self.remote, "not-a-key")
+        self.put(self.remote, "d" * 20, raw="NaN")
+        self.put(self.remote, "e" * 20, emotions="{bad json")
+        self.assertEqual(_import_pulse_scores(self.local.cursor(), self.remote.cursor()), 1)
+        got = dict(self.local.execute("SELECT para_hash, raw FROM paragraph_pulse_scores"))
+        self.assertEqual(got, {good: 0.5, mine: 0.2})
+        self.assertEqual(_import_pulse_scores(self.local.cursor(), self.remote.cursor()), 0)
+
+    def test_a_peer_without_the_table_is_fine(self):
+        from routes.sync import _import_pulse_scores
+        bare = sqlite3.connect(":memory:")
+        self.assertEqual(_import_pulse_scores(self.local.cursor(), bare.cursor()), 0)
+
+    def test_the_table_never_merges_through_change_log(self):
+        from routes.sync import _mergeable
+        self.assertFalse(_mergeable({"paragraph_pulse_scores": {"raw"}}, "paragraph_pulse_scores", "raw"))
+
+
 class TestCorrections(unittest.TestCase):
     """The writer's own values: applied by content key, re-anchored
     after small edits, reported stale when the paragraph is gone, synced."""

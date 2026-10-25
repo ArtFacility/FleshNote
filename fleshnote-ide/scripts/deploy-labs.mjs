@@ -7,9 +7,11 @@
 //   node scripts/deploy-labs.mjs --no-build  copy the last build
 //   node scripts/deploy-labs.mjs --id fleshnote-demo   the demo copy: labs/<id> over labs/fleshnote
 //
+// (npm run deploy:labs, deploy:labs:demo, deploy:labs:all; step by step: labs/README.md.)
 // The page picks up a new build on its next reload; the backend restarts only when its files
-// changed. Once per machine, the app is set up there with sudo (seneschal repo:
-// deploy/homeserver/setup-lab-app.sh fleshnote), which also lets this script restart it.
+// changed, and the script then waits for it to answer. Once per machine, the app is set up there
+// with sudo (seneschal repo: deploy/homeserver/setup-lab-app.sh fleshnote), which also lets this
+// script restart it. LABS_HOST is the SSH host (default homeserver), LABS_URL the site.
 import { spawn, spawnSync } from 'node:child_process'
 import crypto from 'node:crypto'
 import fs from 'node:fs'
@@ -17,6 +19,7 @@ import os from 'node:os'
 import path from 'node:path'
 
 const HOST = process.env.LABS_HOST || 'homeserver'
+const SITE = (process.env.LABS_URL || 'https://experiments.artfacility.xyz').replace(/\/$/, '')
 const idArg = process.argv.indexOf('--id')
 const ID = idArg > 0 ? process.argv[idArg + 1] : 'fleshnote'
 const root = path.resolve(import.meta.dirname, '..')
@@ -41,7 +44,7 @@ function step(what) {
 
 if (!process.argv.includes('--no-build')) {
   step('Building the browser version')
-  const r = spawnSync('npm', ['run', 'build:web'], { cwd: root, stdio: 'inherit', shell: true })
+  const r = spawnSync('npm run build:web', { cwd: root, stdio: 'inherit', shell: true })
   if (r.status !== 0) process.exit(r.status || 1)
 }
 const web = path.join(root, 'out/web')
@@ -85,6 +88,14 @@ walk(path.join(stage, 'backend'))
 hash.update(fs.readFileSync(path.join(stage, 'run')))
 fs.writeFileSync(path.join(stage, 'backend.hash'), hash.digest('hex') + '\n')
 
+const port = /^backend: *[\d.]+:(\d+)/m.exec(
+  fs.readFileSync(path.join(stage, 'experiment.yaml'), 'utf8')
+)?.[1]
+if (!port) {
+  console.error(`No backend port in labs/${ID}/experiment.yaml`)
+  process.exit(1)
+}
+
 step(`Copying to ${HOST}:/srv/labs/${ID}`)
 const dest = `/srv/labs/${ID}`
 const remote = [
@@ -96,7 +107,16 @@ const remote = [
   `chmod 750 ${dest}/run`,
   `if [ "$old" = "$(cat ${dest}/backend.hash)" ] && systemctl is-active --quiet seneschal-lab@${ID}; then echo "backend unchanged"; ` +
     `elif sudo -n systemctl restart seneschal-lab@${ID}; then echo "backend restarted"; ` +
-    `else echo "the backend changed but could not be restarted: sudo systemctl restart seneschal-lab@${ID}"; exit 4; fi`
+    `else echo "the backend changed but could not be restarted: sudo systemctl restart seneschal-lab@${ID}"; exit 4; fi`,
+  // A start that reinstalls the Python packages takes minutes; don't wait that long here.
+  `for i in $(seq 60); do`,
+  `  code=$(curl -s -o /dev/null -w '%{http_code}' http://127.0.0.1:${port}/ || true)`,
+  `  case "$code" in 2*|3*|4*) echo "backend answering (version $(cat ${dest}/version))"; exit 0;; esac`,
+  `  sleep 1`,
+  `done`,
+  `echo "backend not answering yet; if the Python packages are being installed, give it a few minutes."`,
+  `echo "Log: ssh ${HOST} journalctl -u seneschal-lab@${ID} -n 40 --no-pager"`,
+  `exit 5`
 ].join('\n')
 const tar = spawn('tar', ['-C', stage, '-cf', '-', '.'], { stdio: ['ignore', 'pipe', 'inherit'] })
 const ssh = spawn('ssh', ['-o', 'BatchMode=yes', HOST, remote], {
@@ -106,5 +126,5 @@ tar.stdout.pipe(ssh.stdin)
 ssh.on('close', (code) => {
   fs.rmSync(stage, { recursive: true, force: true })
   if (code !== 0) process.exit(code || 1)
-  step('Deployed. Reload the page; a first start installs the Python packages (a few minutes).')
+  step(`Deployed. Reload ${SITE}/${ID}/`)
 })

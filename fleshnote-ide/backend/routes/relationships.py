@@ -427,3 +427,69 @@ def get_relationships_for_character(req: RelationshipsForCharacter):
         rel.pop("_chapter_md_filename", None)
 
     return {"relationships": results}
+
+
+# ── Shared with sketchboards ──────────────────────────────────────────────────
+
+def directed_histories(cursor, project_path: str) -> list:
+    """Every relationship turning point between live characters, grouped by
+    direction: how the first character stands toward the second. A mutual
+    row counts in both directions, as in the relationship tracker.
+
+    Each history is in the tracker's order (chapter, then word offset, then
+    id, with rows that have no chapter first as the starting state), so the
+    state at a point is the last row that is not past it. Every row carries
+    its effective world date and that date as a day number (None when the
+    date can't be read; such rows always count, as in the tracker)."""
+    cursor.execute("""
+        SELECT r.*,
+               ch.chapter_number,
+               ch.world_time AS chapter_world_time, ch.md_filename AS chapter_md_filename
+        FROM character_relationships r
+        JOIN characters c1 ON r.character_id = c1.id
+        JOIN characters c2 ON r.target_character_id = c2.id
+        LEFT JOIN chapters ch ON r.chapter_id = ch.id
+        WHERE r.deleted = 0
+          AND c1.deleted = 0
+          AND c2.deleted = 0
+          AND (ch.deleted = 0 OR ch.deleted IS NULL)
+        ORDER BY ch.chapter_number ASC, r.word_offset ASC, r.id ASC
+    """)
+    rows = cursor.fetchall()
+    cal = load_calendar_config(cursor)
+    md_cache: dict = {}
+    world_times_cache: dict = {}
+
+    def _md(md_filename):
+        if md_filename not in md_cache:
+            md_cache[md_filename] = _chapter_md_content(project_path, md_filename)
+        return md_cache[md_filename]
+
+    def _world_times(chapter_id):
+        if chapter_id not in world_times_cache:
+            cursor.execute("SELECT id, world_date FROM world_times WHERE chapter_id = ? AND deleted = 0",
+                           (chapter_id,))
+            world_times_cache[chapter_id] = {row[0]: row[1] for row in cursor.fetchall()}
+        return world_times_cache[chapter_id]
+
+    out: dict = {}
+    for r in rows:
+        eff = effective_world_time(r["world_time"], r["word_offset"], _md(r["chapter_md_filename"]),
+                                   r["chapter_world_time"], _world_times(r["chapter_id"]))
+        mutual = r["is_one_sided"] is not None and not r["is_one_sided"]
+        item = {
+            "id": r["id"],
+            "rel_type": r["rel_type"],
+            "notes": r["notes"] or "",
+            "mutual": mutual,
+            "chapter_id": r["chapter_id"],
+            "chapter_number": r["chapter_number"],
+            "word_offset": r["word_offset"],
+            "world_time": eff or None,
+            "day": world_time_to_linear_day(eff, cal) if eff else None,
+        }
+        src, tgt = str(r["character_id"]), str(r["target_character_id"])
+        out.setdefault((src, tgt), []).append(item)
+        if mutual:
+            out.setdefault((tgt, src), []).append(item)
+    return [{"from": a, "to": b, "history": h} for (a, b), h in out.items()]

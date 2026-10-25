@@ -11,6 +11,7 @@ methods on one curve would distort it.
 """
 
 import hashlib
+import json
 import os
 import re
 import unicodedata
@@ -143,6 +144,92 @@ def _reanchor(conn, row: dict, key: str, text: str, idx: int) -> bool:
     return False
 
 
+# ── Stored measurements (db_setup.ensure_pulse_scores) ─────────────────────
+# What the engine measured per paragraph, in fleshnote.db so it travels with
+# the project. Not change-logged: derived data, rewritten freely; a sync merge
+# copies rows across (routes/sync.py _import_pulse_scores).
+SCORE_TABLE = "paragraph_pulse_scores"
+
+
+def _load_scores(conn, chapter_id, lang: str, weights_version, engine) -> dict[str, dict]:
+    """{paragraph key: measurement} usable on this machine: same weights, and the
+    same Janitor engine unless this machine has none to compare with."""
+    rows = conn.execute(
+        f"SELECT para_hash, raw, valence, emotions, evidence, engine FROM {SCORE_TABLE} "
+        f"WHERE chapter_id = ? AND lang = ? AND weights_version IS ?",
+        (str(chapter_id), lang, weights_version)).fetchall()
+    out = {}
+    for r in rows:
+        if engine is not None and r["engine"] != engine:
+            continue
+        try:
+            out[r["para_hash"]] = {"raw": r["raw"], "valence": r["valence"],
+                                   "emotions": json.loads(r["emotions"] or "{}"),
+                                   "evidence": json.loads(r["evidence"] or "[]")}
+        except ValueError:
+            continue
+    return out
+
+
+def _save_scores(conn, chapter_id, lang: str, weights_version, engine,
+                 new: dict[str, dict], keep: set[str]) -> bool:
+    """Store fresh measurements and drop the ones whose paragraph is gone.
+    Returns whether anything was written (the caller commits)."""
+    from sync_core import _now_iso
+    cur = conn.cursor()
+    changed = False
+    now = _now_iso()
+    for key, p in new.items():
+        cur.execute(
+            f"INSERT INTO {SCORE_TABLE} (chapter_id, para_hash, lang, raw, valence, emotions, evidence, "
+            f"words, engine, weights_version, scored_at) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?) "
+            f"ON CONFLICT(chapter_id, para_hash, lang) DO UPDATE SET raw = excluded.raw, "
+            f"valence = excluded.valence, emotions = excluded.emotions, evidence = excluded.evidence, "
+            f"words = excluded.words, engine = excluded.engine, "
+            f"weights_version = excluded.weights_version, scored_at = excluded.scored_at",
+            (str(chapter_id), key, lang, p["raw"], p["valence"], json.dumps(p["emotions"]),
+             json.dumps(p["evidence"], ensure_ascii=False), p["words"], engine, weights_version, now))
+        changed = True
+    gone = [r[0] for r in cur.execute(
+        f"SELECT para_hash FROM {SCORE_TABLE} WHERE chapter_id = ? AND lang = ?",
+        (str(chapter_id), lang)).fetchall() if r[0] not in keep]
+    for key in gone:
+        cur.execute(f"DELETE FROM {SCORE_TABLE} WHERE chapter_id = ? AND lang = ? AND para_hash = ?",
+                    (str(chapter_id), lang, key))
+    return changed or bool(gone)
+
+
+def _drop_scores_of_gone_chapters(conn, chapter_ids) -> None:
+    live = {str(c) for c in chapter_ids}
+    gone = [r[0] for r in conn.execute(f"SELECT DISTINCT chapter_id FROM {SCORE_TABLE}").fetchall()
+            if r[0] not in live]
+    for cid in gone:
+        conn.execute(f"DELETE FROM {SCORE_TABLE} WHERE chapter_id = ?", (cid,))
+    if gone:
+        conn.commit()
+
+
+def refresh_stored_scores(project_path: str) -> None:
+    """Store what the Janitor has measured so far, before the project leaves
+    this machine (remote sync / clone zip). Cache only, never parses; does
+    nothing when the writer has Story Pulse off. Never raises."""
+    import sqlite3
+    try:
+        conn = sqlite3.connect(os.path.join(project_path, "fleshnote.db"))
+        try:
+            cfg = dict(conn.execute(
+                "SELECT config_key, config_value FROM project_config "
+                "WHERE config_key IN ('janitor_show_story_pulse', 'story_language')").fetchall())
+        finally:
+            conn.close()
+        if str(cfg.get("janitor_show_story_pulse", "")).lower() not in ("true", "1"):
+            return
+        story_pulse(StoryPulseRequest(project_path=project_path,
+                                      language=cfg.get("story_language") or "en", cache_only=True))
+    except Exception as exc:
+        print(f"[pulse] scores not refreshed: {exc}", flush=True)
+
+
 class StoryPulseRequest(BaseModel):
     project_path: str
     language: str = "en"
@@ -179,6 +266,10 @@ def story_pulse(req: StoryPulseRequest):
         except (OSError, ValueError, KeyError):
             model_ok = False
 
+        wv = weights.get("weights_version") if model_ok else None
+        if model_ok:
+            _drop_scores_of_gone_chapters(conn, [ch["id"] for ch in rows])
+
         chapters, flat = [], []  # flat: every plotted paragraph in reading order
         for ch in rows:
             html = ""
@@ -188,21 +279,32 @@ def story_pulse(req: StoryPulseRequest):
                     html = md_to_editor_html(f.read())
             blocks = [(i, start, text) for i, (start, text, tag) in enumerate(split_blocks_tagged(html))
                       if not tag.startswith("h") and len(text.split()) >= MIN_WORDS]
-            results = reader.results([text for _, _, text in blocks]) if model_ok else [None] * len(blocks)
+            keys = [paragraph_key(text) for _, _, text in blocks]
+            # Stored measurements first (a phone or a fresh machine has no
+            # Janitor cache); only the rest go to the cache or the parser.
+            stored = _load_scores(conn, ch["id"], req.language, wv, reader.engine) if model_ok else {}
+            todo = [n for n, k in enumerate(keys) if k not in stored]
+            fresh = dict(zip(todo, reader.results([blocks[n][2] for n in todo]))) if model_ok and todo else {}
+            new_scores = {}
             paragraphs = []
-            for (i, start, text), result in zip(blocks, results):
-                para = {"block": i, "start": start, "key": paragraph_key(text), "words": len(text.split()),
+            for n, (i, start, text) in enumerate(blocks):
+                para = {"block": i, "start": start, "key": keys[n], "words": len(text.split()),
                         "excerpt": text[:EXCERPT_CHARS]}
-                rec = (result or {}).get("pulse")
-                if rec is None:
+                rec = (fresh.get(n) or {}).get("pulse")
+                if keys[n] in stored:
+                    para.update(stored[keys[n]])
+                elif rec is None:
                     para["pending"] = True
                 else:
                     raw, valence = IE.score(rec, req.language, weights)
                     para.update(raw=round(raw, 3), valence=round(valence, 3),
                                 emotions=IE.top_emotions(rec),
                                 evidence=[[eid, word] for eid, word, _ in rec.get("ev", [])])
+                    new_scores[keys[n]] = para
                 paragraphs.append(para)
                 flat.append(para)
+            if model_ok and _save_scores(conn, ch["id"], req.language, wv, reader.engine, new_scores, set(keys)):
+                reanchored = True  # same per-chapter commit below
             matched, moved, stale = match_corrections(
                 _load_corrections(conn, ch["id"]), [p["key"] for p in paragraphs], [t for _, _, t in blocks])
             for row, idx in moved:

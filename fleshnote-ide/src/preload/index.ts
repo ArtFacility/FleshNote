@@ -215,12 +215,9 @@ const api = {
   updateBoard: (p) => ipcRenderer.invoke('api:updateBoard', p),
   deleteBoard: (p) => ipcRenderer.invoke('api:deleteBoard', p),
   loadBoard: (p) => ipcRenderer.invoke('api:loadBoard', p),
-  createBoardItem: (p) => ipcRenderer.invoke('api:createBoardItem', p),
-  updateBoardItem: (p) => ipcRenderer.invoke('api:updateBoardItem', p),
-  deleteBoardItem: (p) => ipcRenderer.invoke('api:deleteBoardItem', p),
-  createBoardConnection: (p) => ipcRenderer.invoke('api:createBoardConnection', p),
-  updateBoardConnection: (p) => ipcRenderer.invoke('api:updateBoardConnection', p),
-  deleteBoardConnection: (p) => ipcRenderer.invoke('api:deleteBoardConnection', p),
+  boardBatch: (p) => ipcRenderer.invoke('api:boardBatch', p),
+  boardsForEntity: (p) => ipcRenderer.invoke('api:boardsForEntity', p),
+  generatedBoard: (p) => ipcRenderer.invoke('api:generatedBoard', p),
 
   // ── Image References ────────────────────────────────
   openImage: () => ipcRenderer.invoke('dialog:openImage'),
@@ -252,6 +249,8 @@ const api = {
 
   // ── Import ─────────────────────────────────────────
   openFile: (filters) => ipcRenderer.invoke('dialog:openFile', filters),
+  saveBoardFile: (payload) => ipcRenderer.invoke('dialog:saveBoardFile', payload),
+  openBoardFile: (filters) => ipcRenderer.invoke('dialog:openBoardFile', filters),
   openFiles: (filters) => ipcRenderer.invoke('dialog:openFiles', filters),
   // Dropped files no longer carry .path (Electron 32+); this recovers it.
   getPathForFile: (file) => {

@@ -719,6 +719,17 @@ export default function FleshNoteIDE({ projectConfig, projectPath, onCloseProjec
     setInspectedTwistId(null)
   }, [])
 
+  // A board to open in World & History, focused on one node ({ boardId, nodeId, at }).
+  const [boardFocus, setBoardFocus] = useState(null)
+  useEffect(() => {
+    const onOpenBoard = (e) => {
+      setBoardFocus({ ...e.detail, at: Date.now() })
+      setMainView('worldinfo')
+    }
+    window.addEventListener('openSketchboard', onOpenBoard)
+    return () => window.removeEventListener('openSketchboard', onOpenBoard)
+  }, [])
+
   useEffect(() => {
     const onForceBack = () => handleBackToChapters()
     window.addEventListener('forceBackToChapters', onForceBack)
@@ -749,6 +760,19 @@ export default function FleshNoteIDE({ projectConfig, projectPath, onCloseProjec
     },
     [chapters, activeChapter]
   )
+
+  // Open an entity's inspector from elsewhere ({ type, id, tab?, mark? }), e.g. a live line on a
+  // sketchboard. Leaves the current view for the editor; mark scrolls the text to that spot.
+  useEffect(() => {
+    const onOpen = (e) => {
+      const { mark, ...ref } = e.detail || {}
+      setMainView('editor')
+      handleEntityClick(ref)
+      if (mark) handleNavigateToMark(mark)
+    }
+    window.addEventListener('openInInspector', onOpen)
+    return () => window.removeEventListener('openInInspector', onOpen)
+  }, [handleEntityClick, handleNavigateToMark])
 
   // ── Open a paragraph from the planner's Story Pulse lane ──
   // charOffset is the editor text coordinate the Janitor uses; the Editor
@@ -838,6 +862,13 @@ export default function FleshNoteIDE({ projectConfig, projectPath, onCloseProjec
       console.error('Failed to refresh entities/twists:', err)
     }
   }, [projectPath])
+
+  // Entities made outside the entity manager (a sketchboard node made into one).
+  useEffect(() => {
+    const onChanged = () => handleEntitiesChanged()
+    window.addEventListener('entitiesChanged', onChanged)
+    return () => window.removeEventListener('entitiesChanged', onChanged)
+  }, [handleEntitiesChanged])
 
   // While a sync or a clone is open, the editor records nothing: its session is
   // sealed with this device's text first, and a new one starts after the sync
@@ -1365,6 +1396,8 @@ export default function FleshNoteIDE({ projectConfig, projectPath, onCloseProjec
             projectConfig={projectConfig}
             onConfigUpdate={onConfigUpdate}
             calConfig={calConfig}
+            activeChapterId={activeChapter?.id ?? null}
+            boardFocus={boardFocus}
             onSurfaceChange={setWorldinfoSurface}
             onCalendarChanged={() => {
               window.api.getCalendarConfig(projectPath)

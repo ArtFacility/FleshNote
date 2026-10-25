@@ -399,6 +399,20 @@ export default function ProjectSettingsModal({ isOpen, onClose, projectPath, onC
                                     )}
                                 </div>
 
+                                <div className="settings-card">
+                                    <label className="checkbox-label">
+                                        <input
+                                            type="checkbox"
+                                            checked={optInOn(config.sketchboard_editor_menu)}
+                                            onChange={() => handleUpdate('sketchboard_editor_menu', optInOn(config.sketchboard_editor_menu) ? 'false' : 'true', 'string')}
+                                        />
+                                        <div>
+                                            <strong>{t('settings.sketchboardEditorMenu', 'Sketchboard actions in the editor menu')}</strong>
+                                            <p className="settings-desc">{t('settings.sketchboardEditorMenuDesc', 'Right-click a linked name to add it to a board, or to make it appear on a board from this chapter on.')}</p>
+                                        </div>
+                                    </label>
+                                </div>
+
                             </div>
                         )}
 

@@ -1,5 +1,7 @@
 import { useEffect, useState, useRef, useLayoutEffect } from 'react'
 import { useTranslation } from 'react-i18next'
+import EditorBoardMenu from './sketchboard/EditorBoardMenu'
+import { boardKindOf } from './sketchboard/boardActions'
 
 // ── Inline SVG Icons ────────────────────────────────────────────────────────
 
@@ -191,10 +193,20 @@ export default function EntityContextMenu({
   milestoneAtCursor, // Milestone link under cursor (if any): { milestoneId, groupId }
   typoSuggestions, // { word, suggestions: [] } | null
   onApplyTypoFix, // (word, fix) => void
-  onMarkNotTypo // (word) => void
+  onMarkNotTypo, // (word) => void
+  projectPath,
+  sketchboardMenu // Show the Sketchboard submenu (a project setting, off by default)
 }) {
   const { t } = useTranslation()
   const [activeSubmenu, setActiveSubmenu] = useState(null)
+  const boardKind = entityAtCursor ? boardKindOf(entityAtCursor.type) : null
+  const boardEntity = boardKind
+    ? {
+        id: entityAtCursor.id,
+        name:
+          entities?.find((e) => String(e.id) === String(entityAtCursor.id))?.name || selectedText || ''
+      }
+    : null
   const [adjustedPos, setAdjustedPos] = useState(position)
   const [submenuLeft, setSubmenuLeft] = useState(false)
   const menuRef = useRef(null)
@@ -611,6 +623,37 @@ export default function EntityContextMenu({
           </div>
         )}
       </div>
+
+      {/* ── Sketchboard (opt-in, on a linked name) ──────── */}
+      {sketchboardMenu && boardKind && (
+        <div
+          className={`context-menu-item has-submenu ${activeSubmenu === 'sketchboard' ? 'active' : ''}`}
+          onMouseEnter={() => setActiveSubmenu('sketchboard')}
+        >
+          <span className="icon rune-font" style={{ color: 'var(--accent-amber)' }}>
+            𐲡
+          </span>
+          {t('contextMenu.sketchboard', 'Sketchboard')}
+          <span className="chevron">
+            <Icons.ChevronRight />
+          </span>
+          {activeSubmenu === 'sketchboard' && (
+            <div
+              ref={submenuRef}
+              className={`context-menu-submenu ${submenuLeft ? 'submenu-left' : ''}`}
+              onClick={(e) => e.stopPropagation()}
+            >
+              <EditorBoardMenu
+                projectPath={projectPath}
+                entity={boardEntity}
+                kind={boardKind}
+                onAction={(type, data) => onAction?.(type, data)}
+                t={t}
+              />
+            </div>
+          )}
+        </div>
+      )}
 
       {/* ── Set as POV (only if entity link is a character) ── */}
       {entityAtCursor && entityAtCursor.type === 'character' && (

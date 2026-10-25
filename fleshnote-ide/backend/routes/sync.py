@@ -15,7 +15,9 @@ Diff model
 """
 
 import os
+import re
 import json
+import math
 import uuid
 import shutil
 import sqlite3
@@ -35,9 +37,11 @@ router = APIRouter()
 # tamper-evidence (server_receipts), process history (pentimento_*),
 # snapshots, and the merge machinery itself (sync_meta, change_log). A forged
 # change_log row naming any of these is untrusted data, not code.
+# paragraph_pulse_scores is never change-logged either: its rows are copied
+# directly (_import_pulse_scores).
 DEVICE_LOCAL_TABLES = {
     "server_receipts", "pentimento_sessions", "pentimento_ops",
-    "chapter_snapshots", "sync_meta", "change_log",
+    "chapter_snapshots", "sync_meta", "change_log", "paragraph_pulse_scores",
 }
 
 # project_config keys that change SECURITY POSTURE when synced: a hostile
@@ -79,11 +83,76 @@ def _ensure_newer_tables(cursor) -> None:
     """Tables created on demand (not by every older schema) must exist locally
     before the allowlist is built, or remote rows for them would be skipped
     while the version vector still advances, i.e. lost for this peer."""
-    from db_setup import (ensure_pulse_corrections, ensure_process_history_schema,
-                          ensure_review_tables)
+    from db_setup import (ensure_board_schema, ensure_pulse_corrections,
+                          ensure_process_history_schema, ensure_review_tables)
     ensure_pulse_corrections(cursor)
     ensure_review_tables(cursor)
+    ensure_board_schema(cursor)
     ensure_process_history_schema(cursor, sync_core.DEVICE_ID)
+
+
+_PULSE_COLS = ("chapter_id", "para_hash", "lang", "raw", "valence", "emotions", "evidence",
+               "words", "engine", "weights_version", "scored_at")
+_PULSE_KEY_RE = re.compile(r"^[0-9a-f]{20}$")       # story_pulse.paragraph_key
+_PULSE_LANG_RE = re.compile(r"^[A-Za-z]{2,3}(-[A-Za-z0-9]{1,8})?$")
+
+
+def _short_text(v, limit=64):
+    return v if v is None or (isinstance(v, str) and len(v) <= limit) else False
+
+
+def _clean_pulse_row(r):
+    """A remote paragraph_pulse_scores row as safe values, or None. The remote
+    file is untrusted: keys, numbers and the JSON columns are all checked."""
+    try:
+        cid, key, lang, raw, val, emo, ev, words, engine, wv, at = (r[c] for c in _PULSE_COLS)
+        if not (isinstance(cid, str) and 0 < len(cid) <= 64 and isinstance(key, str)
+                and _PULSE_KEY_RE.match(key) and isinstance(lang, str) and _PULSE_LANG_RE.match(lang)):
+            return None
+        raw, val = float(raw), float(val)
+        if not (math.isfinite(raw) and math.isfinite(val) and abs(raw) < 1e6):
+            return None
+        emotions = json.loads(emo or "{}")
+        evidence = json.loads(ev or "[]")
+        if not (isinstance(emotions, dict) and len(emotions) <= 16
+                and all(isinstance(k, str) and len(k) <= 32 and isinstance(x, (int, float))
+                        for k, x in emotions.items())):
+            return None
+        if not (isinstance(evidence, list) and len(evidence) <= 200
+                and all(isinstance(e, list) and len(e) == 2
+                        and all(isinstance(s, str) and len(s) <= 64 for s in e) for e in evidence)):
+            return None
+        words = int(words) if words is not None else None
+        if words is not None and not 0 <= words <= 1_000_000:
+            return None
+        if False in (_short_text(engine), _short_text(wv), _short_text(at)):
+            return None
+        return (cid, key, lang, raw, max(-1.0, min(1.0, val)), json.dumps(emotions),
+                json.dumps(evidence, ensure_ascii=False), words, engine, wv, at)
+    except (TypeError, ValueError, IndexError, KeyError):
+        return None
+
+
+def _import_pulse_scores(cl, cr) -> int:
+    """Story Pulse measurements the other side has and this one lacks
+    (db_setup.ensure_pulse_scores). Never change-logged: rows are keyed by
+    paragraph content, so a copy can't conflict, and a row whose text has since
+    changed is simply never matched (the next pulse run drops it). Only for
+    chapters this side has. Returns the number of rows added."""
+    try:
+        rows = cr.execute(f"SELECT {', '.join(_PULSE_COLS)} FROM paragraph_pulse_scores").fetchall()
+    except sqlite3.Error:
+        return 0  # a peer from before the table
+    chapters = {str(r[0]) for r in cl.execute("SELECT id FROM chapters").fetchall()}
+    added = 0
+    for r in rows:
+        clean = _clean_pulse_row(r)
+        if clean is None or clean[0] not in chapters:
+            continue
+        cl.execute(f"INSERT OR IGNORE INTO paragraph_pulse_scores ({', '.join(_PULSE_COLS)}) "
+                   f"VALUES ({', '.join('?' * len(_PULSE_COLS))})", clean)
+        added += cl.rowcount
+    return added
 
 
 def _schema_allowlist(conn) -> Dict[str, set]:
@@ -604,6 +673,8 @@ def sync_apply(req: SyncApplyRequest):
         device = sync_core.DEVICE_ID
         history = import_process_history(cl, cr, device, remote_device)
         receipts_to_anchor = []
+        # 1.7 Story Pulse measurements (not change-logged, see _import_pulse_scores)
+        _import_pulse_scores(cl, cr)
 
         # 2. Prose plan (same open cursors — no nested endpoint call)
         takes, conflicts = _compute_prose_plan(cl, cr, req.local_path, req.remote_path)

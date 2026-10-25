@@ -242,6 +242,34 @@ def ensure_pulse_corrections(cursor) -> None:
     """)
     cursor.execute("CREATE INDEX IF NOT EXISTS idx_pulse_corr_chapter "
                    "ON paragraph_intensity_corrections(chapter_id, deleted)")
+    ensure_pulse_scores(cursor)
+
+
+def ensure_pulse_scores(cursor) -> None:
+    """Story Pulse measurements: what the engine computed for each paragraph,
+    kept apart from the writer's corrections. Derived, so never in change_log:
+    the table rides along in fleshnote.db (clone, .flnote) and a sync merge
+    copies the other side's rows directly (routes/sync.py), so a phone can draw
+    the pulse without running the engine. `raw` is the score before the
+    book-wide normalize (story_pulse.py), so a row stays true while other
+    paragraphs change. Keyed by story_pulse.paragraph_key, like the
+    corrections. Created wherever the corrections table is."""
+    cursor.execute("""
+        CREATE TABLE IF NOT EXISTS paragraph_pulse_scores (
+            chapter_id      TEXT NOT NULL,
+            para_hash       TEXT NOT NULL,
+            lang            TEXT NOT NULL,
+            raw             REAL NOT NULL,
+            valence         REAL NOT NULL,
+            emotions        TEXT,
+            evidence        TEXT,
+            words           INTEGER,
+            engine          TEXT,
+            weights_version TEXT,
+            scored_at       TEXT,
+            PRIMARY KEY (chapter_id, para_hash, lang)
+        )
+    """)
 
 
 def ensure_review_tables(cursor) -> None:
@@ -311,6 +339,92 @@ def ensure_review_tables(cursor) -> None:
         )
     """)
     cursor.execute("CREATE INDEX IF NOT EXISTS idx_review_copies_key ON review_copies(key_id)")
+
+
+# Sketchboard columns added on top of the original boards / board_items /
+# item_connections tables. Only ever added, never renamed or repurposed: older
+# builds keep syncing and drawing the original columns (color, conn_color,
+# curve_offset, directed), so the new look lives in new columns and the old
+# ones keep a best-effort equivalent (routes/boards.py).
+BOARD_COLUMNS = {
+    "boards": [
+        ("settings", "TEXT"),           # JSON: default routing, snapping, icons
+    ],
+    "board_items": [
+        ("shape", "TEXT"),              # card | diamond | ellipse | hex | text | frame
+        ("color_token", "TEXT"),        # neutral | amber | red | green | blue | purple
+        ("kind_id", "TEXT"),            # board_node_kinds.id
+        ("parent_id", "TEXT"),          # frame this node sits in
+        ("props", "TEXT"),              # JSON [[key, value], ...]
+        ("appears_chapter_id", "TEXT"),
+        ("ends_chapter_id", "TEXT"),
+        ("appears_world_time", "TEXT"),
+        ("ends_world_time", "TEXT"),
+        ("appears_auto", "INTEGER"),    # 1: a bound node appears at its entity's first mention
+    ],
+    "item_connections": [
+        ("from_side", "TEXT"),          # auto | top | right | bottom | left
+        ("to_side", "TEXT"),
+        ("routing", "TEXT"),            # straight | curved | elbow
+        ("waypoints", "TEXT"),          # JSON [[x, y], ...]
+        ("start_marker", "TEXT"),       # none | arrow | bar | dot | diamond
+        ("end_marker", "TEXT"),
+        ("color_token", "TEXT"),
+        ("label_t", "REAL"),            # label position along the line, 0..1
+        ("type_id", "TEXT"),            # board_edge_types.id
+        ("appears_chapter_id", "TEXT"),
+        ("ends_chapter_id", "TEXT"),
+        ("appears_world_time", "TEXT"),
+        ("ends_world_time", "TEXT"),
+    ],
+}
+
+
+def ensure_board_schema(cursor) -> None:
+    """Sketchboard columns and legend tables. Boards sync through change_log,
+    and a merge skips columns the local schema lacks, so this runs for new
+    projects, on project open, before a sync merge and on demand by the board
+    routes. Skips tables that don't exist yet (generate_project_db creates them)."""
+    for table, columns in BOARD_COLUMNS.items():
+        cursor.execute(f"PRAGMA table_info({table})")
+        existing = {c[1] for c in cursor.fetchall()}
+        if not existing:
+            continue
+        for name, col_type in columns:
+            if name not in existing:
+                cursor.execute(f"ALTER TABLE {table} ADD COLUMN {name} {col_type}")
+    # The board's legend: named connection types and node kinds, each with a
+    # look that every connection or node of that type shares.
+    cursor.execute("""
+        CREATE TABLE IF NOT EXISTS board_edge_types (
+            id           TEXT PRIMARY KEY,
+            board_id     TEXT NOT NULL,
+            name         TEXT NOT NULL,
+            color_token  TEXT,
+            conn_type    TEXT,
+            start_marker TEXT,
+            end_marker   TEXT,
+            sort_order   INTEGER DEFAULT 0,
+            deleted      INTEGER DEFAULT 0,
+            deleted_at   TEXT,
+            created_at   TEXT DEFAULT (datetime('now'))
+        )
+    """)
+    cursor.execute("""
+        CREATE TABLE IF NOT EXISTS board_node_kinds (
+            id          TEXT PRIMARY KEY,
+            board_id    TEXT NOT NULL,
+            name        TEXT NOT NULL,
+            shape       TEXT,
+            color_token TEXT,
+            sort_order  INTEGER DEFAULT 0,
+            deleted     INTEGER DEFAULT 0,
+            deleted_at  TEXT,
+            created_at  TEXT DEFAULT (datetime('now'))
+        )
+    """)
+    cursor.execute("CREATE INDEX IF NOT EXISTS idx_board_edge_types_board ON board_edge_types(board_id)")
+    cursor.execute("CREATE INDEX IF NOT EXISTS idx_board_node_kinds_board ON board_node_kinds(board_id)")
 
 
 DEVICE_KINDS = ("desktop", "mobile")
@@ -998,6 +1112,7 @@ def generate_project_db(project_path: str, answers: dict) -> str:
 
     cursor.execute("CREATE INDEX IF NOT EXISTS idx_board_items_board ON board_items(board_id);")
     cursor.execute("CREATE INDEX IF NOT EXISTS idx_connections_board ON item_connections(board_id);")
+    ensure_board_schema(cursor)
 
     # ══════════════════════════════════════════════════════════
     # TABLE 15: STATS (Aggregated Statistics - Counter)
@@ -1978,6 +2093,7 @@ def apply_migrations(db_path: str):
 
         cursor.execute("CREATE INDEX IF NOT EXISTS idx_board_items_board ON board_items(board_id);")
         cursor.execute("CREATE INDEX IF NOT EXISTS idx_connections_board ON item_connections(board_id);")
+        ensure_board_schema(cursor)
 
         # Image references table
         cursor.execute("""

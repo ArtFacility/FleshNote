@@ -86,6 +86,21 @@
     color: var(--text-primary);
 }
 
+.context-menu-heading {
+  padding: 6px 12px 3px;
+  font-family: var(--font-mono);
+  font-size: 9px;
+  letter-spacing: 1.2px;
+  text-transform: uppercase;
+  color: var(--text-tertiary);
+}
+
+.context-menu-note {
+  padding: 8px 12px;
+  font-size: 12px;
+  color: var(--text-tertiary);
+}
+
 .context-menu-submenu {
     position: absolute;
     left: calc(100% - 2px);

@@ -297,6 +297,80 @@ body {
   margin-bottom: 16px;
 }
 
+/* Notice after a Sketchboard action in the editor's context menu */
+.editor-notice {
+  position: fixed;
+  bottom: 28px;
+  left: 50%;
+  z-index: 900;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 8px 10px 8px 14px;
+  background: var(--bg-elevated);
+  border: 1px solid var(--border-default);
+  border-inline-start: 2px solid var(--accent-amber);
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.45);
+  color: var(--text-primary);
+  font-size: 12px;
+  transform: translateX(-50%);
+}
+
+.editor-notice-btn {
+  padding: 4px 10px;
+  background: none;
+  border: 1px solid var(--border-default);
+  border-radius: 0;
+  color: var(--accent-amber);
+  font-family: var(--font-mono);
+  font-size: 10px;
+  letter-spacing: 0.5px;
+  text-transform: uppercase;
+  cursor: pointer;
+}
+
+.editor-notice-btn:hover {
+  border-color: var(--accent-amber);
+}
+
+/* Sketchboards an entity is on (inspector overview) */
+.on-board-row {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 5px 6px;
+  font-size: 12px;
+  color: var(--text-secondary);
+  cursor: pointer;
+}
+
+.on-board-row:hover,
+.on-board-row:focus-visible {
+  background: var(--bg-hover);
+  color: var(--text-primary);
+  outline: none;
+}
+
+.on-board-rune {
+  width: 18px;
+  flex-shrink: 0;
+  color: var(--accent-amber);
+  text-align: center;
+}
+
+.on-board-name {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.on-board-count {
+  margin-inline-start: auto;
+  font-family: var(--font-mono);
+  font-size: 10px;
+  color: var(--text-tertiary);
+}
+
 .entity-section-title {
   display: flex;
   align-items: center;

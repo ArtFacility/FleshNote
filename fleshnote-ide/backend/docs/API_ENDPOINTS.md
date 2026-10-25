@@ -909,19 +909,20 @@ Delete an annotation by ID.
 
 ## Sketchboards
 
-Defined in `backend/routes/boards.py`. Provides endpoints for creating node-graph maps.
+Defined in `backend/routes/boards.py`. See `backend/docs/SKETCHBOARDS.md` for the model.
 
-- `POST /api/project/boards/list`: Returns list of all sketchboards.
-- `POST /api/project/boards/create`: Creates a new board `{ "name": "...", "board_type": "custom" }`.
-- `POST /api/project/boards/update`: Updates board metadata (name, focus, zoom).
-- `POST /api/project/boards/delete`: Deletes a board.
-- `POST /api/project/boards/get`: Returns full board state `{ "board": {...}, "items": [...], "connections": [...] }`.
-- `POST /api/project/boards/items/create`: Creates a node on a board.
-- `POST /api/project/boards/items/update`: Updates a node's position, size, text, or color.
-- `POST /api/project/boards/items/delete`: Deletes a node.
-- `POST /api/project/boards/connections/create`: Creates a connecting line between two nodes.
-- `POST /api/project/boards/connections/update`: Modifies a connection (curve offset, color, label).
-- `POST /api/project/boards/connections/delete`: Removes a connection line.
+- `POST /api/project/boards/list`: every board, with `settings` parsed.
+- `POST /api/project/boards/create`: `{ name, board_type, icon }`. `board_type` is `custom`, a template id (`magic_system`, `tech_tree`, `power_structure`, `economy`) or a live board (`gen_relationships`, `gen_factions`).
+- `POST /api/project/boards/update`: name, icon, board type, `settings` (synced); zoom and pan (this device only).
+- `POST /api/project/boards/delete`: deletes the board and everything on it, legend included.
+- `POST /api/project/boards/load`: `{ board, items, connections, types, kinds }`. Nodes carry `entity_name` and `entity_missing` (live) and `first_chapter_id` (the first chapter that mentions a linked entity). A type or kind deleted elsewhere reads as `null`.
+- `POST /api/project/boards/batch`: `{ board_id, ops: [{ op, id, fields }] }`, applied in order, all or nothing (at most 2000 ops).
+  - Ops: `put_node`, `put_edge`, `put_type`, `put_kind` (create, update or revive) and `del_node`, `del_edge`, `del_type`, `del_kind`.
+  - A connection's ends, `type_id` and a node's `kind_id` must be live rows of the same board.
+- `POST /api/project/boards/for-entity`: `{ entity_type, entity_id }` → `{ boards: [{ board_id, name, icon, node_ids }] }`.
+- `POST /api/project/boards/generated`: `{ board_id }` for a live board.
+  - Relationships: `{ kind: "relationships", entities, pairs: [{ from, to, history }] }`. `history` is the relationship tracker's turning points per direction, in its order, each with its chapter number and world day.
+  - Factions: `{ kind: "factions", entities, links, parents }`. `links` are memberships with joined/left dates and days; `parents` says which faction is part of which.
 
 ---
 

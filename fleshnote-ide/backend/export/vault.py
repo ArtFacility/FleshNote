@@ -7,11 +7,12 @@ Produces a folder tree of Markdown (Obsidian-ready) or plain text files:
       Characters/Sophia.md                  (frontmatter: type, aliases, role, ... + body sections)
       Locations/...   Groups & Factions/...   Lore/<category>/...
       Quick Notes/...   Twists & Secrets/...
+      Sketchboards/<Board>.canvas           (JSON Canvas, obsidian mode only)
       attachments/                          (entity images, obsidian mode only)
       Project Overview.md
 
 FleshNote-specific telemetry (plot planner, Pentimento, world history timeline,
-sketchboards, stats/achievements) is deliberately not exported.
+stats/achievements) is deliberately not exported.
 
 Chapter conversion reuses the marker vocabulary from export/strip.py: on-disk
 chapters use {{char:<id>|Name}} / {{loc:...}} / {{item:...}} markers,
@@ -23,6 +24,7 @@ import os
 import re
 import shutil
 import sqlite3
+import traceback
 from datetime import date
 from project_io import safe_md_path
 from export.strip import (
@@ -43,6 +45,7 @@ FOLDER_LORE = "Lore"
 FOLDER_QUICKNOTES = "Quick Notes"
 FOLDER_TWISTS = "Twists & Secrets"
 FOLDER_ATTACHMENTS = "attachments"
+FOLDER_BOARDS = "Sketchboards"
 
 _FMT_SUFFIX = {"obsidian": " (Obsidian)", "txt": " (Plain Text)"}
 _FORBIDDEN = re.compile(r'[<>:"/\\|?*\x00-\x1f]')
@@ -106,10 +109,13 @@ class VaultExporter:
         self.wiki_names = {}
         # entity key ("char"|"loc"|"group"|"lore"|"secret", id) -> folder-qualified path
         self.entity_paths = {}
+        # (board entity type, id) -> the note file actually written, extension included
+        self.entity_files = {}
         self.chapter_paths = {}
         self.character_names = {}
         self.used_names = {}  # folder -> {filename: count}
         self.file_count = 0
+        self.board_count = 0
 
     # ── database access ──────────────────────────────────────────────────
 
@@ -252,8 +258,9 @@ class VaultExporter:
         return safe if count == 1 else f"{safe} ({count})"
 
     def _write_entity_note(self, folder, title, frontmatter, body):
-        name = self._unique_filename(folder, title)
-        self._write(f"{folder}/{name}.{self._ext()}", frontmatter + body)
+        relpath = f"{folder}/{self._unique_filename(folder, title)}.{self._ext()}"
+        self._write(relpath, frontmatter + body)
+        return relpath
 
     def _frontmatter(self, fields):
         if self.fmt != "obsidian":
@@ -501,7 +508,7 @@ class VaultExporter:
             "groups": group_links,
             "icon": f"[[{icon}]]" if icon else None,
         })
-        self._write_entity_note(FOLDER_CHARACTERS, c["name"], fm, body)
+        self.entity_files[("character", cid)] = self._write_entity_note(FOLDER_CHARACTERS, c["name"], fm, body)
 
     def location_note(self, l):
         lid = str(l["id"])
@@ -534,7 +541,7 @@ class VaultExporter:
             "parent": parent["name"] if parent else None,
             "icon": f"[[{icon}]]" if icon else None,
         })
-        self._write_entity_note(FOLDER_LOCATIONS, l["name"], fm, body)
+        self.entity_files[("location", lid)] = self._write_entity_note(FOLDER_LOCATIONS, l["name"], fm, body)
 
     def group_note(self, g):
         gid = str(g["id"])
@@ -582,7 +589,7 @@ class VaultExporter:
             "parent": parent["name"] if parent else None,
             "icon": f"[[{icon}]]" if icon else None,
         })
-        self._write_entity_note(FOLDER_GROUPS, g["name"], fm, body)
+        self.entity_files[("group", gid)] = self._write_entity_note(FOLDER_GROUPS, g["name"], fm, body)
 
     def lore_note(self, e):
         eid = str(e["id"])
@@ -609,7 +616,7 @@ class VaultExporter:
             "classification": e.get("classification"),
             "icon": f"[[{icon}]]" if icon else None,
         })
-        self._write_entity_note(folder, e["name"], fm, body)
+        self.entity_files[("lore", eid)] = self._write_entity_note(folder, e["name"], fm, body)
 
     def secret_note(self, s):
         try:
@@ -709,6 +716,8 @@ class VaultExporter:
             ("Twists", len(self.twists)),
             ("Secrets", len(self.secrets)),
         ]
+        if self.fmt == "obsidian":
+            counts.append(("Sketchboards", self.board_count))
 
         body = self._frontmatter({"name": self.project_title, "type": "project",
                                   "exported": self.today, "author": self.author_name or None})
@@ -716,8 +725,9 @@ class VaultExporter:
         if lines:
             body += _clean_paragraphs("\n".join(lines)) + "\n\n"
         body += self._bullets("Contents", [f"{k}: {v}" for k, v in counts])
+        boards = "" if self.fmt == "obsidian" else "sketchboards, "
         body += ("## Not exported\n\nPlot planner, Pentimento (writing-process telemetry), "
-                 "world history timeline, sketchboards, statistics and achievements are "
+                 f"world history timeline, {boards}statistics and achievements are "
                  "FleshNote-specific features and are not part of this export.\n")
 
         self._write(f"Project Overview.{self._ext()}", body)
@@ -731,11 +741,44 @@ class VaultExporter:
             items = [p.split("/")[-1] for p in paths]
         return self._bullets("Appears in", items)
 
-    # ── orchestration ────────────────────────────────────────────────────
+    def board_files(self):
+        """Each sketchboard as a .canvas file; linked nodes show their entity's note."""
+        if self.fmt != "obsidian":
+            return
+        from db_setup import ensure_board_schema
+        from routes.boards import GENERATED_TYPES, generated_data, read_board
+        from export.board_canvas import board_canvas, live_edges
 
-    def _write_entity_note(self, folder, title, frontmatter, body):
-        name = self._unique_filename(folder, title)
-        self._write(f"{folder}/{name}.{self._ext()}", frontmatter + body)
+        conn = self._connect()
+        try:
+            cursor = conn.cursor()
+            ensure_board_schema(cursor)
+            cursor.execute("SELECT id FROM boards WHERE deleted = 0 ORDER BY created_at")
+            for (board_id,) in [tuple(r) for r in cursor.fetchall()]:
+                # One unreadable board (or live-board history) skips that board, not the vault.
+                try:
+                    board = read_board(cursor, board_id)
+                    if board is None:
+                        continue
+                    edges = board["connections"]
+                    if board["board"].get("board_type") in GENERATED_TYPES:
+                        data = generated_data(cursor, self.project_path, board["board"]["board_type"])
+                        edges = live_edges(data, board["items"])
+                    text = board_canvas(board["items"], edges,
+                                        lambda kind, eid: self.entity_files.get((kind, str(eid))),
+                                        board["types"])
+                except Exception:
+                    traceback.print_exc()
+                    continue
+                name = self._unique_filename(FOLDER_BOARDS, board["board"].get("name") or "Board")
+                self._write(f"{FOLDER_BOARDS}/{name}.canvas", text)
+                self.board_count += 1
+        except sqlite3.Error:
+            traceback.print_exc()
+        finally:
+            conn.close()
+
+    # ── orchestration ────────────────────────────────────────────────────
 
     def export(self, dest_dir):
         if not os.path.exists(self.db_path):
@@ -757,7 +800,9 @@ class VaultExporter:
         self.today = date.today().isoformat()
         self.used_names = {}
         self.chapter_paths = {}
+        self.entity_files = {}
         self.file_count = 0
+        self.board_count = 0
 
         self.root = final
         os.makedirs(self.root, exist_ok=True)
@@ -777,6 +822,7 @@ class VaultExporter:
         for t in self.twists:
             self.twist_note(t)
         self.quick_note_files()
+        self.board_files()
         self.overview_file()
 
         return final, self.file_count

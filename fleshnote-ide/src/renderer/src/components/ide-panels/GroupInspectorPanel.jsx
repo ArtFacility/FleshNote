@@ -3,6 +3,7 @@ import { useTranslation } from 'react-i18next'
 import CalendarDatePicker from '../CalendarDatePicker'
 import EntityRenamePopup from '../EntityRenamePopup'
 import ImageGallery from './ImageGallery'
+import OnBoards from './OnBoards'
 
 const FACTION_COLORS = [
   '#991b1b', // crimson
@@ -1594,6 +1595,10 @@ export default function GroupInspectorPanel({
         )}
 
         {/* 4. REFERENCES & IMAGES TAB */}
+        {activeTab === 'overview' && (
+          <OnBoards projectPath={projectPath} entityType="group" entityId={group.id} />
+        )}
+
         {activeTab === 'references' && (
           <ImageGallery
             projectPath={projectPath}

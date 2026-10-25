@@ -1204,9 +1204,13 @@ function CharacterTimelineTab({ projectPath, chapters, entities, characters, pro
     );
 }
 
-export default function WorldbuildAndHistory({ projectPath, chapters, entities, characters, projectConfig, onConfigUpdate, calConfig, onCalendarChanged, onSurfaceChange }) {
+export default function WorldbuildAndHistory({ projectPath, chapters, entities, characters, projectConfig, onConfigUpdate, calConfig, onCalendarChanged, onSurfaceChange, activeChapterId, boardFocus }) {
     const { t } = useTranslation();
-    const [activeTab, setActiveTab] = useState("timeline");
+    const [activeTab, setActiveTab] = useState(boardFocus ? "sketchboards" : "timeline");
+
+    useEffect(() => {
+        if (boardFocus) setActiveTab("sketchboards");
+    }, [boardFocus]);
 
     // Report the active sub-tab upward so time tracking can bucket it per surface
     useEffect(() => {
@@ -1248,7 +1252,7 @@ export default function WorldbuildAndHistory({ projectPath, chapters, entities, 
                         cursor: "pointer", transition: "all 0.2s"
                     }}
                 >
-                    Sketchboards
+                    {t('sketchboard.tab', 'Sketchboards')}
                 </button>
             </div>
 
@@ -1272,7 +1276,7 @@ export default function WorldbuildAndHistory({ projectPath, chapters, entities, 
                     />
                 )}
                 {activeTab === "sketchboards" && (
-                    <Sketchboards projectPath={projectPath} entities={entities} />
+                    <Sketchboards projectPath={projectPath} entities={entities} chapters={chapters} activeChapterId={activeChapterId} calConfig={calConfig} focus={boardFocus} />
                 )}
             </div>
         </div>
