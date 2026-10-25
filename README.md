@@ -144,7 +144,7 @@ The build scripts do everything: they set up the Python environment, freeze the 
 
 **Windows:**
 ```bash
-.uild.bat
+.build.bat
 ```
 
 **Linux / macOS:**
