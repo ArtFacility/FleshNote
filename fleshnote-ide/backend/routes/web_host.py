@@ -1,6 +1,6 @@
 """
 Web host: what Electron's main process does for the desktop app, for the browser build
-(Seneschal Labs, src/web). Mounted only by web_main.py, never by main.py, so the desktop
+(src/web). Mounted only by web_main.py, never by main.py, so the desktop
 backend and its frozen build don't have these routes.
 
 Everything lives under one root folder (FLESHNOTE_WEB_ROOT):

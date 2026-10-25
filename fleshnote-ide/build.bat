@@ -38,6 +38,15 @@ if not exist ".venv\Scripts\activate.bat" (
 
 call .venv\Scripts\activate.bat
 
+REM The pins (huspacy above all) don't install on Python 3.14 yet.
+python -c "import sys; sys.exit(0 if sys.version_info[:2] == (3, 13) else 1)"
+if !ERRORLEVEL! neq 0 (
+    echo ERROR: backend\.venv is not Python 3.13, which the build needs.
+    echo Install Python 3.13, delete backend\.venv and run build.bat again.
+    popd
+    exit /b 1
+)
+
 :: Sync the environment to the pinned versions on every build
 :: (fast no-op when already satisfied; protects against silent drift).
 python -m pip install -r requirements_build.txt

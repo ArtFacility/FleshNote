@@ -7,8 +7,9 @@ On your own server (VPS_DEPLOY.md), behind a login (web_standalone.py), serving 
     python web_main.py set-password --config fleshnote-web.yaml   (once, and to change it)
     python web_main.py --config fleshnote-web.yaml
 
-On Seneschal Labs, whose site does the signing in and serves the pages: FLESHNOTE_WEB_ROOT names
-the folder that holds the workspace and everything else the browser build keeps on the server.
+Behind a host site that does the signing in and serves the pages itself (the author's test server
+runs it this way): FLESHNOTE_WEB_ROOT names the folder that holds the workspace and everything else
+the browser build keeps on the server.
 
     FLESHNOTE_WEB_ROOT=/srv/labs/fleshnote/data python web_main.py --port 8100
 """
@@ -49,7 +50,7 @@ def main() -> None:
     else:
         root = os.environ.get("FLESHNOTE_WEB_ROOT")
         if not root:
-            sys.exit("Give --config <file> (your own server), or set FLESHNOTE_WEB_ROOT (Seneschal Labs).")
+            sys.exit("Give --config <file> (see VPS_DEPLOY.md), or set FLESHNOTE_WEB_ROOT when a host site handles sign-in.")
         port, demo = args.port, os.environ.get("FLESHNOTE_WEB_DEMO") == "1"
 
     import uvicorn

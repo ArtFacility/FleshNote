@@ -1,110 +1,123 @@
-# FleshNote IDE (v2.0 Beta)
+# FleshNote (v2.0)
 
 > [!WARNING]
-> **Warning: You are currently on the `experimental` branch.**
-> This branch introduces version 2 of the database schema (moving all entity, note, and time IDs to UUIDs). If you have existing projects, make sure to back up your project directories before opening them. The IDE provides an automated "Migrate to new version" button to convert legacy databases.
+> **You're on the `experimental` branch, where 2.0 lives until its release.**
+> It's mostly stable now, and feedback is very welcome: if something breaks or feels off, please open an issue.
+> 2.0 changes the project format. FleshNote upgrades projects made with 1.x and keeps a backup of the old database, but copy your project folders somewhere safe before you open them anyway.
 
-An advanced, no-bullshit writing tool for novelists and world builders who actually want to finish their draft this century. Built with Electron, React, TypeScript, and FastAPI.
-
-### What's New in v2.0
-
-* **History Rewind**: Revert chapters to previous states with non-destructive session snapshots, visual inline diffing, and instant rollbacks.
-* **Sync Projects Across Devices (with upcoming mobile app)**: Local-first cross-device sync over Wi-Fi / LAN powered by Hybrid Logical Clocks (HLC) and conflict-free 3-way merges, built for the upcoming mobile companion app.
-* **Pentimento (Proof of Process)**: Complete writing telemetry with process replay simulation, paragraph effort heatmaps, typing speed traces, input provenance (human vs. paste/machine), and cryptographic sealing with RFC 3161 timestamps to prove authentic human authorship.
-* **Reviewer Mode (.flreview)**: Send out lightweight, stripped-down review copies of your novel with optional self-expiring encryption, allowing beta readers and editors to leave inline annotations and merge all feedback files seamlessly back into your master manuscript.
-* **Story Architect**: Comprehensive 5-step narrative planning suite ("Write First, Note Second") spanning seed premise questions, cast & relationship dynamics, story arc beat-sheets, automatic chapter scaffolding, and a deterministic non-AI brainstorm generator.
-* **Story Intensity Pulse**: Real-time chapter intensity curves and narrative pulse tracking built into the Plot Planner to visualize tension, emotional stakes, and pacing across your manuscript.
-* **Smarter Janitor**: Upgraded local linguistic analysis with customizable audit intensity, "Show, Don't Tell" confidence grading, sensory balance tracking, and expanded grammatical rules for English, Hungarian, and Polish.
-* **New Group System (Factions & Guilds)**: Group characters into factions, alliances, and guilds with temporal membership tracking, role hierarchies, group milestones, and World History timeline integration.
-* **Export Projects to Plain Text & Obsidian**: Seamless vault export converting `.flnote` projects into clean Markdown vaults or `.txt` archives, fully compatible with Obsidian while preserving wikilinks and metadata.
-* **Cover Art Maker & Rebuilt Book Export**: Design print wraps and dust jackets with automated spine thickness calculations based on page count and paper caliper; print-ready PDF export via Chromium (Printed Book and Submission layouts), DOCX, and validated EPUB with live preview.
-* **Self-Hosted VPS Browser Mode**: Run FleshNote directly in your browser served from your own Linux VPS with Caddy HTTPS and password authentication (see [VPS_DEPLOY.md](VPS_DEPLOY.md)).
-* **Optimized App Bundle & Installer Size**: Drastically reduced installer and installed footprint by trimming unused spellcheck dictionaries, excluding dev dependencies, and strictly packaging production runtime assets.
-* **Dynamic Backend Port**: The backend now dynamically finds an available local port on startup instead of conflicting on static port 8000.
-* **Dozens of Bugfixes & Polish**: Multi-device writing-process telemetry synchronization, SQLite WAL performance tuning, UUID v4 database architecture, hardened `.flnote` container format, safe legacy project migration, and numerous UI refinements.
-
----
+A no-bullshit writing tool for novelists and world builders who actually want to finish their draft this century. Your projects stay on your computer. Built with Electron, React and FastAPI.
 
 [![License: MPL 2.0](https://img.shields.io/badge/License-MPL_2.0-brightgreen.svg)](https://opensource.org/licenses/MPL-2.0)
 
 ![FleshNote IDE](assets/full_ide.png)
 
+## What's new in 2.0
+
+- **Sketchboards, rebuilt.** Work out magic systems, tech trees, politics or trade on a canvas, with a legend, templates and a timeline. Relationships and Factions boards draw themselves from your notes.
+- **Factions.** Group characters into factions and guilds, with roles, join and leave dates, and a history of their own.
+- **History.** Chapters keep snapshots of earlier writing sessions. Compare them and roll back.
+- **Story Architect.** A five-step planner for a new book: premise, cast, story structure, chapter scaffolding, and a brainstorm generator (no AI involved).
+- **Story Pulse.** An intensity curve per chapter in the Plot Planner, so you can see where the book is tense and where it sags.
+- **A smarter Janitor.** Choose how picky it is. Better show-don't-tell detection, a balance of the senses, and more rules for English, Hungarian and Polish.
+- **Pentimento.** FleshNote can record how you write, so you can replay a chapter being written and show that a person wrote it. If you opt in, the records are sealed with a trusted timestamp.
+- **Review copies.** Send a beta reader a stripped-down `.flreview` file, optionally set to expire. They comment in FleshNote's reviewer mode, and their notes come back into your manuscript.
+- **Export, rebuilt.** Print-ready PDFs (printed book or manuscript submission), DOCX and EPUB, with a preview of the real pages. There's also an early cover editor.
+- **Obsidian export.** Turn a project into an Obsidian vault (notes, links, and sketchboards as `.canvas` files) or into plain text.
+- **Manuscript import.** Bring in a `.docx`, `.txt` or `.md` file. FleshNote suggests where the chapters split and finds the names in it.
+- **A bookshelf** for your projects, with colours, runes and shelves of your own.
+- **Wi-Fi sync** with the upcoming phone app. It's encrypted and goes straight between your devices, no cloud.
+- **Run it in a browser** on your own server (see [VPS_DEPLOY.md](VPS_DEPLOY.md)).
+- **A smaller installer**, and the app no longer fights other programs over port 8000.
+
+![Bookshelf](assets/bookshelf.png)
+
 ## Why FleshNote?
 
 FleshNote was built by writers, for writers. I created this app mainly for myself to help me write my novel, but I decided to make it open source so that other writers can benefit from it as well.
 
-### 🧹 The Janitor (Your Smart Editing Assistant)
-Write now, edit later. The built-in Janitor actively reads your chapters in the background using local, offline linguistic analysis (spaCy & NLTK) to offer structural suggestions without ever interrupting your flow:
-- **Sensory Analysis**: Avoid "White Room Syndrome." The Janitor tracks if your scene is missing descriptions of Smell, Taste, Touch, Sound, or Sight.
-- **Show, Don't Tell**: Detects weak adverbs and passive voice.
-- **Readability & Pacing**: Grades your chapter complexity and warns you if you start three sentences in a row with the exact same word.
+### The Janitor
+
+Write now, edit later. The Janitor reads your chapters in the background and points out things to fix, without interrupting you. It runs on your computer (spaCy and NLTK, no AI service):
+
+- **Senses:** shows which senses a scene uses, so you notice when it has no smell, sound or touch at all ("white room syndrome").
+- **Show, don't tell:** flags weak adverbs, passive voice and telling.
+- **Readability and pacing:** grades how hard a chapter is to read, and warns you when three sentences in a row start with the same word.
 
 ![Sensory Analysis](assets/sensory_analysis.png)
 
-### 🏃‍♂️ Hardcore Sprint Modes
-Sometimes you just need a little push to get drafted. FleshNote gamifies the writing process with specialized, un-exitable Focus Modes:
-- **Hemingway Mode**: The backspace and delete keys are completely disabled. No inner-editor allowed. You can only move forward!
-- **Zen Mode**: Relax and watch a procedural tree grow on your screen as you hit your word count goals. Hitting your target makes the tree bloom.
-- **Kamikaze Mode**: Stop typing for too long, and your text turns red before being permanently deleted. Survive the sprint!
-- **Fog Mode**: Previous sentences fade into a thick fog, keeping your eyes locked on the *current* sentence so you don't scroll up.
+### Sprint modes
+
+For when you need a push to get the draft done. Six focus modes, some rewarding and some punishing:
+
+- **Hemingway:** Backspace and Delete don't work. Forward only.
+- **Zen:** a tree grows as you write, and blooms when you hit your goal.
+- **Kamikaze:** stop typing for a minute and your words start disappearing.
+- **Fog:** text away from where you're typing fades out, so you can't scroll back and fiddle.
+- **Momentum** and **Combo:** type faster to fill a bar, or build a combo that breaks if you delete too much.
 
 ![Zen Mode Timelapse](assets/zen_mode_timelapse.gif)
 
-### 🧠 Epistemic UI (Who Knows What?)
-Track exactly what a character knows at any given point in your timeline. Use the **Entity Inspector** to lock away a character's "True Goal" while they lie to the reader, visually tracking narrative deception across chapters.
+### Who knows what
+
+Track what each character knows, and from which chapter. Keep a character's true goal hidden in the inspector while they lie to the reader, and follow the lie across chapters.
 
 ![Knowledge State](assets/knowledge_state.png)
 
-### 🗺️ Timeline & Plot Planner
-A zoomable, multi-layer canvas for mapping out your story beats, arcs, and foreshadowing natively injected straight into the manuscript. 
+### Plot Planner
+
+A zoomable timeline for beats, arcs and foreshadowing, tied to the actual chapters.
 
 ![Plot Planner](assets/plot_planner.png)
 
-### 📜 World History Timeline
-Track what happened with your characters and items before the book even begins. Build a deep chronological history by dragging relationships and pinning major backstory events across an interactive, visual timeline.
+### World history
+
+What happened before chapter one. Put relationships and backstory events for your characters and items on a timeline.
 
 ![History Timeline](assets/history_timeline.gif)
 
-### 📂 Unified Entity & Twist Tracking
-Dumping lore into your project is easy. Managing it is easier. The codebase features a robust tabbed dashboard to manage Characters, Locations, Twists, and Quick Notes with bulk operations and inline tagging (`@mention` any character right in the editor).
+### Sketchboards
+
+Boards for working out how your world works: shapes, labelled connections, a legend that says what they mean, and a slider that shows the board as it stands at any chapter. Link a node to a character, place or faction and it keeps their current name. The Relationships and Factions boards take their lines from the relationship tracker and the faction rosters, so they stay up to date.
+
+![Sketchboard](assets/sketchboard.png)
+
+### Characters, places, lore and twists
+
+All in one tabbed manager, with bulk editing. Type `@` in the editor to link a name as you write.
 
 ![Entity Manager](assets/entity_manager.png)
 
-### 📚 Professional Book Export & Cover Art
-Export straight to industry-standard formatting. Generates print-ready PDFs (Printed Book & Submission layouts via Chromium), standard DOCX files, and EPUBs with a real-pages live preview, plus a flat-wrap **Cover Art Maker** with automatic spine width calculation.
+### Export
+
+PDF (printed book or manuscript submission), DOCX and EPUB, with a preview of the real pages. The cover editor (still early) lays out the front, spine and back at your book's size, with the spine as wide as your page count makes it.
 
 ![File Export](assets/file_export.png)
 
-### Other Features
+### Other features
 
-- **Story Architect & Brainstorm Generator**: 5-step narrative planning suite from seed premise to cast dynamics, story arc beat-sheets, chapter scaffolding, and combinatorial brainstorming.
-- **Pentimento Process Telemetry**: Record keystroke telemetry, replay writing sessions, visualize edit effort heatmaps, and cryptographically seal drafts with RFC 3161 TSA receipts.
-- **Reviewer Mode & .flreview Bundles**: Export lightweight, stripped-down review archives with optional self-expiring encryption, letting beta readers annotate chapters in standalone reviewer mode before merging feedback back into the author's copy.
-- **Vault Export (Obsidian & Plain Text)**: Export projects into clean Markdown vaults or `.txt` archives, fully compatible with Obsidian while preserving internal links and metadata.
-- **Chapter Time Overrides**: Track flashbacks and timeskips at the paragraph level so your entities and relationship dynamics remain chronologically accurate.
-- **Environment & Weather System**: Define weather states per location with **Hierarchical Inheritance** (sub-locations automatically pull weather from parents).
-- **7 Total Sprint Modes**: Let it be Rewarding or Punishing, there is a mode for every writer.
-- **Daily Writing Encouragement**: Context-aware prompts and streak tracking when you open your project.
-- **Sketchboards & Mind-Mapping**: Visual node-graph canvas for mapping out magic systems, technology trees, and character webs.
-- **Smart Entity Renaming Wizard**: Safely rename characters or locations across your entire manuscript with automated text-link rewriting.
-- **Custom World Calendars**: Build your own calendar systems with custom months, seasons, and years for precise age and history tracking.
-- **Image Gallery**: Each entity type has its own gallery and Icon. Add description, time, and crop icons.
-- **Character and Location Name Generator**: Generate procedural and preset character names, or answer questions and generate location names based on your answers.
+- **Time overrides:** mark flashbacks and time skips inside a chapter, so ages and relationships stay correct.
+- **Weather** per location. Smaller places inherit it from the region they're in.
+- **Daily writing prompts** and streaks when you open a project.
+- **Renaming:** rename a character or place everywhere in the manuscript at once, links included.
+- **Custom calendars** with your own months, seasons and eras, used for ages and history.
+- **Image galleries** for every character, place and lore entry, each with a cropped icon.
+- **Name generators:** pick from real-name lists and presets, or answer a few questions about a place and get name ideas.
+- **Interface languages:** English, Hungarian and Polish. The Arabic translation is being updated.
 
 ---
 
-# Getting Started
+# Getting started
 
-> ⚠️ **Windows Users:** I'm a solo indie dev and I don't plan on buying an expensive Windows Code Signing Certificate. When installing the app, Windows SmartScreen will show a scary blue pop-up warning you about an "unrecognized app". Simply click **More info** -> **Run anyway** to proceed with the installation!
+> **Windows users:** I'm a solo indie dev and I don't plan on buying an expensive Windows code signing certificate. When you install the app, Windows SmartScreen will show a scary blue pop-up about an "unrecognized app". Click **More info** → **Run anyway** to install it.
 
 ### Prerequisites
 
-- [Node.js](https://nodejs.org/) (Project uses npm)
-- [Python 3.13](https://www.python.org/) (For backend services)
+- [Node.js](https://nodejs.org/) 22 or newer
+- [Python 3.13](https://www.python.org/). Not 3.14 yet: some of the language packages don't install on it. If your Linux distribution ships 3.14, get 3.13 through pyenv, uv or your package manager.
 
 ### Installation
 
-1. Clone the repository and navigate into the `fleshnote-ide` subfolder:
+1. Clone the repository and go into the `fleshnote-ide` folder:
    ```bash
    cd fleshnote-ide
    ```
@@ -112,107 +125,81 @@ Export straight to industry-standard formatting. Generates print-ready PDFs (Pri
    ```bash
    npm install
    ```
-3. Setup the Python backend environment:
+3. Set up the Python backend:
    ```bash
    cd backend
-   python3 -m venv .venv
-   source .venv/bin/activate  # On Windows: .venv\Scripts\activate
+   python3.13 -m venv .venv    # on Windows: py -3.13 -m venv .venv
+   source .venv/bin/activate  # on Windows: .venv\Scripts\activate
    pip install -r requirements.txt
    cd ..
    ```
-   > **Note:** `requirements.txt` contains only runtime dependencies. If you plan to **build/package** the app with PyInstaller, use `requirements_build.txt` instead. That file deliberately omits `huspacy` — install it separately with `pip install --no-deps huspacy==0.12.1`, because its `packaging<22.0` requirement conflicts with PyInstaller ≥ 6 (the build scripts do this automatically).
 
 ### Development
-Run the application in development mode:
+
 ```bash
 npm run dev
 ```
 
-## 📦 Building for Production
+## Building the installers
 
-You can build the production installer using the provided platform-specific scripts or npm commands. 
+The build scripts do everything: they set up the Python environment, freeze the backend with PyInstaller, build the app and package it. The installers end up in `fleshnote-ide/dist/`.
 
-**IMPORTANT**: When building the app manually (via npm), you *must* also manually freeze the Python backend using PyInstaller first. The provided build scripts (`build.bat` and `build.sh`) handle this dual-compilation step for you automatically!
-
-### Using Build Scripts (Recommended)
-
-**Windows** (PowerShell/CMD):
+**Windows:**
 ```bash
-./build.bat
+.uild.bat
 ```
 
-**Linux/macOS** (Terminal):
+**Linux / macOS:**
 ```bash
 chmod +x build.sh
 ./build.sh linux  # or ./build.sh mac
 ```
 
-### Manual Build Commands
-
-*(Remember to run PyInstaller on the backend first!)*
-
-**Windows**
-```bash
-npm run build:win
-```
-
-**macOS**
-```bash
-npm run build:mac
-```
-
-**Linux**
-```bash
-npm run build:linux
-```
-
-**Linux (Flatpak)**
-
-> **Note:** To build Flatpak correctly, you must ensure `flatpak` and `flatpak-builder` are installed on your system. 
-> Since the bundler operates at the user-level, you also **must** have the Flathub remote added for your local user environment, or the build will fail:
-> ```bash
-> flatpak remote-add --user --if-not-exists flathub https://flathub.org/repo/flathub.flatpakrepo
-> ```
+On Linux this makes an AppImage, a snap, a `.deb` and a Flatpak. The Flatpak needs `flatpak` and `flatpak-builder`, plus the Flathub remote added for your user:
 
 ```bash
-npm run build:flatpak
+flatpak remote-add --user --if-not-exists flathub https://flathub.org/repo/flathub.flatpakrepo
 ```
 
-## 🌐 Running it in a browser on your own server
+Without them, the script stops at the Flatpak step. The backend and app are built by then, so you can package the rest with `npx electron-builder --linux AppImage deb`.
 
-FleshNote can also run in a browser, served from a VPS you own, behind a sign-in page: one account
-per server, your projects stored there, HTTPS through Caddy. It's a free self-hosted option for
-people comfortable with a Linux shell, separate from FleshNote's own services. The step-by-step
-guide is **[VPS_DEPLOY.md](VPS_DEPLOY.md)**.
+### Building by hand
+
+Freeze the backend first. The build uses `requirements_build.txt` instead of `requirements.txt`, and `huspacy` has to be installed on its own, because its `packaging<22.0` requirement clashes with PyInstaller 6:
+
+```bash
+cd backend
+pip install -r requirements_build.txt
+pip install --no-deps huspacy==0.12.1
+python build_backend.py
+cd ..
+```
+
+Then package the app with one of `npm run build:win`, `build:mac`, `build:linux` or `build:flatpak`.
+
+## Running it in a browser on your own server
+
+FleshNote can also run in a browser, served from a server you own, behind a password and HTTPS (through Caddy). It's meant for people comfortable with a Linux shell. The guide is **[VPS_DEPLOY.md](VPS_DEPLOY.md)**.
 
 ### For developers: the browser build
 
-The browser build is the same renderer and preload, built with `npm run build:web` (into
-`fleshnote-ide/out/web`); none of it is part of the desktop app or `npm run dev`.
+`npm run build:web` builds the browser version into `fleshnote-ide/out/web`. It isn't part of the desktop app or `npm run dev`.
 
-- `src/web/` stands in for Electron. Most IPC handlers in `src/main/index.ts` only pass their
-  arguments on to the backend; the build lifts those into the browser as they are. A handler
-  that uses Electron itself, the file system or main's own state needs a browser version in
-  `src/web/handlers.ts`, or `npm run build:web` fails and names it. The desktop build doesn't
-  care either way.
-- `backend/web_main.py` starts the backend for the browser: with `--config` it serves the pages
-  behind a login (`backend/web_standalone.py`, the VPS setup); without it, it expects Seneschal
-  Labs (the author's own server) to do that. Its extra routes (`backend/routes/web_host.py`:
-  uploads, downloads, files) are only safe behind a login: never expose `web_main.py` without one.
-- `labs/` and `scripts/deploy-labs.mjs` deploy to the author's home server and are of no use
-  elsewhere; `deploy/selfhost/` holds the VPS guide's systemd unit, config and Caddyfile.
+- `src/web/` stands in for Electron. Most IPC handlers in `src/main/index.ts` only pass their arguments on to the backend, and the build reuses them as they are. A handler that uses Electron itself, the file system or the main process's own state needs a browser version in `src/web/handlers.ts`; otherwise `npm run build:web` fails and names it.
+- `backend/web_main.py --config <file>` serves the pages behind a login (`backend/web_standalone.py`). Its extra routes (uploads, downloads, files) are only safe behind that login, so never expose `web_main.py` without it.
+- `deploy/selfhost/` has the systemd unit, config and Caddyfile the guide uses. `labs/` and `scripts/deploy-labs.mjs` deploy to my own test server and won't be useful to you.
 
-## 🛠️ Recommended Setup
+## Recommended setup
 
-- **IDE**: [VSCode](https://code.visualstudio.com/)
-- **Extensions**: 
-    - [ESLint](https://marketplace.visualstudio.com/items?itemName=dbaeumer.vscode-eslint)
-    - [Prettier](https://marketplace.visualstudio.com/items?itemName=esbenp.prettier-vscode)
-    - [Tailwind CSS IntelliSense](https://marketplace.visualstudio.com/items?itemName=bradlc.vscode-tailwindcss)
+[VS Code](https://code.visualstudio.com/) with [ESLint](https://marketplace.visualstudio.com/items?itemName=dbaeumer.vscode-eslint) and [Prettier](https://marketplace.visualstudio.com/items?itemName=esbenp.prettier-vscode).
 
-## 📄 License
+## The old 1.2 version
 
-This project is licensed under the **Mozilla Public License 2.0**. See the [LICENSE](LICENSE) file for the full text.
+FleshNote changed a lot in 2.0. If you prefer the old, simpler app (the one from before the new project format), version 1.2.0 is still on the [`legacy`](https://github.com/ArtFacility/FleshNote/tree/legacy) branch. It won't get new features, but bug fixes are welcome there, and I may fix bugs in it myself too.
+
+## License
+
+FleshNote is licensed under the **Mozilla Public License 2.0**. See [LICENSE](LICENSE) for the full text.
 
 ---
-Built with ❤️ by [Artfacility](https://www.artfacility.xyz)
+Made by [Artfacility](https://www.artfacility.xyz)

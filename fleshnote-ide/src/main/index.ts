@@ -667,9 +667,9 @@ app.whenReady().then(async () => {
         return sourcePath // fallback to read-only, though it might fail
       }
     }
-    // The bundled Tutorial is a 1.x project: the user's copy is brought to the
-    // current schema before it opens (backup and rollback as for any project).
-    // Once it carries a v2 descriptor this is skipped.
+    // The bundled Tutorial is already a 2.0 project, but a copy left behind by
+    // a 1.x install is still a 1.x project: bring it to the current schema
+    // before it opens (backup and rollback as for any project).
     if (!fs.existsSync(join(userDataTutorial, 'fleshnote_project.json'))) {
       await backendPost('/api/project/migrate', { project_path: userDataTutorial })
     }

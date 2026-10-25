@@ -59,8 +59,7 @@ hidden_imports = [
     'routes.spellcheck',
     'phunspell',
     'spylls',
-    'spylls.spellcheck',
-    'spylls.spellcheck.dictionary',
+    'spylls.hunspell',
 ]
 
 datas = [

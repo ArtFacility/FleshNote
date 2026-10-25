@@ -85,6 +85,13 @@ fi
 
 source .venv/bin/activate
 
+# The pins (huspacy above all) don't install on Python 3.14 yet.
+if ! python -c 'import sys; sys.exit(0 if sys.version_info[:2] == (3, 13) else 1)'; then
+    echo "ERROR: backend/.venv runs Python $(python -c 'import platform; print(platform.python_version())'), the build needs 3.13."
+    echo "Install Python 3.13, delete backend/.venv and run this script again."
+    exit 1
+fi
+
 # Sync the environment to the pinned versions on every build
 # (fast no-op when already satisfied; protects against silent drift).
 python -m pip install -r requirements_build.txt

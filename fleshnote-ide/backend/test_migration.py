@@ -1,7 +1,7 @@
 """Migrating FleshNote 1.2 projects (integer ids) to the 2.0 schema (UUIDs).
 
 Fixtures in test_fixtures/v1_2/ are real 1.2 projects:
-- tutorial: the Tutorial project shipped with 1.2 (and still with 2.0)
+- tutorial: the Tutorial project as shipped with 1.2
 - legacy_harbor: built by tools/make_v1_fixture.py with the 1.2 code itself, so
   it has every marker type 1.2 wrote into chapter files and every table that
   references another (knowledge, relationships, time overrides, boards, images…)
