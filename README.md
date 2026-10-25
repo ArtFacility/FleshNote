@@ -1,9 +1,7 @@
 # FleshNote (v2.0)
 
-> [!WARNING]
-> **You're on the `experimental` branch, where 2.0 lives until its release.**
-> It's mostly stable now, and feedback is very welcome: if something breaks or feels off, please open an issue.
-> 2.0 changes the project format. FleshNote upgrades projects made with 1.x and keeps a backup of the old database, but copy your project folders somewhere safe before you open them anyway.
+> [!NOTE]
+> 2.0 changes the project format. FleshNote upgrades projects made with 1.x and keeps a backup of the old database, but copy your project folders somewhere safe before you open them anyway. Feedback is very welcome: if something breaks or feels off, please open an issue.
 
 A no-bullshit writing tool for novelists and world builders who actually want to finish their draft this century. Your projects stay on your computer. Built with Electron, React and FastAPI.
 
