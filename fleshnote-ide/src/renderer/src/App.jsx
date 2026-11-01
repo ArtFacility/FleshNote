@@ -7,7 +7,7 @@ import FleshNoteIDE from './components/FleshNoteIDE'
 import ReviewerIDE from './components/ReviewerIDE'
 import IncomingReviewModal from './components/IncomingReviewModal'
 import TitleBar from './components/TitleBar'
-import { applyToProject } from './utils/pentimentoVerification'
+import { applyToProject, applyIfUnset } from './utils/pentimentoVerification'
 import { installCloseGuard } from './utils/closeGuard'
 import { useTranslation } from 'react-i18next'
 
@@ -81,6 +81,7 @@ export default function App() {
       const data = await window.api.loadProject(projectPath)
       setProjectConfig(data.config)
       setActiveProject(projectPath)
+      applyIfUnset(projectPath, data.config).catch(() => { })
 
       setCurrentView('ide')
     } catch (err) {

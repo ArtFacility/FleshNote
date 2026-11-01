@@ -1873,6 +1873,8 @@ export default function FleshNoteIDE({ projectConfig, projectPath, onCloseProjec
                     onToggle={toggleHistoryPanel}
                     onRestored={handleHistoryRestored}
                     onBeforeSnapshot={async () => { try { await janitorActionsRef.current?.flushSave?.() } catch { /* noop */ } }}
+                    onBeforeRestore={async () => { try { await janitorActionsRef.current?.pauseRecording?.() } catch { /* noop */ } }}
+                    onAfterRestore={() => janitorActionsRef.current?.resumeRecording?.()}
                   />
                   {(reviewsData.reviews.length > 0 || reviewsData.copies.length > 0) && (
                     <ReviewsPanel

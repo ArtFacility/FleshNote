@@ -434,7 +434,7 @@ def ensure_process_history_schema(cursor, device_id=None) -> None:
     """Columns and tables the writing-process history gained after it first
     shipped, so older projects (and databases arriving from other devices) can
     be read, written and merged the same way:
-      - pentimento_sessions.summary_json / wpm_trace / device_kind
+      - pentimento_sessions.summary_json / wpm_trace / device_kind / op_model
       - pentimento_ops.source
       - server_receipts (Sealed Pentimento receipts)
       - process_history_tombstones: ids of sessions and snapshots this device
@@ -446,7 +446,7 @@ def ensure_process_history_schema(cursor, device_id=None) -> None:
         "SELECT name FROM sqlite_master WHERE type='table'").fetchall()}
     if "pentimento_sessions" in tables:
         cols = {c[1] for c in cursor.execute("PRAGMA table_info(pentimento_sessions)").fetchall()}
-        for col in ("summary_json", "wpm_trace", "device_kind"):
+        for col in ("summary_json", "wpm_trace", "device_kind", "op_model"):
             if col not in cols:
                 cursor.execute(f"ALTER TABLE pentimento_sessions ADD COLUMN {col} TEXT")
         cursor.execute("CREATE INDEX IF NOT EXISTS idx_pent_sessions_chapter_device "
@@ -1415,6 +1415,7 @@ def generate_project_db(project_path: str, answers: dict) -> str:
             summary_json TEXT,
             wpm_trace TEXT,
             device_kind TEXT,                -- 'desktop' | 'mobile' (not hashed)
+            op_model TEXT,                   -- 'flat' = ops use the flat text model (not hashed)
             created_at TEXT DEFAULT (datetime('now')),
             FOREIGN KEY (chapter_id) REFERENCES chapters(id) ON DELETE CASCADE
         )

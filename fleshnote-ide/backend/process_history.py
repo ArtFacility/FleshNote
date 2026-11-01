@@ -30,6 +30,11 @@ When a sync resolves a prose conflict, the applying device records a MERGE sessi
 on its own chain: one 'merge' op whose text lists the other devices' chain heads and
 the resulting prose hash. The session hash covers that op, so the join of the
 chains is sealed (and anchored, when Sealed Pentimento is on) like any other session.
+
+Going back to an older version of a chapter records a RESTORE session the same way:
+one 'restore' op naming the version brought back and the text it replaced. The jump
+is sealed, so a session's ops still lead to its text and a replay can show the jump
+as a jump.
 """
 
 import datetime
@@ -39,6 +44,8 @@ import re
 import zlib
 
 MERGE_OP = "merge"
+RESTORE_OP = "restore"
+MARKER_OPS = (MERGE_OP, RESTORE_OP)   # a session's record of an event, not writing
 DEVICE_KINDS = ("desktop", "mobile")
 MAX_SNAPSHOT_BYTES = 64 * 1024 * 1024   # decompressed size cap for an imported snapshot
 
@@ -88,6 +95,27 @@ def parse_merge_payload(text):
         return None
     heads = data.get("heads")
     if not isinstance(heads, list) or not all(isinstance(h, str) for h in heads):
+        return None
+    return data
+
+
+def restore_payload(from_snapshot, from_time, prose_hash, replaced_hash) -> str:
+    """Text of a restore op. Like a merge's, the session hash covers the stored string."""
+    return json.dumps({
+        "restore": 1,
+        "from_snapshot": from_snapshot,
+        "from_time": from_time,
+        "prose_hash": prose_hash,
+        "replaced_hash": replaced_hash,
+    }, sort_keys=True, separators=(",", ":"))
+
+
+def parse_restore_payload(text):
+    try:
+        data = json.loads(text or "")
+    except (TypeError, ValueError):
+        return None
+    if not isinstance(data, dict) or data.get("restore") != 1:
         return None
     return data
 
@@ -183,6 +211,24 @@ def record_merge(cur, project_path, chapter_id, device_id, resolution, prose_tex
     one 'merge' op that names the other devices' chain heads and the merged text's
     hash, with a 'merge' snapshot of the merged text. Seals this device's open
     session on the chapter first. Returns (session_id, [receipt ids to anchor])."""
+    heads = foreign_heads(cur, chapter_id, device_id)
+    prose_hash = hashlib.sha256((prose_text or "").encode("utf-8")).hexdigest()
+    return _record_marker(cur, project_path, chapter_id, device_id, MERGE_OP,
+                          merge_payload(heads, prose_hash, resolution, theirs))
+
+
+def record_restore(cur, project_path, chapter_id, device_id, from_snapshot, from_time,
+                   prose_hash, replaced_hash):
+    """Record going back to an older version on this device's chain: a sealed session
+    holding one 'restore' op, with a 'restore' snapshot of the restored text (already
+    on disk). This device's open session must be sealed before the text changes.
+    Returns (session_id, [receipt ids to anchor])."""
+    return _record_marker(cur, project_path, chapter_id, device_id, RESTORE_OP,
+                          restore_payload(from_snapshot, from_time, prose_hash, replaced_hash))
+
+
+def _record_marker(cur, project_path, chapter_id, device_id, op_type, payload):
+    """A sealed session holding one marker op, with a snapshot of the same kind."""
     from routes.pentimento import _seal_session
     receipts = []
     dangling = seal_own_dangling(cur, project_path, chapter_id, device_id)
@@ -191,8 +237,6 @@ def record_merge(cur, project_path, chapter_id, device_id, resolution, prose_tex
 
     head = chain_head(cur, chapter_id, device_id)
     prev_hash = head["session_hash"] if head else fork_point(cur, chapter_id)
-    heads = foreign_heads(cur, chapter_id, device_id)
-    prose_hash = hashlib.sha256((prose_text or "").encode("utf-8")).hexdigest()
 
     import uuid
     session_id = str(uuid.uuid4())
@@ -206,10 +250,9 @@ def record_merge(cur, project_path, chapter_id, device_id, resolution, prose_tex
         "INSERT INTO pentimento_ops "
         "(session_id, chapter_id, timestamp, op_type, para_index, char_offset, length, "
         " text_content, duration_ms, origin, source) VALUES (?,?,?,?,0,0,0,?,0,'desktop','machine')",
-        (session_id, chapter_id, _utc_now_iso(), MERGE_OP,
-         merge_payload(heads, prose_hash, resolution, theirs)))
+        (session_id, chapter_id, _utc_now_iso(), op_type, payload))
     _hash, _snap, receipt_id = _seal_session(cur, project_path, session_id, now,
-                                             snapshot_kind="merge")
+                                             snapshot_kind=op_type)
     if receipt_id:
         receipts.append(receipt_id)
     return session_id, receipts

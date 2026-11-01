@@ -3,6 +3,7 @@ import { EditorState } from '@tiptap/pm/state'
 import PentimentoRecorder from '../utils/pentimentoRecorder'
 import { onBeforeClose } from '../utils/closeGuard'
 import StarterKit from '@tiptap/starter-kit'
+import { DoubleEnterParagraph } from '../extensions/DoubleEnterParagraph'
 import Placeholder from '@tiptap/extension-placeholder'
 import CharacterCount from '@tiptap/extension-character-count'
 import Mention from '@tiptap/extension-mention'
@@ -375,6 +376,15 @@ export default function Editor({
     return () => window.removeEventListener('fleshnote:hotkeys-changed', onHotkeysChanged)
   }, [])
 
+  // "Double Enter for new paragraph" (an app setting, read by the extension on each Enter)
+  const doubleEnterRef = useRef(false)
+  useEffect(() => {
+    window.api.getGlobalConfig().then(config => { doubleEnterRef.current = !!config?.double_enter_paragraph })
+    const onChanged = (e) => { doubleEnterRef.current = !!e.detail }
+    window.addEventListener('fleshnote:double-enter-changed', onChanged)
+    return () => window.removeEventListener('fleshnote:double-enter-changed', onChanged)
+  }, [])
+
   // Hover card state
   const [hoverCard, setHoverCard] = useState(null)
   const [hoverPos, setHoverPos] = useState({ x: 0, y: 0 })
@@ -487,7 +497,8 @@ export default function Editor({
     SearchAndReplace,
     Mention.configure({
       suggestion: getSuggestionConfig(() => entitiesRef.current),
-    })
+    }),
+    DoubleEnterParagraph.configure({ isOn: () => doubleEnterRef.current })
   ], [t])
 
   const editor = useEditor({

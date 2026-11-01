@@ -19,10 +19,10 @@ function fmtDateTime(iso) {
   } catch { return '' }
 }
 
-const KIND_ACCENT = { session: '#3fa093', manual: 'var(--accent-amber)', pre_restore: 'var(--text-tertiary)', pre_link: 'var(--text-tertiary)', merge: 'var(--accent-purple)', sync: 'var(--text-tertiary)' }
+const KIND_ACCENT = { session: '#3fa093', manual: 'var(--accent-amber)', pre_restore: 'var(--text-tertiary)', pre_link: 'var(--text-tertiary)', merge: 'var(--accent-purple)', sync: 'var(--text-tertiary)', restore: 'var(--accent-amber)' }
 
 export default function HistoryPanel({
-  projectPath, activeChapter, isCollapsed, onToggle, onRestored, onBeforeSnapshot,
+  projectPath, activeChapter, isCollapsed, onToggle, onRestored, onBeforeSnapshot, onBeforeRestore, onAfterRestore,
 }) {
   const { t, i18n } = useTranslation()
   const chapterId = activeChapter?.id || null
@@ -105,6 +105,7 @@ export default function HistoryPanel({
     if (s.kind === 'pre_restore') return t('history.beforeRestore', 'Before restore')
     if (s.kind === 'pre_link') return t('history.beforeLinking', 'Before names were linked')
     if (s.kind === 'merge') return t('history.merged', 'Copies merged')
+    if (s.kind === 'restore') return t('history.restoredVersion', 'Older version restored')
     if (s.kind === 'sync') return t('history.fromSync', 'From another device')
     const base = s.session_num
       ? t('history.session', 'Session {{n}}', { n: s.session_num })
@@ -142,7 +143,9 @@ export default function HistoryPanel({
   const handleRestore = useCallback(async (s) => {
     setBusy(true); setMsg(null); setConfirmId(null)
     try {
-      await onBeforeSnapshot?.()   // flush pending save so the pre-restore safety snapshot holds the true current text
+      // Save and seal the writing session, so the pre-restore safety snapshot holds the
+      // true current text and the jump isn't recorded as typing.
+      await onBeforeRestore?.()
       const res = await window.api.chapterHistoryRestore({ project_path: projectPath, snapshot_id: s.id })
       if (res?.content_html != null) {
         onRestored?.(res.content_html, res.word_count || 0, res.chapter_id || chapterId)
@@ -153,8 +156,11 @@ export default function HistoryPanel({
         setMsg(t('history.failed', 'Something went wrong.'))
       }
     } catch { setMsg(t('history.failed', 'Something went wrong.')) }
-    finally { setBusy(false) }
-  }, [projectPath, chapterId, onRestored, refresh, t, onBeforeSnapshot])
+    finally {
+      onAfterRestore?.()   // writing from here on is a new session
+      setBusy(false)
+    }
+  }, [projectPath, chapterId, onRestored, refresh, t, onBeforeRestore, onAfterRestore])
 
   return (
     <div className={`panel-right ${isCollapsed ? 'collapsed' : ''}`} style={{ outline: 'none' }}>

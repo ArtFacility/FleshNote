@@ -24,9 +24,9 @@ const ctx = makeTimeContext(
 const at = (id, axis = 'reading') => chapterPoint(ctx, axis, id)
 
 // The same turning points as the backend's parity test (test_boards.py).
-const r1 = { id: 'r1', rel_type: 'friendship', mutual: false, chapter_number: null, day: null }
-const r3 = { id: 'r3', rel_type: 'love', mutual: true, chapter_number: 1, day: 100 }
-const r2 = { id: 'r2', rel_type: 'hate', mutual: false, chapter_number: 2, day: 200 }
+const r1 = { id: 'r1', rel_type: 'friendship', mutual: false, chapter_number: null, day: null, world_rank: 0 }
+const r3 = { id: 'r3', rel_type: 'love', mutual: true, chapter_number: 1, day: 100, world_rank: 1 }
+const r2 = { id: 'r2', rel_type: 'hate', mutual: false, chapter_number: 2, day: 200, world_rank: 2 }
 const pairs = [
   { from: 'A', to: 'B', history: [r1, r3, r2] },
   { from: 'B', to: 'A', history: [r3] }
@@ -54,6 +54,17 @@ test('on world time, undated turning points always count', () => {
   assert.equal(relationState(h, 'world', at('ch-1', 'world'), ctx).row.id, 'r3')
   assert.equal(relationState(h, 'world', { at: 50, prev: 49 }, ctx).row.id, 'r1')
   assert.equal(relationState([r2], 'world', { at: 150, prev: 100 }, ctx).state, 'future')
+})
+
+test('a flashback is latest in reading order but not on world time', () => {
+  // Read in chapter 2, dated before chapter 1.
+  const love = { id: 'love', mutual: false, chapter_number: 1, day: 100, world_rank: 1 }
+  const flashback = { id: 'flash', mutual: false, chapter_number: 2, day: 50, world_rank: 0 }
+  const h = [love, flashback]
+  assert.equal(relationState(h, 'world', { at: 150, prev: 100 }, ctx).row.id, 'love')
+  assert.equal(relationState(h, 'world', { at: 60, prev: 50 }, ctx).row.id, 'flash')
+  assert.equal(relationState(h, 'reading', at('ch-2'), ctx).row.id, 'flash')
+  assert.equal(relationState(h, 'reading', null, ctx).row.id, 'love')
 })
 
 test('a shared mutual turning point is one line with two arrowheads', () => {

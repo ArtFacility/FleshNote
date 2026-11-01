@@ -46,11 +46,65 @@ export function diffLines(aText, bText) {
 // need (a) which paragraphs were modified vs added/removed, and (b) the minimal
 // character edits inside a modified paragraph. cleanProse is applied by callers.
 
-// Paragraph-level diff that pairs an adjacent del+add of changed paragraphs into
-// a single { type: 'mod', before, after } chunk. Within a change region the order
-// is: mods first, then leftover dels, then leftover adds — so a caller walking the
-// chunks with a running paragraph index (increment on same/mod/add, not on del)
-// patches a live paragraph array correctly.
+// Word counts of a paragraph, ignoring case and punctuation.
+function wordBag(s) {
+  const bag = new Map()
+  for (const w of s.toLowerCase().match(/[\p{L}\p{N}]+/gu) || []) bag.set(w, (bag.get(w) || 0) + 1)
+  return bag
+}
+
+function bagSize(bag) {
+  let n = 0
+  for (const c of bag.values()) n += c
+  return n
+}
+
+// How alike two paragraphs are, or 0 when one isn't an edit of the other: at least
+// half the shorter one's words survive (so continuing a paragraph still counts), or
+// at least half the text is untouched at its two ends (so does fixing a short line).
+function paragraphSimilarity(a, b) {
+  const { prefix, suffix } = commonTrim(a, b)
+  const ends = (prefix.length + suffix.length) / Math.max(a.length, b.length, 1)
+  const bagA = wordBag(a), bagB = wordBag(b)
+  const sizeA = bagSize(bagA), sizeB = bagSize(bagB)
+  let shared = 0
+  for (const [w, c] of bagA) shared += Math.min(c, bagB.get(w) || 0)
+  if (shared / Math.max(Math.min(sizeA, sizeB), 1) < 0.5 && ends < 0.5) return 0
+  return Math.max(ends, (2 * shared) / Math.max(sizeA + sizeB, 1))
+}
+
+const MAX_ALIGNED_PAIRS = 40000 // a region this big is a rewrite: don't compare every pair
+
+// Lines up a change region's old and new paragraphs in document order, keeping the
+// most alike pairs as edits. Unpaired old ones come out as dels, new ones as adds.
+function alignChanged(dels, adds) {
+  const n = dels.length, m = adds.length
+  const out = []
+  const aligned = n * m <= MAX_ALIGNED_PAIRS
+  const sim = (i, j) => (aligned ? paragraphSimilarity(dels[i], adds[j]) : 0)
+  const scores = Array.from({ length: n }, (_, i) => adds.map((_a, j) => sim(i, j)))
+  const best = Array.from({ length: n + 1 }, () => new Array(m + 1).fill(0))
+  for (let i = n - 1; i >= 0; i--)
+    for (let j = m - 1; j >= 0; j--)
+      best[i][j] = Math.max(
+        best[i + 1][j], best[i][j + 1],
+        scores[i][j] > 0 ? scores[i][j] + best[i + 1][j + 1] : 0)
+  let i = 0, j = 0
+  while (i < n && j < m) {
+    if (scores[i][j] > 0 && best[i][j] === scores[i][j] + best[i + 1][j + 1]) {
+      out.push({ type: 'mod', before: dels[i], after: adds[j] }); i++; j++
+    } else if (best[i][j] === best[i + 1][j]) { out.push({ type: 'del', text: dels[i] }); i++ }
+    else { out.push({ type: 'add', text: adds[j] }); j++ }
+  }
+  while (i < n) { out.push({ type: 'del', text: dels[i] }); i++ }
+  while (j < m) { out.push({ type: 'add', text: adds[j] }); j++ }
+  return out
+}
+
+// Paragraph-level diff that turns a changed paragraph into a single
+// { type: 'mod', before, after } chunk, when its old and new text are alike. The chunks
+// are in document order, so a caller walking them with a running paragraph index
+// (increment on same/mod/add, not on del) patches a live paragraph array correctly.
 export function diffParagraphs(aText, bText) {
   const raw = diffLines(aText, bText)
   const out = []
@@ -63,10 +117,7 @@ export function diffParagraphs(aText, bText) {
       else adds.push(raw[i].text)
       i++
     }
-    const pairs = Math.min(dels.length, adds.length)
-    for (let k = 0; k < pairs; k++) out.push({ type: 'mod', before: dels[k], after: adds[k] })
-    for (let k = pairs; k < dels.length; k++) out.push({ type: 'del', text: dels[k] })
-    for (let k = pairs; k < adds.length; k++) out.push({ type: 'add', text: adds[k] })
+    out.push(...alignChanged(dels, adds))
   }
   return out
 }

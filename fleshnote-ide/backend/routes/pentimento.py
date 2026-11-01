@@ -30,7 +30,7 @@ from pydantic import BaseModel
 from typing import List, Optional
 
 import sync_core
-from process_history import (MERGE_OP, chain_hash, chain_head, device_directory,
+from process_history import (MARKER_OPS, chain_hash, chain_head, device_directory,
                              fork_point, next_session_num, op_fingerprint, remember_removed)
 
 router = APIRouter()
@@ -640,6 +640,15 @@ def receipts(req: ProjectScoped):
 
 # ── Aggregation ─────────────────────────────────────────────────────────────
 
+# Ops whose (para_index, char_offset) are in the flat text model, so they can be
+# placed on paragraphs: everything the desktop records, and phone sessions marked
+# op_model='flat' (the companion from 2026-10-29). Older phone sessions numbered
+# list paragraphs one by one and stay snapshot-only. `ps` is the op's session row,
+# LEFT JOINed: a desktop op whose session row is gone still counts, as before.
+_FLAT_OPS = "(o.origin != 'mobile' OR ps.op_model = 'flat')"
+# The same rule for compacted sessions, read from the session row itself.
+_FLAT_AGGREGATES = "(COALESCE(device_kind, '') != 'mobile' OR op_model = 'flat')"
+
 @router.post("/api/project/pentimento/heatmap")
 def heatmap(req: ChapterDeviceScoped):
     conn = _get_db(req.project_path)
@@ -658,21 +667,17 @@ def heatmap(req: ChapterDeviceScoped):
     session_ids = set()
 
     # 1. live ops (device filter joins through the session row). Paragraph indices
-    # are only comparable for desktop ops: the phone numbers list paragraphs one by
-    # one, so its ops (and its compacted aggregates below) stay out of the
-    # per-paragraph map until they are translated. Merge markers carry no writing.
-    if device:
-        cur.execute(
-            "SELECT o.session_id AS session_id, o.op_type AS op_type, o.para_index AS para_index, "
-            "       o.length AS length, o.duration_ms AS duration_ms, o.timestamp AS timestamp "
-            "FROM pentimento_ops o JOIN pentimento_sessions ps ON ps.id = o.session_id "
-            "WHERE o.chapter_id=? AND ps.device_id=? AND o.origin!='mobile' AND o.op_type!=?",
-            (req.chapter_id, device, MERGE_OP))
-    else:
-        cur.execute(
-            "SELECT session_id, op_type, para_index, length, duration_ms, timestamp "
-            "FROM pentimento_ops WHERE chapter_id=? AND origin!='mobile' AND op_type!=?",
-            (req.chapter_id, MERGE_OP))
+    # are only comparable for ops in the flat text model (_FLAT_OPS): phone
+    # sessions recorded before it numbered list paragraphs one by one, so their
+    # ops (and their compacted aggregates below) stay out of the per-paragraph map.
+    # Merge markers carry no writing.
+    device_filter = " AND ps.device_id=?" if device else ""
+    cur.execute(
+        "SELECT o.session_id AS session_id, o.op_type AS op_type, o.para_index AS para_index, "
+        "       o.length AS length, o.duration_ms AS duration_ms, o.timestamp AS timestamp "
+        "FROM pentimento_ops o LEFT JOIN pentimento_sessions ps ON ps.id = o.session_id "
+        f"WHERE o.chapter_id=?{device_filter} AND {_FLAT_OPS} AND o.op_type NOT IN (?,?)",
+        (req.chapter_id, device, *MARKER_OPS) if device else (req.chapter_id, *MARKER_OPS))
     for o in cur.fetchall():
         _accumulate(paras, o["para_index"], o["op_type"], o["length"] or 0,
                     o["duration_ms"] or 0, _is_night(o["timestamp"]))
@@ -683,13 +688,13 @@ def heatmap(req: ChapterDeviceScoped):
         cur.execute(
             "SELECT id, summary_json FROM pentimento_sessions "
             "WHERE chapter_id=? AND summary_json IS NOT NULL AND device_id=? "
-            "AND COALESCE(device_kind, '')!='mobile'",
+            f"AND {_FLAT_AGGREGATES}",
             (req.chapter_id, device))
     else:
         cur.execute(
             "SELECT id, summary_json FROM pentimento_sessions "
             "WHERE chapter_id=? AND summary_json IS NOT NULL "
-            "AND COALESCE(device_kind, '')!='mobile'", (req.chapter_id,))
+            f"AND {_FLAT_AGGREGATES}", (req.chapter_id,))
     for s in cur.fetchall():
         session_ids.add(s["id"])
         try:
@@ -725,22 +730,20 @@ def heatmap(req: ChapterDeviceScoped):
 def get_ops(req: ChapterDeviceScoped):
     conn = _get_db(req.project_path)
     cur = conn.cursor()
-    device_join = ""
     device_filter = ""
     params: list = [req.chapter_id]
     if req.device_id:
-        device_join = " JOIN pentimento_sessions ps ON ps.id = o.session_id "
         device_filter = " AND ps.device_id=? "
         params.append(req.device_id)
-    # Desktop ops only: the replay reads their paragraph coordinates, and the phone
-    # numbers paragraphs differently. Merge markers carry no writing.
-    params.append(MERGE_OP)
+    # Flat-model ops only (_FLAT_OPS): the replay reads their paragraph
+    # coordinates. Merge and restore markers carry no writing.
+    params.extend(MARKER_OPS)
     cur.execute(
         "SELECT o.session_id AS session_id, o.op_type AS op_type, o.para_index AS para_index, "
         "       o.char_offset AS char_offset, o.length AS length, o.text_content AS text_content, "
         "       o.duration_ms AS duration_ms, o.timestamp AS timestamp, o.source AS source "
-        f"FROM pentimento_ops o {device_join}"
-        f" WHERE o.chapter_id=? {device_filter} AND o.origin!='mobile' AND o.op_type!=?"
+        "FROM pentimento_ops o LEFT JOIN pentimento_sessions ps ON ps.id = o.session_id "
+        f" WHERE o.chapter_id=? {device_filter} AND {_FLAT_OPS} AND o.op_type NOT IN (?,?)"
         " ORDER BY o.timestamp, o.rowid",
         params)
     ops = [{
@@ -793,8 +796,8 @@ def summary(req: ProjectScoped):
         SELECT ps.device_id AS device_id, o.op_type AS op_type, o.length AS length,
                o.text_content AS text_content, o.duration_ms AS duration_ms, o.timestamp AS timestamp
         FROM pentimento_ops o JOIN pentimento_sessions ps ON ps.id = o.session_id
-        WHERE o.op_type != ?
-    """, (MERGE_OP,))
+        WHERE o.op_type NOT IN (?,?)
+    """, MARKER_OPS)
     device_totals: dict = {}
     for o in cur.fetchall():
         dur = o["duration_ms"] or 0
@@ -876,11 +879,11 @@ def compact(req: CompactRequest):
     cutoff = (datetime.datetime.now() - datetime.timedelta(days=req.older_than_days)).isoformat()
     conn = _get_db(req.project_path)
     cur = conn.cursor()
-    # Merge sessions are one marker op whose text is the record itself: never compacted.
+    # Merge and restore sessions are one marker op whose text is the record itself: never compacted.
     cur.execute(
         "SELECT id FROM pentimento_sessions WHERE start_time < ? AND summary_json IS NULL "
-        "AND id NOT IN (SELECT session_id FROM pentimento_ops WHERE op_type=?)",
-        (cutoff, MERGE_OP))
+        "AND id NOT IN (SELECT session_id FROM pentimento_ops WHERE op_type IN (?,?))",
+        (cutoff, *MARKER_OPS))
     session_ids = [r["id"] for r in cur.fetchall()]
 
     compacted = 0

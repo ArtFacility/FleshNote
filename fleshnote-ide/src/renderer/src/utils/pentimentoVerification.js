@@ -1,9 +1,10 @@
 /**
- * Sealed Pentimento — app-level opt-in helpers.
+ * Sealed Pentimento — app-level switch helpers.
  *
  * The master switch lives in localStorage (`fn_pentimento_verification`) and is
  * mirrored into each project's `project_config` (`pentimento_verification`),
  * which is what the Python backend actually reads when sealing sessions.
+ * Sealing is on unless the writer turned it off: an unset switch counts as on.
  */
 
 export const VERIFICATION_KEY = 'fn_pentimento_verification'
@@ -20,7 +21,7 @@ export function setVerificationDefault(on) {
 }
 
 export function verificationOn() {
-  return getVerificationDefault() === 'true'
+  return getVerificationDefault() !== 'false'
 }
 
 export function externalTsaOn() {
@@ -48,9 +49,17 @@ export function setTsaUrl(url) {
 // setting is toggled for every project in the workspace.
 export async function applyToProject(projectPath) {
   if (!projectPath || !window.api?.updateProjectConfig) return
-  const mode = getVerificationDefault() || 'false'
+  const mode = verificationOn() ? 'true' : 'false'
   try { await window.api.updateProjectConfig(projectPath, 'pentimento_verification', mode, 'string') } catch { /* noop */ }
   try { await window.api.updateProjectConfig(projectPath, 'pentimento_external_tsa', externalTsaOn() ? 'true' : 'false', 'string') } catch { /* noop */ }
   const url = getTsaUrl()
   try { await window.api.updateProjectConfig(projectPath, 'pentimento_tsa_url', url, 'string') } catch { /* noop */ }
+}
+
+// A project that never received the app-level choice (made before it existed,
+// imported, or created on another device) takes it when it is opened. A project
+// that already has its own setting keeps it.
+export async function applyIfUnset(projectPath, config) {
+  if (!config || config.pentimento_verification !== undefined) return
+  await applyToProject(projectPath)
 }

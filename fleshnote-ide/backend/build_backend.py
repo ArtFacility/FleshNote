@@ -23,6 +23,11 @@ def ensure_nltk_data():
     os.makedirs(nltk_dir, exist_ok=True)
     nltk.download("wordnet", download_dir=nltk_dir, quiet=False)
     nltk.download("omw-1.4", download_dir=nltk_dir, quiet=False)
+    # Some NLTK versions also leave unzipped copies, and the spec ships the whole folder.
+    for name in ("wordnet", "omw-1.4"):
+        unzipped = os.path.join(nltk_dir, "corpora", name)
+        if os.path.isdir(unzipped) and os.path.exists(unzipped + ".zip"):
+            shutil.rmtree(unzipped)
     print("NLTK WordNet data ready.")
 
 def build():

@@ -1,5 +1,5 @@
 import { app, shell, BrowserWindow, ipcMain, dialog, protocol, net } from 'electron'
-import { join } from 'path'
+import { dirname, isAbsolute, join } from 'path'
 import { pathToFileURL } from 'url'
 import fs from 'fs'
 import { electronApp, optimizer, is } from '@electron-toolkit/utils'
@@ -7,6 +7,7 @@ import icon from '../../resources/icon.png?asset'
 import { spawn, ChildProcessWithoutNullStreams } from 'child_process'
 import { createServer, AddressInfo } from 'net'
 import { autoUpdater } from 'electron-updater'
+import { assetPathFromUrl, dialogStartPath, isSafeExternalUrl } from './guards'
 
 let pythonProcess: ChildProcessWithoutNullStreams | null = null
 let backendStderr = ''
@@ -408,7 +409,7 @@ function createWindow(): void {
   })
 
   mainWindow.webContents.setWindowOpenHandler((details) => {
-    shell.openExternal(details.url)
+    if (isSafeExternalUrl(details.url)) shell.openExternal(details.url)
     return { action: 'deny' }
   })
 
@@ -459,6 +460,83 @@ protocol.registerSchemesAsPrivileged([
   { scheme: 'fleshnote-asset', privileges: { standard: true, secure: true, supportFetchAPI: true, stream: true } }
 ])
 
+// ── Updates ──────────────────────────────────────────────────────────────────
+// Stable and beta builds come from GitHub releases. With "Download unstable builds" on,
+// the app looks in the nightly folder first and still takes a stable release from GitHub
+// when the folder has nothing newer. Nightlies stay out of GitHub's release list: the
+// updater offers any pre-release tag there to everyone on a beta.
+const GITHUB_FEED = { provider: 'github', owner: 'ArtFacility', repo: 'FleshNote' } as const
+const NIGHTLY_FEED_URL =
+  process.env.FLESHNOTE_NIGHTLY_FEED || 'https://ams1.vultrobjects.com/downloads-apps/fleshnote/nightly/'
+
+let feedIsNightly = false
+let updateCheckQueue: Promise<unknown> = Promise.resolve()
+
+async function checkForUpdatesOnFeeds(): Promise<void> {
+  if (getGlobalConfig().nightly_updates) {
+    feedIsNightly = true
+    autoUpdater.setFeedURL({ provider: 'generic', url: NIGHTLY_FEED_URL })
+    try {
+      const result = await autoUpdater.checkForUpdates()
+      if (result?.isUpdateAvailable) return
+    } catch (err) {
+      console.error('Failed to check the nightly folder:', err)
+    }
+  }
+  feedIsNightly = false
+  // With pre-releases allowed, the updater wants a tag on the install's own channel, and
+  // GitHub has no nightly tags. A nightly only ever looks for a stable release here.
+  if (app.getVersion().includes('-nightly.')) autoUpdater.allowPrerelease = false
+  autoUpdater.setFeedURL(GITHUB_FEED)
+  await autoUpdater.checkForUpdates()
+}
+
+// One at a time: changing the setting mid-check would otherwise swap the feed under it.
+function queueUpdateCheck(): Promise<unknown> {
+  updateCheckQueue = updateCheckQueue
+    .then(checkForUpdatesOnFeeds)
+    .catch((err) => console.error('Failed to check for updates:', err))
+  return updateCheckQueue
+}
+
+// For installs that can't update themselves (deb, snap).
+function manualDownloadUrl(version: string): string {
+  return feedIsNightly
+    ? new URL(`fleshnote-ide_${version}_amd64.deb`, NIGHTLY_FEED_URL).toString()
+    : 'https://github.com/ArtFacility/FleshNote/releases/latest'
+}
+
+// ── File dialogs ─────────────────────────────────────────────────────────────
+// Electron opens a dialog in Downloads unless told otherwise, and the OS no longer
+// remembers the last folder, so the app does.
+function withStart<T extends { defaultPath?: string }>(opts: T): T {
+  const defaultPath = dialogStartPath(opts.defaultPath, getGlobalConfig().last_dialog_folder, { isAbsolute, join })
+  return defaultPath ? { ...opts, defaultPath } : opts
+}
+
+function rememberFolder(folder: string): void {
+  try {
+    updateGlobalConfig({ last_dialog_folder: folder })
+  } catch {
+    // Only a convenience: the dialog's answer still stands.
+  }
+}
+
+async function openDialog(...args: [BrowserWindow, Electron.OpenDialogOptions] | [Electron.OpenDialogOptions]) {
+  const opts = withStart(args[args.length - 1] as Electron.OpenDialogOptions)
+  const result = args.length === 2 ? await dialog.showOpenDialog(args[0], opts) : await dialog.showOpenDialog(opts)
+  const first = result.filePaths[0]
+  if (!result.canceled && first) rememberFolder(opts.properties?.includes('openDirectory') ? first : dirname(first))
+  return result
+}
+
+async function saveDialog(...args: [BrowserWindow, Electron.SaveDialogOptions] | [Electron.SaveDialogOptions]) {
+  const opts = withStart(args[args.length - 1] as Electron.SaveDialogOptions)
+  const result = args.length === 2 ? await dialog.showSaveDialog(args[0], opts) : await dialog.showSaveDialog(opts)
+  if (!result.canceled && result.filePath) rememberFolder(dirname(result.filePath))
+  return result
+}
+
 // ── Opening review files ─────────────────────────────────────────────────────
 // Double-clicking a .flreview file launches FleshNote with its path (or, on
 // macOS, sends 'open-file'). Only one FleshNote runs at a time: a second launch
@@ -498,10 +576,8 @@ app.whenReady().then(async () => {
 
   // Handle fleshnote-asset://load/C:/path/to/file.png requests
   protocol.handle('fleshnote-asset', (request) => {
-    const url = new URL(request.url)
-    // pathname is /C:/stories/8768/assets/img.png — strip the leading /
-    let filePath = decodeURIComponent(url.pathname)
-    if (filePath.startsWith('/')) filePath = filePath.substring(1)
+    const filePath = assetPathFromUrl(request.url)
+    if (!filePath) return new Response('Not found', { status: 404 })
     return net.fetch(pathToFileURL(filePath).toString())
   })
 
@@ -541,7 +617,7 @@ app.whenReady().then(async () => {
 
   // ── Dialogs ────────────────────────────────────────
   ipcMain.handle('dialog:selectFolder', async () => {
-    const { canceled, filePaths } = await dialog.showOpenDialog({
+    const { canceled, filePaths } = await openDialog({
       properties: ['openDirectory'],
       title: 'Select FleshNote Workspace'
     })
@@ -560,7 +636,7 @@ app.whenReady().then(async () => {
     }
     if (rect.width <= 0 || rect.height <= 0) return { saved: false }
     const image = await win.webContents.capturePage(rect)
-    const { canceled, filePath } = await dialog.showSaveDialog(win, {
+    const { canceled, filePath } = await saveDialog(win, {
       title: 'Save Showcase',
       defaultPath: payload?.defaultName || 'fleshnote-showcase.png',
       filters: [{ name: 'PNG Image', extensions: ['png'] }]
@@ -572,7 +648,7 @@ app.whenReady().then(async () => {
 
   // Several files at once (manuscript import: one file per chapter)
   ipcMain.handle('dialog:openFiles', async (_event, filters) => {
-    const { canceled, filePaths } = await dialog.showOpenDialog({
+    const { canceled, filePaths } = await openDialog({
       properties: ['openFile', 'multiSelections'],
       title: 'Select Files to Import',
       filters: filters || [
@@ -594,8 +670,8 @@ app.whenReady().then(async () => {
       filters: payload?.filters || []
     }
     const { canceled, filePath } = win
-      ? await dialog.showSaveDialog(win, opts)
-      : await dialog.showSaveDialog(opts)
+      ? await saveDialog(win, opts)
+      : await saveDialog(opts)
     if (canceled || !filePath) return { saved: false }
     fs.writeFileSync(filePath, String(payload?.content ?? ''), 'utf8')
     return { saved: true, path: filePath }
@@ -609,15 +685,15 @@ app.whenReady().then(async () => {
       filters: filters || []
     }
     const { canceled, filePaths } = win
-      ? await dialog.showOpenDialog(win, opts)
-      : await dialog.showOpenDialog(opts)
+      ? await openDialog(win, opts)
+      : await openDialog(opts)
     if (canceled || !filePaths[0]) return null
     if (fs.statSync(filePaths[0]).size > 20 * 1024 * 1024) return null
     return { name: filePaths[0].split(/[\\/]/).pop(), content: fs.readFileSync(filePaths[0], 'utf8') }
   })
 
   ipcMain.handle('dialog:openFile', async (_event, filters) => {
-    const { canceled, filePaths } = await dialog.showOpenDialog({
+    const { canceled, filePaths } = await openDialog({
       properties: ['openFile'],
       title: 'Select File to Import',
       filters: filters || [
@@ -697,7 +773,7 @@ app.whenReady().then(async () => {
     try {
       const win = BrowserWindow.fromWebContents(event.sender)
       if (!win) return { status: 'error', message: 'No window' }
-      const { canceled, filePath } = await dialog.showSaveDialog(win, {
+      const { canceled, filePath } = await saveDialog(win, {
         title: 'Export Project (.flnote)',
         defaultPath: `${payload?.defaultName || 'Project'}.flnote`,
         filters: [{ name: 'FleshNote Project', extensions: ['flnote'] }]
@@ -718,7 +794,7 @@ app.whenReady().then(async () => {
     try {
       const win = BrowserWindow.fromWebContents(event.sender)
       if (!win) return { status: 'error', message: 'No window' }
-      const { canceled, filePaths } = await dialog.showOpenDialog(win, {
+      const { canceled, filePaths } = await openDialog(win, {
         title: payload?.fmt === 'txt' ? 'Export Project (Plain Text)' : 'Export Project (Obsidian Vault)',
         defaultPath: payload?.defaultName || undefined,
         properties: ['openDirectory', 'createDirectory'],
@@ -741,7 +817,7 @@ app.whenReady().then(async () => {
     try {
       let zipPath = payload?.zip_path
       if (!zipPath) {
-        const { canceled, filePaths } = await dialog.showOpenDialog({
+        const { canceled, filePaths } = await openDialog({
           properties: ['openFile'],
           title: 'Open FleshNote Project File',
           filters: [{ name: 'FleshNote Project', extensions: ['flnote'] }]
@@ -775,7 +851,7 @@ app.whenReady().then(async () => {
     try {
       const win = BrowserWindow.fromWebContents(event.sender)
       if (!win) return { status: 'error', message: 'No window' }
-      const { canceled, filePath } = await dialog.showSaveDialog(win, {
+      const { canceled, filePath } = await saveDialog(win, {
         title: 'Save review copy',
         defaultPath: join(app.getPath('documents'), `${safeFileName(payload?.defaultName)}.flreview`),
         filters: [{ name: 'FleshNote Review', extensions: ['flreview'] }]
@@ -816,7 +892,7 @@ app.whenReady().then(async () => {
           title: 'Open a review file',
           filters: [{ name: 'FleshNote Review', extensions: ['flreview'] }]
         }
-        const { canceled, filePaths } = win ? await dialog.showOpenDialog(win, opts) : await dialog.showOpenDialog(opts)
+        const { canceled, filePaths } = win ? await openDialog(win, opts) : await openDialog(opts)
         if (canceled || !filePaths[0]) return { status: 'cancelled' }
         file = filePaths[0]
       }
@@ -848,7 +924,7 @@ app.whenReady().then(async () => {
     try {
       const win = BrowserWindow.fromWebContents(event.sender)
       if (!win) return { status: 'error', message: 'No window' }
-      const { canceled, filePath } = await dialog.showSaveDialog(win, {
+      const { canceled, filePath } = await saveDialog(win, {
         title: 'Save your review for the author',
         defaultPath: join(app.getPath('documents'), `${safeFileName(payload?.defaultName)}.flreview`),
         filters: [{ name: 'FleshNote Review', extensions: ['flreview'] }]
@@ -879,7 +955,7 @@ app.whenReady().then(async () => {
           title: 'Import reviews',
           filters: [{ name: 'FleshNote Review', extensions: ['flreview'] }]
         }
-        const { canceled, filePaths } = win ? await dialog.showOpenDialog(win, opts) : await dialog.showOpenDialog(opts)
+        const { canceled, filePaths } = win ? await openDialog(win, opts) : await openDialog(opts)
         if (canceled || !filePaths.length) return { status: 'cancelled' }
         files = filePaths
       }
@@ -896,7 +972,7 @@ app.whenReady().then(async () => {
       title: 'Choose review files',
       filters: [{ name: 'FleshNote Review', extensions: ['flreview'] }]
     }
-    const { canceled, filePaths } = win ? await dialog.showOpenDialog(win, opts) : await dialog.showOpenDialog(opts)
+    const { canceled, filePaths } = win ? await openDialog(win, opts) : await openDialog(opts)
     if (canceled || !filePaths.length) return { status: 'cancelled' }
     return { status: 'ok', paths: filePaths }
   })
@@ -1417,7 +1493,7 @@ app.whenReady().then(async () => {
 
   // ── Image References ──────────────────────────────
   ipcMain.handle('dialog:openImage', async () => {
-    const { canceled, filePaths } = await dialog.showOpenDialog({
+    const { canceled, filePaths } = await openDialog({
       properties: ['openFile'],
       title: 'Select Image',
       filters: [
@@ -1603,7 +1679,12 @@ app.whenReady().then(async () => {
     if (!autoUpdater.listenerCount('update-available')) {
       autoUpdater.on('update-available', (info) => {
         BrowserWindow.getAllWindows().forEach((win) => {
-          win.webContents.send('update-event', { type: 'update-available', info, canAutoUpdate })
+          win.webContents.send('update-event', {
+            type: 'update-available',
+            info,
+            canAutoUpdate,
+            manualDownloadUrl: manualDownloadUrl(info.version)
+          })
         })
       })
       autoUpdater.on('update-not-available', (info) => {
@@ -1629,9 +1710,7 @@ app.whenReady().then(async () => {
       })
     }
 
-    autoUpdater.checkForUpdates().catch((err) => {
-      console.error('Failed to check for updates:', err)
-    })
+    return queueUpdateCheck()
   })
 
   ipcMain.handle('api:downloadUpdate', () => {

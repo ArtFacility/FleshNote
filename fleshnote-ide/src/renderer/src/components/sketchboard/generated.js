@@ -65,17 +65,24 @@ export function genLayout(kind, entities) {
 
 const indexOfNumber = (ctx, n) => ctx.stops.find((s) => s.number === n)?.index ?? null
 
+const latestInStory = (rows) =>
+  rows.reduce((best, r) => (r.world_rank > best.world_rank ? r : best))
+
 /**
- * One direction of a relationship at a point: the tracker's latest row that
- * is not past it (rows without a chapter, or without a readable date on the
- * world axis, always count). With no point, the latest row of all.
- * Returns { row, state } or null when the direction has no history.
+ * One direction of a relationship at a point, by the tracker's rule. History
+ * is in reading order, so reading order takes the last row not past the
+ * chapter. The world axis takes the highest world_rank not past the date, so
+ * a flashback doesn't replace what came after it. Rows without a chapter, or
+ * without a readable date on the world axis, always count. With no point, the
+ * end of the story. Returns { row, state } or null when the direction has no
+ * history.
  */
 export function relationState(history, axis, point, ctx) {
   if (!history.length) return null
-  if (!point) return { row: history[history.length - 1], state: 'always' }
+  if (!point) return { row: latestInStory(history), state: 'always' }
   let valid
   let isNew
+  let latest
   if (axis === 'reading') {
     const num = ctx.stops[point.at]?.number
     valid = history.filter(
@@ -83,12 +90,14 @@ export function relationState(history, axis, point, ctx) {
     )
     isNew = (r) =>
       r.chapter_number != null && (indexOfNumber(ctx, r.chapter_number) ?? -Infinity) > point.prev
+    latest = (rows) => rows[rows.length - 1]
   } else {
     valid = history.filter((r) => r.day == null || r.day <= point.at)
     isNew = (r) => r.day != null && r.day > point.prev
+    latest = latestInStory
   }
   if (!valid.length) return { row: history[0], state: 'future' }
-  const row = valid[valid.length - 1]
+  const row = latest(valid)
   return { row, state: isNew(row) ? 'new' : 'present' }
 }
 

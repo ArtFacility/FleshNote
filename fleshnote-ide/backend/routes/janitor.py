@@ -766,7 +766,7 @@ def _is_animate_noun_en(lemma: str, persons_only: bool = False) -> bool:
             from nltk_manager import check_wordnet_exists
             if not check_wordnet_exists():
                 return True
-            from nltk.corpus import wordnet as wn
+            from nltk_manager import wordnet as wn
             names = ("person.n.01", "animal.n.01", "people.n.01")
             if not persons_only:
                 names += ("social_group.n.01", "body_part.n.01")

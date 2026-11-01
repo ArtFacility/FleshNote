@@ -108,6 +108,7 @@ export default function ProjectSettingsModal({ isOpen, onClose, projectPath, onC
     const [isDownloading, setIsDownloading] = useState(false)
     const [downloadProgress, setDownloadProgress] = useState(0)
     const [nlpModelStatus, setNlpModelStatus] = useState({ en: null, hu: null, pl: null, ar: null })
+    const [doubleEnter, setDoubleEnter] = useState(false)
     const [hotkeys, setHotkeys] = useState({
         synonym_lookup: 'Alt+S', search: 'Ctrl+F',
         todo_marker: 'Alt+T', entity_palette: 'Alt+E',
@@ -147,6 +148,7 @@ export default function ProjectSettingsModal({ isOpen, onClose, projectPath, onC
         if (activeTab === 'hotkeys' && isOpen) {
             window.api?.getGlobalConfig?.()
                 .then(cfg => {
+                    setDoubleEnter(!!cfg?.double_enter_paragraph)
                     if (cfg?.hotkeys) setHotkeys({
                         synonym_lookup: 'Alt+S', search: 'Ctrl+F',
                         todo_marker: 'Alt+T', entity_palette: 'Alt+E',
@@ -640,6 +642,25 @@ export default function ProjectSettingsModal({ isOpen, onClose, projectPath, onC
                                     </div>
                                     <div style={{ fontSize: 12, color: 'var(--text-secondary)', marginBottom: 20 }}>
                                         {t('settings.hotkeysDesc', 'The two highlighted shortcuts can be customised — click a key combo to change it.')}
+                                    </div>
+
+                                    <div className="settings-card" style={{ marginBottom: 16 }}>
+                                        <label className="checkbox-label">
+                                            <input
+                                                type="checkbox"
+                                                checked={doubleEnter}
+                                                onChange={() => {
+                                                    const next = !doubleEnter
+                                                    setDoubleEnter(next)
+                                                    window.api?.updateGlobalConfig?.({ double_enter_paragraph: next })
+                                                    window.dispatchEvent(new CustomEvent('fleshnote:double-enter-changed', { detail: next }))
+                                                }}
+                                            />
+                                            <div>
+                                                <strong>{t('settings.doubleEnter', 'Double Enter for new paragraph')}</strong>
+                                                <p className="settings-desc">{t('settings.doubleEnterDesc', 'The first Enter starts a new line, and a second Enter makes a new paragraph, like the phone app. Lists and headings aren\'t affected.')}</p>
+                                            </div>
+                                        </label>
                                     </div>
 
                                     <div style={{ fontSize: 13, fontWeight: 600, color: 'var(--text-primary)', marginBottom: 10 }}>

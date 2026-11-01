@@ -57,6 +57,9 @@ step('Staging')
 const stage = fs.mkdtempSync(path.join(os.tmpdir(), 'fleshnote-labs-'))
 fs.cpSync(path.join(root, 'labs', 'fleshnote'), stage, { recursive: true })
 if (ID !== 'fleshnote') fs.cpSync(path.join(root, 'labs', ID), stage, { recursive: true }) // its own manifest
+// A Windows checkout may hold CRLF, and the server can't start a script with a CR in its shebang.
+const runPath = path.join(stage, 'run')
+fs.writeFileSync(runPath, fs.readFileSync(runPath, 'utf8').replace(/\r\n/g, '\n'))
 fs.cpSync(web, path.join(stage, 'web'), { recursive: true })
 const backendSrc = path.join(root, 'backend')
 fs.cpSync(backendSrc, path.join(stage, 'backend'), {

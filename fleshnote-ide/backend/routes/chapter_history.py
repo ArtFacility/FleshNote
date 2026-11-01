@@ -29,7 +29,8 @@ from typing import List, Optional
 import sync_core
 from sync_core import log_change
 from project_io import safe_md_path
-from process_history import remember_removed
+from process_history import (RESTORE_OP, parse_restore_payload, record_restore,
+                             remember_removed, seal_own_dangling)
 from routes.chapters import (
     _get_db,
     _entity_md_to_html, _twist_md_to_html, _knowledge_md_to_html,
@@ -172,6 +173,11 @@ def history_list(req: ChapterScoped):
         "device_id": r["device_id"], "snapshot_device_id": r["snapshot_device_id"],
     } for r in cur.fetchall()]
     cur.execute(
+        "SELECT session_id, text_content FROM pentimento_ops WHERE chapter_id=? AND op_type=?",
+        (req.chapter_id, RESTORE_OP))
+    restores = {r["session_id"]: parse_restore_payload(r["text_content"]) or {}
+                for r in cur.fetchall()}
+    cur.execute(
         "SELECT ps.id, ps.device_id, ps.device_kind, ps.session_num, ps.start_time, ps.end_time, "
         "       ps.session_hash, ps.previous_session_hash, "
         "       EXISTS(SELECT 1 FROM pentimento_ops o WHERE o.session_id = ps.id "
@@ -183,6 +189,8 @@ def history_list(req: ChapterScoped):
         "session_num": r["session_num"], "start_time": r["start_time"],
         "end_time": r["end_time"], "session_hash": r["session_hash"],
         "previous_session_hash": r["previous_session_hash"], "is_merge": bool(r["is_merge"]),
+        "is_restore": r["id"] in restores,
+        "restored_from": restores.get(r["id"], {}).get("from_time"),
     } for r in cur.fetchall()]
     devices = device_directory(cur)
     conn.close()
@@ -221,7 +229,7 @@ def history_restore(req: SnapshotScoped):
     conn = _get_db(req.project_path)
     cur = conn.cursor()
     cur.execute(
-        "SELECT chapter_id, content_gz, word_count, prose_hash "
+        "SELECT chapter_id, content_gz, word_count, prose_hash, created_at "
         "FROM chapter_snapshots WHERE id=?", (req.snapshot_id,))
     snap = cur.fetchone()
     if not snap:
@@ -239,15 +247,26 @@ def history_restore(req: SnapshotScoped):
         conn.close()
         raise HTTPException(status_code=404, detail="Chapter not found")
 
-    # Safety snapshot of the CURRENT state so this restore can itself be undone.
-    _create_snapshot(cur, req.project_path, chapter_id, "pre_restore")
-
-    # Write the snapshot markdown back to disk.
     md_path = safe_md_path(os.path.join(req.project_path, "md"), chap["md_filename"])
     if not md_path:
         conn.close()
         raise HTTPException(status_code=409,
                             detail="Chapter has an unsafe filename; refusing to restore.")
+
+    # A session still open here ends with the text it was writing (the editor seals its
+    # own first; this catches anything left open), so the jump isn't recorded as typing.
+    receipts = []
+    dangling = seal_own_dangling(cur, req.project_path, chapter_id, sync_core.DEVICE_ID)
+    if dangling:
+        receipts.append(dangling)
+
+    replaced_hash = hashlib.sha256(
+        _read_chapter_md(req.project_path, chap["md_filename"]).encode("utf-8")).hexdigest()
+
+    # Safety snapshot of the CURRENT state so this restore can itself be undone.
+    _create_snapshot(cur, req.project_path, chapter_id, "pre_restore")
+
+    # Write the snapshot markdown back to disk.
     os.makedirs(os.path.dirname(md_path), exist_ok=True)
     with open(md_path, "w", encoding="utf-8") as f:
         f.write(md)
@@ -266,9 +285,25 @@ def history_restore(req: SnapshotScoped):
     # Log the restored hash so sync's prose-hash ancestry recognises this state.
     log_change(cur, "chapters", chapter_id, {"word_count": word_count, "prose_hash": prose_hash})
 
+    # Mark the jump in the process history, so a replay shows it as a jump. With capture
+    # off there is no session to add, and the snapshot's kind alone marks it.
+    cur.execute("SELECT config_value FROM project_config WHERE config_key='pentimento_capture'")
+    capture = cur.fetchone()
+    if capture is not None and str(capture["config_value"]).lower() == "false":
+        _create_snapshot(cur, req.project_path, chapter_id, RESTORE_OP)
+    else:
+        _session_id, marker_receipts = record_restore(
+            cur, req.project_path, chapter_id, sync_core.DEVICE_ID,
+            req.snapshot_id, snap["created_at"], prose_hash, replaced_hash)
+        receipts.extend(marker_receipts)
+
     conn.commit()
     html = _md_to_html(cur, md)
     conn.close()
+    if receipts:
+        from routes.pentimento import _spawn_anchor
+        for rid in receipts:
+            _spawn_anchor(req.project_path, rid)
     return {"status": "ok", "chapter_id": chapter_id,
             "content_html": html, "word_count": word_count}
 

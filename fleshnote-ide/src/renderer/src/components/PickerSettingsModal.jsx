@@ -36,9 +36,15 @@ export default function PickerSettingsModal({ projects = [], onClose }) {
   const [dyslexia, setDyslexia] = useState(readDyslexia())
   const [saved, setSaved] = useState(false)
   const [personal, setPersonal] = useState({ author_name: '', reviewer_name: '', story_language: '' })
+  const [nightly, setNightly] = useState(false)
+  const [doubleEnter, setDoubleEnter] = useState(false)
 
   useEffect(() => {
     getPersonalDefaults().then(setPersonal).catch(() => { })
+    window.api.getGlobalConfig?.().then((config) => {
+      setNightly(!!config?.nightly_updates)
+      setDoubleEnter(!!config?.double_enter_paragraph)
+    }).catch(() => { })
   }, [])
 
   const updatePersonal = (key, value) => {
@@ -71,6 +77,19 @@ export default function PickerSettingsModal({ projects = [], onClose }) {
     setExternal(next)
     setExternalTsa(next)
     setSaved(true)
+  }
+
+  const toggleDoubleEnter = () => {
+    const next = !doubleEnter
+    setDoubleEnter(next)
+    window.api.updateGlobalConfig({ double_enter_paragraph: next })
+  }
+
+  const toggleNightly = async () => {
+    const next = !nightly
+    setNightly(next)
+    await window.api.updateGlobalConfig({ nightly_updates: next })
+    window.api.checkForUpdates?.()
   }
 
   const commitUrl = (value) => {
@@ -161,7 +180,30 @@ export default function PickerSettingsModal({ projects = [], onClose }) {
               onToggle={() => { const next = !dyslexia; setDyslexia(next); writeDyslexia(next) }}
               t={t}
             />
+            <ToggleRow
+              label={t('settings.doubleEnter', 'Double Enter for new paragraph')}
+              desc={t('settings.doubleEnterDesc', 'The first Enter starts a new line, and a second Enter makes a new paragraph, like the phone app. Lists and headings aren\'t affected.')}
+              on={doubleEnter}
+              onToggle={toggleDoubleEnter}
+              t={t}
+            />
           </section>
+
+          {/* ── Updates (the browser version is always current) ── */}
+          {!import.meta.env.VITE_FLESHNOTE_WEB && (
+            <section>
+              <h3 style={{ color: 'var(--text-secondary)', fontSize: '12px', textTransform: 'uppercase', letterSpacing: '1px', margin: '0 0 12px 0', borderBottom: '1px solid var(--border-subtle)', paddingBottom: 8 }}>
+                {t('picker.updatesSection', 'Updates')}
+              </h3>
+              <ToggleRow
+                label={t('picker.nightlyToggle', 'Download unstable builds')}
+                desc={t('picker.nightlyDesc', 'Get new features early, every few days to a month, and expect more bugs. Back up your projects first: a newer build may change a project so that older versions can\'t open it. Turning this off keeps your current build until a newer stable release arrives.')}
+                on={nightly}
+                onToggle={toggleNightly}
+                t={t}
+              />
+            </section>
+          )}
 
           {/* ── Sealed Pentimento ── */}
           <section>

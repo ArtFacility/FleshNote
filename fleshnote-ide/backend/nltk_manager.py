@@ -47,6 +47,19 @@ def _ensure_nltk_path():
     return data_dir
 
 
+def _wordnet():
+    """WordNet reading the omw-1.4 data FleshNote bundles and merges Hungarian into,
+    whichever Open Multilingual Wordnet package this NLTK defaults to."""
+    from nltk.corpus.reader import CorpusReader, WordNetCorpusReader
+    from nltk.corpus.util import LazyCorpusLoader
+    return LazyCorpusLoader(
+        "wordnet", WordNetCorpusReader,
+        LazyCorpusLoader("omw-1.4", CorpusReader, r".*/wn-data-.*\.tab", encoding="utf8"))
+
+
+wordnet = _wordnet()
+
+
 def _wordnet_data_present(data_dir: str) -> bool:
     """Check if WordNet zip/dir exists on disk (faster than nltk.data.find for custom dirs)."""
     corpora = os.path.join(data_dir, "corpora")
@@ -195,7 +208,6 @@ def get_synonyms(word: str, lang: str = "eng") -> list:
     Returns list of dicts: [{ definition: str, pos: str, synonyms: [str] }]
     """
     ensure_wordnet_available()
-    from nltk.corpus import wordnet
 
     word_clean = word.strip().lower()
     results = _lookup_synsets(wordnet, word_clean, lang)
@@ -211,8 +223,9 @@ def _lookup_synsets(wordnet, word: str, lang: str) -> list:
     """Query WordNet for a word in a specific language and return grouped synonyms."""
     try:
         synsets = wordnet.synsets(word, lang=lang)
-    except Exception:
-        # Language not available in OMW — fall back silently
+    except Exception as e:
+        # Language not available in OMW: the caller falls back to English
+        print(f"WordNet lookup failed for lang={lang}: {e!r}", flush=True)
         return []
 
     results = []

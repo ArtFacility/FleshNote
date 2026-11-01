@@ -68,7 +68,8 @@ def live_edges(data, items):
                         "color_token": "neutral", "title": "", **look})
 
     if data.get("kind") == "relationships":
-        latest = {(p["from"], p["to"]): p["history"][-1] for p in data.get("pairs", []) if p.get("history")}
+        latest = {(p["from"], p["to"]): max(p["history"], key=lambda r: r["world_rank"])
+                  for p in data.get("pairs", []) if p.get("history")}
         for (a, b), row in latest.items():
             back = latest.get((b, a))
             shared = row.get("mutual") and back is not None and back["id"] == row["id"]

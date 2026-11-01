@@ -175,7 +175,7 @@ export default class PentimentoRecorder {
   }
 
   _verificationOn() {
-    try { return localStorage.getItem('fn_pentimento_verification') === 'true' } catch { return false }
+    try { return localStorage.getItem('fn_pentimento_verification') !== 'false' } catch { return true }
   }
 
   // Record into `chapterId` from now on. The session being left is sealed in the

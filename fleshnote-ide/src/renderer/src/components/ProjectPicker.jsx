@@ -117,8 +117,12 @@ export default function ProjectPicker({
           setUpdateState({
             status: 'available',
             version: payload.info.version,
-            canAutoUpdate: payload.canAutoUpdate
+            canAutoUpdate: payload.canAutoUpdate,
+            manualDownloadUrl: payload.manualDownloadUrl
           })
+        } else if (payload.type === 'update-not-available') {
+          // The offer may have come from a feed the writer has since switched off.
+          setUpdateState(prev => (prev.status === 'available' ? { status: 'idle' } : prev))
         } else if (payload.type === 'download-progress') {
           setUpdateState(prev => ({ ...prev, status: 'downloading', progress: payload.progress }))
         } else if (payload.type === 'update-downloaded') {
@@ -215,7 +219,7 @@ export default function ProjectPicker({
         window.api.downloadUpdate()
         setUpdateState(prev => ({ ...prev, status: 'downloading', progress: 0 }))
       } else {
-        window.open('https://github.com/ArtFacility/FleshNote/releases/latest', '_blank')
+        window.open(updateState.manualDownloadUrl, '_blank')
       }
     } else if (updateState.status === 'downloaded') {
       window.api.installUpdate()

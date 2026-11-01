@@ -653,5 +653,10 @@ if __name__ == "__main__":
   )
   args, _ = parser.parse_known_args()
 
+  # Local use has no login: only the app itself may talk to it.
+  if args.host in ("127.0.0.1", "localhost", "::1"):
+    from host_guard import LoopbackGuard
+    app.add_middleware(LoopbackGuard)
+
   # Run the server on the configured port
   uvicorn.run(app, host=args.host, port=args.port)

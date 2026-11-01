@@ -57,6 +57,35 @@ def _row_to_dict(row):
         "created_at": row["created_at"],
     }
 
+def _reading_key(row):
+    """Where a turning point falls in reading order: chapter, then word offset,
+    then id, with missing values first. A row with no chapter is a starting
+    state, so it comes before the story. Matches the SQL ORDER BY on these rows."""
+    ch, wo = row.get("chapter_number"), row.get("word_offset")
+    return (ch is not None, ch or 0, wo is not None, wo or 0, row["id"])
+
+
+def in_story_time(rows, day_of) -> list:
+    """Turning points in the order they happen in the story, by effective date.
+
+    Same-day rows keep their reading order. A row whose date can't be read stays
+    where the reader meets it: it counts as the latest date read so far, so an
+    undated chapter doesn't lose to every dated one. With nothing dated before
+    it, it comes first."""
+    latest_read = None
+    dated = []
+    for row in sorted(rows, key=_reading_key):
+        day = day_of(row)
+        if day is None:
+            day = latest_read
+        else:
+            latest_read = day if latest_read is None else max(latest_read, day)
+        dated.append((day, row))
+    # Stable, so ties stay in reading order.
+    dated.sort(key=lambda item: float("-inf") if item[0] is None else item[0])
+    return [row for _, row in dated]
+
+
 def _get_db_rel(project_path: str):
     conn = _get_db(project_path)
     cursor = conn.cursor()
@@ -360,35 +389,38 @@ def get_relationships_for_character(req: RelationshipsForCharacter):
                 narrative_history = [r for r in history if r["chapter_number"] is None or r["chapter_number"] <= current_chapter]
                 narrative_rev_history = [r for r in rev_history if r["chapter_number"] is None or r["chapter_number"] <= current_chapter]
 
-        def _sort_key(r):
-            # Sort by effective world time (to the day) first if available, then chapter/offset
-            y = _effective_linear(r)
-            y = y if y is not None else -999999999999999 # Initial state
-            ch = r.get("chapter_number")
-            ch = ch if ch is not None else 999999
-            wo = r.get("word_offset")
-            # If word offset is missing, treat as mid-chapter (5000 words)
-            wo = wo if wo is not None else 5000 
-            return (y, ch, wo, r["id"])
+        def _latest_read(rows):
+            return max(rows, key=_reading_key) if rows else None
 
-        # IMPROVED: Merge mutual feelings from BOTH directions correctly
-        # Mutual feelings where I am the TARGET are already in history (via Query 1)
-        # Mutual feelings where I am the SOURCE are ALSO already in history
-        # We need to make sure combined_valid_rev accurately represents their feelings for me.
-        
-        mutual_valid = [r for r in valid_history if not r["is_one_sided"]]
-        combined_valid_rev = sorted(valid_rev_history + mutual_valid, key=_sort_key)
-        
-        mutual_narrative = [r for r in narrative_history if not r["is_one_sided"]]
-        combined_narrative_rev = sorted(narrative_rev_history + mutual_narrative, key=_sort_key)
+        def _latest_in_story(rows, valid):
+            # Ordered over every row, then filtered, so a row's place doesn't
+            # move as the point in the story moves.
+            valid_ids = {r["id"] for r in valid}
+            for r in reversed(in_story_time(rows, _effective_linear)):
+                if r["id"] in valid_ids:
+                    return r
+            return None
 
-        # Get latest active states (last element in array, as they are sorted by chapter/offset)
-        latest_active = valid_history[-1] if valid_history else None
-        latest_narrative = narrative_history[-1] if narrative_history else None
-        
-        latest_reverse = combined_valid_rev[-1] if combined_valid_rev else None
-        latest_narrative_reverse = combined_narrative_rev[-1] if combined_narrative_rev else None
-        
+        # Mutual rows are in history whichever side this character is on, and
+        # they are the other character's feelings too.
+        all_rev = rev_history + [r for r in history if not r["is_one_sided"]]
+        valid_rev = valid_rev_history + [r for r in valid_history if not r["is_one_sided"]]
+        narrative_rev = narrative_rev_history + [r for r in narrative_history if not r["is_one_sided"]]
+
+        # The narrative view is what the reader has seen so far, so a flashback
+        # read last is the latest thing. Every other view asks how things stand
+        # at a point in the story, so it goes by date. The ghost state is always
+        # the narrative one.
+        if effective_filter_mode == 'narrative':
+            latest_active = _latest_read(valid_history)
+            latest_reverse = _latest_read(valid_rev)
+        else:
+            latest_active = _latest_in_story(history, valid_history)
+            latest_reverse = _latest_in_story(all_rev, valid_rev)
+
+        latest_narrative = _latest_read(narrative_history)
+        latest_narrative_reverse = _latest_read(narrative_rev)
+
         # If no active relationship in primary mode, skip
         if not latest_active and not latest_narrative:
             continue
@@ -436,11 +468,13 @@ def directed_histories(cursor, project_path: str) -> list:
     direction: how the first character stands toward the second. A mutual
     row counts in both directions, as in the relationship tracker.
 
-    Each history is in the tracker's order (chapter, then word offset, then
-    id, with rows that have no chapter first as the starting state), so the
-    state at a point is the last row that is not past it. Every row carries
-    its effective world date and that date as a day number (None when the
-    date can't be read; such rows always count, as in the tracker)."""
+    Each history is in reading order (chapter, then word offset, then id, with
+    rows that have no chapter first as the starting state), so the state at a
+    chapter is the last row not past it. Every row carries its effective world
+    date, that date as a day number (None when the date can't be read; such
+    rows always count, as in the tracker) and world_rank, its place in this
+    direction in story time: the state at a date is the highest-ranked row not
+    past it, so a flashback doesn't replace what came after it."""
     cursor.execute("""
         SELECT r.*,
                ch.chapter_number,
@@ -491,5 +525,9 @@ def directed_histories(cursor, project_path: str) -> list:
         src, tgt = str(r["character_id"]), str(r["target_character_id"])
         out.setdefault((src, tgt), []).append(item)
         if mutual:
-            out.setdefault((tgt, src), []).append(item)
+            # Its own copy: the row can rank differently in each direction.
+            out.setdefault((tgt, src), []).append(dict(item))
+    for history in out.values():
+        for rank, row in enumerate(in_story_time(history, lambda r: r["day"])):
+            row["world_rank"] = rank
     return [{"from": a, "to": b, "history": h} for (a, b), h in out.items()]

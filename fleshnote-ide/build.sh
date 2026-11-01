@@ -110,6 +110,7 @@ echo ""
 echo "[2/3] Building Electron frontend (typecheck + vite)..."
 echo ""
 
+npm ci
 npm run build
 
 echo ""

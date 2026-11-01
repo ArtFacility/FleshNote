@@ -143,6 +143,30 @@ def merge_records(db, session):
     return out
 
 
+def restore_issues(db, session):
+    """A restore op must name the text of the version it brought back. A pruned
+    version can't be checked, so only one still held is compared."""
+    issues = []
+    for (text,) in db.execute(
+            "SELECT text_content FROM pentimento_ops WHERE session_id=? AND op_type='restore'",
+            (session["id"],)):
+        try:
+            data = json.loads(text or "")
+        except ValueError:
+            data = None
+        if not isinstance(data, dict) or data.get("restore") != 1:
+            issues.append("restore record is unreadable")
+            continue
+        try:
+            row = db.execute("SELECT prose_hash FROM chapter_snapshots WHERE id=?",
+                             (data.get("from_snapshot"),)).fetchone()
+        except sqlite3.Error:
+            row = None
+        if row and row[0] != data.get("prose_hash"):
+            issues.append("restore names a version with different text")
+    return issues
+
+
 def verify_project(project_path, tsa_url, keys_file, verbose=False):
     db_path = os.path.join(project_path, "fleshnote.db")
     if not os.path.exists(db_path):
@@ -242,6 +266,8 @@ def verify_project(project_path, tsa_url, keys_file, verbose=False):
                     if (ch, head) not in by_hash:
                         entry["issues"].append(
                             f"{name}: merge names a chain head not in this project")
+            for issue in restore_issues(db, s):
+                entry["issues"].append(f"{name}: {issue}")
 
             # receipts matching this session's hash
             if stored:

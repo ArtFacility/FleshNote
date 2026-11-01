@@ -351,6 +351,8 @@ export default function PentimentoTab({ projectPath, chapters, projectConfig, ac
           html: res?.content_html || '', session_num: s.session_num, session_id: s.session_id,
           device_id: s.device_id || s.snapshot_device_id || null, prose_hash: s.prose_hash,
           isMerge: s.kind === 'merge' || !!sessionById.get(s.session_id)?.is_merge,
+          isRestore: s.kind === 'restore' || !!sessionById.get(s.session_id)?.is_restore,
+          restoredFrom: sessionById.get(s.session_id)?.restored_from || null,
         })
       }
       states.push({
@@ -413,6 +415,24 @@ export default function PentimentoTab({ projectPath, chapters, projectConfig, ac
 
         for (let i = 1; i < states.length; i++) {
           const snap = states[i]
+          // Going back to an older version wasn't written, so nothing is animated: say
+          // what happened and jump straight to that text.
+          if (snap.isRestore) {
+            sessionStep(t('pentimento.restoreStep', 'History recovery'), snap.device_id, {
+              restore: true,
+              notice: snap.restoredFrom
+                ? t('pentimento.restoreNotice', 'Restored the version from {{date}}', {
+                    date: new Date(snap.restoredFrom).toLocaleString(undefined, {
+                      year: 'numeric', month: 'short', day: 'numeric', hour: '2-digit', minute: '2-digit',
+                    }),
+                  })
+                : null,
+            })
+            const restored = parasFor(i)
+            steps.push({ type: 'set', paras: [...restored] })
+            currentParas = [...restored]
+            continue
+          }
           // Play this frame from the frame it was written from. When that isn't what's
           // on screen (another device was writing in parallel), switch copies first.
           const parent = parents[i]
@@ -542,11 +562,11 @@ export default function PentimentoTab({ projectPath, chapters, projectConfig, ac
   const deviceMarks = useMemo(() => {
     if (!simSteps || !simSteps.length) return []
     return simSteps.map((st, index) => ({ st, index }))
-      .filter(({ st }) => st.type === 'session' && (st.deviceChanged || st.branch || st.merge))
+      .filter(({ st }) => st.type === 'session' && (st.deviceChanged || st.branch || st.merge || st.restore))
       .map(({ st, index }) => ({
         index,
         percent: (index / simSteps.length) * 100,
-        color: st.merge ? 'var(--accent-purple)' : deviceColor(st.deviceId),
+        color: st.restore ? 'var(--accent-amber)' : st.merge ? 'var(--accent-purple)' : deviceColor(st.deviceId),
         title: st.device ? `${st.device.name} · ${st.label}` : st.label,
       }))
   }, [simSteps])
@@ -633,8 +653,10 @@ export default function PentimentoTab({ projectPath, chapters, projectConfig, ac
     const step = simSteps[currentStepIndex]
 
     if (step.type === 'session') {
-      setEventText(step.device && (step.deviceChanged || step.branch || step.merge)
-        ? `${step.device.name} · ${step.label}` : step.label)
+      setEventText(step.restore
+        ? [step.label, step.notice].filter(Boolean).join(' · ')
+        : step.device && (step.deviceChanged || step.branch || step.merge)
+          ? `${step.device.name} · ${step.label}` : step.label)
       setHudSess(step.label)
       setHudDevice(step.deviceId || null)
       setHudDeviceInfo(step.device || null)
@@ -643,7 +665,7 @@ export default function PentimentoTab({ projectPath, chapters, projectConfig, ac
         setEventText('')
         setCurrentStepIndex(prev => prev + 1)
         setCurrentOpCharIndex(0)
-      }, 1000 / speedMultiplier)
+      }, (step.restore ? 2500 : 1000) / speedMultiplier)
       return
     }
 

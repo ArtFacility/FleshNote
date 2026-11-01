@@ -20,7 +20,9 @@ export default defineConfig({
   },
   define: {
     // the preload's choice between contextBridge and window: a page has no isolated context
-    'process.contextIsolated': 'false'
+    'process.contextIsolated': 'false',
+    // parts of the UI that only make sense in the desktop app
+    'import.meta.env.VITE_FLESHNOTE_WEB': 'true'
   },
   plugins: [
     react(),

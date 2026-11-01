@@ -76,6 +76,12 @@ echo.
 echo [2/3] Building Electron frontend (typecheck + vite)...
 echo.
 
+call npm ci
+if !ERRORLEVEL! neq 0 (
+    echo.
+    echo ERROR: npm ci failed!
+    exit /b 1
+)
 call npm run build
 if !ERRORLEVEL! neq 0 (
     echo.

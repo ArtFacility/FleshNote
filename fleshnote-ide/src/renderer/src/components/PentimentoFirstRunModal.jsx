@@ -24,8 +24,8 @@ export default function PentimentoFirstRunModal({ projects = [], onClose }) {
     <div className="popup-overlay" style={{ zIndex: 10001 }}>
       <div className="popup-panel" onClick={(e) => e.stopPropagation()} style={{ position: 'relative', width: 480, display: 'flex', flexDirection: 'column' }}>
         <div className="popup-header" style={{ marginBottom: 12 }}>
-          <span style={{ color: 'var(--accent-amber)' }}>{t('pentimento.firstRunTitle', 'Sealed Pentimento — Prove Your Process')}</span>
-          <button className="popup-close" onClick={() => decide(false)} disabled={busy}>&times;</button>
+          <span style={{ color: 'var(--accent-amber)' }}>{t('pentimento.firstRunOnTitle', 'Sealed Pentimento is on')}</span>
+          <button className="popup-close" onClick={() => decide(true)} disabled={busy}>&times;</button>
         </div>
         <div style={{ paddingInline: '20px', paddingBottom: '20px' }}>
           <p style={{ color: 'var(--text-secondary)', fontSize: '13px', lineHeight: 1.6, margin: '0 0 14px 0' }}>
@@ -36,7 +36,7 @@ export default function PentimentoFirstRunModal({ projects = [], onClose }) {
           </p>
           <ul style={{ margin: '0 0 20px 0', paddingInlineStart: '18px', color: 'var(--text-tertiary)', fontSize: '12px', lineHeight: 1.7 }}>
             <li>{t('pentimento.firstRunPoint1', 'Hashes are blind: no one can reconstruct your manuscript from them.')}</li>
-            <li>{t('pentimento.firstRunPoint2', 'Free, optional, and can be turned off anytime in Settings.')}</li>
+            <li>{t('pentimento.firstRunOnPoint2', 'Free, and on by default. Turn it off here, or anytime in Settings.')}</li>
             <li>{t('pentimento.firstRunPoint3', 'Your writing keeps working offline — receipts sync when a connection returns.')}</li>
           </ul>
           <div style={{ display: 'flex', gap: 12 }}>
@@ -50,7 +50,7 @@ export default function PentimentoFirstRunModal({ projects = [], onClose }) {
                 opacity: busy ? 0.6 : 1,
               }}
             >
-              {t('pentimento.firstRunEnable', 'Enable (Recommended)')}
+              {t('pentimento.firstRunKeep', 'Keep it on')}
             </button>
             <button
               disabled={busy}
@@ -62,7 +62,7 @@ export default function PentimentoFirstRunModal({ projects = [], onClose }) {
                 opacity: busy ? 0.6 : 1,
               }}
             >
-              {t('pentimento.firstRunDecline', 'Keep Fully Offline')}
+              {t('pentimento.firstRunTurnOff', 'Turn it off')}
             </button>
           </div>
           <p style={{ color: 'var(--text-tertiary)', fontSize: '11px', margin: '14px 0 0 0', fontFamily: 'var(--font-mono)' }}>
