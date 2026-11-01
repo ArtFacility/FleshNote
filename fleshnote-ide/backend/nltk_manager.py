@@ -32,6 +32,33 @@ def get_nltk_data_dir() -> str:
         return os.path.expanduser("~/.config/FleshNote/Models/nltk_data")
 
 
+def _make_data_dirs_private(data_dir: str):
+    """Remove group and other write access from FleshNote's own NLTK data folders.
+
+    NLTK refuses to download into, or read from, a folder other accounts could write
+    to. With the umask 002 that is common on Debian and Ubuntu, new folders are
+    group-writable, so downloads fail and languages go missing with only a log message.
+    """
+    if os.name == "nt":
+        return  # Windows protects the profile with ACLs; NLTK doesn't read modes there
+
+    def make_private(path):
+        try:
+            mode = os.stat(path).st_mode & 0o7777
+            if mode & 0o022:
+                os.chmod(path, mode & ~0o022)
+        except OSError:
+            pass  # not ours to change: NLTK reports what's still wrong
+
+    models_dir = os.path.dirname(data_dir)
+    make_private(os.path.dirname(models_dir))
+    make_private(models_dir)
+    make_private(data_dir)
+    for root, dirs, files in os.walk(data_dir):
+        for name in dirs + files:
+            make_private(os.path.join(root, name))
+
+
 def _ensure_nltk_path():
     """Add bundled + user data dirs to NLTK's search path. Returns user data dir."""
     # Bundled path (read-only, ships with installer)
@@ -42,6 +69,7 @@ def _ensure_nltk_path():
     # User data dir (writable, for additional downloads)
     data_dir = get_nltk_data_dir()
     os.makedirs(data_dir, exist_ok=True)
+    _make_data_dirs_private(data_dir)
     if data_dir not in nltk.data.path:
         nltk.data.path.insert(0, data_dir)
     return data_dir
@@ -152,6 +180,9 @@ def ensure_wordnet_available() -> bool:
             os.makedirs(hun_dst_dir, exist_ok=True)
             shutil.copy(hun_src, hun_dst)
             print("DOWNLOAD_LOG: Hungarian WordNet data merged.", flush=True)
+
+        # The extraction and copy above follow the umask
+        _make_data_dirs_private(data_dir)
 
         print("DOWNLOAD_PROGRESS: 100", flush=True)
         print("DOWNLOAD_COMPLETE", flush=True)

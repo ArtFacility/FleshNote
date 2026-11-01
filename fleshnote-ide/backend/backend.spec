@@ -77,7 +77,7 @@ datas = [
     ('../resources/icons/fleshnote-project-256.png', 'icons'),
 ]
 
-from PyInstaller.utils.hooks import collect_submodules, collect_data_files
+from PyInstaller.utils.hooks import collect_submodules, collect_data_files, copy_metadata
 
 hidden_imports.extend(collect_submodules('numpy'))
 
@@ -97,6 +97,10 @@ datas += [(src, dest) for src, dest in collect_data_files('phunspell') if _wante
 datas += collect_data_files('pyphen')
 hidden_imports.extend(collect_submodules('spacy'))
 hidden_imports.extend(collect_submodules('thinc'))
+# Older models such as hu_core_news_lg use spacy.Tagger.v1. spaCy finds it through spacy-legacy's
+# entry points, so the bundle needs that package's metadata as well as its code.
+hidden_imports.extend(collect_submodules('spacy_legacy'))
+datas += copy_metadata('spacy-legacy')
 
 a = Analysis(
     ['main.py'],
