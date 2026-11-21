@@ -47,6 +47,15 @@ MERGE_OP = "merge"
 RESTORE_OP = "restore"
 MARKER_OPS = (MERGE_OP, RESTORE_OP)   # a session's record of an event, not writing
 DEVICE_KINDS = ("desktop", "mobile")
+FOCUS_CATEGORIES = {
+    "normal": "neutral",
+    "momentum": "rewarding",
+    "combo": "rewarding",
+    "zen": "rewarding",
+    "kamikaze": "punishing",
+    "hemingway": "punishing",
+    "fog": "punishing",
+}
 MAX_SNAPSHOT_BYTES = 64 * 1024 * 1024   # decompressed size cap for an imported snapshot
 
 _HEX64 = re.compile(r"^[0-9a-f]{64}$")
@@ -403,6 +412,20 @@ def import_process_history(cl, cr, local_device, remote_device=None, dry_run=Fal
         if kind not in DEVICE_KINDS:
             kind = next((o.get("origin") for o in ops if o.get("origin") in DEVICE_KINDS), None)
         r["device_kind"] = kind
+
+        f_mode = (r.get("focus_mode") or "").strip().lower() if isinstance(r.get("focus_mode"), str) else None
+        if f_mode in FOCUS_CATEGORIES:
+            r["focus_mode"] = f_mode
+            r["focus_category"] = FOCUS_CATEGORIES[f_mode]
+            goal = r.get("focus_goal")
+            r["focus_goal"] = int(goal) if isinstance(goal, (int, float)) and not isinstance(goal, bool) and 0 < int(goal) <= 100000 else None
+            comp = r.get("focus_completed")
+            r["focus_completed"] = (1 if comp else 0) if comp is not None else 0
+        else:
+            r["focus_mode"] = None
+            r["focus_category"] = None
+            r["focus_goal"] = None
+            r["focus_completed"] = None
 
         cl.execute("SELECT device_id, session_hash, device_kind, summary_json "
                    "FROM pentimento_sessions WHERE id=?", (sid,))

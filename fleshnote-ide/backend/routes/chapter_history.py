@@ -18,6 +18,7 @@ Endpoints:
 """
 
 import os
+import re
 import zlib
 import uuid
 import hashlib
@@ -107,16 +108,24 @@ def _read_chapter_md(project_path: str, md_filename: Optional[str]) -> str:
 
 def _create_snapshot(cursor, project_path: str, chapter_id: str, kind: str,
                      label: Optional[str] = None, session_id: Optional[str] = None,
-                     session_hash: Optional[str] = None) -> Optional[str]:
-    """Snapshot the chapter's current on-disk markdown. Returns snapshot id, or None if
-    skipped (unchanged content for a non-manual snapshot, or missing chapter)."""
+                     session_hash: Optional[str] = None,
+                     snapshot_html: Optional[str] = None) -> Optional[str]:
+    """Snapshot the chapter's prose (or provided HTML before later auto-saves).
+    Returns snapshot id, or None if skipped (unchanged content for a non-manual snapshot,
+    or missing chapter)."""
     cursor.execute(
         "SELECT md_filename, word_count FROM chapters WHERE id=? AND deleted=0", (chapter_id,))
     row = cursor.fetchone()
     if not row:
         return None
 
-    md = _read_chapter_md(project_path, row["md_filename"])
+    if snapshot_html is not None:
+        from routes.chapters import content_html_to_md
+        md = content_html_to_md(snapshot_html)
+        words = len(re.sub(r"<[^>]+>", " ", snapshot_html).split())
+    else:
+        md = _read_chapter_md(project_path, row["md_filename"])
+        words = row["word_count"] or 0
     prose_hash = hashlib.sha256(md.encode("utf-8")).hexdigest()
 
     # Dedup only auto session snapshots that match this device's most recent one, so
@@ -141,7 +150,7 @@ def _create_snapshot(cursor, project_path: str, chapter_id: str, kind: str,
         " byte_size, session_id, session_hash, device_id) "
         "VALUES (?,?,?,?,?,?,?,?,?,?,?,?)",
         (snap_id, str(chapter_id), datetime.datetime.now().isoformat(), kind, label,
-         row["word_count"] or 0, prose_hash, gz, len(gz), session_id, session_hash,
+         words, prose_hash, gz, len(gz), session_id, session_hash,
          sync_core.DEVICE_ID))
     return snap_id
 
@@ -160,7 +169,9 @@ def history_list(req: ChapterScoped):
     cur.execute(
         "SELECT s.id, s.created_at, s.kind, s.label, s.word_count, s.byte_size, "
         "       s.prose_hash, s.session_id, s.session_hash, s.device_id AS snapshot_device_id, "
-        "       ps.session_num AS session_num, ps.device_id AS device_id "
+        "       ps.session_num AS session_num, ps.device_id AS device_id, "
+        "       ps.focus_mode AS focus_mode, ps.focus_category AS focus_category, "
+        "       ps.focus_goal AS focus_goal, ps.focus_completed AS focus_completed "
         "FROM chapter_snapshots s "
         "LEFT JOIN pentimento_sessions ps ON ps.id = s.session_id "
         "WHERE s.chapter_id=? ORDER BY s.created_at DESC, s.rowid DESC", (req.chapter_id,))
@@ -171,6 +182,9 @@ def history_list(req: ChapterScoped):
         "session_id": r["session_id"], "session_num": r["session_num"],
         "session_hash": r["session_hash"],
         "device_id": r["device_id"], "snapshot_device_id": r["snapshot_device_id"],
+        "focus_mode": r["focus_mode"], "focus_category": r["focus_category"],
+        "focus_goal": r["focus_goal"],
+        "focus_completed": bool(r["focus_completed"]) if r["focus_completed"] is not None else None,
     } for r in cur.fetchall()]
     cur.execute(
         "SELECT session_id, text_content FROM pentimento_ops WHERE chapter_id=? AND op_type=?",
@@ -180,6 +194,7 @@ def history_list(req: ChapterScoped):
     cur.execute(
         "SELECT ps.id, ps.device_id, ps.device_kind, ps.session_num, ps.start_time, ps.end_time, "
         "       ps.session_hash, ps.previous_session_hash, "
+        "       ps.focus_mode, ps.focus_category, ps.focus_goal, ps.focus_completed, "
         "       EXISTS(SELECT 1 FROM pentimento_ops o WHERE o.session_id = ps.id "
         "              AND o.op_type='merge') AS is_merge "
         "FROM pentimento_sessions ps WHERE ps.chapter_id=? "
@@ -191,6 +206,9 @@ def history_list(req: ChapterScoped):
         "previous_session_hash": r["previous_session_hash"], "is_merge": bool(r["is_merge"]),
         "is_restore": r["id"] in restores,
         "restored_from": restores.get(r["id"], {}).get("from_time"),
+        "focus_mode": r["focus_mode"], "focus_category": r["focus_category"],
+        "focus_goal": r["focus_goal"],
+        "focus_completed": bool(r["focus_completed"]) if r["focus_completed"] is not None else None,
     } for r in cur.fetchall()]
     devices = device_directory(cur)
     conn.close()

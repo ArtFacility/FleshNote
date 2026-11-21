@@ -735,6 +735,16 @@ def md_to_editor_html(content: str, quicknote_types: dict = None) -> str:
     return _time_md_to_html(content)
 
 
+def content_html_to_md(content: str) -> str:
+    """Convert editor HTML (with entity/twist/knowledge/relationship/milestone/time spans) to markdown."""
+    md_content = _entity_html_to_md(content)
+    md_content = _twist_html_to_md(md_content)
+    md_content = _knowledge_html_to_md(md_content)
+    md_content = _relationship_html_to_md(md_content)
+    md_content = _milestone_html_to_md(md_content)
+    return _time_html_to_md(md_content)
+
+
 @router.post("/api/project/chapter/save")
 def save_chapter_content(req: ChapterSave, background_tasks: BackgroundTasks):
     conn = _get_db(req.project_path)
@@ -748,17 +758,7 @@ def save_chapter_content(req: ChapterSave, background_tasks: BackgroundTasks):
 
     old_word_count = row["word_count"] or 0
 
-    # Convert entity-link HTML spans to markdown markers before writing
-    md_content = _entity_html_to_md(req.content)
-
-    # Convert twist/foreshadow HTML spans to markdown markers
-    md_content = _twist_html_to_md(md_content)
-
-    # Convert knowledge/relationship HTML spans to markdown markers
-    md_content = _knowledge_html_to_md(md_content)
-    md_content = _relationship_html_to_md(md_content)
-    md_content = _milestone_html_to_md(md_content)
-    md_content = _time_html_to_md(md_content)
+    md_content = content_html_to_md(req.content)
 
     # Write the md file — but never through a poisoned (traversal) filename
     md_path = safe_md_path(os.path.join(req.project_path, "md"), row["md_filename"])

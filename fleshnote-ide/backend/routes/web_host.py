@@ -34,7 +34,7 @@ from fastapi.responses import FileResponse
 from pydantic import BaseModel
 
 MAX_UPLOAD = 500 * 1024 * 1024
-COVER_IMAGE = re.compile(r"^assets/cover/(?:img|front|spine)_[0-9a-f]{12}\.(png|jpe?g|webp|gif|bmp)$")
+COVER_IMAGE = re.compile(r"^assets/cover/(?:img|front|spine|back)_[0-9a-f]{12}\.(png|jpe?g|webp|gif|bmp)$")
 TUTORIAL_SRC = os.path.join(os.path.dirname(os.path.dirname(os.path.abspath(__file__))), "Tutorial")
 
 

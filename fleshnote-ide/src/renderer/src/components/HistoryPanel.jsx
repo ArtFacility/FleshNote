@@ -1,6 +1,8 @@
 import { useState, useEffect, useCallback, useMemo, useRef } from 'react'
 import { useTranslation } from 'react-i18next'
 import { diffLines } from '../utils/proseDiff'
+import { resolveFocusMeta } from '../utils/focusModeMeta'
+import FocusFlagBadge from './FocusBadge'
 
 /**
  * HistoryPanel — prose rollback ("Edit History"). A right-side panel mirroring JanitorPanel
@@ -100,16 +102,18 @@ export default function HistoryPanel({
     if (!isCollapsed) refresh()
   }, [isCollapsed, chapterId, refresh])
 
-  const kindLabel = useCallback((s) => {
+  const kindLabel = useCallback((s, isBaseline = false) => {
     if (s.kind === 'manual') return s.label ? `${t('history.pinned', 'Pinned')} · ${s.label}` : t('history.pinned', 'Pinned')
     if (s.kind === 'pre_restore') return t('history.beforeRestore', 'Before restore')
     if (s.kind === 'pre_link') return t('history.beforeLinking', 'Before names were linked')
     if (s.kind === 'merge') return t('history.merged', 'Copies merged')
     if (s.kind === 'restore') return t('history.restoredVersion', 'Older version restored')
     if (s.kind === 'sync') return t('history.fromSync', 'From another device')
-    const base = s.session_num
-      ? t('history.session', 'Session {{n}}', { n: s.session_num })
-      : t('history.autosnapshot', 'Session')
+    const base = isBaseline && s.session_num
+      ? t('pentimento.sessionStart', 'Session {{n}} — start', { n: s.session_num })
+      : s.session_num
+        ? t('history.session', 'Session {{n}}', { n: s.session_num })
+        : t('history.autosnapshot', 'Session')
     // name the device once the chapter was written on more than one
     const info = Object.keys(devices).length > 1 ? devices[s.device_id] : null
     if (!info) return base
@@ -205,18 +209,21 @@ export default function HistoryPanel({
               {!loading && snapshots.map((s, i) => {
                 const older = snapshots[i + 1]
                 const delta = older ? (s.word_count - older.word_count) : null
-                const accent = KIND_ACCENT[s.kind] || 'var(--text-tertiary)'
+                const isBaseline = s.kind === 'session' && !s.session_hash && i > 0 && snapshots[i - 1]?.session_id === s.session_id
+                const focusMeta = (s.kind === 'session' && !isBaseline) ? resolveFocusMeta(s, t) : null
+                const accent = focusMeta?.theme?.accent || KIND_ACCENT[s.kind] || 'var(--text-tertiary)'
+                const labelText = kindLabel(s, isBaseline)
                 const isOpen = openId === s.id
                 return (
                   <div key={s.id} className="inbox-card" style={{ borderInlineStart: `3px solid ${accent}`, marginBottom: 8, padding: 0, overflow: 'hidden' }}>
                     <div style={{ padding: '9px 11px', cursor: 'pointer' }} onClick={() => handlePreview(s)}>
                       <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
                         <span style={{ fontSize: 10, fontFamily: 'var(--font-mono)', textTransform: 'uppercase', letterSpacing: '0.06em', color: accent, fontWeight: 600, flex: 1, minWidth: 0, overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>
-                          {kindLabel(s)}
+                          {labelText}
                         </span>
                         <span style={{ fontSize: 10, fontFamily: 'var(--font-mono)', color: 'var(--text-tertiary)' }}>{fmtDateTime(s.created_at)}</span>
                       </div>
-                      <div style={{ display: 'flex', alignItems: 'center', gap: 8, marginTop: 4 }}>
+                      <div style={{ display: 'flex', alignItems: 'center', flexWrap: 'wrap', gap: 8, marginTop: 4 }}>
                         <span style={{ fontSize: 11, fontFamily: 'var(--font-mono)', color: 'var(--text-secondary)' }}>
                           {(s.word_count || 0).toLocaleString()} {t('history.words', 'words')}
                         </span>
@@ -225,6 +232,7 @@ export default function HistoryPanel({
                             {delta > 0 ? '+' : ''}{delta.toLocaleString()}
                           </span>
                         )}
+                        {focusMeta && <FocusFlagBadge focus={focusMeta} compact />}
                       </div>
                     </div>
 

@@ -1,6 +1,6 @@
 import { useEditor, EditorContent } from '@tiptap/react'
 import { EditorState } from '@tiptap/pm/state'
-import PentimentoRecorder from '../utils/pentimentoRecorder'
+import PentimentoRecorder, { FOCUS_MIN_MS } from '../utils/pentimentoRecorder'
 import { onBeforeClose } from '../utils/closeGuard'
 import StarterKit from '@tiptap/starter-kit'
 import { DoubleEnterParagraph } from '../extensions/DoubleEnterParagraph'
@@ -213,6 +213,18 @@ export default function Editor({
   const pentiLoadingRef = useRef(false) // true while content is being loaded programmatically
   if (!pentimentoRef.current) pentimentoRef.current = new PentimentoRecorder(window.api)
   const pentiEnabled = projectConfig?.pentimento_capture !== false // default on
+  const focusModeRef = useRef(focusMode)
+  focusModeRef.current = focusMode
+
+  // Promote a held Focus Mode session automatically once 5 minutes elapse even without new keystrokes.
+  useEffect(() => {
+    if (!focusMode?.active || !focusMode?.startTime) return
+    const remaining = Math.max(0, FOCUS_MIN_MS - (Date.now() - focusMode.startTime))
+    const timer = setTimeout(() => {
+      pentimentoRef.current?.updateFocusProgress()
+    }, remaining + 50)
+    return () => clearTimeout(timer)
+  }, [focusMode?.active, focusMode?.startTime])
 
   // Open/seal a chained session as the chapter (or capture toggle) changes. The
   // chapter being left is saved first, so its session's closing snapshot holds the
@@ -736,6 +748,10 @@ export default function Editor({
 
         const html = editor.getHTML()
         const words = editor.storage.characterCount.words()
+        const fm = focusModeRef.current
+        if (fm?.active) {
+          pentimentoRef.current?.updateFocusProgress(Math.max(0, words - (fm.startWordCount || 0)))
+        }
         // the chapter on screen, which may no longer be the one selected
         const chapterId = chapter?.id
 
@@ -773,6 +789,44 @@ export default function Editor({
       } catch (e) { /* ignore */ }
     },
   })
+
+  const beginFocusMode = useCallback(({ type, goal }) => {
+    const words = editor ? editor.storage.characterCount.words() : 0
+    const startTime = Date.now()
+    const preSave = flushPendingSave()
+    const preFocusHtml = editor ? editor.getHTML() : null
+    pentimentoRef.current?.enterFocus({
+      mode: type,
+      goal: goal || null,
+      startWordCount: words,
+      startTime,
+      preFocusHtml,
+      preSave,
+    })
+    onToggleFocus({
+      active: true,
+      type,
+      goal: goal || null,
+      startWordCount: words,
+      startTime,
+    })
+    if (goal) {
+      window.api.updateProjectConfig(projectPath, 'active_sprint', startTime.toString(), 'string')
+      window.api.updateStat({ project_path: projectPath, stat_key: 'sprints_started', increment_by: 1 })
+    }
+  }, [editor, onToggleFocus, projectPath])
+
+  const finishFocusMode = useCallback(({ completed }) => {
+    const words = editor ? editor.storage.characterCount.words() : 0
+    const wordsWritten = Math.max(0, words - (focusMode?.startWordCount || 0))
+    const saved = flushPendingSave()
+    pentimentoRef.current?.exitFocus({
+      completed: !!completed,
+      wordsWritten,
+      beforeSeal: saved,
+    })
+    onToggleFocus(null)
+  }, [editor, focusMode, onToggleFocus])
 
   // Update quicknote type on all matching marks when changed from inspector
   useEffect(() => {
@@ -892,9 +946,15 @@ export default function Editor({
       if (matchesHotkey(e, hotkeys.focus_normal)) {
         e.preventDefault()
         if (focusMode?.active) {
-          onToggleFocus(null)
+          const words = editor ? editor.storage.characterCount.words() : 0
+          const wordsWritten = Math.max(0, words - (focusMode.startWordCount || 0))
+          const metGoal = !focusMode.goal || wordsWritten >= focusMode.goal
+          if (focusMode.goal) {
+            window.api.updateProjectConfig(projectPath, 'active_sprint', '', 'string')
+          }
+          finishFocusMode({ completed: metGoal })
         } else {
-          onToggleFocus({ active: true, type: 'normal', goal: null, startWordCount: editor ? editor.storage.characterCount.words() : 0 })
+          beginFocusMode({ type: 'normal', goal: null })
         }
         return
       }
@@ -902,7 +962,7 @@ export default function Editor({
 
     window.addEventListener('keydown', handleGlobalKeyDown)
     return () => window.removeEventListener('keydown', handleGlobalKeyDown)
-  }, [hotkeys, editor, focusMode, onToggleFocus])
+  }, [hotkeys, editor, focusMode, beginFocusMode, finishFocusMode, projectPath])
 
   // Clear search highlights when search bar is closed
   useEffect(() => {
@@ -1946,17 +2006,17 @@ export default function Editor({
                     window.api.updateStat({ project_path: projectPath, stat_key: 'sprints_completed', increment_by: 1 });
 
                     // Easter egg stats
-                    if (focusMode.id === 'zen' && wordsWritten >= 400) {
+                    if (focusMode.type === 'zen' && wordsWritten >= 400) {
                       window.api.updateStat({ project_path: projectPath, stat_key: 'zen_sprints_400', increment_by: 1 });
                     }
-                    if (focusMode.id === 'hemingway' && wordsWritten >= 1000) {
+                    if (focusMode.type === 'hemingway' && wordsWritten >= 1000) {
                       window.api.updateStat({ project_path: projectPath, stat_key: 'hemingway_sprints_1000', increment_by: 1 });
                     }
                   }
 
                   // Clear the recovery token
                   window.api.updateProjectConfig(projectPath, 'active_sprint', '', 'string');
-                  onToggleFocus(null) // Exit focus mode
+                  finishFocusMode({ completed: true }) // Exit focus mode & seal focus session
                 } else {
                   // Provide feedback that they can't exit yet? Could add a toast later.
                 }
@@ -2595,18 +2655,7 @@ export default function Editor({
         <FocusSelectorPopup
           onClose={closePopup}
           onSelectMode={({ type, goal }) => {
-            const startTime = Date.now()
-            onToggleFocus({
-              active: true,
-              type,
-              goal,
-              startWordCount: editor ? editor.storage.characterCount.words() : 0,
-              startTime
-            })
-            if (goal) {
-              window.api.updateProjectConfig(projectPath, 'active_sprint', startTime.toString(), 'string')
-              window.api.updateStat({ project_path: projectPath, stat_key: 'sprints_started', increment_by: 1 })
-            }
+            beginFocusMode({ type, goal })
             closePopup()
           }}
         />

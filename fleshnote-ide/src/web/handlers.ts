@@ -137,6 +137,10 @@ export const webHandlers = {
     const [file] = await pick({ filters: IMAGES })
     return file ? upload(file) : null
   },
+  'dialog:openFont': async () => {
+    const [file] = await pick({ filters: [{ name: 'Fonts', extensions: ['ttf', 'otf', 'woff2', 'woff'] }] })
+    return file ? upload(file) : null
+  },
 
   // ── Settings and translations ───────────────────
   'api:getGlobalConfig': async () => {
@@ -225,6 +229,17 @@ export const webHandlers = {
       const rest = { ...res }
       delete rest.html
       return { ...rest, status: 'success', warnings: 'Choose "Save as PDF" in the print dialog.' }
+    }
+    if (res?.status === 'success' && res.filepath) download(res.filepath)
+    return res
+  },
+  'api:coverExportWrap': async (_e: unknown, payload: any) => {
+    const res = await backendPost('/api/project/cover/export-wrap', payload)
+    if (res?.status === 'print') {
+      printHtml(res.html)
+      const rest = { ...res }
+      delete rest.html
+      return { ...rest, status: 'success', message: 'Choose "Save as PDF" in the print dialog.' }
     }
     if (res?.status === 'success' && res.filepath) download(res.filepath)
     return res

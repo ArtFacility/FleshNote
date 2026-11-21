@@ -1,6 +1,8 @@
 import { useState, useEffect, useMemo, useRef, useCallback } from 'react'
 import { useTranslation } from 'react-i18next'
 import { diffParagraphs, inlineChange, cleanProse } from '../utils/proseDiff'
+import { FOCUS_THEMES, resolveFocusMeta } from '../utils/focusModeMeta'
+import FocusFlagBadge, { FocusCategoryIcon } from './FocusBadge'
 
 // Continuous effort palette (no watercolor, no hard buckets). Churn slides teal→amber→red;
 // night blends toward violet; heat (time) drives the fill intensity.
@@ -261,7 +263,9 @@ export default function PentimentoTab({ projectPath, chapters, projectConfig, ac
   const [simWords, setSimWords] = useState(0)
   const [simDeleted, setSimDeleted] = useState(0)
   const [hudSess, setHudSess] = useState('1')
+  const [hudFocus, setHudFocus] = useState(null)
   const [eventText, setEventText] = useState('')
+  const [eventStep, setEventStep] = useState(null)
   const [caretPara, setCaretPara] = useState(null)
   const [caretOffset, setCaretOffset] = useState(0)
 
@@ -274,13 +278,16 @@ export default function PentimentoTab({ projectPath, chapters, projectConfig, ac
     let lastSessionLabel = '1'
     let lastSessionDevice = null
     let lastDeviceInfo = null
+    let lastFocus = null
 
-    for (let i = 0; i < targetIdx; i++) {
+    const stopIdx = stepsList[targetIdx]?.type === 'session' ? targetIdx + 1 : targetIdx
+    for (let i = 0; i < stopIdx && i < stepsList.length; i++) {
       const step = stepsList[i]
       if (step.type === 'session') {
         lastSessionLabel = step.label
         lastSessionDevice = step.deviceId || null
         lastDeviceInfo = step.device || null
+        lastFocus = step.focus || null
       } else if (step.type === 'set') {
         nextParas = [...step.paras]
       } else if (step.type === 'edit') {
@@ -301,6 +308,9 @@ export default function PentimentoTab({ projectPath, chapters, projectConfig, ac
     setHudSess(String(lastSessionLabel))
     setHudDevice(lastSessionDevice)
     setHudDeviceInfo(lastDeviceInfo)
+    setHudFocus(lastFocus)
+    setEventText('')
+    setEventStep(null)
     setCaretPara(null)
   }, [])
 
@@ -347,24 +357,39 @@ export default function PentimentoTab({ projectPath, chapters, projectConfig, ac
       const states = []
       for (const s of sortedSnaps) {
         const res = await window.api.chapterHistoryPreview({ project_path: projectPath, snapshot_id: s.id })
+        const sess = sessionById.get(s.session_id)
+        const focusMeta = resolveFocusMeta({
+          focus_mode: s.focus_mode || sess?.focus_mode,
+          focus_category: s.focus_category || sess?.focus_category,
+          focus_goal: s.focus_goal ?? sess?.focus_goal,
+          focus_completed: s.focus_completed ?? sess?.focus_completed,
+        }, t)
         states.push({
           html: res?.content_html || '', session_num: s.session_num, session_id: s.session_id,
           device_id: s.device_id || s.snapshot_device_id || null, prose_hash: s.prose_hash,
-          isMerge: s.kind === 'merge' || !!sessionById.get(s.session_id)?.is_merge,
-          isRestore: s.kind === 'restore' || !!sessionById.get(s.session_id)?.is_restore,
-          restoredFrom: sessionById.get(s.session_id)?.restored_from || null,
+          isMerge: s.kind === 'merge' || !!sess?.is_merge,
+          isRestore: s.kind === 'restore' || !!sess?.is_restore,
+          restoredFrom: sess?.restored_from || null,
+          focus: focusMeta,
         })
       }
+      const openSess = (deviceFilter === 'all' || deviceFilter === currentDevice)
+        ? [...sessions].reverse().find(s => !s.session_hash && (!s.device_id || s.device_id === currentDevice))
+        : null
       states.push({
-        html: content?.content || '', session_num: null, session_id: null, isLive: true,
+        html: content?.content || '',
+        session_num: openSess?.session_num ?? null,
+        session_id: openSess?.id || null,
+        isLive: true,
         device_id: currentDevice,
+        focus: openSess ? resolveFocusMeta(openSess, t) : null,
       })
       const parents = replayParents(states, sessions, currentDevice)
 
       // A session-start baseline snapshot shares its session_id with the end snapshot
       // that follows it — label it as the session's starting state, not a duplicate.
       const labelFor = (snap, ordinal, isStart) => {
-        if (snap?.isLive) return t('pentimento.finalState', 'Final state')
+        if (snap?.isLive && !snap?.session_id) return t('pentimento.finalState', 'Final state')
         if (snap?.isMerge) return t('pentimento.mergeStep', 'Copies merged')
         const n = (typeof snap?.session_num === 'number' ? snap.session_num : ordinal)
         return isStart
@@ -409,7 +434,9 @@ export default function PentimentoTab({ projectPath, chapters, projectConfig, ac
       }
       if (states.length > 0) {
         const firstParas = parasFor(0)
-        sessionStep(labelFor(states[0], 1, isStartFrame(states[0], states[1])), states[0].device_id)
+        const firstIsStart = isStartFrame(states[0], states[1])
+        sessionStep(labelFor(states[0], 1, firstIsStart), states[0].device_id,
+          { focus: firstIsStart ? null : (states[0].focus || null) })
         steps.push({ type: 'set', paras: firstParas })
         let currentParas = [...firstParas]
 
@@ -433,6 +460,10 @@ export default function PentimentoTab({ projectPath, chapters, projectConfig, ac
             currentParas = [...restored]
             continue
           }
+          const targetProse = cleanProse(snap.html)
+          if (snap.isLive && currentParas.join('\n') === targetProse) {
+            continue
+          }
           // Play this frame from the frame it was written from. When that isn't what's
           // on screen (another device was writing in parallel), switch copies first.
           const parent = parents[i]
@@ -444,8 +475,9 @@ export default function PentimentoTab({ projectPath, chapters, projectConfig, ac
               currentParas = [...parentParas]
             }
           }
-          sessionStep(labelFor(snap, i + 1, isStartFrame(snap, states[i + 1])), snap.device_id,
-            { merge: !!snap.isMerge })
+          const isStart = isStartFrame(snap, states[i + 1])
+          sessionStep(labelFor(snap, i + 1, isStart), snap.device_id,
+            { merge: !!snap.isMerge, focus: isStart ? null : (snap.focus || null) })
 
           // Snapshot-anchored: diff full paragraph text, patch only what changed.
           const chunks = diffParagraphs(currentParas.join('\n'), cleanProse(snap.html))
@@ -506,7 +538,9 @@ export default function PentimentoTab({ projectPath, chapters, projectConfig, ac
       setCurrentStepIndex(0)
       setCurrentOpCharIndex(0)
       setSimDeleted(0)
+      setHudFocus(null)
       setEventText('')
+      setEventStep(null)
       setCaretPara(null)
       setCaretOffset(0)
       setSimMode(true)
@@ -545,7 +579,9 @@ export default function PentimentoTab({ projectPath, chapters, projectConfig, ac
     setHudSess('1')
     setHudDevice(null)
     setHudDeviceInfo(null)
+    setHudFocus(null)
     setEventText('')
+    setEventStep(null)
     setCaretPara(null)
     setCaretOffset(0)
 
@@ -558,18 +594,32 @@ export default function PentimentoTab({ projectPath, chapters, projectConfig, ac
     setIsPlaying(prev => !prev)
   }, [])
 
-  // Timeline ticks where the writing moves to another device (or merges).
+  // Timeline ticks where writing moves to another device, merges, restores, or enters Focus Mode.
   const deviceMarks = useMemo(() => {
     if (!simSteps || !simSteps.length) return []
     return simSteps.map((st, index) => ({ st, index }))
-      .filter(({ st }) => st.type === 'session' && (st.deviceChanged || st.branch || st.merge || st.restore))
-      .map(({ st, index }) => ({
-        index,
-        percent: (index / simSteps.length) * 100,
-        color: st.restore ? 'var(--accent-amber)' : st.merge ? 'var(--accent-purple)' : deviceColor(st.deviceId),
-        title: st.device ? `${st.device.name} · ${st.label}` : st.label,
-      }))
+      .filter(({ st }) => st.type === 'session' && (st.deviceChanged || st.branch || st.merge || st.restore || st.focus))
+      .map(({ st, index }) => {
+        const focusDesc = st.focus
+          ? `${st.focus.modeLabel} (${st.focus.categoryLabel})${st.focus.goal ? ` · ${st.focus.goal}w` : ''}`
+          : null
+        return {
+          index,
+          percent: (index / simSteps.length) * 100,
+          isFocus: !!st.focus,
+          color: st.restore
+            ? 'var(--accent-amber)'
+            : st.merge
+              ? 'var(--accent-purple)'
+              : st.focus
+                ? st.focus.theme.tick
+                : deviceColor(st.deviceId),
+          title: [st.device?.name, st.label, focusDesc].filter(Boolean).join(' · '),
+        }
+      })
   }, [simSteps])
+
+  const hasFocusMarks = useMemo(() => deviceMarks.some(m => m.isFocus), [deviceMarks])
 
   const progressPercent = useMemo(() => {
     if (!simSteps || simSteps.length === 0) return 0
@@ -653,19 +703,28 @@ export default function PentimentoTab({ projectPath, chapters, projectConfig, ac
     const step = simSteps[currentStepIndex]
 
     if (step.type === 'session') {
+      const f = step.focus
+      const focusBanner = f
+        ? `${step.label} · ${f.modeLabel} (${f.categoryLabel})${f.goal ? ` · ${f.goal}w` : ''}${f.completed ? ' ✓' : ''}`
+        : null
       setEventText(step.restore
         ? [step.label, step.notice].filter(Boolean).join(' · ')
-        : step.device && (step.deviceChanged || step.branch || step.merge)
-          ? `${step.device.name} · ${step.label}` : step.label)
+        : focusBanner
+          ? (step.device && (step.deviceChanged || step.branch || step.merge) ? `${step.device.name} · ${focusBanner}` : focusBanner)
+          : step.device && (step.deviceChanged || step.branch || step.merge)
+            ? `${step.device.name} · ${step.label}` : step.label)
+      setEventStep(step)
       setHudSess(step.label)
       setHudDevice(step.deviceId || null)
       setHudDeviceInfo(step.device || null)
+      setHudFocus(f || null)
       setCaretPara(null)
       simTimerRef.current = setTimeout(() => {
         setEventText('')
+        setEventStep(null)
         setCurrentStepIndex(prev => prev + 1)
         setCurrentOpCharIndex(0)
-      }, (step.restore ? 2500 : 1000) / speedMultiplier)
+      }, (step.restore ? 2500 : f ? 1250 : 1000) / speedMultiplier)
       return
     }
 
@@ -749,8 +808,31 @@ export default function PentimentoTab({ projectPath, chapters, projectConfig, ac
   const hovered = hover != null ? byIndex.get(hover) : null
   const S = summary || {}
 
+  const activeFocusTheme = simMode && hudFocus ? hudFocus.theme : null
+  const bannerStyle = useMemo(() => {
+    if (eventStep?.restore) {
+      return { background: 'rgba(217, 151, 63, 0.16)', border: '1px solid rgba(217, 151, 63, 0.45)', color: '#ebc078' }
+    }
+    if (eventStep?.focus?.theme) {
+      const th = eventStep.focus.theme
+      return { background: th.badgeBg, border: `1px solid ${th.badgeBorder}`, color: th.badgeText }
+    }
+    if (eventStep?.merge || eventStep?.branch) {
+      return { background: 'rgba(138, 111, 208, 0.15)', border: '1px solid rgba(138, 111, 208, 0.4)', color: '#b49ae6' }
+    }
+    return { background: 'rgba(20, 24, 34, 0.85)', border: '1px solid var(--border-subtle)', color: 'var(--text-secondary)' }
+  }, [eventStep])
+
   return (
-    <div style={{ display: 'flex', gap: 20, padding: 24, height: '100%', boxSizing: 'border-box' }}>
+    <div style={{
+      display: 'flex',
+      gap: 20,
+      padding: 24,
+      height: '100%',
+      boxSizing: 'border-box',
+      background: activeFocusTheme ? activeFocusTheme.stageBg : undefined,
+      transition: 'background 0.55s ease',
+    }}>
       <style>{`
         @keyframes blink {
           50% { opacity: 0; }
@@ -785,6 +867,7 @@ export default function PentimentoTab({ projectPath, chapters, projectConfig, ac
               </div>
               <DeviceFilterChips summary={summary} deviceFilter={deviceFilter} onChange={handleDeviceChange} />
               <span style={{ flex: 1 }} />
+              {hudFocus && <FocusFlagBadge focus={hudFocus} />}
               <span style={{ fontSize: 11, fontFamily: 'var(--font-mono)', color: 'var(--text-secondary)', background: 'var(--bg-surface)', padding: '4px 8px', borderRadius: 4, display: 'inline-flex', alignItems: 'center', gap: 6 }}>
                 <DeviceDot deviceId={deviceFilter !== 'all' ? deviceFilter : hudDevice} />
                 {hudDeviceInfo && <DeviceIcon kind={hudDeviceInfo.kind} title={hudDeviceInfo.name} />}
@@ -796,8 +879,10 @@ export default function PentimentoTab({ projectPath, chapters, projectConfig, ac
             <div style={{
               flex: 1,
               overflowY: 'auto',
-              background: 'var(--bg-surface)',
-              border: '1px solid var(--border-subtle)',
+              background: activeFocusTheme ? activeFocusTheme.paperBg : 'var(--bg-surface)',
+              border: `1px solid ${activeFocusTheme ? activeFocusTheme.paperBorder : 'var(--border-subtle)'}`,
+              boxShadow: activeFocusTheme ? activeFocusTheme.paperGlow : 'none',
+              transition: 'background 0.55s ease, border-color 0.55s ease, box-shadow 0.55s ease',
               borderRadius: 4,
               padding: 24,
               fontFamily: 'var(--font-serif)',
@@ -807,21 +892,36 @@ export default function PentimentoTab({ projectPath, chapters, projectConfig, ac
               position: 'relative',
               whiteSpace: 'pre-wrap',
             }}>
+              {activeFocusTheme && (
+                <div style={{
+                  position: 'sticky',
+                  top: -24,
+                  margin: '-24px -24px 20px -24px',
+                  height: 2,
+                  background: activeFocusTheme.accent,
+                  opacity: 0.7,
+                  pointerEvents: 'none',
+                }} />
+              )}
               {eventText && (
                 <div style={{
                   position: 'absolute',
                   top: 16,
                   right: 16,
-                  background: 'rgba(138, 111, 208, 0.15)',
-                  border: '1px solid rgba(138, 111, 208, 0.4)',
-                  color: '#b49ae6',
+                  background: bannerStyle.background,
+                  border: bannerStyle.border,
+                  color: bannerStyle.color,
                   fontFamily: 'var(--font-mono)',
                   fontSize: 11,
                   padding: '6px 12px',
                   borderRadius: 4,
                   zIndex: 5,
+                  display: 'inline-flex',
+                  alignItems: 'center',
+                  gap: 6,
                   animation: 'fadeIn 0.2s ease',
                 }}>
+                  {eventStep?.focus && <FocusCategoryIcon category={eventStep.focus.category} size={12} />}
                   {eventText}
                 </div>
               )}
@@ -868,6 +968,32 @@ export default function PentimentoTab({ projectPath, chapters, projectConfig, ac
                 <Stat label={t('pentimento.wordsWritten', 'words written')} value={simWords} />
                 <Stat label={t('pentimento.wordsDeleted', 'words deleted')} value={simDeleted} />
               </div>
+              {hudFocus && (
+                <div style={{
+                  marginTop: 12,
+                  padding: '8px 10px',
+                  borderRadius: 4,
+                  background: hudFocus.theme.badgeBg,
+                  border: `1px solid ${hudFocus.theme.badgeBorder}`,
+                  color: hudFocus.theme.badgeText,
+                  fontFamily: 'var(--font-mono)',
+                  fontSize: 11,
+                  display: 'flex',
+                  alignItems: 'center',
+                  gap: 8,
+                }}>
+                  <FocusCategoryIcon category={hudFocus.category} size={13} />
+                  <div style={{ flex: 1, minWidth: 0 }}>
+                    <div style={{ fontWeight: 600 }}>{hudFocus.modeLabel} · {hudFocus.categoryLabel}</div>
+                    <div style={{ fontSize: 10, opacity: 0.82, marginTop: 2 }}>
+                      {hudFocus.goal ? `${hudFocus.goal} ${t('history.words', 'words')} · ` : ''}
+                      {hudFocus.completed
+                        ? t('pentimento.focusCompleted', 'Completed')
+                        : t('pentimento.focusUnfinished', 'Exited early')}
+                    </div>
+                  </div>
+                </div>
+              )}
             </div>
 
             <div style={{ background: 'var(--bg-surface)', border: '1px solid var(--border-subtle)', borderRadius: 4, padding: 16, display: 'flex', flexDirection: 'column', gap: 16 }}>
@@ -903,9 +1029,25 @@ export default function PentimentoTab({ projectPath, chapters, projectConfig, ac
                   <div style={{ position: 'absolute', top: 0, left: 0, bottom: 0, background: 'var(--accent-amber)', width: `${progressPercent}%`, transition: 'width 0.1s linear' }} />
                   {deviceMarks.map(m => (
                     <span key={m.index} title={m.title}
-                      style={{ position: 'absolute', top: 0, bottom: 0, width: 2, left: `${m.percent}%`, background: m.color }} />
+                      style={{ position: 'absolute', top: 0, bottom: 0, width: m.isFocus ? 3 : 2, left: `${m.percent}%`, background: m.color }} />
                   ))}
                 </div>
+                {hasFocusMarks && (
+                  <div style={{ display: 'flex', flexWrap: 'wrap', gap: '6px 10px', marginTop: 8, fontSize: 9, fontFamily: 'var(--font-mono)', color: 'var(--text-tertiary)' }}>
+                    <span style={{ display: 'inline-flex', alignItems: 'center', gap: 4 }}>
+                      <span style={{ width: 6, height: 6, borderRadius: 1, background: FOCUS_THEMES.rewarding.tick }} />
+                      {t('pentimento.focusRewarding', 'Rewarding')}
+                    </span>
+                    <span style={{ display: 'inline-flex', alignItems: 'center', gap: 4 }}>
+                      <span style={{ width: 6, height: 6, borderRadius: 1, background: FOCUS_THEMES.punishing.tick }} />
+                      {t('pentimento.focusPunishing', 'Punishing')}
+                    </span>
+                    <span style={{ display: 'inline-flex', alignItems: 'center', gap: 4 }}>
+                      <span style={{ width: 6, height: 6, borderRadius: 1, background: FOCUS_THEMES.neutral.tick }} />
+                      {t('pentimento.focusNeutral', 'Standard Focus')}
+                    </span>
+                  </div>
+                )}
               </div>
 
               <button onClick={exitSimulation}
@@ -995,6 +1137,35 @@ export default function PentimentoTab({ projectPath, chapters, projectConfig, ac
                 <Stat label={t('pentimento.timeSpent', 'time writing')} value={fmtDuration(S.total_time_ms)} big />
                 <Stat label={t('pentimento.sessions', 'sessions')} value={S.sessions || 0} big />
               </div>
+              {(S.focus_sessions?.total || 0) > 0 && (
+                <div style={{ marginTop: 12, paddingTop: 10, borderTop: '1px solid var(--border-subtle)' }}>
+                  <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'baseline', fontSize: 11, fontFamily: 'var(--font-mono)' }}>
+                    <span style={{ color: 'var(--text-tertiary)', textTransform: 'uppercase', fontSize: 9, letterSpacing: '.06em' }}>
+                      {t('pentimento.focusSessions', 'Focus sessions')}
+                    </span>
+                    <span style={{ color: 'var(--accent-amber)' }}>
+                      {S.focus_sessions.completed}/{S.focus_sessions.total}
+                    </span>
+                  </div>
+                  <div style={{ display: 'flex', gap: 10, marginTop: 5, fontSize: 10, fontFamily: 'var(--font-mono)', color: 'var(--text-secondary)' }}>
+                    {S.focus_sessions.by_category?.rewarding > 0 && (
+                      <span style={{ display: 'inline-flex', alignItems: 'center', gap: 4, color: FOCUS_THEMES.rewarding.badgeText }}>
+                        <FocusCategoryIcon category="rewarding" size={10} /> {S.focus_sessions.by_category.rewarding}
+                      </span>
+                    )}
+                    {S.focus_sessions.by_category?.punishing > 0 && (
+                      <span style={{ display: 'inline-flex', alignItems: 'center', gap: 4, color: FOCUS_THEMES.punishing.badgeText }}>
+                        <FocusCategoryIcon category="punishing" size={10} /> {S.focus_sessions.by_category.punishing}
+                      </span>
+                    )}
+                    {S.focus_sessions.by_category?.neutral > 0 && (
+                      <span style={{ display: 'inline-flex', alignItems: 'center', gap: 4, color: FOCUS_THEMES.neutral.badgeText }}>
+                        <FocusCategoryIcon category="neutral" size={10} /> {S.focus_sessions.by_category.neutral}
+                      </span>
+                    )}
+                  </div>
+                </div>
+              )}
               {S.chain_head_hash && (
                 <div style={{ marginTop: 12, fontSize: 10, fontFamily: 'var(--font-mono)', color: 'var(--text-tertiary)', wordBreak: 'break-all' }}>
                   {t('pentimento.receipt', 'receipt')}: {S.chain_head_hash.slice(0, 12)}…
@@ -1163,6 +1334,12 @@ function ShowcaseModal({ onClose, projectName, chapterTitle, paras, summary }) {
             <CardStat n={(summary.deleted_words || 0).toLocaleString()} l={t('pentimento.wordsDeleted', 'words deleted')} />
             <CardStat n={fmtDuration(summary.total_time_ms)} l={t('pentimento.timeSpent', 'time writing')} />
             <CardStat n={summary.sessions || 0} l={t('pentimento.sessions', 'sessions')} />
+            {(summary.focus_sessions?.total || 0) > 0 && (
+              <CardStat
+                n={`${summary.focus_sessions.completed}/${summary.focus_sessions.total}`}
+                l={t('pentimento.focusSessions', 'Focus sessions')}
+              />
+            )}
           </div>
           {summary.chain_head_hash && (
             <div style={{ position: 'absolute', bottom: 20, right: 44, fontFamily: 'var(--font-mono)', fontSize: 10, color: '#3fa093' }}>

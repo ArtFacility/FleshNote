@@ -255,7 +255,7 @@ function createSplashWindow(): void {
   body { display: flex; align-items: center; justify-content: center; -webkit-user-select: none; user-select: none; }
   .card {
     width: 400px; padding: 30px 34px 26px;
-    background: #1a1c22; border: 1px solid #2a2d37; border-radius: 16px;
+    background: #1a1c22; border: 1px solid #2a2d37; border-radius: 0;
     box-shadow: 0 20px 60px rgba(0,0,0,0.55);
     display: flex; flex-direction: column; align-items: center;
     animation: rise .35s ease both;
@@ -274,8 +274,8 @@ function createSplashWindow(): void {
   }
   .ver { margin-top: 6px; font-family: Consolas, monospace; font-size: 11px; letter-spacing: .08em; color: #6b6860; }
   .slogan { margin-top: 14px; font-family: Georgia, serif; font-style: italic; font-size: 13.5px; color: #9b978f; }
-  .track { margin-top: 26px; width: 100%; height: 4px; background: #23262f; border-radius: 4px; overflow: hidden; }
-  .fill { height: 100%; width: 42%; border-radius: 4px;
+  .track { margin-top: 26px; width: 100%; height: 4px; background: #23262f; border-radius: 0; overflow: hidden; }
+  .fill { height: 100%; width: 42%; border-radius: 0;
     background: linear-gradient(90deg, rgba(212,160,82,0) 0%, #d4a052 50%, rgba(212,160,82,0) 100%);
     animation: sweep 1.3s ease-in-out infinite; }
   @keyframes sweep { 0% { transform: translateX(-110%); } 100% { transform: translateX(250%); } }
@@ -1504,18 +1504,46 @@ app.whenReady().then(async () => {
     if (canceled) return null
     return filePaths[0]
   })
+  ipcMain.handle('dialog:openFont', async () => {
+    const { canceled, filePaths } = await openDialog({
+      properties: ['openFile'],
+      title: 'Select Font',
+      filters: [
+        { name: 'Fonts', extensions: ['ttf', 'otf', 'woff2', 'woff'] },
+        { name: 'All Files', extensions: ['*'] }
+      ]
+    })
+    if (canceled) return null
+    return filePaths[0]
+  })
   ipcMain.handle('api:uploadImageRef', async (_e, p) => backendPost('/api/project/image-ref/upload', p))
 
   // ── Book cover ────────────────────────────────────
   ipcMain.handle('api:coverGet', async (_e, p) => backendPost('/api/project/cover/get', p))
   ipcMain.handle('api:coverAddImage', async (_e, p) => backendPost('/api/project/cover/add-image', p))
+  ipcMain.handle('api:coverAddFont', async (_e, p) => backendPost('/api/project/cover/add-font', p))
   ipcMain.handle('api:coverSave', async (_e, p) => backendPost('/api/project/cover/save', p))
   ipcMain.handle('api:coverCleanup', async (_e, p) => backendPost('/api/project/cover/cleanup', p))
+  ipcMain.handle('api:coverExportWrap', async (_e, p) => {
+    const res = await backendPost('/api/project/cover/export-wrap', p)
+    if (res?.status !== 'print') return res
+    try {
+      await printToPdfFile(res.html, res.filepath)
+    } catch (err: any) {
+      return { status: 'error', message: `Cover PDF printing failed: ${err.message}` }
+    }
+    const { html: _html, ...rest } = res
+    return { ...rest, status: 'success' }
+  })
+  ipcMain.handle('api:coverFontPackStatus', async (_e, p) => backendPost('/api/cover/font-pack/status', p || {}))
+  ipcMain.handle('api:coverFontPackDownload', async (_e, p) => backendPost('/api/cover/font-pack/download', p || {}))
+  ipcMain.handle('api:coverFontPackRemove', async (_e, p) => backendPost('/api/cover/font-pack/remove', p || {}))
+  ipcMain.handle('api:coverReadFont', async (_e, p) => backendPost('/api/cover/read-font', p))
   // The cover editor draws images on a canvas it saves as PNG; images loaded from
   // fleshnote-asset:// would taint that canvas, so it gets the bytes instead.
   // Only the project's own cover assets can be read.
   ipcMain.handle('api:coverReadImage', async (_e, { project_path, path: rel }) => {
-    const m = /^assets\/cover\/(?:img|front|spine)_[0-9a-f]{12}\.(png|jpe?g|webp|gif|bmp)$/.exec(rel || '')
+    const m = /^assets\/cover\/(?:img|front|spine|back)_[0-9a-f]{12}\.(png|jpe?g|webp|gif|bmp)$/.exec(rel || '')
     if (!m || typeof project_path !== 'string') return null
     const full = join(project_path, ...rel.split('/'))
     if (!fs.existsSync(full) || fs.lstatSync(full).isSymbolicLink()) return null

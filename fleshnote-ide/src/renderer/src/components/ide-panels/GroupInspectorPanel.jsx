@@ -338,6 +338,9 @@ export default function GroupInspectorPanel({
   }
 
   const saveEdit = async () => {
+    const oldName = currGroup.name
+    const newName = (editData.name || '').trim()
+    if (!newName) return
     setSaving(true)
     try {
       const aliasesArray = (editData.aliases || '')
@@ -348,7 +351,7 @@ export default function GroupInspectorPanel({
       const payload = {
         project_path: projectPath,
         group_id: currGroup.id,
-        name: editData.name,
+        name: newName,
         aliases: aliasesArray,
         group_type: editData.group_type,
         description: editData.description,
@@ -363,10 +366,21 @@ export default function GroupInspectorPanel({
       }
 
       await window.api.updateGroup(payload)
-      setEditMode(false)
       setAddingMember(false)
       setAddingHistory(false)
-      if (onEntityUpdated) onEntityUpdated()
+      await onEntityUpdated?.()
+
+      const nameChanged = oldName !== newName && !!oldName && !!newName && !aliasesArray.includes(newName)
+      if (nameChanged) {
+        await onFlushEditorSave?.()
+        setRenameData({
+          oldName,
+          newName,
+          entity: { ...currGroup, type: 'group', name: newName }
+        })
+      } else {
+        setEditMode(false)
+      }
     } catch (e) {
       console.error('Failed to save group edits:', e)
     } finally {
@@ -593,20 +607,6 @@ export default function GroupInspectorPanel({
                 >
                   {currGroup.name}
                 </span>
-                <button
-                  className="ide-titlebar-btn"
-                  onClick={() =>
-                    setRenameData({
-                      oldName: currGroup.name,
-                      entityType: 'group',
-                      entityId: currGroup.id
-                    })
-                  }
-                  title={t('inspector.renameTooltip', 'Rename entity globally')}
-                  style={{ padding: 2 }}
-                >
-                  <Icons.Edit />
-                </button>
               </div>
               <div style={{ display: 'flex', alignItems: 'center', gap: 6, marginTop: 3 }}>
                 <span
@@ -669,6 +669,20 @@ export default function GroupInspectorPanel({
             )}
           </div>
         </div>
+        {editMode && (
+          <div className="entity-edit-field" style={{ marginTop: 8, marginBottom: 0 }}>
+            <label className="entity-edit-label">{t('inspector.nameLabel', 'Name')}</label>
+            <input
+              className="entity-edit-input"
+              value={editData.name || ''}
+              onChange={(e) => setEditData((p) => ({ ...p, name: e.target.value }))}
+              onKeyDown={(e) => {
+                if (e.key === 'Enter') saveEdit()
+                if (e.key === 'Escape') cancelEdit()
+              }}
+            />
+          </div>
+        )}
       </div>
 
       {/* ── TABS ── */}
@@ -1613,13 +1627,20 @@ export default function GroupInspectorPanel({
       {renameData && (
         <EntityRenamePopup
           projectPath={projectPath}
+          entity={renameData.entity}
           oldName={renameData.oldName}
-          entityType={renameData.entityType}
-          entityId={renameData.entityId}
-          onClose={() => setRenameData(null)}
-          onSuccess={() => {
+          newName={renameData.newName}
+          onClose={() => {
             setRenameData(null)
-            if (onEntityUpdated) onEntityUpdated()
+            setEditMode(false)
+          }}
+          onSuccess={(didReplace) => {
+            setRenameData(null)
+            setEditMode(false)
+            if (didReplace) {
+              onEntityUpdated?.()
+              onReloadCurrentChapter?.()
+            }
           }}
         />
       )}

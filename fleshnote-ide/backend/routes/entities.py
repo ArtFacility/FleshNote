@@ -7,6 +7,7 @@ import os
 import json
 import sqlite3
 import re
+import hashlib
 from fastapi import APIRouter, HTTPException
 from pydantic import BaseModel
 from project_io import safe_md_path
@@ -550,6 +551,7 @@ def replace_entity_references(req: ReplaceReferencesRequest):
 
     short_type = _ENTITY_TYPE_TO_SHORT.get(req.entity_type, req.entity_type)
     from routes.chapters import _update_entity_appearances, _update_foreshadowings, _update_knowledge_offsets, _update_relationship_offsets
+    from sync_core import log_change
     
     aliases_to_add = set()
 
@@ -592,7 +594,13 @@ def replace_entity_references(req: ReplaceReferencesRequest):
             _update_relationship_offsets(cursor, row["id"], new_content)
             
             cursor.execute("UPDATE chapters SET word_count = ?, updated_at = CURRENT_TIMESTAMP WHERE id = ?", (word_count, row["id"]))
+            prose_hash = hashlib.sha256(new_content.encode("utf-8")).hexdigest()
+            log_change(cursor, "chapters", row["id"], {
+                "word_count": word_count,
+                "prose_hash": prose_hash,
+            })
 
+    aliases_to_add = {a.strip() for a in aliases_to_add if isinstance(a, str) and a.strip()}
     if aliases_to_add:
         table_map = {
             "character": "characters",
@@ -605,10 +613,14 @@ def replace_entity_references(req: ReplaceReferencesRequest):
             cursor.execute(f"SELECT aliases FROM {table} WHERE id = ?", (req.entity_id,))
             alias_row = cursor.fetchone()
             if alias_row:
-                import json
                 existing = json.loads(alias_row["aliases"]) if alias_row["aliases"] else []
-                new_aliases = list(set(existing) | aliases_to_add)
-                cursor.execute(f"UPDATE {table} SET aliases = ? WHERE id = ?", (json.dumps(new_aliases), req.entity_id))
+                new_aliases = existing + [a for a in sorted(aliases_to_add) if a not in existing]
+                if new_aliases != existing:
+                    cursor.execute(
+                        f"UPDATE {table} SET aliases = ?, updated_at = CURRENT_TIMESTAMP WHERE id = ?",
+                        (json.dumps(new_aliases), req.entity_id),
+                    )
+                    log_change(cursor, table, req.entity_id, {"aliases": new_aliases})
 
     conn.commit()
     conn.close()

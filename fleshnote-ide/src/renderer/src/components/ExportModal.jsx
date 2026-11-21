@@ -67,7 +67,7 @@ const fmtIn = (v) => `${Number(v.toFixed(3))}″`;
 /* ============================================================
    CLOSED BOOK (cover sketch at the trim size, spine from the real page count)
    ============================================================ */
-function ClosedBookSVG({ trimKey, spineInches, accentColor, title, author, rune, frontImage, spineImage }) {
+function ClosedBookSVG({ trimKey, spineInches, accentColor, title, author, rune, frontImage, spineImage, backImage, side = 'front' }) {
   const uid = useId().replace(/[^a-zA-Z0-9_-]/g, "");
   const { w, h } = TRIM_SIZES[trimKey];
   const S = 42;
@@ -80,6 +80,7 @@ function ClosedBookSVG({ trimKey, spineInches, accentColor, title, author, rune,
   const titleSize = title.length > 35 ? 12 : title.length > 25 ? 14 : title.length > 15 ? 17 : 20;
   const showSpineText = spineW > 16 && !spineImage;
   const spineFS = Math.min(9, spineW * 0.35);
+  const faceImage = side === 'back' ? backImage : frontImage;
 
   return (
     <svg viewBox={`0 0 ${viewW} ${viewH}`} style={{ width: "100%", maxHeight: "100%", height: "auto" }}>
@@ -110,8 +111,10 @@ function ClosedBookSVG({ trimKey, spineInches, accentColor, title, author, rune,
         <path d={`M ${dx * 0.4} ${dy * 0.4} L ${dx * 0.4} ${dy * 0.4 + bookH}`} fill="none" stroke="rgba(255,255,255,0.12)" strokeWidth="1.5" />
         {showSpineText && <text x={dx / 2} y={dy / 2 + bookH / 2} transform={`rotate(90,${dx / 2},${dy / 2 + bookH / 2})`} fill={adj(cc, 60)} fontSize={spineFS} fontFamily="var(--font-serif)" letterSpacing="0.06em" opacity="0.75" textAnchor="middle" alignmentBaseline="middle">{title.length > 30 ? title.slice(0, 28) + "…" : title}</text>}
         <rect x={dx} y={dy} width={bookW} height={bookH} rx={1.5} fill={cc} stroke={cdd} strokeWidth="1" />
-        {frontImage ? (
-          <image href={frontImage} x={dx} y={dy} width={bookW} height={bookH} preserveAspectRatio="xMidYMid slice" />
+        {faceImage ? (
+          <image href={faceImage} x={dx} y={dy} width={bookW} height={bookH} preserveAspectRatio="xMidYMid slice" />
+        ) : side === 'back' ? (
+          <rect x={dx + bookW * 0.07} y={dy + bookH * 0.05} width={bookW * 0.86} height={bookH * 0.9} rx={1.5} fill="none" stroke={adj(cc, 28)} strokeWidth="0.6" opacity="0.25" />
         ) : (<>
         <rect x={dx + bookW * 0.07} y={dy + bookH * 0.05} width={bookW * 0.86} height={bookH * 0.9} rx={1.5} fill="none" stroke={adj(cc, 28)} strokeWidth="0.6" opacity="0.25" />
         <line x1={dx + bookW * 0.28} y1={dy + bookH * 0.19} x2={dx + bookW * 0.72} y2={dy + bookH * 0.19} stroke={adj(cc, 35)} strokeWidth="0.6" opacity="0.35" />
@@ -189,6 +192,8 @@ export default function ExportModal({ isOpen, onClose, projectPath, projectConfi
   const [loadingPreview, setLoadingPreview] = useState(false);
   const [view, setView] = useState("pages"); // 'pages' | 'cover' (PDF and Word)
   const [cover, setCover] = useState(null);
+  const [coverSide, setCoverSide] = useState("front"); // 'front' | 'back'
+  const [includeCover, setIncludeCover] = useState(false);
   const [editingCover, setEditingCover] = useState(false);
   const [printPdf, setPrintPdf] = useState(null);
   const [printing, setPrinting] = useState(false);
@@ -235,11 +240,12 @@ export default function ExportModal({ isOpen, onClose, projectPath, projectConfi
     gutter: effectiveGutter,
     outer: metrics.outerIn,
     chapter_ids: chapterIdsPayload,
-  }), [projectPath, contentMode, format, bookReady, trimKey, effectiveFontSize, effectiveGutter, metrics.outerIn, chapterIdsPayload]);
+    include_cover: format === "pdf" && bookReady && includeCover,
+  }), [projectPath, contentMode, format, bookReady, trimKey, effectiveFontSize, effectiveGutter, metrics.outerIn, chapterIdsPayload, includeCover]);
 
   // the page view prints the PDF layout for both PDF and Word, so the format is not part of it
-  const printPayload = useMemo(() => ({ ...payload, format: "pdf" }), // eslint-disable-line react-hooks/exhaustive-deps
-    [projectPath, contentMode, bookReady, trimKey, effectiveFontSize, effectiveGutter, metrics.outerIn, chapterIdsPayload]);
+  const printPayload = useMemo(() => ({ ...payload, format: "pdf", include_cover: format === "pdf" && bookReady && includeCover }), // eslint-disable-line react-hooks/exhaustive-deps
+    [projectPath, contentMode, bookReady, trimKey, effectiveFontSize, effectiveGutter, metrics.outerIn, chapterIdsPayload, format, includeCover]);
 
   const selectedTitles = useMemo(() => (chapters || [])
     .filter((ch) => !selectedChapterIds || selectedChapterIds.has(ch.id))
@@ -519,6 +525,18 @@ export default function ExportModal({ isOpen, onClose, projectPath, projectConfi
                           )}
                         </div>
                       )}
+
+                      {format === "pdf" && cover?.render?.front && (
+                        <label style={{ display: "flex", alignItems: "center", gap: 8, marginTop: 14, cursor: "pointer", fontSize: 11, color: "var(--text-secondary)" }}>
+                          <input
+                            type="checkbox"
+                            checked={includeCover}
+                            onChange={e => setIncludeCover(e.target.checked)}
+                            style={{ accentColor: "var(--accent-amber)" }}
+                          />
+                          <span>{t('exportModal.includeCoverPage', "Include front cover as page 1 (for digital sharing)")}</span>
+                        </label>
+                      )}
                     </div>
                   )}
                 </div>
@@ -609,13 +627,23 @@ export default function ExportModal({ isOpen, onClose, projectPath, projectConfi
                   <button className="xp-cover-stage" onClick={() => setEditingCover(true)}
                     title={cover ? t('exportModal.editCover', "Edit cover") : t('exportModal.designCover', "Design a cover")}>
                     <ClosedBookSVG trimKey={trimKey} spineInches={spineFor(pages)} accentColor={coverColor} rune={coverRune}
-                      title={projectTitle} author={authorName}
+                      title={projectTitle} author={authorName} side={coverSide}
                       frontImage={assetUrl(projectPath || '', cover?.render?.front)}
-                      spineImage={assetUrl(projectPath || '', cover?.render?.spine)} />
+                      spineImage={assetUrl(projectPath || '', cover?.render?.spine)}
+                      backImage={assetUrl(projectPath || '', cover?.render?.back)} />
                   </button>
                   <div className="xp-specs">
                     <span><b>{pages}</b> {t('exportModal.specPages', "pages")}</span>
                     <span>{t('exportModal.specSpine', "spine")} <b>{fmtIn(spineFor(pages))}</b></span>
+                    {cover?.render?.back && (
+                      <button
+                        className="xp-cover-edit"
+                        style={{ marginInlineStart: 0 }}
+                        onClick={() => setCoverSide((s) => (s === 'front' ? 'back' : 'front'))}
+                      >
+                        {coverSide === 'front' ? t('exportModal.showBack', "Show back") : t('exportModal.showFront', "Show front")}
+                      </button>
+                    )}
                     {!cover && <span>{t('exportModal.coverNote', "Colour and rune from the bookshelf")}</span>}
                     <button className="xp-cover-edit" onClick={() => setEditingCover(true)}>
                       {cover ? t('exportModal.editCover', "Edit cover") : t('exportModal.designCover', "Design a cover")}

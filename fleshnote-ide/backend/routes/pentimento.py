@@ -64,9 +64,36 @@ class Op(BaseModel):
     source: Optional[str] = None   # 'human' (keyboard/IME/undo) | 'paste' | 'machine' (chips, AI, IDE)
 
 
+_FOCUS_CATEGORIES = {
+    "normal": "neutral",
+    "momentum": "rewarding",
+    "combo": "rewarding",
+    "zen": "rewarding",
+    "kamikaze": "punishing",
+    "hemingway": "punishing",
+    "fog": "punishing",
+}
+
+
+def _norm_focus(mode: Optional[str], category: Optional[str] = None):
+    m = (mode or "").strip().lower()
+    if m not in _FOCUS_CATEGORIES:
+        return None, None
+    c = (category or "").strip().lower()
+    if c not in ("neutral", "rewarding", "punishing"):
+        c = _FOCUS_CATEGORIES[m]
+    return m, c
+
+
 class SessionStart(BaseModel):
     project_path: str
     chapter_id: str
+    focus_mode: Optional[str] = None
+    focus_category: Optional[str] = None
+    focus_goal: Optional[int] = None
+    started_at: Optional[str] = None
+    snapshot_html: Optional[str] = None
+    prev_snapshot_html: Optional[str] = None
 
 
 class FlushRequest(BaseModel):
@@ -86,6 +113,11 @@ class FlushRequest(BaseModel):
 class SessionEnd(BaseModel):
     project_path: str
     session_id: str
+    focus_mode: Optional[str] = None
+    focus_category: Optional[str] = None
+    focus_goal: Optional[int] = None
+    focus_completed: Optional[bool] = None
+    snapshot_html: Optional[str] = None
 
 
 class ChapterScoped(BaseModel):
@@ -398,15 +430,23 @@ def session_start(req: SessionStart):
         cur.execute("SELECT MAX(timestamp) t FROM pentimento_ops WHERE session_id=?", (last["id"],))
         last_op = cur.fetchone()["t"]
         prev_hash, _snap, dangling_receipt = _seal_session(
-            cur, req.project_path, last["id"], _local_iso(last_op) if last_op else None)
+            cur, req.project_path, last["id"], _local_iso(last_op) if last_op else None,
+            snapshot_html=req.prev_snapshot_html)
+
+    focus_mode, focus_category = _norm_focus(req.focus_mode, req.focus_category)
+    focus_goal = req.focus_goal if (focus_mode and req.focus_goal and req.focus_goal > 0) else None
+    focus_completed = 0 if focus_mode else None
+    start_ts = _local_iso(req.started_at) if req.started_at else None
 
     session_id = _new_uuid(cur)
     cur.execute(
         "INSERT INTO pentimento_sessions "
-        "(id, chapter_id, device_id, session_num, start_time, previous_session_hash, device_kind) "
-        "VALUES (?,?,?,?,?,?,'desktop')",
+        "(id, chapter_id, device_id, session_num, start_time, previous_session_hash, "
+        " device_kind, focus_mode, focus_category, focus_goal, focus_completed) "
+        "VALUES (?,?,?,?,?,?,'desktop',?,?,?,?)",
         (session_id, req.chapter_id, device, session_num,
-         datetime.datetime.now().isoformat(), prev_hash))
+         start_ts or datetime.datetime.now().isoformat(), prev_hash,
+         focus_mode, focus_category, focus_goal, focus_completed))
 
     # Baseline snapshot: capture the chapter's state BEFORE this session writes, so the
     # replay always has a frame to interpolate from (a fresh chapter snapshots as an
@@ -420,7 +460,8 @@ def session_start(req: SessionStart):
         prose_history_on = (pcfg is None) or (str(pcfg["config_value"]).lower() != "false")
         if prose_history_on:
             from routes.chapter_history import _create_snapshot
-            _create_snapshot(cur, req.project_path, req.chapter_id, "session", session_id=session_id)
+            _create_snapshot(cur, req.project_path, req.chapter_id, "session",
+                             session_id=session_id, snapshot_html=req.snapshot_html)
     except Exception:
         pass
 
@@ -513,12 +554,17 @@ def _local_iso(ts: str) -> Optional[str]:
 
 
 def _seal_session(cur, project_path: str, session_id: str, end_time: Optional[str] = None,
-                  snapshot_kind: str = "session"):
+                  snapshot_kind: str = "session",
+                  focus_mode: Optional[str] = None,
+                  focus_category: Optional[str] = None,
+                  focus_goal: Optional[int] = None,
+                  focus_completed: Optional[bool] = None,
+                  snapshot_html: Optional[str] = None):
     """Hash a session's ops onto its predecessor's hash, close it, snapshot the
     chapter and queue a seal receipt. Returns (session_hash, snapshot_id, receipt_id);
     the caller commits and then anchors the receipt."""
-    cur.execute("SELECT previous_session_hash, chapter_id FROM pentimento_sessions WHERE id=?",
-                (session_id,))
+    cur.execute("SELECT previous_session_hash, chapter_id, focus_mode, focus_category, focus_goal, focus_completed "
+                "FROM pentimento_sessions WHERE id=?", (session_id,))
     sess = cur.fetchone()
     cur.execute(
         "SELECT op_type, para_index, char_offset, length, text_content, timestamp "
@@ -527,9 +573,25 @@ def _seal_session(cur, project_path: str, session_id: str, end_time: Optional[st
 
     session_hash = chain_hash(sess["previous_session_hash"], ops)
 
+    f_mode = sess["focus_mode"]
+    f_cat = sess["focus_category"]
+    f_goal = sess["focus_goal"]
+    if focus_mode:
+        m_norm, c_norm = _norm_focus(focus_mode, focus_category)
+        if m_norm:
+            f_mode = m_norm
+            f_cat = c_norm
+            if focus_goal and focus_goal > 0:
+                f_goal = focus_goal
+    f_comp = sess["focus_completed"]
+    if focus_completed is not None and f_mode:
+        f_comp = 1 if focus_completed else 0
+
     cur.execute(
-        "UPDATE pentimento_sessions SET end_time=?, session_hash=? WHERE id=?",
-        (end_time or datetime.datetime.now().isoformat(), session_hash, session_id))
+        "UPDATE pentimento_sessions SET end_time=?, session_hash=?, "
+        "focus_mode=?, focus_category=?, focus_goal=?, focus_completed=? WHERE id=?",
+        (end_time or datetime.datetime.now().isoformat(), session_hash,
+         f_mode, f_cat, f_goal, f_comp, session_id))
 
     # Auto-snapshot the chapter's prose at this sealed session boundary (rollback / Edit
     # History), unless the writer turned prose_history off. Best-effort: a snapshot failure
@@ -543,7 +605,8 @@ def _seal_session(cur, project_path: str, session_id: str, end_time: Optional[st
             from routes.chapter_history import _create_snapshot
             snapshot_id = _create_snapshot(
                 cur, project_path, sess["chapter_id"], snapshot_kind,
-                session_id=session_id, session_hash=session_hash)
+                session_id=session_id, session_hash=session_hash,
+                snapshot_html=snapshot_html)
     except Exception:
         snapshot_id = None
 
@@ -573,7 +636,14 @@ def session_end(req: SessionEnd):
         conn.close()
         return {"status": "ok", "session_hash": sess["session_hash"], "already_sealed": True}
 
-    session_hash, snapshot_id, receipt_id = _seal_session(cur, req.project_path, req.session_id)
+    session_hash, snapshot_id, receipt_id = _seal_session(
+        cur, req.project_path, req.session_id,
+        focus_mode=req.focus_mode,
+        focus_category=req.focus_category,
+        focus_goal=req.focus_goal,
+        focus_completed=req.focus_completed,
+        snapshot_html=req.snapshot_html,
+    )
     cur.execute("SELECT COUNT(*) c FROM pentimento_ops WHERE session_id=?", (req.session_id,))
     op_count = cur.fetchone()["c"]
 
@@ -849,6 +919,26 @@ def summary(req: ProjectScoped):
                 "WHERE session_hash IS NOT NULL AND device_id=? "
                 "ORDER BY end_time DESC, rowid DESC LIMIT 1", (sync_core.DEVICE_ID,))
     head = cur.fetchone()
+    cur.execute(
+        "SELECT focus_mode, focus_category, focus_completed "
+        "FROM pentimento_sessions WHERE focus_mode IS NOT NULL"
+    )
+    focus_sessions = {
+        "total": 0,
+        "completed": 0,
+        "by_category": {"neutral": 0, "rewarding": 0, "punishing": 0},
+        "by_mode": {},
+    }
+    for fr in cur.fetchall():
+        mode = fr["focus_mode"]
+        cat = fr["focus_category"] or _FOCUS_CATEGORIES.get(mode) or "neutral"
+        focus_sessions["total"] += 1
+        if fr["focus_completed"]:
+            focus_sessions["completed"] += 1
+        if cat in focus_sessions["by_category"]:
+            focus_sessions["by_category"][cat] += 1
+        focus_sessions["by_mode"][mode] = focus_sessions["by_mode"].get(mode, 0) + 1
+
     directory = device_directory(cur)
     conn.close()
     for dev_id, totals in device_totals.items():
@@ -867,6 +957,7 @@ def summary(req: ProjectScoped):
         "chain_head_hash": head["session_hash"] if head else None,
         "current_device": sync_core.DEVICE_ID,
         "devices": device_totals,
+        "focus_sessions": focus_sessions,
     }
 
 

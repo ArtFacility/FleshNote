@@ -96,7 +96,7 @@ class ExportPipeline:
     def word_count(chapters) -> int:
         return sum(len(b.plain.split()) for ch in chapters for b in ch.blocks)
 
-    def render(self, content_mode, fmt, book_ready=False, overrides=None, chapters=None):
+    def render(self, content_mode, fmt, book_ready=False, overrides=None, chapters=None, include_cover=False):
         """Renders chapters (from chapters()) as str or bytes."""
         title, author = self.project_title, self.author_name
         if fmt == "txt":
@@ -109,8 +109,9 @@ class ExportPipeline:
             return render_docx.render(title, author, chapters, content_mode, overrides, book_ready,
                                       word_count=self.word_count(chapters))
         if fmt == "pdf":
+            cover = self.cover_png() if (book_ready and include_cover) else None
             return render_pdf.render(title, author, chapters, book_ready, overrides, self.lang,
-                                     word_count=self.word_count(chapters))
+                                     word_count=self.word_count(chapters), cover_png=cover)
         if fmt == "epub":
             ident = "urn:uuid:%s" % self.project_id if self.project_id else None
             return render_epub.render(title, author, chapters, self.lang, ident, self.cover_png())
@@ -131,11 +132,12 @@ class ExportPipeline:
                     + "</pre></body></html>")
         return render_html.document(self.project_title, self.author_name, chapters, self.lang)
 
-    def print_document(self, content_mode: str, book_ready: bool = True, overrides=None, chapter_ids=None) -> str:
+    def print_document(self, content_mode: str, book_ready: bool = True, overrides=None,
+                       chapter_ids=None, include_cover: bool = False) -> str:
         """The PDF print document for the selected chapters, without writing a file
         (the export window prints it to show the real pages)."""
         chapters, _ = self.chapters(content_mode, chapter_ids)
-        return self.render(content_mode, "pdf", book_ready, overrides, chapters)
+        return self.render(content_mode, "pdf", book_ready, overrides, chapters, include_cover=include_cover)
 
     def output_path(self, content_mode: str, fmt: str) -> str:
         """A new file in the project's exports folder; never overwrites an earlier export."""
@@ -149,7 +151,8 @@ class ExportPipeline:
             n += 1
         return path
 
-    def run(self, content_mode: str, fmt: str, book_ready: bool = False, overrides=None, chapter_ids=None):
+    def run(self, content_mode: str, fmt: str, book_ready: bool = False, overrides=None,
+            chapter_ids=None, include_cover: bool = False):
         """Exports to a new file. Returns (filepath, todo_count, print_html).
 
         A PDF is not written here: print_html is the print document, and the
@@ -159,7 +162,7 @@ class ExportPipeline:
         if fmt not in FORMATS:
             raise ValueError("Unknown export format: %s" % fmt)
         chapters, todo_count = self.chapters(content_mode, chapter_ids)
-        rendered = self.render(content_mode, fmt, book_ready, overrides, chapters)
+        rendered = self.render(content_mode, fmt, book_ready, overrides, chapters, include_cover=include_cover)
         filepath = self.output_path(content_mode, fmt)
         if fmt == "pdf":
             return filepath, todo_count, rendered

@@ -20,6 +20,7 @@ hidden_imports = [
     'routes.settings',
     'routes.export',
     'routes.cover',
+    'routes.cover_fonts',
     'routes.sync',
     'routes.remote_sync',
     'remote_sync_session',

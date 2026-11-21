@@ -16,6 +16,7 @@ class ExportRequest(BaseModel):
     gutter: float | None = None
     outer: float | None = None
     chapter_ids: list[str | int] | None = None  # None = export all chapters
+    include_cover: bool = False
 
 
 def _overrides(request: ExportRequest) -> dict:
@@ -39,7 +40,8 @@ def export_project(request: ExportRequest):
             fmt=request.format,
             book_ready=request.book_ready,
             overrides=_overrides(request),
-            chapter_ids=request.chapter_ids
+            chapter_ids=request.chapter_ids,
+            include_cover=request.include_cover,
         )
         response = {
             "status": "print" if print_html is not None else "success",
@@ -66,7 +68,8 @@ def export_print_preview(request: ExportRequest):
     try:
         pipeline = ExportPipeline(request.project_path)
         html = pipeline.print_document(request.content_mode, request.book_ready,
-                                       _overrides(request), request.chapter_ids)
+                                       _overrides(request), request.chapter_ids,
+                                       include_cover=request.include_cover)
         return {"status": "success", "html": html}
     except Exception as e:
         import traceback

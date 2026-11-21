@@ -30,6 +30,16 @@ const STASH_KEY = 'fn_pentimento_stash'
 const STASH_EVERY_MS = 1000  // unsent ops are backed up at most this often
 const STASH_MAX_TRIES = 3    // give up on a crash stash the backend keeps refusing
 
+// Pure Focus Mode separation gate: avoid cluttering mode tests with extra sessions/flags.
+export const FOCUS_MIN_WORDS = 50
+export const FOCUS_MIN_MS = 5 * 60 * 1000
+export const focusCategoryFor = (mode) => {
+  if (mode === 'momentum' || mode === 'combo' || mode === 'zen') return 'rewarding'
+  if (mode === 'kamikaze' || mode === 'hemingway' || mode === 'fog') return 'punishing'
+  if (mode === 'normal') return 'neutral'
+  return null
+}
+
 export const LEAF_CHAR = '￼'
 
 // Same fingerprint format the backend seals with (pentimento.py) so a verifier can
@@ -132,6 +142,8 @@ function newSession(projectPath, chapterId, enabled) {
   return {
     projectPath, chapterId, enabled: !!enabled,
     sessionId: null, starting: null, closed: false,
+    focus: null,             // { mode, category, goal, startedAt, snapshotHtml } once threshold met
+    focusHold: null,         // active hold before FOCUS_MIN_WORDS / FOCUS_MIN_MS
     pending: null,           // { type, flat, para, offset, text, tStart, tLast, source }
     buffer: [],              // ops awaiting flush
     inflight: [],            // ops sent but not yet confirmed
@@ -204,26 +216,148 @@ export default class PentimentoRecorder {
     return done
   }
 
-  _detach(beforeSeal) {
+  // Enter Focus Mode without eagerly splitting: held until >=50 words or >=5 min.
+  enterFocus({ mode, category, goal, startWordCount, startTime, preFocusHtml, preSave } = {}) {
     const st = this.s
+    if (!st.enabled || st.closed) return
+    const m = (mode || '').toLowerCase()
+    const cat = category || focusCategoryFor(m)
+    if (!cat || st.focus) return
+    this._flushPending(st)
+    st.wpmChars = 0
+    st.wpmT = 0
+    st.focusHold = {
+      mode: m,
+      category: cat,
+      goal: goal || null,
+      startWordCount: startWordCount || 0,
+      startTime: startTime || Date.now(),
+      preFocusHtml: preFocusHtml ?? null,
+      preSave: preSave || null,
+      bufferStart: st.buffer.length,
+      wpmStart: st.wpmSamples.length,
+      wordsWritten: 0,
+      promoted: false,
+    }
+  }
+
+  updateFocusProgress(wordsWritten) {
+    const st = this.s
+    const h = st.focusHold
+    if (!h || h.promoted || st.closed || !st.enabled) return false
+    if (typeof wordsWritten === 'number' && wordsWritten > h.wordsWritten) {
+      h.wordsWritten = wordsWritten
+    }
+    const elapsed = Date.now() - h.startTime
+    const hasFocusEdits = st.buffer.length > h.bufferStart || Boolean(st.pending?.text)
+    if (h.wordsWritten >= FOCUS_MIN_WORDS || (elapsed >= FOCUS_MIN_MS && hasFocusEdits)) {
+      this._promoteFocus(st)
+      return true
+    }
+    return false
+  }
+
+  _promoteFocus(st) {
+    const h = st.focusHold
+    if (!h || h.promoted) return
+    h.promoted = true
+    this._flushPending(st)
+    const preOps = st.buffer.slice(0, h.bufferStart)
+    const holdOps = st.buffer.slice(h.bufferStart)
+    const preWpm = st.wpmSamples.slice(0, h.wpmStart)
+    const holdWpm = st.wpmSamples.slice(h.wpmStart)
+    const preHasContent = !!(st.sessionId || st.starting || preOps.length > 0)
+
+    const focusSt = newSession(st.projectPath, st.chapterId, st.enabled)
+    focusSt.focus = {
+      mode: h.mode,
+      category: h.category,
+      goal: h.goal,
+      startedAt: new Date(h.startTime).toISOString(),
+      snapshotHtml: h.preFocusHtml,
+    }
+    focusSt.buffer = holdOps
+    focusSt.wpmSamples = holdWpm
+    focusSt.wpmDirty = holdWpm.length > 0
+    focusSt.lastDoc = st.lastDoc
+    focusSt.lastEventTime = st.lastEventTime
+    focusSt.wpmT = st.wpmT
+    focusSt.wpmChars = st.wpmChars
+
+    st.buffer = preOps
+    st.wpmSamples = preWpm
+    st.wpmDirty = preWpm.length > 0
+    st.focusHold = null
+    st.closed = true
+    this._writeStash(st)
+    this.s = focusSt
+
+    if (preHasContent) {
+      this._sealing = this._sealing
+        .then(() => this._seal(st, h.preSave, { snapshotHtml: h.preFocusHtml }))
+        .catch(() => {})
+    }
+    if (focusSt.buffer.length || focusSt.wpmDirty) {
+      this._ensureSession(focusSt)
+      this._flush(focusSt)
+    }
+  }
+
+  exitFocus({ completed = false, wordsWritten = null, beforeSeal = null } = {}) {
+    const st = this.s
+    if (st.focusHold && !st.focusHold.promoted) {
+      this.updateFocusProgress(wordsWritten ?? st.focusHold.wordsWritten)
+    }
+    const cur = this.s
+    if (cur.focusHold && !cur.focusHold.promoted) {
+      // Dropped below threshold: merge held ops back into the current normal session cleanly.
+      cur.focusHold = null
+      if (cur.enabled && (cur.buffer.length >= FLUSH_COUNT || cur.wpmDirty)) this._flush(cur)
+      return Promise.resolve(false)
+    }
+    if (cur.focus) {
+      const done = this._detach(beforeSeal, { focusCompleted: !!completed })
+      this.s = newSession(cur.projectPath, cur.chapterId, cur.enabled)
+      return done.then(() => true)
+    }
+    return Promise.resolve(false)
+  }
+
+  _detach(beforeSeal, endMeta) {
+    if (this.s.focusHold && !this.s.focusHold.promoted) {
+      this.updateFocusProgress(this.s.focusHold.wordsWritten)
+    }
+    const st = this.s
+    if (st.focusHold && !st.focusHold.promoted) st.focusHold = null
     st.closed = true
     this._flushPending(st)
     if (st.sessionId || st.starting) {
-      this._sealing = this._sealing.then(() => this._seal(st, beforeSeal)).catch(() => {})
+      const meta = st.focus
+        ? { focusCompleted: endMeta?.focusCompleted ?? (st.focus.mode === 'normal'), snapshotHtml: endMeta?.snapshotHtml }
+        : endMeta
+      this._sealing = this._sealing.then(() => this._seal(st, beforeSeal, meta)).catch(() => {})
     }
     return this._sealing
   }
 
-  async _seal(st, beforeSeal) {
+  async _seal(st, beforeSeal, endMeta) {
     if (st.starting) { try { await st.starting } catch { /* noop */ } }
     if (!st.sessionId) return
-    await this._flush(st)
+    await this._flush(st, { force: true })
     try { await beforeSeal } catch { /* a failed save still gets its session sealed */ }
     // If the last flush failed, the stash still holds those ops: leave the session
     // open so the next start delivers them and seals it then.
     if (st.buffer.length) return
     try {
-      await this.api.pentimentoSessionEnd({ project_path: st.projectPath, session_id: st.sessionId })
+      const payload = { project_path: st.projectPath, session_id: st.sessionId }
+      if (st.focus) {
+        payload.focus_mode = st.focus.mode
+        payload.focus_category = st.focus.category
+        if (st.focus.goal) payload.focus_goal = st.focus.goal
+        if (endMeta?.focusCompleted !== undefined) payload.focus_completed = !!endMeta.focusCompleted
+      }
+      if (endMeta?.snapshotHtml != null) payload.snapshot_html = endMeta.snapshotHtml
+      await this.api.pentimentoSessionEnd(payload)
       this._dropStash(st.sessionId)
     } catch { /* noop: the backend seals a dangling session when the next one starts */ }
   }
@@ -252,9 +386,17 @@ export default class PentimentoRecorder {
 
   // Create the backend session on demand — only once there's something to record.
   _ensureSession(st) {
-    if (st.sessionId || !st.enabled || st.starting || !st.chapterId || st.closed) return
+    if (st.sessionId || !st.enabled || st.starting || !st.chapterId || st.closed || st.focusHold) return
+    const payload = { project_path: st.projectPath, chapter_id: st.chapterId }
+    if (st.focus) {
+      payload.focus_mode = st.focus.mode
+      payload.focus_category = st.focus.category
+      if (st.focus.goal) payload.focus_goal = st.focus.goal
+      if (st.focus.startedAt) payload.started_at = st.focus.startedAt
+      if (st.focus.snapshotHtml != null) payload.snapshot_html = st.focus.snapshotHtml
+    }
     st.starting = Promise.all([this._recovering, this._sealing])
-      .then(() => this.api.pentimentoSessionStart({ project_path: st.projectPath, chapter_id: st.chapterId }))
+      .then(() => this.api.pentimentoSessionStart(payload))
       .then(res => {
         st.sessionId = res?.session_id || null
         // seed the rolling head with the previous session's chain hash
@@ -312,7 +454,7 @@ export default class PentimentoRecorder {
   onTransaction(transaction, appendedTransactions = []) {
     const st = this.s
     if (!st.enabled || st.closed || !transaction?.docChanged) return
-    this._ensureSession(st)
+    if (!st.focusHold) this._ensureSession(st)
     const source = this._resolveSource(transaction)
     const now = Date.now()
 
@@ -389,7 +531,7 @@ export default class PentimentoRecorder {
 
     this._sampleWpm(st, flatInfo(finalDoc), chunks, wpmChars, hadDelete, now)
 
-    if (st.buffer.length >= FLUSH_COUNT) this._flush(st)
+    if (!st.focusHold && st.buffer.length >= FLUSH_COUNT) this._flush(st)
     else if (now - this._lastStash >= STASH_EVERY_MS) this._writeStash(st)
   }
 
@@ -559,8 +701,10 @@ export default class PentimentoRecorder {
   _armFlush() {
     if (this._flushTimer) return
     this._flushTimer = setInterval(() => {
-      this._flush(this.s)
-      this._maybeAnchorHead(this.s)
+      if (this.s.focusHold) this.updateFocusProgress(this.s.focusHold.wordsWritten)
+      const cur = this.s
+      this._flush(cur)
+      this._maybeAnchorHead(cur)
     }, FLUSH_MS)
   }
 
@@ -569,7 +713,8 @@ export default class PentimentoRecorder {
   }
 
   // Flushes of one session run one at a time, in order.
-  _flush(st = this.s) {
+  _flush(st = this.s, opts = {}) {
+    if (st.focusHold && !opts.force) return st.flushChain
     this._flushPending(st)
     st.flushChain = st.flushChain.then(() => this._flushNow(st)).catch(() => {})
     return st.flushChain

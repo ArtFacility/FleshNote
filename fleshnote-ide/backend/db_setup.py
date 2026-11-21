@@ -446,9 +446,18 @@ def ensure_process_history_schema(cursor, device_id=None) -> None:
         "SELECT name FROM sqlite_master WHERE type='table'").fetchall()}
     if "pentimento_sessions" in tables:
         cols = {c[1] for c in cursor.execute("PRAGMA table_info(pentimento_sessions)").fetchall()}
-        for col in ("summary_json", "wpm_trace", "device_kind", "op_model"):
+        for col, col_type in (
+            ("summary_json", "TEXT"),
+            ("wpm_trace", "TEXT"),
+            ("device_kind", "TEXT"),
+            ("op_model", "TEXT"),
+            ("focus_mode", "TEXT"),
+            ("focus_category", "TEXT"),
+            ("focus_goal", "INTEGER"),
+            ("focus_completed", "INTEGER"),
+        ):
             if col not in cols:
-                cursor.execute(f"ALTER TABLE pentimento_sessions ADD COLUMN {col} TEXT")
+                cursor.execute(f"ALTER TABLE pentimento_sessions ADD COLUMN {col} {col_type}")
         cursor.execute("CREATE INDEX IF NOT EXISTS idx_pent_sessions_chapter_device "
                        "ON pentimento_sessions(chapter_id, device_id)")
     if "pentimento_ops" in tables:
@@ -1416,6 +1425,10 @@ def generate_project_db(project_path: str, answers: dict) -> str:
             wpm_trace TEXT,
             device_kind TEXT,                -- 'desktop' | 'mobile' (not hashed)
             op_model TEXT,                   -- 'flat' = ops use the flat text model (not hashed)
+            focus_mode TEXT,                 -- optional Focus Mode id (not hashed)
+            focus_category TEXT,             -- 'neutral' | 'rewarding' | 'punishing' (not hashed)
+            focus_goal INTEGER,              -- word goal if sprint mode (not hashed)
+            focus_completed INTEGER,         -- 1 if finished successfully (not hashed)
             created_at TEXT DEFAULT (datetime('now')),
             FOREIGN KEY (chapter_id) REFERENCES chapters(id) ON DELETE CASCADE
         )

@@ -231,10 +231,10 @@ def _surname(author_name: str) -> str:
 
 
 def print_book(project_title, author_name, chapters, lang="en", trim="standard",
-               font_size=None, gutter=None, outer=None) -> str:
+               font_size=None, gutter=None, outer=None, cover_png=None) -> str:
     """A trim-size book for print: mirrored margins (the gutter on the binding
     side of every page), page numbers, justified and hyphenated text, each
-    chapter on a new page."""
+    chapter on a new page. Optional cover_png adds a full-bleed cover on page 1."""
     width, height, top, bottom = TRIM_SIZES.get(trim, TRIM_SIZES["standard"])
     font_size = font_size or 11
     gutter = gutter or 0.5
@@ -245,10 +245,13 @@ def print_book(project_title, author_name, chapters, lang="en", trim="standard",
 @page :left { margin-left: %(outer)sin; margin-right: %(gutter)sin; }
 @page :right { margin-left: %(gutter)sin; margin-right: %(outer)sin; }
 @page front { @bottom-center { content: none; } }
+@page cover { size: %(w)sin %(h)sin; margin: 0; @bottom-center { content: none; } }
 html, body { margin: 0; padding: 0; }
 body { font-family: 'Crimson Pro', Georgia, serif; font-size: %(fs)spt; line-height: 1.32; color: #000;
        text-align: justify; hyphens: manual; widows: 2; orphans: 2; font-kerning: normal;
        font-variant-ligatures: common-ligatures; }
+.cover-page { page: cover; break-after: page; width: %(w)sin; height: %(h)sin; margin: 0; padding: 0; overflow: hidden; }
+.cover-page img { width: 100%%; height: 100%%; object-fit: cover; display: block; }
 .title-page { page: front; break-after: page; height: %(content_h)sin; display: flex; flex-direction: column;
               justify-content: center; text-align: center; }
 .title-page h1 { font-weight: 400; font-size: 2.1em; letter-spacing: 0.04em; margin: 0 0 0.6em; hyphens: none; }
@@ -271,8 +274,11 @@ a { color: inherit; text-decoration: none; }
 """ % {"w": width, "h": height, "top": top, "bottom": bottom, "outer": outer, "gutter": gutter,
        "fs": font_size, "folio": max(7, round(font_size * 0.8, 1)), "sink": round(height * 0.17, 2),
        "content_h": round(height - top - bottom - 0.05, 2)}
+    cover_block = ('<div class="cover-page"><img src="data:image/png;base64,%s" alt="" /></div>'
+                   % base64.b64encode(cover_png).decode("ascii")) if cover_png else ""
     out = ["<!DOCTYPE html>", '<html lang="%s">' % esc(lang), "<head>", '<meta charset="utf-8" />',
            "<title>%s</title>" % esc(project_title), "<style>%s</style>" % css, "</head>", "<body>",
+           *( [cover_block] if cover_block else [] ),
            '<div class="title-page"><h1>%s</h1>%s</div>' % (
                esc(project_title), '<div class="author">%s</div>' % esc(author_name) if author_name else ""),
            # the back of the title page stays blank, so chapter one opens on a right-hand page

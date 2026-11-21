@@ -568,6 +568,11 @@ device has its own chain per chapter; a sync imports other devices' sealed sessi
 | `summary_json` | TEXT | | Compacted aggregate totals once raw ops are pruned |
 | `wpm_trace` | TEXT | | JSON array of `[para, word_offset, wpm]` triples (wpm clamped 10–300), one per completed word typed — replay matches diffed words by `(para, word_offset)` for per-word pacing |
 | `device_kind` | TEXT | | `desktop` \| `mobile` (not hashed). Each device labels its own rows; imported rows bring theirs |
+| `op_model` | TEXT | | `'flat'` = ops use the flat text model (not hashed) |
+| `focus_mode` | TEXT | | Optional Focus Mode ID (`normal`, `momentum`, `combo`, `zen`, `kamikaze`, `hemingway`, `fog`) (not hashed) |
+| `focus_category` | TEXT | | Optional Focus Mode category (`neutral` \| `rewarding` \| `punishing`) (not hashed) |
+| `focus_goal` | INTEGER | | Word goal for sprint Focus modes, or NULL for normal focus (not hashed) |
+| `focus_completed` | INTEGER | | `1` when Focus Mode finished successfully, `0` when promoted past threshold without completion, NULL for non-focus sessions (not hashed) |
 | `created_at` | TEXT | DEFAULT `datetime('now')` | |
 
 `process_history_tombstones (table_name, row_id, removed_at)` remembers the sessions and

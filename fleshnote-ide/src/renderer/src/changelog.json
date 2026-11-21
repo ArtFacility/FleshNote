@@ -12,11 +12,14 @@
                 "NEW: Story Pulse — an intensity curve per chapter in the Plot Planner",
                 "NEW: Pentimento — record and replay how a chapter was written, optionally sealed with a trusted timestamp",
                 "NEW: Review copies — send a beta reader a .flreview file and bring their notes back into the manuscript",
-                "NEW: Export rebuilt — print-ready PDF, DOCX and EPUB with a page preview, plus an early cover editor",
+                "NEW: Export rebuilt — print-ready PDF, DOCX and EPUB with a page preview, plus a layered cover editor with shapes, layout templates, custom fonts, and print-wrap export",
                 "NEW: Obsidian vault export, manuscript import, and a bookshelf for your projects",
                 "NEW: Wi-Fi sync with the upcoming phone app, and a browser version for your own server",
                 "Smarter Janitor, a day-level world calendar, a smaller installer, and no more clashes over port 8000",
                 "Projects from 1.x are upgraded when you open them (a backup of the old database is kept)",
+                "FIX: Fixed a crash when adding shapes in the cover editor",
+                "Updated Hungarian and Polish translations",
+                "NEW: Pentimento replay & history now highlight Focus Mode sessions by mode and challenge type",
                 "More details on the website (artfacility.xyz)"
             ]
         },
