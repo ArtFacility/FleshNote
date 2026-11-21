@@ -171,6 +171,7 @@ export default function GroupInspectorPanel({
     }
   }, [initialTab])
   const [editMode, setEditMode] = useState(false)
+  const [nameEditMode, setNameEditMode] = useState(false)
   const [editData, setEditData] = useState({})
   const [saving, setSaving] = useState(false)
   const [iconPath, setIconPath] = useState(null)
@@ -335,6 +336,42 @@ export default function GroupInspectorPanel({
     setEditData({})
     setAddingMember(false)
     setAddingHistory(false)
+  }
+
+  const startNameEdit = () => {
+    setEditData((prev) => ({ ...prev, name: currGroup.name || '' }))
+    setNameEditMode(true)
+  }
+
+  const cancelNameEdit = () => {
+    setNameEditMode(false)
+    setEditData((prev) => ({ ...prev, name: currGroup.name || '' }))
+  }
+
+  const saveNameEdit = async () => {
+    const oldName = currGroup.name
+    const newName = (editData.name || '').trim()
+    if (!newName) return
+    if (newName === oldName) {
+      cancelNameEdit()
+      return
+    }
+    setSaving(true)
+    try {
+      await window.api.updateGroup({
+        project_path: projectPath,
+        group_id: currGroup.id,
+        name: newName
+      })
+      await onEntityUpdated?.()
+      await onFlushEditorSave?.()
+      setNameEditMode(false)
+      setRenameData({ oldName, newName, entity: { ...currGroup, type: 'group', name: newName } })
+    } catch (e) {
+      console.error('Failed to rename group:', e)
+    } finally {
+      setSaving(false)
+    }
   }
 
   const saveEdit = async () => {
@@ -583,30 +620,57 @@ export default function GroupInspectorPanel({
             )}
             <div>
               <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
-                <span
-                  style={{
-                    fontFamily: 'var(--font-sans)',
-                    fontSize: 16,
-                    fontWeight: 600,
-                    color: 'var(--text-primary)'
-                  }}
-                >
-                  {currGroup.name}
-                </span>
-                <button
-                  className="ide-titlebar-btn"
-                  onClick={() =>
-                    setRenameData({
-                      oldName: currGroup.name,
-                      entityType: 'group',
-                      entityId: currGroup.id
-                    })
-                  }
-                  title={t('inspector.renameTooltip', 'Rename entity globally')}
-                  style={{ padding: 2 }}
-                >
-                  <Icons.Edit />
-                </button>
+                {nameEditMode ? (
+                  <>
+                    <input
+                      className="entity-edit-input"
+                      value={editData.name || ''}
+                      onChange={(e) => setEditData((p) => ({ ...p, name: e.target.value }))}
+                      onKeyDown={(e) => {
+                        if (e.key === 'Enter') saveNameEdit()
+                        if (e.key === 'Escape') cancelNameEdit()
+                      }}
+                      style={{ fontFamily: 'var(--font-sans)', fontSize: 16, fontWeight: 600, width: 195 }}
+                    />
+                    <button
+                      className="entity-edit-btn save"
+                      onClick={saveNameEdit}
+                      disabled={saving}
+                      style={{ padding: '4px 10px', fontSize: 11 }}
+                    >
+                      <Icons.Check /> {saving ? '...' : t('inspector.save', 'Save')}
+                    </button>
+                    <button
+                      className="entity-edit-btn"
+                      onClick={cancelNameEdit}
+                      disabled={saving}
+                      style={{ padding: '4px 10px', fontSize: 11 }}
+                    >
+                      <Icons.X />
+                    </button>
+                  </>
+                ) : (
+                  <>
+                    <span
+                      style={{
+                        fontFamily: 'var(--font-sans)',
+                        fontSize: 16,
+                        fontWeight: 600,
+                        color: 'var(--text-primary)'
+                      }}
+                    >
+                      {currGroup.name}
+                    </span>
+                    <button
+                      className="ide-titlebar-btn"
+                      onClick={startNameEdit}
+                      title={t('inspector.renameTooltip', 'Rename entity globally')}
+                      style={{ padding: 2 }}
+                    >
+                      <Icons.Edit />
+                    </button>
+                  </>
+                )}
               </div>
               <div style={{ display: 'flex', alignItems: 'center', gap: 6, marginTop: 3 }}>
                 <span
@@ -657,7 +721,7 @@ export default function GroupInspectorPanel({
                   <Icons.X />
                 </button>
               </>
-            ) : (
+            ) : nameEditMode ? null : (
               <button
                 className="entity-edit-btn"
                 onClick={startEdit}
@@ -1613,13 +1677,14 @@ export default function GroupInspectorPanel({
       {renameData && (
         <EntityRenamePopup
           projectPath={projectPath}
+          entity={renameData.entity}
           oldName={renameData.oldName}
-          entityType={renameData.entityType}
-          entityId={renameData.entityId}
-          onClose={() => setRenameData(null)}
-          onSuccess={() => {
+          newName={renameData.newName}
+          onClose={() => { setRenameData(null); setEditMode(false) }}
+          onSuccess={(didReplace) => {
             setRenameData(null)
-            if (onEntityUpdated) onEntityUpdated()
+            setEditMode(false)
+            if (didReplace && onReloadCurrentChapter) onReloadCurrentChapter()
           }}
         />
       )}

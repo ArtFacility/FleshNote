@@ -20,6 +20,10 @@ export default function EntityRenamePopup({
     let isMounted = true
 
     const scan = async () => {
+      if (!entity?.type || !entity?.id || !newName) {
+        onClose()
+        return
+      }
       try {
         const res = await window.api.scanEntityReferences({
           project_path: projectPath,
