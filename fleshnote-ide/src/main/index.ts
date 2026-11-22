@@ -1550,6 +1550,21 @@ app.whenReady().then(async () => {
     const ext = m[1] === 'jpg' ? 'jpeg' : m[1]
     return { mime: `image/${ext}`, data: new Uint8Array(fs.readFileSync(full)) }
   })
+  // The icon cropper also draws images on a canvas and saves the result as PNG.
+  // fleshnote-asset:// images would taint that canvas, so give it the bytes too.
+  ipcMain.handle('api:readAssetImage', async (_e, { project_path, path: rel }) => {
+    if (typeof project_path !== 'string' || typeof rel !== 'string') return null
+    const normalized = rel.replace(/\\/g, '/')
+    if (!normalized || normalized.includes('\0')) return null
+    const parts = normalized.split('/')
+    if (parts[0] !== 'assets' || parts.length < 2 || parts.some(p => !p || p === '.' || p === '..')) return null
+    const m = /\.(png|jpe?g|webp|gif|bmp)$/i.exec(normalized)
+    if (!m) return null
+    const full = join(project_path, ...parts)
+    if (!fs.existsSync(full) || fs.lstatSync(full).isSymbolicLink()) return null
+    const ext = m[1].toLowerCase() === 'jpg' ? 'jpeg' : m[1].toLowerCase()
+    return { mime: `image/${ext}`, data: new Uint8Array(fs.readFileSync(full)) }
+  })
   ipcMain.handle('api:createImageRef', async (_e, p) => backendPost('/api/project/image-ref/create', p))
   ipcMain.handle('api:saveIconCrop', async (_e, p) => backendPost('/api/project/image-ref/save-icon', p))
   ipcMain.handle('api:updateImageRef', async (_e, p) => backendPost('/api/project/image-ref/update', p))

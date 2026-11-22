@@ -147,13 +147,16 @@ function entityTypeToDbCode(type) {
 function EntityCard({ entity, color, selected, inspecting, onClick, onCheckbox, mentionCount, onMentionClick, iconSrc, allEntities }) {
     const { t } = useTranslation();
     const effectiveBorderColor = entity.faction_color || color;
+    const sideBorder = `1px solid ${inspecting ? (entity.faction_color || T.amber) : T.bg3}`;
     return (
         <div
             onClick={onClick}
             style={{
                 position: 'relative',
                 background: selected ? T.amberDim : (inspecting ? T.bg2 : T.bg1),
-                border: `1px solid ${inspecting ? (entity.faction_color || T.amber) : T.bg3}`,
+                borderLeft: sideBorder,
+                borderRight: sideBorder,
+                borderBottom: sideBorder,
                 borderTop: `2px solid ${effectiveBorderColor}`,
                 padding: '12px',
                 cursor: 'pointer',
