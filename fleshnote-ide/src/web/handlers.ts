@@ -188,6 +188,14 @@ export const webHandlers = {
     for (let i = 0; i < bin.length; i++) data[i] = bin.charCodeAt(i)
     return { mime: res.mime, data }
   },
+  'api:readAssetImage': async (_e: unknown, payload: { project_path: string; path: string }) => {
+    const res = await backendPost('api/web/asset/read', payload)
+    if (!res) return null
+    const bin = atob(res.data)
+    const data = new Uint8Array(bin.length)
+    for (let i = 0; i < bin.length; i++) data[i] = bin.charCodeAt(i)
+    return { mime: res.mime, data }
+  },
   'api:takeLaunchFile': () => null,
   'api:showItemInFolder': (_e: unknown, path: string) => {
     if (path) download(path)

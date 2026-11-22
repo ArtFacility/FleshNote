@@ -23,7 +23,13 @@ export default function ImageGallery({
   const [lightboxVisible, setLightboxVisible] = useState(false)
   const [showCropper, setShowCropper] = useState(false)
   const [cropperSrc, setCropperSrc] = useState(null)
+  const [cropperUrl, setCropperUrl] = useState(null)
   const [cropperIsTemp, setCropperIsTemp] = useState(false) // whether the cropperSrc is an uploaded temp file
+  const cropperUrlRef = useRef(null)
+  useEffect(() => { cropperUrlRef.current = cropperUrl }, [cropperUrl])
+  useEffect(() => () => {
+    if (cropperUrlRef.current) URL.revokeObjectURL(cropperUrlRef.current)
+  }, [])
 
   // Inspector popup editor state
   const [editingCaption, setEditingCaption] = useState(false)
@@ -146,6 +152,36 @@ export default function ImageGallery({
   }
 
   // ── Icon cropper ──────────────────────────────────────────────────────────
+  // Read the image bytes instead of pointing the cropper at fleshnote-asset://:
+  // that custom protocol is cross-origin to the renderer, so a canvas it was
+  // drawn on would be tainted and toDataURL() would throw. A blob URL is local.
+  const openCropper = async (relPath, isTemp) => {
+    try {
+      const res = await window.api.readAssetImage({ project_path: projectPath, path: relPath })
+      if (!res) throw new Error('Image could not be read')
+      const url = URL.createObjectURL(new Blob([res.data], { type: res.mime }))
+      setCropperUrl(prev => {
+        if (prev) URL.revokeObjectURL(prev)
+        return url
+      })
+      setCropperSrc(relPath)
+      setCropperIsTemp(isTemp)
+      setShowCropper(true)
+    } catch (err) {
+      console.error('Failed to load image for icon crop:', err)
+    }
+  }
+
+  const closeCropper = () => {
+    setShowCropper(false)
+    setCropperSrc(null)
+    setCropperIsTemp(false)
+    setCropperUrl(prev => {
+      if (prev) URL.revokeObjectURL(prev)
+      return null
+    })
+  }
+
   const handleSetIcon = async () => {
     const sourcePath = await window.api.openImage()
     if (!sourcePath) return
@@ -155,9 +191,7 @@ export default function ImageGallery({
         project_path: projectPath,
         source_path: sourcePath
       })
-      setCropperSrc(uploadRes.image_path)
-      setCropperIsTemp(true)
-      setShowCropper(true)
+      await openCropper(uploadRes.image_path, true)
     } catch (err) {
       console.error('Failed to upload for icon crop:', err)
     }
@@ -165,9 +199,7 @@ export default function ImageGallery({
 
   // Make icon from an existing gallery image (no upload needed)
   const handleMakeIconFromRef = (ref) => {
-    setCropperSrc(ref.image_path)
-    setCropperIsTemp(false)
-    setShowCropper(true)
+    openCropper(ref.image_path, false)
   }
 
   const handleCropSave = async (base64Data) => {
@@ -185,9 +217,7 @@ export default function ImageGallery({
           image_path: cropperSrc
         })
       }
-      setShowCropper(false)
-      setCropperSrc(null)
-      setCropperIsTemp(false)
+      closeCropper()
       onIconChanged?.()
     } catch (err) {
       console.error('Failed to save icon crop:', err)
@@ -205,9 +235,7 @@ export default function ImageGallery({
         console.error('Failed to clean up temp icon file:', err)
       }
     }
-    setShowCropper(false)
-    setCropperSrc(null)
-    setCropperIsTemp(false)
+    closeCropper()
   }
 
   // ── Lightbox navigation ───────────────────────────────────────────────────
@@ -572,9 +600,9 @@ export default function ImageGallery({
       )}
 
       {/* ── Icon Cropper Popup ───────────────────────────────────────────────── */}
-      {showCropper && cropperSrc && (
+      {showCropper && cropperUrl && (
         <IconCropper
-          src={toAssetUrl(cropperSrc)}
+          src={cropperUrl}
           onSave={handleCropSave}
           onCancel={handleCropCancel}
         />
@@ -694,6 +722,7 @@ function IconCropper({ src, onSave, onCancel }) {
   const { t } = useTranslation()
   const canvasRef = useRef(null)
   const imgRef = useRef(null)
+  const cropAreaRef = useRef(null)
   const [imgLoaded, setImgLoaded] = useState(false)
   const [crop, setCrop] = useState({ x: 0, y: 0, size: 100 })
   const [dragging, setDragging] = useState(false)
@@ -730,19 +759,24 @@ function IconCropper({ src, onSave, onCancel }) {
 
   const handleMouseUp = () => setDragging(false)
 
-  const handleWheel = (e) => {
-    e.preventDefault()
-    const delta = e.deltaY > 0 ? -10 : 10
-    setCrop(c => {
-      const newSize = Math.max(40, Math.min(Math.min(imgDims.w, imgDims.h), c.size + delta))
-      // Keep centered
-      const cx = c.x + c.size / 2
-      const cy = c.y + c.size / 2
-      const nx = Math.max(0, Math.min(imgDims.w - newSize, cx - newSize / 2))
-      const ny = Math.max(0, Math.min(imgDims.h - newSize, cy - newSize / 2))
-      return { x: nx, y: ny, size: newSize }
-    })
-  }
+  useEffect(() => {
+    const el = cropAreaRef.current
+    if (!el) return
+    const onWheel = (e) => {
+      e.preventDefault()
+      const delta = e.deltaY > 0 ? -10 : 10
+      setCrop(c => {
+        const newSize = Math.max(40, Math.min(Math.min(imgDims.w, imgDims.h), c.size + delta))
+        const cx = c.x + c.size / 2
+        const cy = c.y + c.size / 2
+        const nx = Math.max(0, Math.min(imgDims.w - newSize, cx - newSize / 2))
+        const ny = Math.max(0, Math.min(imgDims.h - newSize, cy - newSize / 2))
+        return { x: nx, y: ny, size: newSize }
+      })
+    }
+    el.addEventListener('wheel', onWheel, { passive: false })
+    return () => el.removeEventListener('wheel', onWheel)
+  }, [imgDims])
 
   const handleSave = () => {
     const canvas = canvasRef.current
@@ -775,18 +809,17 @@ function IconCropper({ src, onSave, onCancel }) {
             {t('gallery.cropHint', 'Drag to move • Scroll to resize')}
           </div>
           <div
+            ref={cropAreaRef}
             style={{ position: 'relative', display: 'inline-block', cursor: dragging ? 'grabbing' : 'grab', userSelect: 'none' }}
             onMouseMove={handleMouseMove}
             onMouseUp={handleMouseUp}
             onMouseLeave={handleMouseUp}
-            onWheel={handleWheel}
           >
             <img
               ref={imgRef}
               src={src}
               alt=""
               onLoad={handleImageLoad}
-              crossOrigin="anonymous"
               style={{ display: 'block', width: imgDims.w || 'auto', height: imgDims.h || 'auto', maxWidth: 500, maxHeight: 450 }}
             />
             {imgLoaded && (

@@ -195,6 +195,23 @@ def make_router(root: str, demo: bool = False, exit_after_reset=lambda: os._exit
         with open(full, "rb") as f:
             return {"mime": f"image/{ext}", "data": base64.b64encode(f.read()).decode("ascii")}
 
+    @router.post("/api/web/asset/read")
+    def asset_read(req: CoverReadRequest):
+        """Any project asset image, as base64 — the icon cropper needs raw bytes."""
+        rel = (req.path or "").replace("\\", "/")
+        m = re.search(r"\.(png|jpe?g|webp|gif|bmp)$", rel, re.I)
+        parts = [p for p in rel.split("/") if p not in ("", ".")]
+        if not m or "\x00" in rel or os.path.isabs(rel):
+            return None
+        if len(parts) < 2 or parts[0] != "assets" or ".." in parts:
+            return None
+        full = os.path.join(req.project_path, *parts)
+        if inside(full) is None or not os.path.isfile(full) or os.path.islink(full):
+            return None
+        ext = "jpeg" if m.group(1).lower() == "jpg" else m.group(1).lower()
+        with open(full, "rb") as f:
+            return {"mime": f"image/{ext}", "data": base64.b64encode(f.read()).decode("ascii")}
+
     @router.post("/api/web/reset")
     def reset(x_labs_admin: str | None = Header(None)):
         if not demo or x_labs_admin != "reset":

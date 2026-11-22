@@ -230,6 +230,7 @@ const api = {
   coverCleanup: (payload) => ipcRenderer.invoke('api:coverCleanup', payload),
   coverExportWrap: (payload) => ipcRenderer.invoke('api:coverExportWrap', payload),
   coverReadImage: (payload) => ipcRenderer.invoke('api:coverReadImage', payload),
+  readAssetImage: (payload) => ipcRenderer.invoke('api:readAssetImage', payload),
   coverFontPackStatus: () => ipcRenderer.invoke('api:coverFontPackStatus', {}),
   coverFontPackDownload: () => ipcRenderer.invoke('api:coverFontPackDownload', {}),
   coverFontPackRemove: () => ipcRenderer.invoke('api:coverFontPackRemove', {}),

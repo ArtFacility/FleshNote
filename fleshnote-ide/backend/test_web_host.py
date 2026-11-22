@@ -122,6 +122,16 @@ class TestWebHost(unittest.TestCase):
         self.assertEqual(res, {"mime": "image/png", "data": "iVBORw=="})
         self.assertIsNone(self.call("/api/web/cover/read", CoverReadRequest(project_path=proj, path="../../outside.txt")))
 
+    def test_asset_images_are_read_as_base64(self):
+        proj = os.path.join(self.ws, "proj")
+        os.makedirs(os.path.join(proj, "assets"))
+        with open(os.path.join(proj, "assets", "img_a1b2c3d4e5f6.jpg"), "wb") as f:
+            f.write(b"\xff\xd8\xff")
+        res = self.call("/api/web/asset/read", CoverReadRequest(project_path=proj, path="assets/img_a1b2c3d4e5f6.jpg"))
+        self.assertEqual(res, {"mime": "image/jpeg", "data": "/9j/"})
+        self.assertIsNone(self.call("/api/web/asset/read", CoverReadRequest(project_path=proj, path="../../outside.txt")))
+        self.assertIsNone(self.call("/api/web/asset/read", CoverReadRequest(project_path=proj, path="assets/notes.txt")))
+
 
 class TestWebHostReset(unittest.TestCase):
     def setUp(self):
