@@ -198,5 +198,86 @@ class TestPolishRules(unittest.TestCase):
                                 "— Będziem po kolei śpiewali — zawołał uradowany Zych.", "pl"))
 
 
+class TestAliasSuggestions(unittest.TestCase):
+    """Alias hints must be unambiguous and independently dismissable."""
+
+    FILLER = "The long corridor stretched on without a sound. " * 7
+
+    @staticmethod
+    def ent(eid, name, aliases=None):
+        return {"id": eid, "name": name, "type": "character", "aliases": aliases or []}
+
+    def test_shared_fragment_is_not_suggested(self):
+        entities = [self.ent("a", "District 40"), self.ent("b", "District 12")]
+        text = ("District 40 burned down that night. " + self.FILLER +
+                "District 12 held. " + self.FILLER +
+                "For weeks afterwards, District was all anyone spoke about.")
+        self.assertEqual(J._analyze_alias(text, entities), [])
+
+    def test_shared_family_surname_is_not_suggested(self):
+        entities = [self.ent("a", "John Smith"), self.ent("b", "Mary Smith")]
+        text = ("John Smith arrived first. " + self.FILLER +
+                "Mary Smith followed. " + self.FILLER +
+                "Later that evening, Smith appeared at the door.")
+        self.assertEqual(J._analyze_alias(text, entities), [])
+
+    def test_unambiguous_part_uses_the_text_as_written(self):
+        entity = self.ent("a", "Vael Ren")
+        text = ("Vael Ren walked in. " + self.FILLER +
+                "Much later, Vael returned from the cold.")
+        found = J._analyze_alias(text, [entity])
+        self.assertEqual(len(found), 1)
+        self.assertEqual(found[0]["matched_text"], "Vael")
+        self.assertEqual(text[found[0]["char_offset"]:found[0]["char_offset"] + 4], "Vael")
+
+    def test_category_nouns_are_not_suggested(self):
+        cases = [
+            ("Floor 672", "the corridor ended at the floor below"),
+            ("Tower Cafe", "a small cafe stood on the corner"),
+            ("Izakaya 40", "an izakaya near the station"),
+        ]
+        for name, standalone in cases:
+            text = (name + " was crowded that night. " + self.FILLER +
+                    "By dawn, " + standalone + " was empty.")
+            self.assertEqual(J._analyze_alias(text, [self.ent("a", name)]), [], name)
+
+    def test_capitalized_common_noun_after_determiner_is_not_suggested(self):
+        entity = self.ent("a", "Tower Cafe")
+        text = ("Tower Cafe stood on the quay. " + self.FILLER +
+                "They entered the Cafe later that evening.")
+        self.assertEqual(J._analyze_alias(text, [entity]), [])
+
+    def test_alias_ids_are_unique_per_entity(self):
+        import tempfile
+        from routes.janitor_paragraphs import ChapterAnalysis
+
+        with tempfile.TemporaryDirectory() as tmp:
+            analysis = ChapterAnalysis(tmp, "c1", "<p>Smith walked in.</p>", "xx")
+            base = {
+                "type": "alias", "matched_text": "Smith", "char_offset": 0,
+                "context": "", "context_highlight_start": 0, "context_highlight_end": 0,
+            }
+            first = analysis.finish({**base, "entity_id": "a"}, J._make_id)
+            second = analysis.finish({**base, "entity_id": "b"}, J._make_id)
+            self.assertNotEqual(first["id"], second["id"])
+
+
+class TestLinkRanges(unittest.TestCase):
+    def test_ranges_align_with_analysed_plain_text(self):
+        from routes.janitor_paragraphs import split_blocks
+
+        html = ('<p>Tom &amp; Jerry met. #TODO&nbsp;draft note\u200b'
+                '<span data-entity-type="char" data-entity-id="5">Sophia</span> smiled.</p>')
+        plain = "".join(text for _, text in split_blocks(html))
+        ranges = J._get_linked_ranges(html)
+        self.assertEqual(len(ranges), 1)
+        self.assertEqual(plain[ranges[0][0]:ranges[0][1]], "Sophia")
+
+    def test_note_spans_do_not_hide_entity_links(self):
+        html = ('<p><span data-entity-type="twist" data-entity-id="t1">'
+                'A long note about Sophia</span> then Sophia left.</p>')
+        self.assertEqual(J._get_linked_ranges(html), [])
+
+
 if __name__ == "__main__":
     unittest.main()

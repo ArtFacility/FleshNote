@@ -182,36 +182,66 @@ def _strip_todo_blocks(text: str) -> str:
     return re.sub(r'#TODO[^\u200B\n]*\u200B?', '', text)
 
 
+_ENTITY_LINK_TYPES = {"char", "loc", "item", "lore", "group", "character", "location"}
+_TODO_SPAN_RE = re.compile(r'#TODO[^\u200B\n]*\u200B?')
+_TAG_STRIP_RE = re.compile(r'<[^>]+>')
+
+
+def _plain_len(fragment: str) -> int:
+    """Plain-text length of an HTML fragment in ChapterAnalysis coordinates."""
+    return len(_TODO_SPAN_RE.sub("", html_lib.unescape(_TAG_STRIP_RE.sub("", fragment))))
+
+
+def _find_span_close(html: str, start: int) -> int:
+    """Offset of the </span> matching the span opened before `start`."""
+    depth = 0
+    pos = start
+    while pos < len(html):
+        opening = re.search(r'<span\b[^>]*>', html[pos:], re.IGNORECASE)
+        closing = html.find('</span>', pos)
+        if closing == -1:
+            return -1
+        if opening and pos + opening.start() < closing:
+            depth += 1
+            pos += opening.end()
+        elif depth == 0:
+            return closing
+        else:
+            depth -= 1
+            pos = closing + len('</span>')
+    return -1
+
+
 def _get_linked_ranges(html: str) -> list[tuple[int, int]]:
-    """Return plain-text char ranges already covered by entity span marks."""
-    ranges = []
-    # We need to find spans with data-entity-id and track their plain-text offsets.
-    # Strategy: walk html tag by tag, counting plain chars as we go.
+    """Plain-text ranges already covered by real entity links.
+
+    Notes (twists, foreshadowing, annotations, quick notes) also carry
+    data-entity-id in stored HTML, but they are not links and must not hide
+    link suggestions. Offsets use the same normalisation as plain_text: tags
+    stripped, entities unescaped and #TODO blocks removed. Counting raw HTML
+    characters slid ranges right by every '&amp;' or TODO before a link.
+    """
+    ranges: list[tuple[int, int]] = []
     pos = 0
     plain_offset = 0
-    while pos < len(html):
-        if html[pos] == '<':
-            tag_end = html.find('>', pos)
-            if tag_end == -1:
-                break
-            tag = html[pos:tag_end + 1]
-            # Check if this is an opening span with data-entity-id
-            if re.match(r'<span[^>]+data-entity-id=', tag, re.IGNORECASE):
-                # Find the closing </span>
-                close_start = html.find('</span>', tag_end)
-                if close_start != -1:
-                    inner_html = html[tag_end + 1:close_start]
-                    inner_text = re.sub(r'<[^>]+>', '', inner_html)
-                    range_start = plain_offset
-                    range_end = plain_offset + len(inner_text)
-                    ranges.append((range_start, range_end))
-                    plain_offset += len(inner_text)
-                    pos = close_start + len('</span>')
-                    continue
-            pos = tag_end + 1
-        else:
-            plain_offset += 1
-            pos += 1
+    for m in re.finditer(r'<span\b[^>]*>', html, re.IGNORECASE):
+        if m.start() < pos:
+            continue
+        plain_offset += _plain_len(html[pos:m.start()])
+        tag = m.group()
+        closing = _find_span_close(html, m.end())
+        if closing == -1:
+            pos = m.end()
+            continue
+        inner_len = _plain_len(html[m.end():closing])
+        type_match = re.search(r'data-entity-type=["\']([^"\']+)', tag, re.IGNORECASE)
+        etype = (type_match.group(1) or "").lower() if type_match else ""
+        if (re.search(r'data-entity-id=', tag, re.IGNORECASE)
+                and (not etype or etype in _ENTITY_LINK_TYPES)):
+            if inner_len:
+                ranges.append((plain_offset, plain_offset + inner_len))
+        plain_offset += inner_len
+        pos = closing + len('</span>')
     return ranges
 
 
@@ -226,19 +256,23 @@ def _get_all_entities(conn) -> list[dict]:
     entities = []
     for table, etype in [("characters", "character"), ("locations", "location"), ("lore_entities", "lore"), ("groups", "group")]:
         try:
-            rows = conn.execute(f"SELECT id, name, aliases FROM {table}").fetchall()
+            try:
+                rows = conn.execute(f"SELECT id, name, aliases FROM {table} WHERE deleted = 0").fetchall()
+            except sqlite3.OperationalError:
+                rows = conn.execute(f"SELECT id, name, aliases FROM {table}").fetchall()
             for r in rows:
-                name = r["name"] or ""
+                name = (r["name"] or "").strip()
                 aliases = []
                 if r["aliases"]:
                     try:
-                        aliases = json.loads(r["aliases"]) or []
-                    except Exception:
-                        pass
+                        parsed = json.loads(r["aliases"]) or []
+                        aliases = [a.strip() for a in parsed if isinstance(a, str) and a.strip()]
+                    except Exception as exc:
+                        print(f"[janitor] bad aliases JSON for {etype} {r['id']}: {exc}", flush=True)
                 if name:
                     entities.append({"id": r["id"], "name": name, "type": etype, "aliases": aliases})
-        except Exception:
-            pass
+        except Exception as exc:
+            print(f"[janitor] cannot load {table} for linking: {exc}", flush=True)
     return entities
 
 
@@ -260,12 +294,16 @@ def _analyze_link_existing(
     plain_text: str,
     linked_ranges: list[tuple[int, int]],
     entities: list[dict],
-    cap: int = 5
+    cap: int = 5,
+    stats: dict | None = None,
+    per_entity_cap: int = 2
 ) -> list[dict]:
     suggestions = []
     # Sort by name length desc to prefer longer matches
     sorted_entities = sorted(entities, key=lambda e: len(e["name"]), reverse=True)
     seen_offsets: set = set()
+    per_entity: dict = {}
+    counters = {"matches": 0, "linked_skipped": 0, "seen_skipped": 0, "cap_reached": False}
 
     for ent in sorted_entities:
         if len(suggestions) >= cap:
@@ -278,12 +316,20 @@ def _analyze_link_existing(
             for m in re.finditer(pattern, plain_text, re.IGNORECASE):
                 if len(suggestions) >= cap:
                     break
+                counters["matches"] += 1
                 offset = m.start()
                 if offset in seen_offsets:
+                    counters["seen_skipped"] += 1
                     continue
                 if _is_in_linked_range(offset, linked_ranges):
+                    counters["linked_skipped"] += 1
+                    continue
+                # One frequently repeated name must not crowd every other
+                # entity off the five-card panel.
+                if per_entity.get(ent["id"], 0) >= per_entity_cap:
                     continue
                 seen_offsets.add(offset)
+                per_entity[ent["id"]] = per_entity.get(ent["id"], 0) + 1
                 context, hl_start, hl_end = _build_context(plain_text, m.start(), m.end())
                 suggestions.append({
                     "id": _make_id("link_existing", m.group(), offset),
@@ -298,6 +344,9 @@ def _analyze_link_existing(
                     "char_offset": offset,
                     "replacement": None
                 })
+    counters["cap_reached"] = len(suggestions) >= cap
+    if stats is not None:
+        stats.update(counters)
     return suggestions
 
 
@@ -386,8 +435,59 @@ def _analyze_create_entity(
     return suggestions
 
 
-def _analyze_alias(plain_text: str, entities: list[dict], cap: int = 3) -> list[dict]:
+_GENERIC_DETERMINERS = {
+    'a', 'an', 'the', 'this', 'that', 'these', 'those', 'another', 'every', 'each',
+    'some', 'any', 'one', 'several', 'many', 'different', 'other', 'my', 'his', 'her',
+    'their', 'our', 'your', 'its',
+    'egy', 'az', 'minden', 'más', 'több', 'sok', 'egyik', 'melyik',
+    'jeden', 'każdy', 'ten', 'tamten', 'inny', 'wiele', 'kilka', 'mój', 'twój',
+    'jego', 'jej', 'ich', 'nasz', 'wasz',
+}
+_SENTENCE_END_RE = re.compile(r'[.!?…]["”’\']?\s*$')
+
+
+def _alias_usage_is_generic(plain_text: str, match: re.Match) -> bool:
+    """True when a standalone name fragment reads as a common noun, not a name.
+
+    Category words ("a cafe", "the third floor", "floor 672", "izakaya 40")
+    describe a kind of thing rather than one particular character or place, so
+    they must never become the alias of a single entity.
+    """
+    matched = match.group()
+    start, end = match.span()
+    before = plain_text[:start]
+    stripped = before.rstrip()
+    if matched[0].islower() and stripped and not _SENTENCE_END_RE.search(stripped):
+        return True
+    words = re.findall(r"[^\W\d_]+", before[-40:].lower())
+    if words and words[-1] in _GENERIC_DETERMINERS:
+        return True
+    if re.match(r'\s+\d+\b', plain_text[end:end + 16]):
+        return True
+    return False
+
+
+def _analyze_alias(
+    plain_text: str,
+    entities: list[dict],
+    linked_ranges: list[tuple[int, int]] | None = None,
+    cap: int = 3
+) -> list[dict]:
+    """Suggest a short name part as an alias, but only when it is unambiguous.
+
+    A fragment shared by more than one entity (e.g. "District" in "District 40"
+    and "District 12", or a surname shared by a family) never identifies a
+    single entity. A fragment used as a category noun ("floor", "cafe",
+    "izakaya") is rejected as well.
+    """
+    linked_ranges = linked_ranges or []
+    part_owners: dict[str, int] = {}
+    for ent in entities:
+        for token in {(p.lower()) for p in (ent.get("name") or "").split()}:
+            part_owners[token] = part_owners.get(token, 0) + 1
+
     suggestions = []
+    seen: set[tuple] = set()
     for ent in entities:
         if len(suggestions) >= cap:
             break
@@ -400,34 +500,49 @@ def _analyze_alias(plain_text: str, entities: list[dict], cap: int = 3) -> list[
             continue
         # Check substrings (single tokens >= 4 chars) that appear standalone
         for part in parts:
+            if len(suggestions) >= cap:
+                break
             if len(part) < 4:
                 continue
+            lowered = part.lower()
+            if part_owners.get(lowered, 0) > 1:
+                continue
+            # "Floor 672" / "Izakaya 40": the word is a category label, not a name.
+            if all(p.isdigit() for p in parts if p.lower() != lowered):
+                continue
             # Skip if already an alias
-            if any(a.lower() == part.lower() for a in (ent["aliases"] or [])):
+            if any(a.lower() == lowered for a in (ent["aliases"] or [])):
                 continue
             for m in re.finditer(r'\b' + re.escape(part) + r'\b', plain_text, re.IGNORECASE):
+                offset = m.start()
+                if _is_in_linked_range(offset, linked_ranges):
+                    continue
+                if _alias_usage_is_generic(plain_text, m):
+                    continue
+                key = (ent["id"], lowered, offset)
+                if key in seen:
+                    continue
                 # Check full name is absent nearby (within 200 chars)
-                window_start = max(0, m.start() - 200)
+                window_start = max(0, offset - 200)
                 window_end = min(len(plain_text), m.end() + 200)
                 nearby = plain_text[window_start:window_end]
                 if not re.search(r'\b' + re.escape(name) + r'\b', nearby, re.IGNORECASE):
+                    seen.add(key)
                     context, hl_start, hl_end = _build_context(plain_text, m.start(), m.end())
                     suggestions.append({
-                        "id": _make_id("alias", part, m.start()),
+                        "id": _make_id("alias", f"{ent['id']}:{m.group()}", offset),
                         "type": "alias",
                         "entity_type": ent["type"],
                         "entity_id": ent["id"],
-                        "entity_name": ent["name"],
-                        "matched_text": part,
+                        "entity_name": name,
+                        "matched_text": m.group(),
                         "context": context,
                         "context_highlight_start": hl_start,
                         "context_highlight_end": hl_end,
-                        "char_offset": m.start(),
+                        "char_offset": offset,
                         "replacement": None
                     })
                     break
-            if len(suggestions) >= cap:
-                break
     return suggestions
 
 
@@ -1455,6 +1570,7 @@ def janitor_analyze(req: JanitorRequest):
     try:
         conn = _get_db(req.project_path)
     except FileNotFoundError as e:
+        print(f"[janitor] analysis failed for chapter {req.chapter_id}: {e}", flush=True)
         return {"status": "error", "suggestions": [], "error": str(e)}
 
     try:
@@ -1464,21 +1580,23 @@ def janitor_analyze(req: JanitorRequest):
         analysis = ChapterAnalysis(req.project_path, req.chapter_id, req.html, req.language)
         plain_text = analysis.plain_text
         if not plain_text.strip():
+            print(f"[janitor] chapter={req.chapter_id}: no analysable text", flush=True)
             return {"status": "ok", "suggestions": []}
         # Word-boundary-safe version for typo/synonym tokenization (adds spaces at block breaks)
         words_plain = _strip_todo_blocks(_html_to_words_plain(req.html))
         entities = _get_all_entities(conn)
         linked_ranges = _get_linked_ranges(req.html)
+        link_stats: dict = {}
         # Chapter-wide checks count words, so keep paragraph edges apart
         # ('ceiling' + 'Sophia', not 'ceilingSophia').
         chapter_words = " ".join(text for _, text in analysis.blocks)
         five_senses = analysis.senses_card()
         readability = _analyze_readability(chapter_words, req.language)
         suggestions = (
-            _analyze_link_existing(plain_text, linked_ranges, entities) +
+            _analyze_link_existing(plain_text, linked_ranges, entities, stats=link_stats) +
             _analyze_create_entity(plain_text, entities, req.language, linked_ranges,
                                    ents=analysis.entities()) +
-            _analyze_alias(plain_text, entities) +
+            _analyze_alias(plain_text, entities, linked_ranges) +
             _analyze_typo(plain_text, req.language, words_plain, entities) +
             _analyze_synonym(plain_text, req.language, words_plain) +
             analysis.rule_suggestions(req.confidence_threshold) +
@@ -1486,8 +1604,18 @@ def janitor_analyze(req: JanitorRequest):
             readability
         )
         suggestions = [analysis.finish(s, _make_id) for s in suggestions]
+        by_type: dict = {}
+        for s in suggestions:
+            by_type[s["type"]] = by_type.get(s["type"], 0) + 1
+        print(f"[janitor] chapter={req.chapter_id} chars={len(plain_text)} "
+              f"entities={len(entities)} linked_ranges={len(linked_ranges)} "
+              f"link_matches={link_stats.get('matches', 0)} "
+              f"link_skipped_linked={link_stats.get('linked_skipped', 0)} "
+              f"link_cap_reached={link_stats.get('cap_reached', False)} "
+              f"types={by_type}", flush=True)
         return {"status": "ok", "suggestions": suggestions}
     except Exception as e:
+        print(f"[janitor] analysis failed for chapter {req.chapter_id}: {e}", flush=True)
         return {"status": "error", "suggestions": [], "error": str(e)}
     finally:
         conn.close()

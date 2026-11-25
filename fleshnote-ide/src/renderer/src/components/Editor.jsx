@@ -248,6 +248,7 @@ export default function Editor({
   }, [])
   const lastJanitorWordCountRef = useRef(0)
   const janitorInactivityTimerRef = useRef(null)
+  const janitorLoadTriggerRef = useRef(null)
 
   // The Janitor triggers fire from timers set during typing; calling the prop
   // captured back then would analyze the chapter as it was when the timer was
@@ -1005,9 +1006,16 @@ export default function Editor({
       lastJanitorWordCountRef.current = editor.storage.characterCount.words()
       if (gutterMeasureTimeoutRef.current) clearTimeout(gutterMeasureTimeoutRef.current)
       gutterMeasureTimeoutRef.current = setTimeout(() => setGutterMeasureTick(t => t + 1), 100)
-      setTimeout(() => {
+      if (janitorLoadTriggerRef.current) clearTimeout(janitorLoadTriggerRef.current)
+      janitorLoadTriggerRef.current = setTimeout(() => {
         if (!editor.isDestroyed) onJanitorTriggerRef.current?.(editor.getHTML())
       }, 300)
+    }
+    return () => {
+      if (janitorInactivityTimerRef.current) clearTimeout(janitorInactivityTimerRef.current)
+      if (janitorLoadTriggerRef.current) clearTimeout(janitorLoadTriggerRef.current)
+      janitorInactivityTimerRef.current = null
+      janitorLoadTriggerRef.current = null
     }
   }, [editor, chapter?.id, chapter?._rev])
 

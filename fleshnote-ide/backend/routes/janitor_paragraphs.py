@@ -302,6 +302,10 @@ class ChapterAnalysis:
             suggestion["context_highlight_start"] = local - cstart
             suggestion["context_highlight_end"] = local + len(matched) - cstart
             anchor = f"{self.hashes[i]}#{self.occurrence[i]}:{offset - self.starts[i]}"
+            if suggestion["type"] == "alias" and suggestion.get("entity_id") is not None:
+                # Two entities can share a name fragment; keep their cards distinct
+                # so dismissing one never leaves a stuck duplicate behind.
+                anchor += f"@{suggestion['entity_id']}"
         else:
             anchor = str(offset)
         suggestion["id"] = make_id(suggestion["type"], matched, anchor)
