@@ -1084,6 +1084,8 @@
     },
     "storyPulse": "Puls historii",
     "experimental": "Eksperymentalne",
+    "autoLink": "Włącz automatyczne łączenie",
+    "autoLinkDesc": "Automatycznie stosuj sugestie Połącz, gdy tylko Arbitr je wykryje, bez pytania. Nowe encje nigdy nie są tworzone automatycznie. Może połączyć niewłaściwą nazwę, więc sprawdź później tekst.",
     "storyPulseDesc": "Dodaje do planera fabuły pasek, który na podstawie słów szacuje napięcie każdego akapitu w porównaniu z resztą książki. To tylko szkic: może się mylić, zwłaszcza w spokojnych scenach i dialogach. Tylko po angielsku, węgiersku i polsku.",
     "sketchboardEditorMenu": "Akcje tablicy szkiców w menu edytora",
     "sketchboardEditorMenuDesc": "Kliknij prawym przyciskiem powiązaną nazwę, aby dodać ją do tablicy albo sprawić, by od tego rozdziału pojawiała się na tablicy."

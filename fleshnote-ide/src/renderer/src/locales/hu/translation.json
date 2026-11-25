@@ -1084,6 +1084,8 @@
     },
     "storyPulse": "Történetpulzus",
     "experimental": "Kísérleti",
+    "autoLink": "Automatikus kapcsolás engedélyezése",
+    "autoLinkDesc": "Automatikusan alkalmazza a Kapcsolás javaslatokat, amint a Portás megtalálja őket, kérdés nélkül. Új entitásokat soha nem hoz létre automatikusan. Előfordulhat, hogy rossz nevet kapcsol be, ezért utána ellenőrizd a szöveget.",
     "storyPulseDesc": "Egy sávot ad a cselekménytervezőhöz, amely a szavak alapján megbecsüli, mennyire feszült egy-egy bekezdés, a könyv többi részéhez képest. Csak durva vázlat: főleg csendes vagy párbeszédes jeleneteknél tévedhet. Csak angol, magyar és lengyel nyelven.",
     "sketchboardEditorMenu": "Vázlattábla műveletek a szerkesztő menüben",
     "sketchboardEditorMenuDesc": "Kattints jobb gombbal egy hivatkozott névre, hogy hozzáadd egy táblához, vagy hogy ettől a fejezettől kezdve megjelenjen egy táblán."

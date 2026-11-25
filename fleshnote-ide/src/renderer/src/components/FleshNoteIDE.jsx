@@ -1,4 +1,4 @@
-import { useState, useCallback, useEffect, useRef } from 'react'
+import { useState, useCallback, useEffect, useMemo, useRef } from 'react'
 import { useTranslation } from 'react-i18next'
 import { matchesHotkey } from '../utils/hotkeyMatcher'
 import Editor from './Editor'
@@ -29,6 +29,17 @@ import ReviewImportSummary from './ReviewImportSummary'
 import HistoryPanel from './HistoryPanel'
 import changelogData from '../changelog.json'
 import WelcomeBackPrompt from './WelcomeBackPrompt'
+
+function getJanitorDismissKey(projectPath, chapterId) {
+  let token
+  try {
+    token = btoa(String(projectPath || '').slice(-20))
+  } catch {
+    // btoa() throws on non-Latin-1 paths; keep every caller on the same key.
+    token = encodeURIComponent(String(projectPath || '').slice(-20))
+  }
+  return `fn_janitor_dismissed_${token}_${chapterId}`
+}
 
 // ─── ICONS ──────────────────────────────────────────────────────────────────
 
@@ -370,6 +381,11 @@ export default function FleshNoteIDE({ projectConfig, projectPath, onCloseProjec
   const [janitorFocusSignal, setJanitorFocusSignal] = useState(0)
   const janitorActionsRef = useRef(null)
   const lastAnalyzedHtmlRef = useRef('')
+  const lastAnalyzedChapterRef = useRef(null)
+  const currentChapterIdRef = useRef(null)
+  currentChapterIdRef.current = activeChapter?.id
+  const autoLinkedRef = useRef(new Set())
+  const janitorSuggestionChapterRef = useRef(null)
 
   // ── History (rollback) Panel State ──────────────────
   // Shares the right rail with the Janitor: opening one collapses the other.
@@ -908,57 +924,104 @@ export default function FleshNoteIDE({ projectConfig, projectPath, onCloseProjec
   }, [handleEntitiesChanged, activeChapter, projectPath])
 
   // ── Janitor Analysis ──────────────────────────────
+  // Single source of truth for the dismissal key, shared with JanitorPanel so a
+  // click always writes to the same place the panel reads from.
+  const janitorDismissKey = useMemo(
+    () => getJanitorDismissKey(projectPath, activeChapter?.id),
+    [projectPath, activeChapter?.id]
+  )
   // `latestHtml` is the editor's current HTML; chapterContent lags it by the
   // save debounce, so without it the Janitor analyzed the previous version.
   const triggerJanitorAnalysis = useCallback(async (latestHtml) => {
-    if (focusMode) return
-    if (!activeChapter || !projectPath) return
-    if (mainView !== 'editor') return
+    if (focusMode) {
+      console.debug('[janitor] skip: focus mode')
+      return
+    }
+    if (!activeChapter || !projectPath) {
+      console.log('[janitor] skip: no chapter or project path')
+      return
+    }
+    if (mainView !== 'editor') {
+      console.log('[janitor] skip: not in editor view', mainView)
+      return
+    }
     const htmlToAnalyze = typeof latestHtml === 'string' ? latestHtml : chapterContent?.content
-    if (!htmlToAnalyze) return
-    // Skip if content hasn't changed since last analysis (prevents 10s timer re-analyzing same text)
-    if (htmlToAnalyze === lastAnalyzedHtmlRef.current) return
+    if (!htmlToAnalyze) {
+      console.log('[janitor] skip: empty chapter content', activeChapter.id)
+      return
+    }
+    // Only skip when this same chapter's content was already analysed.
+    if (htmlToAnalyze === lastAnalyzedHtmlRef.current &&
+        activeChapter.id === lastAnalyzedChapterRef.current) {
+      console.debug('[janitor] skip: unchanged content', activeChapter.id)
+      return
+    }
     // Don't refresh while user is actively browsing the panel — defer until they're done
-    if (Date.now() - janitorPanelActivityRef.current < 8000) {
+    const wait = 8000 - (Date.now() - janitorPanelActivityRef.current)
+    if (wait > 0) {
       if (janitorPendingRetryRef.current) clearTimeout(janitorPendingRetryRef.current)
+      console.log('[janitor] deferring analysis while the panel is active', activeChapter.id, `${Math.round(wait)}ms`)
       janitorPendingRetryRef.current = setTimeout(() => triggerJanitorAnalysis(htmlToAnalyze), 8000)
       return
     }
 
+    const requestedChapterId = activeChapter.id
     setJanitorLoading(true)
     try {
       const result = await window.api.janitorAnalyze({
         project_path: projectPath,
-        chapter_id: activeChapter.id,
+        chapter_id: requestedChapterId,
         html: htmlToAnalyze,
         language: projectConfig?.story_language || 'en',
         confidence_threshold: projectConfig?.janitor_sdt_confidence ?? 0.5,
       })
+      if (currentChapterIdRef.current !== requestedChapterId) {
+        console.log('[janitor] discarding result for stale chapter', requestedChapterId, 'current', currentChapterIdRef.current)
+        return
+      }
       if (result?.status === 'ok') {
+        const suggestions = result.suggestions || []
+        const byType = suggestions.reduce((acc, s) => {
+          acc[s.type] = (acc[s.type] || 0) + 1
+          return acc
+        }, {})
+        let dismissed
+        try {
+          dismissed = new Set(JSON.parse(localStorage.getItem(janitorDismissKey) || '[]').map(i => i.id))
+        } catch {
+          dismissed = new Set()
+          console.warn('[janitor] could not read dismissals for', janitorDismissKey)
+        }
+        const visible = suggestions.filter(s => !dismissed.has(s.id))
+        console.log('[janitor] analysed', requestedChapterId, {
+          generated: suggestions.length,
+          byType,
+          dismissed: suggestions.length - visible.length,
+          visible: visible.length,
+          linkToggleEnabled: projectConfig?.janitor_show_link_existing !== false,
+        })
         lastAnalyzedHtmlRef.current = htmlToAnalyze
-        // Filter out already-dismissed suggestions so badge count matches panel count
-        const dismissKey = `fn_janitor_dismissed_${btoa(projectPath.slice(-20))}_${activeChapter.id}`
-        const dismissed = new Set(
-          JSON.parse(localStorage.getItem(dismissKey) || '[]').map(i => i.id)
-        )
-        setJanitorSuggestions((result.suggestions || []).filter(s => !dismissed.has(s.id)))
+        lastAnalyzedChapterRef.current = requestedChapterId
+        setJanitorSuggestions(visible)
+        janitorSuggestionChapterRef.current = requestedChapterId
         setJanitorRuns(n => n + 1)
+      } else {
+        console.error('[janitor] backend analysis failed', requestedChapterId, result?.error || result)
       }
     } catch (err) {
-      console.error('Janitor analysis failed:', err)
+      console.error('[janitor] analysis request failed', requestedChapterId, err)
     } finally {
       setJanitorLoading(false)
     }
-  }, [focusMode, activeChapter, projectPath, chapterContent, mainView, projectConfig])
+  }, [focusMode, activeChapter, projectPath, chapterContent, mainView, projectConfig, janitorDismissKey])
 
   const handleJanitorDismiss = useCallback((suggestion) => {
     if (!projectPath || !activeChapter) return
-    const key = `fn_janitor_dismissed_${btoa(projectPath.slice(-20))}_${activeChapter.id}`
-    const existing = JSON.parse(localStorage.getItem(key) || '[]')
+    const existing = JSON.parse(localStorage.getItem(janitorDismissKey) || '[]')
     existing.push({ id: suggestion.id })
-    localStorage.setItem(key, JSON.stringify(existing))
+    localStorage.setItem(janitorDismissKey, JSON.stringify(existing))
     setJanitorSuggestions(prev => prev.filter(s => s.id !== suggestion.id))
-  }, [projectPath, activeChapter])
+  }, [projectPath, activeChapter, janitorDismissKey])
 
   const handleJanitorAccept = useCallback(async (suggestion) => {
     const actions = janitorActionsRef.current
@@ -1014,11 +1077,51 @@ export default function FleshNoteIDE({ projectConfig, projectPath, onCloseProjec
     handleJanitorDismiss(suggestion)
   }, [janitorActionsRef, projectPath, handleEntitiesChanged, handleJanitorDismiss])
 
+  // Experimental opt-in: apply linking suggestions as soon as they are detected.
+  useEffect(() => {
+    if (focusMode || projectConfig?.janitor_auto_link !== true) return
+    if (janitorSuggestionChapterRef.current !== activeChapter?.id) {
+      console.debug('[janitor] auto-link skipped: suggestions are not for the current chapter')
+      return
+    }
+    const linkEnabled = projectConfig?.janitor_show_link_existing !== false
+    if (!linkEnabled) {
+      console.log('[janitor] auto-link skipped: the Link suggestion type is disabled')
+      return
+    }
+    const identityOf = (s) => `${s.type}|${s.entity_id}|${s.matched_text}|${s.char_offset}`
+    const linkSuggestions = janitorSuggestions.filter(s => s.type === 'link_existing')
+    const pending = linkSuggestions.filter(s => !autoLinkedRef.current.has(identityOf(s)))
+    if (pending.length === 0) return
+    console.log('[janitor] auto-link applying', pending.length, 'of', linkSuggestions.length,
+      'link suggestions in chapter', activeChapter?.id)
+    let cancelled = false
+    ;(async () => {
+      for (const suggestion of pending) {
+        if (cancelled) break
+        autoLinkedRef.current.add(identityOf(suggestion))
+        try {
+          await handleJanitorAccept(suggestion)
+        } catch (err) {
+          console.error('[janitor] auto-link failed for', suggestion.matched_text, err)
+        }
+      }
+    })()
+    return () => { cancelled = true }
+  }, [janitorSuggestions, projectConfig, handleJanitorAccept, focusMode, activeChapter?.id])
+
   // Clear janitor on chapter change or focus mode entry
   useEffect(() => {
+    if (janitorPendingRetryRef.current) {
+      clearTimeout(janitorPendingRetryRef.current)
+      janitorPendingRetryRef.current = null
+    }
     setJanitorSuggestions([])
     setJanitorLoading(false)
     lastAnalyzedHtmlRef.current = ''
+    lastAnalyzedChapterRef.current = null
+    autoLinkedRef.current.clear()
+    janitorSuggestionChapterRef.current = null
   }, [activeChapter?.id])
 
   useEffect(() => {
@@ -1860,6 +1963,7 @@ export default function FleshNoteIDE({ projectConfig, projectPath, onCloseProjec
                     }}
                     chapterId={activeChapter?.id}
                     projectPath={projectPath}
+                    dismissKey={janitorDismissKey}
                     projectConfig={projectConfig}
                     autoFocusSignal={janitorFocusSignal}
                     onReturnFocus={() => janitorActionsRef.current?.focusEditor()}

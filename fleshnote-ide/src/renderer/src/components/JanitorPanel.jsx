@@ -45,14 +45,6 @@ function getAccent(suggestion) {
   return CARD_ACCENT[suggestion.type] || '#c4a74c'
 }
 
-function getDismissKey(projectPath, chapterId) {
-  try {
-    return `fn_janitor_dismissed_${btoa(projectPath.slice(-20))}_${chapterId}`
-  } catch {
-    return `fn_janitor_dismissed_${chapterId}`
-  }
-}
-
 function ContextSnippet({ context, highlightStart, highlightEnd, onClick }) {
   const before = context.slice(0, highlightStart)
   const highlight = context.slice(highlightStart, highlightEnd)
@@ -74,8 +66,7 @@ export default function JanitorPanel({
   onDismiss,
   onAccept,
   onNavigate,
-  chapterId,
-  projectPath,
+  dismissKey,
   projectConfig,
   autoFocusSignal,
   onReturnFocus,
@@ -105,15 +96,14 @@ export default function JanitorPanel({
   }, [projectConfig])
 
   const dismissedIds = useMemo(() => {
-    if (!projectPath || !chapterId) return new Set()
-    const key = getDismissKey(projectPath, chapterId)
+    if (!dismissKey) return new Set()
     try {
-      const stored = JSON.parse(localStorage.getItem(key) || '[]')
+      const stored = JSON.parse(localStorage.getItem(dismissKey) || '[]')
       return new Set(stored.map(item => item.id))
     } catch {
       return new Set()
     }
-  }, [projectPath, chapterId, suggestions])
+  }, [dismissKey, suggestions])
 
   const visibleSuggestions = useMemo(
     () => suggestions.filter(s => !dismissedIds.has(s.id) && enabledTypes[s.type]),

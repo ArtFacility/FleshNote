@@ -624,6 +624,22 @@ export default function ProjectSettingsModal({ isOpen, onClose, projectPath, onC
                                         </div>
                                     </label>
                                 </div>
+
+                                {/* Off unless switched on: a missing key means off */}
+                                <div className="settings-card">
+                                    <label className="checkbox-label">
+                                        <input
+                                            type="checkbox"
+                                            checked={config.janitor_auto_link === true}
+                                            onChange={() => handleUpdate('janitor_auto_link', config.janitor_auto_link !== true, 'toggle')}
+                                        />
+                                        <div>
+                                            <strong>{t('settings.autoLink', 'Enable auto-linking')}</strong>
+                                            <span className="experimental-badge">{t('settings.experimental', 'Experimental')}</span>
+                                            <p className="settings-desc">{t('settings.autoLinkDesc', 'Apply Link suggestions as soon as The Janitor finds them, without asking. New entities are never created automatically. It can link the wrong name, so check your text afterwards.')}</p>
+                                        </div>
+                                    </label>
+                                </div>
                             </div>
                         )}
 
