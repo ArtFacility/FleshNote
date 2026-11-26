@@ -7,6 +7,7 @@ alias suggestions, typo detection, and synonym improvement.
 import os
 import re
 import json
+import bisect
 import sqlite3
 import hashlib
 import html as html_lib
@@ -140,6 +141,13 @@ class JanitorRequest(BaseModel):
     confidence_threshold: float = 0.5
 
 
+class JanitorLinkAllRequest(BaseModel):
+    project_path: str
+    chapter_id: str | int
+    html: str
+    language: str = "en"
+
+
 class JanitorSuggestion(BaseModel):
     id: str
     type: str
@@ -182,7 +190,7 @@ def _strip_todo_blocks(text: str) -> str:
     return re.sub(r'#TODO[^\u200B\n]*\u200B?', '', text)
 
 
-_ENTITY_LINK_TYPES = {"char", "loc", "item", "lore", "group", "character", "location"}
+_ENTITY_LINK_TYPES = {"char", "loc", "item", "lore", "group", "character", "location", "annotation"}
 _TODO_SPAN_RE = re.compile(r'#TODO[^\u200B\n]*\u200B?')
 _TAG_STRIP_RE = re.compile(r'<[^>]+>')
 
@@ -192,56 +200,33 @@ def _plain_len(fragment: str) -> int:
     return len(_TODO_SPAN_RE.sub("", html_lib.unescape(_TAG_STRIP_RE.sub("", fragment))))
 
 
-def _find_span_close(html: str, start: int) -> int:
-    """Offset of the </span> matching the span opened before `start`."""
-    depth = 0
-    pos = start
-    while pos < len(html):
-        opening = re.search(r'<span\b[^>]*>', html[pos:], re.IGNORECASE)
-        closing = html.find('</span>', pos)
-        if closing == -1:
-            return -1
-        if opening and pos + opening.start() < closing:
-            depth += 1
-            pos += opening.end()
-        elif depth == 0:
-            return closing
-        else:
-            depth -= 1
-            pos = closing + len('</span>')
-    return -1
-
-
 def _get_linked_ranges(html: str) -> list[tuple[int, int]]:
     """Plain-text ranges already covered by real entity links.
 
-    Notes (twists, foreshadowing, annotations, quick notes) also carry
+    Notes (twists, foreshadowing, time, knowledge) also carry
     data-entity-id in stored HTML, but they are not links and must not hide
     link suggestions. Offsets use the same normalisation as plain_text: tags
-    stripped, entities unescaped and #TODO blocks removed. Counting raw HTML
-    characters slid ranges right by every '&amp;' or TODO before a link.
+    stripped, entities unescaped and #TODO blocks removed.
     """
-    ranges: list[tuple[int, int]] = []
     pos = 0
     plain_offset = 0
-    for m in re.finditer(r'<span\b[^>]*>', html, re.IGNORECASE):
-        if m.start() < pos:
-            continue
+    span_stack: list[tuple[bool, int]] = []
+    ranges: list[tuple[int, int]] = []
+    for m in re.finditer(r'<[^>]+>', html):
         plain_offset += _plain_len(html[pos:m.start()])
+        pos = m.end()
         tag = m.group()
-        closing = _find_span_close(html, m.end())
-        if closing == -1:
-            pos = m.end()
-            continue
-        inner_len = _plain_len(html[m.end():closing])
-        type_match = re.search(r'data-entity-type=["\']([^"\']+)', tag, re.IGNORECASE)
-        etype = (type_match.group(1) or "").lower() if type_match else ""
-        if (re.search(r'data-entity-id=', tag, re.IGNORECASE)
-                and (not etype or etype in _ENTITY_LINK_TYPES)):
-            if inner_len:
-                ranges.append((plain_offset, plain_offset + inner_len))
-        plain_offset += inner_len
-        pos = closing + len('</span>')
+        if re.match(r'^<\s*span\b', tag, re.IGNORECASE) and not tag.rstrip().endswith('/>'):
+            has_id = bool(re.search(r'data-entity-id=', tag, re.IGNORECASE))
+            type_match = re.search(r'data-entity-type=["\']([^"\']+)', tag, re.IGNORECASE)
+            etype = (type_match.group(1) or "").lower() if type_match else ""
+            is_link = has_id and (not etype or etype in _ENTITY_LINK_TYPES)
+            span_stack.append((is_link, plain_offset))
+        elif re.match(r'^<\s*/\s*span\s*>', tag, re.IGNORECASE):
+            if span_stack:
+                is_link, start = span_stack.pop()
+                if is_link and plain_offset > start:
+                    ranges.append((start, plain_offset))
     return ranges
 
 
@@ -1580,7 +1565,8 @@ def janitor_analyze(req: JanitorRequest):
         analysis = ChapterAnalysis(req.project_path, req.chapter_id, req.html, req.language)
         plain_text = analysis.plain_text
         if not plain_text.strip():
-            print(f"[janitor] chapter={req.chapter_id}: no analysable text", flush=True)
+            if os.environ.get("FLESHNOTE_DEBUG_JANITOR"):
+                print(f"[janitor] chapter={req.chapter_id}: no analysable text", flush=True)
             return {"status": "ok", "suggestions": []}
         # Word-boundary-safe version for typo/synonym tokenization (adds spaces at block breaks)
         words_plain = _strip_todo_blocks(_html_to_words_plain(req.html))
@@ -1607,15 +1593,156 @@ def janitor_analyze(req: JanitorRequest):
         by_type: dict = {}
         for s in suggestions:
             by_type[s["type"]] = by_type.get(s["type"], 0) + 1
-        print(f"[janitor] chapter={req.chapter_id} chars={len(plain_text)} "
-              f"entities={len(entities)} linked_ranges={len(linked_ranges)} "
-              f"link_matches={link_stats.get('matches', 0)} "
-              f"link_skipped_linked={link_stats.get('linked_skipped', 0)} "
-              f"link_cap_reached={link_stats.get('cap_reached', False)} "
-              f"types={by_type}", flush=True)
+        if os.environ.get("FLESHNOTE_DEBUG_JANITOR"):
+            print(f"[janitor] chapter={req.chapter_id} chars={len(plain_text)} "
+                  f"entities={len(entities)} linked_ranges={len(linked_ranges)} "
+                  f"link_matches={link_stats.get('matches', 0)} "
+                  f"link_skipped_linked={link_stats.get('linked_skipped', 0)} "
+                  f"link_cap_reached={link_stats.get('cap_reached', False)} "
+                  f"types={by_type}", flush=True)
         return {"status": "ok", "suggestions": suggestions}
     except Exception as e:
         print(f"[janitor] analysis failed for chapter {req.chapter_id}: {e}", flush=True)
         return {"status": "error", "suggestions": [], "error": str(e)}
+    finally:
+        conn.close()
+
+
+def _plan_link_all(
+    plain_text: str,
+    blocks: list[tuple[int, str]],
+    linked_ranges: list[tuple[int, int]],
+    entities: list[dict],
+) -> tuple[list[dict], list[dict]]:
+    """Plan deterministic whole-chapter entity links and collect ambiguous mentions."""
+    term_index: dict[str, dict] = {}
+    for ent in entities:
+        eid = ent["id"]
+        for raw_term in [ent.get("name") or ""] + list(ent.get("aliases") or []):
+            term = raw_term.strip()
+            if len(term) < 2:
+                continue
+            term_index.setdefault(term.lower(), {})[eid] = (ent, "explicit", term)
+
+    for ent in entities:
+        if ent.get("type") != "character":
+            continue
+        parts = (ent.get("name") or "").split()
+        if len(parts) < 2:
+            continue
+        eid = ent["id"]
+        for part in parts:
+            if len(part) < 3 or part.isdigit():
+                continue
+            if all(p.isdigit() for p in parts if p.lower() != part.lower()):
+                continue
+            bucket = term_index.setdefault(part.lower(), {})
+            if eid not in bucket:
+                bucket[eid] = (ent, "part", part)
+
+    candidates: list[dict] = []
+    for term_l, owners_map in term_index.items():
+        owners = list(owners_map.values())
+        all_parts = all(k == "part" for _, k, _ in owners)
+        has_explicit = any(k == "explicit" for _, k, _ in owners)
+        pattern = r'\b' + re.escape(term_l) + r'\b'
+        for m in re.finditer(pattern, plain_text, re.IGNORECASE):
+            start, end = m.span()
+            if any(start < le and end > ls for ls, le in linked_ranges):
+                continue
+            matched = m.group()
+            if all_parts and _alias_usage_is_generic(plain_text, m):
+                continue
+            candidates.append({
+                "start": start,
+                "end": end,
+                "matched_text": matched,
+                "owners": owners,
+                "has_explicit": has_explicit,
+            })
+
+    # Longest match wins, preferring hits backed by at least one explicit term.
+    candidates.sort(key=lambda h: (-(h["end"] - h["start"]), 0 if h["has_explicit"] else 1, h["start"]))
+    accepted_intervals: list[tuple[int, int]] = []
+    kept: list[dict] = []
+    for hit in candidates:
+        s, e = hit["start"], hit["end"]
+        if any(s < ae and e > a_s for a_s, ae in accepted_intervals):
+            continue
+        accepted_intervals.append((s, e))
+        kept.append(hit)
+    kept.sort(key=lambda h: h["start"])
+
+    starts = [s for s, _ in blocks]
+    auto_links: list[dict] = []
+    ambiguous: list[dict] = []
+    window = 90
+    for hit in kept:
+        start = hit["start"]
+        matched = hit["matched_text"]
+        owners = hit["owners"]
+        if len(owners) == 1:
+            ent = owners[0][0]
+            auto_links.append({
+                "char_offset": start,
+                "matched_text": matched,
+                "entity_type": ent["type"],
+                "entity_id": ent["id"],
+                "entity_name": ent["name"],
+            })
+        else:
+            if blocks:
+                idx = max(0, bisect.bisect_right(starts, start) - 1)
+                b_start, b_text = blocks[idx]
+                local = start - b_start
+                if local < 0 or local + len(matched) > len(b_text):
+                    b_text, local = plain_text, start
+            else:
+                b_text, local = plain_text, start
+            cstart = max(0, local - window)
+            cend = min(len(b_text), local + len(matched) + window)
+            ctx = b_text[cstart:cend]
+            hl_start = local - cstart
+            hl_end = local + len(matched) - cstart
+            sorted_owners = sorted(owners, key=lambda item: (0 if item[1] == "explicit" else 1, item[0]["name"].lower()))
+            ambiguous.append({
+                "char_offset": start,
+                "matched_text": matched,
+                "context": ctx,
+                "context_highlight_start": hl_start,
+                "context_highlight_end": hl_end,
+                "candidates": [
+                    {
+                        "entity_id": ent["id"],
+                        "entity_type": ent["type"],
+                        "entity_name": ent["name"],
+                        "aliases": ent.get("aliases") or [],
+                    }
+                    for ent, _, _ in sorted_owners
+                ],
+            })
+
+    return auto_links, ambiguous
+
+
+@router.post("/api/project/janitor/link-all")
+def janitor_link_all(req: JanitorLinkAllRequest):
+    try:
+        conn = _get_db(req.project_path)
+    except FileNotFoundError as e:
+        return {"status": "error", "error": str(e), "auto_links": [], "ambiguous": []}
+
+    try:
+        from routes.janitor_paragraphs import split_blocks
+        blocks = split_blocks(req.html)
+        plain_text = "".join(t for _, t in blocks)
+        if not plain_text.strip():
+            return {"status": "ok", "auto_links": [], "ambiguous": []}
+        entities = _get_all_entities(conn)
+        linked_ranges = _get_linked_ranges(req.html)
+        auto_links, ambiguous = _plan_link_all(plain_text, blocks, linked_ranges, entities)
+        return {"status": "ok", "auto_links": auto_links, "ambiguous": ambiguous}
+    except Exception as e:
+        return {"status": "error", "error": str(e), "auto_links": [], "ambiguous": []}
     finally:
         conn.close()

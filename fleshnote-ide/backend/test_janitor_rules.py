@@ -278,6 +278,114 @@ class TestLinkRanges(unittest.TestCase):
                 'A long note about Sophia</span> then Sophia left.</p>')
         self.assertEqual(J._get_linked_ranges(html), [])
 
+    def test_nested_entity_link_inside_twist_span_is_detected(self):
+        from routes.janitor_paragraphs import split_blocks
+
+        html = ('<p><span data-entity-type="twist" data-entity-id="t1">'
+                'A secret about <span data-entity-type="char" data-entity-id="5">Sophia</span>'
+                '</span> then Sophia left.</p>')
+        plain = "".join(text for _, text in split_blocks(html))
+        ranges = J._get_linked_ranges(html)
+        self.assertEqual(len(ranges), 1)
+        self.assertEqual(plain[ranges[0][0]:ranges[0][1]], "Sophia")
+        self.assertEqual(ranges[0][0], plain.index("Sophia"))
+
+    def test_uppercase_closing_span_tag_is_handled(self):
+        html = '<p><SPAN data-entity-type="char" data-entity-id="5">Sophia</SPAN> smiled.</p>'
+        self.assertEqual(J._get_linked_ranges(html), [(0, 6)])
+
+
+class TestLinkAll(unittest.TestCase):
+    @staticmethod
+    def ent(eid, name, etype="character", aliases=None):
+        return {"id": eid, "name": name, "type": etype, "aliases": aliases or []}
+
+    def plan(self, html, entities):
+        from routes.janitor_paragraphs import split_blocks
+
+        blocks = split_blocks(html)
+        plain = "".join(t for _, t in blocks)
+        linked = J._get_linked_ranges(html)
+        return J._plan_link_all(plain, blocks, linked, entities), plain
+
+    def test_multiple_mentions_same_and_across_lines_in_order(self):
+        entities = [self.ent("c1", "Sophia")]
+        html = "<p>Sophia met Sophia by the gate.</p><p>Later, Sophia smiled.</p>"
+        (auto_links, ambiguous), plain = self.plan(html, entities)
+        self.assertEqual(ambiguous, [])
+        self.assertEqual(len(auto_links), 3)
+        offsets = [item["char_offset"] for item in auto_links]
+        self.assertEqual(offsets, sorted(offsets))
+        self.assertEqual(
+            [plain[item["char_offset"]:item["char_offset"] + len(item["matched_text"])] for item in auto_links],
+            ["Sophia", "Sophia", "Sophia"],
+        )
+
+    def test_longest_match_wins_and_standalone_shared_first_name_is_ambiguous(self):
+        entities = [self.ent("c1", "Jon Snow"), self.ent("c2", "Jon Arryn")]
+        html = "<p>Jon Snow rode north while Jon stayed behind.</p>"
+        (auto_links, ambiguous), plain = self.plan(html, entities)
+        self.assertEqual(len(auto_links), 1)
+        self.assertEqual(auto_links[0]["matched_text"], "Jon Snow")
+        self.assertEqual(auto_links[0]["entity_id"], "c1")
+        self.assertEqual(len(ambiguous), 1)
+        amb = ambiguous[0]
+        self.assertEqual(amb["matched_text"], "Jon")
+        self.assertEqual(
+            amb["context"][amb["context_highlight_start"]:amb["context_highlight_end"]],
+            "Jon",
+        )
+        self.assertEqual({c["entity_id"] for c in amb["candidates"]}, {"c1", "c2"})
+        self.assertEqual(plain[amb["char_offset"]:amb["char_offset"] + 3], "Jon")
+
+    def test_shared_surname_is_ambiguous(self):
+        entities = [self.ent("c1", "John Smith"), self.ent("c2", "Mary Smith")]
+        html = "<p>Smith knocked on the door.</p>"
+        (auto_links, ambiguous), _ = self.plan(html, entities)
+        self.assertEqual(auto_links, [])
+        self.assertEqual(len(ambiguous), 1)
+        self.assertEqual(ambiguous[0]["matched_text"], "Smith")
+        self.assertEqual({c["entity_id"] for c in ambiguous[0]["candidates"]}, {"c1", "c2"})
+
+    def test_explicit_name_colliding_with_other_first_name_is_ambiguous(self):
+        entities = [self.ent("c1", "Jon"), self.ent("c2", "Jon Snow")]
+        html = "<p>Jon entered the hall.</p>"
+        (auto_links, ambiguous), _ = self.plan(html, entities)
+        self.assertEqual(auto_links, [])
+        self.assertEqual(len(ambiguous), 1)
+        self.assertEqual(ambiguous[0]["matched_text"], "Jon")
+        self.assertEqual(
+            [c["entity_id"] for c in ambiguous[0]["candidates"]],
+            ["c1", "c2"],
+        )
+
+    def test_lowercase_explicit_names_link_while_generic_lowercase_parts_skip(self):
+        entities = [self.ent("c1", "Jon"), self.ent("c2", "Tom Baker")]
+        html = "<p>Jon and jon saw Tom Baker and a baker before Baker left.</p>"
+        (auto_links, ambiguous), _ = self.plan(html, entities)
+        self.assertEqual(ambiguous, [])
+        self.assertEqual(
+            [(item["entity_id"], item["matched_text"]) for item in auto_links],
+            [("c1", "Jon"), ("c1", "jon"), ("c2", "Tom Baker"), ("c2", "Baker")],
+        )
+
+    def test_non_character_parts_ignored_and_already_linked_skipped(self):
+        entities = [
+            self.ent("l1", "Tower Cafe", etype="location"),
+            self.ent("c1", "Sophia", etype="character"),
+        ]
+        html = (
+            '<p>They visited the Cafe near <span data-entity-type="location" data-entity-id="l1">Tower Cafe</span>. '
+            '<span data-entity-type="twist" data-entity-id="t1">Inside, '
+            '<span data-entity-type="char" data-entity-id="c1">Sophia</span> waited</span> '
+            'while Sophia watched the street.</p>'
+        )
+        (auto_links, ambiguous), plain = self.plan(html, entities)
+        self.assertEqual(ambiguous, [])
+        self.assertEqual(len(auto_links), 1)
+        self.assertEqual(auto_links[0]["matched_text"], "Sophia")
+        self.assertEqual(auto_links[0]["char_offset"], plain.rindex("Sophia"))
+
 
 if __name__ == "__main__":
     unittest.main()

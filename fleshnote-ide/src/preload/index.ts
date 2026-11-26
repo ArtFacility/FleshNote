@@ -288,6 +288,7 @@ const api = {
 
   // ── Janitor ────────────────────────────────────────
   janitorAnalyze: (payload) => ipcRenderer.invoke('api:janitorAnalyze', payload),
+  janitorLinkAll: (payload) => ipcRenderer.invoke('api:janitorLinkAll', payload),
   janitorSensesOverview: (payload) => ipcRenderer.invoke('api:janitorSensesOverview', payload),
   storyPulse: (payload) => ipcRenderer.invoke('api:storyPulse', payload),
   storyPulseCorrect: (payload) => ipcRenderer.invoke('api:storyPulseCorrect', payload),

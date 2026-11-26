@@ -23,6 +23,7 @@ import StatsDashboard from './StatsDashboard'
 import EntityManager from './EntityManager'
 import WorldbuildAndHistory from './WorldbuildAndHistory'
 import JanitorPanel from './JanitorPanel'
+import LinkAllDisambiguateModal from './LinkAllDisambiguateModal'
 import ReviewsPanel from './ReviewsPanel'
 import SendForReviewModal from './SendForReviewModal'
 import ReviewImportSummary from './ReviewImportSummary'
@@ -384,8 +385,9 @@ export default function FleshNoteIDE({ projectConfig, projectPath, onCloseProjec
   const lastAnalyzedChapterRef = useRef(null)
   const currentChapterIdRef = useRef(null)
   currentChapterIdRef.current = activeChapter?.id
-  const autoLinkedRef = useRef(new Set())
-  const janitorSuggestionChapterRef = useRef(null)
+  const [linkAllRunning, setLinkAllRunning] = useState(false)
+  const [linkAllNotice, setLinkAllNotice] = useState(null)
+  const [linkAllDisambig, setLinkAllDisambig] = useState(null)
 
   // ── History (rollback) Panel State ──────────────────
   // Shares the right rail with the Janitor: opening one collapses the other.
@@ -938,16 +940,16 @@ export default function FleshNoteIDE({ projectConfig, projectPath, onCloseProjec
       return
     }
     if (!activeChapter || !projectPath) {
-      console.log('[janitor] skip: no chapter or project path')
+      console.debug('[janitor] skip: no chapter or project path')
       return
     }
     if (mainView !== 'editor') {
-      console.log('[janitor] skip: not in editor view', mainView)
+      console.debug('[janitor] skip: not in editor view', mainView)
       return
     }
     const htmlToAnalyze = typeof latestHtml === 'string' ? latestHtml : chapterContent?.content
     if (!htmlToAnalyze) {
-      console.log('[janitor] skip: empty chapter content', activeChapter.id)
+      console.debug('[janitor] skip: empty chapter content', activeChapter.id)
       return
     }
     // Only skip when this same chapter's content was already analysed.
@@ -960,7 +962,7 @@ export default function FleshNoteIDE({ projectConfig, projectPath, onCloseProjec
     const wait = 8000 - (Date.now() - janitorPanelActivityRef.current)
     if (wait > 0) {
       if (janitorPendingRetryRef.current) clearTimeout(janitorPendingRetryRef.current)
-      console.log('[janitor] deferring analysis while the panel is active', activeChapter.id, `${Math.round(wait)}ms`)
+      console.debug('[janitor] deferring analysis while the panel is active', activeChapter.id, `${Math.round(wait)}ms`)
       janitorPendingRetryRef.current = setTimeout(() => triggerJanitorAnalysis(htmlToAnalyze), 8000)
       return
     }
@@ -976,7 +978,7 @@ export default function FleshNoteIDE({ projectConfig, projectPath, onCloseProjec
         confidence_threshold: projectConfig?.janitor_sdt_confidence ?? 0.5,
       })
       if (currentChapterIdRef.current !== requestedChapterId) {
-        console.log('[janitor] discarding result for stale chapter', requestedChapterId, 'current', currentChapterIdRef.current)
+        console.debug('[janitor] discarding result for stale chapter', requestedChapterId, 'current', currentChapterIdRef.current)
         return
       }
       if (result?.status === 'ok') {
@@ -993,7 +995,7 @@ export default function FleshNoteIDE({ projectConfig, projectPath, onCloseProjec
           console.warn('[janitor] could not read dismissals for', janitorDismissKey)
         }
         const visible = suggestions.filter(s => !dismissed.has(s.id))
-        console.log('[janitor] analysed', requestedChapterId, {
+        console.debug('[janitor] analysed', requestedChapterId, {
           generated: suggestions.length,
           byType,
           dismissed: suggestions.length - visible.length,
@@ -1003,7 +1005,6 @@ export default function FleshNoteIDE({ projectConfig, projectPath, onCloseProjec
         lastAnalyzedHtmlRef.current = htmlToAnalyze
         lastAnalyzedChapterRef.current = requestedChapterId
         setJanitorSuggestions(visible)
-        janitorSuggestionChapterRef.current = requestedChapterId
         setJanitorRuns(n => n + 1)
       } else {
         console.error('[janitor] backend analysis failed', requestedChapterId, result?.error || result)
@@ -1077,38 +1078,85 @@ export default function FleshNoteIDE({ projectConfig, projectPath, onCloseProjec
     handleJanitorDismiss(suggestion)
   }, [janitorActionsRef, projectPath, handleEntitiesChanged, handleJanitorDismiss])
 
-  // Experimental opt-in: apply linking suggestions as soon as they are detected.
-  useEffect(() => {
-    if (focusMode || projectConfig?.janitor_auto_link !== true) return
-    if (janitorSuggestionChapterRef.current !== activeChapter?.id) {
-      console.debug('[janitor] auto-link skipped: suggestions are not for the current chapter')
+  const applyLinkAllBatch = useCallback((links) => {
+    const actions = janitorActionsRef.current
+    if (!actions?.applyEntityLinksBatch || !links?.length) {
+      setLinkAllNotice({ count: 0, empty: true })
       return
     }
-    const linkEnabled = projectConfig?.janitor_show_link_existing !== false
-    if (!linkEnabled) {
-      console.log('[janitor] auto-link skipped: the Link suggestion type is disabled')
+    const applied = actions.applyEntityLinksBatch(links)
+    if (applied.length > 0) {
+      lastAnalyzedHtmlRef.current = ''
+      const requestedKeys = new Set(
+        links.map(l => `${l.char_offset}|${(l.matched_text || '').toLowerCase()}`)
+      )
+      setJanitorSuggestions(prev =>
+        prev.filter(
+          s => !(s.type === 'link_existing' && requestedKeys.has(`${s.char_offset}|${(s.matched_text || '').toLowerCase()}`))
+        )
+      )
+      setLinkAllNotice({ count: applied.length, appliedLinks: applied })
+    } else {
+      setLinkAllNotice({ count: 0, empty: true })
+    }
+  }, [janitorActionsRef])
+
+  const handleLinkAll = useCallback(async () => {
+    if (linkAllRunning || !activeChapter || !projectPath || focusMode) return
+    const html = janitorActionsRef.current?.getHTML?.() ?? chapterContent?.content
+    if (!html) {
+      setLinkAllNotice({ count: 0, empty: true })
       return
     }
-    const identityOf = (s) => `${s.type}|${s.entity_id}|${s.matched_text}|${s.char_offset}`
-    const linkSuggestions = janitorSuggestions.filter(s => s.type === 'link_existing')
-    const pending = linkSuggestions.filter(s => !autoLinkedRef.current.has(identityOf(s)))
-    if (pending.length === 0) return
-    console.log('[janitor] auto-link applying', pending.length, 'of', linkSuggestions.length,
-      'link suggestions in chapter', activeChapter?.id)
-    let cancelled = false
-    ;(async () => {
-      for (const suggestion of pending) {
-        if (cancelled) break
-        autoLinkedRef.current.add(identityOf(suggestion))
-        try {
-          await handleJanitorAccept(suggestion)
-        } catch (err) {
-          console.error('[janitor] auto-link failed for', suggestion.matched_text, err)
+    const requestedChapterId = activeChapter.id
+    setLinkAllRunning(true)
+    setLinkAllNotice(null)
+    try {
+      const result = await window.api.janitorLinkAll({
+        project_path: projectPath,
+        chapter_id: requestedChapterId,
+        html,
+        language: projectConfig?.story_language || 'en',
+      })
+      if (currentChapterIdRef.current !== requestedChapterId) return
+      if (result?.status === 'ok') {
+        const autoLinks = result.auto_links || []
+        const ambiguous = result.ambiguous || []
+        if (ambiguous.length > 0) {
+          setLinkAllDisambig({ chapterId: requestedChapterId, autoLinks, ambiguous })
+        } else if (autoLinks.length > 0) {
+          applyLinkAllBatch(autoLinks)
+        } else {
+          setLinkAllNotice({ count: 0, empty: true })
         }
+      } else {
+        console.error('[janitor] link-all failed', requestedChapterId, result?.error || result)
       }
-    })()
-    return () => { cancelled = true }
-  }, [janitorSuggestions, projectConfig, handleJanitorAccept, focusMode, activeChapter?.id])
+    } catch (err) {
+      console.error('[janitor] link-all request failed', requestedChapterId, err)
+    } finally {
+      setLinkAllRunning(false)
+    }
+  }, [linkAllRunning, activeChapter, projectPath, focusMode, chapterContent, projectConfig, janitorActionsRef, applyLinkAllBatch])
+
+  const handleUndoLinkAll = useCallback(() => {
+    const appliedLinks = linkAllNotice?.appliedLinks
+    let didUndo = false
+    if (appliedLinks?.length) {
+      const undone = janitorActionsRef.current?.undoEntityLinksBatch?.(appliedLinks)
+      if (undone) {
+        didUndo = true
+        lastAnalyzedHtmlRef.current = ''
+        janitorPanelActivityRef.current = 0
+      }
+    }
+    setLinkAllNotice(null)
+    if (didUndo) {
+      triggerJanitorAnalysis(janitorActionsRef.current?.getHTML?.())
+    }
+  }, [linkAllNotice, janitorActionsRef, triggerJanitorAnalysis])
+
+  const handleEditorUserEdit = useCallback(() => setLinkAllNotice(prev => (prev ? null : prev)), [])
 
   // Clear janitor on chapter change or focus mode entry
   useEffect(() => {
@@ -1120,14 +1168,18 @@ export default function FleshNoteIDE({ projectConfig, projectPath, onCloseProjec
     setJanitorLoading(false)
     lastAnalyzedHtmlRef.current = ''
     lastAnalyzedChapterRef.current = null
-    autoLinkedRef.current.clear()
-    janitorSuggestionChapterRef.current = null
+    setLinkAllRunning(false)
+    setLinkAllNotice(null)
+    setLinkAllDisambig(null)
   }, [activeChapter?.id])
 
   useEffect(() => {
     if (focusMode) {
       setJanitorSuggestions([])
       setJanitorLoading(false)
+      setLinkAllRunning(false)
+      setLinkAllNotice(null)
+      setLinkAllDisambig(null)
     }
   }, [focusMode])
 
@@ -1948,6 +2000,7 @@ export default function FleshNoteIDE({ projectConfig, projectPath, onCloseProjec
                   onJanitorTrigger={focusMode ? null : triggerJanitorAnalysis}
                   pulseRefreshKey={janitorRuns}
                   onEffectiveTimeChange={setCursorWorldTime}
+                  onUserEdit={handleEditorUserEdit}
                 />
                 {!focusMode && (
                   <>
@@ -1969,6 +2022,11 @@ export default function FleshNoteIDE({ projectConfig, projectPath, onCloseProjec
                     onReturnFocus={() => janitorActionsRef.current?.focusEditor()}
                     onActivity={() => { janitorPanelActivityRef.current = Date.now() }}
                     hotkeys={ideHotkeys}
+                    onLinkAll={handleLinkAll}
+                    isLinkAllRunning={linkAllRunning}
+                    linkAllNotice={linkAllNotice}
+                    onUndoLinkAll={handleUndoLinkAll}
+                    onDismissLinkAllNotice={() => setLinkAllNotice(null)}
                   />
                   <HistoryPanel
                     projectPath={projectPath}
@@ -2186,6 +2244,19 @@ export default function FleshNoteIDE({ projectConfig, projectPath, onCloseProjec
         onClose={() => setCloneMode(null)}
         projectPath={projectPath}
         workspacePath={projectPath ? projectPath.replace(/[\\/][^\\/]+[\\/]?$/, '') : ''}
+      />
+
+      <LinkAllDisambiguateModal
+        isOpen={Boolean(linkAllDisambig)}
+        autoCount={linkAllDisambig?.autoLinks?.length || 0}
+        items={linkAllDisambig?.ambiguous || []}
+        onCancel={() => setLinkAllDisambig(null)}
+        onComplete={(chosen) => {
+          const pending = linkAllDisambig
+          setLinkAllDisambig(null)
+          if (!pending || currentChapterIdRef.current !== pending.chapterId) return
+          applyLinkAllBatch([...(pending.autoLinks || []), ...(chosen || [])])
+        }}
       />
     </>
   )

@@ -1699,6 +1699,9 @@ app.whenReady().then(async () => {
   ipcMain.handle('api:janitorAnalyze', async (_event, payload) => {
     return await backendPost('/api/project/janitor/analyze', payload)
   })
+  ipcMain.handle('api:janitorLinkAll', async (_event, payload) => {
+    return await backendPost('/api/project/janitor/link-all', payload)
+  })
   ipcMain.handle('api:janitorSensesOverview', async (_event, payload) => {
     return await backendPost('/api/project/janitor/senses-overview', payload)
   })

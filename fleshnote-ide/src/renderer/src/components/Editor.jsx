@@ -192,7 +192,8 @@ export default function Editor({
   janitorActionsRef,  // ref that receives { navigateToCharOffset, linkEntityAtOffset, replaceAtOffset }
   onJanitorTrigger,   // called when 100-word boundary crossed or 10s idle
   pulseRefreshKey,    // bumps after each Janitor run: the Pulse gutter refetches its scores
-  onEffectiveTimeChange // called when cursor time changes
+  onEffectiveTimeChange, // called when cursor time changes
+  onUserEdit          // called when the user edits the document (excluding programmatic/Link All changes)
 }) {
   const { t, i18n } = useTranslation()
   const saveTimeoutRef = useRef(null)
@@ -257,6 +258,11 @@ export default function Editor({
   useEffect(() => {
     onJanitorTriggerRef.current = onJanitorTrigger
   }, [onJanitorTrigger])
+
+  const onUserEditRef = useRef(onUserEdit)
+  useEffect(() => {
+    onUserEditRef.current = onUserEdit
+  }, [onUserEdit])
 
   // What the recorder should be recording right now (read by resumeRecording).
   const recordTargetRef = useRef(null)
@@ -743,6 +749,9 @@ export default function Editor({
       // Capture the writing process — but never the programmatic content-load.
       if (!pentiLoadingRef.current) {
         try { pentimentoRef.current?.onTransaction(transaction, appendedTransactions) } catch { /* telemetry must never break editing */ }
+      }
+      if (!pentiLoadingRef.current && transaction?.docChanged && !transaction?.getMeta('fleshnoteLinkAll')) {
+        onUserEditRef.current?.()
       }
       if (onUpdate) {
         if (saveTimeoutRef.current) clearTimeout(saveTimeoutRef.current)
@@ -1353,6 +1362,161 @@ export default function Editor({
       focusEditor() {
         if (!editor || editor.isDestroyed) return
         editor.commands.focus()
+      },
+      getHTML() {
+        return editor && !editor.isDestroyed ? editor.getHTML() : null
+      },
+      applyEntityLinksBatch(links) {
+        if (!editor || editor.isDestroyed || !Array.isArray(links) || links.length === 0) return []
+        const todoRe = /#TODO[^\u200B\n]*\u200B?/g
+        const segments = []
+        let docPlain = ''
+        let plainOffset = 0
+
+        editor.state.doc.descendants((node, pos) => {
+          if (!node.isText) return
+          const hasEntityLink = node.marks.some(m => m.type.name === 'entityLink')
+          todoRe.lastIndex = 0
+          let lastIdx = 0
+          let m
+          while ((m = todoRe.exec(node.text)) !== null) {
+            if (m.index > lastIdx) {
+              const segText = node.text.slice(lastIdx, m.index)
+              segments.push({
+                plainStart: plainOffset,
+                plainEnd: plainOffset + segText.length,
+                docPos: pos + lastIdx,
+                text: segText,
+                hasEntityLink,
+              })
+              docPlain += segText
+              plainOffset += segText.length
+            }
+            lastIdx = m.index + m[0].length
+          }
+          if (lastIdx < node.text.length) {
+            const segText = node.text.slice(lastIdx)
+            segments.push({
+              plainStart: plainOffset,
+              plainEnd: plainOffset + segText.length,
+              docPos: pos + lastIdx,
+              text: segText,
+              hasEntityLink,
+            })
+            docPlain += segText
+            plainOffset += segText.length
+          }
+        })
+
+        if (segments.length === 0) return []
+
+        const claimedRanges = []
+        const overlapsClaimed = (from, to) =>
+          claimedRanges.some(([cFrom, cTo]) => from < cTo && to > cFrom)
+
+        const mapPlainRange = (plainStart, plainEnd) => {
+          if (plainEnd <= plainStart) return null
+          let docFrom = null
+          let docTo = null
+          for (const seg of segments) {
+            if (seg.plainEnd <= plainStart) continue
+            if (seg.plainStart >= plainEnd) break
+            if (seg.hasEntityLink) return null
+            if (docFrom === null) {
+              docFrom = seg.docPos + (plainStart - seg.plainStart)
+            }
+            if (plainEnd <= seg.plainEnd) {
+              docTo = seg.docPos + (plainEnd - seg.plainStart)
+            }
+          }
+          if (docFrom === null || docTo === null || docTo <= docFrom) return null
+          if (docTo - docFrom !== plainEnd - plainStart) return null
+          if (!editor.state.doc.resolve(docFrom).sameParent(editor.state.doc.resolve(docTo))) return null
+          if (overlapsClaimed(docFrom, docTo)) return null
+          return { docFrom, docTo }
+        }
+
+        const docPlainLower = docPlain.toLowerCase()
+        const applied = []
+
+        for (const item of links) {
+          const { char_offset, matched_text, entity_type, entity_id } = item || {}
+          if (!matched_text || !entity_type || entity_id == null) continue
+          const needle = matched_text.toLowerCase()
+          const len = matched_text.length
+          let resolved = null
+
+          if (
+            typeof char_offset === 'number' &&
+            char_offset >= 0 &&
+            char_offset + len <= docPlain.length &&
+            docPlainLower.slice(char_offset, char_offset + len) === needle
+          ) {
+            resolved = mapPlainRange(char_offset, char_offset + len)
+          }
+
+          if (!resolved) {
+            const isWordChar = (ch) => Boolean(ch && /[\p{L}\p{N}_]/u.test(ch))
+            const center = typeof char_offset === 'number' ? char_offset : 0
+            const winStart = Math.max(0, center - 60)
+            const winEnd = Math.min(docPlain.length, center + len + 60)
+            const candidates = []
+            let searchFrom = winStart
+            while (searchFrom + len <= winEnd) {
+              const idx = docPlainLower.indexOf(needle, searchFrom)
+              if (idx === -1 || idx + len > winEnd) break
+              if (!isWordChar(docPlain[idx - 1]) && !isWordChar(docPlain[idx + len])) {
+                candidates.push(idx)
+              }
+              searchFrom = idx + 1
+            }
+            candidates.sort((a, b) => Math.abs(a - center) - Math.abs(b - center))
+            for (const idx of candidates) {
+              const mapped = mapPlainRange(idx, idx + len)
+              if (mapped) {
+                resolved = mapped
+                break
+              }
+            }
+          }
+
+          if (resolved) {
+            claimedRanges.push([resolved.docFrom, resolved.docTo])
+            applied.push({
+              from: resolved.docFrom,
+              to: resolved.docTo,
+              entityType: entity_type,
+              entityId: String(entity_id),
+              matchedText: matched_text,
+            })
+          }
+        }
+
+        if (applied.length === 0) return []
+        const tr = editor.state.tr
+        tr.setMeta('fleshnoteLinkAll', true)
+        const markType = editor.schema.marks.entityLink
+        for (const { from, to, entityType, entityId } of applied) {
+          tr.addMark(from, to, markType.create({ entityType, entityId }))
+        }
+        editor.view.dispatch(tr)
+        return applied
+      },
+      undoEntityLinksBatch(appliedLinks) {
+        if (!editor || editor.isDestroyed || !appliedLinks?.length) return false
+        const tr = editor.state.tr
+        tr.setMeta('fleshnoteLinkAll', true)
+        const markType = editor.schema.marks.entityLink
+        for (const { from, to, entityType, entityId } of appliedLinks) {
+          if (from >= 0 && to > from && to <= tr.doc.content.size) {
+            tr.removeMark(from, to, markType.create({ entityType, entityId: String(entityId) }))
+          }
+        }
+        if (tr.docChanged) {
+          editor.view.dispatch(tr)
+          return true
+        }
+        return false
       }
     }
   }, [editor, janitorActionsRef])
