@@ -1084,8 +1084,6 @@
     },
     "storyPulse": "Puls historii",
     "experimental": "Eksperymentalne",
-    "autoLink": "Włącz automatyczne łączenie",
-    "autoLinkDesc": "Automatycznie stosuj sugestie Połącz, gdy tylko Arbitr je wykryje, bez pytania. Nowe encje nigdy nie są tworzone automatycznie. Może połączyć niewłaściwą nazwę, więc sprawdź później tekst.",
     "storyPulseDesc": "Dodaje do planera fabuły pasek, który na podstawie słów szacuje napięcie każdego akapitu w porównaniu z resztą książki. To tylko szkic: może się mylić, zwłaszcza w spokojnych scenach i dialogach. Tylko po angielsku, węgiersku i polsku.",
     "sketchboardEditorMenu": "Akcje tablicy szkiców w menu edytora",
     "sketchboardEditorMenuDesc": "Kliknij prawym przyciskiem powiązaną nazwę, aby dodać ją do tablicy albo sprawić, by od tego rozdziału pojawiała się na tablicy."
@@ -1931,7 +1929,20 @@
     "missingSensesDesc": "Nieobecne w tym rozdziale:",
     "readabilityDesc": "Zobacz zakładkę Analiza Zmysłowa, aby uzyskać szczegóły",
     "rewrite": "Przepisz",
-    "edit": "Edytuj"
+    "edit": "Edytuj",
+    "linkAll": "Połącz wszystkie",
+    "linkingAll": "Łączenie...",
+    "linkAllTitle": "Przeskanuj rozdział i połącz niepowiązane wzmianki o bytach",
+    "linkedCount": "Połączono {{count}} wzmianek",
+    "undoAutoLinks": "Cofnij automatyczne linki",
+    "undoAutoLinksHint": "Znika po edycji tekstu lub zmianie rozdziału.",
+    "noUnlinkedFound": "Nie znaleziono niepowiązanych bytów.",
+    "disambiguateTitle": "Ujednoznacznij link do bytu",
+    "disambiguatePrompt": "Wiele bytów pasuje do „{{term}}”. Wybierz, który połączyć:",
+    "disambiguateAutoReady": "{{count}} jednoznacznych dopasowań również zostanie połączonych.",
+    "skip": "Pomiń",
+    "skipAllTerm": "Pomiń wszystkie „{{term}}”",
+    "skipRestApply": "Pomiń resztę i zastosuj"
   },
   "palette": {
     "searchEntities": "Wyszukaj lub utwórz encję…",

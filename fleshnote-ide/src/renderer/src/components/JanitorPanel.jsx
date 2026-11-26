@@ -72,6 +72,11 @@ export default function JanitorPanel({
   onReturnFocus,
   onActivity,
   hotkeys = { janitor_accept: 'y', janitor_dismiss: 'n' },
+  onLinkAll,
+  isLinkAllRunning = false,
+  linkAllNotice = null,
+  onUndoLinkAll,
+  onDismissLinkAllNotice,
 }) {
   const { t } = useTranslation()
   const panelRef = useRef(null)
@@ -214,8 +219,71 @@ export default function JanitorPanel({
         </button>
       </div>
 
+      {!isCollapsed && onLinkAll && enabledTypes.link_existing && (
+        <div className="janitor-toolbar">
+          <button
+            type="button"
+            className="janitor-link-all-btn"
+            onClick={onLinkAll}
+            disabled={isLinkAllRunning || isLoading}
+            title={t('janitor.linkAllTitle', 'Scan the chapter and link unlinked entity mentions')}
+          >
+            <span className="janitor-rune">ᚠ</span>
+            <span>
+              {isLinkAllRunning
+                ? t('janitor.linkingAll', 'Linking...')
+                : t('janitor.linkAll', 'Link All')}
+            </span>
+          </button>
+        </div>
+      )}
+
       {!isCollapsed && (
         <div className="panel-content" style={{ overflowY: 'auto', padding: '8px' }}>
+          {linkAllNotice && (
+            <div className="inbox-card janitor-undo-card">
+              <div className="inbox-content">
+                {linkAllNotice.count > 0 ? (
+                  <>
+                    <div className="janitor-undo-header">
+                      <span className="janitor-rune" style={{ color: 'var(--accent-amber)' }}>ᚠ</span>
+                      <span>
+                        {t('janitor.linkedCount', 'Linked {{count}} mentions', { count: linkAllNotice.count })}
+                      </span>
+                    </div>
+                    <div className="janitor-undo-hint">
+                      {t('janitor.undoAutoLinksHint', 'Clears when you edit or switch chapters.')}
+                    </div>
+                    <div className="janitor-undo-actions">
+                      {onUndoLinkAll && (
+                        <button type="button" className="janitor-undo-btn" onClick={onUndoLinkAll}>
+                          {t('janitor.undoAutoLinks', 'Undo Auto Links')}
+                        </button>
+                      )}
+                      {onDismissLinkAllNotice && (
+                        <button type="button" className="janitor-undo-dismiss-btn" onClick={onDismissLinkAllNotice}>
+                          {t('janitor.dismiss', 'Dismiss')}
+                        </button>
+                      )}
+                    </div>
+                  </>
+                ) : (
+                  <>
+                    <div style={{ fontSize: 11, fontFamily: 'var(--font-mono)', color: 'var(--text-secondary)', marginBottom: 8 }}>
+                      {t('janitor.noUnlinkedFound', 'No unlinked entities found.')}
+                    </div>
+                    {onDismissLinkAllNotice && (
+                      <div className="janitor-undo-actions">
+                        <button type="button" className="janitor-undo-dismiss-btn" onClick={onDismissLinkAllNotice}>
+                          {t('janitor.dismiss', 'Dismiss')}
+                        </button>
+                      </div>
+                    )}
+                  </>
+                )}
+              </div>
+            </div>
+          )}
           {isLoading ? (
             <div className="janitor-scanning">
               <div className="janitor-scanning-dot" />

@@ -74,3 +74,256 @@
     font-family: var(--font-mono);
     line-height: 1;
 }
+
+/* ── Link All toolbar & undo card ──────────────── */
+
+.janitor-toolbar {
+    display: flex;
+    align-items: center;
+    padding-block: 6px;
+    padding-inline: 8px;
+    border-bottom: 1px solid var(--border-subtle);
+    background: var(--bg-base);
+}
+
+.janitor-link-all-btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 6px;
+    width: 100%;
+    padding-block: 6px;
+    padding-inline: 10px;
+    background: transparent;
+    border: 1px solid var(--border-default);
+    color: var(--text-secondary);
+    font-family: var(--font-mono);
+    font-size: 11px;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    cursor: pointer;
+    transition: background 0.15s, border-color 0.15s, color 0.15s, opacity 0.15s;
+}
+
+.janitor-link-all-btn .janitor-rune {
+    color: var(--accent-amber);
+}
+
+.janitor-link-all-btn:hover:not(:disabled) {
+    border-color: var(--accent-amber);
+    color: var(--accent-amber);
+    background: var(--accent-amber-dim);
+}
+
+.janitor-link-all-btn:disabled {
+    opacity: 0.45;
+    cursor: default;
+}
+
+.janitor-undo-card {
+    border-inline-start: 3px solid var(--accent-amber);
+    margin-bottom: 8px;
+}
+
+.janitor-undo-header {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    margin-bottom: 4px;
+    font-size: 10px;
+    font-family: var(--font-mono);
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    color: var(--accent-amber);
+    font-weight: 600;
+}
+
+.janitor-undo-hint {
+    font-size: 10px;
+    font-family: var(--font-mono);
+    color: var(--text-tertiary);
+    margin-bottom: 8px;
+    line-height: 1.4;
+}
+
+.janitor-undo-actions {
+    display: flex;
+    gap: 6px;
+}
+
+.janitor-undo-btn {
+    flex: 1;
+    padding-block: 5px;
+    padding-inline: 8px;
+    background: transparent;
+    border: 1px solid var(--accent-amber);
+    color: var(--accent-amber);
+    font-family: var(--font-mono);
+    font-size: 10px;
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+    cursor: pointer;
+    transition: background 0.15s;
+}
+
+.janitor-undo-btn:hover {
+    background: var(--accent-amber-dim);
+}
+
+.janitor-undo-dismiss-btn {
+    padding-block: 5px;
+    padding-inline: 10px;
+    background: transparent;
+    border: 1px solid var(--border-subtle);
+    color: var(--text-tertiary);
+    font-family: var(--font-mono);
+    font-size: 10px;
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+    cursor: pointer;
+    transition: background 0.15s, color 0.15s;
+}
+
+.janitor-undo-dismiss-btn:hover {
+    background: rgba(255, 255, 255, 0.05);
+    color: var(--text-secondary);
+}
+
+/* ── Link All disambiguation modal ─────────────── */
+
+.janitor-disambig-panel {
+    position: relative;
+    width: 480px;
+    max-width: calc(100vw - 32px);
+    max-height: calc(100vh - 48px);
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+}
+
+.janitor-disambig-panel .popup-header {
+    gap: 12px;
+    align-items: center;
+}
+
+.janitor-disambig-header-title {
+    display: inline-flex;
+    align-items: center;
+    min-width: 0;
+}
+
+.janitor-disambig-header-right {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    flex-shrink: 0;
+}
+
+.janitor-disambig-progress {
+    font-family: var(--font-mono);
+    font-size: 10px;
+    color: var(--text-secondary);
+    padding-block: 2px;
+    padding-inline: 6px;
+    background: var(--bg-surface);
+    border: 1px solid var(--border-subtle);
+    white-space: nowrap;
+    flex-shrink: 0;
+    line-height: 1.2;
+}
+
+.janitor-disambig-body {
+    padding-block: 4px 8px;
+    padding-inline: 16px;
+    overflow-y: auto;
+    flex: 1;
+}
+
+.janitor-disambig-body .janitor-context {
+    cursor: default;
+    font-size: 13px;
+    padding: 10px 12px;
+    margin-bottom: 12px;
+}
+
+.janitor-disambig-body .janitor-context:hover {
+    border-color: var(--border-subtle);
+}
+
+.janitor-disambig-list {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+}
+
+.janitor-disambig-option {
+    border: 1px solid var(--border-subtle);
+    background: var(--bg-surface);
+    padding: 8px 12px;
+    transition: background 0.12s, border-color 0.12s;
+}
+
+.janitor-disambig-option:hover {
+    border-color: var(--accent-amber);
+    background: var(--bg-hover);
+}
+
+.janitor-disambig-label {
+    flex: 1;
+    min-width: 0;
+    display: flex;
+    align-items: baseline;
+    gap: 6px;
+    overflow: hidden;
+}
+
+.janitor-disambig-label .popup-entity-name {
+    flex: 0 1 auto;
+}
+
+.janitor-disambig-key {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    min-width: 18px;
+    height: 18px;
+    padding-inline: 4px;
+    background: var(--bg-surface);
+    border: 1px solid var(--border-subtle);
+    color: var(--text-tertiary);
+    font-family: var(--font-mono);
+    font-size: 10px;
+    flex-shrink: 0;
+}
+
+.janitor-disambig-aliases {
+    font-size: 11px;
+    color: var(--text-tertiary);
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    max-width: 160px;
+}
+
+.janitor-disambig-shortcuts {
+    margin-top: 10px;
+    font-family: var(--font-mono);
+    font-size: 10px;
+    color: var(--text-tertiary);
+    opacity: 0.75;
+}
+
+.janitor-disambig-footer {
+    justify-content: space-between;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 8px;
+    margin-top: 0;
+}
+
+.janitor-disambig-footer-group {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    flex-wrap: wrap;
+}
