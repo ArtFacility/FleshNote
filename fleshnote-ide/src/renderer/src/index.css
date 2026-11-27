@@ -13,6 +13,7 @@
 @import './styles/reviewer.css';
 @import './styles/reviews.css';
 @import './styles/story-pulse.css';
+@import './styles/book-search.css';
 
 @font-face {
   font-family: 'Crimson Pro';

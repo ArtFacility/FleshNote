@@ -91,6 +91,8 @@ const api = {
   // ── Chapters ───────────────────────────────────────
   getChapters: (projectPath) => ipcRenderer.invoke('api:getChapters', projectPath),
   getTodos: (projectPath) => ipcRenderer.invoke('api:getTodos', projectPath),
+  bookSearch: (payload) => ipcRenderer.invoke('api:bookSearch', payload),
+  bookReplace: (payload) => ipcRenderer.invoke('api:bookReplace', payload),
   createChapter: (payload) => ipcRenderer.invoke('api:createChapter', payload),
   bulkCreateChapters: (payload) => ipcRenderer.invoke('api:bulkCreateChapters', payload),
   loadChapterContent: (projectPath, chapterId) =>

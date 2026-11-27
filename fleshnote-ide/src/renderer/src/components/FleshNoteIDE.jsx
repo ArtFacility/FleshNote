@@ -23,6 +23,7 @@ import StatsDashboard from './StatsDashboard'
 import EntityManager from './EntityManager'
 import WorldbuildAndHistory from './WorldbuildAndHistory'
 import JanitorPanel from './JanitorPanel'
+import BookSearch from './BookSearch'
 import LinkAllDisambiguateModal from './LinkAllDisambiguateModal'
 import ReviewsPanel from './ReviewsPanel'
 import SendForReviewModal from './SendForReviewModal'
@@ -445,7 +446,7 @@ export default function FleshNoteIDE({ projectConfig, projectPath, onCloseProjec
   }, [activeChapter])
 
   // ── IDE-level configurable hotkeys ────────────────
-  const [ideHotkeys, setIdeHotkeys] = useState({ janitor_open: 'Alt+j', focus_normal: 'Alt+f' })
+  const [ideHotkeys, setIdeHotkeys] = useState({ janitor_open: 'Alt+j', book_search: 'Ctrl+Shift+f', focus_normal: 'Alt+f' })
   const janitorPanelActivityRef = useRef(0) // timestamp of last user interaction inside the panel
   const janitorPendingRetryRef = useRef(null) // deferred retry when panel is active
 
@@ -808,6 +809,25 @@ export default function FleshNoteIDE({ projectConfig, projectPath, onCloseProjec
     [chapters, activeChapter]
   )
   const clearCharTarget = useCallback(() => setScrollToCharTarget(null), [])
+
+  const handleBookSearchNavigate = useCallback(async ({ chapterId, wordOffset, charOffset, match }) => {
+    const targetChapter = chapters.find(ch => String(ch.id) === String(chapterId))
+    if (!targetChapter) return
+    setMainView('editor')
+    if (!activeChapter || String(activeChapter.id) !== String(chapterId)) {
+      await loadChapter(targetChapter)
+    }
+    if (charOffset != null) {
+      setScrollToCharTarget({
+        chapterId,
+        charOffset,
+        snippet: match || '',
+        timestamp: Date.now()
+      })
+    } else if (wordOffset != null) {
+      setScrollToWordOffset({ wordOffset, timestamp: Date.now() })
+    }
+  }, [chapters, activeChapter])
 
   // ── Review notes ───────────────────────────────────
   const handleOpenReviewNote = useCallback(async (note) => {
@@ -1215,6 +1235,17 @@ export default function FleshNoteIDE({ projectConfig, projectPath, onCloseProjec
     return () => window.removeEventListener('keydown', handleAltJ)
   }, [focusMode, janitorCollapsed, ideHotkeys.janitor_open])
 
+  useEffect(() => {
+    const handleBookSearch = (e) => {
+      if (matchesHotkey(e, ideHotkeys.book_search) && !focusMode) {
+        e.preventDefault()
+        setMainView('booksearch')
+      }
+    }
+    window.addEventListener('keydown', handleBookSearch)
+    return () => window.removeEventListener('keydown', handleBookSearch)
+  }, [focusMode, ideHotkeys.book_search])
+
   return (
     <>
       {/* ── IDE HEADER TOOLBAR ──────────────────────── */}
@@ -1594,6 +1625,13 @@ export default function FleshNoteIDE({ projectConfig, projectPath, onCloseProjec
             projectConfig={projectConfig}
             onOpenParagraph={handleOpenParagraph}
             onConfigUpdate={onConfigUpdate}
+          />
+        ) : mainView === 'booksearch' ? (
+          <BookSearch
+            projectPath={projectPath}
+            onClose={() => setMainView('editor')}
+            onNavigate={handleBookSearchNavigate}
+            onBookChanged={handleImportDataChanged}
           />
         ) : (
           <>

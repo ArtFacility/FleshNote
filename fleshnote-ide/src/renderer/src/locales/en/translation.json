@@ -1,5 +1,21 @@
 {
   "test_key": "Setup is complete!",
+  "bookSearch": {
+    "findPlaceholder": "Find across book...",
+    "find": "Find all",
+    "replaceAll": "Replace all",
+    "replacing": "Replacing...",
+    "replacedNote": "Replaced in this view — refresh to re-search",
+    "resultsTitle": "Search results",
+    "resultCount": "{{count}} matches in {{chapters}} chapters",
+    "truncated": "Showing first {{count}} matches",
+    "refresh": "Refresh",
+    "searching": "Searching...",
+    "initialHint": "Enter a word or phrase above to search every chapter of this book.",
+    "noResults": "No matches found.",
+    "chapter": "Chapter {{number}}",
+    "openResult": "Open in editor"
+  },
   "popup": {
     "addAliasTitle": "Add Alias To...",
     "addAliasSubtitle": "Add \"{{text}}\" as an alias to:",
@@ -1041,6 +1057,7 @@
     "hotkeyTodo": "Insert #TODO marker",
     "hotkeySynonym": "Open synonym lookup",
     "hotkeySearch": "Find & replace",
+    "hotkeyBookSearch": "Find & replace across book",
     "hotkeyBold": "Bold",
     "hotkeyItalic": "Italic",
     "hotkeyUnderline": "Underline",
