@@ -294,7 +294,6 @@ function EntityRow({ entity, onClick, draggable, active }) {
   return (
     <div
       className={`sk-entity-row${active ? ' active' : ''}`}
-      onMouseDown={(e) => e.preventDefault()}
       onClick={onClick}
       draggable={draggable}
       onDragStart={

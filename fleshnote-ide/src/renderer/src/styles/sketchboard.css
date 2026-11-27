@@ -796,6 +796,7 @@ textarea.sk-inline-input {
   font-size: 12px;
   color: var(--text-secondary);
   cursor: pointer;
+  user-select: none;
 }
 
 .sk-entity-row[draggable='true'] {
