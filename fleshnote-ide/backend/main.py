@@ -12,6 +12,7 @@ import project_io
 import migration_engine
 
 from routes.chapters import router as chapters_router
+from routes.book_search import router as book_search_router
 from routes.characters import router as characters_router
 from routes.locations import router as locations_router
 from routes.entities import router as entities_router
@@ -52,6 +53,7 @@ app = FastAPI(title="FleshNote API")
 
 # Mount route modules
 app.include_router(chapters_router)
+app.include_router(book_search_router)
 app.include_router(characters_router)
 app.include_router(locations_router)
 app.include_router(entities_router)

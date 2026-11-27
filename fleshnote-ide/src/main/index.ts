@@ -425,6 +425,7 @@ function createWindow(): void {
 const DEFAULT_HOTKEYS = {
   synonym_lookup: 'Alt+s',
   search: 'Ctrl+f',
+  book_search: 'Ctrl+Shift+f',
   todo_marker: 'Alt+t',
   janitor_open: 'Alt+j',
   janitor_accept: 'y',
@@ -1146,6 +1147,22 @@ app.whenReady().then(async () => {
 
   ipcMain.handle('api:getTodos', async (_event, projectPath) => {
     return await backendPost('/api/project/todos', { project_path: projectPath })
+  })
+
+  ipcMain.handle('api:bookSearch', async (_event, payload) => {
+    return await backendPost('/api/project/book/search', payload)
+  })
+
+  ipcMain.handle('api:bookReplace', async (_event, payload) => {
+    return await backendPost('/api/project/book/replace', payload)
+  })
+
+  ipcMain.handle('api:bookUndo', async (_event, payload) => {
+    return await backendPost('/api/project/book/undo', payload)
+  })
+
+  ipcMain.handle('api:bookUndoStatus', async (_event, payload) => {
+    return await backendPost('/api/project/book/undo/status', payload)
   })
 
   ipcMain.handle('api:createChapter', async (_event, payload) => {

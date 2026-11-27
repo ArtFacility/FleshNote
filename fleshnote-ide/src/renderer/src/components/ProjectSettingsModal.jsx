@@ -110,7 +110,7 @@ export default function ProjectSettingsModal({ isOpen, onClose, projectPath, onC
     const [nlpModelStatus, setNlpModelStatus] = useState({ en: null, hu: null, pl: null, ar: null })
     const [doubleEnter, setDoubleEnter] = useState(false)
     const [hotkeys, setHotkeys] = useState({
-        synonym_lookup: 'Alt+S', search: 'Ctrl+F',
+        synonym_lookup: 'Alt+S', search: 'Ctrl+F', book_search: 'Ctrl+Shift+F',
         todo_marker: 'Alt+T', entity_palette: 'Alt+E',
         quick_note_popup: 'Alt+Q', focus_normal: 'Alt+F',
         janitor_open: 'Alt+J', janitor_accept: 'Y', janitor_dismiss: 'N'
@@ -150,7 +150,7 @@ export default function ProjectSettingsModal({ isOpen, onClose, projectPath, onC
                 .then(cfg => {
                     setDoubleEnter(!!cfg?.double_enter_paragraph)
                     if (cfg?.hotkeys) setHotkeys({
-                        synonym_lookup: 'Alt+S', search: 'Ctrl+F',
+                        synonym_lookup: 'Alt+S', search: 'Ctrl+F', book_search: 'Ctrl+Shift+F',
                         todo_marker: 'Alt+T', entity_palette: 'Alt+E',
                         quick_note_popup: 'Alt+Q', focus_normal: 'Alt+F',
                         janitor_open: 'Alt+J', janitor_accept: 'Y', janitor_dismiss: 'N',
@@ -671,6 +671,7 @@ export default function ProjectSettingsModal({ isOpen, onClose, projectPath, onC
                                             <EditableHotkeyRow hotkeyKey="todo_marker" action={t('settings.hotkeyTodo', 'Insert #TODO marker')} {...rowProps} />
                                             <EditableHotkeyRow hotkeyKey="synonym_lookup" action={t('settings.hotkeySynonym', 'Open synonym lookup')} {...rowProps} />
                                             <EditableHotkeyRow hotkeyKey="search" action={t('settings.hotkeySearch', 'Find & replace')} {...rowProps} />
+                                            <EditableHotkeyRow hotkeyKey="book_search" action={t('settings.hotkeyBookSearch', 'Find & replace across book')} {...rowProps} />
                                             <EditableHotkeyRow hotkeyKey="entity_palette" action={t('settings.hotkeyEntityPalette', 'Open entity command palette')} {...rowProps} />
                                             <EditableHotkeyRow hotkeyKey="quick_note_popup" action={t('settings.hotkeyQuickNotePopup', 'Quick note on selection')} {...rowProps} />
                                             <EditableHotkeyRow hotkeyKey="focus_normal" action={t('settings.hotkeyFocusNormal', 'Toggle focus (normal) mode')} {...rowProps} />
