@@ -307,6 +307,20 @@ export default function Editor({
   // Search state: false | 'search' | 'replace'
   const [showSearch, setShowSearch] = useState(false)
 
+  const [titleValue, setTitleValue] = useState(chapter?.title || '')
+  const titleStateRef = useRef({ id: chapter?.id, typed: new Set([chapter?.title || '']) })
+  useEffect(() => {
+    const state = titleStateRef.current
+    const next = chapter?.title || ''
+    if (state.id !== chapter?.id) {
+      titleStateRef.current = { id: chapter?.id, typed: new Set([next]) }
+      setTitleValue(next)
+    } else if (!state.typed.has(next)) {
+      state.typed.add(next)
+      setTitleValue(next)
+    }
+  }, [chapter?.id, chapter?.title])
+
   // Link visibility state
   const [showEyeDropdown, setShowEyeDropdown] = useState(false)
   const [linkVisibility, setLinkVisibility] = useState(() => {
@@ -2397,9 +2411,14 @@ export default function Editor({
             <div className="editor-chapter-title" style={{ padding: '0 64px', marginBottom: '0' }}>
               <input
                 type="text"
-                value={chapter.title || ''}
+                value={titleValue}
                 placeholder={`${t('editor.chapterPrefix', 'Chapter ')}${chapter.chapter_number}`}
-                onChange={(e) => onChapterMetaUpdate?.({ title: e.target.value })}
+                onChange={(e) => {
+                  const value = e.target.value
+                  titleStateRef.current.typed.add(value)
+                  setTitleValue(value)
+                  onChapterMetaUpdate?.({ title: value })
+                }}
                 style={{
                   background: 'transparent',
                   border: 'none',
