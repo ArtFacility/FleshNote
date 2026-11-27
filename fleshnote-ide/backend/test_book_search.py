@@ -13,9 +13,12 @@ import db_setup
 from routes.book_search import (
     BookReplaceRequest,
     BookSearchRequest,
+    BookUndoRequest,
     _display_text,
     replace_book,
     search_book,
+    undo_book_replace,
+    undo_status,
 )
 
 
@@ -41,6 +44,7 @@ class TestBookSearch(unittest.TestCase):
         self.write_chapter("ch-1", "<p>The black cat sat on a mat with another cat.</p><p>{{char:c1|Sophia}} purred.</p>")
         self.write_chapter("ch-2", "<p>Another CAT watched her.</p>")
         self.write_chapter("ch-3", "<p>A deleted cat must stay untouched.</p>")
+        self.original = {cid: self.read_chapter(cid) for cid in ("ch-1", "ch-2", "ch-3")}
 
     def tearDown(self):
         shutil.rmtree(self.project, ignore_errors=True)
@@ -117,6 +121,40 @@ class TestBookSearch(unittest.TestCase):
         self.assertIn("{{char:c1|Dora}}", self.read_chapter("ch-1"))
         self.assertEqual(self.search("Sophia")["total"], 0)
         self.assertEqual(self.search("Dora")["total"], 1)
+
+    def test_undo_replace_all_restores_every_touched_chapter(self):
+        replaced = replace_book(BookReplaceRequest(
+            project_path=self.project, query="cat", replacement="fox"
+        ))
+        self.assertTrue(replaced["undo_token"])
+        status_req = BookUndoRequest(
+            project_path=self.project, undo_token=replaced["undo_token"]
+        )
+        self.assertTrue(undo_status(status_req)["available"])
+        undone = undo_book_replace(status_req)
+        self.assertEqual(undone["undone"], 2)
+        self.assertEqual(undone["skipped"], 0)
+        for cid in ("ch-1", "ch-2", "ch-3"):
+            self.assertEqual(self.read_chapter(cid), self.original[cid])
+        self.assertEqual(self.search("cat")["total"], 3)
+        self.assertFalse(undo_status(status_req)["available"])
+        with self.assertRaises(Exception) as ctx:
+            undo_book_replace(status_req)
+        self.assertEqual(ctx.exception.status_code, 404)
+
+    def test_undo_does_not_overwrite_later_edits(self):
+        replaced = replace_book(BookReplaceRequest(
+            project_path=self.project, query="cat", replacement="fox"
+        ))
+        edited = "<p>Another fox watched her. New sentence.</p>"
+        self.write_chapter("ch-2", edited)
+        undone = undo_book_replace(BookUndoRequest(
+            project_path=self.project, undo_token=replaced["undo_token"]
+        ))
+        self.assertEqual(undone["undone"], 1)
+        self.assertEqual(undone["skipped"], 1)
+        self.assertEqual(self.read_chapter("ch-1"), self.original["ch-1"])
+        self.assertEqual(self.read_chapter("ch-2"), edited)
 
     def test_replace_updates_word_count(self):
         replace_book(BookReplaceRequest(

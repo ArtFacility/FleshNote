@@ -5,6 +5,7 @@ import html
 import os
 import re
 import sqlite3
+import uuid
 
 from fastapi import APIRouter, HTTPException
 from pydantic import BaseModel
@@ -15,6 +16,9 @@ router = APIRouter()
 
 MAX_RESULTS = 2000
 CONTEXT_CHARS = 90
+MAX_UNDO_RECORDS = 20
+
+_undo_records = {}
 
 _MARKER_RE = re.compile(r'\{\{[^{}|]+\|[^{}]*\}\}')
 _TAG_RE = re.compile(r'<[^>]+>')
@@ -35,6 +39,11 @@ class BookReplaceRequest(BaseModel):
     replacement: str = ""
     case_sensitive: bool = False
     match_ids: list[str] = []
+
+
+class BookUndoRequest(BaseModel):
+    project_path: str
+    undo_token: str
 
 
 def _get_db(project_path: str):
@@ -126,6 +135,35 @@ def _match_regex(query: str, case_sensitive: bool):
     return re.compile(re.escape(query), 0 if case_sensitive else re.IGNORECASE)
 
 
+def _sync_chapter_prose(cursor, chapter_id, content):
+    from routes.chapters import (
+        _update_entity_appearances,
+        _update_foreshadowings,
+        _update_knowledge_offsets,
+        _update_relationship_offsets,
+        _update_milestone_offsets,
+    )
+    from sync_core import log_change
+
+    _update_entity_appearances(cursor, chapter_id, content)
+    _update_foreshadowings(cursor, chapter_id, content)
+    _update_knowledge_offsets(cursor, chapter_id, content)
+    _update_relationship_offsets(cursor, chapter_id, content)
+    _update_milestone_offsets(cursor, chapter_id, content)
+
+    text, _, _ = _display_text(content)
+    word_count = len(text.split())
+    cursor.execute(
+        "UPDATE chapters SET word_count = ?, updated_at = CURRENT_TIMESTAMP WHERE id = ?",
+        (word_count, chapter_id),
+    )
+    prose_hash = hashlib.sha256(content.encode("utf-8")).hexdigest()
+    log_change(cursor, "chapters", chapter_id, {
+        "word_count": word_count,
+        "prose_hash": prose_hash,
+    })
+
+
 @router.post("/api/project/book/search")
 def search_book(req: BookSearchRequest):
     """Search the visible prose of every chapter, with a little context either side."""
@@ -167,19 +205,11 @@ def replace_book(req: BookReplaceRequest):
     if not req.query:
         raise HTTPException(status_code=400, detail="Search term is required")
 
-    from routes.chapters import (
-        _update_entity_appearances,
-        _update_foreshadowings,
-        _update_knowledge_offsets,
-        _update_relationship_offsets,
-        _update_milestone_offsets,
-    )
-    from sync_core import log_change
-
     allowed = set(req.match_ids) if req.match_ids else None
     regex = _match_regex(req.query, req.case_sensitive)
     replaced = 0
     touched_chapters = []
+    undo_patches = []
 
     conn = _get_db(req.project_path)
     try:
@@ -201,26 +231,15 @@ def replace_book(req: BookReplaceRequest):
 
             replaced += len(spans)
             touched_chapters.append(row["id"])
+            undo_patches.append({
+                "chapter_id": row["id"],
+                "before": content,
+                "after": new_content,
+            })
             with open(path, "w", encoding="utf-8") as f:
                 f.write(new_content)
 
-            _update_entity_appearances(cursor, row["id"], new_content)
-            _update_foreshadowings(cursor, row["id"], new_content)
-            _update_knowledge_offsets(cursor, row["id"], new_content)
-            _update_relationship_offsets(cursor, row["id"], new_content)
-            _update_milestone_offsets(cursor, row["id"], new_content)
-
-            new_text, _, _ = _display_text(new_content)
-            word_count = len(new_text.split())
-            cursor.execute(
-                "UPDATE chapters SET word_count = ?, updated_at = CURRENT_TIMESTAMP WHERE id = ?",
-                (word_count, row["id"]),
-            )
-            prose_hash = hashlib.sha256(new_content.encode("utf-8")).hexdigest()
-            log_change(cursor, "chapters", row["id"], {
-                "word_count": word_count,
-                "prose_hash": prose_hash,
-            })
+            _sync_chapter_prose(cursor, row["id"], new_content)
         conn.commit()
     except Exception:
         conn.rollback()
@@ -228,4 +247,69 @@ def replace_book(req: BookReplaceRequest):
     finally:
         conn.close()
 
-    return {"status": "ok", "replaced": replaced, "chapters": touched_chapters}
+    undo_token = None
+    if undo_patches:
+        undo_token = uuid.uuid4().hex
+        _undo_records[undo_token] = undo_patches
+        while len(_undo_records) > MAX_UNDO_RECORDS:
+            _undo_records.pop(next(iter(_undo_records)))
+
+    return {
+        "status": "ok",
+        "replaced": replaced,
+        "chapters": touched_chapters,
+        "undo_token": undo_token,
+    }
+
+
+@router.post("/api/project/book/undo/status")
+def undo_status(req: BookUndoRequest):
+    return {"available": req.undo_token in _undo_records}
+
+
+@router.post("/api/project/book/undo")
+def undo_book_replace(req: BookUndoRequest):
+    """Restore the chapter snapshots captured by a Replace All.
+
+    Chapters edited since the replace are left alone so a newer edit is never
+    overwritten by an undo.
+    """
+    patches = _undo_records.pop(req.undo_token, None)
+    if patches is None:
+        raise HTTPException(status_code=404, detail="Undo is no longer available")
+
+    conn = _get_db(req.project_path)
+    undone = 0
+    skipped = 0
+    try:
+        cursor = conn.cursor()
+        for patch in patches:
+            row = cursor.execute(
+                "SELECT md_filename FROM chapters WHERE id = ? AND deleted = 0",
+                (patch["chapter_id"],),
+            ).fetchone()
+            if not row or not row["md_filename"]:
+                skipped += 1
+                continue
+            path = safe_md_path(os.path.join(req.project_path, "md"), row["md_filename"])
+            if not path or not os.path.exists(path):
+                skipped += 1
+                continue
+            with open(path, "r", encoding="utf-8") as f:
+                current = f.read()
+            if current != patch["after"]:
+                skipped += 1
+                continue
+
+            with open(path, "w", encoding="utf-8") as f:
+                f.write(patch["before"])
+            _sync_chapter_prose(cursor, patch["chapter_id"], patch["before"])
+            undone += 1
+        conn.commit()
+    except Exception:
+        conn.rollback()
+        raise
+    finally:
+        conn.close()
+
+    return {"status": "ok", "undone": undone, "skipped": skipped}

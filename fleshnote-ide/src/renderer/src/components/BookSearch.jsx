@@ -1,4 +1,4 @@
-import { useMemo, useRef, useState } from 'react'
+import { useEffect, useMemo, useRef, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 
 export default function BookSearch({ projectPath, onClose, onNavigate, onBookChanged }) {
@@ -12,10 +12,36 @@ export default function BookSearch({ projectPath, onClose, onNavigate, onBookCha
   const [truncated, setTruncated] = useState(false)
   const [loading, setLoading] = useState(false)
   const [replacing, setReplacing] = useState(false)
+  const [undoing, setUndoing] = useState(false)
+  const undoKey = `fn_book_undo_${projectPath}`
+  const [undoToken, setUndoToken] = useState(null)
+  const [undoValidated, setUndoValidated] = useState(false)
   const [error, setError] = useState('')
   const [replacedWith, setReplacedWith] = useState({})
   const searchInputRef = useRef(null)
   const requestSeqRef = useRef(0)
+
+  useEffect(() => {
+    const stored = localStorage.getItem(undoKey)
+    const check = window.api?.bookUndoStatus
+    if (!stored || !check) {
+      if (stored) localStorage.removeItem(undoKey)
+      return
+    }
+    let cancelled = false
+    check({ project_path: projectPath, undo_token: stored })
+      .then(res => {
+        if (cancelled) return
+        if (res?.available) {
+          setUndoToken(stored)
+          setUndoValidated(true)
+        } else {
+          localStorage.removeItem(undoKey)
+        }
+      })
+      .catch(() => { if (!cancelled) localStorage.removeItem(undoKey) })
+    return () => { cancelled = true }
+  }, [undoKey, projectPath])
 
   const groupedResults = useMemo(() => {
     const groups = []
@@ -79,11 +105,42 @@ export default function BookSearch({ projectPath, onClose, onNavigate, onBookCha
       })
       if (response?.error) throw new Error(response.error)
       setReplacedWith(Object.fromEntries(results.map(r => [r.id, replacement])))
+      setUndoToken(response?.undo_token || null)
+      setUndoValidated(Boolean(response?.undo_token))
+      if (response?.undo_token) localStorage.setItem(undoKey, response.undo_token)
+      else localStorage.removeItem(undoKey)
       onBookChanged?.()
     } catch (err) {
       setError(String(err?.message || err))
     } finally {
       setReplacing(false)
+    }
+  }
+
+  const undoReplaceAll = async () => {
+    if (!undoToken || undoing) return
+    setUndoing(true)
+    setError('')
+    try {
+      const response = await window.api.bookUndo({
+        project_path: projectPath,
+        undo_token: undoToken
+      })
+      if (response?.error) throw new Error(response.error)
+      setReplacedWith({})
+      setUndoToken(null)
+      setUndoValidated(false)
+      localStorage.removeItem(undoKey)
+      onBookChanged?.()
+    } catch (err) {
+      if (String(err?.message || err).includes('Undo is no longer available')) {
+        setUndoToken(null)
+        setUndoValidated(false)
+        localStorage.removeItem(undoKey)
+      }
+      setError(String(err?.message || err))
+    } finally {
+      setUndoing(false)
     }
   }
 
@@ -151,6 +208,18 @@ export default function BookSearch({ projectPath, onClose, onNavigate, onBookCha
             {t('bookSearch.find', 'Find all')}
           </button>
           <div className="book-search-count">{searched ? `${results.length}` : '—'}</div>
+          {undoToken && undoValidated && (
+            <button
+              className="book-search-action"
+              onClick={undoReplaceAll}
+              disabled={undoing}
+              title={t('bookSearch.undoReplaceAll', 'Undo the last Replace All across the book')}
+            >
+              {undoing
+                ? t('bookSearch.undoing', 'Undoing...')
+                : t('bookSearch.undoReplaceAll', 'Undo Last Replace All')}
+            </button>
+          )}
           <button onClick={onClose} title={t('editor.closeSearch', 'Close (Esc)')} style={btnStyle}>
             <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
               <line x1="18" y1="6" x2="6" y2="18" /><line x1="6" y1="6" x2="18" y2="18" />

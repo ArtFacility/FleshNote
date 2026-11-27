@@ -1157,6 +1157,14 @@ app.whenReady().then(async () => {
     return await backendPost('/api/project/book/replace', payload)
   })
 
+  ipcMain.handle('api:bookUndo', async (_event, payload) => {
+    return await backendPost('/api/project/book/undo', payload)
+  })
+
+  ipcMain.handle('api:bookUndoStatus', async (_event, payload) => {
+    return await backendPost('/api/project/book/undo/status', payload)
+  })
+
   ipcMain.handle('api:createChapter', async (_event, payload) => {
     return await backendPost('/api/project/chapter/create', payload)
   })

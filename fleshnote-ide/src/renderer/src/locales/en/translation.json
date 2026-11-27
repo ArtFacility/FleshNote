@@ -6,6 +6,8 @@
     "replaceAll": "Replace all",
     "replacing": "Replacing...",
     "replacedNote": "Replaced in this view — refresh to re-search",
+    "undoReplaceAll": "Undo Last Replace All",
+    "undoing": "Undoing...",
     "resultsTitle": "Search results",
     "resultCount": "{{count}} matches in {{chapters}} chapters",
     "truncated": "Showing first {{count}} matches",
